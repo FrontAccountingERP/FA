@@ -102,7 +102,7 @@ hidden("OldMaterialCost", $myrow["material_cost"]);
 hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 $dec1 = $dec2 = $dec3 = 0;
 $_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
 $_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);

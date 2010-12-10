@@ -11,7 +11,7 @@
 ***********************************************************************/
 function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 {
-	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
+	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax, $sql_queries;
 
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
@@ -32,6 +32,12 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 	foreach($js_lib as $text)
 	  	echo $text;
 	echo "\n--></script>\n";
+
+	if ($sql_queries) {
+		div_start('footer_debug');
+		 echo "<div class='note_msg'>$sql_queries</div>";
+		div_end();
+	}
     echo "</body></html>\n";
 }
 

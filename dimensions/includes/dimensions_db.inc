@@ -122,10 +122,11 @@ function dimension_has_deposits($id)
 
 function dimension_has_payments($id)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE dimension_id = ".db_escape($id);
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE dimension_id = ".db_escape($id)
+	 . " OR dimension2_id = ".db_escape($id);
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
-	return ($row[0] != 0.0);
+	return ($row[0] > 0);
 }
 
 function dimension_is_closed($id)
@@ -146,8 +147,80 @@ function close_dimension($id)
 
 function reopen_dimension($id)
 {
-	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = $id";
+	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = ".db_escape($id);
 	db_query($sql, "could not reopen dimension");
 }
 
+//--------------------------------------------------------------------------------------
+
+function get_dimension_balance_all($id, $from, $to) 
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "SELECT account, ".TB_PREF."chart_master.account_name, sum(amount) AS amt FROM
+		".TB_PREF."gl_trans,".TB_PREF."chart_master WHERE
+		".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND
+		(dimension_id = ".db_escape($id)." OR dimension2_id = ".db_escape($id).") AND
+		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
+	return db_query($sql, "Transactions could not be calculated");
+}
+
+//--------------------------------------------------------------------------------------
+
+function get_dimension_balance($id, $from, $to) 
+{
+	$id = db_escape($id);
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
+		date2sql($from) . "' AND
+		tran_date <= '" . date2sql($to) . "' AND (dimension_id = " .
+		db_escape($id)." OR dimension2_id = " .db_escape($id).")";
+	$res = db_query($sql, "Sum of transactions could not be calculated");
+	$row = db_fetch_row($res);
+
+	return $row[0];
+}
+
+//--------------------------------------------------------------------------------------
+
+function get_sql_for_search_dimensions($dim)
+{	
+	$sql = "SELECT dim.id,
+		dim.reference,
+		dim.name,
+		dim.type_,
+		dim.date_,
+		dim.due_date,
+		dim.closed
+		FROM ".TB_PREF."dimensions as dim WHERE id > 0";
+
+	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
+	{
+		$sql .= " AND reference LIKE ".db_escape("%". $_POST['OrderNumber'] . "%");
+	} else {
+
+		if ($dim == 1)
+			$sql .= " AND type_=1";
+
+		if (isset($_POST['OpenOnly']))
+		{
+			$sql .= " AND closed=0";
+		}
+
+		if (isset($_POST['type_']) && ($_POST['type_'] > 0))
+		{
+			$sql .= " AND type_=".db_escape($_POST['type_']);
+		}
+
+		if (isset($_POST['OverdueOnly']))
+		{
+			$today = date2sql(Today());
+
+			$sql .= " AND due_date < '$today'";
+		}
+
+		$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
+			AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
+	}
+	return $sql;
+}	
 ?>

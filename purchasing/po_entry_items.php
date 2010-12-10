@@ -9,12 +9,23 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 'SA_PURCHASEORDER';
 $path_to_root = "..";
+$page_security = 'SA_PURCHASEORDER';
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/purchasing/includes/db/suppliers_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+
+set_page_security( @$_SESSION['PO']->trans_type,
+	array(	ST_PURCHORDER => 'SA_PURCHASEORDER',
+			ST_SUPPRECEIVE => 'SA_GRN',
+			ST_SUPPINVOICE => 'SA_SUPPLIERINVOICE'),
+	array(	'NewOrder' => 'SA_PURCHASEORDER',
+			'ModifyOrderNumber' => 'SA_PURCHASEORDER',
+			'NewGRN' => 'SA_GRN',
+			'NewInvoice' => 'SA_SUPPLIERINVOICE')
+);
 
 $js = '';
 if ($use_popup_windows)
@@ -22,14 +33,29 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-if (isset($_GET['ModifyOrderNumber'])) 
-{
-	page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
-} 
-else 
-{
-	page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
+if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
+
+	$_SESSION['page_title'] = _($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'];
+	create_new_po(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
+	copy_from_cart();
+} elseif (isset($_GET['NewOrder'])) {
+
+	$_SESSION['page_title'] = _($help_context = "Purchase Order Entry");
+	create_new_po(ST_PURCHORDER, 0);
+	copy_from_cart();
+} elseif (isset($_GET['NewGRN'])) {
+
+	$_SESSION['page_title'] = _($help_context = "Direct GRN Entry");
+	create_new_po(ST_SUPPRECEIVE, 0);
+	copy_from_cart();
+} elseif (isset($_GET['NewInvoice'])) {
+
+	$_SESSION['page_title'] = _($help_context = "Direct Purchase Invoice Entry");
+	create_new_po(ST_SUPPINVOICE, 0);
+	copy_from_cart();
 }
+
+page($_SESSION['page_title'], false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------
 
@@ -61,29 +87,52 @@ if (isset($_GET['AddedID']))
 	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
 	
 	display_footer_exit();	
-}
-//--------------------------------------------------------------------------------------------------
 
-function copy_from_cart()
-{
-	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
-	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
-    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-    $_POST['ref'] = $_SESSION['PO']->reference;
-	$_POST['Comments'] = $_SESSION['PO']->Comments;
-    $_POST['StkLocation'] = $_SESSION['PO']->Location;
-    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
-}
+} elseif (isset($_GET['AddedGRN'])) {
 
-function copy_to_cart()
-{
-	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];
-	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
-	$_SESSION['PO']->reference = $_POST['ref'];
-	$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-	$_SESSION['PO']->Comments = $_POST['Comments'];
-	$_SESSION['PO']->Location = $_POST['StkLocation'];
-	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+	$trans_no = $_GET['AddedGRN'];
+	$trans_type = ST_SUPPRECEIVE;
+
+	display_notification_centered(_("Direct GRN has been entered"));
+
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this GRN")), 0);
+
+// not yet
+//	display_note(print_document_link($trans_no, _("&Print This GRN"), true, $trans_type), 0, 1);
+
+	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php",
+		_("Entry purchase &invoice for this receival"), "New=1");
+
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+		"filterType=$trans_type&trans_no=$trans_no");
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another GRN"), "NewGRN=Yes");
+	
+	display_footer_exit();	
+
+} elseif (isset($_GET['AddedPI'])) {
+
+	$trans_no = $_GET['AddedPI'];
+	$trans_type = ST_SUPPINVOICE;
+
+	display_notification_centered(_("Direct Purchase Invoice has been entered"));
+
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this Invoice")), 0);
+
+// not yet
+//	display_note(print_document_link($trans_no, _("&Print This Invoice"), true, $trans_type), 0, 1);
+
+	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Invoice")), 1);
+
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+		"PInvoice=".$trans_no);
+
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
+		"filterType=$trans_type&trans_no=$trans_no");
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Direct Invoice"), "NewInvoice=Yes");
+	
+	display_footer_exit();	
 }
 //--------------------------------------------------------------------------------------------------
 
@@ -157,6 +206,12 @@ function handle_cancel_po()
 
 function check_data()
 {
+	if(!get_post('stock_id_text', true)) {
+		display_error( _("Item description cannot be empty."));
+		set_focus('stock_id_edit');
+		return false;
+	}
+
 	$dec = get_qty_dec($_POST['stock_id']);
 	$min = 1 / pow(10, $dec);
     if (!check_num('qty',$min))
@@ -173,7 +228,7 @@ function check_data()
 		set_focus('price');
 	   	return false;	   
     }
-    if (!is_date($_POST['req_del_date'])){
+    if ($_SESSION['PO']->trans_type == ST_PURCHORDER && !is_date($_POST['req_del_date'])){
     		display_error(_("The date entered is in an invalid format."));
 		set_focus('req_del_date');
    		return false;    	 
@@ -200,7 +255,7 @@ function handle_update_item()
 		}
 	
 		$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
-  			$_POST['req_del_date']);
+  			@$_POST['req_del_date'], $_POST['item_description'] );
 		unset_form_variables();
 	}	
     line_start_focus();
@@ -218,36 +273,31 @@ function handle_add_new_item()
 		{
 		    foreach ($_SESSION['PO']->line_items as $order_item) 
 		    {
-
     			/* do a loop round the items on the order to see that the item
     			is not already on this order */
-   			    if (($order_item->stock_id == $_POST['stock_id']) && 
-   			    	($order_item->Deleted == false)) 
+   			    if (($order_item->stock_id == $_POST['stock_id'])) 
    			    {
-				  	$allow_update = false;
-				  	display_error(_("The selected item is already on this order."));
+					display_warning(_("The selected item is already on this order."));
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
 		}
 
 		if ($allow_update == true)
 		{
-		   	$sql = "SELECT description, units, mb_flag
-				FROM ".TB_PREF."stock_master WHERE stock_id = ".db_escape($_POST['stock_id']);
+			$result = get_short_info($_POST['stock_id']);
 
-		    $result = db_query($sql,"The stock details for " . $_POST['stock_id'] . " could not be retrieved");
-
-		    if (db_num_rows($result) == 0)
-		    {
+			if (db_num_rows($result) == 0)
+			{
 				$allow_update = false;
-		    }		    
+			}
 
 			if ($allow_update)
-		   	{
+			{
 				$myrow = db_fetch($result);
-				$_SESSION['PO']->add_to_order ($_POST['line_no'], $_POST['stock_id'], input_num('qty'), 
-					$myrow["description"], input_num('price'), $myrow["units"],
-					$_POST['req_del_date'], 0, 0);
+				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], input_num('qty'), 
+					get_post('stock_id_text'), //$myrow["description"], 
+					input_num('price'), '', // $myrow["units"], (retrived in cart)
+					$_SESSION['PO']->trans_type == ST_PURCHORDER ? $_POST['req_del_date'] : '', 0, 0);
 
 				unset_form_variables();
 				$_POST['stock_id']	= "";
@@ -282,6 +332,13 @@ function can_commit()
 		return false;
 	} 
 	
+	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !is_date($_POST['due_date'])) 
+	{
+		display_error(_("The entered due date is invalid."));
+		set_focus('due_date');
+		return false;
+	} 
+	
 	if (!$_SESSION['PO']->order_no) 
 	{
     	if (!$Refs->is_valid(get_post('ref'))) 
@@ -291,7 +348,7 @@ function can_commit()
     		return false;
     	} 
     	
-    	if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) 
+    	if (!is_new_reference(get_post('ref'), $_SESSION['PO']->trans_type)) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
@@ -299,13 +356,18 @@ function can_commit()
     	}
 	}
 	
-	if (get_post('delivery_address') == '')
+	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && !$Refs->is_valid(get_post('supp_ref'))) 
+	{
+		display_error(_("You must enter a supplier's invoice reference."));
+		set_focus('supp_ref');
+		return false;
+	}
+	if ($_SESSION['PO']->trans_type == ST_PURCHORDER && get_post('delivery_address') == '')
 	{
 		display_error(_("There is no delivery address specified."));
 		set_focus('delivery_address');
 		return false;
 	} 
-	
 	if (get_post('StkLocation') == '')
 	{
 		display_error(_("There is no location specified to move any items into."));
@@ -326,33 +388,80 @@ function can_commit()
 
 function handle_commit_order()
 {
+	$cart = &$_SESSION['PO'];
 
-	if (can_commit())
-	{
+	if (can_commit()) {
+
 		copy_to_cart();
-
-		if ($_SESSION['PO']->order_no == 0)
-		{ 
-			
+		if ($cart->trans_type != ST_PURCHORDER) {
+			// for direct grn/invoice set same dates for lines as for whole document
+			foreach ($cart->line_items as $line_no =>$line)
+				$cart->line_items[$line_no]->req_del_date = $cart->orig_order_date;
+		}
+		if ($cart->order_no == 0) { // new po/grn/invoice
 			/*its a new order to be inserted */
-			$order_no = add_po($_SESSION['PO']);
-			new_doc_date($_SESSION['PO']->orig_order_date); 
-			unset($_SESSION['PO']);
-			 
-        	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");	
+			$ref = $cart->reference;
+			if ($cart->trans_type != ST_PURCHORDER) {
+				$cart->reference = 'auto';
+				begin_transaction();	// all db changes as single transaction for direct document
+			}
+			$order_no = add_po($cart);
+			new_doc_date($cart->orig_order_date); 
+        	$cart->order_no = $order_no;
 
-		} 
-		else 
-		{ 
-
-			/*its an existing order need to update the old order info */
-			$order_no = update_po($_SESSION['PO']);
+			if ($cart->trans_type == ST_PURCHORDER) {
+				unset($_SESSION['PO']);
+        		meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
+        	}
+			//Direct GRN
+			if ($cart->trans_type == ST_SUPPRECEIVE)
+				$cart->reference = $ref;
+			$cart->Comments = $cart->reference; //grn does not hold supp_ref
+			foreach($cart->line_items as $key => $line)
+				$cart->line_items[$key]->receive_qty = $line->quantity;
+			$grn_no = add_grn($cart);
+			if ($cart->trans_type == ST_SUPPRECEIVE) {
+				commit_transaction(); // save PO+GRN
+				unset($_SESSION['PO']);
+        		meta_forward($_SERVER['PHP_SELF'], "AddedGRN=$grn_no");
+			}
+//			Direct Purchase Invoice
+ 			$inv = new supp_trans(ST_SUPPINVOICE);
+			$inv->Comments = $cart->Comments;
+			$inv->supplier_id = $cart->supplier_id;
+			$inv->tran_date = $cart->orig_order_date;
+			$inv->due_date = $cart->due_date;
+			$inv->reference = $ref;
+			$inv->supp_reference = $cart->supp_ref;
+			$inv->tax_included = $cart->tax_included;
+			$supp = get_supplier($cart->supplier_id);
+			$inv->tax_group_id = $supp['tax_group_id'];
+//			$inv->ov_discount 'this isn't used at all'
+			$inv->ov_amount = $inv->ov_gst = 0;
 			
+			foreach($cart->line_items as $key => $line) {
+				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
+					$line->item_description, $line->receive_qty, 0, $line->receive_qty,
+					$line->price, $line->price, true, get_standard_cost($line->stock_id), '');
+				$inv->ov_amount += round2(($line->receive_qty * $line->price), user_price_dec());
+			}
+			$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
+			foreach( $taxes as $taxitem) {
+				$inv->ov_gst += round2($taxitem['Value'], user_price_dec());
+			}
+			$inv_no = add_supp_invoice($inv);
+			commit_transaction(); // save PO+GRN+PI
+			// FIXME payment for cash terms. (Needs cash account selection)
 			unset($_SESSION['PO']);
-			
+       		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
+		}
+		else { // order modification
+		
+			$order_no = update_po($cart);
+			unset($_SESSION['PO']);
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");	
 		}
-	}	
+	}
 }
 //---------------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
@@ -375,24 +484,9 @@ if (isset($_POST['CancelOrder']))
 if (isset($_POST['CancelUpdate']))
 	unset_form_variables();
 
-if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
-{
-	create_new_po();
-	
-	$_SESSION['PO']->order_no = $_GET['ModifyOrderNumber'];	
-
-	/*read in all the selected order into the Items cart  */
-	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
-	
-	copy_from_cart();
-}
-
 if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 	line_start_focus();
 }
-
-if (isset($_GET['NewOrder']))
-	create_new_po();
 
 //---------------------------------------------------------------------------------------------------
 
@@ -403,22 +497,35 @@ echo "<br>";
 
 display_po_items($_SESSION['PO']);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 
 end_table(1);
 
 div_start('controls', 'items_table');
+$process_txt = _("Place Order");
+$update_txt = _("Update Order");
+$cancel_txt = _("Cancel Order");
+if ($_SESSION['PO']->trans_type == ST_SUPPRECEIVE) {
+	$process_txt = _("Process GRN");
+	$update_txt = _("Update GRN");
+	$cancel_txt = _("Cancel GRN");
+}	
+elseif ($_SESSION['PO']->trans_type == ST_SUPPINVOICE) {
+	$process_txt = _("Process Invoice");
+	$update_txt = _("Update Invoice");
+	$cancel_txt = _("Cancel Invoice");
+}	
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
-		submit_center_first('Commit', _("Update Order"), '', 'default');
+		submit_center_first('Commit', $update_txt, '', 'default');
 	else
-		submit_center_first('Commit', _("Place Order"), '', 'default');
-	submit_center_last('CancelOrder', _("Cancel Order")); 	
+		submit_center_first('Commit', $process_txt, '', 'default');
+	submit_center_last('CancelOrder', $cancel_txt); 	
 }
 else
-	submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');
+	submit_center('CancelOrder', $cancel_txt, true, false, 'cancel');
 div_end();
 //---------------------------------------------------------------------------------------------------
 

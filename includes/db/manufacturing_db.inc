@@ -194,6 +194,35 @@ function get_mb_flag($stock_id)
 
 //--------------------------------------------------------------------------------------
 
+function add_bom($selected_parent, $component, $workcentre_added, $loc_code, $quantity)
+{
+	$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity)
+		VALUES (".db_escape($selected_parent).", ".db_escape($component) . ","
+		.db_escape($workcentre_added) . ", ".db_escape($loc_code) . ", "
+		. $quantity . ")";
+
+	db_query($sql,"check failed");
+}
+//--------------------------------------------------------------------------------------
+
+function update_bom($selected_parent, $selected_component, $work_centre_added, $loc_code, $quantity)
+{
+	$sql = "UPDATE ".TB_PREF."bom SET workcentre_added=".db_escape($workcentre_added)
+	 . ",loc_code=".db_escape($loc_code) . ",
+		quantity= " . $quantity . "
+		WHERE parent=".db_escape($selected_parent) . "
+		AND id=".db_escape($selected_component);
+	check_db_error("Could not update this bom component", $sql);
+
+	db_query($sql,"could not update bom");
+}
+	
+function delete_bom($selected_id)
+{
+	$sql = "DELETE FROM ".TB_PREF."bom WHERE id=".db_escape($selected_id);
+	db_query($sql,"Could not delete this bom components");
+}
+
 function get_bom($item)
 {
 	$sql = "SELECT ".TB_PREF."bom.*, ".TB_PREF."locations.location_name, ".TB_PREF."workcentres.name AS WorkCentreDescription, 
@@ -210,6 +239,18 @@ function get_bom($item)
 
 //--------------------------------------------------------------------------------------
 
+function get_component_from_bom($selected_id)
+{
+	$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM "
+		.TB_PREF."bom,".TB_PREF."stock_master
+		WHERE id=".db_escape($selected_id)."
+		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component";
+
+	$result = db_query($sql, "could not get bom");
+	return db_fetch($result);
+}
+//--------------------------------------------------------------------------------------
+
 function has_bom($item)
 {
     $result = get_bom($item);
@@ -218,5 +259,47 @@ function has_bom($item)
 }
 
 //--------------------------------------------------------------------------------------
+
+function is_component_already_on_bom($component, $workcentre_added, $loc_code, $selected_parent)
+{
+	$sql = "SELECT component FROM ".TB_PREF."bom
+		WHERE parent=".db_escape($selected_parent)."
+		AND component=".db_escape($component) . "
+		AND workcentre_added=".db_escape($workcentre_added) . "
+		AND loc_code=".db_escape($loc_code);
+	$result = db_query($sql,"check failed");
+
+	return (db_num_rows($result) > 0);
+}
+
+//--------------------------------------------------------------------------------------
+
+function check_for_recursive_bom($ultimate_parent, $component_to_check)
+{
+
+	/* returns true ie 1 if the bom contains the parent part as a component
+	ie the bom is recursive otherwise false ie 0 */
+
+	$sql = "SELECT component FROM ".TB_PREF."bom WHERE parent=".db_escape($component_to_check);
+	$result = db_query($sql,"could not check recursive bom");
+
+	if ($result != 0)
+	{
+		while ($myrow = db_fetch_row($result))
+		{
+			if ($myrow[0] == $ultimate_parent)
+			{
+				return 1;
+			}
+
+			if (check_for_recursive_bom($ultimate_parent, $myrow[0]))
+			{
+				return 1;
+			}
+		} //(while loop)
+	} //end if $result is true
+
+	return 0;
+} //end of function check_for_recursive_bom
 
 ?>

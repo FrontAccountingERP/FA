@@ -36,7 +36,7 @@ if (!isset($_POST['customer_id']))
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
@@ -133,70 +133,8 @@ function fmt_credit($row)
 }
 //------------------------------------------------------------------------------------------------
 
-  $data_after = date2sql($_POST['TransAfterDate']);
-  $date_to = date2sql($_POST['TransToDate']);
+$sql = get_sql_for_customer_allocation_inquiry();
 
-  $sql = "SELECT 
-  		trans.type,
-		trans.trans_no,
-		trans.reference,
-		trans.order_,
-		trans.tran_date,
-		trans.due_date,
-		debtor.name,
-		debtor.curr_code,
-    	(trans.ov_amount + trans.ov_gst + trans.ov_freight 
-			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
-		trans.alloc AS Allocated,
-		((trans.type = ".ST_SALESINVOICE.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-    	FROM "
-			.TB_PREF."debtor_trans as trans, "
-			.TB_PREF."debtors_master as debtor
-    	WHERE debtor.debtor_no = trans.debtor_no
-			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
-				+ trans.ov_freight_tax + trans.ov_discount != 0)
-    		AND trans.tran_date >= '$data_after'
-    		AND trans.tran_date <= '$date_to'";
-
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
-
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
-   	{
-   		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
-   		{
-   			$sql .= " AND trans.type = ".ST_SALESINVOICE." ";
-   		}
-   		elseif ($_POST['filterType'] == '3')
-   		{
-			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
-   		}
-   		elseif ($_POST['filterType'] == '4')
-   		{
-			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
-   		}
-
-    	if ($_POST['filterType'] == '2')
-    	{
-    		$today =  date2sql(Today());
-    		$sql .= " AND trans.due_date < '$today'
-				AND (round(abs(trans.ov_amount + "
-				."trans.ov_gst + trans.ov_freight + "
-				."trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
-    	}
-   	}else
-   	{
-	    $sql .= " AND trans.type <> ".ST_CUSTDELIVERY." ";
-   	}
-
-
-   	if (!check_value('showSettled'))
-   	{
-   		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + "
-		."trans.ov_freight + trans.ov_freight_tax + "
-		."trans.ov_discount) - trans.alloc,6) != 0) ";
-   	}
 //------------------------------------------------------------------------------------------------
 
 $cols = array(

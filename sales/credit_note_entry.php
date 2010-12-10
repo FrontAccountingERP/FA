@@ -67,8 +67,8 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
-	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1),0, 1);
+	display_note(print_document_link($credit_no."-".$trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
+	display_note(print_document_link($credit_no."-".$trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1),0, 1);
 
 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -96,7 +96,8 @@ function copy_to_cn()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->Location = $_POST["Location"];
 	$cart->sales_type = $_POST['sales_type_id'];
-	$cart->reference = $_POST['ref'];
+	if ($cart->trans_no == 0)
+		$cart->reference = $_POST['ref'];
 	$cart->ship_via = $_POST['ShipperID'];
 	$cart->dimension_id = $_POST['dimension_id'];
 	$cart->dimension2_id = $_POST['dimension2_id'];
@@ -112,7 +113,8 @@ function copy_from_cn()
 	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
 	$_POST['Location'] = $cart->Location;
 	$_POST['sales_type_id'] = $cart->sales_type;
-	$_POST['ref'] = $cart->reference;
+	if ($cart->trans_no == 0)
+		$_POST['ref'] = $cart->reference;
 	$_POST['ShipperID'] = $cart->ship_via;
 	$_POST['dimension_id'] = $cart->dimension_id;
 	$_POST['dimension2_id'] = $cart->dimension2_id;
@@ -264,7 +266,7 @@ hidden('cart_id');
 $customer_error = display_credit_header($_SESSION['Items']);
 
 if ($customer_error == "") {
-	start_table("$table_style width=80%", 10);
+	start_table(TABLESTYLE, "width=80%", 10);
 	echo "<tr><td>";
 	display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
 	credit_options_controls($_SESSION['Items']);

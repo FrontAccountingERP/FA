@@ -29,13 +29,6 @@ function can_process()
 		set_focus('pos_name');
 		return false;
 	}
-	if (!check_value('cash') && !check_value('credit'))
-	{
-		display_error(_("You must allow cash or credit sale."));
-		set_focus('credit');
-		return false;
-	}
-
 	return true;
 }
 
@@ -64,9 +57,8 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 if ($Mode == 'Delete')
 {
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE pos=".db_escape($selected_id);
-	$res = db_query($sql, "canot check pos usage");
-	if (db_num_rows($res)) {
+	if (key_in_foreign_table($selected_id, 'users', 'pos'))
+	{
 		display_error(_("Cannot delete this POS because it is used in users setup."));
 	} else {
 		delete_sales_point($selected_id);
@@ -87,7 +79,7 @@ if ($Mode == 'RESET')
 $result = get_all_sales_points(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style");
+start_table(TABLESTYLE);
 
 $th = array (_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), 
 	 '','');
@@ -117,7 +109,7 @@ $cash = db_has_cash_accounts();
 
 if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {
@@ -136,8 +128,8 @@ if ($selected_id != -1)
 
 text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
 if($cash) {
-	check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
-	check_row(_('Allowed cash sale'), 'cash',  check_value('cash_sale'));
+	check_row(_('Allowed credit sale terms selection:'), 'credit', check_value('credit_sale'));
+	check_row(_('Allowed cash sale terms selection:'), 'cash',  check_value('cash_sale'));
 	cash_accounts_list_row(_("Default cash account").':', 'account');
 } else {
 	hidden('credit', 1);

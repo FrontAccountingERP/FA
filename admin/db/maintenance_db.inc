@@ -56,6 +56,12 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    return $aryResult;
 }
 
+function update_admin_password($conn, $password)
+{
+	$sql = "UPDATE ".$conn['tbpref']."users SET password=".db_escape($password) . "
+		WHERE user_id='admin'";
+	db_query($sql, "could not update user password for 'admin'");
+}
 
 function write_config_db($new = false)
 {
@@ -66,35 +72,19 @@ function write_config_db($new = false)
 	$n = count($db_connections);
 	$msg = "<?php\n\n";
 	$msg .= "/*Connection Information for the database\n";
-	$msg .= "- \$def_coy is the default company that is pre-selected on login\n\n";
-	$msg .= "- host is the computer ip address or name where the database is the default is localhost assuming that the web server is also the sql server\n\n";
-	$msg .= "- user is the user name under which the database should be accessed - need to change to the mysql (or other DB) user set up for purpose\n";
-	$msg .= "  NB it is not secure to use root as the user with no password - a user with appropriate privileges must be set up\n\n";
-	$msg .= "- password is the password the user of the database requires to be sent to authorise the above database user\n\n";
-	$msg .= "- DatabaseName is the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
-	$msg .= "  The scripts for MySQL provided use the name logicworks */\n\n\n";
+	$msg .= "\$def_coy - the default company that is pre-selected on login\n\n";
+	$msg .= "'host' - the computer ip address or name where the database is. The default is 'localhost' assuming that the web server is also the sql server.\n\n";
+	$msg .= "'dbuser' - the user name under which the company database should be accessed.\n";
+	$msg .= "  NB it is not secure to use root as the dbuser with no password - a user with appropriate privileges must be set up.\n\n";
+	$msg .= "'dbpassword' - the password required for the dbuser to authorise the above database user.\n\n";
+	$msg .= "'dbname' - the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
+	$msg .= "'tbpref' - prefix on table names, or '' if not used. Always use non-empty prefixes if multiply company use the same database.\n";
+	$msg .= "*/\n\n\n";
 
 	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
 	$msg .= "\$tb_pref_counter = " . $tb_pref_counter . ";\n\n";
-	$msg .= "\$db_connections = array (\n";
-	$msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('name' => '" . $db_connections[$i]['name'] . "',\n";
-		$msg .= "\t\t'host' => '" . $db_connections[$i]['host'] . "',\n";
-		$msg .= "\t\t'dbuser' => '" . $db_connections[$i]['dbuser'] . "',\n";
-		$msg .= "\t\t'dbpassword' => '" . $db_connections[$i]['dbpassword'] . "',\n";
-		$msg .= "\t\t'dbname' => '" . $db_connections[$i]['dbname'] . "',\n";
-		$msg .= "\t\t'tbpref' => '" . $db_connections[$i]['tbpref'] . "')";
-		if ($i != $n - 1)
-			$msg .= ",";
-		$msg .= "\n\n";
-	}
-	$msg .= "\t);\n?>";
+	$msg .= "\$db_connections = " .var_export($db_connections, true);
+	$msg .= ";\n?>";
 
 	$filename = $path_to_root . "/config_db.php";
 	// Check if the file exists and is writable first.
@@ -132,26 +122,14 @@ function write_extensions($extensions=null, $company = -1)
 	if (!isset($next_extension_id)) {
 		$next_extension_id = 1;
 	}
-//	$exts = array_natsort($extensions, 'name', 'name');
-//	$extensions = $exts;
 
 	$msg = "<?php\n\n";
 	if ($company == -1)
 		$msg .=
-"/* List of installed additional modules and plugins. If adding extensions manually 
-	to the list make sure they have unique, so far not used extension_ids as a keys,
-	and \$next_extension_id is also updated.
-	
-	'name' - name for identification purposes;
-	'type' - type of extension: 'module' or 'plugin'
-	'path' - FA root based installation path
-	'filename' - name of module menu file, or plugin filename; related to path.
-	'tab' - index of the module tab (new for module, or one of standard module names for plugin);
-	'title' - is the menu text (for plugin) or new tab name
-	'active' - current status of extension
-	'acc_file' - (optional) file name with \$security_areas/\$security_sections extensions; 
-		related to 'path'
-	'access' - security area code in string form
+"/* List of installed additional extensions. If extensions are added to the list manually
+	make sure they have unique and so far never used extension_ids as a keys,
+	and \$next_extension_id is also updated. More about format of this file yo will find in 
+	FA extension system documentation.
 */
 \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
 	else 
@@ -161,20 +139,8 @@ function write_extensions($extensions=null, $company = -1)
 	by extensions editor.
 */\n\n";
 
-	$msg .= "\$installed_extensions = array (\n";
-	foreach($extensions as $i => $ext) 
-	{
-		$msg .= "\t$i => ";
-		$msg .= "array ( ";
-		$t = '';
-		foreach($ext as $key => $val) {
-			$msg .= $t."'$key' => '$val',\n";
-			$t = "\t\t\t";
-		}
-		$msg .= "\t\t),\n";
-	}
-	$msg .= "\t);\n?>";
-
+	$msg .= "\$installed_extensions = ". var_export($extensions, true);
+	$msg .= ";\n?>";
 	$filename = $path_to_root . ($company==-1 ? '' : '/company/'.$company)
 		.'/installed_extensions.php';
 
@@ -199,43 +165,60 @@ function write_extensions($extensions=null, $company = -1)
 	}
 	return true;
 }
+//---------------------------------------------------------------------------------------------
+//
+// Update per-company list of installed extensions
+//
+function update_extensions($extensions) {
+	global $db_connections;
+	
+	if (!write_extensions($extensions)) {
+		display_notification(_("Cannot update system extensions list."));
+		return false;
+	}
+
+	// update per company files
+	$cnt = count($db_connections);
+	for($i = 0; $i < $cnt; $i++) 
+	{
+		$newexts = $extensions;
+		// update 'active' status 
+		$exts = get_company_extensions($i);
+		foreach ($exts as $key => $ext) 
+		{
+			if (isset($newexts[$key]))
+				$newexts[$key]['active'] = $exts[$key]['active'];
+		}
+		if(!write_extensions($newexts, $i)) 
+		{
+			display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
+				$db_connections[$i]['name']));
+		 return false;
+		}
+	}
+	return true;
+}
+
 
 function write_lang()
 {
 	global $path_to_root, $installed_languages, $dflt_lang;
 
-	$conn = array_natsort($installed_languages, 'code', 'code');
-	$installed_languages = $conn;
-	//reset($installed_languages);
+	$installed_languages = array_natsort($installed_languages, 'code', 'code');
 	$n = count($installed_languages);
 	$msg = "<?php\n\n";
 
-	$msg .= "/* How to make new entries here\n\n";
-	$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
-	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
+	$msg .= "/* How to make new entries here for non-packaged languages:\n\n";
+	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n.";
 	$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
-	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
+	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n";
+	$msg .= "-- 'encoding' used in translation file\n";
+	$msg .= "-- 'version' always set to '' for manually installed languages.\n";
+	$msg .= "-- 'path' installation path related to FA root (e.g. 'lang/en_US').\n";
 	$msg .= "*/\n\n\n";
 
-	$msg .= "\$installed_languages = array (\n";
-	if ($n > 0)
-	    $msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\t\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
-		$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
-		$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
-		if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
-			$msg .= ", 'rtl' => true),\n";
-		else
-			$msg .= "),\n";
-	}
-
-	$msg .= "\t);\n";
+	$msg .= "\$installed_languages = " . var_export($installed_languages, true);
+	$msg .= ";\n";
 	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
 
 	$path = $path_to_root . "/lang";
@@ -268,49 +251,10 @@ function write_lang()
 	return true;
 }
 
-function db_create_db($connection)
-{
-	$db = mysql_connect($connection["host"] ,
-		$connection["dbuser"], $connection["dbpassword"]);
-	if (!mysql_select_db($connection["dbname"], $db))
-	{
-		$sql = "CREATE DATABASE " . $connection["dbname"] . "";
-		if (!mysql_query($sql))
-			return 0;
-		mysql_select_db($connection["dbname"], $db);
-	}
-	return $db;
-}
-
-function db_drop_db($connection)
-{
-
-	if ($connection["tbpref"] == "")
-	{
-		$sql = "DROP DATABASE " . $connection["dbname"] . "";
-		return mysql_query($sql);
-	}
-	else
-	{
-    	$res = db_query("show table status");
-    	$all_tables = array();
-    	while($row = db_fetch($res))
-    		$all_tables[] = $row;
-        // get table structures
-		foreach ($all_tables as $table)
-		{
-			if (strpos($table['Name'], $connection["tbpref"]) === 0)
-				db_query("DROP TABLE `".$table['Name'] . "`");
-		}
-		//deleting the tables, how??
-		return true;
-	}
-}
-
 function db_import($filename, $connection, $force=true)
 {
 	global $db, $go_debug;
-	
+
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
 		"alter table" => 'table_queries', 
@@ -332,7 +276,6 @@ function db_import($filename, $connection, $force=true)
 
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
-
 	// uncrompress gziped backup files
 	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
 		$lines = db_ungzip("lines", $filename);
@@ -433,8 +376,6 @@ function db_import($filename, $connection, $force=true)
 		return false;
 	} else
 		return true;
-	//$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
-	//shell_exec($shell_command);
 }
 
 // returns the content of the gziped $path backup file. use of $mode see below
@@ -497,12 +438,12 @@ function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
 	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-	return db_export($conn, $filename, $ext, $comm, $tbpref);
+	return db_export($conn, clean_file_name($filename), $ext, $comm, $tbpref);
 }
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
+function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, $no_default=false)
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
@@ -549,7 +490,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
     $all_tables = array();
     while($row = db_fetch($res))
     {
-		//if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false) replaced
 		if (($conn["tbpref"] == "" && !preg_match('/[0-9]+_/', $row['Name'])) ||
 			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) === 0))
     		$all_tables[] = $row;
@@ -584,7 +524,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 	// as long as no error occurred
 	if (!$error)
 	{
-		//while($row=@mysql_fetch_array($res))
 		foreach ($all_tables as $row)
 		{
 			$tablename = $row['Name'];
@@ -595,11 +534,13 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 			$out.="### Structure of table `".$tablename."` ###\n\n";
 
 			$out.="DROP TABLE IF EXISTS `".$tablename."`;\n\n";
+			if ($no_default && ($def_pos = strpos($table_sql[$tablename], "DEFAULT CHARSET")) > 0)
+				$table_sql[$tablename] = substr($table_sql[$tablename], 0, $def_pos);
 			$out.=$table_sql[$tablename];
 
 			// add auto_increment value
-			if ($auto_incr[$tablename])
-				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
+//			if ($auto_incr[$tablename])
+//				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
 			$out.=" ;";
 			$out.="\n\n\n";
 
@@ -667,9 +608,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
-
-	// if (mysql_error()) return "DB_ERROR";
-	//@mysql_close($con);
 
 	//if ($zip == "zip")
 	//	$zip = $time;
@@ -864,4 +802,39 @@ function create_comp_dirs($comp_path, $comp_subdirs)
 			@fclose($f);
 	    }
 }
+
+//
+//	Checks $field existence in $table with given field $properties
+//	$table - table name without prefix
+//  $field -  optional field name
+//  $properties - optional properties of field defined by MySQL:
+//		'Type', 'Null', 'Key', 'Default', 'Extra'
+//
+function check_table($pref, $table, $field=null, $properties=null)
+{
+	$tables = @db_query("SHOW TABLES LIKE '".$pref.$table."'");
+	if (!db_num_rows($tables))
+		return 1;		// no such table or error
+
+	$fields = @db_query("SHOW COLUMNS FROM ".$pref.$table);
+	if (!isset($field)) 
+		return 0;		// table exists
+
+	while( $row = db_fetch_assoc($fields)) 
+	{
+		if ($row['Field'] == $field) 
+		{
+			if (!isset($properties)) 
+				return 0;
+			foreach($properties as $property => $value) 
+			{
+				if ($row[$property] != $value) 
+					return 3;	// failed type/length check
+			}
+			return 0; // property check ok.
+		}
+	}
+	return 2; // field not found
+}
+
 ?>

@@ -56,12 +56,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves 
-		WHERE type=" . ST_INVADJUST. " AND person_id=".db_escape($selected_id);
-
-	$result = db_query($sql, "could not query stock moves");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (movement_types_in_stock_moves($selected_id))
 	{
 		display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 		return false;
@@ -95,7 +90,7 @@ if ($Mode == 'RESET')
 $result = get_all_movement_type(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array(_("Description"), "", "");
 inactive_control_column($th);
@@ -117,7 +112,7 @@ end_table(1);
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

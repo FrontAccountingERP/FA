@@ -116,12 +116,32 @@
 		function add_lapp_function($level, $label,$link="",$access='SA_OPEN') 
 		{
 			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
-		}	
-			
+		}
+		
 		function add_rapp_function($level, $label,$link="",$access='SA_OPEN') 
 		{
 			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
-		}	
+		}
+		
+		function add_extensions()
+		{
+			hook_invoke_all('install_options', $this);
+		}
+		//
+		// Helper returning link to report class added by extension module.
+		//
+		function report_class_url($class)
+		{
+			global $installed_extensions;
+
+			// TODO : konwencja lub ?
+			$classno = 7;
+//			if (file_exists($path_to_root.'/'.$mod['path'].'/'.$entry['url']
+//					.'/'.'reporting/reports_custom.php'))
+				return "reporting/reports_main.php?Class=".$class;
+//			else
+//				return '';
+		}
 	}
 
 

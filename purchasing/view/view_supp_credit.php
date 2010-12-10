@@ -31,14 +31,13 @@ elseif (isset($_POST["trans_no"]))
 	$trans_no = $_POST["trans_no"];
 }
 
-$supp_trans = new supp_trans();
-$supp_trans->is_invoice = false;
+$supp_trans = new supp_trans(ST_SUPPCREDIT);
 
 read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 
-display_heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
+display_heading("<font color=red>" . _("SUPPLIER CREDIT NOTE") . " # " . $trans_no . "</font>");
 echo "<br>";
-start_table($table_style2);
+start_table(TABLESTYLE, "width=95%");
 start_row();
 label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -57,14 +56,15 @@ $total_grn = display_grn_items($supp_trans, 2);
 
 $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 
-start_table("$table_style width=95%");
+start_table(TABLESTYLE, "width=95%");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=17%");
 
 $tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2(-($supp_trans->ov_amount + $supp_trans->ov_gst),user_price_dec());
-label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 align=right", "nowrap align=right");
+label_row("<font color=red>" . _("TOTAL CREDIT NOTE") . "</font", "<font color=red>$display_total</font>", 
+	"colspan=1 align=right", "nowrap align=right");
 
 end_table(1);
 
@@ -75,6 +75,6 @@ if (!$voided)
 	display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 }
 
-end_page(true);
+end_page(true, false, false, ST_SUPPCREDIT, $trans_no);
 
 ?>

@@ -42,7 +42,7 @@ start_form();
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
@@ -119,57 +119,7 @@ function fmt_credit($row)
 }
 //------------------------------------------------------------------------------------------------
 
- $date_after = date2sql($_POST['TransAfterDate']);
- $date_to = date2sql($_POST['TransToDate']);
-
-    // Sherifoz 22.06.03 Also get the description
-    $sql = "SELECT 
-		trans.type, 
-		trans.trans_no,
-		trans.reference, 
-		supplier.supp_name, 
-		trans.supp_reference,
-    	trans.tran_date, 
-		trans.due_date,
-		supplier.curr_code, 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
-		trans.alloc AS Allocated,
-		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-    	FROM "
-			.TB_PREF."supp_trans as trans, "
-			.TB_PREF."suppliers as supplier
-    	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'";
-
-   	if ($_POST['supplier_id'] != ALL_TEXT)
-   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
-   	{
-   		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
-   		{
-   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
-   		}
-   		elseif ($_POST['filterType'] == '3')
-   		{
-			$sql .= " AND trans.type = ".ST_SUPPAYMENT." ";
-   		}
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5'))
-   		{
-			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
-   		}
-
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5'))
-   		{
-   			$today =  date2sql(Today());
-			$sql .= " AND trans.due_date < '$today' ";
-   		}
-   	}
-
-   	if (!check_value('showSettled'))
-   	{
-   		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
-   	}
+$sql = get_sql_for_supplier_allocation_inquiry();
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),

@@ -30,25 +30,23 @@ if (isset($_POST['setprefs']))
 		display_error( _("Query size must be integer and greater than zero."));
 		set_focus('query_size');
 	} else {
+		$_POST['theme'] = clean_file_name($_POST['theme']);
 		$chg_theme = user_theme() != $_POST['theme'];
 		$chg_lang = $_SESSION['language']->code != $_POST['language'];
 
-		set_user_prefs($_POST['prices'], $_POST['Quantities'],
-			$_POST['Rates'], $_POST['Percent'],
-			check_value('show_gl'),
-			check_value('show_codes'),
-			$_POST['date_format'], $_POST['date_sep'],
-			$_POST['tho_sep'], $_POST['dec_sep'],
-			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
-			$_POST['profile'], check_value('rep_popup'), 
-			(int)($_POST['query_size']), check_value('graphic_links'), 
-			$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
+		set_user_prefs(get_post( 
+			array('prices_dec', 'qty_dec', 'rates_dec', 'percent_dec',
+			'date_format', 'date_sep', 'tho_sep', 'dec_sep', 'print_profile', 
+			'theme', 'page_size', 'language', 'startup_tab',
+			'show_gl' => 0, 'show_codes'=> 0, 'show_hints' => 0,
+			'rep_popup' => 0, 'graphic_links' => 0, 'sticky_doc_date' => 0,
+			'query_size' => 10.0)));
 
 		if ($chg_lang)
 			$_SESSION['language']->set_language($_POST['language']);
 			// refresh main menu
 
-		flush_dir($comp_path.'/'.user_company().'/js_cache');	
+		flush_dir(company_path().'/js_cache');	
 
 		if ($chg_theme && $allow_demo_mode)
 			$_SESSION["wa_current_user"]->prefs->theme = $_POST['theme'];
@@ -66,15 +64,15 @@ if (isset($_POST['setprefs']))
 
 start_form();
 
-start_outer_table($table_style2);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 table_section_title(_("Decimal Places"));
 
-text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', user_price_dec());
-text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', user_qty_dec());
-text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', user_exrate_dec());
-text_row_ex(_("Percentages:"), 'Percent',  5, 5, '', user_percent_dec());
+text_row_ex(_("Prices/Amounts:"), 'prices_dec', 5, 5, '', user_price_dec());
+text_row_ex(_("Quantities:"), 'qty_dec', 5, 5, '', user_qty_dec());
+text_row_ex(_("Exchange Rates:"), 'rates_dec', 5, 5, '', user_exrate_dec());
+text_row_ex(_("Percentages:"), 'percent_dec',  5, 5, '', user_percent_dec());
 
 table_section_title(_("Dateformat and Separators"));
 
@@ -122,10 +120,10 @@ tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
 /* The array $pagesizes is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
-if (!isset($_POST['profile']))
-	$_POST['profile'] = user_print_profile();
+if (!isset($_POST['print_profile']))
+	$_POST['print_profile'] = user_print_profile();
 
-print_profiles_list_row(_("Printing profile"). ':', 'profile', 
+print_profiles_list_row(_("Printing profile"). ':', 'print_profile', 
 	null, _('Browser printing support'));
 
 check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),

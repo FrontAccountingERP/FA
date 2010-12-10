@@ -26,9 +26,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 
 function display_order_header(&$order)
 {
-	global $table_style2, $Refs;
+	global $Refs;
 
-	start_outer_table("width=70% $table_style2"); // outer table
+	start_outer_table(TABLESTYLE2, "width=70%"); // outer table
 	table_section(1);
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
@@ -54,11 +54,11 @@ function display_order_header(&$order)
 
 function display_adjustment_items($title, &$order)
 {
-	global $table_style, $path_to_root;
+	global $path_to_root;
 
 	display_heading($title);
     div_start('items_table');
-	start_table("$table_style width=80%");
+	start_table(TABLESTYLE, "width=80%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Total"), "");
 	if ( count($order->line_items)) $th[] = '';

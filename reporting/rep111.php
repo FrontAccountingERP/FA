@@ -30,7 +30,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote;
+	global $path_to_root, $print_as_quote, $print_invoice_no;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -58,6 +58,7 @@ function print_sales_quotations()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -72,13 +73,20 @@ function print_sales_quotations()
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->filename = "SalesQuotation" . $i . ".pdf";
+			if ($print_invoice_no == 1)
+				$rep->filename = "SalesQuotation" . $i . ".pdf";
+			else	
+				$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		$rep->title = _("SALES QUOTATION");
-		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
+		//$rep->headerFunc = 'Header2';
+		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
 		$SubTotal = 0;
@@ -107,7 +115,7 @@ function print_sales_quotations()
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+				$rep->NewPage();
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -120,14 +128,7 @@ function print_sales_quotations()
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
 		$doctype = ST_SALESQUOTE;
-		if ($rep->currency != $myrow['curr_code'])
-		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
-		}
-		else
-		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
-		}
+		include($path_to_root . "/reporting/includes/doctext.inc");
 
 		$rep->TextCol(3, 6, $doc_Sub_total, -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
@@ -151,15 +152,9 @@ function print_sales_quotations()
 		$rep->Font();
 		if ($email == 1)
 		{
-			if ($myrow['contact_email'] == '')
-			{
-				$myrow['contact_email'] = $branch['email'];
-				if ($myrow['contact_email'] == '')
-					$myrow['contact_email'] = $myrow['master_email'];
-				$myrow['DebtorName'] = $branch['br_name'];
-			}
-			//$myrow['reference'] = $i;
-			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
+			if ($print_invoice_no == 1)
+				$myrow['reference'] = $i;
+			$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow);
 		}
 	}
 	if ($email == 0)

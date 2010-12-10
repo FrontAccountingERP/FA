@@ -12,12 +12,7 @@
 $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 	'SA_MANUFTRANSVIEW' : 'SA_MANUFBULKREP';
 // ----------------------------------------------------------------
-// $ Revision:	2.0 $
-// Creator:	Janusz Dobrowolski
-// date_:	2008-01-14
-// Title:	Print Workorders
-// draft version!
-// ----------------------------------------------------------------
+// Title:	Work Orders
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
@@ -33,7 +28,7 @@ print_workorders();
 
 function print_workorders()
 {
-	global $path_to_root, $SysPrefs;
+	global $path_to_root, $SysPrefs, $dflt_lang;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -63,6 +58,7 @@ function print_workorders()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -73,19 +69,25 @@ function print_workorders()
 		$myrow = get_work_order($i);
 		if ($myrow === false)
 			continue;
-		$date_ = sql2date($myrow["date_"]);			
+		$date_ = sql2date($myrow["date_"]);
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 				$rep->title = _('WORK ORDER');
-				$rep->filename = "WorkOrder" . $myrow['reference'] . ".pdf";
+				$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		else
 			$rep->title = _('WORK ORDER');
-		$rep->Header2($myrow, null, null, '', 26);
+
+		$contact[] = array('email' =>$myrow['email'],'lang' => $dflt_lang,
+			'name' => $myrow['contact'], 'name2' => '', 'contact');
+
+		$rep->SetCommonData($myrow, null, null, '', 26, $contact);
+		$rep->NewPage();
 
 		$result = get_wo_requirements($i);
 		$rep->TextCol(0, 5,_("Work Order Requirements"), -2);
@@ -126,7 +128,7 @@ function print_workorders()
 			$rep->AmountCol(6, 7,	$myrow2['units_issued'], $dec, -2);
 			$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null,'',26);
+				$rep->NewPage();
 		}
 		$rep->NewLine(1);
 		$rep->TextCol(0, 5," *** = "._("Insufficient stock"), -2);
@@ -137,6 +139,12 @@ function print_workorders()
 			$rep->NewLine();
 			while ($comment=db_fetch($comments))
 				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+		}
+		if ($email == 1)
+		{
+			$myrow['DebtorName'] = $myrow['contact'];
+			$myrow['reference'] = $myrow['wo_ref'];
+ 			$rep->End($email, _("Work Order No.") . " " . $myrow['wo_ref'], $myrow);
 		}
 	}
 	if ($email == 0)

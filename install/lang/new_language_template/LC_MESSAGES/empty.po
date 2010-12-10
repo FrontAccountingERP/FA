@@ -1,0 +1,458 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-13 15:12+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../install/index.php:20 ../install/index.php:40
+msgid "FrontAccouting ERP Installation Wizard"
+msgstr ""
+
+#: ../install/index.php:41
+#, php-format
+msgid "Step %d: %s"
+msgstr ""
+
+#: ../install/index.php:48
+msgid "Chart of accounts"
+msgstr ""
+
+#: ../install/index.php:48 ../install/index.php:75
+msgid "Encoding"
+msgstr ""
+
+#: ../install/index.php:48 ../install/index.php:75
+msgid "Description"
+msgstr ""
+
+#: ../install/index.php:48 ../install/index.php:75
+msgid "Install"
+msgstr ""
+
+#: ../install/index.php:65 ../install/index.php:93
+msgid "Installed"
+msgstr ""
+
+#: ../install/index.php:75
+msgid "Language"
+msgstr ""
+
+#: ../install/index.php:156
+msgid "Cannot save system configuration file 'config.php'."
+msgstr ""
+
+#: ../install/index.php:173
+msgid "Cannot open 'config_db.php' configuration file."
+msgstr ""
+
+#: ../install/index.php:176
+msgid "Cannot write to the 'config_db.php' configuration file."
+msgstr ""
+
+#: ../install/index.php:179
+msgid ""
+"Configuration file 'config_db.php' is not writable. Change its permissions "
+"so it is, then re-run installation step."
+msgstr ""
+
+#: ../install/index.php:217
+msgid "Host name cannot be empty."
+msgstr ""
+
+#: ../install/index.php:221
+msgid "Database user name cannot be empty."
+msgstr ""
+
+#: ../install/index.php:225
+msgid "Database name cannot be empty."
+msgstr ""
+
+#: ../install/index.php:277
+msgid "Company name cannot be empty."
+msgstr ""
+
+#: ../install/index.php:281
+msgid "Company admin name cannot be empty."
+msgstr ""
+
+#: ../install/index.php:285
+msgid "Company admin password cannot be empty."
+msgstr ""
+
+#: ../install/index.php:289
+msgid "Company admin passwords differ."
+msgstr ""
+
+#: ../install/index.php:321
+msgid "System Diagnostics"
+msgstr ""
+
+#: ../install/index.php:323
+msgid "Select install wizard language:"
+msgstr ""
+
+#: ../install/index.php:329
+msgid ""
+"All application preliminary requirements seems to be correct. Please press "
+"Continue button below."
+msgstr ""
+
+#: ../install/index.php:330 ../install/index.php:356 ../install/index.php:363
+#: ../install/index.php:370 ../install/index.php:389
+msgid "Continue >>"
+msgstr ""
+
+#: ../install/index.php:332
+msgid ""
+"Application cannot be installed. Please fix problems listed below in red, "
+"and press Refresh button."
+msgstr ""
+
+#: ../install/index.php:333
+msgid "Refresh"
+msgstr ""
+
+#: ../install/index.php:343
+msgid "Database Server Settings"
+msgstr ""
+
+#: ../install/index.php:345
+msgid "Server Host:"
+msgstr ""
+
+#: ../install/index.php:346
+msgid "Database User:"
+msgstr ""
+
+#: ../install/index.php:347
+msgid "Database Password:"
+msgstr ""
+
+#: ../install/index.php:348
+msgid "Database Name:"
+msgstr ""
+
+#: ../install/index.php:349
+msgid "Use '0_' Table Prefix:"
+msgstr ""
+
+#: ../install/index.php:349 ../includes/system_tests.inc:38
+#: ../includes/system_tests.inc:113 ../includes/system_tests.inc:126
+msgid "Yes"
+msgstr ""
+
+#: ../install/index.php:349 ../includes/system_tests.inc:38
+#: ../includes/system_tests.inc:113 ../includes/system_tests.inc:126
+msgid "No"
+msgstr ""
+
+#: ../install/index.php:350
+msgid "Install Additional Language Packs from FA Repository:"
+msgstr ""
+
+#: ../install/index.php:351
+msgid "Install Additional COAs from FA Repository:"
+msgstr ""
+
+#: ../install/index.php:353
+msgid ""
+"Use table prefix if you share selected database for more than one FA company."
+msgstr ""
+
+#: ../install/index.php:354
+msgid ""
+"Do not select additional langs nor COAs if you have no working internet "
+"connection right now. You can install them later."
+msgstr ""
+
+#: ../install/index.php:355 ../install/index.php:362 ../install/index.php:369
+#: ../install/index.php:388
+msgid "<< Back"
+msgstr ""
+
+#: ../install/index.php:360
+msgid "User Interface Languages Selection"
+msgstr ""
+
+#: ../install/index.php:367
+msgid "Charts of Accounts Selection"
+msgstr ""
+
+#: ../install/index.php:379
+msgid "Company Settings"
+msgstr ""
+
+#: ../install/index.php:381
+msgid "Company Name:"
+msgstr ""
+
+#: ../install/index.php:382
+msgid "Admin Login:"
+msgstr ""
+
+#: ../install/index.php:383
+msgid "Admin Password:"
+msgstr ""
+
+#: ../install/index.php:384
+msgid "Reenter Password:"
+msgstr ""
+
+#: ../install/index.php:385
+msgid "Select Chart of Accounts:"
+msgstr ""
+
+#: ../install/index.php:386
+msgid "Select Default Language:"
+msgstr ""
+
+#: ../install/index.php:393
+msgid "FrontAccounting ERP has been installed successsfully."
+msgstr ""
+
+#: ../install/index.php:394
+msgid "Please do not forget to remove install wizard folder."
+msgstr ""
+
+#: ../install/index.php:396
+msgid "Click here to start."
+msgstr ""
+
+#: ../includes/system_tests.inc:15
+msgid "Info"
+msgstr ""
+
+#: ../includes/system_tests.inc:16
+msgid "Optional"
+msgstr ""
+
+#: ../includes/system_tests.inc:17
+msgid "Recommended"
+msgstr ""
+
+#: ../includes/system_tests.inc:18
+msgid "Required "
+msgstr ""
+
+#: ../includes/system_tests.inc:24
+msgid "MySQL version"
+msgstr ""
+
+#: ../includes/system_tests.inc:28
+msgid "Upgrade MySQL server to version at least 4.1"
+msgstr ""
+
+#: ../includes/system_tests.inc:35
+msgid "PHP MySQL extension"
+msgstr ""
+
+#: ../includes/system_tests.inc:40
+msgid "Your PHP has to have MySQL extension enabled."
+msgstr ""
+
+#: ../includes/system_tests.inc:46
+msgid "PHP version"
+msgstr ""
+
+#: ../includes/system_tests.inc:50
+msgid "Upgrade PHP to version at least 4.3.3"
+msgstr ""
+
+#: ../includes/system_tests.inc:57
+msgid "Server system"
+msgstr ""
+
+#: ../includes/system_tests.inc:67
+msgid "Session save path"
+msgstr ""
+
+#: ../includes/system_tests.inc:79
+msgid "Removed install wizard folder"
+msgstr ""
+
+#: ../includes/system_tests.inc:82
+msgid "Not removed"
+msgstr ""
+
+#: ../includes/system_tests.inc:83
+msgid "Remove or rename install wizard folder for security reasons."
+msgstr ""
+
+#: ../includes/system_tests.inc:90
+msgid "Browser type"
+msgstr ""
+
+#: ../includes/system_tests.inc:94
+msgid "Any browser is supported"
+msgstr ""
+
+#: ../includes/system_tests.inc:101
+msgid "Http server type"
+msgstr ""
+
+#: ../includes/system_tests.inc:105
+msgid "Any server is supported"
+msgstr ""
+
+#: ../includes/system_tests.inc:112
+msgid "Native gettext"
+msgstr ""
+
+#: ../includes/system_tests.inc:116
+msgid "In case of no gettext support, php emulation is used"
+msgstr ""
+
+#: ../includes/system_tests.inc:124
+msgid "Debugging mode"
+msgstr ""
+
+#: ../includes/system_tests.inc:128
+msgid "To switch debugging on set $go_debug>0 in config.php file"
+msgstr ""
+
+#: ../includes/system_tests.inc:137
+msgid "Error logging"
+msgstr ""
+
+#: ../includes/system_tests.inc:145
+msgid "Disabled"
+msgstr ""
+
+#: ../includes/system_tests.inc:148
+msgid "To switch error logging set $error_logging in config.php file"
+msgstr ""
+
+#: ../includes/system_tests.inc:151
+msgid "Log file is not writeable"
+msgstr ""
+
+#: ../includes/system_tests.inc:161
+msgid "Current database version"
+msgstr ""
+
+#: ../includes/system_tests.inc:165
+msgid "Database structure seems to be not upgraded to current version"
+msgstr ""
+
+#: ../includes/system_tests.inc:180
+msgid "Company subdirectories consistency"
+msgstr ""
+
+#: ../includes/system_tests.inc:193 ../includes/system_tests.inc:200
+#: ../includes/system_tests.inc:208 ../includes/system_tests.inc:225
+#: ../includes/system_tests.inc:340 ../includes/system_tests.inc:349
+#: ../includes/system_tests.inc:358
+#, php-format
+msgid "'%s' is not writeable"
+msgstr ""
+
+#: ../includes/system_tests.inc:221
+msgid "Temporary directory"
+msgstr ""
+
+#: ../includes/system_tests.inc:233
+msgid "Language configuration consistency"
+msgstr ""
+
+#: ../includes/system_tests.inc:242
+msgid "Languages folder should be writeable."
+msgstr ""
+
+#: ../includes/system_tests.inc:251
+msgid "Languages configuration file should be writeable."
+msgstr ""
+
+#: ../includes/system_tests.inc:270
+#, php-format
+msgid "Missing %s translation file."
+msgstr ""
+
+#: ../includes/system_tests.inc:275
+#, php-format
+msgid "Missing system locale: %s"
+msgstr ""
+
+#: ../includes/system_tests.inc:288
+msgid "Main config file"
+msgstr ""
+
+#: ../includes/system_tests.inc:295 ../includes/system_tests.inc:317
+#, php-format
+msgid "Can't write '%s' file. Check FA directory write permissions."
+msgstr ""
+
+#: ../includes/system_tests.inc:296 ../includes/system_tests.inc:318
+#, php-format
+msgid "'%s' file exists."
+msgstr ""
+
+#: ../includes/system_tests.inc:300
+#, php-format
+msgid "'%s' file should be read-only"
+msgstr ""
+
+#: ../includes/system_tests.inc:309
+msgid "Database auth file"
+msgstr ""
+
+#: ../includes/system_tests.inc:322
+#, php-format
+msgid ""
+"'%s' file should be read-only if you do not plan to add or change companies"
+msgstr ""
+
+#: ../includes/system_tests.inc:333
+msgid "Extensions system"
+msgstr ""
+
+#: ../includes/system_tests.inc:363
+msgid "Extensions configuration files and directories should be writeable"
+msgstr ""
+
+#: ../includes/system_tests.inc:375
+#, php-format
+msgid "Non-standard theme directory '%s' is not writable"
+msgstr ""
+
+#: ../includes/system_tests.inc:385
+msgid ""
+"OpenSSL PHP extension have to be enabled to use extension repository system."
+msgstr ""
+
+#: ../includes/system_tests.inc:388
+msgid ""
+"OpenSSL have to be available on your server to use extension repository "
+"system."
+msgstr ""
+
+#: ../includes/system_tests.inc:411
+msgid "Test"
+msgstr ""
+
+#: ../includes/system_tests.inc:411
+msgid "Test type"
+msgstr ""
+
+#: ../includes/system_tests.inc:411
+msgid "Value"
+msgstr ""
+
+#: ../includes/system_tests.inc:411
+msgid "Comments"
+msgstr ""
+
+#: ../includes/system_tests.inc:435
+msgid "Ok"
+msgstr ""

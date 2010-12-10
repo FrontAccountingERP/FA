@@ -49,6 +49,7 @@ if (isset($_GET['AddedID']))
 	hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
  
  	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+ 	br();
 
 	end_page();
 	exit;
@@ -103,9 +104,10 @@ function can_process()
 
 if (isset($_POST['process']) && can_process() == true)
 {
+	$date = $_POST['date_'];
 	begin_transaction();
 	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
-		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+		0, 0, $date.": ".$wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 	$is_bank_to = is_bank_account($_POST['cr_acc']);
 	if ($is_bank_to)
 	{
@@ -115,7 +117,7 @@ if (isset($_POST['process']) && can_process() == true)
 	}
 
 	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
-		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
+		$_POST['dim1'], $_POST['dim2'], $date.": ".$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
 			$_POST['PaymentType']);
 	commit_transaction();	
 
@@ -133,7 +135,7 @@ start_form();
 hidden('selected_id', $_POST['selected_id']);
 //hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 br();
 
@@ -143,9 +145,7 @@ date_row(_("Date:"), 'date_');
 
 $item_accounts = get_stock_gl_code($wo_details['stock_id']);
 $_POST['db_acc'] = $item_accounts['assembly_account'];
-$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
-$rs = db_query($sql,"could not get bank accounts");
-$r = db_fetch_row($rs);
+$r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r[0];
 
 amount_row(_("Additional Costs:"), 'costs');

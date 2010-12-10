@@ -10,16 +10,25 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
+	// probably this function should be optimized
+	// passing transaction cart as argument. This would
+	// save a couple of db calls like get_supplier()
+	
+	$supp = get_supplier($supplier);
 	if ($supplier != null)
-		$currency = get_supplier_currency($supplier);
+		$currency = $supp['curr_code'];
 	else
 		$currency = null;
-	$dec = user_price_dec();
-	price_decimal_format($price, $dec);
-	$price = round2($price, $dec);
+
+	if ($supp['tax_included'])
+		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+			$supp['tax_included']);
+
+	//$dec = user_price_dec();
+	//price_decimal_format($price, $dec);
+	//$price = round2($price, $dec);
 	if ($currency != null)
 	{
 		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
@@ -38,7 +47,9 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	else
 		$exclude = 0;
 	$cost_adjust = false;
-	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+	//$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+	$qoh = get_qoh_on_date($stock_id);
+	
 	if ($adj_only)
 	{
 		if ($qoh > 0)
@@ -55,7 +66,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		if ($qoh + $qty != 0)
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}	
-	$material_cost = round2($material_cost, $dec);
+	//$material_cost = round2($material_cost, $dec);
+	
 	if ($cost_adjust) // new 2010-02-10
 		adjust_deliveries($stock_id, $material_cost, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
@@ -66,15 +78,18 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 //-------------------------------------------------------------------------------------------------------------
 
-function add_grn(&$po, $date_, $reference, $location)
+function add_grn(&$po)
 {
 	global $Refs;
 
+	$date_ = $po->orig_order_date;
+
 	begin_transaction();
+	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
-	$grn = add_grn_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
+	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
-	foreach ($po->line_items as $order_line)
+	foreach ($po->line_items as $line_no => $order_line)
 	{
 
 		if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty))
@@ -82,8 +97,9 @@ function add_grn(&$po, $date_, $reference, $location)
 
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-			update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
-				$order_line->receive_qty, $date_);
+			if (is_inventory_item($order_line->stock_id))
+				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
+					$order_line->receive_qty, $date_);
 			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
@@ -101,18 +117,21 @@ function add_grn(&$po, $date_, $reference, $location)
 				$order_line->stock_id, $order_line->item_description,
 				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
-			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-            add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "",
-            	$order_line->receive_qty, $order_line->standard_cost,
-            	$po->supplier_id, 1, $order_line->price);
+			$po->line_items[$line_no]->grn_item_id = $grn_item;
+			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
+			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
+				$order_line->receive_qty, $order_line->standard_cost,
+            		$po->supplier_id, 1, $order_line->price);
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	$Refs->save(ST_SUPPRECEIVE, $grn, $reference);
+	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 
 	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
 
+	$po->trans_no = $grn;
+	hook_db_postwrite($po, ST_SUPPRECEIVE);
 	commit_transaction();
 
 	return $grn;
@@ -285,12 +304,12 @@ function read_grn_items_to_order($grn_batch, &$order)
 				$units = $myrow["units"];
 		 	}
 
-			$order->add_to_order($order->lines_on_order+1, $myrow["item_code"],
+			$order->add_to_order($order->lines_on_order, $myrow["item_code"],
 				1,$myrow["description"], $myrow["unit_price"],$units,
 				sql2date($myrow["delivery_date"]), $myrow["quantity_inv"],
 				$myrow["qty_recd"]);
 
-			$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
+			$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
 		} /* line po from purchase order details */
   	} //end of checks on returned data set
 }
@@ -365,6 +384,7 @@ function void_grn($grn_batch)
 		return false;
 
 	begin_transaction();
+	hook_db_prevoid(ST_SUPPRECEIVE, $grn_batch);
 
 	void_bank_trans(ST_SUPPRECEIVE, $grn_batch, true);
 	void_gl_trans(ST_SUPPRECEIVE, $grn_batch, true);

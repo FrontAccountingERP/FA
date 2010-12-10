@@ -13,6 +13,7 @@ $page_security = 'SA_SRECURRENT';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -40,29 +41,17 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		$sql = "UPDATE ".TB_PREF."recurrent_invoices SET 
-    			description=".db_escape($_POST['description']).", 
-    			order_no=".db_escape($_POST['order_no']).", 
-    			debtor_no=".db_escape($_POST['debtor_no']).", 
-    			group_no=".db_escape($_POST['group_no']).", 
-    			days=".input_num('days', 0).", 
-    			monthly=".input_num('monthly', 0).", 
-    			begin='".date2sql($_POST['begin'])."', 
-    			end='".date2sql($_POST['end'])."' 
-    			WHERE id = ".db_escape($selected_id);
+    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], $_POST['debtor_no'], 
+    			$_POST['group_no'], input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
 			$note = _('Selected recurrent invoice has been updated');
     	} 
     	else 
     	{
-    		$sql = "INSERT INTO ".TB_PREF."recurrent_invoices (description, order_no, debtor_no,
-    			group_no, days, monthly, begin, end, last_sent) VALUES (".db_escape($_POST['description']) . ", "
-    			.db_escape($_POST['order_no']).", ".db_escape($_POST['debtor_no']).", "
-    			.db_escape($_POST['group_no']).", ".input_num('days', 0).", ".input_num('monthly', 0).", '"
-    			.date2sql($_POST['begin'])."', '".date2sql($_POST['end'])."', '".date2sql(Add_Years($_POST['begin'], -5))."')";
+    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], $_POST['debtor_no'], $_POST['group_no'],
+    			input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
 			$note = _('New recurrent invoice has been added');
     	}
     
-    	db_query($sql,"The recurrent invoice could not be updated or added");
 		display_notification($note);    	
 		$Mode = 'RESET';
 	}
@@ -75,8 +64,7 @@ if ($Mode == 'Delete')
 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($selected_id);
-		db_query($sql,"could not delete recurrent invoice");
+		delete_recurrent_invoice($selected_id);
 
 		display_notification(_('Selected recurrent invoice has been deleted'));
 	} //end if Delete area
@@ -89,19 +77,11 @@ if ($Mode == 'RESET')
 	unset($_POST);
 }
 //-------------------------------------------------------------------------------------------------
-function get_sales_group_name($group_no)
-{
-	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
-	$result = db_query($sql, "could not get group");
-	$row = db_fetch($result);
-	return $row[0];
-}
 
-$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices ORDER BY description, group_no, debtor_no";
-$result = db_query($sql,"could not get recurrent invoices");
+$result = get_recurrent_invoices();
 
 start_form();
-start_table("$table_style width=70%");
+start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"", "");
 table_header($th);
 $k = 0;
@@ -143,16 +123,13 @@ echo '<br>';
 
 start_form();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($selected_id);
-
-		$result = db_query($sql,"could not get recurrent invoice");
-		$myrow = db_fetch($result);
+		$myrow = get_recurrent_invoice($selected_id);
 
 		$_POST['description']  = $myrow["description"];
 		$_POST['order_no']  = $myrow["order_no"];

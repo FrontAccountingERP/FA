@@ -53,12 +53,9 @@ if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
 
 function tax_inquiry_controls()
 {
-	global $table_style2;
-
     start_form();
 
-    //start_table($table_style2);
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
@@ -76,11 +73,11 @@ function tax_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
     /*Now get the transactions  */
 	div_start('trans_tbl');
-	start_table($table_style);
+	start_table(TABLESTYLE);
 
 	$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs")."/"._("Inputs"));
 	table_header($th);

@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_CUSTSTATREP';
@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -29,10 +30,10 @@ print_statements();
 
 //----------------------------------------------------------------------------------------------------
 
-function getTransactions($debtorno, $date)
+function getTransactions($debtorno, $date, $outstanding)
 {
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
+				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
 				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
@@ -40,9 +41,12 @@ function getTransactions($debtorno, $date)
     			FROM ".TB_PREF."debtor_trans
     			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
     				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-    				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) != 0
-    				ORDER BY ".TB_PREF."debtor_trans.tran_date";
+    				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
+				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) != 0";
+	if ($outstanding)
+		$sql .= " AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
+				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) - alloc <> 0";
+	$sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -57,8 +61,9 @@ function print_statements()
 
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
-	$email = $_POST['PARAM_2'];
-	$comments = $_POST['PARAM_3'];
+	$outstanding = $_POST['PARAM_2'];
+	$email = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
 
 	$dec = user_price_dec();
 
@@ -77,12 +82,13 @@ function print_statements()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
+	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
@@ -95,7 +101,7 @@ function print_statements()
 
 		$myrow['order_'] = "";
 
-		$TransResult = getTransactions($myrow['debtor_no'], $date);
+		$TransResult = getTransactions($myrow['debtor_no'], $date, $outstanding);
 		$baccount = get_default_bank_account($myrow['curr_code']);
 		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)
@@ -103,24 +109,21 @@ function print_statements()
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->title = _('STATEMENT');
 			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
+		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');
+		//= get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT, $contacts);
+		$rep->NewPage();
 		$rep->NewLine();
 		$linetype = true;
 		$doctype = ST_STATEMENT;
-		if ($rep->currency != $myrow['curr_code'])
-		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
-		}
-		else
-		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
-		}
+		include($path_to_root . "/reporting/includes/doctext.inc");
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 8, $doc_Outstanding);
 		$rep->fontSize -= 2;
@@ -136,7 +139,7 @@ function print_statements()
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['type'] == ST_SALESINVOICE)
+			if ($myrow2['type'] == ST_SALESINVOICE || $myrow2['type'] == ST_BANKPAYMENT)
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
 			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);
@@ -144,7 +147,7 @@ function print_statements()
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
+				$rep->NewPage();
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;

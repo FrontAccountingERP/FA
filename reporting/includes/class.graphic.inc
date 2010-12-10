@@ -147,11 +147,18 @@ class graph
     var $h3d = 15; // 3D height
 	var $built_in = true;
 	var $fontfile = "";
-
+	var $encoding;
+	
     function graph()
     {
-        $this->x = $this->y = $this->z = array();
+		$this->encoding = $_SESSION['language']->encoding;
+		$path = dirname(__FILE__).'/../fonts/';
 
+		// If you use utf-8 encoding you have to download and install FreeSans.ttf font.
+		// It is not bundled with application due to its size.
+		$this->fontfile = $this->encoding=='UTF-8' ? $path.'FreeSans.ttf' : $path.'LiberationSans-Regular.ttf';
+
+        $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;
         $this->biggest_y        = NULL;
         $this->alternate_x      = false;
@@ -203,6 +210,8 @@ class graph
         }
 
         $this->sum_total           = array_sum($this->y);
+        if ($this->sum_total == 0)
+        	$this->sum_total = 1;
         $this->space_between_bars += ($this->graphic_2_exists == true) ? 10 : 0;
 
         $this->calculate_higher_value();
@@ -942,6 +951,14 @@ class graph
     {
        	if ($alt && strlen($string) > 12)
        		$string = substr($string, 0, 12);
+
+		if ($this->encoding != 'UTF-8') {
+			if (function_exists('iconv'))
+				$string = iconv($this->encoding, 'UTF-8', $string);
+			else
+				$string = mb_convert_encoding($string, 'UTF-8', $this->encoding);
+		}
+
     	if ($this->built_in)
     	{
     		imagestring($img, $size, $x, $y + $alt, $string, $col);
@@ -963,6 +980,7 @@ class graph
     		//	$angle = -15;
     		//else
    				$angle = 0;
+
     		imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
     	}
     }	

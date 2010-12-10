@@ -11,11 +11,9 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/db/connect_db.inc");
 
-include_once($path_to_root . "/includes/errors.inc");
 include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/systypes.inc");
 include_once($path_to_root . "/includes/references.inc");
-include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
 include_once($path_to_root . "/includes/db/audit_trail_db.inc");
@@ -25,7 +23,7 @@ include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
 	
-function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
+function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false, $css='')
 {
 
    	global $path_to_root, $page_security;
@@ -35,7 +33,7 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 
    	include($path_to_root . "/includes/page/header.inc");
 
-   	page_header($title, $no_menu, $is_index, $onload, $js);
+   	page_header($title, $no_menu, $is_index, $onload, $js, $css);
 	check_page_security($page_security);
 //	error_box();
 	if($script_only) {		
@@ -48,29 +46,16 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 	}
 }
 
-function end_page($no_menu=false, $is_index=false, $hide_back_link=false)
+function end_page($no_menu=false, $is_index=false, $hide_back_link=false, $type_no=0, $trans_no=0)
 {
 	global $path_to_root;
 
 	if (!$is_index && !$hide_back_link && function_exists('hyperlink_back'))
-		hyperlink_back(true, $no_menu);
+		hyperlink_back(true, $no_menu, $type_no, $trans_no);
 	div_end();	// end of _page_body section
 
 	include($path_to_root . "/includes/page/footer.inc");
 	page_footer($no_menu, $is_index, $hide_back_link);
-}
-
-function flush_dir($path, $wipe = false) 
-{
-	$dir = opendir($path);
-	while(false !== ($fname = readdir($dir))) {
-		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
-  		if(is_dir($path.'/'.$fname)) {
-		    flush_dir($path.'/'.$fname, $wipe);
-		    if ($wipe) @rmdir($path.'/'.$fname);
-		} else
-		    @unlink($path.'/'.$fname);
-	}
 }
 
 function cache_js_file($fpath, $text) 
@@ -261,6 +246,109 @@ function js_compress($sJS)
 		$sJS = str_replace("___".$i."___",$literal_strings[$i],$sJS);
 	}
 	return $sJS;
+}
+
+/*
+	Check if file can be updated, restoring subdirectories 
+	if needed. Returns 1 when no confilcts, -1 when file exists and is writable
+*/
+function check_write($path)
+{
+	if ($path == ''//|| $path == '.' || $path == '..'
+	) return 0;
+	
+	return is_writable($path) ? (is_dir($path) ? 1 : -1) 
+		: (is_file($path) ? 0 : ($path == '.' ? 0 : check_write(dirname($path))));
+}
+
+/*
+	Copies set of files. When $strict is set
+	also removes files from the $to which 
+	does not exists in $from directory but arelisted in $flist.
+*/
+function copy_files($flist, $from, $to, $strict=false)
+{
+	foreach ($flist as $file) {
+		if (file_exists($from.'/'.$file)) {
+			if (!copy_file($file, $from, $to))
+				return false;
+		} else if ($strict) {
+				unlink($to.'/'.$file);
+		}
+	}
+	return true;
+}
+
+/*
+	Copies file from base to target directory, restoring subdirectories 
+	if needed.
+*/
+function copy_file($file, $from, $to)
+{
+
+	if (!is_dir(dirname($file=='.' ? $to : ($to.'/'.$file)))) {
+		if (!copy_file(dirname($file), null, $to))
+			return false;
+	}
+	if (!$from) {
+	//		error_log( 'dodanie katalogu '.$to.'/'.$file);
+		return @mkdir($file=='.' ? $to : ($to.'/'.$file));
+	}
+	else {
+	//		error_log( 'skopiowanie '.$to.'/'.$file);
+		return @copy($from.'/'.$file, $to.'/'.$file);
+	}
+}
+/*
+	Search for file, looking first for company specific version, then for 
+	version provided by any extension module, finally in main FA directory.
+	Also adds include path for any related files, and sets $local_path_to_root 
+	to enable local translation domains.
+	
+	Returns found file path or null.
+*/
+function find_custom_file($rep)
+{
+	global $installed_extensions, $path_to_root, $local_path_to_root;
+
+	// customized per company version
+	$path = company_path();
+	$file = $path.$rep;
+	if (file_exists($file)) {
+		// add local include path
+		$local_path_to_root = $path;
+		set_include_path(dirname($file).PATH_SEPARATOR.get_include_path());
+		return $file;
+	}
+	// file added by active extension modules
+	if (count($installed_extensions) > 0)
+	{
+		$extensions = $installed_extensions;
+		foreach ($extensions as $ext)
+			if (($ext['active'] && $ext['type'] == 'extension')) {
+				$path = $path_to_root.'/'.$ext['path'];
+				$file = $path.$rep;
+				if (file_exists($file)) {
+					set_include_path($path.PATH_SEPARATOR.get_include_path());
+					$local_path_to_root = $path;
+					return $file;
+				}
+			}
+	}
+	// standard location
+	$file = $path_to_root.$rep;
+	if (file_exists($file))
+		return $file;
+
+	return null;
+}
+/*
+	
+	Protect against directory traversal.
+	Changes all not POSIX compatible chars to underscore.
+*/
+function clean_file_name($filename) {
+    return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
 }
 
 ?>

@@ -52,28 +52,16 @@ function can_process()
 
 if (isset($_POST['submit']) && can_process())
 {
-	update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
-		$_POST['debtors_act'], $_POST['pyt_discount_act'],
-		$_POST['creditors_act'], $_POST['freight_act'],
-		$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
-		$_POST['default_sales_act'],
-		$_POST['default_sales_discount_act'],
-		$_POST['default_prompt_payment_act'],
-		$_POST['default_inventory_act'],
-		$_POST['default_cogs_act'],
-		$_POST['default_adj_act'],
-		$_POST['default_inv_sales_act'],
-		$_POST['default_assembly_act'],
-		check_value('allow_negative_stock'),
-		input_num('po_over_receive'),
-		input_num('po_over_charge'),
-		check_value('accumulate_shipping'),
-		$_POST['legal_text'],
-		$_POST['past_due_days'],
-		$_POST['default_credit_limit'],
-		$_POST['default_workorder_required'],
-		$_POST['default_dim_required'],
-		$_POST['default_delivery_required']);
+	update_company_prefs( get_post( array( 'retained_earnings_act', 'profit_loss_year_act',
+		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act',
+		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
+		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
+		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
+		'past_due_days', 'default_workorder_required', 'default_dim_required',
+		'default_delivery_required',
+		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
+		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
+)));
 
 	display_notification(_("The general GL setup has been updated."));
 
@@ -83,8 +71,7 @@ if (isset($_POST['submit']) && can_process())
 
 start_form();
 
-//start_outer_table("class='tablestyle'");
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 
@@ -127,11 +114,6 @@ $_POST['default_delivery_required'] = $myrow['default_delivery_required'];
 
 
 table_section_title(_("General GL"));
-
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
 
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 

@@ -13,8 +13,8 @@
 
 function display_grn_summary(&$po, $editable=false)
 {
-	global $table_style2, $Refs;
-    start_table("$table_style2 width=90%");
+	global $Refs;
+    start_table(TABLESTYLE2, "width=90%");
     
     start_row();
 	label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
@@ -26,7 +26,6 @@ function display_grn_summary(&$po, $editable=false)
     	"class='tableheader2'");
     
 	label_cells(_("Ordered On"), $po->orig_order_date, "class='tableheader2'");
-	label_cells(_("Supplier's Reference"), $po->requisition_no, "class='tableheader2'");
 	end_row();
 		
    	start_row();
@@ -45,12 +44,15 @@ function display_grn_summary(&$po, $editable=false)
      	  	$_POST['DefaultReceivedDate'] = new_doc_date();
     	
     	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='tableheader2'");    
-        
+		// currently this is related order supp reference
+//		ref_cells(_("Supplier's Reference"), 'supp_ref', _("Supplier's Reference"), null, "class='tableheader2'");
+		label_cells(_("Supplier's Reference"), $po->supp_ref, "class='tableheader2'");
     } 
     else 
     {
     	label_cells(_("Reference"), $po->reference, "class='tableheader2'");
     	label_cells(_("Deliver Into Location"), get_location_name($po->Location), "class='tableheader2'");
+		label_cells(_("Supplier's Reference"), $po->supp_ref, "class='tableheader2'");
     }
     
     end_row();

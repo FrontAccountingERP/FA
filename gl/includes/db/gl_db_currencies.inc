@@ -68,6 +68,4 @@ function get_currencies($all=false)
 	return db_query($sql, "could not get currencies");
 }
 
-//---------------------------------------------------------------------------------------------
-
 ?>

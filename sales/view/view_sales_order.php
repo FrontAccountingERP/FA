@@ -41,7 +41,7 @@ if (isset($_SESSION['View']))
 
 $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
 
-start_table("$table_style2 width=95%", 5);
+start_table(TABLESTYLE2, "width=95%", 5);
 echo "<tr valign=top><td>";
 display_heading2(_("Order Information"));
 if ($_GET['trans_type'] != ST_SALESQUOTE)
@@ -55,7 +55,7 @@ echo "</td></tr>";
 
 echo "<tr valign=top><td>";
 
-start_table("$table_style width=95%");
+start_table(TABLESTYLE, "width=95%");
 label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'",
 	"colspan=3");
 start_row();
@@ -74,6 +74,7 @@ label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='t
 label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
 end_row();
 
+label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
 label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
 label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
@@ -87,34 +88,33 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
 	echo "</td><td valign='top'>";
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	display_heading2(_("Delivery Notes"));
 
 
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTDELIVERY." AND order_=".db_escape($_GET['trans_no']);
-	$result = db_query($sql,"The related delivery notes could not be retreived");
-
-	$delivery_total = 0;
-	$k = 0;
 	$dn_numbers = array();
-	
-	while ($del_row = db_fetch($result))
-	{
+	$delivery_total = 0;
 
-		alt_table_row_color($k);
-		$dn_numbers[] = $del_row["trans_link"];
-		$this_total = $del_row["ov_freight"]+ $del_row["ov_amount"] + $del_row["ov_freight_tax"]  + $del_row["ov_gst"] ;
-		$delivery_total += $this_total;
+	if ($result = get_sales_child_documents(ST_SALESORDER, $_GET['trans_no'])) {
 
-		label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
-		label_cell($del_row["reference"]);
-		label_cell(sql2date($del_row["tran_date"]));
-		amount_cell($this_total);
-		end_row();
+		$k = 0;
+		while ($del_row = db_fetch($result))
+		{
 
+			alt_table_row_color($k);
+			$dn_numbers[] = $del_row["trans_no"];
+			$this_total = $del_row["ov_freight"]+ $del_row["ov_amount"] + $del_row["ov_freight_tax"]  + $del_row["ov_gst"] ;
+			$delivery_total += $this_total;
+
+			label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
+			label_cell($del_row["reference"]);
+			label_cell(sql2date($del_row["tran_date"]));
+			amount_cell($this_total);
+			end_row();
+		}
 	}
 
 	label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
@@ -122,27 +122,21 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	end_table();
 	echo "</td><td valign='top'>";
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	display_heading2(_("Sales Invoices"));
 
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
-
+	
 	$inv_numbers = array();
 	$invoices_total = 0;
 
-	if (count($dn_numbers)) {
-
-		$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE
-			." AND trans_no IN(". implode(',', array_values($dn_numbers)).")";
-
-		$result = db_query($sql,"The related invoices could not be retreived");
+	if ($result = get_sales_child_documents(ST_CUSTDELIVERY, $dn_numbers)) {
 
 		$k = 0;
 
 		while ($inv_row = db_fetch($result))
 		{
-
 			alt_table_row_color($k);
 
 			$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
@@ -154,7 +148,6 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 			label_cell(sql2date($inv_row["tran_date"]));
 			amount_cell($this_total);
 			end_row();
-
 		}
 	}
 	label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
@@ -163,20 +156,13 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	display_heading2(_("Credit Notes"));
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
-
-	$credits_total = 0;
-	if (count($inv_numbers)) {
-		// FIXME -  credit notes retrieved here should be those linked to invoices containing 
-		// at least one line from this order
 	
-		$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
-			." AND trans_link IN(". implode(',', array_values($inv_numbers)).")";
-
-		$result = db_query($sql,"The related credit notes could not be retreived");
-
+	$credits_total = 0;
+	
+	if ($result = get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
 		$k = 0;
 
 		while ($credits_row = db_fetch($result))
@@ -194,6 +180,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 			end_row();
 
 		}
+
 	}
 	label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
 		" ", "colspan=4 align=right");
@@ -209,7 +196,7 @@ if ($_SESSION['View']->so_type == 1)
 	display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 width=95% $table_style");
+start_table(TABLESTYLE, "colspan=9 width=95%");
 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 	_("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 table_header($th);
@@ -236,17 +223,28 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 	end_row();
 }
 
-$items_total = $_SESSION['View']->get_items_total();
-
-$display_total = price_format($items_total + $_SESSION['View']->freight_cost);
-
 label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
 	"align=right colspan=6", "nowrap align=right", 1);
-label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
+
+$sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
+
+$display_sub_tot = price_format($sub_tot);
+
+label_row(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
 	"nowrap align=right", 1);
 
+$taxes = $_SESSION['View']->get_taxes();
+
+$tax_total = display_edit_tax_items($taxes, 6, $_SESSION['View']->tax_included,2);
+
+$display_total = price_format($sub_tot + $tax_total);
+
+start_row();
+label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cell('', "colspan=2");
+end_row();
 end_table(2);
 
-end_page(true);
+end_page(true, false, false, $_GET['trans_type'], $_GET['trans_no']);
 
 ?>

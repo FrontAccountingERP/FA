@@ -66,7 +66,7 @@ if (isset($_POST['UPDATE_ITEM']))
 
 start_form();
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $myrow = get_user($_SESSION["wa_current_user"]->user);
 

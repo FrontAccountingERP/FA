@@ -22,16 +22,17 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/admin/db/tags_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, 
+	$tags, &$pg, $graphics)
 {
 	$code_per_balance = 0;
 	$code_acc_balance = 0;
 	$per_balance_total = 0;
 	$acc_balance_total = 0;
-	unset($totals_arr);
 	$totals_arr = array();
 
 	$printtitle = 0; //Flag for printing type name	
@@ -40,6 +41,11 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 	$result = get_gl_accounts(null, null, $type);	
 	while ($account=db_fetch($result))
 	{
+		if ($tags != -1 && is_array($tags) && $tags[0] != false)
+		{
+			if (!is_record_in_tags($tags, TAG_ACCOUNT, $account['account_code']))
+				continue;
+		}	
 		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 
 		if ($compare == 2)
@@ -72,7 +78,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
 		{
 			$rep->Line($rep->row - 2);
-			$rep->Header();
+			$rep->NewPage();
 		}
 
 		$code_per_balance += $per_balance;
@@ -95,7 +101,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-			$pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
@@ -144,7 +150,7 @@ function Achieve($d1, $d2)
 
 function print_profit_and_loss_statement()
 {
-	global $comp_path, $path_to_root;
+	global $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -156,25 +162,28 @@ function print_profit_and_loss_statement()
 	{
 		$dimension = $_POST['PARAM_3'];
 		$dimension2 = $_POST['PARAM_4'];
+		$tags = (isset($_POST['PARAM_5']) ? $_POST['PARAM_5'] : -1);
+		$decimals = $_POST['PARAM_6'];
+		$graphics = $_POST['PARAM_7'];
+		$comments = $_POST['PARAM_8'];
+		$destination = $_POST['PARAM_9'];
+	}
+	else if ($dim == 1)
+	{
+		$dimension = $_POST['PARAM_3'];
+		$tags = (isset($_POST['PARAM_4']) ? $_POST['PARAM_4'] : -1);
 		$decimals = $_POST['PARAM_5'];
 		$graphics = $_POST['PARAM_6'];
 		$comments = $_POST['PARAM_7'];
 		$destination = $_POST['PARAM_8'];
 	}
-	else if ($dim == 1)
+	else
 	{
-		$dimension = $_POST['PARAM_3'];
+		$tags = (isset($_POST['PARAM_3']) ? $_POST['PARAM_3'] : -1);
 		$decimals = $_POST['PARAM_4'];
 		$graphics = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
-	}
-	else
-	{
-		$decimals = $_POST['PARAM_3'];
-		$graphics = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -205,19 +214,22 @@ function print_profit_and_loss_statement()
                     	2 => array('text' => _('Dimension')." 1",
                             'from' => get_dimension_string($dimension), 'to' => ''),
                     	3 => array('text' => _('Dimension')." 2",
-                            'from' => get_dimension_string($dimension2), 'to' => ''));
+                            'from' => get_dimension_string($dimension2), 'to' => ''),
+                        4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
     else if ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
                     	2 => array('text' => _('Dimension'),
-                            'from' => get_dimension_string($dimension), 'to' => ''));
+                            'from' => get_dimension_string($dimension), 'to' => ''),
+                        3 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
     else
     {
     	$params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
+    				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
+    				    2 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
 
 
@@ -243,10 +255,8 @@ function print_profit_and_loss_statement()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
-	$classper = 0.0;
-	$classacc = 0.0;
 	$salesper = 0.0;
 	$salesacc = 0.0;	
 
@@ -268,7 +278,7 @@ function print_profit_and_loss_statement()
 		while ($accounttype=db_fetch($typeresult))
 		{
 			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-				$pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+				$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
 			$class_per_total += $classtotal[0];
 			$class_acc_total += $classtotal[1];			
 		}
@@ -314,16 +324,15 @@ function print_profit_and_loss_statement()
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
-		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
+		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
 		$x = ($rep->pageWidth - $w) / 2;
 		$rep->NewLine(2);
 		if ($rep->row - $h < $rep->bottomMargin)
-			$rep->Header();
+			$rep->NewPage();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
 		

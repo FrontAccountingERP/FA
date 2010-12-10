@@ -9,182 +9,89 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
-function update_company_gl_setup($retained_act, $profit_loss_act, $debtors_act, $pyt_discount_act, $creditors_act,
-		$freight_act,
-		$exchange_diff_act,
-		$bank_charge_act,
-		$default_sales_act,
-		$default_sales_discount_act,
-		$default_prompt_payment_act,
-		$default_inventory_act,
-		$default_cogs_act,
-		$default_adj_act,
-		$default_inv_sales_act,
-		$default_assembly_act,
-		$allow_negative_stock,
-		$po_over_receive,
-		$po_over_charge,
-		$accumulate_shipping,
-		$legal_text,
-		$past_due_days,
-		$default_credit_limit,
-		$default_workorder_required,
-		$default_dim_required,
-		$default_delivery_required)
+/*
+	Update main or gl company setup.
+*/
+function update_company_prefs( $params, $pref = TB_PREF )
 {
-	$sql = "UPDATE ".TB_PREF."company SET
-		retained_earnings_act=".db_escape($retained_act).", profit_loss_year_act=".db_escape($profit_loss_act).",
-		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
-		creditors_act=".db_escape($creditors_act).",
-		freight_act=".db_escape($freight_act).",
-		exchange_diff_act=".db_escape($exchange_diff_act).",
-		bank_charge_act=".db_escape($bank_charge_act).",
-		default_sales_act=".db_escape($default_sales_act).",
-		default_sales_discount_act=".db_escape($default_sales_discount_act).",
-		default_prompt_payment_act=".db_escape($default_prompt_payment_act).",
-		default_inventory_act=".db_escape($default_inventory_act).",
-		default_cogs_act=".db_escape($default_cogs_act).",
-		default_adj_act=".db_escape($default_adj_act).",
-		default_inv_sales_act=".db_escape($default_inv_sales_act).",
-		default_assembly_act=".db_escape($default_assembly_act).",
-		allow_negative_stock=$allow_negative_stock,
-		po_over_receive=$po_over_receive,
-		po_over_charge=$po_over_charge,
-		accumulate_shipping=$accumulate_shipping,
-		legal_text=".db_escape($legal_text).",
-		past_due_days=$past_due_days,
-		default_credit_limit=$default_credit_limit,
-		default_workorder_required=$default_workorder_required,
-		default_dim_required=$default_dim_required,
-		default_delivery_required=$default_delivery_required
-		WHERE coy_code=1";
-
-	db_query($sql, "The company gl setup could not be updated ");
+	$sql = "UPDATE {$pref}sys_prefs SET value = ";
+	foreach($params as $name => $value) {
+		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
+			 "The company prefferences could not be updated "))
+			return false;
+		// update cached value
+		$_SESSION['SysPrefs']->prefs[$name] = $value;
+	}
+	return true;
 }
-
-function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
-	$postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, 
-	$curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, 
-	$base_sales, $time_zone, $add_pct, $round_to, $login_tout)
+/*
+	Get company preferences. Returns cached values from global variable SysPrefs
+	or retrieved from database if SysPrefs values are not set.
+	$prefs can be preference name, array of names, or null for all preferences.
+	
+*/
+function get_company_pref($prefs = null, $tbpref = null)
 {
-	if ($f_year == null)
-		$f_year = 0;
-	$sql = "UPDATE ".TB_PREF."company SET coy_name=".db_escape($coy_name).",
-		coy_no = ".db_escape($coy_no).",
-		gst_no=".db_escape($gst_no).",
-		tax_prd=$tax_prd,
-		tax_last=$tax_last,
-		postal_address =".db_escape($postal_address).",
-		phone=".db_escape($phone).", fax=".db_escape($fax).",
-		email=".db_escape($email).",
-		coy_logo=".db_escape($coy_logo).",
-		domicile=".db_escape($domicile).",
-		use_dimension=$Dimension,
-		no_item_list=$no_item_list,
-		no_customer_list=$no_customer_list,
-		no_supplier_list=$no_supplier_list,
-		curr_default=".db_escape($curr_default).",
-		f_year=$f_year,
-		base_sales=$base_sales,
-		time_zone=$time_zone,
-		add_pct=$add_pct,
-		round_to=$round_to,
-		login_tout = ".db_escape($login_tout)."
-		WHERE coy_code=1";
+	global $SysPrefs, $db_version;
+	
+	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
-	db_query($sql, "The company setup could not be updated ");
+		$_SESSION['SysPrefs'] = new sys_prefs();
+
+		if (!isset($tbpref))
+			$tbpref = TB_PREF;
+
+		$sql = "SELECT name, value FROM {$tbpref}sys_prefs";
+		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
+
+		if(!$result)
+			return null;
+
+		while($pref = db_fetch_assoc($result)) {
+			$_SESSION['SysPrefs']->prefs[$pref['name']] = $pref['value'];
+		}
+
+		$SysPrefs = &$_SESSION['SysPrefs'];
+
+		// update current db status for info in log file
+		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $db_version;
+	}
+
+	$all = $_SESSION['SysPrefs']->prefs;
+
+	if (!$prefs)
+		return $all;
+	elseif (is_string($prefs))
+		return @$all[$prefs];
+
+	$ret = array();
+	foreach($prefs as $name)
+		$ret[$name] = $all[$name];
+
+		return $ret;
 }
 
 function get_company_prefs($tbpref = TB_PREF)
 {
-	$sql = "SELECT * FROM ".$tbpref."company WHERE coy_code=1";
-	
-	$result = db_query($sql, "The company preferences could not be retrieved");
-
-	if (db_num_rows($result) == 0)
-		display_db_error("FATAL : Could not find company prefs", $sql);
-
-	return db_fetch($result);
+	return get_company_pref(null, $tbpref);
 }
 
-function get_company_pref($pref_name, $tbpref = TB_PREF)
+function refresh_sys_prefs()
 {
-	$prefs = get_company_prefs($tbpref);
-	return $prefs[$pref_name];
-}
-
-// fiscal year routines
-function add_fiscalyear($from_date, $to_date, $closed)
-{
-	$from = date2sql($from_date);
-	$to = date2sql($to_date);
-
-	$sql = "INSERT INTO ".TB_PREF."fiscal_year (begin, end, closed)
-		VALUES (".db_escape($from).",".db_escape($to).", ".db_escape($closed).")";
-
-	db_query($sql, "could not add fiscal year");
-}
-
-function update_fiscalyear($id, $closed)
-{
-	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=".db_escape($closed)."
-		WHERE id=".db_escape($id);
-
-	db_query($sql, "could not update fiscal year");
-}
-
-function get_all_fiscalyears()
-{
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year ORDER BY begin";
-
-	return db_query($sql, "could not get all fiscal years");
-}
-
-function get_fiscalyear($id)
-{
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
-
-	$result = db_query($sql, "could not get fiscal year");
-
-	return db_fetch($result);
-}
-
-function get_current_fiscalyear()
-{
-	$year = get_company_pref('f_year');
-
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
-
-	$result = db_query($sql, "could not get current fiscal year");
-
-	return db_fetch($result);
-}
-
-function delete_fiscalyear($id)
-{
-	begin_transaction();
-
-	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
-
-	db_query($sql, "could not delete fiscal year");
-
-	commit_transaction();
+	flush_dir(company_path().'/js_cache'); // clear cache
+	unset($_SESSION['SysPrefs']);
+	get_company_prefs();
 }
 
 function get_base_sales_type()
 {
-	$sql = "SELECT base_sales FROM ".TB_PREF."company WHERE coy_code=1";
-
-	$result = db_query($sql, "could not get base sales type");
-	$myrow = db_fetch($result);
-	return $myrow[0];
+	return get_company_pref('base_sales');
 }
 
 function get_company_extensions($id = -1) {
 	global $path_to_root;
 
-	$file = $path_to_root.($id == -1 ? '' : '/company/'.$id).'/installed_extensions.php';
+	$file = $path_to_root.($id == -1 ? '' : '/company/'.(int)$id).'/installed_extensions.php';
 	$installed_extensions = array();
 	if (is_file($file)) {
 		include($file);
@@ -192,5 +99,96 @@ function get_company_extensions($id = -1) {
 	return $installed_extensions;
 }
 
+function add_payment_terms($daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll) 
+	{
+		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" .
+			db_escape($terms) . ", " . db_escape($dayNumber) . ", 0)";
+	} 
+	else 
+	{
+		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" . db_escape($terms) . ",
+			0, " . db_escape($dayNumber) . ")";
+	}
+   	db_query($sql,"The payment term could not be added");
+}
+
+function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll) 
+	{
+		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=0,
+			days_before_due=" . db_escape($dayNumber) . "
+			WHERE terms_indicator = " .db_escape($selected_id);
+	} 
+	else 
+	{
+		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=" . db_escape($dayNumber) . ",
+			days_before_due=0
+			WHERE terms_indicator = " .db_escape($selected_id);
+	}
+   	db_query($sql,"The payment term could not be updated");
+}
+
+function delete_payment_terms($selected_id)
+{
+	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
+	db_query($sql,"could not delete a payment terms");
+}
+
+function get_payment_terms($selected_id)
+{
+	$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+	 FROM ".TB_PREF."payment_terms t WHERE terms_indicator=".db_escape($selected_id);
+
+	$result = db_query($sql,"could not get payment term");
+
+	return db_fetch($result);
+}
+
+function get_payment_terms_all($show_inactive)
+{
+	$sql = "SELECT * FROM ".TB_PREF."payment_terms";
+	if (!$show_inactive) $sql .= " WHERE !inactive";
+	return db_query($sql,"could not get payment terms");
+}
+/*
+	Return number of records in tables, where some foreign key $id is used.
+	$id - searched key value
+	$tables - array of table names (without prefix); when table name is used as a key, then
+		value is name of foreign key field. For numeric keys $stdkey field name is used.
+	$stdkey - standard name of foreign key.
+*/
+function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
+{
+	if (!$escaped)
+		$id = db_escape($id);
+
+	if (!is_array($tables))
+		$tables = array($tables);
+
+	$sqls = array();
+	foreach ($tables as $tbl => $key) {
+		if (is_numeric($tbl)) {
+			$tbl = $key;
+			$key = $stdkey;
+		}
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM ".TB_PREF."$tbl WHERE $key=$id)\n";
+	}
+
+	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
+
+	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
+	$count =  db_fetch($result);
+
+	return $count[0];
+}
 
 ?>

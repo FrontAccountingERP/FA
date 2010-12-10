@@ -20,20 +20,20 @@ if (get_post('view')) {
 	if (!get_post('backups')) {
 		display_error(_('Select backup file first.'));
 	} else {
-		$filename = BACKUP_PATH . get_post('backups');
+		$filename = BACKUP_PATH . clean_file_name(get_post('backups'));
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
-		    header('Content-type: application/octet-stream');
+		    header('Content-type: text/plain');
     		header('Content-Length: '.filesize($filename));
-			header("Content-Disposition: inline; filename=$filename");
+			header("Content-Disposition: inline");
     		readfile($filename);
 			exit();
 		}
 	}
 };
 if (get_post('download')) {
-	download_file(BACKUP_PATH . get_post('backups'));
+	download_file(BACKUP_PATH . clean_file_name(get_post('backups')));
 	exit;
 }
 
@@ -122,6 +122,8 @@ function download_file($filename)
 
 $db_name = $_SESSION["wa_current_user"]->company;
 $conn = $db_connections[$db_name];
+$backup_name = clean_file_name(get_post('backups'));
+$backup_path = BACKUP_PATH . $backup_name;
 
 if (get_post('creat')) {
 	generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -129,26 +131,27 @@ if (get_post('creat')) {
 };
 
 if (get_post('restore')) {
-	if (db_import(BACKUP_PATH . get_post('backups'), $conn))
+	if (db_import($backup_path, $conn))
 		display_notification(_("Restore backup completed."));
+	refresh_sys_prefs(); // re-read system setup
 }
 
 if (get_post('deldump')) {
-	if (unlink(BACKUP_PATH . get_post('backups'))) {
+	if (unlink($backup_path)) {
 		display_notification(_("File successfully deleted.")." "
-				. _("Filename") . ": " . get_post('backups'));
+				. _("Filename") . ": " . $backup_name);
 		$Ajax->activate('backups');
 	}
 	else
 		display_error(_("Can't delete backup file."));
-};
+}
 
 if (get_post('upload'))
 {
 	$tmpname = $_FILES['uploadfile']['tmp_name'];
-	$fname = $_FILES['uploadfile']['name'];
+	$fname = trim(basename($_FILES['uploadfile']['name']));
 
-	if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
+	if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
 		display_error(_("You can only upload *.sql backup files"));
 	elseif (is_uploaded_file($tmpname)) {
 		rename($tmpname, BACKUP_PATH . $fname);
@@ -159,7 +162,7 @@ if (get_post('upload'))
 }
 //-------------------------------------------------------------------------------
 start_form(true, true);
-start_outer_table($table_style2);
+start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);
@@ -173,7 +176,7 @@ table_section_title(_("Backup scripts maintenance"));
 	echo "<td style='padding-left:20px'align='left'>".get_backup_file_combo()."</td>";
 	echo "<td valign='top'>";
 	start_table();
-	submit_row('view',_("View Backup"), false, '', '', true);
+	submit_row('view',_("View Backup"), false, '', '', false);
 	submit_row('download',_("Download Backup"), false, '', '', false);
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
 	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));

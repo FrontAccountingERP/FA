@@ -47,13 +47,13 @@ if (isset($_POST['add']) || isset($_POST['update']))
 
 	$input_error = 0;
 
-	if (strlen($_POST['account_code']) == 0) 
+	if (strlen(trim($_POST['account_code'])) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account code must be entered."));
 		set_focus('account_code');
 	} 
-	elseif (strlen($_POST['account_name']) == 0) 
+	elseif (strlen(trim($_POST['account_name'])) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account name cannot be empty."));
@@ -108,108 +108,55 @@ function can_delete($selected_account)
 		return false;
 	$acc = db_escape($selected_account);
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE account=$acc";
-	$result = db_query($sql,"Couldn't test for existing transactions");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($acc, 'gl_trans', 'account', true))
 	{
 		display_error(_("Cannot delete this account because transactions have been created using this account."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act=$acc 
-		OR pyt_discount_act=$acc
-		OR creditors_act=$acc 
-		OR bank_charge_act=$acc 
-		OR exchange_diff_act=$acc
-		OR profit_loss_year_act=$acc
-		OR retained_earnings_act=$acc
-		OR freight_act=$acc
-		OR default_sales_act=$acc 
-		OR default_sales_discount_act=$acc
-		OR default_prompt_payment_act=$acc
-		OR default_inventory_act=$acc
-		OR default_cogs_act=$acc
-		OR default_adj_act=$acc
-		OR default_inv_sales_act=$acc
-		OR default_assembly_act=$acc";
-	$result = db_query($sql,"Couldn't test for default company GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_company_defaults($acc))
 	{
 		display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 		return false;
 	}
-	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE account_code=$acc";
-	$result = db_query($sql,"Couldn't test for bank accounts");
 
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($acc, 'bank_accounts', 'account_code', true))	
 	{
 		display_error(_("Cannot delete this account because it is used by a bank account."));
 		return false;
 	}	
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE 
-		inventory_account=$acc 
-		OR cogs_account=$acc
-		OR adjustment_account=$acc 
-		OR sales_account=$acc";
-	$result = db_query($sql,"Couldn't test for existing stock GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_stock_category($acc))
+	{
+		display_error(_("Cannot delete this account because it is used by one or more Item Categories."));
+		return false;
+	}	
+	
+	if (gl_account_in_stock_master($acc))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Items."));
 		return false;
 	}	
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
-	$result = db_query($sql,"Couldn't test for existing tax GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_tax_types($acc))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Taxes."));
 		return false;
 	}	
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE 
-		sales_account=$acc 
-		OR sales_discount_account=$acc
-		OR receivables_account=$acc
-		OR payment_discount_account=$acc";
-	$result = db_query($sql,"Couldn't test for existing cust branch GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_cust_branch($acc))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Customer Branches."));
 		return false;
 	}		
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
-		purchase_account=$acc
-		OR payment_discount_account=$acc
-		OR payable_account=$acc";
-	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_suppliers($acc))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more suppliers."));
 		return false;
 	}									
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
-		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
-	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (gl_account_in_quick_entry_lines($acc))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 		return false;
@@ -241,7 +188,7 @@ start_form();
 
 if (db_has_gl_accounts()) 
 {
-	start_table("class = 'tablestyle_noborder'");
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     gl_all_accounts_list_cells(null, 'AccountList', null, false, false,
 		_('New account'), true, check_value('show_inactive'));
@@ -255,7 +202,7 @@ if (db_has_gl_accounts())
 }
 	
 br(1);
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_account != "") 
 {
@@ -287,10 +234,10 @@ else
 		$_POST['account_name']	= $_POST['account_type'] = '';
  		$_POST['inactive'] = 0;
 	}
-	text_row_ex(_("Account Code:"), 'account_code', 11);
+	text_row_ex(_("Account Code:"), 'account_code', 15);
 }
 
-text_row_ex(_("Account Code 2:"), 'account_code2', 11);
+text_row_ex(_("Account Code 2:"), 'account_code2', 15);
 
 text_row_ex(_("Account Name:"), 'account_name', 60);
 

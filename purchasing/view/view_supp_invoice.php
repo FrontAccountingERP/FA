@@ -31,8 +31,7 @@ elseif (isset($_POST["trans_no"]))
 	$trans_no = $_POST["trans_no"];
 }
 
-$supp_trans = new supp_trans();
-$supp_trans->is_invoice = true;
+$supp_trans = new supp_trans(ST_SUPPINVOICE);
 
 read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 
@@ -41,7 +40,7 @@ $supplier_curr_code = get_supplier_currency($supp_trans->supplier_id);
 display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 echo "<br>";
 
-start_table("$table_style width=95%");   
+start_table(TABLESTYLE, "width=95%");   
 start_row();
 label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -62,7 +61,7 @@ $total_grn = display_grn_items($supp_trans, 2);
 
 $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 
-start_table("width=95% $table_style");
+start_table(TABLESTYLE, "width=95%");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 
 $tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
@@ -76,6 +75,6 @@ end_table(1);
 
 is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_SUPPINVOICE, $trans_no);
 
 ?>

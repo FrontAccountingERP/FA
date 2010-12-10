@@ -47,7 +47,7 @@ echo "<center>";
 display_heading(_("Payment to Supplier") . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style2 width=80%");
+start_table(TABLESTYLE2, "width=80%");
 
 start_row();
 label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
@@ -81,5 +81,5 @@ if (!$voided)
 	display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 }
 
-end_page(true);
+end_page(true, false, false, ST_SUPPAYMENT, $trans_no);
 ?>

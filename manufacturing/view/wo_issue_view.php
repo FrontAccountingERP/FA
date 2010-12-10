@@ -36,12 +36,10 @@ if ($_GET['trans_no'] != "")
 
 function display_wo_issue($issue_no)
 {
-	global $table_style;
-
     $myrow = get_work_order_issue($issue_no);
 
 	br(1);
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
     	_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
     table_header($th);
@@ -67,8 +65,6 @@ function display_wo_issue($issue_no)
 
 function display_wo_issue_details($issue_no)
 {
-	global $table_style;
-
     $result = get_work_order_issue_details($issue_no);
 
     if (db_num_rows($result) == 0)
@@ -77,7 +73,7 @@ function display_wo_issue_details($issue_no)
     }
     else
     {
-        start_table($table_style);
+        start_table(TABLESTYLE);
         $th = array(_("Component"), _("Quantity"), _("Units"));
 
         table_header($th);
@@ -123,7 +119,7 @@ display_wo_issue_details($wo_issue_no);
 
 echo "<br>";
 
-end_page(true);
+end_page(true, false, false, ST_MANUISSUE, $wo_issue_no);
 
 ?>
 

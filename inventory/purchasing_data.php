@@ -55,26 +55,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
      	if ($Mode == 'ADD_ITEM') 
        	{
-
-    		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
-    			conversion_factor, supplier_description) VALUES (";
-    		$sql .= db_escape($_POST['supplier_id']).", ".db_escape($_POST['stock_id']). ", "
-		    	.input_num('price',0) . ", ".db_escape( $_POST['suppliers_uom'] ). ", "
-    			.input_num('conversion_factor') . ", "
-    			.db_escape($_POST['supplier_description']) . ")";
-
-    		db_query($sql,"The supplier purchasing details could not be added");
+			add_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id'], input_num('price',0),
+				$_POST['suppliers_uom'], input_num('conversion_factor'), $_POST['supplier_description']);
     		display_notification(_("This supplier purchasing data has been added."));
-       	} else
+       	} 
+       	else
        	{
-          	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price',0) . ",
-				suppliers_uom=".db_escape($_POST['suppliers_uom']) . ",
-				conversion_factor=" . input_num('conversion_factor') . ",
-				supplier_description=" . db_escape($_POST['supplier_description']) . "
-				WHERE stock_id=".db_escape($_POST['stock_id']) . " AND
-				supplier_id=".db_escape($selected_id);
-          	db_query($sql,"The supplier purchasing details could not be updated");
-
+       		update_item_purchasing_data($selected_id, $_POST['stock_id'], input_num('price',0),
+       			$_POST['suppliers_uom'], input_num('conversion_factor'), $_POST['supplier_description']);
     	  	display_notification(_("Supplier purchasing data has been updated."));
        	}
 		$Mode = 'RESET';
@@ -85,11 +73,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 if ($Mode == 'Delete')
 {
-
-	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id=".db_escape($selected_id)."
-		AND stock_id=".db_escape($_POST['stock_id']);
-	db_query($sql,"could not delete purchasing data");
-
+	delete_item_purchasing_data($selected_id, $_POST['stock_id']);
 	display_notification(_("The purchasing data item has been sucessfully deleted."));
 	$Mode = 'RESET';
 }
@@ -130,22 +114,15 @@ if ($mb_flag == -1)
 }
 else
 {
-
-    $sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name,"
-    	.TB_PREF."suppliers.curr_code
-		FROM ".TB_PREF."purch_data INNER JOIN ".TB_PREF."suppliers
-		ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE stock_id = ".db_escape($_POST['stock_id']);
-
-    $result = db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
-  div_start('price_table');
+	$result = get_items_purchasing_data($_POST['stock_id']);
+  	div_start('price_table');
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There is no purchasing data set up for the part selected"));
     }
     else
     {
-        start_table("$table_style width=65%");
+        start_table(TABLESTYLE, "width=65%");
 
 		$th = array(_("Supplier"), _("Price"), _("Currency"),
 			_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");
@@ -162,7 +139,7 @@ else
             amount_decimal_cell($myrow["price"]);
             label_cell($myrow["curr_code"]);
             label_cell($myrow["suppliers_uom"]);
-            qty_cell($myrow['conversion_factor'], false, user_exrate_dec());
+            qty_cell($myrow['conversion_factor'], false, 'max');
             label_cell($myrow["supplier_description"]);
 		 	edit_button_cell("Edit".$myrow['supplier_id'], _("Edit"));
 		 	delete_button_cell("Delete".$myrow['supplier_id'], _("Delete"));
@@ -186,26 +163,18 @@ else
 $dec2 = 6;
 if ($Mode =='Edit')
 {
-
-	$sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name FROM ".TB_PREF."purch_data
-		INNER JOIN ".TB_PREF."suppliers ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE ".TB_PREF."purch_data.supplier_id=".db_escape($selected_id)."
-		AND ".TB_PREF."purch_data.stock_id=".db_escape($_POST['stock_id']);
-
-	$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-
-	$myrow = db_fetch($result);
+	$myrow = get_item_purchasing_data($selected_id, $_POST['stock_id']);
 
     $supp_name = $myrow["supp_name"];
     $_POST['price'] = price_decimal_format($myrow["price"], $dec2);
     $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
-    $_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
+    $_POST['conversion_factor'] = maxprec_format($myrow["conversion_factor"]);
 }
 
 br();
 hidden('selected_id', $selected_id);
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($Mode == 'Edit')
 {
@@ -222,10 +191,10 @@ text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
-   	$_POST['conversion_factor'] = exrate_format(1);
+   	$_POST['conversion_factor'] = maxprec_format(1);
 }
 amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor',
-  exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec() );
+  maxprec_format($_POST['conversion_factor']), null, null, 'max');
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
 end_table(1);

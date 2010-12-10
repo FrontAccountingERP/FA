@@ -61,7 +61,6 @@ class db_pager {
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $table = null, $page_len=0) 
 	{
-		global $table_style;
 		$this->width = "95%";
 		if ($page_len == 0) $page_len = user_query_size();
 		$this->name = $name;
@@ -160,11 +159,11 @@ class db_pager {
 			$c = 0;
 		  // add result field names to column defs for 
 		  // col value retrieve and sort purposes 
-		   $cnt = min(mysql_num_fields($result), count($this->columns));
+		   $cnt = min(db_num_fields($result), count($this->columns));
 			for ($c = $i = 0; $c < $cnt; $c++) {
 				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 //					if (!@($this->columns[$c]['type']=='skip'))
-			 			$this->columns[$c]['name']= mysql_field_name($result, $i);
+			 			$this->columns[$c]['name']= db_field_name($result, $i);
 					if (!@($this->columns[$c]['type']=='insert'))
 			 		$i++;
 			 		}
@@ -261,7 +260,7 @@ class db_pager {
 
 		if(count($this->extra_where)) {
 		    $where .= ($where=='' ? '' : ' AND ')
-				.implode( $this->extra_where, ' AND ');
+				.implode(' AND ', $this->extra_where);
 		}
 		if ($where) $where = " WHERE ($where)";
 

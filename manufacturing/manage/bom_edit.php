@@ -62,44 +62,11 @@ else
 
 //--------------------------------------------------------------------------------------------------
 
-function check_for_recursive_bom($ultimate_parent, $component_to_check)
-{
-
-	/* returns true ie 1 if the bom contains the parent part as a component
-	ie the bom is recursive otherwise false ie 0 */
-
-	$sql = "SELECT component FROM ".TB_PREF."bom WHERE parent=".db_escape($component_to_check);
-	$result = db_query($sql,"could not check recursive bom");
-
-	if ($result != 0)
-	{
-		while ($myrow = db_fetch_row($result))
-		{
-			if ($myrow[0] == $ultimate_parent)
-			{
-				return 1;
-			}
-
-			if (check_for_recursive_bom($ultimate_parent, $myrow[0]))
-			{
-				return 1;
-			}
-		} //(while loop)
-	} //end if $result is true
-
-	return 0;
-
-} //end of function check_for_recursive_bom
-
-//--------------------------------------------------------------------------------------------------
-
 function display_bom_items($selected_parent)
 {
-	global $table_style;
-
 	$result = get_bom($selected_parent);
-div_start('bom');
-	start_table("$table_style width=60%");
+	div_start('bom');
+	start_table(TABLESTYLE, "width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
 		_("Work Centre"), _("Quantity"), _("Units"),'','');
 	table_header($th);
@@ -122,7 +89,7 @@ div_start('bom');
 
 	} //END WHILE LIST LOOP
 	end_table();
-div_end();
+	div_end();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -138,15 +105,8 @@ function on_submit($selected_parent, $selected_component=-1)
 
 	if ($selected_component != -1)
 	{
-
-		$sql = "UPDATE ".TB_PREF."bom SET workcentre_added=".db_escape($_POST['workcentre_added'])
-		 . ",loc_code=".db_escape($_POST['loc_code']) . ",
-			quantity= " . input_num('quantity') . "
-			WHERE parent=".db_escape($selected_parent) . "
-			AND id=".db_escape($selected_component);
-		check_db_error("Could not update this bom component", $sql);
-
-		db_query($sql,"could not update bom");
+		update_bom($selected_parent, $selected_component, $_POST['workcentre_added'], $_POST['loc_code'],
+			input_num('quantity'));
 		display_notification(_('Selected component has been updated'));
 		$Mode = 'RESET';
 	}
@@ -162,21 +122,11 @@ function on_submit($selected_parent, $selected_component=-1)
 		{
 
 			/*Now check to see that the component is not already on the bom */
-			$sql = "SELECT component FROM ".TB_PREF."bom
-				WHERE parent=".db_escape($selected_parent)."
-				AND component=".db_escape($_POST['component']) . "
-				AND workcentre_added=".db_escape($_POST['workcentre_added']) . "
-				AND loc_code=".db_escape($_POST['loc_code']);
-			$result = db_query($sql,"check failed");
-
-			if (db_num_rows($result) == 0)
+			if (!is_component_already_on_bom($_POST['component'], $_POST['workcentre_added'],
+				$_POST['loc_code'], $selected_parent))
 			{
-				$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (".db_escape($selected_parent).", ".db_escape($_POST['component']) . ","
-					.db_escape($_POST['workcentre_added']) . ", ".db_escape($_POST['loc_code']) . ", "
-					. input_num('quantity') . ")";
-
-				db_query($sql,"check failed");
+				add_bom($selected_parent, $_POST['component'], $_POST['workcentre_added'],
+					$_POST['loc_code'], input_num('quantity'));
 				display_notification(_("A new component part has been added to the bill of material for this item."));
 				$Mode = 'RESET';
 			}
@@ -198,8 +148,7 @@ function on_submit($selected_parent, $selected_component=-1)
 
 if ($Mode == 'Delete')
 {
-	$sql = "DELETE FROM ".TB_PREF."bom WHERE id=".db_escape($selected_id);
-	db_query($sql,"Could not delete this bom components");
+	delete_bom($selected_id);
 
 	display_notification(_("The component item has been deleted from this bom"));
 	$Mode = 'RESET';
@@ -216,8 +165,10 @@ if ($Mode == 'RESET')
 start_form();
 
 start_form(false, true);
-start_table("class='tablestyle_noborder'");
-stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+start_table(TABLESTYLE_NOBORDER);
+start_row();
+stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+end_row();
 if (list_updated('stock_id'))
 	$Ajax->activate('_page_body');
 end_table();
@@ -238,32 +189,26 @@ start_form();
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1)
 	{
  		if ($Mode == 'Edit') {
 			//editing a selected component from the link to the line item
-			$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM "
-				.TB_PREF."bom,".TB_PREF."stock_master
-				WHERE id=".db_escape($selected_id)."
-				AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component";
-
-			$result = db_query($sql, "could not get bom");
-			$myrow = db_fetch($result);
+			$myrow = get_component_from_bom($selected_id);
 
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['component'] = $myrow["component"]; // by Tom Moulton
 			$_POST['workcentre_added']  = $myrow["workcentre_added"];
 			$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
-		label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
+			label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 		}
 		hidden('selected_id', $selected_id);
 	}
 	else
 	{
 		start_row();
-		label_cell(_("Component:"));
+		label_cell(_("Component:"), "class='label'");
 
 		echo "<td>";
 		echo stock_component_items_list('component', $selected_parent, null, false, true);

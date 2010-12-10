@@ -59,7 +59,7 @@
 		$this->NewLine();
 		if ($this->company['coy_logo'] != '')
 		{
-			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
+			$logo = company_path() . "/images/" . $this->company['coy_logo'];
 			$this->AddImage($logo, $ccol, $this->row, 0, 40);
 		}
 		else
@@ -122,28 +122,28 @@
 		$this->NewLine(3);
 		$this->Text($mcol + 100, $doc_Date);
 		if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER)
-			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
+			$this->Text($mcol + 180, sql2date($this->formData['ord_date']));
 		elseif ($doctype == ST_WORKORDER)	
-			$this->Text($mcol + 180, sql2date($myrow['date_']));
+			$this->Text($mcol + 180, sql2date($this->formData['date_']));
 		else
-			$this->Text($mcol + 180, sql2date($myrow['tran_date']));
+			$this->Text($mcol + 180, sql2date($this->formData['tran_date']));
 		$this->NewLine();
 		$this->Text($mcol + 100, $doc_Invoice_no);
 		if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) // QUOTE, PO or SO
 		{
 			if ($print_invoice_no == 1)
-				$this->Text($mcol + 180, $myrow['order_no']);
+				$this->Text($mcol + 180, $this->formData['order_no']);
 			else	
-				$this->Text($mcol + 180, $myrow['reference']);
+				$this->Text($mcol + 180, $this->formData['reference']);
 		}		
 		elseif ($doctype == ST_WORKORDER)	
-			$this->Text($mcol + 180, $myrow['id']);
-		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA
+			$this->Text($mcol + 180, $this->formData['id']);
+		else if (isset($this->formData['trans_no']) && isset($this->formData['reference'])) // INV/CRE/STA
 		{
 			if ($print_invoice_no == 1)
-				$this->Text($mcol + 180, $myrow['trans_no']);
+				$this->Text($mcol + 180, $this->formData['trans_no']);
 			else
-				$this->Text($mcol + 180, $myrow['reference']);
+				$this->Text($mcol + 180, $this->formData['reference']);
 		}
 
 		if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
@@ -159,44 +159,48 @@
 		$temp = $this->row;
 		if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER)
 		{
-			$this->Text($ccol, $myrow['name'], $icol);
+			$this->Text($ccol, $this->formData['name'], $icol);
 		}
 		elseif ($doctype == ST_WORKORDER)
 		{
-			$this->Text($ccol, $myrow['location_name'], $icol);
+			$this->Text($ccol, $this->formData['location_name'], $icol);
 			$this->NewLine();
-			$this->TextWrapLines($ccol, $icol - $ccol, $myrow['delivery_address']);
+			$this->TextWrapLines($ccol, $icol - $ccol, $this->formData['delivery_address']);
 		}
 		else
 		{
 			if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
-				$name = $myrow['supp_name'];
-				$addr = $myrow['address'];
+				$name = $this->formData['supp_name'];
+				$addr = $this->formData['address'];
 			} else {
-				if (trim($branch['br_address']) != '') {
-					$name = $branch['br_name'];
-					$addr = $branch['br_address'];
+				if (isset($this->formData['br_address']) && 
+						trim($this->formData['br_address']) != '') {
+					$name = $this->formData['br_name'];
+					$addr = $this->formData['br_address'];
 				} else {
-					$name = $myrow['DebtorName'];
-					$addr = $myrow['address'];
+					$name = $this->formData['DebtorName'];
+					$addr = $this->formData['address'];
 				}
 			}
 			$this->Text($ccol, $name, $icol);
 			$this->NewLine();
 			$this->TextWrapLines($ccol, $icol - $ccol, $addr);
 		}
-		if ($sales_order != NULL)
+		$this->row = $temp;
+		if (isset($this->formData['deliver_to']))
 		{
-			$this->row = $temp;
-			if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
+			if ($doctype == ST_PURCHORDER)
+				$this->Text($mcol, $this->company['coy_name']);
+			elseif ($doctype != ST_SUPPAYMENT && isset($this->formData['deliver_to']))
 			{
-				$this->Text($mcol, $sales_order['deliver_to']);
+				$this->Text($mcol, $this->formData['deliver_to']);
 				$this->NewLine();
 			}	
-			// if you need the company name in purchase order then write it as first line in location addresss.	
-			if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address']))
-				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
-		}
+			if ($doctype != ST_SUPPAYMENT && isset($this->formData['delivery_address']))
+				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $this->formData['delivery_address']);
+		}	// if you need the company name in purchase order then write it as first line in location addresss.	
+		elseif ($doctype == ST_PURCHORDER && isset($this->formData['delivery_address']))
+			$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $this->formData['delivery_address']);
 		$this->row = $iline2 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
 		$this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
@@ -214,83 +218,76 @@
 		$this->row = $iline3 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
 		if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT)
-			$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
+			$this->TextWrap($col, $this->row, $width, $this->formData['supp_account_no'], 'C');
 		elseif ($doctype == ST_WORKORDER)
-			$this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
-		elseif (isset($sales_order["customer_ref"]))
-			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
-		elseif (isset($myrow["debtor_ref"]))
-			$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
+			$this->TextWrap($col, $this->row, $width, $this->formData['wo_ref'], 'C');
+		elseif (isset($this->formData["customer_ref"]))
+			$this->TextWrap($col, $this->row, $width, $this->formData["customer_ref"], 'C');
+		elseif (isset($this->formData["debtor_ref"]))
+			$this->TextWrap($col, $this->row, $width, $this->formData["debtor_ref"], 'C');
 		$col += $width;	
-		if ($branch != null)
+		if (isset($this->formData['salesman']))
 		{
-			$id = $branch['salesman'];
-			$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
-			$result = db_query($sql,"could not get sales person");
-			$row = db_fetch($result);
-			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+			$id = $this->formData['salesman'];
+			//$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
+			//$result = db_query($sql,"could not get sales person");
+			//$row = db_fetch($result);
+			//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+			$this->TextWrap($col, $this->row, $width, get_salesman_name($id), 'C');
 		}		
 		elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
-			$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
+			$this->TextWrap($col, $this->row, $width, $systypes_array[$this->formData["type"]], 'C');
 		elseif ($doctype == ST_WORKORDER)
-			$this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
+			$this->TextWrap($col, $this->row, $width, $wo_types_array[$this->formData["type"]], 'C');
 		$col += $width;	
 		if ($doctype == ST_WORKORDER)
-			$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-		elseif ($doctype != ST_PURCHORDER && isset($myrow['tax_id']))
-			$this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
+			$this->TextWrap($col, $this->row, $width, $this->formData["StockItemName"], 'C');
+		elseif ($doctype != ST_PURCHORDER && isset($this->formData['tax_id']))
+			$this->TextWrap($col, $this->row, $width, $this->formData['tax_id'], 'C');
 		$col += $width;	
 		if ($doctype == ST_SALESINVOICE)
 		{
-			$deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
-			$line = "";
-			foreach ($deliveries as $delivery)
+			$deliveries = get_sales_parent_numbers(ST_SALESINVOICE, $this->formData['trans_no']);
+			if ($print_invoice_no == 0)
 			{
-				if ($print_invoice_no == 0)
-				{
-					$ref = get_reference(ST_CUSTDELIVERY, $delivery);
-					if ($ref)
-						$delivery = $ref;
-				}		
-				if ($line == "")
-					$line .= "$delivery";
-				else
-					$line .= ",$delivery";
-			}		
-			$this->TextWrap($col, $this->row, $width, $line, 'C');
+				foreach($deliveries as $n => $delivery) {
+					$deliveries[$n] = get_reference(ST_CUSTDELIVERY, $delivery);
+				}
+			}
+			$this->TextWrap($col, $this->row, $width, implode(',', $deliveries), 'C');
 		}
 		elseif ($doctype == ST_CUSTDELIVERY)
 		{
-			$ref = $myrow['order_'];
+			$ref = $this->formData['order_'];
 			if ($print_invoice_no == 0)
 			{
-				$ref = get_reference(ST_SALESORDER, $myrow['order_']);
+				$ref = get_reference(ST_SALESORDER, $this->formData['order_']);
 				if (!$ref)
-					$ref = $myrow['order_'];
+					$ref = $this->formData['order_'];
 			}		
 			$this->TextWrap($col, $this->row, $width, $ref, 'C');
 		}
 		elseif ($doctype == ST_WORKORDER)
-			$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
-		elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
-			$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
+			$this->TextWrap($col, $this->row, $width, $this->formData["location_name"], 'C');
+		elseif (isset($this->formData['order_']) && $this->formData['order_'] != 0)
+			$this->TextWrap($col, $this->row, $width, $this->formData['order_'], 'C');
 		$col += $width;	
 		if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE)
-			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
+			$this->TextWrap($col, $this->row, $width, sql2date($this->formData['delivery_date']), 'C');
 		elseif ($doctype == ST_WORKORDER)	
-			$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
+			$this->TextWrap($col, $this->row, $width, $this->formData["units_issued"], 'C');
 		elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT &&
-			$doctype != ST_SUPPAYMENT && isset($myrow['due_date']))
-			$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
-		if (!isset($packing_slip) || $packing_slip == 0)
+			$doctype != ST_SUPPAYMENT && isset($this->formData['due_date']))
+			$this->TextWrap($col, $this->row, $width, sql2date($this->formData['due_date']), 'C');
+		if ((!isset($packing_slip) || $packing_slip == 0) && ($doctype != ST_STATEMENT)) //!
 		{
 			$this->row -= (2 * $this->lineHeight);
 			if ($doctype == ST_WORKORDER)
-				$str = sql2date($myrow["required_by"]);
+				$str = sql2date($this->formData["required_by"]);
 			else
 			{
-				$id = $myrow['payment_terms'];
-				$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
+				$id = $this->formData['payment_terms'];
+				$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
 				$result = db_query($sql,"could not get paymentterms");
 				$row = db_fetch($result);
 				$str = $row["terms"];
@@ -309,24 +306,24 @@
 		$this->Font('italic');
 		$this->row = $iline7 - $this->lineHeight - 6;
 		if ($doctype != ST_WORKORDER)
-			$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . " - " . $myrow['curr_code'], 'C');
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . " - " . $this->formData['curr_code'], 'C');
 		$this->row -= $this->lineHeight;
 
-		if (isset($bankaccount['bank_name']))
+		if (isset($this->formData['bank_name']))
 		{
-			$txt = $doc_Bank . ": ".$bankaccount['bank_name']. ", " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
+			$txt = $doc_Bank . ": ".$this->formData['bank_name']. ", " . $doc_Bank_Account . ": " . $this->formData['bank_account_number'];
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 			$this->row -= $this->lineHeight;
 		}	
-		if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) // payment links
+		if ($doctype == ST_SALESINVOICE && $this->formData['disable_branch'] > 0) // payment links
 		{
-			if ($branch['disable_branch'] == 1)
+			if ($this->formData['disable_branch'] == 1)
 			{
-				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
+				$amt = number_format($this->formData["ov_freight"] + $this->formData["ov_gst"] +	$this->formData["ov_amount"], user_price_dec());
 				$txt = $doc_Payment_Link . " PayPal: ";
-				$name = urlencode($this->title . " " . $myrow['reference']);
+				$name = urlencode($this->title . " " . $this->formData['reference']);
 				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+					$name . "&amount=" . $amt . "&currency_code=" . $this->formData['curr_code'];
 				$this->fontSize -= 2;
 				$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 				$this->row -= $this->lineHeight;

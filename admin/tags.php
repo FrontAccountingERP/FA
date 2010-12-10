@@ -124,7 +124,7 @@ if ($Mode == 'RESET')
 $result = get_tags($_POST['type'], check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Tag Name"), _("Tag Description"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -147,7 +147,7 @@ end_table(1);
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) // We've selected a tag 
 {

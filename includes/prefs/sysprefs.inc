@@ -13,10 +13,18 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 class sys_prefs 
 {
+	var $prefs;
+	var $db_ok; // check whether database has been upgraded after src update.
+
+	function sys_prefs()
+	{
+//		$this->prefs = get_company_prefs();
+	
+	}
 	
 	function allow_negative_stock() 
 	{
-		return get_company_pref('allow_negative_stock');
+		return $this->prefs['allow_negative_stock'];
 	}
 	
     /* Sherifoz 26.06.03 Proportion by which items can be received over the quantity that is specified in a purchase
@@ -25,7 +33,7 @@ class sys_prefs
     */
 	function over_receive_allowance() 
 	{
-		return get_company_pref('po_over_receive');
+		return $this->prefs['po_over_receive'];
 	}
 	
     /* Proportion by which a purchase invoice line is an overcharge for a purchase order item received
@@ -35,27 +43,32 @@ class sys_prefs
     */	
 	function over_charge_allowance() 
 	{
-		return get_company_pref('po_over_charge');
+		return $this->prefs['po_over_charge'];
 	}
 	
 	function default_credit_limit() 
 	{
-		return get_company_pref('default_credit_limit');
+		return $this->prefs['default_credit_limit'];
 	}				
 	
 	function default_wo_required_by() 
 	{
-		return get_company_pref('default_workorder_required');
+		return $this->prefs['default_workorder_required'];
 	}
 
 	function default_delivery_required_by() 
 	{
-		return get_company_pref('default_delivery_required');
+		return $this->prefs['default_delivery_required'];
 	}
 
 	function default_dimension_required_by() 
 	{
-		return get_company_pref('default_dim_required');
+		return $this->prefs['default_dim_required'];
+	}	
+	
+	function auto_currency_revaluation() 
+	{
+		return $this->prefs['auto_curr_reval'];
 	}	
 	
 	function allocation_settled_allowance()

@@ -80,6 +80,22 @@ function get_tag_name($id)
 	return $row[0];
 }
 
+//----------------------------------------------------------------------------------------------------
+function get_tag_names($tags)
+{
+	$str = "";
+	if ($tags == -1)
+		return $str;
+	foreach($tags as $id)
+	{
+		$tag = get_tag_name($id);
+		if ($str == "")
+			$str .= $tag;
+		else	
+			$str .= ", ".$tag;
+	}
+	return $str;
+}
 //--------------------------------------------------------------------------------------
 
 function get_tag_description($id)
@@ -189,5 +205,19 @@ function get_tags_associated_with_record($type, $recordid)
 }
 
 //--------------------------------------------------------------------------------------
+
+function is_record_in_tags($tags, $type, $recordid)
+{
+	foreach($tags as $id)
+	{
+		$sql = "SELECT ta.record_id FROM ".TB_PREF."tag_associations AS ta 
+				INNER JOIN ".TB_PREF."tags AS tags ON tags.id = ta.tag_id 
+				WHERE tags.type = $type AND tags.id = $id AND ta.record_id = ".db_escape($recordid);
+		$res = db_query($sql, "could not get tags associations for record");
+		if (db_num_rows($res) == 0)
+			return false;
+	}
+	return true;
+}
 
 ?>

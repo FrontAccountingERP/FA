@@ -104,9 +104,13 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$to = date2sql($to_date);
 
 	$sql = "SELECT ".TB_PREF."gl_trans.*, "
-		.TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, "
-		.TB_PREF."chart_master
-		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		.TB_PREF."chart_master.account_name FROM "
+		.TB_PREF."gl_trans
+			LEFT JOIN ".TB_PREF."voided v ON "
+			.TB_PREF."gl_trans.type_no=v.id AND v.type=".TB_PREF."gl_trans.type,"
+			.TB_PREF."chart_master"
+		." WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		AND ISNULL(v.date_)
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
 	if ($trans_no > 0)
@@ -140,13 +144,13 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 function get_gl_trans($type, $trans_id)
 {
-	$sql = "SELECT ".TB_PREF."gl_trans.*, "
-		.TB_PREF."chart_master.account_name FROM "
-			.TB_PREF."gl_trans, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".db_escape($type)
-		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id);
-
+	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
+		.TB_PREF."gl_trans as gl
+		LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
+		LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
+		." WHERE gl.type= ".db_escape($type) 
+		." AND gl.type_no = ".db_escape($trans_id)
+		." ORDER BY counter";
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
 
@@ -269,17 +273,76 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 	$row = db_fetch_row($result);
 	return $row[0];
 }
+//-------------------------------------------------------------------------------------
+
+function exists_gl_budget($date_, $account, $dimension, $dimension2)
+{
+	$sql = "SELECT account FROM ".TB_PREF."budget_trans WHERE account=".db_escape($account)
+	." AND tran_date='$date_' AND
+		dimension_id=".db_escape($dimension)." AND dimension2_id=".db_escape($dimension2);
+	$result = db_query($sql, "Cannot retreive a gl transaction");
+
+    return (db_num_rows($result) > 0);
+}
+
+function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount)
+{
+	$date = date2sql($date_);
+
+	if (exists_gl_budget($date, $account, $dimension, $dimension2))
+		$sql = "UPDATE ".TB_PREF."budget_trans SET amount=".db_escape($amount)
+		." WHERE account=".db_escape($account)
+		." AND dimension_id=".db_escape($dimension)
+		." AND dimension2_id=".db_escape($dimension2)
+		." AND tran_date='$date'";
+	else
+		$sql = "INSERT INTO ".TB_PREF."budget_trans (tran_date,
+			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
+			".db_escape($account).", ".db_escape($dimension).", "
+			.db_escape($dimension2).", ".db_escape($amount).", '')";
+
+	db_query($sql, "The GL budget transaction could not be saved");
+}
+
+function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
+{
+	$date = date2sql($date_);
+
+	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE account=".db_escape($account)
+	." AND dimension_id=".db_escape($dimension)
+	." AND dimension2_id=".db_escape($dimension2)
+	." AND tran_date='$date'";
+	db_query($sql, "The GL budget transaction could not be deleted");
+}
+
+function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
+{
+
+	$from = date2sql($from_date);
+	$to = date2sql($to_date);
+
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
+		WHERE account=".db_escape($account)
+		." AND tran_date >= '$from' AND tran_date <= '$to'
+		 AND dimension_id = ".db_escape($dimension)
+		 ." AND dimension2_id = ".db_escape($dimension2);
+	$result = db_query($sql,"No budget accounts were returned");
+
+	$row = db_fetch_row($result);
+	return $row[0];
+}
 
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
 	
 	$tax = get_tax_type($tax_type);
-	if ($gl_code == $tax['sales_gl_code']) 
+	//if ($gl_code == $tax['sales_gl_code'])
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTDELIVERY || $trans_type == ST_CUSTCREDIT)
 		$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
 	if ($tax['rate'] == 0) {
@@ -291,7 +354,7 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 		$net_amount = $amount/$tax['rate']*100; 
 	}
 		
-	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], 0, 
+	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
 		$amount, $net_amount, $ex_rate, $date, $memo);
 			
 }
@@ -341,6 +404,17 @@ function void_trans_tax_details($type, $type_no)
 		." AND trans_type=".db_escape($type);
 
 	db_query($sql, "The transaction tax details could not be voided");
+}
+
+//----------------------------------------------------------------------------------------
+
+function clear_trans_tax_details($type, $type_no)
+{
+	$sql = "DELETE FROM ".TB_PREF."trans_tax_details 
+		WHERE trans_no=".db_escape($type_no)
+		." AND trans_type=".db_escape($type);
+
+	db_query($sql, "The transaction tax details could not be cleared");
 }
 
 function get_tax_summary($from, $to)
@@ -427,12 +501,11 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 			ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
 	}
 	
+	$Refs->save($trans_type, $trans_id, $ref);
 	if ($new) {
 		add_comments($trans_type, $trans_id, $date_, $memo_);
-		$Refs->save($trans_type, $trans_id, $ref);
 	} else {
 		update_comments($trans_type, $trans_id, null, $memo_);
-		$Refs->update($trans_type, $trans_id, $ref);
 	}
 
 	add_audit_trail($trans_type, $trans_id, $date_);
@@ -503,6 +576,22 @@ function void_gl_trans($type, $trans_id, $nested=false)
 		commit_transaction();
 }
 
+//--------------------------------------------------------------------------------------------------
+
+function clear_gl_trans($type, $trans_id, $nested=false)
+{
+	if (!$nested)
+		begin_transaction();
+
+	$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE type=".db_escape($type)
+	." AND type_no=".db_escape($trans_id);
+
+	db_query($sql, "could not clear gl transactions for type=$type and trans_no=$trans_id");
+
+	if (!$nested)
+		commit_transaction();
+}
+
 //----------------------------------------------------------------------------------------
 
 function void_journal_trans($type, $type_no, $use_transaction=true)
@@ -518,4 +607,42 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 		commit_transaction();
 }
 
+function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $alsoclosed=false)
+{
+
+	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+		gl.tran_date,
+		gl.type,
+		gl.type_no,
+		refs.reference,
+		SUM(IF(gl.amount>0, gl.amount,0)) as amount,
+		com.memo_,
+		IF(ISNULL(u.user_id),'',u.user_id) as user_id
+		FROM ".TB_PREF."gl_trans as gl
+		 LEFT JOIN ".TB_PREF."audit_trail as a ON
+			(gl.type=a.type AND gl.type_no=a.trans_no)
+		 LEFT JOIN ".TB_PREF."comments as com ON
+			(gl.type=com.type AND gl.type_no=com.id)
+		 LEFT JOIN ".TB_PREF."refs as refs ON
+			(gl.type=refs.type AND gl.type_no=refs.id)
+		 LEFT JOIN ".TB_PREF."users as u ON
+			a.user=u.id
+		WHERE gl.tran_date >= '" . date2sql($from) . "'
+		AND gl.tran_date <= '" . date2sql($to) . "'
+		AND gl.amount!=0";
+	if ($ref) {
+		$sql .= " AND reference LIKE ". db_escape("%$ref%");
+	}
+	if ($memo) {
+		$sql .= " AND com.memo_ LIKE ". db_escape("%$memo%");
+	}
+	if ($filter != -1) {
+		$sql .= " AND gl.type=".db_escape($filter);
+	}
+	if (!$alsoclosed) {
+		$sql .= " AND gl_seq=0";
+	}
+	$sql .= " GROUP BY gl.type, gl.type_no";
+	return $sql;
+}
 ?>

@@ -17,6 +17,8 @@ include_once($path_to_root . "/sales/includes/db/sales_invoice_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_delivery_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_points_db.inc");
+include_once($path_to_root . "/sales/includes/db/sales_groups_db.inc");
+include_once($path_to_root . "/sales/includes/db/recurrent_invoices_db.inc");
 include_once($path_to_root . "/sales/includes/db/custalloc_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
@@ -172,7 +174,7 @@ function get_kit_price($item_code, $currency, $sales_type_id, $factor=null,
 		$kit_price = get_price( $item_code, $currency, $sales_type_id, 
 			$factor, $date);
 
-		if ($kit_price !== false) {
+		if ($kit_price !== 0) {
 			return $kit_price;
 		}
 	}	
@@ -194,68 +196,25 @@ function get_kit_price($item_code, $currency, $sales_type_id, $factor=null,
 	return $kit_price;
 }
 
-//-----------------------------------------------------------------------------
-
-function set_document_parent($cart)
-{
-	$inv_no = key($cart->trans_no);
-
-	if (count($cart->src_docs) == 1) {
-
-		// if this child document has only one parent - update child link
-		$src = array_keys($cart->src_docs);
-		$del_no = reset($src);
-
-		$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
-			' WHERE type='.db_escape($cart->trans_type).' AND trans_no='. $inv_no ;
-		db_query($sql, 'Child document link cannot be updated');
-
-	}
-	if ($cart->trans_type != ST_SALESINVOICE)
-		return 0;
-
-	// the rest is batch invoice specific
-
-	foreach ($cart->line_items as $line) {
-		if ($line->quantity != $line->qty_dispatched) {
-			return 1;	// this is partial invoice
-		}
-	}
-
-	$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $inv_no .
-	' WHERE type='.get_parent_type($cart->trans_type).' AND (';
-
-	$deliveries = array_keys($cart->src_docs);
-
-	foreach ($deliveries as $key=>$del)
-		$deliveries[$key] = 'trans_no='.$del;
-
-	$sql .= implode(' OR ', $deliveries) . ')';
-	db_query($sql, 'Delivery links cannot be updated');
-
-	return 0; // batch or complete invoice
-}
-
 //--------------------------------------------------------------------------------------------------
-function get_parent_type($type)
-{
-	$parent_types = array( ST_CUSTCREDIT => ST_SALESINVOICE, ST_SALESINVOICE => ST_CUSTDELIVERY, ST_CUSTDELIVERY => ST_SALESORDER );
-	return isset($parent_types[$type]) ?  $parent_types[$type] : 0;
-}
-
-//--------------------------------------------------------------------------------------------------
-function update_parent_line($doc_type, $line_id, $qty_dispatched)
+function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 {
 	$doc_type = get_parent_type($doc_type);
+
+        $qty_dispatched = (float)$qty_dispatched;
 
 //	echo "update line: $line_id, $doc_type, $qty_dispatched";
 	if ($doc_type==0)
 		return false;
 	else {
 		if ($doc_type==ST_SALESORDER)
+		{
 			$sql = "UPDATE ".TB_PREF."sales_order_details
-				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=".db_escape($line_id);
+				SET qty_sent = qty_sent + $qty_dispatched";
+			if ($auto)
+				$sql .= ", quantity = quantity + $qty_dispatched";
+			$sql .= " WHERE id=".db_escape($line_id);
+		}		
 		else
 			$sql = "UPDATE ".TB_PREF."debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
@@ -308,14 +267,13 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"],0);
 
 		$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
-			$myrow["curr_code"], $myrow["discount"]);
+			$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 		$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
-			$myrow["tax_group_name"],	$myrow["phone"], $myrow["email"]);
+			$myrow["tax_group_name"]);
 
 		$cart->reference = $myrow["reference"];
 		$cart->order_no = $myrow["order_"];
-		$cart->trans_link = $myrow["trans_link"];
 		$cart->due_date = sql2date($myrow["due_date"]);
 		$cart->document_date = sql2date($myrow["tran_date"]);
 		$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
@@ -344,7 +302,8 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 					$myrow["stock_id"],$myrow["quantity"],
 					$myrow["unit_price"], $myrow["discount_percent"],
 					$myrow["qty_done"], $myrow["standard_cost"],
-					$myrow["StockDescription"],$myrow["id"], $myrow["debtor_trans_no"]);
+					$myrow["StockDescription"],$myrow["id"], $myrow["debtor_trans_no"],
+					@$myrow["src_id"]);
 			}
 		}
 	} // !newdoc
@@ -352,4 +311,99 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 	return true;
 }
 //----------------------------------------------------------------------------------------
+
+function get_sales_child_lines($trans_type, $trans_no, $lines=true)
+{
+	if (!($ctype = get_child_type($trans_type)))
+		return false;
+	if (!is_array($trans_no)) {
+		$trans_no = array($trans_no);
+	}
+
+	$par_tbl = $trans_type == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	$par_no = $trans_type == ST_SALESORDER ? "trans.order_no" : "trans.debtor_trans_no";
+
+	foreach($trans_no as $n => $trans) {
+		$trans_no[$n] = db_escape($trans);
+	}
+	$sql = "SELECT child.*
+			FROM
+				".TB_PREF."debtor_trans_details child
+			LEFT JOIN ".TB_PREF."$par_tbl trans 
+				ON child.src_id=trans.id AND child.debtor_trans_type=$ctype
+			WHERE $par_no IN(". implode(',', array_values($trans_no)).")";
+
+	if (!$lines)
+		$sql .= " GROUP BY child.debtor_trans_no";
+
+	$sql .= " ORDER BY child.debtor_trans_no";
+
+	return db_query($sql, "can't retrieve child trans");
+}
+
+function get_sales_child_numbers($trans_type, $trans_no)
+{
+	$trans = array();
+	$res = get_sales_child_lines($trans_type, $trans_no, false);
+	while ($line = db_fetch($res)) {
+		$trans[] = $line['debtor_trans_no'];
+	}
+	return $trans;
+}
+
+function get_sales_parent_lines($trans_type, $trans_no, $lines=true)
+{
+	$partype = get_parent_type($trans_type);
+
+	if (!$partype)
+		return false;
+
+	$par_tbl = $partype == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	$par_no = $partype == ST_SALESORDER ? "parent.order_no" : "parent.debtor_trans_no";
+	$sql = "SELECT parent.*
+			FROM
+				".TB_PREF."$par_tbl parent
+			LEFT JOIN ".TB_PREF."debtor_trans_details trans 
+				ON trans.src_id=parent.id
+			WHERE
+				trans.debtor_trans_type=".db_escape($trans_type)
+				." AND trans.debtor_trans_no=".db_escape($trans_no);
+	if (!$lines)
+		$sql .= " GROUP BY $par_no";
+	
+	$sql .= " ORDER BY $par_no";
+	
+	return db_query($sql, "can't retrieve child trans");
+
+}
+
+function get_sales_parent_numbers($trans_type, $trans_no)
+{
+	$trans = array();
+	$res = get_sales_parent_lines($trans_type, $trans_no, false);
+	while ($line = db_fetch($res))
+		$trans[] = $line[$trans_type==ST_CUSTDELIVERY ? 'order_no' : 'debtor_trans_no'];
+	return $trans;
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_sales_child_documents($trans_type, $trans_no)
+{
+	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
+	// at least one line from related invoice
+
+	if (!count($trans_no))
+		return false;
+	$childs = get_sales_child_numbers($trans_type, $trans_no, false);
+	if (!count($childs))
+		return false;
+		
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans
+		WHERE type=".get_child_type($trans_type)." AND trans_no IN(". implode(',', array_values($childs)).")";
+
+	return db_query($sql,"The related credit notes could not be retreived");
+}
+
+
 ?>

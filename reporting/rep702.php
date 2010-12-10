@@ -63,7 +63,7 @@ function print_list_of_journal_entries()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
     if ($systype == -1)
         $systype = null;
@@ -71,13 +71,22 @@ function print_list_of_journal_entries()
     $trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
 
     $typeno = $type = 0;
+    $debit = $credit = 0.0;
+    $totdeb = $totcre = 0.0;
     while ($myrow=db_fetch($trans))
     {
         if ($type != $myrow['type'] || $typeno != $myrow['type_no'])
         {
             if ($typeno != 0)
             {
-                $rep->Line($rep->row  + 4);
+                $rep->Line($rep->row += 6);
+                $rep->NewLine();
+            	$rep->AmountCol(4, 5, $debit, $dec);
+            	$rep->AmountCol(5, 6, abs($credit), $dec);
+            	$totdeb += $debit;
+            	$totcre += $credit;
+            	$debit = $credit = 0.0;
+				$rep->Line($rep->row -= 4);
                 $rep->NewLine();
             }
             $typeno = $myrow['type_no'];
@@ -106,13 +115,31 @@ function print_list_of_journal_entries()
         	$dim_str .= "/".$dim_str2;
         $rep->TextCol(2, 3, $dim_str);
         $rep->TextCol(3, 4, $myrow['memo_']);
-        if ($myrow['amount'] > 0.0)
+        if ($myrow['amount'] > 0.0) {
+        	$debit += $myrow['amount'];
             $rep->AmountCol(4, 5, abs($myrow['amount']), $dec);
-        else
+        }    
+        else {
+        	$credit += $myrow['amount'];
             $rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
+        }    
         $rep->NewLine(1, 2);
     }
-    $rep->Line($rep->row  + 4);
+	if ($typeno != 0)
+	{
+		$rep->Line($rep->row += 6);
+		$rep->NewLine();
+		$rep->AmountCol(4, 5, $debit, $dec);
+		$rep->AmountCol(5, 6, abs($credit), $dec);
+		$totdeb += $debit;
+		$totcre += $credit;
+		$rep->Line($rep->row -= 4);
+		$rep->NewLine();
+        $rep->TextCol(0, 4, _("Total"));
+		$rep->AmountCol(4, 5, $totdeb, $dec);
+		$rep->AmountCol(5, 6, abs($totcre), $dec);
+		$rep->Line($rep->row -= 4);
+	}
     $rep->End();
 }
 

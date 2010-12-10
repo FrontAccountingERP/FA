@@ -100,6 +100,35 @@ function last_negative_stock_begin_date($stock_id, $to)
 }
 
 //-------------------------------------------------------------------
+// Newly written
+function last_negative_stock_trans_id($stock_id, $to)
+{
+	$sql = "SELECT * from ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." 
+		AND qty <> 0 order by trans_id asc";
+	
+	$result = db_query($sql, "The query on stock moves failed.");
+	
+	$qty = 0;
+	$flag = 0;
+	$negative_trans_id = 1;
+	
+	while ($myrow = db_fetch($result))
+	{
+		$qty += $myrow['qty'];
+		if ($qty < 0 && $flag == 0)
+		{
+			$flag = 1;
+			$negative_trans_id = $myrow['trans_id'];
+		}
+		if ($qty > 0)
+			$flag = 0;		
+	}
+		
+	return $negative_trans_id;
+}
+
+//-------------------------------------------------------------------
 
 function get_deliveries_between($stock_id, $from, $to)
 {
@@ -113,9 +142,67 @@ function get_deliveries_between($stock_id, $from, $to)
 	return db_fetch_row($result);
 }
 
-//-------------------------------------------------------------------
+//Newly written
+function get_deliveries_from_trans($stock_id, $from)
+{
+	// -ve qty is delivery either by ST_CUSTDELIVERY or inventory adjustment
+	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
+			trans_id>='$from' GROUP BY stock_id";
+	$result = db_query($sql, "The deliveries could not be updated");
+	$row = db_fetch_row($result);
+	
+	display_notification('Row0 - '.$row[0].' Row1- '.$row[1]);
+	
+	//return $row;
+	
+	// Get Std cost of previsous transaction before the cut-over delivery
+	// This is useful to get inventory valuation
+	$prev_trans = $from - 1;
+	display_notification('From - '.$from.' Prev- '.$prev_trans);
+	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." AND 
+			trans_id ='$prev_trans'";
+	$result = db_query($sql, "The deliveries could not be updated");
+	$cost = db_fetch_row($result);	
+	
+	display_notification('Last Delivery Cost - '.$cost[0]);
+	
+	// Adjusting QOH valuation 
+	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." AND
+			trans_id<'$from' GROUP BY stock_id";
+	$result = db_query($sql, "The deliveries could not be updated");
+	$qoh = db_fetch_row($result);
+	
+	display_notification('QOH before last delivery - '.$qoh[0]);
+	
+	$qty = $row[0] - $qoh[0]; //Qoh is minus from delivered in -ve
+	$final_cost = $row[1] - $qoh[0]*$cost[0];
+	
+	display_notification('Qty - '.$qty.' cost- '.$final_cost);
+	
+	return array($qty,$final_cost); 
+}
 
-function adjust_deliveries($stock_id, $material_cost, $to)
+//Newly written
+function get_purchases_from_trans($stock_id, $from)
+{
+	// Calculate All inward stock moves i.e. qty > 0
+	$sql = "SELECT SUM(qty), SUM(qty*standard_cost) FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." AND qty > 0 AND 
+			trans_id>'$from' GROUP BY stock_id";
+	$result = db_query($sql, "The deliveries could not be updated");
+	$row = db_fetch_row($result);
+	
+	display_notification('Purchase Qty - '.$row[0].' Cost- '.$row[1]);
+	
+	return $row;
+}
+
+//-------------------------------------------------------------------
+// Original Code V0
+function adjust_deliveries_v0($stock_id, $material_cost, $to)
 {
 	if (!is_inventory_item($stock_id))
 		return;
@@ -137,7 +224,65 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	   
 		$stock_gl_code = get_stock_gl_code($stock_id);
 
-		$memo_ = _("Cost was ") . $old_cost . _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+		$memo_ = sprintf(_("Cost was %s changed to %s for item '%s'"),
+			$old_cost, $new_cost, $stock_id);
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
+			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);
+
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 
+			0, 0, $memo_, -$diff);
+		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
+   	}
+}
+
+//New written function
+function adjust_deliveries($stock_id, $material_cost, $to)
+{
+	if (!is_inventory_item($stock_id))
+		return;
+	
+	$from = last_negative_stock_trans_id($stock_id, $to);
+	if ($from == false || $from == "")
+		return;
+
+	$row = get_deliveries_from_trans($stock_id, $from);
+		
+	if ($row == false)
+		return;	
+	$old_sales_cost = $row[1];
+	$new_sales_cost = $row[0] * $material_cost;
+	$sales_diff = $new_sales_cost - $old_sales_cost;
+	
+	$row = get_purchases_from_trans($stock_id, $from);
+	$purchase_diff = 0;
+	$old_purchase_cost = 0;
+	if ($row != false)
+	{
+		$old_purchase_cost = $row[1];
+		$new_purchase_cost = $row[0] * $material_cost;
+		$purchase_diff = $new_purchase_cost - $old_purchase_cost;
+	}
+	
+	$diff =  $sales_diff - $purchase_diff;
+	
+	display_notification('Sales Diff - '.$sales_diff.' Purchase Diff - '.$purchase_diff);
+	
+	$sql = "INSERT INTO trace values ('Diff', ".db_escape($diff).", '')";
+	$result = db_query($sql, "The dstock moves could not be retrieved");	
+		
+	if ($diff != 0)
+	{
+	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
+		if (!is_date_in_fiscalyear($to))
+			$to = end_fiscalyear();
+	   
+		$stock_gl_code = get_stock_gl_code($stock_id);
+
+		$dec = user_price_dec();
+		$old_cost = -round2($old_sales_cost-$old_purchase_cost,$dec);
+		$new_cost = -round2($new_sales_cost-$new_purchase_cost,$dec);
+		
+		$memo_ = _("Cost was ") . $old_cost. _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
 		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
 			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
 

@@ -12,7 +12,11 @@
 $page_security = 'SA_CREATEMODULES';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root."/includes/packages.inc");
 
+if ($use_popup_windows) {
+	$js = get_js_open_window(900, 500);
+}
 page(_($help_context = "Install/Activate extensions"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -23,221 +27,148 @@ include_once($path_to_root . "/includes/ui.inc");
 simple_page_mode(true);
 
 //---------------------------------------------------------------------------------------------
-function update_extensions($extensions) {
-	global $db_connections;
-	
-	if (!write_extensions($extensions)) {
-		display_notification(_("Cannot update system extensions list."));
-		return false;
-	}
+function local_extension($id)
+{
+	global $next_extension_id, $Ajax, $path_to_root;
 
-	// update per company files
-	$cnt = count($db_connections);
-	for($i = 0; $i < $cnt; $i++) 
-	{
-		$newexts = $extensions;
-		// update 'active' status 
-		$exts = get_company_extensions($i);
-		foreach ($exts as $key => $ext) 
-		{
-			if (isset($newexts[$key]))
-				$newexts[$key]['active'] = $exts[$key]['active'];
-		}
-		if(!write_extensions($newexts, $i)) 
-		{
-			display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
-				$db_connections[$i]['name']));
-		 return false;
-		}
+	$exts = get_company_extensions();
+	$exts[$next_extension_id++] = array(
+			'package' => $id,
+			'name' => $id,
+			'version' => '-',
+			'available' => '',
+			'type' => 'extension',
+			'path' => 'modules/'.$id,
+			'active' => false
+	);
+
+	if (file_exists($path_to_root.'/modules/'.$id.'/hooks.php')) {
+		include_once($path_to_root.'/modules/'.$id.'/hooks.php');
 	}
+	$hooks_class = 'hooks_'.$id;
+	if (class_exists($hooks_class, false)) {
+		$hooks = new $hooks_class;
+		$hooks->install_extension(false);
+	}
+	$Ajax->activate('ext_tbl'); // refresh settings display
+	if (!update_extensions($exts))
+		return false;
 	return true;
 }
 
-function check_data($id, $exts)
+function handle_delete($id)
 {
-	if ($_POST['name'] == "") {
-		display_error(_("Extension name cannot be empty."));
-		return false;
-	}
-	foreach($exts as $n =>$ext) {
-		if ($_POST['name'] == $ext['name'] && $id != $n) {
-			display_error(_("Extension name have to be unique."));
+	global $path_to_root;
+	
+	$extensions = get_company_extensions();
+	$ext = $extensions[$id];
+	if ($ext['version'] != '-') {
+		if (!uninstall_package($ext['package']))
 			return false;
+	} else {
+		@include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
+		$hooks_class = 'hooks_'.$ext['package'];
+		if (class_exists($hooks_class)) {
+			$hooks = new $hooks_class;
+			$hooks->uninstall_extension(false);
 		}
 	}
-
-	if ($_POST['title'] == "") {
-		display_error(_("Extension title cannot be empty."));
-		return false;
-	}
-	if ($_POST['path'] == "") {
-		display_error(_("Extension folder name cannot be empty."));
-		return false;
-	}
-	if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
-		display_error(_("You have to select plugin file to upload"));
-		return false; 
-	}
-	return true;
-}
-
-//---------------------------------------------------------------------------------------------
-
-function handle_submit()
-{
-	global $path_to_root, $db_connections, $selected_id, $next_extension_id;
-
-	$extensions = get_company_extensions();
-	if (!check_data($selected_id, $extensions))
-		return false;
-	$id = $selected_id==-1 ? $next_extension_id : $selected_id;
-
-	if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
-		display_error(_('Module installation support is not implemented yet. You have to do it manually.'));
-		return;
-	}
-
-	$extensions[$id]['tab'] = $_POST['tab'];
-	$extensions[$id]['name'] = $_POST['name'];
-	$extensions[$id]['path'] = $_POST['path'];
-	$extensions[$id]['title'] = $_POST['title'];
-	$extensions[$id]['active'] = check_value('active');
-
-	// Currently we support only plugin extensions here.
-	$extensions[$id]['type'] = 'plugin';
-	$directory = $path_to_root . "/modules/" . $_POST['path'];
-	if (!file_exists($directory))
-	{
-		mkdir($directory);
-	}
-	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
-	{
-		$extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
-		$file1 = $_FILES['uploadfile']['tmp_name'];
-		$file2 = $directory . "/".$_FILES['uploadfile']['name'];
-		if (file_exists($file2))
-			unlink($file2);
-		move_uploaded_file($file1, $file2);
-	}
-	else
-		$extensions[$id]['filename'] = get_post('filename');
-	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
-	{
-		$file1 = $_FILES['uploadfile2']['tmp_name'];
-		$file2 = $directory . "/".$_FILES['uploadfile2']['name'];
-		if (file_exists($file2))
-			unlink($file2);
-		move_uploaded_file($file1, $file2);
-		$db_name = $_SESSION["wa_current_user"]->company;
-		db_import($file2, $db_connections[$db_name]);
-	}
-	
-	if (is_uploaded_file($_FILES['uploadfile3']['tmp_name']))
-	{
-		$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
-		$file1 = $_FILES['uploadfile3']['tmp_name'];
-		$file2 = $directory . "/".$_FILES['uploadfile3']['name'];
-		if (file_exists($file2))
-			unlink($file2);
-		move_uploaded_file($file1, $file2);
-	}
-	else
-		$extensions[$id]['acc_file'] = get_post('acc_file');
-
-	// security area guess for plugins
-	if ($extensions[$id]['type'] == 'plugin'){
-		$exttext = file_get_contents($path_to_root.'/modules/'
-			.$extensions[$id]['path'].'/'.$extensions[$id]['filename']);
-		$area = 'SA_OPEN';
-		if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
-			$area = trim($match[1]);
-		} 
-		$extensions[$id]['access'] = $area;
-	}
-
-	if ($selected_id == -1) 
-	{
-		$next_extension_id++;
-	}
-	if (!update_extensions($extensions))
-		return false;
-	return true;
-}
-
-function handle_delete()
-{
-	global  $path_to_root, $db_connections, $selected_id;
-	
-	$extensions = get_company_extensions();
-
-	$id = $selected_id;
-
-	$filename = $path_to_root
-		. ($extensions[$id]['type']=='plugin' ? "/modules/": '/')
-		. $extensions[$id]['path'];
-
-	flush_dir($filename);
-	rmdir($filename);
 	unset($extensions[$id]);
-	if (update_extensions($extensions))
+	if (update_extensions($extensions)) {
 		display_notification(_("Selected extension has been successfully deleted"));
+	}
 	return true;
 }
-
+//
+// Helper for formating menu tabs/entries to be displayed in extension table
+//
+function fmt_titles($defs)
+{
+		if (!$defs) return '';
+		foreach($defs as $def) {
+			$str[] = access_string($def['title'], true);
+		}
+		return implode('<br>', array_values($str));
+}
 //---------------------------------------------------------------------------------------------
-
+//
+// Display list of all extensions - installed and available from repository
+//
 function display_extensions()
 {
-	global $table_style;
+	global $installed_extensions;
+	
+	div_start('ext_tbl');
+	start_table(TABLESTYLE);
 
-	start_table($table_style);
-	$th = array(_("Name"),_("Tab"), _("Link text"), _("Folder"), _("Filename"), 
-		_("Access extensions"),"", "");
+	$th = array(_("Extension"),_("Modules provided"), _("Options provided"),
+		 _("Installed"), _("Available"),  "", "");
 	table_header($th);
 
 	$k = 0;
-	$mods = get_company_extensions();
-	$mods = array_natsort($mods, null, 'name');
+	$mods = get_extensions_list('extension');
 
-	foreach($mods as $i => $mod)
+	foreach($mods as $pkg_name => $ext)
 	{
-		$is_mod = $mod['type'] == 'module';
-   		alt_table_row_color($k);
-		label_cell($mod['name']);
-		label_cell( $is_mod ? 
-			$mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true));
-		$ttl = access_string($mod['title']);
-		label_cell($ttl[0]);
-		label_cell($mod['path']);
-		label_cell($mod['filename']);
-		label_cell(@$mod['acc_file']);
-		if ($is_mod)
-		{
-			label_cell(''); // not implemented (yet)
-		}
+		$available = @$ext['available'];
+		$installed = @$ext['version'];
+		$id = @$ext['local_id'];
+		$is_mod = $ext['type'] == 'module';
+
+		$entries = fmt_titles(@$ext['entries']);
+		$tabs = fmt_titles(@$ext['tabs']);
+
+		alt_table_row_color($k);
+//		label_cell(is_array($ext['Descr']) ? $ext['Descr'][0] : $ext['Descr']);
+		label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
+		label_cell($tabs);
+		label_cell($entries);
+
+		label_cell($id === null ? _("None") :
+			($available && $installed ? $installed : _("Unknown")));
+		label_cell($available ? $available : _("Unknown"));
+
+		if (!$available && $ext['type'] == 'extension')	{// third-party plugin
+			if (!$installed)
+				button_cell('Local'.$ext['package'], _("Install"), _('Install third-party extension.'), 
+					ICON_DOWN);
+			else
+				label_cell('');
+		} elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed extension in repo
+			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+				_('Upload and install latest extension package'), ICON_DOWN);
 		else
-		{
-			edit_button_cell("Edit".$i, _("Edit"));
-		}
-			delete_button_cell("Delete".$i, _("Delete"));
-		submit_js_confirm('Delete'.$i, _('You are about to delete this extension\nDo you want to continue?'));
+			label_cell('');
+
+		if ($id !== null) {
+			delete_button_cell('Delete'.$id, _('Delete'));
+			submit_js_confirm('Delete'.$id, 
+				sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+					$ext['name']));
+		} else
+			label_cell('');
+
 		end_row();
 	}
 
 	end_table(1);
-}
 
+	submit_center_first('Refresh', _("Update"), '', null);
+	submit_center_last('Add', _("Add third-party extension"), '', false);
+
+	div_end();
+}
+//---------------------------------------------------------------------------------
+//
+// Get all installed extensions and display
+// with current status stored in company directory.
+//
 function company_extensions($id)
 {
-	global $table_style;
-
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	
-	$th = array(_("Name"),_("Tab"), _("Link text"), _("Active"));
+	$th = array(_("Extension"),_("Modules provided"), _("Options provided"), _("Active"));
 	
-	// get all available extensions and display
-	// with current status stored in company directory.
-
 	$mods = get_company_extensions();
 	$exts = get_company_extensions($id);
 	foreach($mods as $key => $ins) {
@@ -252,89 +183,64 @@ function company_extensions($id)
 	$k = 0;
 	foreach($mods as $i => $mod)
 	{
+		if ($mod['type'] != 'extension') continue;
    		alt_table_row_color($k);
 		label_cell($mod['name']);
-		label_cell( $mod['type'] == 'module' ? 
-			$mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true));
-		$ttl = access_string($mod['title']);
-		label_cell($ttl[0]);
+		$entries = fmt_titles(@$mod['entries']);
+		$tabs = fmt_titles(@$mod['tabs']);
+		label_cell($tabs);
+		label_cell($entries);
+
 		check_cells(null, 'Active'.$i, @$mod['active'] ? 1:0, 
 			false, false, "align='center'");
 		end_row();
 	}
 
 	end_table(1);
-	submit_center('Update', _('Update'), true, false, 'default');
+	submit_center('Refresh', _('Update'), true, false, 'default');
 }
 
 //---------------------------------------------------------------------------------------------
-
-function display_ext_edit($selected_id)
-{
-	global $table_style2, $Mode;
-
-
-	$extensions = get_company_extensions();
-
-	start_table($table_style2);
-
-	if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin')
-	{
-		if ($Mode == 'Edit') {
-			$mod = $extensions[$selected_id];
-			$_POST['tab']  = $mod['tab'];
-			$_POST['name'] = $mod['name'];
-			$_POST['title'] = $mod['title'];
-			$_POST['path'] = $mod['path'];
-			$_POST['filename'] = $mod['filename'];
-			$_POST['acc_file'] = @$mod['acc_file'];
-			hidden('filename', $_POST['filename']);
-			hidden('acc_file', $_POST['acc_file']);
-		}
-		hidden('selected_id', $selected_id);
-	}
-	text_row_ex(_("Name"), 'name', 30);
-	text_row_ex(_("Folder"), 'path', 20);
-
-	tab_list_row(_("Menu Tab"), 'tab', null, true);
-	text_row_ex(_("Menu Link Text"), 'title', 30);
-
-	record_status_list_row(_("Default status"), 'active');
-
-	file_row(_("Module File"), 'uploadfile');
-	file_row(_("Access Levels Extensions"), 'uploadfile3');
-	file_row(_("SQL File"), 'uploadfile2');
-
-	end_table(0);
-	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
-	submit_add_or_update_center($selected_id == -1, '', 'both');
-}
-
-//---------------------------------------------------------------------------------------------
-if ($Mode=='ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
-	if(handle_submit()) {
-		if ($selected_id != -1)
-			display_notification(_("Extension data has been updated."));
-		else
-			display_notification(_("Extension has been installed."));
-	$Mode = 'RESET';
-	}
-}
 if ($Mode == 'Delete')
 {
-	handle_delete();
+	handle_delete($selected_id);
 	$Mode = 'RESET';
 }
-if (get_post('Update')) {
-	$exts = get_company_extensions();
+
+if (get_post('Refresh')) {
+	$comp = get_post('extset');
+	$exts = get_company_extensions($comp);
+
+	$result = true;
 	foreach($exts as $i => $ext) {
-		$exts[$i]['active'] = check_value('Active'.$i);
+		if ($ext['package'] && ($ext['active'] ^ check_value('Active'.$i))) {
+			if (!$ext['active'])
+				$activated = activate_hooks($ext['package'], $comp);
+			else
+				$activated = hook_invoke($ext['package'], check_value('Active'.$i) ?
+				 'activate_extension':'deactivate_extension', $comp, false);
+			if ($activated !== null)
+				$result &= $activated;
+			if ($activated || ($activated === null))
+				$exts[$i]['active'] = check_value('Active'.$i);
+		}
 	}
 	write_extensions($exts, get_post('extset'));
 	if (get_post('extset') == user_company())
 		$installed_extensions = $exts;
-	display_notification(_('Current active extensions set has been saved.'));
+	
+	if(!$result) {
+		display_error(_('Status change for some extensions failed.'));
+		$Ajax->activate('ext_tbl'); // refresh settings display
+	}else
+		display_notification(_('Current active extensions set has been saved.'));
 }
+
+if ($id = find_submit('Update', false))
+	install_extension($id);
+
+if ($id = find_submit('Local', false))
+	local_extension($id);
 
 if ($Mode == 'RESET')
 {
@@ -347,21 +253,19 @@ start_form(true);
 if (list_updated('extset'))
 	$Ajax->activate('_page_body');
 
+$set = get_post('extset', -1);
+
 echo "<center>" . _('Extensions:') . "&nbsp;&nbsp;";
 echo extset_list('extset', null, true);
 echo "</center><br>";
 
-$set = get_post('extset', -1);
-if ($set == -1) {
+if ($set == -1) 
 	display_extensions();
-
-	display_ext_edit($selected_id);
-} else {
+else 
 	company_extensions($set);
-}
+
 //---------------------------------------------------------------------------------------------
 end_form();
 
 end_page();
-
 ?>

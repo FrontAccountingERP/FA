@@ -13,7 +13,6 @@ class setup_app extends application
 {
 	function setup_app()
 	{
-		global $installed_extensions;
 		$this->application("system", _($this->help_context = "S&etup"));
 
 		$this->add_module(_("Company Setup"));
@@ -49,6 +48,8 @@ class setup_app extends application
 			"sales/manage/sales_points.php?", 'SA_POSSETUP');
 		$this->add_rapp_function(1, _("&Printers"),
 			"admin/printers.php?", 'SA_PRINTERS');
+		$this->add_rapp_function(1, _("Contact &Categories"),
+			"admin/crm_categories.php?", 'SA_CRMCATEGORY');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Void a Transaction"),
@@ -68,18 +69,14 @@ class setup_app extends application
 			"admin/inst_lang.php?", 'SA_CREATELANGUAGE');
 		$this->add_rapp_function(2, _("Install/Activate &Extensions"),
 			"admin/inst_module.php?", 'SA_CREATEMODULES');
+		$this->add_rapp_function(2, _("Install/Activate &Themes"),
+			"admin/inst_theme.php?", 'SA_CREATEMODULES');
+		$this->add_rapp_function(2, _("Install/Activate &Chart of Accounts"),
+			"admin/inst_chart.php?", 'SA_CREATEMODULES');
 		$this->add_rapp_function(2, _("Software &Upgrade"),
 			"admin/inst_upgrade.php?", 'SA_SOFTWAREUPGRADE');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "system")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 

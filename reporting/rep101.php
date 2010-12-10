@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -31,36 +32,38 @@ print_customer_balances();
 
 function get_open_balance($debtorno, $to, $convert)
 {
-	$to = date2sql($to);
+	if($to)
+		$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
+    $sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE.",
+    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(".TB_PREF."debtor_trans.type <> ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
+    	SUM(IF(t.type <> ".ST_SALESINVOICE.",
+    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= " * -1, 0)) AS credits,
-		SUM(".TB_PREF."debtor_trans.alloc";
+		SUM(t.alloc";
 	if ($convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
-		SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+		SUM(IF(t.type = ".ST_SALESINVOICE.",
+			(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount - t.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 
-    	((".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-    	".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc)";
+    	((t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1 + t.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ")) AS OutStanding
-		FROM ".TB_PREF."debtor_trans
-    	WHERE ".TB_PREF."debtor_trans.tran_date < '$to'
-		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
-		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY." GROUP BY debtor_no";
+		FROM ".TB_PREF."debtor_trans t
+    	WHERE t.debtor_no = ".db_escape($debtorno)
+		." AND t.type <> ".ST_CUSTDELIVERY;
+    if ($to)
+    	$sql .= " AND t.tran_date < '$to'";
+	$sql .= " GROUP BY debtor_no";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -129,17 +132,16 @@ function print_customer_balances()
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
-    	$params =   array( 	0 => $comments,
-    				1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
-    				2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
-    				3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
-				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+    $params =   array( 	0 => $comments,
+    				    1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
+    				    2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
+    				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+						4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    	$rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
-
-    	$rep->Font();
-    	$rep->Info($params, $cols, $headers, $aligns);
-    	$rep->Header();
+    $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
+    $rep->Font();
+    $rep->Info($params, $cols, $headers, $aligns);
+    $rep->NewPage();
 
 	$grandtotal = array(0,0,0,0);
 

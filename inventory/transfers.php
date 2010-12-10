@@ -224,7 +224,7 @@ start_form();
 
 display_order_header($_SESSION['transfer_items']);
 
-start_table("$table_style width=70%", 10);
+start_table(TABLESTYLE, "width=70%", 10);
 start_row();
 echo "<td>";
 display_transfer_items(_("Items"), $_SESSION['transfer_items']);

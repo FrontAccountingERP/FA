@@ -59,18 +59,14 @@ if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."print_profiles WHERE printer = ".db_escape($selected_id);
-	$result = db_query($sql,"check printers relations failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'print_profiles', 'printer'))
 	{
 		display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
 	} 
 	else 
 	{
-			$sql="DELETE FROM ".TB_PREF."printers WHERE id=".db_escape($selected_id);
-			db_query($sql,"could not delete printer definition");
-			display_notification(_('Selected printer definition has been deleted'));
+		delete_printer($selected_id);
+		display_notification(_('Selected printer definition has been deleted'));
 	}
 	$Mode = 'RESET';
 }
@@ -84,7 +80,7 @@ if ($Mode == 'RESET')
 
 $result = get_all_printers();
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"),'','');
 table_header($th);
 
@@ -112,7 +108,7 @@ echo '<br>';
 
 start_form();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

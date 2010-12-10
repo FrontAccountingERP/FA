@@ -43,7 +43,7 @@ function get_text_init($managerType = GETTEXT_NATIVE) {
 }
 
 function raise_error($str) {
-//	echo "$str";
+	error_log($str);
 	return 1;
 }
 
@@ -60,6 +60,7 @@ function is_error($err) {
 class gettext_native_support 
 {
     var $_interpolation_vars = array();
+    var $domain_path;
 
     /**
      * Set gettext language code.
@@ -73,7 +74,20 @@ class gettext_native_support
 
         //$set = setlocale(LC_ALL, "$lang_code");
         //$set = setlocale(LC_ALL, "$encoding");
-        $set = setlocale(LC_ALL, $lang_code.".".$encoding);
+
+		// cover a couple of country/encoding variants 
+		$up = strtoupper($encoding);
+		$low = strtolower($encoding);
+		$lshort = strtr($up, '-','');
+		$ushort = strtr($low, '-','');
+
+		if ($lang_code == 'C')
+			$set = setlocale(LC_ALL,'C');
+		else
+        	$set = setlocale(LC_ALL, $lang_code.".".$encoding, 
+				$lang_code.".".$up, $lang_code.".".$low,
+				$lang_code.".".$ushort,	$lang_code.".".$lshort);
+
         setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
         if ($set === false) 
         {
@@ -85,24 +99,50 @@ class gettext_native_support
         }
 		//return 0;
     }
-    
+    /**
+	 *	Check system support for given language nedded for gettext.
+	 */
+	function check_support($lang_code, $encoding)
+    {
+
+		$old = setlocale(LC_CTYPE, '0'); // LC_MESSAGES does not exist on Win
+		$up = strtoupper($encoding);
+		$low = strtolower($encoding);
+		$lshort = strtr($up, '-','');
+		$ushort = strtr($low, '-','');
+
+        $test = setlocale(LC_ALL,
+			$lang_code.".".$encoding, 
+			$lang_code.".".$up,
+			$lang_code.".".$low,
+			$lang_code.".".$ushort,
+			$lang_code.".".$lshort) !== false;
+		setlocale(LC_ALL, $old);
+		setlocale(LC_NUMERIC, 'C');
+		return $test;
+	}
     /**
      * Add a translation domain.
      */
-    function add_domain($domain, $path=false)
+    function add_domain($domain, $path=false, $version='')
     {
         if ($path === false) 
-        {
-            bindtextdomain($domain, "./locale/");
-        } 
-        else 
-        { 
-            bindtextdomain($domain, $path);
-        }
+	        $path = $this->domain_path;
+        if ($path === false) 
+	        $path = "./locale";
+	    if ($domain == "")
+	    	$domain = "?";
+		if ($version) {
+	// To avoid need for apache server restart after change of *.mo file
+	// we have to include file version as part of filename.
+	// This is alternative naming convention: $domain = $version.'/'.$domain;
+			$domain .= '-'.$version;
+		}
+        bindtextdomain($domain, $path);
         //bind_textdomain_codeset($domain, $encoding);
         textdomain($domain);
     }
-    
+
     /**
      * Retrieve translation for specified key.
      *
@@ -242,7 +282,13 @@ class gettext_php_support extends gettext_native_support
             }            
         }
     }
-    
+    /**
+	 *	Check system support for given language (dummy).
+	 */
+	function check_support($lang_code, $encoding)
+    {
+		return true;
+    }
     /**
      * Add a translation domain.
      *
@@ -250,8 +296,17 @@ class gettext_php_support extends gettext_native_support
      * @param string $path optional -- Repository path
      * @throws GetText_Error
      */
-    function add_domain($domain, $path = "./locale/")
+    function add_domain($domain, $path = false, $version ='')
     {   
+        if ($path === false) 
+	      $path = $this->domain_path;
+        if ($path === false) 
+	        $path = "./locale";
+
+    	if ($version) {
+			$domain .= '-'.$version;
+		}
+
         if (array_key_exists($domain, $this->_domains)) 
         { 
             return; 
@@ -487,9 +542,16 @@ class gettext_php_support_compiler
     }
 }
 
-/**
-* get_text related error.
+/*
+	Set current gettext domain path
 */
-//class GetText_Error extends PEAR_Error {}
+function set_ext_domain($path='') {
+	global $path_to_root;
 
+	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
+	// ignore change when extension does not provide translation structure
+	if (file_exists($lang_path))
+		$_SESSION['get_text']->add_domain($_SESSION['language']->code,
+			$lang_path, $path ? '' : $_SESSION['language']->version);
+}
 ?>

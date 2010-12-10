@@ -13,7 +13,7 @@
 // if ($writeoff_acc==0) return goods into $cart->Location
 // if src_docs!=0 => credit invoice else credit note
 //
-function write_credit_note($credit_note, $write_off_acc)
+function write_credit_note(&$credit_note, $write_off_acc)
 {
 	global $Refs;
 
@@ -31,6 +31,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
 
 	begin_transaction();
+	hook_db_prewrite($credit_note, ST_CUSTCREDIT);
 
 	$company_data = get_company_prefs();
 	$branch_data = get_branch_accounts($credit_note->Branch);
@@ -71,14 +72,13 @@ function write_credit_note($credit_note, $write_off_acc)
 		$credit_note->Branch, $credit_date, $credit_note->reference,
 		$credit_note_total, 0, $items_added_tax,
 		$credit_note->freight_cost, $freight_added_tax,
-		$credit_note->sales_type,
-		$credit_note->order_no, $credit_invoice, $credit_note->ship_via,
-		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id); 
+		$credit_note->sales_type, $credit_note->order_no, $credit_note->ship_via,
+		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id,
+		$credit_note->payment); 
 		// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
 
 	if ($trans_no==0) {
 		$credit_note->trans_no = array($credit_no=>0);
-		set_document_parent($credit_note);
 	} else {
 		delete_comments(ST_CUSTCREDIT, $credit_no);
 		void_cust_allocations(ST_CUSTCREDIT, $credit_no, $credit_date);
@@ -87,34 +87,20 @@ function write_credit_note($credit_note, $write_off_acc)
 		void_trans_tax_details(ST_CUSTCREDIT, $credit_no);
 	}
 	if ($credit_invoice) {
-		$invoice_alloc_balance = get_DebtorTrans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
 		update_customer_trans_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs );
-		if ($invoice_alloc_balance > 0) { 	//the invoice is not already fully allocated 
-			$total = $credit_note_total + $credit_note->freight_cost +
-			    $items_added_tax + $freight_added_tax;
 
-			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
-			/*Now insert the allocation record if > 0 */
-			if ($allocate_amount != 0) {
-				update_debtor_trans_allocation(ST_SALESINVOICE, $credit_invoice, $allocate_amount);
-				update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no, $allocate_amount); // ***
-				add_cust_allocation($allocate_amount, ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $credit_invoice);
-				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+		$total = $credit_note_total + $credit_note->freight_cost + $items_added_tax 
+			+ $freight_added_tax;
 
-				exchange_variation(ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $credit_invoice, $credit_date,
-					$allocate_amount, PT_CUSTOMER);
-
-				///////////////////////////////////////////////////////////////////////////
-
-			}
-		}
+		if (!credit_sales_invoice_allocate($credit_invoice, $credit_no, $total, $credit_date))
+			return false;
 	}
 
 	$total = 0;
 	foreach ($credit_note->line_items as $credit_line) {
 
 		if ($credit_invoice && $credit_line->qty_dispatched!=$credit_line->qty_old ) {
-			update_parent_line(11, $credit_line->src_id,($credit_line->qty_dispatched
+			update_parent_line(ST_CUSTCREDIT, $credit_line->src_id,($credit_line->qty_dispatched
 					-$credit_line->qty_old));
 		}
 
@@ -127,7 +113,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id,
 			$credit_line->item_description, $credit_line->qty_dispatched,
 			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
-			$credit_line->standard_cost, $trans_no==0 ? 0:  $credit_line->id);
+			$credit_line->standard_cost, $credit_line->src_id, $trans_no==0 ? 0:  $credit_line->id);
 
 		add_credit_movements_item($credit_note, $credit_line,
 			$credit_type, $line_taxfree_price+$line_tax, $credit_invoice);
@@ -175,7 +161,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	if ($trans_no == 0) {
 		$Refs->save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 	}
-
+	hook_db_postwrite($credit_note, ST_CUSTCREDIT);
 	commit_transaction();
 
 	return $credit_no;

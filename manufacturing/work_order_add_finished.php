@@ -50,6 +50,7 @@ if (isset($_GET['AddedID']))
    	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+	br();
 
 	end_page();
 	exit;
@@ -110,7 +111,13 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-
+	// don't produce more that required. Otherwise change the Work Order.
+	if (input_num('quantity') > ($wo_details["units_reqd"] - $wo_details["units_issued"]))
+	{
+		display_error(_("The production exceeds the quantity needed. Please change the Work Order."));
+		set_focus('quantity');
+		return false;
+	}
 	// if unassembling we need to check the qoh
 	if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock())
 	{
@@ -185,7 +192,7 @@ $dec = get_qty_dec($wo_details["stock_id"]);
 if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 	$_POST['quantity'] = qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 br();
 
 ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));

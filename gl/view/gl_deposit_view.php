@@ -48,7 +48,7 @@ echo "<center>";
 display_heading(_("GL Deposit") . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style width=80%");
+start_table(TABLESTYLE, "width=80%");
 
 if ($show_currencies)
 {
@@ -93,7 +93,7 @@ else
 	if ($show_currencies)
 		display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
-    start_table("$table_style width=80%");
+    start_table(TABLESTYLE, "width=80%");
     $dim = get_company_pref('use_dimension');
     if ($dim == 2)
         $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
@@ -136,5 +136,5 @@ else
 	display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 }
 
-end_page(true);
+end_page(true, false, false, ST_BANKDEPOSIT, $trans_no);
 ?>

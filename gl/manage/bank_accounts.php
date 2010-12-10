@@ -66,18 +66,13 @@ elseif( $Mode == 'Delete')
 	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_trans WHERE bank_act=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($acc, 'bank_trans', 'bank_act', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if (key_in_foreign_table($acc, 'sales_pos', 'pos_account', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -99,18 +94,10 @@ if ($Mode == 'RESET')
 
 /* Always show the list of accounts */
 
-$sql = "SELECT account.*, gl_account.account_name 
-	FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
-	WHERE account.account_code = gl_account.account_code";
-if (!check_value('show_inactive')) $sql .= " AND !account.inactive";
-$sql .= " ORDER BY account_code, bank_curr_code";
-
-$result = db_query($sql,"could not get bank accounts");
-
-check_db_error("The bank accounts set up could not be retreived", $sql);
+$result = get_bank_accounts(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width='80%'");
+start_table(TABLESTYLE, "width='80%'");
 
 $th = array(_("Account Name"), _("Type"), _("Currency"), _("GL Account"), 
 	_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '','');
@@ -144,11 +131,11 @@ while ($myrow = db_fetch($result))
 inactive_control_row($th);
 end_table(1);
 
-$is_editing = $selected_id != -1; 
+$is_used = $selected_id != -1 && key_in_foreign_table($selected_id, 'bank_trans', 'bank_act', true);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
-if ($is_editing) 
+if ($selected_id != -1) 
 {
   if ($Mode == 'Edit') {	
 	$myrow = get_bank_account($selected_id);
@@ -171,7 +158,7 @@ if ($is_editing)
 
 text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 
-if ($is_editing) 
+if ($is_used) 
 {
 	label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 } 
@@ -179,7 +166,7 @@ else
 {
 	bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
 }
-if ($is_editing) 
+if ($is_used) 
 {
 	label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
 } 
@@ -190,7 +177,7 @@ else
 
 yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 
-if($is_editing)
+if($is_used)
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
 else 
 	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);

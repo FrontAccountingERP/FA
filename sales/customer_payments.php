@@ -217,26 +217,18 @@ function read_customer_data()
 {
 	global $Refs;
 
-	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
-		".TB_PREF."credit_status.dissallow_invoices
-		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
-		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($_POST['customer_id']);
-
-	$result = db_query($sql, "could not query customers");
-
-	$myrow = db_fetch($result);
+	$myrow = get_customer_habit($_POST['customer_id']);
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
-	$_POST['ref'] = $Refs->get_next(12);
+	$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
 }
 
 //----------------------------------------------------------------------------------------------
 
 start_form();
 
-	start_outer_table("$table_style2 width=60%", 5);
+	start_outer_table(TABLESTYLE2, "width=60%", 5);
 	table_section(1);
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
@@ -289,7 +281,7 @@ start_form();
 			div_end();
 		}
 
-		start_table("$table_style width=60%");
+		start_table(TABLESTYLE, "width=60%");
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');

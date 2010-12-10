@@ -18,7 +18,7 @@ class Ajax extends JsHttpRequest {
 	
     function Ajax() 
     {
-	  $this->JsHttpRequest($_SESSION['language']->encoding);
+	  $this->JsHttpRequest(@$_SESSION['language']->encoding);
     }
 	//
 	//	This function is used in ctrl routines to activate
@@ -132,8 +132,8 @@ class Ajax extends JsHttpRequest {
 		  if($com['n'] == 'up' && $com['t'] == '_page_body') {
 		  	  $cmds = array($com);
 		  	  foreach( $this->aCommands as $k=> $cmd) {
-			  	if ($cmd['n'] == 'fc') {	// save focus
-					$cmds[] = $cmd; break;
+			  	if ($cmd['n'] == 'fc' || $cmd['n'] == 'js') {	// save focus
+					$cmds[] = $cmd; //break;
 			  	}
 			  }
 			  $this->aCommands = $cmds;

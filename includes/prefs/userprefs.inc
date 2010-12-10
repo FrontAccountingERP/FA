@@ -84,7 +84,32 @@ class user_prefs
 			}
 		}
 	}
-
+	
+	function get_all()
+	{
+			return array(
+			'language' => $this->language,
+			'qty_dec' => $this->qty_dec,
+			'prices_dec' => $this->price_dec,
+			'rates_dec' => $this->exrate_dec,
+			'percent_dec' => $this->percent_dec,
+			'show_gl' => $this->show_gl_info,
+			'show_codes' => $this->show_codes,
+			'date_format' =>$this->date_format,
+			'date_sep' => $this->date_sep,
+			'tho_sep' => $this->tho_sep,
+			'dec_sep' => $this->dec_sep,
+			'theme' => $this->theme,
+			'page_size' => $this->pagesize,
+			'show_hints' => $this->show_hints,
+			'print_profile' => $this->print_profile,
+			'rep_popup' => $this->rep_popup,
+			'query_size' => $this->query_size,
+			'graphic_links' => $this->graphic_links,
+			'sticky_doc_date' => $this->sticky_date,
+			'startup_tab' => $this->startup_tab);
+	}
+	
 	function language() 
 	{
 		return $this->language;

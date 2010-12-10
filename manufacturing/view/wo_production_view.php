@@ -37,12 +37,10 @@ if ($_GET['trans_no'] != "")
 
 function display_wo_production($prod_id)
 {
-	global $table_style;
-
     $myrow = get_work_order_produce($prod_id);
 
 	br(1);
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("Production #"), _("Reference"), _("For Work Order #"),
     	_("Item"), _("Quantity Manufactured"), _("Date"));
     table_header($th);
@@ -73,7 +71,7 @@ display_wo_production($wo_production);
 
 br(2);
 
-end_page(true);
+end_page(true, false, false, ST_MANURECEIVE, $wo_production);
 
 ?>
 

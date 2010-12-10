@@ -9,8 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
+include_once($path_to_root . "/includes/prefs/userprefs.inc");
+if (!defined('TB_PREF')) {
+	define('TB_PREF', '&TB_PREF&');
+}
 //--------------------------------------------------------------------------
 
 class current_user
@@ -19,17 +22,18 @@ class current_user
 	var $loginname;
 	var $username;
 	var $name;
-	var $company;
+	var $company; // user's company
 	var $pos;
 	var $access;
 	var $timeout;
 	var $last_act;
 	var $role_set = false;
-	var $old_db;	
+	var $old_db;
 	var $logged;
 	var $ui_mode = 0;
 	
 	var $prefs;
+	var $cur_con; // current db connection (can be different from $company for superuser)
 
 	function current_user()
 	{
@@ -149,50 +153,19 @@ class current_user
 		return $this->can_access($page_level);
 	}
 
-	function get_db_connection($id=-1)
+	function set_db_connection($id = -1)
 	{
-    	global $db_connections;
-
-    	$connection = $db_connections[$id == -1 ? $this->company : $id];
-
-    	//print_r($connection);
-
-    	$db = mysql_connect($connection["host"] ,
-    		$connection["dbuser"], $connection["dbpassword"]);
-    	mysql_select_db($connection["dbname"],$db);
-
-		if (!defined('TB_PREF'))
-			define('TB_PREF', $connection["tbpref"]);
-
-    	return $db;
+		return set_global_connection($id);
 	}
 
-	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
-		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
-		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
-		$graphic_links, $lang, $stickydate, $startup_tab)
+	function update_prefs($prefs)
 	{
 		global $allow_demo_mode;
-
-		$user = array(
-			'prices_dec' => $price_dec, 	'qty_dec' => $qty_dec,
-			'rates_dec' => $exrate_dec,		'percent_dec' => $percent_dec,
-			'show_gl' => $showgl,			'show_codes' => $showcodes,
-			'date_format' => $date_format,	'date_sep' => $date_sep,
-			'tho_sep' => $tho_sep,			'dec_sep' => $dec_sep,
-			'theme' => $theme,				'page_size' => $pagesize,
-			'show_hints' => $show_hints,	'print_profile' => $profile,
-			'rep_popup' => $rep_popup,		'query_size' => $query_size,
-			'graphic_links' => $graphic_links,	'language' => $lang,
-			'sticky_doc_date' => $stickydate,	'startup_tab' => $startup_tab
-		);
-
+		
 		if(!$allow_demo_mode) {
-			update_user_display_prefs($this->user, $price_dec, 
-				$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
-				$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
-				$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+			update_user_prefs($this->user, $prefs);
 		}
+
 		$this->prefs = new user_prefs(get_user($this->user));
 	}
 }
@@ -205,14 +178,29 @@ function round2($number, $decimals=0)
 	return round($number+$delta, $decimals);
 }
 
+/*
+	Returns number formatted according to user setup and using $decimals digits after dot 
+	(defualt is 0). When $decimals is set to 'max' maximum available precision is used 
+	(decimals depend on value) and trailing zeros are trimmed.
+*/
 function number_format2($number, $decimals=0)
 {
 	global $thoseps, $decseps;
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
-	$delta = ($number < 0 ? -.0000000001 : .0000000001);
-	return number_format($number+$delta, $decimals, $dsep,	$tsep);
+	if($decimals==='max')
+		$dec = 15 - floor(log10(abs($number)));
+	else {
+		$delta = ($number < 0 ? -.0000000001 : .0000000001);
+		$number += $delta;
+		$dec = $decimals;
+	}
+
+	$num = number_format($number, $dec, $dsep, $tsep);
+
+	return $decimals==='max' ? rtrim($num, '0') : $num;
+
 }
 //
 //	Current ui mode.
@@ -254,6 +242,7 @@ function qty_format($number, $stock_id=null, &$dec) {
 	$dec = get_qty_dec($stock_id);
     return number_format2($number, $dec);
 }
+
 // and get_qty_dec
 function get_qty_dec($stock_id=null)
 {
@@ -266,6 +255,13 @@ function get_qty_dec($stock_id=null)
 	return $dec;
 }
 //-------------------------------------------------------------------
+//
+//	Maximum precision format. Strips trailing unsignificant digits.
+//
+function maxprec_format($number) {
+    return number_format2($number, 'max');
+}
+
 function exrate_format($number) {
     return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->exrate_dec());
@@ -299,7 +295,9 @@ function user_numeric($input) {
 
 function user_company()
 {
-	return $_SESSION["wa_current_user"]->company;
+	global $def_coy;
+	
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->company : $def_coy;
 }
 
 function user_pos()
@@ -369,7 +367,8 @@ function user_dec_sep()
 
 function user_theme()
 {
-	return $_SESSION["wa_current_user"]->prefs->get_theme();
+	return isset($_SESSION["wa_current_user"]) ?
+		$_SESSION["wa_current_user"]->prefs->get_theme() : 'default';
 }
 
 function user_pagesize()
@@ -412,14 +411,9 @@ function user_startup_tab()
 	return $_SESSION["wa_current_user"]->prefs->start_up_tab();
 }
 
-function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-	$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab)
+function set_user_prefs($prefs)
 {
-
-	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-		$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+	$_SESSION["wa_current_user"]->update_prefs($prefs);
 }
 
 function add_user_js_data() {
@@ -483,26 +477,72 @@ function array_append(&$array, $elements)
 			$array[$key] = $el;
 	}
 }
-
+//
+//	Search $needle in $haystack or in $haystack[][$valuekey]
+//	returns $needle found or null.
+//
 function array_search_value($needle, $haystack, $valuekey=null)
 {
 	foreach($haystack as $key => $value) {
-		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		$val = isset($valuekey) ? @$value[$valuekey] : $value;
 		if ($needle == $val){
 			return $value;
 		}
 	}
 	return null;
 }
-
+//
+//	Search $needle in $haystack or in $haystack[][$valuekey]
+//	returns array of keys of $haystack elements found
+//
+function array_search_keys($needle, $haystack, $valuekey=null)
+{
+	$keys = array();
+	if($haystack)
+		foreach($haystack as $key => $value) {
+			$val = isset($valuekey) ? @$value[$valuekey] : $value;
+			if ($needle == $val){
+				$keys[] = $key;
+			}
+		}
+	return $keys;
+}
+//
+//	Find first (single) $needle in $haystack or in $haystack[][$valuekey]
+//	returns $haystack element found or null
+//
 function array_search_key($needle, $haystack, $valuekey=null)
 {
-	foreach($haystack as $key => $value) {
-		$val = isset($valuekey) ? $value[$valuekey] : $value;
-		if ($needle == $val){
-			return $key;
-		}
-	}
-	return null;
+	$keys = array_search_keys($needle, $haystack, $valuekey);
+	return @$keys[0];
 }
+
+function flush_dir($path, $wipe = false) 
+{
+	$dir = opendir($path);
+	while(false !== ($fname = readdir($dir))) {
+		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
+  		if(is_dir($path.'/'.$fname)) {
+		    flush_dir($path.'/'.$fname, $wipe);
+		    if ($wipe) @rmdir($path.'/'.$fname);
+		} else
+		    @unlink($path.'/'.$fname);
+	}
+}
+/*
+	Returns current path to company private folder.
+	(Current path can change after chdir).
+*/
+function company_path($comp=null)
+{
+	global $path_to_root, $comp_path;
+
+	if (!isset($comp))
+		$comp = user_company();
+
+	// if path is relative, set current path_to_root
+	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
+			. '/'.$comp;
+}
+
 ?>

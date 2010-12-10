@@ -103,7 +103,7 @@ function print_payment_report()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$total = array();
 	$grandtotal = array(0,0);

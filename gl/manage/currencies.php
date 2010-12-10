@@ -89,38 +89,26 @@ function check_can_delete()
 	$curr = db_escape($selected_id);
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($curr, 'suppliers', 'curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 		return false;
 	}
-		
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE curr_default = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if ($curr == get_company_pref('curr_default'))
 	{
 		display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 		return false;
 	}
 	
 	// see if there are any bank accounts that use this currency
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE bank_curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 		return false;
@@ -146,12 +134,10 @@ function handle_delete()
 
 function display_currencies()
 {
-	global $table_style;
-
 	$company_currency = get_company_currency();
 	
     $result = get_currencies(check_value('show_inactive'));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
     	_("Hundredths name"), _("Country"), _("Auto update"), "", "");
 	inactive_control_column($th);
@@ -195,9 +181,9 @@ function display_currencies()
 
 function display_currency_edit($selected_id)
 {
-	global $table_style2, $Mode;
+	global $Mode;
 	
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != '') 
 	{

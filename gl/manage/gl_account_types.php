@@ -19,27 +19,26 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-simple_page_mode(true);
+simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
 {
-	global $selected_id;
-
-	if (!input_num('id'))
+	if (strlen(trim($_POST['id'])) == 0) 
 	{
-	    display_error( _("The account id must be an integer and cannot be empty."));
+	    display_error( _("The account group id cannot be empty."));
 	    set_focus('id');
 	    return false;
 	}
-	if (strlen($_POST['name']) == 0) 
+	if (strlen(trim($_POST['name'])) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
 
-	if (isset($selected_id) && ($selected_id == $_POST['parent'])) 
+	//if (strcmp($_POST['id'], $_POST['parent']) == 0) 
+	if ($_POST['id'] === $_POST['parent']) 
 	{
 		display_error(_("You cannot set an account group to be a subgroup of itself."));
 		return false;
@@ -56,18 +55,18 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (can_process()) 
 	{
 
-    	if ($selected_id != -1) 
+    	if ($selected_id != "") 
     	{
-    		if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']))
+    		if (update_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'], $_POST['old_id']))
 				display_notification(_('Selected account type has been updated'));
     	} 
     	else 
     	{
     		if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 				display_notification(_('New account type has been added'));
-				$Mode = 'RESET';
 			}
     	}
+		$Mode = 'RESET';
 	}
 }
 
@@ -75,25 +74,17 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	if ($selected_id == -1)
+	if ($selected_id == "")
 		return false;
 	$type = db_escape($selected_id);
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_master
-		WHERE account_type=$type";
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($type, 'chart_master', 'account_type', true))
 	{
 		display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE parent=$type";
-	$result = db_query($sql, "could not query chart types");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($type, 'chart_types', 'parent', true))
 	{
 		display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 		return false;
@@ -117,7 +108,7 @@ if ($Mode == 'Delete')
 }
 if ($Mode == 'RESET')
 {
- 	$selected_id = -1;
+ 	$selected_id = "";
 	$_POST['id']  = $_POST['name']  = '';
 	unset($_POST['parent']);
 	unset($_POST['class_id']);
@@ -127,8 +118,8 @@ if ($Mode == 'RESET')
 $result = get_account_types(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
-$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
+start_table(TABLESTYLE);
+$th = array(_("Group ID"), _("Group Name"), _("Subgroup Of"), _("Class Type"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -140,7 +131,7 @@ while ($myrow = db_fetch($result))
 
 	$bs_text = get_account_class_name($myrow["class_id"]);
 
-	if ($myrow["parent"] == ANY_NUMERIC) 
+	if ($myrow["parent"] == '-1') 
 	{
 		$parent_text = "";
 	} 
@@ -163,9 +154,9 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
-if ($selected_id != -1)
+if ($selected_id != "")
 {
 	if ($Mode == 'Edit') 
 	{
@@ -175,14 +166,19 @@ if ($selected_id != -1)
 		$_POST['id']  = $myrow["id"];
 		$_POST['name']  = $myrow["name"];
 		$_POST['parent']  = $myrow["parent"];
+		if ($_POST['parent'] == '-1')
+			$_POST['parent'] == "";
 		$_POST['class_id']  = $myrow["class_id"];
-		hidden('selected_id', $selected_id);
+		hidden('selected_id', $myrow['id']);
+		hidden('old_id', $myrow["id"]);
  	}
- 	hidden('id');
-	label_row(_("ID:"), $_POST['id']);
+ 	else
+ 	{
+		hidden('selected_id', $selected_id);
+		hidden('old_id', $_POST["old_id"]);
+	}	
 }
-else
-	text_row_ex(_("ID:"), 'id', 10);
+text_row_ex(_("ID:"), 'id', 10);
 text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
@@ -191,7 +187,7 @@ class_list_row(_("Class Type:"), 'class_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == "", '', 'both');
 
 end_form();
 

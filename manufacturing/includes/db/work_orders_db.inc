@@ -20,19 +20,20 @@ function add_material_cost($stock_id, $qty, $date_)
 		$standard_cost = get_standard_cost($bom_item['component']);
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
-	$dec = user_price_dec();
-	price_decimal_format($m_cost, $dec);
+	//$dec = user_price_dec();
+	//price_decimal_format($m_cost, $dec);
 	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
 		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
-	$material_cost = round2($material_cost, $dec);	
+	//$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -40,8 +41,8 @@ function add_material_cost($stock_id, $qty, $date_)
 
 function add_overhead_cost($stock_id, $qty, $date_, $costs)
 {
-	$dec = user_price_dec();
-	price_decimal_format($costs, $dec); 
+	//$dec = user_price_dec();
+	//price_decimal_format($costs, $dec); 
 	if ($qty != 0)
 		$costs /= $qty;
 	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
@@ -49,12 +50,13 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$overhead_cost =  $myrow['overhead_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
-	$overhead_cost = round2($overhead_cost, $dec);	
+	//$overhead_cost = round2($overhead_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -62,8 +64,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 
 function add_labour_cost($stock_id, $qty, $date_, $costs)
 {
-	$dec = user_price_dec();
-	price_decimal_format($costs, $dec); 
+	//$dec = user_price_dec();
+	//price_decimal_format($costs, $dec); 
 	if ($qty != 0)
 		$costs /= $qty;
 	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
@@ -71,12 +73,13 @@ function add_labour_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$labour_cost =  $myrow['labour_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
-	$labour_cost = round2($labour_cost, $dec);	
+	//$labour_cost = round2($labour_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -91,14 +94,15 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
-	$dec = user_price_dec();
-	price_decimal_format($material_cost, $dec); 
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$dec = user_price_dec();
+	//price_decimal_format($material_cost, $dec); 
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$material_cost = ($qty * $costs) /	($qoh + $qty);
-	$material_cost = round2($material_cost, $dec);	
+	//$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
 		.db_escape($material_cost)
 		." WHERE stock_id=".db_escape($stock_id);
@@ -114,6 +118,11 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
+		'type', 'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+	$args->woid = 0;
+	hook_db_prewrite($args, ST_WORKORDER);
 
 	add_material_cost($stock_id, $units_reqd, $date_);
 
@@ -134,6 +143,8 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$Refs->save(ST_WORKORDER, $woid, $wo_ref);
 	add_audit_trail(ST_WORKORDER, $woid, $date_);
 
+	$args->woid = $woid;
+	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
 
 	return $woid;
@@ -145,6 +156,10 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 					$date_, $required_by, $memo_)
 {
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('woid', 'loc_code', 'units_reqd', 'stock_id',
+		'date_', 'required_by', 'memo_'), $args);
+	hook_db_prewrite($args, ST_WORKORDER);
 
 	add_material_cost($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
 	add_material_cost($stock_id, $units_reqd, $date_);
@@ -163,12 +178,14 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 	update_comments(ST_WORKORDER, $woid, null, $memo_);
 	add_audit_trail(ST_WORKORDER, $woid, $date_, _("Updated."));
 
+	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
 }
 
 function delete_work_order($woid)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	add_material_cost($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
 
@@ -189,13 +206,13 @@ function delete_work_order($woid)
 
 function get_work_order($woid, $allow_null=false)
 {
-    $sql = "SELECT ".TB_PREF."workorders.*, ".TB_PREF."stock_master.description As StockItemName,
-		".TB_PREF."locations.location_name, ".TB_PREF."locations.delivery_address 
-		FROM ".TB_PREF."workorders, ".TB_PREF."stock_master, ".TB_PREF."locations
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
-		AND	".TB_PREF."locations.loc_code=".TB_PREF."workorders.loc_code
-		AND ".TB_PREF."workorders.id=".db_escape($woid)."
-		GROUP BY ".TB_PREF."workorders.id";
+    $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
+    		l.delivery_address,l.email, l.contact
+		FROM ".TB_PREF."workorders wo, ".TB_PREF."stock_master st, ".TB_PREF."locations l
+		WHERE st.stock_id=wo.stock_id
+		AND	l.loc_code=wo.loc_code
+		AND wo.id=".db_escape($woid)."
+		GROUP BY wo.id";
 
 	$result = db_query($sql, "The work order issues could not be retrieved");
 
@@ -295,6 +312,7 @@ function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
 function void_work_order($woid)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	$work_order = get_work_order($woid);
 	if (!($work_order["type"] == WO_ADVANCED))
@@ -381,6 +399,78 @@ function void_work_order($woid)
 	commit_transaction();
 }
 
+function get_sql_for_work_orders($outstanding_only, $all_items)
+{
+	$sql = "SELECT
+		workorder.id,
+		workorder.wo_ref,
+		workorder.type,
+		location.location_name,
+		item.description,
+		workorder.units_reqd,
+		workorder.units_issued,
+		workorder.date_,
+		workorder.required_by,
+		workorder.released_date,
+		workorder.closed,
+		workorder.released,
+		workorder.stock_id,
+		unit.decimals
+		FROM ".TB_PREF."workorders as workorder,"
+			.TB_PREF."stock_master as item,"
+			.TB_PREF."item_units as unit,"
+			.TB_PREF."locations as location
+		WHERE workorder.stock_id=item.stock_id 
+			AND workorder.loc_code=location.loc_code
+			AND item.units=unit.abbr";
+
+	if (check_value('OpenOnly') || $outstanding_only != 0)
+	{
+		$sql .= " AND workorder.closed=0";
+	}
+
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
+	{
+		$sql .= " AND workorder.loc_code=".db_escape($_POST['StockLocation']);
+	}
+
+	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
+	{
+		$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$_POST['OrderNumber'].'%');
+	}
+
+	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items)
+	{
+		$sql .= " AND workorder.stock_id=".db_escape($_POST['SelectedStockItem']);
+	}
+
+	if (check_value('OverdueOnly'))
+	{
+		$Today = date2sql(Today());
+
+		$sql .= " AND workorder.required_by < '$Today' ";
+	}
+	return $sql;
+}
+
+function get_sql_for_where_used()
+{
+	$sql = "SELECT 
+			bom.parent,
+			workcentre.name As WorkCentreName,
+			location.location_name,
+			bom.quantity,
+			parent.description
+			FROM ".TB_PREF."bom as bom, "
+				.TB_PREF."stock_master as parent, "
+				.TB_PREF."workcentres as workcentre, "
+				.TB_PREF."locations as location
+			WHERE bom.parent = parent.stock_id 
+				AND bom.workcentre_added = workcentre.id
+				AND bom.loc_code = location.loc_code
+				AND bom.component=".db_escape($_POST['stock_id']);
+	return $sql;			
+}
 //--------------------------------------------------------------------------------------
 function get_gl_wo_cost($woid, $cost_type)
 {

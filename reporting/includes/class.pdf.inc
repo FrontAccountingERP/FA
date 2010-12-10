@@ -59,28 +59,70 @@ define("K_RE_PATTERN_ARABIC", "/(
 			)/x");
 
 include_once (dirname(__FILE__).'/tcpdf.php');
+include_once (dirname(__FILE__).'/fpdi/fpdi.php');
 
-class Cpdf extends TCPDF {
+class Cpdf extends FPDI {
 
-	function Cpdf($pageSize='A4', $l=array(), $pageOrientation='P')
+	function Cpdf($pageSize='A4', $lang=null, $pageOrientation='P')
 	{
+		$this->TCPDF($pageOrientation, 'pt', $pageSize);//, $uni, $enc);
+		$this->SetLang($lang);
+		$this->setPrintHeader(false);
+		$this->setPrintFooter(false);
+		$this->setPDFVersion("1.3");
+		$this->setAutoPageBreak(0);
+		$this->SetLineWidth(1);
+		$this->cMargin = 0;
+	}
+	/*
+		Set lamguage for next report
+	*/
+	function SetLang($code=null) 
+	{
+		global $installed_languages, $dflt_lang, $path_to_root, $local_path_to_root;
+
+		if (!$code)
+			$code = $dflt_lang;
+
+		$lang = array_search_value($code, $installed_languages, 'code');
+		$_SESSION['get_text']->set_language($lang['code'], strtoupper($lang['encoding']));
+
+		// $local_path_to_root is  set inside find_custom_file.
+		// Select extension domain if po file is provided
+		// otherwise use global translation.
+		if (file_exists($local_path_to_root.'/lang/'.$lang['code'].'/LC_MESSAGES/'.$lang['code'].'.po'))
+			$_SESSION['get_text']->add_domain($lang['code'], $local_path_to_root . "/lang");
+		else
+			$_SESSION['get_text']->add_domain($lang['code'], $path_to_root . "/lang", @$lang['version']);
+		// re-read translated sys names.
+		include($path_to_root.'/includes/sysnames.inc');
+
+		$l = array('a_meta_charset' => strtoupper($lang['encoding']), 
+			'a_meta_dir' => @$lang['rtl'] ? 'rtl' : 'ltr',
+	 		'a_meta_language' => $code, 'w_page' => 'page');
+
 		if (!isset($l['a_meta_charset']))
 			$l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
 		$enc = $l['a_meta_charset'];
 		$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
 		if ($uni)
 			ini_set("memory_limit", "48M");
-		$this->TCPDF($pageOrientation, 'pt', $pageSize, $uni, $enc);
-		$this->setLanguageArray($l);
-		$this->setPrintHeader(false);
-		$this->setPrintFooter(false);
-		$this->setPDFVersion("1.3");
-		$this->setAutoPageBreak(0);
-		$this->AddPage();
 
-		$this->SetLineWidth(1);
-		$this->cMargin = 0;
+		$this->isunicode = $uni;
+		$this->setLanguageArray($l);
+		if ($uni)
+		{
+				global $unicode, $unicode_mirror, $unicode_arlet, $laa_array, $diacritics;
+				include_once(dirname(__FILE__)."/unicode_data2.php");
+		}
+		$this->encoding = strtoupper($lang['encoding']);
+
+		$this->FontFamily = 'helvetica';
+		$this->FontStyle = '';
+		$this->FontSizePt = 12;
+//		$this->utf8Bidi(array(""));
 	}
+
 
 	// $fontname should be a standard PDF font (like 'times', 'helvetica' or 'courier')
 	// or one that's been installed on your system.  An empty string can also be used
@@ -172,24 +214,9 @@ class Cpdf extends TCPDF {
 
 	function addInfo($label,$value)
 	{
-		if($label=='Title')
-		{
-			$this->SetTitle($value);
-		}
-		if ($label=='Subject')
-		{
-			$this->SetSubject($value);
-		}
-		if($label=='Creator')
-		{
-			// The Creator info in source is not exactly it should be ;)
-			$value = str_replace( "ros.co.nz", "tcpdf.org", $value );
-			$value = str_replace( "R&OS", "", $value );
-			$this->SetCreator( $value );
-		}
-		if($label=='Author')
-		{
-			$this->SetAuthor($value);
+		if (in_array($label, array( 'Title', 'Subject', 'Author', 'Creator'))) {
+			$seter = "Set{$label}";
+			$this->$seter($value);
 		}
 	}
 
@@ -224,14 +251,14 @@ class Cpdf extends TCPDF {
 	* nSeg is not allowed to be less than 2, as this will simply draw a line (and will even draw a
 	* pretty crappy shape at 2, as we are approximating with bezier curves.
 	*/
-	function ellipse($x0,$y0,$r1,$r2=0,$angle=0,$nSeg=8,$astart=0,$afinish=360,$close=1,$fill=0)
+	function ellipse($x0,$y0,$r1,$r2=0,$angle=0,$nSeg=8,$astart=0,$afinish=360,$close=1,$fill=0, $dummy=null)
 	{
 		parent::Ellipse($x0, $y0, $r1, $r2, $angle, $astart. $afinish, ($close?'C':''), "", "", $nSeg);
 	}
 
-	function Stream()
+	function Stream($fname='')
 	{
-		parent::Output('', 'I');
+		parent::Output($fname, 'I');
 	}
 
 	function calcTextWrap($txt, $width, $spacebreak=false)

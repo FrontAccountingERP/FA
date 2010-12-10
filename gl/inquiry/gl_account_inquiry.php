@@ -61,28 +61,26 @@ if (!isset($_POST["amount_max"]))
 
 function gl_inquiry_controls()
 {
-	global $table_style2;
-
 	$dim = get_company_pref('use_dimension');
     start_form();
 
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 	start_row();
-    gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, "All Accounts");
+    gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, _("All Accounts"));
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
     end_row();
 	end_table();
 
-	start_table();
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
 		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 
-	small_amount_cells(_("Amount min:"), 'amount_min', null);
-	small_amount_cells(_("Amount max:"), 'amount_max', null);
+	small_amount_cells(_("Amount min:"), 'amount_min', null, " ");
+	small_amount_cells(_("Amount max:"), 'amount_max', null, " ");
 	submit_cells('Show',_("Show"),'','', 'default');
 	end_row();
 	end_table();
@@ -95,7 +93,7 @@ function gl_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style, $systypes_array;
+	global $path_to_root, $systypes_array;
 
 	if (!isset($_POST["account"]))
 		$_POST["account"] = null;
@@ -122,7 +120,7 @@ function show_results()
                      input_num("amount_min") == 0 && 
                      input_num("amount_max") == 0;
 		
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	
 	$first_cols = array(_("Type"), _("#"), _("Date"));
 	
@@ -161,7 +159,7 @@ function show_results()
 	    $bfw = get_gl_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
     	start_row("class='inquirybg'");
     	label_cell("<b>"._("Opening Balance")." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
-    	display_debit_or_credit_cells($bfw);
+    	display_debit_or_credit_cells($bfw, true);
     	label_cell("");
     	label_cell("");
     	end_row();
@@ -210,7 +208,7 @@ function show_results()
 	if ($show_balances) {
     	start_row("class='inquirybg'");
     	label_cell("<b>" . _("Ending Balance") ." - ".$_POST['TransToDate']. "</b>", "colspan=$colspan");
-    	display_debit_or_credit_cells($running_total);
+    	display_debit_or_credit_cells($running_total, true);
     	label_cell("");
     	label_cell("");
     	end_row();

@@ -47,13 +47,12 @@ function help_url($context=null)
 
 function send_scripts()
 {
-    global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,
-	$path_to_root, $go_debug;
+    global $js_static, $js_path, $js_userlib, $path_to_root, $go_debug;
 
 	$js ='';
 	foreach($js_static as $jsfile)
 	{
-	    $fpath = $comp_path.'/'.user_company().'/js_cache/'.$jsfile;
+	    $fpath = company_path().'/js_cache/'.$jsfile;
 	    // compress also static files
 	  	if (!file_exists($fpath) || $go_debug)
 			cache_js_file($fpath, file_get_contents($js_path.$jsfile));
@@ -70,7 +69,7 @@ function send_scripts()
     echo $js;
 }
 
-function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
+function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="", $css='')
 {
 	// titles and screen header
 	global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
@@ -84,7 +83,6 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 //		add_js_ufile($jsext);
 
 	$theme = user_theme();
-	$local_path_to_root = $path_to_root;
 
 	if ($help_base_url != null && $use_popup_windows && $js == '')
 	{
@@ -127,15 +125,19 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
-	send_scripts($js);
+	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
+	if ($css)
+		echo '<link href="'.$css.'" rel="stylesheet" type="text/css">';
+
+	send_scripts();
 
 	echo "</head> \n";
 	if ($onload == "")
 		echo "<body>";
 	else
 		echo "<body onload=\"$onload\">";
-	include_once($local_path_to_root."/themes/".user_theme()."/renderer.php");
+
+	include_once($path_to_root . "/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
 	error_box();

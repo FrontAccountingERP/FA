@@ -75,6 +75,20 @@ function get_bank_account($id)
 }
 
 //---------------------------------------------------------------------------------------------
+
+function get_bank_accounts($show_inactive)
+{
+	$sql = "SELECT account.*, gl_account.account_name 
+		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
+		WHERE account.account_code = gl_account.account_code";
+	if (!$show_inactive) $sql .= " AND !account.inactive";
+	$sql .= " ORDER BY account_code, bank_curr_code";
+
+	return db_query($sql,"could not get bank accounts");
+}
+
+//---------------------------------------------------------------------------------------------
+
 function get_bank_gl_account($id)
 {
 	$sql = "SELECT account_code FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($id);
@@ -88,22 +102,22 @@ function get_bank_gl_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry($description, $type, $base_amount, $base_desc)
+function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc) 
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type) 
 	VALUES (".db_escape($description).", ".db_escape($type).", "
-		.db_escape($base_amount).", ".db_escape($base_desc).")";
+		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).")";
 
 	db_query($sql, "could not insert quick entry for $description");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc)
+function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc, $bal_type)
 {
 	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
 		type=".db_escape($type).", base_amount=".db_escape($base_amount)
-		.", base_desc=".db_escape($base_desc)."
+		.", base_desc=".db_escape($base_desc).", bal_type=".db_escape($bal_type)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry for $selected_id");
@@ -218,6 +232,67 @@ function get_quick_entry_line($selected_id)
 	return db_fetch($result);
 }
 
+//---------------------------------------------------------------------------------------------
+
+function get_max_reconciled($date, $bank_account)
+{
+	$date = date2sql($date);
+	 // temporary fix to enable fix of invalid entries made in 2.2RC
+	if ($date == 0) $date = '0000-00-00';
+
+	$sql = "SELECT MAX(reconciled) as last_date,
+			 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
+			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
+			 SUM(amount) as total
+		FROM ".TB_PREF."bank_trans trans
+		WHERE bank_act=".db_escape($bank_account);
+	//	." AND trans.reconciled IS NOT NULL";
+
+	return db_query($sql,"Cannot retrieve reconciliation data");
+
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_ending_reconciled($bank_account, $bank_date)
+{
+	$sql = "SELECT ending_reconcile_balance
+		FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($bank_account)
+		. " AND last_reconciled_date=".db_escape($bank_date);
+	$result = db_query($sql,"Cannot retrieve last reconciliation");
+	return db_fetch($result);
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_sql_for_bank_account_reconcile($bank_account, $date)
+{
+	$sql = "SELECT	type, trans_no, ref, trans_date, 
+				amount,	person_id, person_type_id, reconciled, id
+		FROM ".TB_PREF."bank_trans
+		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
+			AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
+		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+	return $sql;
+}
+
+//---------------------------------------------------------------------------------------------
+
+function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
+{
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
+		." WHERE id=".db_escape($reconcile_id);
+
+  	db_query($sql, "Can't change reconciliation status");
+	// save last reconcilation status (date, end balance)
+    $sql2 = "UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
+			.date2sql($reconcile_date)."',
+    	    ending_reconcile_balance=$end_balance
+			WHERE id=".db_escape($bank_account);
+
+	db_query($sql2,"Error updating reconciliation information");
+}
 //---------------------------------------------------------------------------------------------
 
 function get_default_bank_account($curr)

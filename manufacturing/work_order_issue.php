@@ -32,9 +32,12 @@ page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 if (isset($_GET['AddedID'])) 
 {
+	$id = $_GET['AddedID'];
    	display_notification(_("The work order issue has been entered."));
 
-    display_note(get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $id, _("View this Work Order")));
+
+   	display_note(get_gl_view_str(ST_WORKORDER, $id, _("View the GL Journal Entries for this Work Order")), 1);
 
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -211,7 +214,7 @@ echo "<br>";
 
 start_form();
 
-start_table("$table_style width=90%", 10);
+start_table(TABLESTYLE, "width=90%", 10);
 echo "<tr><td>";
 display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
 issue_options_controls();

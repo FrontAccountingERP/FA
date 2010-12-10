@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/remote_url.inc");
 //---------------------------------------------------------------------------------------------
 function get_exchange_rate($rate_id)
 {
@@ -75,12 +76,10 @@ function delete_exchange_rate($rate_id)
 //
 function retrieve_exrate($curr_b, $date)
 {
-	global $Hooks;
-
-	if (method_exists($Hooks, 'retrieve_exrate'))
-		return $Hooks->retrieve_exrate($curr_b, $date);
-	else
-		return get_extern_rate($curr_b, 'ECB', $date);
+	$rate = hook_retrieve_exrate($curr_b, $date);
+	if (is_numeric($rate))
+		return $rate;
+	return get_extern_rate($curr_b, 'ECB', $date);
 }
 //-----------------------------------------------------------------------------
 
@@ -123,18 +122,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
-		$handle = @fopen("http://".$site.$filename, 'rb');
-		if ($handle) {
-			do 
-			{
-				$data = @fread( $handle, 4096 );
-				if ( strlen ( $data ) == 0 ) 
-   					break;
-   				$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
-			} 
-			while (true);
-			@fclose( $handle );
-		} // end handle
+		$contents = url_get_contents("http://".$site.$filename);
 	}
 	if (!$contents) {
 		display_warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
@@ -184,4 +172,14 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	return $val;
 }  /* end function get_extern_rate */
 
+//-----------------------------------------------------------------------------
+
+function get_sql_for_exchange_rates()
+{
+	$sql = "SELECT date_, rate_buy, id FROM "
+		.TB_PREF."exchange_rates "
+		."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
+		 ORDER BY date_ DESC";
+	return $sql;	 
+}
 ?>

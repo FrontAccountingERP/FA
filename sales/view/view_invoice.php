@@ -43,11 +43,11 @@ $sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
-start_table("$table_style2 width=95%");
+start_table(TABLESTYLE2, "width=95%");
 echo "<tr valign=top><td>"; // outer table
 
 /*Now the customer charged to details in a sub table*/
-start_table("$table_style width=100%");
+start_table(TABLESTYLE, "width=100%");
 $th = array(_("Charge To"));
 table_header($th);
 
@@ -61,7 +61,7 @@ echo "</td><td>"; // outer table
 
 /*end of the main table showing the company name and charge to details */
 
-start_table("$table_style width=100%");
+start_table(TABLESTYLE, "width=100%");
 $th = array(_("Charge Branch"));
 table_header($th);
 
@@ -70,17 +70,16 @@ end_table();
 
 echo "</td><td>"; // outer table
 
-start_table("$table_style width=100%");
-$th = array(_("Delivered To"));
-table_header($th);
-
-label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-	"nowrap");
+start_table(TABLESTYLE, "width=100%");
+$th = array(_("Payment Terms"));
+table_header($th); 
+$paym = get_payment_terms($myrow['payment_terms']);
+label_row(null, $paym["terms"], "nowrap");
 end_table();
 
 echo "</td><td>"; // outer table
 
-start_table("$table_style width=100%");
+start_table(TABLESTYLE, "width=100%");
 start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
@@ -96,7 +95,7 @@ start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
-	get_parent_trans(ST_SALESINVOICE,$trans_id)), "class='tableheader2'");
+	get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();
@@ -107,7 +106,7 @@ end_table(1); // outer table
 
 $result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
-start_table("$table_style width=95%");
+start_table(TABLESTYLE, "width=95%");
 
 if (db_num_rows($result) > 0)
 {
@@ -145,16 +144,16 @@ if (db_num_rows($result) > 0)
 		end_row();
 	} //end while there are line items to print out
 
+	$display_sub_tot = price_format($sub_total);
+	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
+		"nowrap align=right width=15%");
 }
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);
 
-$display_sub_tot = price_format($sub_total);
 $display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the invoice text entered */
-label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
-	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 $tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
@@ -168,6 +167,6 @@ end_table(1);
 
 is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_SALESINVOICE, $trans_id);
 
 ?>

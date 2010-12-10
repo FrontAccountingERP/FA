@@ -10,11 +10,23 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function set_global_connection()
+function set_global_connection($company=-1)
 {
-	global $db;
+	global $db, $transaction_level, $db_connections;
 
-   	$db = $_SESSION["wa_current_user"]->get_db_connection();
+	cancel_transaction(); // cancel all aborted transactions if any
+	$transaction_level = 0;
+
+	if ($company == -1) 
+		$company = $_SESSION["wa_current_user"]->company;
+
+	$_SESSION["wa_current_user"]->cur_con = $company;
+
+	$connection = $db_connections[$company];
+
+	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+		mysql_select_db($connection["dbname"], $db);
+	return $db;
 }
 
 $db_duplicate_error_code = 1062;
@@ -23,22 +35,24 @@ $db_duplicate_error_code = 1062;
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql, $sql_trail, $select_trail, $go_debug;
+	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
+		$db_connections;
 	
+	// set current db prefix
+	$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
+	$sql = str_replace(TB_PREF, $cur_prefix, $sql);
+
 	if ($show_sql)
 	{
-		echo "<font face=arial size=2 color=000099><b>SQL..</b></font>";
-		echo "<pre>";
-		echo $sql;
-		echo "</pre>\n";
+		$Ajax->activate('footer_debug');
+		$sql_queries .= "<pre>$sql</pre>\n<hr>";
 	}
-	
 
 	$result = mysql_query($sql, $db);
 	if($sql_trail) {
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
 			mysql_query(
-			"INSERT INTO ".TB_PREF."sql_trail
+			"INSERT INTO ".$cur_prefix."sql_trail
 				(`sql`, `result`, `msg`)
 				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
 				".db_escape($err_msg).")", $db);
@@ -144,6 +158,58 @@ function db_num_affected_rows()
 {
 	global $db;
 	return mysql_affected_rows($db);
+}
+
+function db_field_name($result, $n)
+{
+	return mysql_field_name($result, $n);
+}
+
+function db_create_db($connection)
+{
+	$db = mysql_connect($connection["host"] ,
+		$connection["dbuser"], $connection["dbpassword"]);
+	if (!mysql_select_db($connection["dbname"], $db))
+	{
+		$sql = "CREATE DATABASE " . $connection["dbname"] . "";
+		if (!mysql_query($sql) || !mysql_select_db($connection["dbname"], $db))
+			return 0;
+	}
+	return $db;
+}
+
+function db_drop_db($connection)
+{
+
+	if ($connection["tbpref"] == "")
+	{
+		$sql = "DROP DATABASE " . $connection["dbname"] . "";
+		return mysql_query($sql);
+	}
+	else
+	{
+    	$res = db_query("show table status");
+    	$all_tables = array();
+    	while($row = db_fetch($res))
+    		$all_tables[] = $row;
+        // get table structures
+		foreach ($all_tables as $table)
+		{
+			if (strpos($table['Name'], $connection["tbpref"]) === 0)
+				db_query("DROP TABLE `".$table['Name'] . "`");
+		}
+		//deleting the tables, how??
+		return true;
+	}
+}
+
+function db_close($dbase = null)
+{
+	global $db;
+	
+	if (!$dbase)
+		$dbase = $db;
+	return mysql_close($dbase);
 }
 
 ?>

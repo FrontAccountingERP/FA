@@ -56,8 +56,8 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
+	display_note(print_document_link($invoice_no."-".$trans_type, _("&Print This Invoice"), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no."-".$trans_type, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
@@ -68,14 +68,16 @@ if (isset($_GET['AddedID'])) {
 } elseif (isset($_GET['UpdatedID']))  {
 
 	$invoice_no = $_GET['UpdatedID'];
+	$trans_type = ST_SALESINVOICE;
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
 	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no."-".$trans_type, _("&Print This Invoice"), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no."-".$trans_type, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select Another &Invoice to Modify"));
 
 	display_footer_exit();
 
@@ -121,14 +123,14 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
 	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
-	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+	$dn->due_date = get_invoice_duedate($dn->payment, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
 	copy_from_cart();
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
-	if ( get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+	if ( get_sales_parent_numbers(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified.") . "</b></center>";
@@ -157,8 +159,12 @@ if (isset($_POST['Update'])) {
 	$Ajax->activate('Items');
 }
 if (isset($_POST['_InvoiceDate_changed'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, 
-		$_POST['InvoiceDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
+	$Ajax->activate('due_date');
+}
+if (list_updated('payment')) {
+	$_SESSION['Items']->payment = get_post('payment');
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
 
@@ -220,9 +226,14 @@ function copy_to_cart()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
+	if ($cart->pos['cash_sale'] || $cart->pos['credit_sale']) {
+		$cart->payment = $_POST['payment'];
+		$cart->payment_terms = get_payment_terms($_POST['payment']);
+	}
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
+
 }
 //-----------------------------------------------------------------------------
 
@@ -236,6 +247,7 @@ function copy_from_cart()
 	$_POST['Comments']= $cart->Comments;
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
+	$_POST['payment'] = $cart->payment;
 }
 
 //-----------------------------------------------------------------------------
@@ -305,9 +317,10 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
 	if ($newinvoice) new_doc_date($_SESSION['Items']->document_date);
-	$invoice_no = $_SESSION['Items']->write();
 
+	$invoice_no = $_SESSION['Items']->write();
 	processing_end();
+
 	if ($newinvoice) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 	} else {
@@ -344,12 +357,24 @@ $is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['It
 start_form();
 hidden('cart_id');
 
-start_table("$table_style2 width=80%", 5);
+start_table(TABLESTYLE2, "width=80%", 5);
 
 start_row();
+$colspan = 1;
+$dim = get_company_pref('use_dimension');
+if ($dim > 0) 
+	$colspan = 3;
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
-label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
+if ($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sale']) {
+ // editable payment type
+	$paymcat = !$_SESSION['Items']->pos['cash_sale'] ? PM_CREDIT :
+		(!$_SESSION['Items']->pos['credit_sale'] ? PM_CASH : PM_ANY);
+	label_cells(_("Payment terms:"), sale_payment_list('payment', $paymcat),
+		"class='tableheader2'", "colspan=$colspan");
+} else
+	label_cells(_('Payment:'), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'", "colspan=$colspan");
+
 end_row();
 start_row();
 
@@ -359,10 +384,15 @@ if ($_SESSION['Items']->trans_no == 0) {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-label_cells(_("Delivery Notes:"),
-get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+//label_cells(_("Delivery Notes:"),
+//get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
+
+label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
+// 2010-09-03 Joe Hunt
+if ($dim > 0) 
+	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
 
 end_row();
 start_row();
@@ -384,10 +414,14 @@ date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0,
 	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+if ($dim > 1) 
+	label_cells(_("Dimension"). " 2", get_dimension_string($_SESSION['Items']->dimension2_id), "class='tableheader2'");
+else if ($dim > 0)
+	label_cell("&nbsp;", "colspan=2");
 
 end_row();
 end_table();
@@ -404,7 +438,7 @@ if ($row['dissallow_invoices'] == 1)
 display_heading(_("Invoice Items"));
 
 div_start('Items');
-start_table("$table_style width=80%");
+start_table(TABLESTYLE, "width=80%");
 $th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"),
 	_("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 
@@ -513,7 +547,7 @@ label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","al
 end_table(1);
 div_end();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 textarea_row(_("Memo"), 'Comments', null, 50, 4);
 
 end_table(1);

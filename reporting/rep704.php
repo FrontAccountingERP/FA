@@ -111,7 +111,7 @@ function print_GL_transactions()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$accounts = get_gl_accounts($fromacc, $toacc);
 
@@ -176,7 +176,7 @@ function print_GL_transactions()
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
 					$rep->Line($rep->row - 2);
-					$rep->Header();
+					$rep->NewPage();
 				}
 			}
 			$rep->NewLine();

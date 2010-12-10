@@ -49,7 +49,7 @@ if (strlen($myrow[0]) == 0)
     exit;
 }
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 table_header($th);
@@ -74,7 +74,7 @@ if ($myrow["closed"] == true)
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 if (!isset($_POST['TransFromDate']))
@@ -95,6 +95,6 @@ display_dimension_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 
 br(1);
 
-end_page(true);
+end_page(true, false, false, ST_DIMENSION, $id);
 
 ?>

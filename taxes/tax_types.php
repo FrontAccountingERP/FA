@@ -72,10 +72,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_group_items	WHERE tax_type_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query tax groups");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0)
+	if (key_in_foreign_table($selected_id, 'tax_group_items', 'tax_type_id'))
 	{
 		display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
 
@@ -112,8 +109,8 @@ $result = get_all_tax_types(check_value('show_inactive'));
 
 start_form();
 
-display_note(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
-start_table($table_style);
+display_note(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."), 0, 1);
+start_table(TABLESTYLE);
 
 $th = array(_("Description"), _("Default Rate (%)"),
 	_("Sales GL Account"), _("Purchasing GL Account"), "", "");
@@ -142,7 +139,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

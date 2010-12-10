@@ -74,7 +74,14 @@ function can_process()
 		set_focus('description');
 		return false;
 	}
-	if (strlen($_POST['base_desc']) == 0) 
+	$bal_type = get_post('bal_type');
+	if ($bal_type == 1 && $_POST['type'] != QE_JOURNAL)
+	{
+		display_error( _("You can only use Balance Based together with Journal Entries."));
+		set_focus('base_desc');
+		return false;
+	}
+	if (!$bal_type && strlen($_POST['base_desc']) == 0) 
 	{
 		display_error( _("The base amount description cannot be empty."));
 		set_focus('base_desc');
@@ -95,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc']);
+				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc']);
+				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -142,6 +149,14 @@ if ($Mode == 'Delete')
 	}
 }
 
+if (find_submit('Edit') != -1) {
+	$Mode2 = 'RESET2';
+	set_focus('description');
+}
+if (find_submit('BEd') != -1 || get_post('ADD_ITEM2')) {
+	set_focus('actn');
+}
+
 if ($Mode2 == 'BDel')
 {
 	delete_quick_entry_line($selected_id2);
@@ -155,6 +170,7 @@ if ($Mode == 'RESET')
 	$_POST['description'] = $_POST['type'] = '';
 	$_POST['base_desc']= _('Base Amount');
 	$_POST['base_amount'] = price_format(0);
+	$_POST['bal_type'] = 0;
 }
 if ($Mode2 == 'RESET2')
 {
@@ -166,7 +182,7 @@ if ($Mode2 == 'RESET2')
 
 $result = get_quick_entries();
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Description"), _("Type"), "", "");
 table_header($th);
 
@@ -183,54 +199,68 @@ while ($myrow = db_fetch($result))
 }
 
 end_table(1);
-end_form();
 //-----------------------------------------------------------------------------------
 
-start_form();
-
-start_table($table_style2);
+div_start('qe');
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
- 	//if ($Mode == 'Edit') 
- 	//{
-		//editing an existing status code
+	if ($Mode == 'Edit') // changed by Joe 2010-11-09
+	{
 		$myrow = get_quick_entry($selected_id);
 
 		$_POST['id']  = $myrow["id"];
 		$_POST['description']  = $myrow["description"];
 		$_POST['type']  = $myrow["type"];
 		$_POST['base_desc']  = $myrow["base_desc"];
-		$_POST['base_amount']  = price_format($myrow["base_amount"]);
-		hidden('selected_id', $selected_id);
- 	//}
+		$_POST['bal_type']  = $myrow["bal_type"];
+		$_POST['base_amount']  = $myrow["bal_type"] ?
+			$myrow["base_amount"] : price_format($myrow["base_amount"]);
+	}	
+	hidden('selected_id', $selected_id);
 } 
 
 text_row_ex(_("Description").':', 'description', 50, 60);
 
-quick_entry_types_list_row(_("Entry Type").':', 'type');
+quick_entry_types_list_row(_("Entry Type").':', 'type', null, true);
 
-text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
+if (get_post('type') == QE_JOURNAL)
+{
+	yesno_list_row(_("Balance Based"), 'bal_type', null, _("Yes"), _("No"), true);
+}	
 
-amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
+if (list_updated('bal_type') || list_updated('type'))
+{
+	$Ajax->activate('qe');
+}
 
+if (get_post('type') == QE_JOURNAL && get_post('bal_type') == 1)
+{
+	yesno_list_row(_("Period"), 'base_amount', null, _("Monthly"), _("Yearly"));
+	gl_all_accounts_list_row(_("Account"), 'base_desc', null, true);
+}
+else
+{
+		$_POST['base_desc'] = _("Base Amount");
+	text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
+	amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
+}
 end_table(1);
-
 submit_add_or_update_center($selected_id == -1, '', 'both');
-
-end_form();
+div_end();
 
 
 if ($selected_id != -1)
 {
 	display_heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 	$result = get_quick_entry_lines($selected_id);
-	start_form();
-	start_table($table_style2);
+
+	start_table(TABLESTYLE2);
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
-	else if ($dim == 1)	
+	elseif ($dim == 1)	
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
 	else	
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
@@ -268,15 +298,9 @@ if ($selected_id != -1)
 		end_row();
 	}
 	end_table(1);
-	hidden('selected_id', $selected_id);
-	hidden('selected_id2', $selected_id2);
-	hidden('description', $_POST['description']);
-	hidden('type', $_POST['type']);
-	end_form();
-	start_form();
 
 	div_start('edit_line');
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id2 != -1) 
 	{
@@ -327,16 +351,14 @@ if ($selected_id != -1)
 	if ($dim < 1)
 		hidden('dimension_id', 0);
 	div_end();
-
+	
 	hidden('selected_id', $selected_id);
 	hidden('selected_id2', $selected_id2);
-	hidden('description', $_POST['description']);
-	hidden('type', $_POST['type']);
 
 	submit_add_or_update_center2($selected_id2 == -1, '', true);
 
-	end_form();
 }		
+end_form();
 //------------------------------------------------------------------------------------
 
 end_page();

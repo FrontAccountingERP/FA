@@ -130,7 +130,7 @@ function print_supplier_balances()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$total = array();
 	$grandtotal = array(0,0,0,0);

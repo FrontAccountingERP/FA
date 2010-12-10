@@ -22,16 +22,16 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/admin/db/tags_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, $tags, &$pg, $graphics)
 {
 	$code_open_balance = 0;
 	$code_period_balance = 0;
 	$open_balance_total = 0;
 	$period_balance_total = 0;
-	unset($totals_arr);
 	$totals_arr = array();
 
 	$printtitle = 0; //Flag for printing type name	
@@ -40,6 +40,11 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 	$result = get_gl_accounts(null, null, $type);	
 	while ($account=db_fetch($result))
 	{
+		if ($tags != -1 && is_array($tags) && $tags[0] != false)
+		{
+			if (!is_record_in_tags($tags, TAG_ACCOUNT, $account['account_code']))
+				continue;
+		}	
 		$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 
 		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -87,7 +92,7 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
-			$rep, $dimension, $dimension2, $pg, $graphics);
+			$rep, $dimension, $dimension2, $tags, $pg, $graphics);
 		$open_balance_total += $totals_arr[0];
 		$period_balance_total += $totals_arr[1];
 	}
@@ -122,7 +127,7 @@ print_balance_sheet();
 
 function print_balance_sheet()
 {
-	global $comp_path, $path_to_root;
+	global $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -133,25 +138,28 @@ function print_balance_sheet()
 	{
 		$dimension = $_POST['PARAM_2'];
 		$dimension2 = $_POST['PARAM_3'];
+		$tags = (isset($_POST['PARAM_4']) ? $_POST['PARAM_4'] : -1);
+		$decimals = $_POST['PARAM_5'];
+		$graphics = $_POST['PARAM_6'];
+		$comments = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
+	}
+	else if ($dim == 1)
+	{
+		$dimension = $_POST['PARAM_2'];
+		$tags = (isset($_POST['PARAM_3']) ? $_POST['PARAM_3'] : -1);
 		$decimals = $_POST['PARAM_4'];
 		$graphics = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 	}
-	else if ($dim == 1)
+	else
 	{
-		$dimension = $_POST['PARAM_2'];
+		$tags = (isset($_POST['PARAM_2']) ? $_POST['PARAM_2'] : -1);
 		$decimals = $_POST['PARAM_3'];
 		$graphics = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
-	}
-	else
-	{
-		$decimals = $_POST['PARAM_2'];
-		$graphics = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -182,25 +190,28 @@ function print_balance_sheet()
                     	2 => array('text' => _('Dimension')." 1",
                             'from' => get_dimension_string($dimension), 'to' => ''),
                     	3 => array('text' => _('Dimension')." 2",
-                            'from' => get_dimension_string($dimension2), 'to' => ''));
+                            'from' => get_dimension_string($dimension2), 'to' => ''),
+                        4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
     else if ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
                     	2 => array('text' => _('Dimension'),
-                            'from' => get_dimension_string($dimension), 'to' => ''));
+                            'from' => get_dimension_string($dimension), 'to' => ''),
+                        3 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
     else
     {
     	$params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
+    				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
+    				    2 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
 
 	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$calc_open = $calc_period = 0.0;
 	$equity_open = $equity_period = 0.0;
@@ -225,7 +236,7 @@ function print_balance_sheet()
 		while ($accounttype=db_fetch($typeresult))
 		{
 			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
-				$rep, $dimension, $dimension2, $pg, $graphics);
+				$rep, $dimension, $dimension2, $tags, $pg, $graphics);
 			$class_open_total += $classtotal[0];
 			$class_period_total += $classtotal[1];			
 		}
@@ -295,16 +306,15 @@ function print_balance_sheet()
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
-		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
+		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
 		$x = ($rep->pageWidth - $w) / 2;
 		$rep->NewLine(2);
 		if ($rep->row - $h < $rep->bottomMargin)
-			$rep->Header();
+			$rep->NewPage();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
 	$rep->End();

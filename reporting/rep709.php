@@ -71,7 +71,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
+	global $path_to_root, $trans_dir, $systypes_array;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -111,7 +111,7 @@ function print_tax_report()
 	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)
 	{
-		$rep->Header();
+		$rep->NewPage();
 	}
 	
 	$totalnet = 0.0;
@@ -144,7 +144,7 @@ function print_tax_report()
 			if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 			{
 				$rep->Line($rep->row - 2);
-				$rep->Header();
+				$rep->NewPage();
 			}
 		}
 		if ($trans['trans_type']==ST_JOURNAL && $trans['amount']<0) {
@@ -174,10 +174,9 @@ function print_tax_report()
 	//for ($i = 0; $i < count($cols2); $i++)
 	//	$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
 
-	//$rep->numcols = count($headers2);
-	//$rep->headers = $headers2;
-	//$rep->aligns = $aligns2;
-	$rep->Header();
+	$rep->headers = $headers2;
+	$rep->aligns = $aligns2;
+	$rep->NewPage();
 
 	$taxtotal = 0;
 	foreach( $taxes as $id=>$sum)
@@ -203,10 +202,7 @@ function print_tax_report()
 	$rep->Font();
 	$rep->NewLine();
 
-	if (method_exists($Hooks, 'TaxFunction'))
-	{
-		$Hooks->TaxFunction();
-	}
+	hook_tax_report_done();
 
 	$rep->End();
 }

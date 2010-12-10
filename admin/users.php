@@ -62,9 +62,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		update_user($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
-    			$_POST['email'], $_POST['Access'], $_POST['language'], 
-				$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
+    		update_user_prefs($selected_id,
+    			get_post(array('user_id', 'real_name', 'phone', 'email', 'role_id', 'language',
+					'print_profile', 'rep_popup' => 0, 'pos')));
 
     		if ($_POST['password'] != "")
     			update_user_password($selected_id, $_POST['user_id'], md5($_POST['password']));
@@ -74,16 +74,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	else 
     	{
     		add_user($_POST['user_id'], $_POST['real_name'], md5($_POST['password']),
-				$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
-				$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
+				$_POST['phone'], $_POST['email'], $_POST['role_id'], $_POST['language'],
+				$_POST['print_profile'], check_value('rep_popup'), $_POST['pos']);
 			$id = db_insert_id();
 			// use current user display preferences as start point for new user
-			update_user_display_prefs($id, user_price_dec(), user_qty_dec(), user_exrate_dec(), 
-				user_percent_dec(), user_show_gl_info(), user_show_codes(), 
-				user_date_format(), user_date_sep(), user_tho_sep(), 
-				user_dec_sep(), user_theme(), user_pagesize(), user_hints(), 
-				$_POST['profile'], check_value('rep_popup'), user_query_size(), 
-				user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab());
+			$prefs = $_SESSION['wa_current_user']->prefs->get_all();
+			
+			update_user_prefs($id, array_merge($prefs, get_post(array('print_profile',
+				'rep_popup' => 0, 'language'))));
 
 			display_notification_centered(_("A new user has been added."));
     	}
@@ -111,7 +109,7 @@ if ($Mode == 'RESET')
 
 $result = get_users(check_value('show_inactive'));
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $th = array(_("User login"), _("Full Name"), _("Phone"),
 	_("E-mail"), _("Last Visit"), _("Access Level"), "", "");
@@ -155,7 +153,7 @@ while ($myrow = db_fetch($result))
 inactive_control_row($th);
 end_table(1);
 //-------------------------------------------------------------------------------------------------
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 $_POST['email'] = "";
 if ($selected_id != -1) 
@@ -169,9 +167,9 @@ if ($selected_id != -1)
 		$_POST['real_name'] = $myrow["real_name"];
 		$_POST['phone'] = $myrow["phone"];
 		$_POST['email'] = $myrow["email"];
-		$_POST['Access'] = $myrow["role_id"];
+		$_POST['role_id'] = $myrow["role_id"];
 		$_POST['language'] = $myrow["language"];
-		$_POST['profile'] = $myrow["print_profile"];
+		$_POST['print_profile'] = $myrow["print_profile"];
 		$_POST['rep_popup'] = $myrow["rep_popup"];
 		$_POST['pos'] = $myrow["pos"];
 	}
@@ -185,7 +183,7 @@ else
 { //end of if $selected_id only do the else when a new record is being entered
 	text_row(_("User Login:"), "user_id",  null, 22, 20);
 	$_POST['language'] = user_language();
-	$_POST['profile'] = user_print_profile();
+	$_POST['print_profile'] = user_print_profile();
 	$_POST['rep_popup'] = user_rep_popup();
 	$_POST['pos'] = user_pos();
 }
@@ -203,13 +201,13 @@ text_row_ex(_("Telephone No.:"), 'phone', 30);
 
 email_row_ex(_("Email Address:"), 'email', 50);
 
-security_roles_list_row(_("Access Level:"), 'Access', null); 
+security_roles_list_row(_("Access Level:"), 'role_id', null); 
 
 languages_list_row(_("Language:"), 'language', null);
 
 pos_list_row(_("User's POS"). ':', 'pos', null);
 
-print_profiles_list_row(_("Printing profile"). ':', 'profile', null,
+print_profiles_list_row(_("Printing profile"). ':', 'print_profile', null,
 	_('Browser printing support'));
 
 check_row(_("Use popup window for reports:"), 'rep_popup', $_POST['rep_popup'],

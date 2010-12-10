@@ -80,7 +80,7 @@ function print_outstanding_GRN()
 	$cols = array(0, 40, 80, 190,	250, 320, 385, 450,	515);
 
 	$headers = array(_('GRN'), _('Order'), _('Item') . '/' . _('Description'), _('Qty Recd'), _('qty Inv'), _('Balance'),
-		_('Std Cost'), _('Value'));
+		_('Act Price'), _('Value'));
 
 	$aligns = array('left',	'left',	'left',	'right', 'right', 'right', 'right', 'right');
 
@@ -91,7 +91,7 @@ function print_outstanding_GRN()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$Tot_Val=0;
 	$Supplier = '';
@@ -122,9 +122,9 @@ function print_outstanding_GRN()
 		$rep->AmountCol(3, 4, $GRNs['qty_recd'], $dec2);
 		$rep->AmountCol(4, 5, $GRNs['quantity_inv'], $dec2);
 		$QtyOstg = $GRNs['qty_recd'] - $GRNs['quantity_inv'];
-		$Value = ($GRNs['qty_recd'] - $GRNs['quantity_inv']) * $GRNs['std_cost_unit'];
+		$Value = ($GRNs['qty_recd'] - $GRNs['quantity_inv']) * $GRNs['act_price'];
 		$rep->AmountCol(5, 6, $QtyOstg, $dec2);
-		$rep->AmountCol(6, 7, $GRNs['std_cost_unit'], $dec);
+		$rep->AmountCol(6, 7, $GRNs['act_price'], $dec);
 		$rep->AmountCol(7, 8, $Value, $dec);
 		$Tot_Val += $Value;
 		$SuppTot_Val += $Value;

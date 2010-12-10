@@ -17,44 +17,20 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
-function find_report_file($rep) {
-	global $installed_extensions, $comp_path, $path_to_root;
-
-	// customized per company versions 
-	$path = $comp_path.'/'.user_company()."/reporting";
-	$rep_file = $path."/rep$rep.php";
-	if (file_exists($rep_file)) {
-		// add local include path for custom reports
-		set_include_path($path.PATH_SEPARATOR.get_include_path());
-		return $rep_file;
+if (isset($save_report_selections) && $save_report_selections > 0 && isset($_POST['REP_ID'])) {	// save parameters from Report Center
+	for($i=0; $i<10; $i++) { // 2010-10-06 Joe Hunt
+		if (isset($_POST['PARAM_'.$i]) && !is_array($_POST['PARAM_'.$i])) {
+			$rep = $_POST['REP_ID'];
+			setcookie("select[$rep][$i]", $_POST['PARAM_'.$i], time()+60*60*24*$save_report_selections); // days from $save_report_selections
+		}	
 	}
-	// reports added by active extension modules
-	if (count($installed_extensions) > 0)
-	{
-		$extensions = $installed_extensions;
-		foreach ($extensions as $ext)
-			if (($ext['active'] && $ext['type'] == 'module')) {
-				$path = $path_to_root.'/'.$ext['path']."/reporting";
-				$rep_file = $path."/rep$rep.php";
-				if (file_exists($rep_file)) {
-					set_include_path($path.PATH_SEPARATOR.get_include_path());
-					return $rep_file;
-				}
-			}
-	}
-	// standard reports
-	$rep_file = $path_to_root ."/reporting/rep$rep.php";
-	if (file_exists($rep_file))
-		return $rep_file;
-
-	return null;
-}
+}	
 
 if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
-	$unique_name = $_GET['unique'];
-	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
+	$path =  company_path(). '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename" );
 	header("Expires: 0");
@@ -66,8 +42,8 @@ if (isset($_GET['xls']))
 elseif (isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
-	$unique_name = $_GET['unique'];
-	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
+	$path =  company_path(). '/pdf_files/';
 	header("content-type: text/xml");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");
@@ -85,10 +61,15 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 			? $_GET['PARAM_'.$i] : $def_pars[$i];
 	}
 }
-$rep = $_POST['REP_ID'];
 
-$rep_file = find_report_file($rep);
-require($rep_file);
+$rep = preg_replace('/[^a-z_0-9]/i', '', $_POST['REP_ID']);
+
+$rep_file = find_custom_file("/reporting/rep$rep.php");
+
+if ($rep_file) {
+	require($rep_file);
+} else
+	display_error("Cannot find report file '$rep'");
 exit();
 
 ?>

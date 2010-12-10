@@ -33,7 +33,7 @@ $to_trans = $transfer_items[1];
 display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style2 width=90%");
+start_table(TABLESTYLE2, "width=90%");
 
 start_row();
 label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
@@ -49,10 +49,9 @@ end_row();
 
 comments_display_row(ST_LOCTRANSFER, $trans_no);
 
-end_table(1);
+end_table(2);
 
-echo "<br>";
-start_table("$table_style width=90%");
+start_table(TABLESTYLE, "width=90%");
 
 $th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 table_header($th);
@@ -76,5 +75,5 @@ end_table(1);
 
 is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_LOCTRANSFER, $trans_no);
 ?>

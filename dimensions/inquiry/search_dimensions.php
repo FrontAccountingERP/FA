@@ -67,7 +67,7 @@ if (isset($_GET["stock_id"]))
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
@@ -97,21 +97,14 @@ function view_link($row)
 	return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 }
 
+function sum_dimension($row) 
+{
+	return get_dimension_balance($row['id'], $_POST['FromDate'], $_POST['ToDate']); 
+}
+
 function is_closed($row)
 {
 	return $row['closed'] ? _('Yes') : _('No');
-}
-
-function sum_dimension($row) 
-{
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
-		date2sql($_POST['FromDate']) . "' AND
-		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
-		$row['id']." OR dimension2_id = " .$row['id'].")";
-	$res = db_query($sql, "Sum of transactions could not be calculated");
-	$row = db_fetch_row($res);
-
-	return $row[0];
 }
 
 function is_overdue($row)
@@ -128,43 +121,7 @@ function edit_link($row)
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
-$sql = "SELECT dim.id,
-	dim.reference,
-	dim.name,
-	dim.type_,
-	dim.date_,
-	dim.due_date,
-	dim.closed
-	FROM ".TB_PREF."dimensions as dim WHERE id > 0";
-
-if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
-{
-	$sql .= " AND reference LIKE ".db_escape("%". $_POST['OrderNumber'] . "%");
-} else {
-
-	if ($dim == 1)
-		$sql .= " AND type_=1";
-
-	if (isset($_POST['OpenOnly']))
-	{
-   		$sql .= " AND closed=0";
-	}
-
-	if (isset($_POST['type_']) && ($_POST['type_'] > 0))
-	{
-   		$sql .= " AND type_=".db_escape($_POST['type_']);
-	}
-
-	if (isset($_POST['OverdueOnly']))
-	{
-		$today = date2sql(Today());
-
-	   	$sql .= " AND due_date < '$today'";
-	}
-
-	$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
-		AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
-}
+$sql = get_sql_for_search_dimensions($dim);
 
 $cols = array(
 	_("#") => array('fun'=>'view_link'), 

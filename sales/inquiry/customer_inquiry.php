@@ -23,7 +23,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Customer Transactions"), false, false, "", $js);
+page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
 
 
 if (isset($_GET['customer_id']))
@@ -38,7 +38,7 @@ start_form();
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
@@ -61,8 +61,6 @@ set_global_customer($_POST['customer_id']);
 
 function display_customer_summary($customer_record)
 {
-	global $table_style;
-
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
     if ($customer_record["dissallow_invoices"] != 0)
@@ -74,7 +72,7 @@ function display_customer_summary($customer_record)
 	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 
-    start_table("width=80% $table_style");
+    start_table(TABLESTYLE, "width=80%");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
     table_header($th);
@@ -156,11 +154,9 @@ function fmt_credit($row)
 
 function credit_link($row)
 {
-	return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-		pager_link(_("Credit This"),
-			"/sales/customer_credit_invoice.php?InvoiceNumber=".
-			$row['trans_no'], ICON_CREDIT)
-			: '';
+	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
+		pager_link(_("Credit This") ,
+			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT):'';
 }
 
 function edit_link($row)
@@ -193,10 +189,12 @@ function edit_link($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
- 		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
- 	else	
+  	if ($row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) 
 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
+  	elseif ($row['type'] == ST_BANKPAYMENT) // bank payment printout not defined yet.
+		return '';
+ 	else	
+ 		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
 function check_overdue($row)
@@ -205,75 +203,7 @@ function check_overdue($row)
 		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 }
 //------------------------------------------------------------------------------------------------
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
-
-  $sql = "SELECT 
-  		trans.type, 
-		trans.trans_no, 
-		trans.order_, 
-		trans.reference,
-		trans.tran_date, 
-		trans.due_date, 
-		debtor.name, 
-		branch.br_name,
-		debtor.curr_code,
-		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
-			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
-   	if ($_POST['filterType'] != ALL_TEXT)
-		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
-
-//	else
-//		$sql .= "IF(trans.type=".ST_CUSTDELIVERY.",'', IF(trans.type=".ST_SALESINVOICE." OR trans.type=".ST_BANKPAYMENT.",@bal := @bal+
-//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), @bal := @bal-
-//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount))) , ";
-		$sql .= "trans.alloc AS Allocated,
-		((trans.type = ".ST_SALESINVOICE.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-		FROM "
-			.TB_PREF."debtor_trans as trans, "
-			.TB_PREF."debtors_master as debtor, "
-			.TB_PREF."cust_branch as branch
-		WHERE debtor.debtor_no = trans.debtor_no
-			AND trans.tran_date >= '$date_after'
-			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code";
-
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
-
-   	if ($_POST['filterType'] != ALL_TEXT)
-   	{
-   		if ($_POST['filterType'] == '1')
-   		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_BANKPAYMENT.") ";
-   		}
-   		elseif ($_POST['filterType'] == '2')
-   		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
-   		}
-   		elseif ($_POST['filterType'] == '3')
-   		{
-			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
-					." OR trans.type = ".ST_BANKDEPOSIT.") ";
-   		}
-   		elseif ($_POST['filterType'] == '4')
-   		{
-			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
-   		}
-   		elseif ($_POST['filterType'] == '5')
-   		{
-			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
-   		}
-
-    	if ($_POST['filterType'] == '2')
-    	{
-    		$today =  date2sql(Today());
-    		$sql .= " AND trans.due_date < '$today'
-				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
-				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
-    	}
-   	}
+$sql = get_sql_for_customer_inquiry();
 
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");

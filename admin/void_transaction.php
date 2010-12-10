@@ -11,11 +11,13 @@
 ***********************************************************************/
 $page_security = 'SA_VOIDTRANSACTION';
 $path_to_root = "..";
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 $js = "";
@@ -26,6 +28,7 @@ if ($use_popup_windows)
 	
 page(_($help_context = "Void a Transaction"), false, false, "", $js);
 
+simple_page_mode(true);
 //----------------------------------------------------------------------------------------
 function exist_transaction($type, $type_no)
 {
@@ -102,17 +105,82 @@ function exist_transaction($type, $type_no)
 	return true;
 }
 
+function view_link($trans)
+{
+	if (!isset($trans['type']))
+		$trans['type'] = $_POST['filterType'];
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
+}
+
+function select_link($row)
+{
+	if (!isset($row['type']))
+		$row['type'] = $_POST['filterType'];
+  	return button('Edit'.$row["trans_no"], _("Select"), _("Select"), ICON_EDIT);
+}
+
+function gl_view($row)
+{
+	if (!isset($row['type']))
+		$row['type'] = $_POST['filterType'];
+	return get_gl_view_str($row["type"], $row["trans_no"]);
+}
+
+function date_view($row)
+{
+	return $row['trans_date'];
+}
+
+function ref_view($row)
+{
+	return $row['ref'];
+}
+
 function voiding_controls()
 {
-	global $table_style2;
-	
+	global $selected_id;
 	start_form();
 
-	start_table($table_style2);
+    start_table(TABLESTYLE_NOBORDER);
+	start_row();
 
-	systypes_list_row(_("Transaction Type:"), "filterType", null, true);
+	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true);
+	if (list_updated('filterType'))
+		$selected_id = -1;
+		
+	end_row();
+    end_table(1);
+    
+	$trans_ref = false;
+	$sql = get_sql_for_view_transactions($_POST['filterType'], null, null, $trans_ref);
+	if ($sql == "")
+		return;
 
-    text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
+	$cols = array(
+		_("#") => array('insert'=>true, 'fun'=>'view_link'), 
+		_("Reference") => array('fun'=>'ref_view'), 
+		_("Date") => array('type'=>'date', 'fun'=>'date_view'),
+		_("GL") => array('insert'=>true, 'fun'=>'gl_view'),
+		_("Select") => array('insert'=>true, 'fun'=>'select_link') 
+	);
+
+	$table =& new_db_pager('transactions', $sql, $cols);
+	$table->width = "40%";
+	display_db_pager($table);
+
+	start_table(TABLESTYLE2);
+
+	if ($selected_id != -1)
+	{
+		hidden('trans_no', $selected_id);
+		hidden('selected_id', $selected_id);
+	}
+	else
+	{
+		hidden('trans_no', '');
+		$_POST['memo_'] = '';
+	}	
+    label_row(_("Transaction #:"), ($selected_id==-1?'':$selected_id));
 
     date_row(_("Voiding Date:"), 'date_');
 
@@ -135,11 +203,6 @@ function voiding_controls()
  		else
  		{
     		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
-    		if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
-    			$view_str = get_gl_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
-    		else
-    			$view_str = get_trans_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
-    		display_note($view_str);
    			br();
     		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
     		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
@@ -241,6 +304,7 @@ if (isset($_POST['ConfirmVoiding']))
 
 if (isset($_POST['CancelVoiding']))
 {
+	$selected_id = -1;
 	$Ajax->activate('_page_body');
 }
 

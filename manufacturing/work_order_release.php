@@ -72,6 +72,7 @@ if (isset($_POST['release']))
     display_note(get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
+	br();
 
 	$Ajax->activate('_page_body');
 	end_page();
@@ -89,7 +90,7 @@ $_POST['memo_'] = "";
 
 if (can_process($myrow))
 {
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
     label_row(_("Work Order #:"), $selected_id);
     label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

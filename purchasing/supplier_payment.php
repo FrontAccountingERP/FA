@@ -63,8 +63,34 @@ if (list_updated('supplier_id') || list_updated('bank_account')) {
 }
 //----------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
-{
+if (!isset($_POST['bank_account'])) { // first page call
+	  $_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
+
+	if (isset($_GET['PInvoice'])) {
+		//  get date and supplier
+		$inv = get_supp_trans($_GET['PInvoice'], ST_SUPPINVOICE);
+		if($inv) {
+			$_POST['supplier_id'] = $inv['supplier_id'];
+			$_POST['DatePaid'] = sql2date($inv['tran_date']);
+//			$_POST['discount'] = price_format(0);
+//		$_POST['bank_account'], $_POST['ref']
+			$_POST['memo_'] = $inv['supp_reference'];
+			foreach($_SESSION['alloc']->allocs as $line => $trans) {
+				if ($trans->type == ST_SUPPINVOICE && $trans->type_no == $_GET['PInvoice']) {
+					$_POST['amount'] = 
+						$_SESSION['alloc']->amount = price_format($_SESSION['alloc']->allocs[$line]->amount);
+					$_SESSION['alloc']->allocs[$line]->current_allocated =
+						$_SESSION['alloc']->allocs[$line]->amount;
+					break;
+				}
+			}
+			unset($inv);
+		} else
+			display_error(_("Invalid purchase invoice number."));
+
+	}
+}
+if (isset($_GET['AddedID'])) {
 	$payment_id = $_GET['AddedID'];
 
    	display_notification_centered( _("Payment has been sucessfully entered"));
@@ -230,14 +256,11 @@ if (isset($_POST['ProcessSuppPayment']))
 
 start_form();
 
-	start_outer_table("$table_style2 width=60%", 5);
+	start_outer_table(TABLESTYLE2, "width=60%", 5);
 
 	table_section(1);
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
-
-	if (!isset($_POST['bank_account'])) // first page call
-		  $_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
 
 	set_global_supplier($_POST['supplier_id']);
 	
@@ -269,7 +292,7 @@ start_form();
 	div_end();
 	}
 
-	start_table("$table_style width=60%");
+	start_table(TABLESTYLE, "width=60%");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

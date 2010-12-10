@@ -148,8 +148,8 @@
   * -------------------------------------------------------------------------------
   */
 if (!defined("K_PATH_FONTS"))
-	define ("K_PATH_FONTS", '../reporting/fonts/');
-define ("K_PATH_CACHE", '../reporting/fonts/');
+	define ("K_PATH_FONTS", dirname(__FILE__)."/../fonts/");
+define ("K_PATH_CACHE", dirname(__FILE__)."/../fonts/");
 define("K_CELL_HEIGHT_RATIO", 1.25);
 
 //require_once(dirname(__FILE__).'/config/tcpdf_config.php');
@@ -3597,8 +3597,8 @@ if (!class_exists('TCPDF')) {
 				if ($type == "jpg") {
 					$type = "jpeg";
 				}
-				$mqr = get_magic_quotes_runtime();
-				set_magic_quotes_runtime(0);
+				$mqr = ini_get('magic_quotes_runtime');
+				ini_set('magic_quotes_runtime', 0);
 				// Specific image handlers
 				$mtd = '_parse'.$type;
 				// GD image handler function
@@ -3625,7 +3625,7 @@ if (!class_exists('TCPDF')) {
 					//If false, we cannot process image
 					return;
 				}
-				set_magic_quotes_runtime($mqr);
+				ini_set('magic_quotes_runtime', $mqr);
 				$info['i'] = count($this->images) + 1;
 				// add image to document
 				$this->images[$file] = $info;
@@ -4505,8 +4505,8 @@ if (!class_exists('TCPDF')) {
 				$this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences ['.$diff.']>>');
 				$this->_out('endobj');
 			}
-			$mqr = get_magic_quotes_runtime();
-			set_magic_quotes_runtime(0);
+			$mqr = ini_get('magic_quotes_runtime');
+			ini_set('magic_quotes_runtime', 0);
 			foreach($this->FontFiles as $file => $info) {
 				//Font file embedding
 				$this->_newobj();
@@ -4536,7 +4536,7 @@ if (!class_exists('TCPDF')) {
 				$this->_putstream($font);
 				$this->_out('endobj');
 			}
-			set_magic_quotes_runtime($mqr);
+			ini_set('magic_quotes_runtime', $mqr);
 			foreach($this->fonts as $k => $font) {
 				//Font objects
 				$this->fonts[$k]['n'] = $this->n + 1;

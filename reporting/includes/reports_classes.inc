@@ -9,9 +9,20 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
+// Standard report classess
+define('RC_CUSTOMER', 0);
+define('RC_SUPPLIER', 1);
+define('RC_INVENTORY', 2);
+define('RC_MANUFACTURE', 3);
+define('RC_DIMENSIONS', 4);
+define('RC_BANKING', 5);
+define('RC_GL', 6);
+
 class BoxReports
 {
-	var $ar_classes;
+	var $ar_classes; // report class names
+	var $ar_reports;
 	var $ctrl_handlers = array();
 
 	function ReportClasses()
@@ -19,45 +30,62 @@ class BoxReports
 		$this->ar_classes = array();
 	}
 
-	function addReportClass($class_name)
+	function addReportClass($class_name, $class_id=null)
 	{
-		$this->ar_classes[$class_name] = array();
+		if (!$class_id)
+			$class_id = count($this->ar_classes);
+		$this->ar_classes[$class_id] = $class_name;
+
+		return $class_id;
 	}
 
-	function addReport($class_name, $id, $rep_name, $params=null)
+	function addReport($class, $id, $rep_name, $params=null)
 	{
-		unset($this->ar_classes[$class_name][$id]); // unset std report if any
-		$this->ar_classes[$class_name][$id] = new Report($id, $rep_name, $params);
+		unset($this->ar_reports[$class][$id]); // unset std report if any
+		$this->ar_reports[$class][$id] = new Report($id, $rep_name, $params);
 	}
 
 	function getDisplay($class=null)
 	{
-		global $table_style, $comp_path, $path_to_root, $pdf_debug, $Ajax;
+		global $path_to_root, $pdf_debug, $Ajax;
 
 
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
-		$class_counter = 0;
-		$rep_counter = 0;
 		$st_reports = "";
 		$st_params = "";
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
-		foreach($this->ar_classes as $key=>$value)
+
+		if (isset($_GET['Class']))
+			set_focus('class'.$_GET['Class']);
+
+		foreach($this->ar_classes as $class_id => $name)
 		{
-			$style = $class_counter==$_REQUEST['Class'] ? '' : "style='display:none'";
-			$acc = access_string($key);
+			if (!isset($this->ar_reports[$class_id]))
+				continue; // e.g. no dimensions
+
+			$acc = access_string($name);
 			$st_classes .= "<a href='"
-				.$_SERVER['PHP_SELF']."?Class=$class_counter'"
-				." class='menu_option' id='".default_focus()."'"
-				." onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
-			$st_reports .= "<table id='TAB_" . $class_counter ."' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
-			foreach($value as $report)
+				.$_SERVER['PHP_SELF']."?Class=$class_id'"
+				." style='font-weight:". ($_REQUEST['Class'] == $class_id ? 'bold' : 'normal')."'"
+				." class='repclass_link' id='".'class'.$class_id."'"
+				."$acc[1]>$acc[0]</a> <br>";
+
+			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
+			$st_reports .= "<table class='repclass' id='TAB_" . $class_id ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$name</b></td></tr>\n";
+			foreach($this->ar_reports[$class_id] as $rep_id => $report)
 			{
 				$acc = access_string($report->name);
-				$st_reports .= "<tr><td><a class='printlink' href='"
-					.$_SERVER['PHP_SELF']."?Class=$class_counter&rep_id=$report->id'"
-					." id='".default_focus()."'"
+				$st_reports .= "<tr><td><a class='repopts_link'"
+					." href='".$_SERVER['PHP_SELF']."?Class=$class_id&rep_id=$report->id'"
+					." style='font-weight:". (@$_GET['rep_id'] == $report->id ? 'bold' : 'normal')."'"
+					." id='".$id = default_focus()."'"
 					."$acc[1]>$acc[0]</a><tr><td>\n";
+
+				if (@$_REQUEST['rep_id'] == $report->id) {
+					$Ajax->activate($id);
+				}
+
 				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
 
 					$action = $path_to_root.'/reporting/prn_redirect.php';
@@ -67,39 +95,19 @@ class BoxReports
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
 						false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
-					$st_params .= $this->getOptions($report->get_controls());
+					$st_params .= $this->getOptions($report->get_controls(), $report->id);
 					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
 					$Ajax->addUpdate(true, 'rep_form', $st_params);
 				}
 			}
 			$st_reports .= "</table>";
-			$class_counter++;
 		}
 
 		$st_params = "<div id='rep_form'>".
 			"$st_params</div>";
 		
-
-		$st = 	"<script language='javascript'>
-					function showClass(pClass) {
-						for(i=0; i<$class_counter; i++) {
-							document.getElementById(\"TAB_\" + i).style.display=
-							i==pClass ? \"block\" : \"none\";
-						}
-						document.getElementById('rep_form').innerHTML = '';
-//						document.getElementById('rep_form').style.display = 'none';
-						return false;
-					}
-					function checkDate(pObj) {
-						var re = /^(3[01]|0[1-9]|[12]\d)\/(0[1-9]|1[012])\/\d{4}/;
-						if (re.test(pObj.value)==false) {
-							alert('" . _("Invalid date format") . "')
-						}
-					}
-				</script>
-				";
-		$st .= "<table align='center' width='80%' style='border:1px solid #cccccc;'><tr valign='top'>";
+		$st = "<table align='center' width='80%' style='border:1px solid #cccccc;'><tr valign='top'>";
 		$st .= "<td width='30%'>$st_classes</td>";
 		$st .= "<td width='35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
 		$st .= "<td width='35%'>$st_params</td>";
@@ -108,7 +116,7 @@ class BoxReports
 		return $st;
 	}
 
-	function getOptions($controls)
+	function getOptions($controls, $id = 0)
 	{
 		$st = '';
 		if ($controls == null)
@@ -123,6 +131,8 @@ class BoxReports
 				if ($ctrl) break;
 			}
 			if ($ctrl == '') {
+				if (isset($_COOKIE['select'][$id][$cnt])) // saved parameters 2010-10-06 Joe Hunt
+					$_POST['PARAM_'.$cnt] = $_COOKIE['select'][$id][$cnt];
 				$ctrl = $this->get_ctrl('PARAM_'.$cnt, $type);
 			}
 			if ($ctrl != '')  {
@@ -148,7 +158,8 @@ class BoxReports
 	//
 	function get_ctrl($name, $type)
 	{
-		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
+		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no,
+			$def_print_destination, $type_shortcuts;
 
 		$st = '';
 			switch ($type)
@@ -164,31 +175,35 @@ class BoxReports
 				case 'DATEENDM':
 				case 'DATEBEGINTAX':
 				case 'DATEENDTAX':
-					if ($type == 'DATEBEGIN')
-						$date = begin_fiscalyear();
-					elseif ($type == 'DATEEND')
-						$date = end_fiscalyear();
-					else
-						$date = Today();
-					if ($type == 'DATEBEGINM')
-						$date = begin_month($date);
-					elseif ($type == 'DATEENDM')
-						$date = end_month($date);
-					elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
+					if (!isset($_POST[$name]))
 					{
-						$row = get_company_prefs();
-						$edate = add_months($date, -$row['tax_last']);
-						$edate = end_month($edate);
-						if ($type == 'DATEENDTAX')
-							$date = $edate;
+						if ($type == 'DATEBEGIN')
+							$date = begin_fiscalyear();
+						elseif ($type == 'DATEEND')
+							$date = end_fiscalyear();
 						else
+							$date = Today();
+						if ($type == 'DATEBEGINM')
+							$date = begin_month($date);
+						elseif ($type == 'DATEENDM')
+							$date = end_month($date);
+						elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
 						{
-							$bdate = begin_month($edate);
-							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
-							$date = $bdate;
+							$row = get_company_prefs();
+							$edate = add_months($date, -$row['tax_last']);
+							$edate = end_month($edate);
+							if ($type == 'DATEENDTAX')
+								$date = $edate;
+							else
+							{
+								$bdate = begin_month($edate);
+								$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+								$date = $bdate;
+							}
 						}
 					}
-
+					else // saved parameters 2010-10-16 Joe Hunt
+						$date = $_POST[$name];
 					$st = "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
@@ -229,11 +244,10 @@ class BoxReports
 					return "<input type='text' name='$name'>";
 
 				case 'TEXTBOX':
-					return "<textarea rows=4 cols=30 name='$name'></textarea>";
+					$value = (isset($_POST[$name]) ? $_POST[$name] : "");
+					return "<textarea rows=4 cols=30 name='$name'>$value</textarea>";
 
 				case 'ACCOUNTS': // not used
-//					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
-//					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
 					return gl_account_types_list($name, null, _("No Account Group Filter"), true);
 
 				case 'ACCOUNTS_NO_FILTER': // not used
@@ -286,8 +300,8 @@ class BoxReports
 //						return supplier_list($name);
 
 				case 'INVOICE':
-					$IV = _("IV");
-					$CN = _("CN");
+					$IV = $type_shortcuts[ST_SALESINVOICE];
+					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
@@ -295,7 +309,7 @@ class BoxReports
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'DELIVERY':
-					$DN = _("DN");
+					$DN = $type_shortcuts[ST_CUSTDELIVERY];
 					$sql = "SELECT
 					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ',
 					 ".TB_PREF."debtors_master.name) as IName
@@ -328,9 +342,9 @@ class BoxReports
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
 				case 'REMITTANCE':
-					$BP = _("BP");
-					$SP = _("SP");
-					$CN = _("CN");
+					$BP = $type_shortcuts[ST_BANKPAYMENT];
+					$SP = $type_shortcuts[ST_SUPPAYMENT];
+					$CN = $type_shortcuts[ST_SUPPCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."supp_trans.trans_no, '-',
 						".TB_PREF."supp_trans.type) AS TNO, concat(".TB_PREF."supp_trans.$ref, if (type=".ST_BANKPAYMENT.", ' $BP ', if (type=".ST_SUPPAYMENT.", ' $SP ', ' $CN ')), ".TB_PREF."suppliers.supp_name) as IName
@@ -338,9 +352,9 @@ class BoxReports
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'RECEIPT':
-					$BD = _("BD");
-					$CP = _("CP");
-					$CN = _("CN");
+					$BD = $type_shortcuts[ST_BANKDEPOSIT];
+					$CP = $type_shortcuts[ST_CUSTPAYMENT];
+					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_BANKDEPOSIT.", ' $BD ', if (type=".ST_CUSTPAYMENT.", ' $CP ', ' $CN ')), ".TB_PREF."debtors_master.name) as IName
@@ -384,7 +398,8 @@ class BoxReports
 						$tag_type = TAG_ACCOUNT;
 					else
 						$tag_type = TAG_DIMENSION;
-					return tag_list($name, 5, $tag_type, true, _("No tags"));
+					//return tag_list($name, 5, $tag_type, true, false, _("No tags"));
+					return tag_list($name, 5, $tag_type, true);
 
 			}
 		return '';
@@ -434,23 +449,28 @@ function gl_systypes_list($name, $value=null, $spec_opt=false)
 			)
 	);
 }
-
+/*
+	Add extension/custom reports to report manager.
+*/
 function add_custom_reports(&$reports)
 {
-	global $installed_extensions, $path_to_root, $comp_path;
+	global $installed_extensions, $path_to_root;
 	
 	// include reports installed inside extension modules
 	if (count($installed_extensions) > 0)
 	{
 		$extensions = $installed_extensions;
 		foreach ($extensions as $ext)
-			if (($ext['active'] && $ext['type'] == 'module')) {
+			if (($ext['active'] && $ext['type'] == 'extension')) {
 				$file = $path_to_root.'/'.$ext['path']."/reporting/reports_custom.php";
-				if (file_exists($file))
+				if (file_exists($file)) {
+					set_ext_domain($ext['path']);
 					include_once($file);
+					set_ext_domain();
+				}
 			}
 	}
-	$file = $comp_path.'/'.user_company()."/reporting/reports_custom.php";
+	$file = company_path()."/reporting/reports_custom.php";
 	if (file_exists($file))
 		include_once($file);
 }

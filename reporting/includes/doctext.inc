@@ -140,6 +140,7 @@ if (isset($header2type) || isset($linetype))
 }
 if (isset($linetype))
 {
+
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || 
 		$doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY)
 	{
@@ -150,10 +151,10 @@ if (isset($linetype))
 		$doc_TOTAL_INVOICE = $doctype ==ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
 		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
 		$doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
-		$doc_TOTAL_PO = _("TOTAL PO EX VAT");
+		$doc_TOTAL_PO = _("TOTAL PO");
 		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
 	}
-	elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT)
+	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
 	{
 		$doc_Towards = _("As advance / full / part / payment towards:");
 		$doc_by_Cheque = _("By Cash / Cheque* / Draft No.");

@@ -35,15 +35,15 @@ read_po($_GET['trans_no'], $purchase_order);
 echo "<br>";
 display_po_summary($purchase_order, true);
 
-start_table("$table_style width=90%", 6);
+start_table(TABLESTYLE, "width=90%", 6);
 echo "<tr><td valign=top>"; // outer table
 
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 $table_style width=100%");
+start_table(TABLESTYLE, "colspan=9 width=100%");
 
 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),
-	_("Line Total"), _("Requested By"), _("Quantity Received"), _("Quantity Invoiced"));
+	_("Requested By"), _("Line Total"), _("Quantity Received"), _("Quantity Invoiced"));
 table_header($th);
 $total = $k = 0;
 $overdue_items = false;
@@ -71,8 +71,8 @@ foreach ($purchase_order->line_items as $stock_item)
 	qty_cell($stock_item->quantity, false, $dec);
 	label_cell($stock_item->units);
 	amount_decimal_cell($stock_item->price);
-	amount_cell($line_total);
 	label_cell($stock_item->req_del_date);
+	amount_cell($line_total);
 	qty_cell($stock_item->qty_received, false, $dec);
 	qty_cell($stock_item->qty_inv, false, $dec);
 	end_row();
@@ -80,9 +80,19 @@ foreach ($purchase_order->line_items as $stock_item)
 	$total += $line_total;
 }
 
-$display_total = number_format2($total,user_price_dec());
-label_row(_("Total Excluding Tax/Shipping"), $display_total,
-	"align=right colspan=5", "nowrap align=right", 3);
+$display_sub_tot = number_format2($total,user_price_dec());
+label_row(_("Sub Total"), $display_sub_tot,
+	"align=right colspan=6", "nowrap align=right",2);
+
+$taxes = $purchase_order->get_taxes();
+$tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included,2);
+
+$display_total = price_format(($total + $tax_total));
+
+start_row();
+label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cell('', "colspan=2");
+end_row();
 
 end_table();
 
@@ -101,7 +111,7 @@ if (db_num_rows($grns_result) > 0)
     echo "</td><td valign=top>"; // outer table
 
     display_heading2(_("Deliveries"));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("#"), _("Reference"), _("Delivered On"));
     table_header($th);
     while ($myrow = db_fetch($grns_result))
@@ -126,7 +136,7 @@ if (db_num_rows($invoice_result) > 0)
     echo "</td><td valign=top>"; // outer table
 
     display_heading2(_("Invoices/Credits"));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("#"), _("Date"), _("Total"));
     table_header($th);
     while ($myrow = db_fetch($invoice_result))
@@ -147,6 +157,6 @@ end_table(1); // outer table
 
 //----------------------------------------------------------------------------------------------------
 
-end_page(true);
+end_page(true, false, false, ST_PURCHORDER, $_GET['trans_no']);
 
 ?>

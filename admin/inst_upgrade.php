@@ -21,39 +21,6 @@ include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 //
-//	Checks $field existence in $table with given field $properties
-//	$table - table name without prefix
-//  $field -  optional field name
-//  $properties - optional properties of field defined by MySQL:
-//		'Type', 'Null', 'Key', 'Default', 'Extra'
-//
-function check_table($pref, $table, $field=null, $properties=null)
-{
-	$tables = @db_query("SHOW TABLES LIKE '".$pref.$table."'");
-	if (!db_num_rows($tables))
-		return 1;		// no such table or error
-
-	$fields = @db_query("SHOW COLUMNS FROM ".$pref.$table);
-	if (!isset($field)) 
-		return 0;		// table exists
-
-	while( $row = db_fetch_assoc($fields)) 
-	{
-		if ($row['Field'] == $field) 
-		{
-			if (!isset($properties)) 
-				return 0;
-			foreach($properties as $property => $value) 
-			{
-				if ($row[$property] != $value) 
-					return 3;	// failed type/length check
-			}
-			return 0; // property check ok.
-		}
-	}
-	return 2; // field not found
-}
-//
 //	Creates table of installer objects sorted by version.
 //
 function get_installers()
@@ -69,7 +36,7 @@ function get_installers()
 		while(false !== ($fname = readdir($datadir)))
 		{ // check all php files but index.php
 			if (!is_dir($patchdir . $fname) && ($fname != 'index.php')
-				&& stristr($fname, '.php') != false)
+				&& stristr($fname, '.php') != false && $fname[0] != '.')
 			{
 				unset($install);
 				include_once($patchdir . $fname);
@@ -102,10 +69,16 @@ function upgrade_step($index, $conn)
 			if (!$inst->pre_check($pref, $force)) return false;
 			$sql = $inst->sql;
 
+			error_log(sprintf(_("Database upgrade for company '%s' (%s:%s*) started..."),
+				$conn['name'], $conn['dbname'], $conn['tbpref']));
+				
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
 
 			$ret &= $inst->install($pref, $force);
+
+			error_log(_("Database upgrade finished."));
+
 		} else
 			if ($state!==true) {
 				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
@@ -115,26 +88,16 @@ function upgrade_step($index, $conn)
 	return $ret;
 }
 
-function db_open($conn)
-{
-	$db = mysql_connect($conn["host"] ,$conn["dbuser"], $conn["dbpassword"]);
-	if (!$db)
-		return false;
-	if (!mysql_select_db($conn["dbname"], $db))
-		return false;
-	return $db;
-}
-
 $installers = get_installers();
 
 if (get_post('Upgrade')) 
 {
 
 	$ret = true;
-	foreach ($db_connections as $conn) 
+	foreach ($db_connections as $comp => $conn) 
 	{
 	// connect to database
-		if (!($db = db_open($conn))) 
+		if (!(set_global_connection($comp))) 
 		{
 			display_error(_("Cannot connect to database for company")
 				." '".$conn['name']."'");
@@ -156,6 +119,7 @@ if (get_post('Upgrade'))
 // 		db_close($conn); ?
 		if (!$ret) break;
 	}
+	set_global_connection();
 	if($ret)
 	{	// re-read the prefs
 		global $path_to_root;
@@ -164,11 +128,12 @@ if (get_post('Upgrade'))
 		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
 		display_notification(_('All companies data has been successfully updated'));
 	}	
+	refresh_sys_prefs(); // re-read system setup
 	$Ajax->activate('_page_body');
 }
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
 	_("Force upgrade"));
 table_header($th);

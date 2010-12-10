@@ -110,6 +110,7 @@ $security_areas =array(
 	'SA_INVENTORYMOVETYPE'  => array(SS_SETUP|11, _("Inventory movement types")),
 	'SA_WORKCENTRES' => array(SS_SETUP|12, _("Manufacture work centres")),
 	'SA_FORMSETUP' => array(SS_SETUP|13, _("Forms setup")),
+	'SA_CRMCATEGORY' => array(SS_SETUP|14, _("Contact categories")),
 //
 // Special and common functions
 //
@@ -226,6 +227,7 @@ $security_areas =array(
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
 	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
+	'SA_MULTIFISCALYEARS' => array(SS_GL_C|13, _("Allow entry on non closed Fiscal years")),
 
 	'SA_BANKTRANSVIEW' => array(SS_GL|1, _("Bank transactions view")),
 	'SA_GLTRANSVIEW' => array(SS_GL|2, _("GL postings view")),
@@ -238,6 +240,7 @@ $security_areas =array(
 	'SA_BANKJOURNAL' => array(SS_GL|11, _("Journal entries to bank related accounts")),
 	'SA_BUDGETENTRY' => array(SS_GL|9, _("Budget edition")),
 	'SA_STANDARDCOST' => array(SS_GL|10, _("Item standard costs")),
+	'SA_ACCRUALS' => array(SS_GL|12, _("Revenue / Cost Accruals")),
 
 	'SA_GLANALYTIC' => array(SS_GL_A|1, _("GL analytical reports and inquiries")),
 	'SA_TAXREP' => array(SS_GL_A|2, _("Tax reports and inquiries")),
@@ -257,9 +260,11 @@ function add_access_extensions()
 	global $security_areas, $security_sections, $installed_extensions;
 
 	foreach($installed_extensions as $extid => $ext) {
+		$accext = hook_invoke($ext['package'], 'install_access', $dummy);
+		if ($accext == null) continue;
+
 		$scode = 100;
 		$acode = 100;
-		$accext = get_access_extensions($extid);
 		$extsections = $accext[1];
 		$extareas = $accext[0];
 		$extcode = $extid<<16;
@@ -290,6 +295,7 @@ function add_access_extensions()
 /*
 	Helper function to retrieve extension access definitions in isolated environment.
 */
+/*
 function get_access_extensions($id) {
 	global $path_to_root, $installed_extensions;
 	
@@ -298,9 +304,9 @@ function get_access_extensions($id) {
 	$security_sections = $security_areas = array();
 	
 	if (isset($ext['acc_file']))
-		include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+		include_once($path_to_root.'/'.$ext['path'].'/'.$ext['acc_file']);
 
 	return array($security_areas, $security_sections);
 }
-
+*/
 ?>

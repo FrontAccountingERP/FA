@@ -99,21 +99,15 @@ function can_delete($selected_id)
 {
 	if ($selected_id == -1)
 		return false;
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE tax_group_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query customers");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'cust_branch', 'tax_group_id'))	
 	{
-		display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
+		display_error(_("Cannot delete this tax group because customer branches been created referring to it."));
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE tax_group_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query suppliers");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'suppliers', 'tax_group_id'))
 	{
-		display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
+		display_error(_("Cannot delete this tax group because suppliers been created referring to it."));
 		return false;
 	}
 
@@ -147,9 +141,11 @@ if ($Mode == 'RESET')
 $result = get_all_tax_groups(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+
+start_table(TABLESTYLE);
 $th = array(_("Description"), _("Shipping Tax"), "", "");
 inactive_control_column($th);
+
 table_header($th);
 
 $k = 0;
@@ -179,7 +175,7 @@ end_table(1);
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
@@ -210,9 +206,9 @@ yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true
 
 end_table();
 
-display_note(_("Select the taxes that are included in this group."), 1);
+display_note(_("Select the taxes that are included in this group."), 1, 1);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 //$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 //Editable rate has been removed 090920 Joe Hunt
 $th = array(_("Tax"), _("Rate (%)"));

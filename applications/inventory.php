@@ -1,19 +1,18 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class inventory_app extends application 
+class inventory_app extends application
 {
-	function inventory_app() 
+	function inventory_app()
 	{
-		global $installed_extensions;
 		$this->application("stock", _($this->help_context = "&Items and Inventory"));
 
 		$this->add_module(_("Transactions"));
@@ -55,16 +54,8 @@ class inventory_app extends application
 			"inventory/purchasing_data.php?", 'SA_PURCHASEPRICING');
 		$this->add_rapp_function(3, _("Standard &Costs"),
 			"inventory/cost_update.php?", 'SA_STANDARDCOST');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "stock")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 

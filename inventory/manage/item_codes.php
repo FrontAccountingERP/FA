@@ -117,7 +117,7 @@ $dflt_cat = $result['category_id'];
 
 $result = get_all_item_codes($_POST['stock_id']);
 div_start('code_table');
-	start_table("$table_style width=60%");
+	start_table(TABLESTYLE, "width=60%");
 
 	$th = array(_("EAN/UPC Code"), _("Quantity"), _("Units"), 
 		_("Description"),_("Category"), "", "");
@@ -169,7 +169,7 @@ if ($selected_id != '') {
 }
 
 echo "<br>";
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 hidden('code_id', $selected_id);
 

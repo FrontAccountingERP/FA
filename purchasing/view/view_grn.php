@@ -36,7 +36,7 @@ display_grn_summary($purchase_order);
 
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 $table_style width=90%");
+start_table(TABLESTYLE, "colspan=9 width=90%");
 $th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
 	_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
 
@@ -66,14 +66,25 @@ foreach ($purchase_order->line_items as $stock_item)
 	$total += $line_total;
 }
 
-$display_total = number_format2($total,user_price_dec());
-label_row(_("Total Excluding Tax/Shipping"),  $display_total,
-	"colspan=6", "nowrap align=right");
+$display_sub_tot = number_format2($total,user_price_dec());
+label_row(_("Sub Total"), $display_sub_tot,
+	"align=right colspan=6", "nowrap align=right", 1);
+
+$taxes = $purchase_order->get_taxes();
+$tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included, 1);
+
+$display_total = price_format(($total + $tax_total));
+
+start_row();
+label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cell('');
+end_row();
+
 
 end_table(1);
 
 is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_SUPPRECEIVE, $_GET['trans_no']);
 
 ?>

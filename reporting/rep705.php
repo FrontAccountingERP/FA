@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/admin/db/tags_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -71,7 +72,7 @@ function getPeriods($yr, $mo, $account, $dimension, $dimension2)
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
+function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2, $tags)
 {
 	$ctotal = array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 	$total = array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
@@ -83,6 +84,11 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 	$result = get_gl_accounts(null, null, $type);	
 	while ($account=db_fetch($result))
 	{
+		if ($tags != -1 && is_array($tags) && $tags[0] != false)
+		{
+			if (!is_record_in_tags($tags, TAG_ACCOUNT, $account['account_code']))
+				continue;
+		}	
 		$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
 		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&	!$bal['per05'] && 
 			!$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && 
@@ -130,7 +136,7 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 			$rep->NewLine();
 		}
 
-		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2, $tags);
 		for ($i = 1; $i <= 12; $i++)
 		{
 			$total[$i] += $totals_arr[$i];
@@ -167,21 +173,24 @@ function print_annual_expense_breakdown()
 		$year = $_POST['PARAM_0'];
 		$dimension = $_POST['PARAM_1'];
 		$dimension2 = $_POST['PARAM_2'];
-		$comments = $_POST['PARAM_3'];
-		$destination = $_POST['PARAM_4'];
+		$tags = (isset($_POST['PARAM_3']) ? $_POST['PARAM_3'] : -1);
+		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
 	else if ($dim == 1)
 	{
 		$year = $_POST['PARAM_0'];
 		$dimension = $_POST['PARAM_1'];
-		$comments = $_POST['PARAM_2'];
-		$destination = $_POST['PARAM_3'];
+		$tags = (isset($_POST['PARAM_2']) ? $_POST['PARAM_2'] : -1);
+		$comments = $_POST['PARAM_3'];
+		$destination = $_POST['PARAM_4'];
 	}
 	else
 	{
 		$year = $_POST['PARAM_0'];
-		$comments = $_POST['PARAM_1'];
-		$destination = $_POST['PARAM_2'];
+		$tags = (isset($_POST['PARAM_1']) ? $_POST['PARAM_1'] : -1);
+		$comments = $_POST['PARAM_2'];
+		$destination = $_POST['PARAM_3'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -237,7 +246,8 @@ function print_annual_expense_breakdown()
                     		'from' => get_dimension_string($dimension), 'to' => ''),
                     	3 => array('text' => _("Dimension")." 2",
                     		'from' => get_dimension_string($dimension2), 'to' => ''),
-                    	4 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+                    	4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''),	
+                    	5 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
     }
     else if ($dim == 1)
@@ -247,7 +257,8 @@ function print_annual_expense_breakdown()
                     		'from' => $year, 'to' => ''),
                     	2 => array('text' => _('Dimension'),
                     		'from' => get_dimension_string($dimension), 'to' => ''),
-                    	3 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+                    	3 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''),	
+                    	4 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
     }
     else
@@ -255,7 +266,8 @@ function print_annual_expense_breakdown()
     	$params =   array( 	0 => $comments,
                     	1 => array('text' => _("Year"),
                     		'from' => $year, 'to' => ''),
-                    	2 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+                    	2 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''),	
+                    	3 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
     }
 
@@ -263,7 +275,7 @@ function print_annual_expense_breakdown()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 	
@@ -283,7 +295,8 @@ function print_annual_expense_breakdown()
 		$typeresult = get_account_types(false, $class['cid'], -1);
 		while ($accounttype=db_fetch($typeresult))
 		{
-			$classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, 
+				$dimension2, $tags);
 			for ($i = 1; $i <= 12; $i++)
 				$ctotal[$i] += $classtotal[$i];
 		}

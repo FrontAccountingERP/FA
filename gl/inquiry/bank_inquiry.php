@@ -39,7 +39,7 @@ if (get_post('Show'))
 //------------------------------------------------------------------------------------------------
 
 start_form();
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 
@@ -53,44 +53,36 @@ end_form();
 
 //------------------------------------------------------------------------------------------------
 
-
-$date_after = date2sql($_POST['TransAfterDate']);
-$date_to = date2sql($_POST['TransToDate']);
 if (!isset($_POST['bank_account']))
 	$_POST['bank_account'] = "";
-$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-	WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($_POST['bank_account']) . "
-	AND trans_date >= '$date_after'
-	AND trans_date <= '$date_to'
-	ORDER BY trans_date,".TB_PREF."bank_trans.id";
 
-$result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
+$result = get_bank_trans_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate'], $_POST['TransToDate']);	
 
 div_start('trans_tbl');
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");
 table_header($th);
 
-$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act="
-	.db_escape($_POST['bank_account']) . "
-	AND trans_date < '$date_after'";
-$before_qty = db_query($sql, "The starting balance on hand could not be calculated");
+$bfw = get_balance_before_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate']);
 
-start_row("class='inquirybg'");
-label_cell("<b>"._("Opening Balance")." - ".$_POST['TransAfterDate']."</b>", "colspan=4");
-$bfw_row = db_fetch_row($before_qty);
-$bfw = $bfw_row[0];
+$credit = $debit = 0;
+start_row("class='inquirybg' style='font-weight:bold'");
+label_cell(_("Opening Balance")." - ".$_POST['TransAfterDate'], "colspan=4");
 display_debit_or_credit_cells($bfw);
 label_cell("");
 label_cell("", "colspan=2");
 
 end_row();
 $running_total = $bfw;
+if ($bfw > 0 ) 
+	$debit += $bfw;
+else 
+	$credit += $bfw;
 $j = 1;
 $k = 0; //row colour counter
 while ($myrow = db_fetch($result))
@@ -110,6 +102,10 @@ while ($myrow = db_fetch($result))
 	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 	label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 	end_row();
+ 	if ($myrow["amount"] > 0 ) 
+ 		$debit += $myrow["amount"];
+ 	else 
+ 		$credit += $myrow["amount"];
 
 	if ($j == 12)
 	{
@@ -120,9 +116,12 @@ while ($myrow = db_fetch($result))
 }
 //end of while loop
 
-start_row("class='inquirybg'");
-label_cell("<b>" . _("Ending Balance")." - ". $_POST['TransToDate']. "</b>", "colspan=4");
-display_debit_or_credit_cells($running_total);
+start_row("class='inquirybg' style='font-weight:bold'");
+label_cell(_("Ending Balance")." - ". $_POST['TransToDate'], "colspan=4");
+amount_cell($debit);
+amount_cell(-$credit);
+//display_debit_or_credit_cells($running_total);
+amount_cell($debit+$credit);
 label_cell("");
 label_cell("", "colspan=2");
 end_row();

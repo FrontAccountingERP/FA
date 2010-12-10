@@ -35,16 +35,15 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		$sql = "UPDATE ".TB_PREF."groups SET description=".db_escape($_POST['description'])." WHERE id = ".db_escape($selected_id);
+    		update_sales_group($selected_id, $_POST['description']);
 			$note = _('Selected sales group has been updated');
     	} 
     	else 
     	{
-    		$sql = "INSERT INTO ".TB_PREF."groups (description) VALUES (".db_escape($_POST['description']) . ")";
+    		add_sales_group($_POST['description']);
 			$note = _('New sales group has been added');
     	}
     
-    	db_query($sql,"The sales group could not be updated or added");
 		display_notification($note);    	
 		$Mode = 'RESET';
 	}
@@ -57,19 +56,14 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE group_no=".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'cust_branch', 'group_no'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this group because customers have been created using this group."));
 	} 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
-		db_query($sql,"could not delete sales group");
-
+		delete_sales_group($selected_id);
 		display_notification(_('Selected sales group has been deleted'));
 	} //end if Delete area
 	$Mode = 'RESET';
@@ -84,14 +78,11 @@ if ($Mode == 'RESET')
 }
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."groups";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$sql .= " ORDER BY description";
-$result = db_query($sql,"could not get groups");
+$result = get_sales_groups(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
-$th = array(_("Group Name"), "", "");
+start_table(TABLESTYLE, "width=30%");
+$th = array(_("ID"), _("Group Name"), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -102,6 +93,7 @@ while ($myrow = db_fetch($result))
 	
 	alt_table_row_color($k);
 		
+	label_cell($myrow["id"]);
 	label_cell($myrow["description"]);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
@@ -110,26 +102,22 @@ while ($myrow = db_fetch($result))
 }
 
 inactive_control_row($th);
-end_table();
-
-echo '<br>';
+end_table(1);
 
 //-------------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
-
-		$result = db_query($sql,"could not get group");
-		$myrow = db_fetch($result);
+		$myrow = get_sales_group($selected_id);
 
 		$_POST['description']  = $myrow["description"];
 	}
 	hidden("selected_id", $selected_id);
+	label_row(_("ID"), $myrow["id"]);
 } 
 
 text_row_ex(_("Group Name:"), 'description', 30); 

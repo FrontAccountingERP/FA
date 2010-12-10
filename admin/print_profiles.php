@@ -23,13 +23,13 @@ $selected_id = get_post('profile_id','');
 // Returns array of defined reports
 //
 function get_reports() {
-	global $path_to_root, $comp_path, $go_debug;
+	global $path_to_root, $go_debug;
 
 if ($go_debug || !isset($_SESSION['reports'])) {	
 	// to save time, store in session.
 		$paths = array (
 			$path_to_root.'/reporting/',
-			$comp_path .'/'. user_company() . '/reporting/');
+			company_path(). '/reporting/');
 		$reports = array( '' => _('Default printing destination'));
 
 	foreach($paths as $dirno => $path) {
@@ -77,9 +77,7 @@ function check_delete($name)
 {
 // check if selected profile is used by any user
 	if ($name=='') return 0; // cannot delete system default profile
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE print_profile=".db_escape($name);
-	$res = db_query($sql,'cannot check printing profile usage');
-	return db_num_rows($res);
+	return key_in_foreign_table($name, 'users', 'print_profile');
 }
 //-------------------------------------------------------------------------------------------
 if ( get_post('submit'))
@@ -146,7 +144,7 @@ while ($myrow = db_fetch($result)) {
 	$prints[$myrow['report']] = $myrow['printer'];
 }
 
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Report Id"), _("Description"), _("Printer"));
 table_header($th);
 

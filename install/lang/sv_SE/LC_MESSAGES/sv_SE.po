@@ -1,0 +1,464 @@
+# Frontaccounting ERP Installer
+# Copyright (C) 2010 FrontAccounting LLC
+# This file is distributed under the same license as the FrontAccounting package.
+# Joe Hunt <joe.hunt.consulting@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-08 12:50+0200\n"
+"PO-Revision-Date: 2010-08-08 17:14+0100\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+
+#: /var/www/fa2.3/devel/../install/index.php:20
+#: /var/www/fa2.3/devel/../install/index.php:40
+msgid "FrontAccouting ERP Installation Wizard"
+msgstr "FrontAccounting ERP installationswizard"
+
+#: /var/www/fa2.3/devel/../install/index.php:41
+#, php-format
+msgid "Step %d: %s"
+msgstr "Steg %d: %s"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+msgid "Chart of accounts"
+msgstr "Kontoplaner"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Encoding"
+msgstr "Kodning"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Description"
+msgstr "Beskrivning"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Install"
+msgstr "Installera"
+
+#: /var/www/fa2.3/devel/../install/index.php:65
+#: /var/www/fa2.3/devel/../install/index.php:93
+msgid "Installed"
+msgstr "Installerad"
+
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Language"
+msgstr "Språk"
+
+#: /var/www/fa2.3/devel/../install/index.php:156
+msgid "Cannot save system configuration file 'config.php'."
+msgstr "Kan inte spara system konfigurationsfilen 'config.php'."
+
+#: /var/www/fa2.3/devel/../install/index.php:173
+msgid "Cannot open 'config_db.php' configuration file."
+msgstr "Kan inte öppna 'config_db.php' konfigurationsfilen."
+
+#: /var/www/fa2.3/devel/../install/index.php:176
+msgid "Cannot write to the 'config_db.php' configuration file."
+msgstr "Kan inte skriva till 'config_db.php konfigutionsfilen."
+
+#: /var/www/fa2.3/devel/../install/index.php:179
+msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
+msgstr "Konfigurationsfilen 'config_db.php' är inte skrivbar. Ändra så att den ör skrivbar, och kör installationssteget igen."
+
+#: /var/www/fa2.3/devel/../install/index.php:217
+msgid "Host name cannot be empty."
+msgstr "Värtsnamnet kan inte vara tomt."
+
+#: /var/www/fa2.3/devel/../install/index.php:221
+msgid "Database user name cannot be empty."
+msgstr "Databas användarnamet kan inte vara tomt."
+
+#: /var/www/fa2.3/devel/../install/index.php:225
+msgid "Database name cannot be empty."
+msgstr "Databasnamnet kan inte vara toms."
+
+#: /var/www/fa2.3/devel/../install/index.php:277
+msgid "Company name cannot be empty."
+msgstr "Företagsnamnet kan inte vara tomt."
+
+#: /var/www/fa2.3/devel/../install/index.php:281
+msgid "Company admin name cannot be empty."
+msgstr "Företags admin namnet kan inte vara tomt."
+
+#: /var/www/fa2.3/devel/../install/index.php:285
+msgid "Company admin password cannot be empty."
+msgstr "Företags admin lösenordet kan inte vara tomt."
+
+#: /var/www/fa2.3/devel/../install/index.php:289
+msgid "Company admin passwords differ."
+msgstr "Företags admin lösenordet är inte samma."
+
+#: /var/www/fa2.3/devel/../install/index.php:320
+msgid "System Diagnostics"
+msgstr "System diagnostik"
+
+#: /var/www/fa2.3/devel/../install/index.php:323
+msgid "Select install wizard language:"
+msgstr "Välj installationswizardens språk:"
+
+#: /var/www/fa2.3/devel/../install/index.php:329
+msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
+msgstr "Alla programmets behov ser ut att vara korrekta. Vänligen tryck Fortsätt knappen nedan."
+
+#: /var/www/fa2.3/devel/../install/index.php:330
+#: /var/www/fa2.3/devel/../install/index.php:356
+#: /var/www/fa2.3/devel/../install/index.php:363
+#: /var/www/fa2.3/devel/../install/index.php:370
+#: /var/www/fa2.3/devel/../install/index.php:389
+msgid "Continue >>"
+msgstr "Fortsätt >>"
+
+#: /var/www/fa2.3/devel/../install/index.php:332
+msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
+msgstr "Programmet kan inte installeras. Vänligen fixa problemen som är beskrivna nedan och tryk Upprepa knappen."
+
+#: /var/www/fa2.3/devel/../install/index.php:333
+msgid "Refresh"
+msgstr "Upprepa"
+
+#: /var/www/fa2.3/devel/../install/index.php:343
+msgid "Database Server Settings"
+msgstr "Databasserver inställningar"
+
+#: /var/www/fa2.3/devel/../install/index.php:345
+msgid "Server Host:"
+msgstr "Server värt:"
+
+#: /var/www/fa2.3/devel/../install/index.php:346
+msgid "Database User:"
+msgstr "Databasanvändare:"
+
+#: /var/www/fa2.3/devel/../install/index.php:347
+msgid "Database Password:"
+msgstr "Databaslösenord:"
+
+#: /var/www/fa2.3/devel/../install/index.php:348
+msgid "Database Name:"
+msgstr "Databasnamn:"
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+msgid "Use '0_' Table Prefix:"
+msgstr "Använd '0_' tabell prefix:"
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+msgid "Yes"
+msgstr "Ja"
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+msgid "No"
+msgstr "Nej"
+
+#: /var/www/fa2.3/devel/../install/index.php:350
+msgid "Install Additional Language Packs from FA Repository:"
+msgstr "Installera ytterligare språkpaket från FA Repository:"
+
+#: /var/www/fa2.3/devel/../install/index.php:351
+msgid "Install Additional COAs from FA Repository:"
+msgstr "Installera ytterligare kontoplaner från FA lagret:"
+
+#: /var/www/fa2.3/devel/../install/index.php:353
+msgid "Use table prefix if you share selected database for more than one FA company."
+msgstr "Använd tabell prefix om du delar databasen med flera än ett företag."
+
+#: /var/www/fa2.3/devel/../install/index.php:354
+msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
+msgstr "Välj inte ytterligare språk eller kontoplaner om du inte har någon fungerande internet förbindelse nu. Du kan installere dem senare."
+
+#: /var/www/fa2.3/devel/../install/index.php:355
+#: /var/www/fa2.3/devel/../install/index.php:362
+#: /var/www/fa2.3/devel/../install/index.php:369
+#: /var/www/fa2.3/devel/../install/index.php:388
+msgid "<< Back"
+msgstr "<< Tillbaka"
+
+#: /var/www/fa2.3/devel/../install/index.php:360
+msgid "User Interface Languages Selection"
+msgstr "Användar språkval"
+
+#: /var/www/fa2.3/devel/../install/index.php:367
+msgid "Charts of Accounts Selection"
+msgstr "Kontoplansval"
+
+#: /var/www/fa2.3/devel/../install/index.php:379
+msgid "Company Settings"
+msgstr "Företagsinställningar"
+
+#: /var/www/fa2.3/devel/../install/index.php:381
+msgid "Company Name:"
+msgstr "Företagsnamn:"
+
+#: /var/www/fa2.3/devel/../install/index.php:382
+msgid "Admin Login:"
+msgstr "Admin logga in:"
+
+#: /var/www/fa2.3/devel/../install/index.php:383
+msgid "Admin Password:"
+msgstr "Admin lösenord:"
+
+#: /var/www/fa2.3/devel/../install/index.php:384
+msgid "Reenter Password:"
+msgstr "Upprepa lösenordet:"
+
+#: /var/www/fa2.3/devel/../install/index.php:385
+msgid "Select Chart of Accounts:"
+msgstr "Välj kontoplan:"
+
+#: /var/www/fa2.3/devel/../install/index.php:386
+msgid "Select Default Language:"
+msgstr "Välj standardspråk:"
+
+#: /var/www/fa2.3/devel/../install/index.php:393
+msgid "FrontAccounting ERP has been installed successsfully."
+msgstr "FrontAccounting ERP har installerats."
+
+#: /var/www/fa2.3/devel/../install/index.php:394
+msgid "Please do not forget to remove install wizard folder."
+msgstr "Vänligen glöm inte att omdöpa eller ta bort installationswizrdens mapp."
+
+#: /var/www/fa2.3/devel/../install/index.php:396
+msgid "Click here to start."
+msgstr "Klicka här för at börja:"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:15
+msgid "Info"
+msgstr "Info"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:16
+msgid "Optional"
+msgstr "Frivillig"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:17
+msgid "Recommended"
+msgstr "Rekommanderad"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:18
+msgid "Required "
+msgstr "Nödvändig"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:24
+msgid "MySQL version"
+msgstr "MySQL version"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:28
+msgid "Upgrade MySQL server to version at least 4.1"
+msgstr "Uppgradera MySQL servern till minst version 4.1"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:35
+msgid "PHP MySQL extension"
+msgstr "PHP MySQL tillägg"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:40
+msgid "Your PHP has to have MySQL extension enabled."
+msgstr "Din PHP måste ha MySQL tillägg aktiverat."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:46
+msgid "PHP version"
+msgstr "PHP version"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:50
+msgid "Upgrade PHP to version at least 4.3.3"
+msgstr "Uppgradera PHP till minst 4.3.3"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:57
+msgid "Server system"
+msgstr "Serversystem"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:67
+msgid "Session save path"
+msgstr "Session save path"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:79
+msgid "Removed install wizard folder"
+msgstr "Omdöpt installationswizardens mapp"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:82
+msgid "Not removed"
+msgstr "Inte borttagen"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:83
+msgid "Remove or rename install wizard folder for security reasons."
+msgstr "Ta bort eller omdöp installationswizardens mapp av säkerhetsmässiga orsaker."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:90
+msgid "Browser type"
+msgstr "Browswrtyp"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:94
+msgid "Any browser is supported"
+msgstr "Alla browser stöds."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:101
+msgid "Http server type"
+msgstr "Http servertyp"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:105
+msgid "Any server is supported"
+msgstr "Alla servrar stöds"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:112
+msgid "Native gettext"
+msgstr "Inhemsk gettext"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:116
+msgid "In case of no gettext support, php emulation is used"
+msgstr "Om inte gettext stöds, används PHP emulering."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:124
+msgid "Debugging mode"
+msgstr "Debug sätt"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:128
+msgid "To switch debugging on set $go_debug>0 in config.php file"
+msgstr "För att koppla på debugging, sätt $go_debug>0 i config.php filen"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:137
+msgid "Error logging"
+msgstr "Fellogg"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:145
+msgid "Disabled"
+msgstr "Bortkopplat"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:148
+msgid "To switch error logging set $error_logging in config.php file"
+msgstr "För att koppla på fel log, sätt $error_logging i config.php filen"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:151
+msgid "Log file is not writeable"
+msgstr "Loggfilen är inte skrivbar"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:161
+msgid "Current database version"
+msgstr "Nuvarande databasversion"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:165
+msgid "Database structure seems to be not upgraded to current version"
+msgstr "Databasstruktur tycks inte ha blivit uppgraderat till nuvarande version"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:180
+msgid "Company subdirectories consistency"
+msgstr "Företagsundermapp konsistens "
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:193
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:200
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:208
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:225
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:345
+#, php-format
+msgid "'%s' is not writeable"
+msgstr "'%s' är inte skrivbar"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:221
+msgid "Temporary directory"
+msgstr "Temporär mapp"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:233
+msgid "Language configuration consistency"
+msgstr "Språkkonfiguration konsistens"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:242
+msgid "Languages folder should be writeable."
+msgstr "Språkmapp måste vara skrivbar"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:250
+msgid "Languages configuration file should be writeable."
+msgstr "Språkkonfigurationsfil måste vara skrivbar."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:268
+#, php-format
+msgid "Missing %s translation file."
+msgstr "'%s' översättningsfil saknas."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:273
+#, php-format
+msgid "Missing system locale: %s"
+msgstr "System locale: %s saknas"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:286
+msgid "Main config file"
+msgstr "Huvud config fil"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:293
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:315
+#, php-format
+msgid "Can't write '%s' file. Check FA directory write permissions."
+msgstr "Kan inte skriva till '%s' fil. Kolla FA mappens skrivbarhet."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:294
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:316
+#, php-format
+msgid "'%s' file exists."
+msgstr "'%s' filen finns redan."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:298
+#, php-format
+msgid "'%s' file should be read-only"
+msgstr "'%s' filen måste vara read-only"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:307
+msgid "Database auth file"
+msgstr "Databas Auth fil"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:320
+#, php-format
+msgid "'%s' file should be read-only if you do not plan to add or change companies"
+msgstr "'%s' filen måste vara read-only om du inte planerar att lägga till eller ändra företag."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:331
+msgid "Extensions system"
+msgstr "Tilläggssystem"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:366
+msgid "Extensions configuration files and directories should be writeable"
+msgstr "Tillägskonfigurationsfilen och mappar måste vara skrivbara"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:378
+#, php-format
+msgid "Non-standard theme directory '%s' is not writable"
+msgstr "Icke standard theme mapp '%s' är inte skrivbar"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:388
+msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
+msgstr "OpenSSL PHP tillägget måste vara aktivt för att använda tillägslagret"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:391
+msgid "OpenSSL have to be available on your server to use extension repository system."
+msgstr "OpenSSL måste finnas på din server för att använda tillägslagret."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Test"
+msgstr "Test"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Test type"
+msgstr "Testtyp"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Value"
+msgstr "Värde"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Comments"
+msgstr "Kommentarer"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:438
+msgid "Ok"
+msgstr "Ok"
+

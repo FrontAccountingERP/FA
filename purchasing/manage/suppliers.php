@@ -15,9 +15,8 @@ include($path_to_root . "/includes/session.inc");
 
 page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
 
-//include($path_to_root . "/includes/date_functions.inc");
-
-include($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/ui/contacts_view.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -25,7 +24,151 @@ if (isset($_GET['supplier_id']))
 {
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
-$new_supplier = get_post('supplier_id') == ''; 
+
+$supplier_id = get_post('supplier_id'); 
+//--------------------------------------------------------------------------------------------
+function supplier_settings(&$supplier_id)
+{
+
+	start_outer_table(TABLESTYLE2);
+
+	table_section(1);
+
+	if ($supplier_id) 
+	{
+		//SupplierID exists - either passed when calling the form or from the form itself
+		$myrow = get_supplier($_POST['supplier_id']);
+
+		$_POST['supp_name'] = $myrow["supp_name"];
+		$_POST['supp_ref'] = $myrow["supp_ref"];
+		$_POST['address']  = $myrow["address"];
+		$_POST['supp_address']  = $myrow["supp_address"];
+
+		$_POST['gst_no']  = $myrow["gst_no"];
+		$_POST['website']  = $myrow["website"];
+		$_POST['supp_account_no']  = $myrow["supp_account_no"];
+		$_POST['bank_account']  = $myrow["bank_account"];
+		$_POST['dimension_id']  = $myrow["dimension_id"];
+		$_POST['dimension2_id']  = $myrow["dimension2_id"];
+		$_POST['curr_code']  = $myrow["curr_code"];
+		$_POST['payment_terms']  = $myrow["payment_terms"];
+		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
+		$_POST['tax_group_id'] = $myrow["tax_group_id"];
+		$_POST['tax_included'] = $myrow["tax_included"];
+		$_POST['payable_account']  = $myrow["payable_account"];
+		$_POST['purchase_account']  = $myrow["purchase_account"];
+		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
+		$_POST['notes']  = $myrow["notes"];
+	 	$_POST['inactive'] = $myrow["inactive"];
+	} 
+	else 
+	{
+		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
+			$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
+		$_POST['dimension_id'] = 0;
+		$_POST['dimension2_id'] = 0;
+		$_POST['tax_included'] = 0;
+		$_POST['sales_type'] = -1;
+		$_POST['gst_no'] = $_POST['bank_account'] = '';
+		$_POST['payment_terms']  = '';
+		$_POST['credit_limit'] = price_format(0);
+
+		$company_record = get_company_prefs();
+		$_POST['curr_code']  = $company_record["curr_default"];
+		$_POST['payable_account'] = $company_record["creditors_act"];
+		$_POST['purchase_account'] = ''; // default/item's cogs account
+		$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+	}
+
+	table_section_title(_("Basic Data"));
+
+	text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
+	text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
+
+	text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
+	link_row(_("Website:"), 'website', null, 35, 55);
+	if ($supplier_id && !is_new_supplier($supplier_id)) 
+	{
+		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
+		hidden('curr_code', $_POST['curr_code']);
+	} 
+	else 
+	{
+		currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
+	}
+	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
+
+	if (!$supplier_id) {
+		table_section_title(_("Contact Data"));
+		text_row(_("Contact Person:"), 'contact', null, 42, 40);
+		text_row(_("Phone Number:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
+	}
+	table_section_title(_("Purchasing"));
+	text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
+	amount_row(_("Credit Limit:"), 'credit_limit', null);
+	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
+	//
+	// tax_included option from supplier record is used directly in update_average_cost() function,
+	// therefore we can't edit the option after any transaction waas done for the supplier.
+	//
+	if (is_new_supplier($supplier_id))
+		check_row(_("Prices contain tax included:"), 'tax_included');
+	else {
+		hidden('tax_included');
+		label_row(_("Prices contain tax included:"), $_POST['tax_included'] ? _('Yes') : _('No'));
+	}
+	table_section_title(_("Accounts"));
+	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
+	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account'],
+		false, false, _("Use Item Inventory/COGS Account"));
+	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
+
+	table_section(2);
+	$dim = get_company_pref('use_dimension');
+	if ($dim >= 1)
+	{
+		table_section_title(_("Dimension"));
+		dimensions_list_row(_("Dimension")." 1:", 'dimension_id', null, true, " ", false, 1);
+		if ($dim > 1)
+			dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, " ", false, 2);
+	}
+	if ($dim < 1)
+		hidden('dimension_id', 0);
+	if ($dim < 2)
+		hidden('dimension2_id', 0);
+
+
+	table_section_title(_("Addresses"));
+	textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
+	textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
+
+	table_section_title(_("General"));
+	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+	if ($supplier_id)
+		record_status_list_row(_("Supplier status:"), 'inactive');
+
+	end_outer_table(1);
+
+	div_start('controls');
+	if ($supplier_id) 
+	{
+		submit_center_first('submit', _("Update Supplier"), 
+		  _('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
+		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
+		submit_center_last('delete', _("Delete Supplier"), 
+		  _('Delete supplier data if have been never used'), true);
+	}
+	else 
+	{
+		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
+	}
+	div_end();
+}
 
 if (isset($_POST['submit'])) 
 {
@@ -55,34 +198,15 @@ if (isset($_POST['submit']))
 	if ($input_error !=1 )
 	{
 
-		if (!$new_supplier) 
+		begin_transaction();
+		if ($supplier_id) 
 		{
-
-			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
-				supp_ref=".db_escape($_POST['supp_ref']) . ",
-                address=".db_escape($_POST['address']) . ",
-                supp_address=".db_escape($_POST['supp_address']) . ",
-                phone=".db_escape($_POST['phone']) . ",
-                phone2=".db_escape($_POST['phone2']) . ",
-                fax=".db_escape($_POST['fax']) . ",
-                gst_no=".db_escape($_POST['gst_no']) . ",
-                email=".db_escape($_POST['email']) . ",
-                website=".db_escape($_POST['website']) . ",
-                contact=".db_escape($_POST['contact']) . ",
-                supp_account_no=".db_escape($_POST['supp_account_no']) . ",
-                bank_account=".db_escape($_POST['bank_account']) . ",
-                credit_limit=".input_num('credit_limit', 0) . ",
-                dimension_id=".db_escape($_POST['dimension_id']) . ",
-                dimension2_id=".db_escape($_POST['dimension2_id']) . ",
-                curr_code=".db_escape($_POST['curr_code']).",
-                payment_terms=".db_escape($_POST['payment_terms']) . ",
-				payable_account=".db_escape($_POST['payable_account']) . ",
-				purchase_account=".db_escape($_POST['purchase_account']) . ",
-				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
-                notes=".db_escape($_POST['notes']) . ",
-				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = ".db_escape($_POST['supplier_id']);
-
-			db_query($sql,"The supplier could not be updated");
+			update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
+				$_POST['supp_address'], $_POST['gst_no'],
+				$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
+				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
+				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
+				$_POST['notes'], $_POST['tax_group_id'], @$_POST['tax_included']);
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
@@ -91,40 +215,24 @@ if (isset($_POST['submit']))
 		} 
 		else 
 		{
+			add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
+				$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
+				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
+				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
+				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
-				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
-				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (".db_escape($_POST['supp_name']). ", "
-				.db_escape($_POST['supp_ref']). ", "
-				.db_escape($_POST['address']) . ", "
-				.db_escape($_POST['supp_address']) . ", "
-				.db_escape($_POST['phone']). ", "
-				.db_escape($_POST['phone2']). ", "
-				.db_escape($_POST['fax']). ", "
-				.db_escape($_POST['gst_no']). ", "
-				.db_escape($_POST['email']). ", "
-				.db_escape($_POST['website']). ", "
-				.db_escape($_POST['contact']). ", "
-				.db_escape($_POST['supp_account_no']). ", "
-				.db_escape($_POST['bank_account']). ", "
-				.input_num('credit_limit',0). ", "
-				.db_escape($_POST['dimension_id']). ", "
-				.db_escape($_POST['dimension2_id']). ", "
-				.db_escape($_POST['curr_code']). ", "
-				.db_escape($_POST['payment_terms']). ", "
-				.db_escape($_POST['payable_account']). ", "
-				.db_escape($_POST['purchase_account']). ", "
-				.db_escape($_POST['payment_discount_account']). ", "
-				.db_escape($_POST['notes']). ", "
-				.db_escape($_POST['tax_group_id']). ")";
+			$supplier_id = $_POST['supplier_id'] = db_insert_id();
 
-			db_query($sql,"The supplier could not be added");
-			$_POST['supplier_id'] = db_insert_id();
-			$new_supplier = false;
+			add_crm_person($_POST['supp_ref'], $_POST['contact'], '', $_POST['address'], 
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
+				$_POST['rep_lang'], '');
+
+			add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
+
 			display_notification(_("A new supplier has been added."));
 			$Ajax->activate('_page_body');
 		}
+		commit_transaction();
 	}
 
 } 
@@ -136,10 +244,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id=".db_escape($_POST['supplier_id']);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
@@ -147,10 +252,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE supplier_id=".db_escape($_POST['supplier_id']);
-		$result = db_query($sql,"check failed");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
@@ -159,11 +261,10 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	}
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($_POST['supplier_id']);
-		db_query($sql,"check failed");
+		delete_supplier($_POST['supplier_id']);
 
 		unset($_SESSION['supplier_id']);
-		$new_supplier = true;
+		$supplier_id = '';
 		$Ajax->activate('_page_body');
 	} //end if Delete supplier
 }
@@ -172,8 +273,8 @@ start_form();
 
 if (db_has_suppliers()) 
 {
-	start_table("", 3);
-//	start_table("class = 'tablestyle_noborder'");
+	start_table(false, "", 3);
+//	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
 		  _('New supplier'), true, check_value('show_inactive'));
@@ -190,139 +291,27 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-start_outer_table($table_style2, 5);
+if (!$supplier_id)
+	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
-table_section(1);
-
-if (!$new_supplier) 
-{
-	//SupplierID exists - either passed when calling the form or from the form itself
-	$myrow = get_supplier($_POST['supplier_id']);
-
-	$_POST['supp_name'] = $myrow["supp_name"];
-	$_POST['supp_ref'] = $myrow["supp_ref"];
-	$_POST['address']  = $myrow["address"];
-	$_POST['supp_address']  = $myrow["supp_address"];
-	$_POST['phone']  = $myrow["phone"];
-	$_POST['phone2']  = $myrow["phone2"];
-	$_POST['fax']  = $myrow["fax"];
-	$_POST['gst_no']  = $myrow["gst_no"];
-	$_POST['email']  = $myrow["email"];
-	$_POST['website']  = $myrow["website"];
-	$_POST['contact']  = $myrow["contact"];
-	$_POST['supp_account_no']  = $myrow["supp_account_no"];
-	$_POST['bank_account']  = $myrow["bank_account"];
-	$_POST['dimension_id']  = $myrow["dimension_id"];
-	$_POST['dimension2_id']  = $myrow["dimension2_id"];
-	$_POST['curr_code']  = $myrow["curr_code"];
-	$_POST['payment_terms']  = $myrow["payment_terms"];
-	$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
-	$_POST['tax_group_id'] = $myrow["tax_group_id"];
-	$_POST['payable_account']  = $myrow["payable_account"];
-	$_POST['purchase_account']  = $myrow["purchase_account"];
-	$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
-	$_POST['notes']  = $myrow["notes"];
- 	$_POST['inactive'] = $myrow["inactive"];
-} 
-else 
-{
-	$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
-		$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
-	$_POST['dimension_id'] = 0;
-	$_POST['dimension2_id'] = 0;
-	$_POST['sales_type'] = -1;
-	$_POST['email'] = $_POST['phone'] = $_POST['phone2'] = $_POST['fax'] = 
-		$_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
-	$_POST['payment_terms']  = '';
-	$_POST['credit_limit']	= price_format(0);
-
-	$company_record = get_company_prefs();
-	$_POST['curr_code']  = $company_record["curr_default"];
-	$_POST['payable_account'] = $company_record["creditors_act"];
-	$_POST['purchase_account'] = $company_record["default_cogs_act"];
-	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
- 	$_POST['inactive'] = 0;
-}
-
-table_section_title(_("Name and Contact"));
-
-text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
-text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
-text_row(_("Contact Person:"), 'contact', null, 42, 40);
-
-text_row(_("Phone Number:"), 'phone', null, 32, 30);
-text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-text_row(_("Fax Number:"), 'fax', null, 32, 30);
-
-email_row(_("E-mail:"), 'email', null, 35, 55);
-link_row(_("Website:"), 'website', null, 35, 55);
-text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
-
-table_section_title(_("Addresses"));
-textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
-textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
-
-table_section(2);
-
-table_section_title(_("Purchasing"));
-text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
-text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
-amount_row(_("Credit Limit:"), 'credit_limit', null);
-if (!$new_supplier) 
-{
-	label_row(_("Supplier's Currency:"), $_POST['curr_code']);
-	hidden('curr_code', $_POST['curr_code']);
-} 
-else 
-{
-	currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
-}
-
-tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
-
-payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
-
-table_section_title(_("Accounts"));
-
-gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
-
-gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
-
-gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
-
-$dim = get_company_pref('use_dimension');
-if ($dim >= 1)
-{
-	table_section_title(_("Dimension"));
-
-	dimensions_list_row(_("Dimension")." 1:", 'dimension_id', null, true, " ", false, 1);
-	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, " ", false, 2);
-}
-if ($dim < 1)
-	hidden('dimension_id', 0);
-if ($dim < 2)
-	hidden('dimension2_id', 0);
-table_section_title(_("General"));
-textarea_row(_("General Notes:"), 'notes', null, 35, 5);
-record_status_list_row(_("Supplier status:"), 'inactive');
-
-end_outer_table(1);
-
-div_start('controls');
-if (!$new_supplier) 
-{
-	submit_center_first('submit', _("Update Supplier"), 
-	  _('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
-	submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
-	submit_center_last('delete', _("Delete Supplier"), 
-	  _('Delete supplier data if have been never used'), true);
-}
-else 
-{
-	submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
-}
-div_end();
+tabbed_content_start('tabs', array(
+		'settings' => array(_('&General settings'), $supplier_id),
+		'contacts' => array(_('&Contacts'), $supplier_id),
+	));
+	
+	switch (get_post('_tabs_sel')) {
+		default:
+		case 'settings':
+			supplier_settings($supplier_id); 
+			break;
+		case 'contacts':
+			$contacts = new contacts('contacts', $supplier_id, 'supplier');
+			$contacts->show();
+			break;
+		case 'orders':
+	};
+br();
+tabbed_content_end();
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 

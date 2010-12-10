@@ -15,9 +15,9 @@ include_once($path_to_root . "/includes/ui.inc");
 
 function display_credit_header(&$order)
 {
-	global $table_style, $Ajax, $Refs;
+	global $Ajax, $Refs;
 
-	start_outer_table("width=80% $table_style");
+	start_outer_table(TABLESTYLE, "width=80%");
 	table_section(1);
 
 	$customer_error = "";
@@ -80,11 +80,11 @@ function display_credit_header(&$order)
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
-		$_POST['ref'] = $Refs->get_next(11);
+		$_POST['ref'] = $Refs->get_next(ST_CUSTCREDIT);
 	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else
-	    label_row(_("Reference").':', $_POST['ref'] );
+	    label_row(_("Reference").':', $order->reference);
 
 
 	if (!is_company_currency($order->customer_currency))
@@ -159,11 +159,11 @@ function display_credit_header(&$order)
 
 function display_credit_items($title, &$order)
 {
-    global $table_style, $path_to_root;
+    global $path_to_root;
 
     display_heading($title);
     div_start('items_table');
-    start_table("$table_style width=90%");
+    start_table(TABLESTYLE, "width=90%");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 	_("Price"), _("Discount %"), _("Total"),'');
 
@@ -247,10 +247,11 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	if ($line_no!=-1 && $line_no == $id)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format(($order->line_items[$id]->discount_percent)*100);
-		$_POST['units'] = $order->line_items[$id]->units;
+		$units = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$id]->item_description, "nowrap");
@@ -269,21 +270,23 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 		$dec = $item_info['decimals'];
    		$_POST['qty'] = number_format2(0, $dec);
-		$_POST['units'] = $item_info["units"];
-		$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
-		    $order->sales_type, $order->price_factor, $order->document_date));
-
+		$units = $item_info["units"];
+		$price = get_price($_POST['stock_id'],
+			$order->customer_currency, $order->sales_type,
+			$order->price_factor, get_post('OrderDate'));
+		$_POST['price'] = price_format($price);
+		
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
-	label_cell($_POST['units']);
-	amount_cells(null, 'price',  null);
-	small_amount_cells(null, 'Disc', percent_format(0), null, null, user_percent_dec());
+	label_cell($units, '', 'units');
+	amount_cells(null, 'price');
+	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
-	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100));
+	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100), false, '', 'line_total');
 
 	if ($id!=-1)
 	{
@@ -308,14 +311,14 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 function credit_options_controls($credit)
 {
-	global $table_style2, $Ajax;
-	echo "<br>";
+	global $Ajax;
+	br();
 
-if (isset($_POST['_CreditType_update']))
-	$Ajax->activate('options');
+	if (isset($_POST['_CreditType_update']))
+		$Ajax->activate('options');
 
- div_start('options');
-	start_table("$table_style2");
+	div_start('options');
+	start_table(TABLESTYLE2);
 
 	credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 

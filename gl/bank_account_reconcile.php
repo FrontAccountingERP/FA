@@ -118,17 +118,10 @@ function change_tpl_flag($reconcile_id)
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
-	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
-		." WHERE id=".db_escape($reconcile_id);
-
-  	db_query($sql, "Can't change reconciliation status");
-	// save last reconcilation status (date, end balance)
-    $sql2="UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
-			.date2sql($_POST["reconcile_date"])."',
-    	    ending_reconcile_balance=".input_num("end_balance")
-			." WHERE id=".db_escape($_POST["bank_account"]);
-
-	$result = db_query($sql2,"Error updating reconciliation information");
+	
+	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
+		input_num('end_balance'), $_POST['bank_account']);
+		
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
 	return true;
@@ -168,7 +161,7 @@ if (isset($_POST['Reconcile'])) {
 
 //------------------------------------------------------------------------------------------------
 start_form();
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 
@@ -177,19 +170,7 @@ bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
 end_row();
 end_table();
 
-$date = date2sql(get_post('reconcile_date'));
- // temporary fix to enable fix of invalid entries made in 2.2RC
-if ($date == 0) $date = '0000-00-00';
-
-$sql = "SELECT MAX(reconciled) as last_date,
-		 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
-		 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
-		 SUM(amount) as total
-	FROM ".TB_PREF."bank_trans trans
-	WHERE bank_act=".db_escape($_POST['bank_account']);
-//	." AND trans.reconciled IS NOT NULL";
-
-$result = db_query($sql,"Cannot retrieve reconciliation data");
+$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
 
 if ($row = db_fetch($result)) {
 	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
@@ -200,11 +181,8 @@ if ($row = db_fetch($result)) {
 		$_POST["end_balance"] = price_format($row["end_balance"]);
 		if (get_post('bank_date')) {
 			// if it is the last updated bank statement retrieve ending balance
-			$sql = "SELECT ending_reconcile_balance
-				FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($_POST['bank_account'])
-				. " AND last_reconciled_date=".db_escape($_POST['bank_date']);
-			$result = db_query($sql,"Cannot retrieve last reconciliation");
-			$row = db_fetch($result);
+
+			$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 			if($row) {
 				$_POST["end_balance"] = price_format($row["ending_reconcile_balance"]);
 			}
@@ -216,7 +194,7 @@ echo "<hr>";
 
 div_start('summary');
 
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Reconcile Date"), _("Beginning<br>Balance"), 
 	_("Ending<br>Balance"), _("Account<br>Total"),_("Reconciled<br>Amount"), _("Difference"));
 table_header($th);
@@ -245,13 +223,7 @@ echo "<hr>";
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-$sql = "SELECT	type, trans_no, ref, trans_date, 
-				amount,	person_id, person_type_id, reconciled, id
-		FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($_POST['bank_account']) . "
-			AND (reconciled IS NULL OR reconciled='". $date ."')
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
-// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);

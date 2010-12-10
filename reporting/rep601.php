@@ -84,7 +84,7 @@ function print_bank_transactions()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 
 	$prev_balance = get_bank_balance_to($from, $account["id"]);
@@ -104,11 +104,11 @@ function print_bank_transactions()
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
+		$total_debit = $total_credit = 0;
 		if ($rows > 0)
 		{
 			// Keep a running total as we loop through
 			// the transactions.
-			$total_debit = $total_credit = 0;			
 			
 			while ($myrow=db_fetch($trans))
 			{
@@ -134,7 +134,7 @@ function print_bank_transactions()
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
 					$rep->Line($rep->row - 2);
-					$rep->Header();
+					$rep->NewPage();
 				}
 			}
 			$rep->NewLine();

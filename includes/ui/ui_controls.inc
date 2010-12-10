@@ -9,9 +9,27 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+/*
+	Retrieve value of POST variable(s).
+	For $name passed as array $dflt is not used, 
+	default values can be passed as values with non-numeric keys instead.
+	If some field have user formatted numeric value, pass float default value to
+	convert automatically to POSIX.
+*/
 function get_post($name, $dflt='')
 {
-	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+	if (is_array($name)) {
+		$ret = array();
+		foreach($name as $key => $dflt)
+			if (!is_numeric($key)) {
+				$ret[$key] = is_float($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
+			} else {
+				$ret[$dflt] = get_post($dflt, null);
+			}
+		return $ret;
+	} else
+		return is_float($dflt) ? input_num($name, $dflt) : 
+				((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 }
 //---------------------------------------------------------------------------------
 
@@ -38,12 +56,19 @@ function end_form($breaks=0)
 	if ($breaks)
 		br($breaks);
 	echo "<input type=\"hidden\" name=\"_focus\" value=\"".get_post('_focus')."\">\n";
+	echo "<input type=\"hidden\" name=\"_modified\" value=\"".get_post('_modified', 0)."\">\n";
 	echo "</form>\n";
 }
 
-function start_table($extra="", $padding='2', $spacing='0')
+function start_table($class=false, $extra="", $padding='2', $spacing='0')
 {
 	echo "<center><table";
+	if ($class == TABLESTYLE_NOBORDER)
+		echo " class='tablestyle_noborder'";
+	elseif ($class == TABLESTYLE2)
+		echo " class='tablestyle2'";
+	elseif ($class == TABLESTYLE)
+		echo " class='tablestyle'";
 	if ($extra != "")
 		echo " $extra";
 	echo " cellpadding=$padding cellspacing=$spacing>\n";
@@ -56,11 +81,11 @@ function end_table($breaks=0)
 		br($breaks);
 }
 
-function start_outer_table($extra="", $padding='2', $spacing='0', $br=false)
+function start_outer_table($class=false, $extra="", $padding='2', $spacing='0', $br=false)
 {
 	if ($br)
 		br();
-	start_table($extra, $padding, $spacing);
+	start_table($class, $extra, $padding, $spacing);
 	echo "<tr valign=top><td>\n"; // outer table
 }
 
@@ -125,14 +150,27 @@ function access_string($label, $clean=false)
 	return $clean ? $label : array($label, $access);
 }
 
-function hyperlink_back($center=true, $no_menu=true)
+function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 {
+	global $path_to_root;
+
 	if ($center)
 		echo "<center>";
-	start_table("width=20%");
+	$id = 0;	
+	if ($no_menu && $trans_no != 0)
+	{
+		include_once($path_to_root."/admin/db/attachments_db.inc");
+		$id = has_attachment($type_no, $trans_no);
+	}
+	$width = ($id != 0 ? "30%" : "20%");	
+	start_table(false, "width=$width");
 	start_row();
 	if ($no_menu)
+	{
+		if ($id != 0)
+			echo "<td align=center><a href='$path_to_root/admin/attachments.php?vw=$id' target='blanc_'>"._("View Attachment")."</a></td>\n";
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
+	}	
 	echo "<td align=center><a href='javascript:goBack();'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
 	end_row();
 	end_table();
@@ -180,7 +218,6 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 	}
 	else
 		$preview_str = $label;
-
  return $preview_str;
 }
 
@@ -200,12 +237,12 @@ function submenu_option($title, $url, $id=null)
 
 function submenu_view($title, $type, $number, $id=null)
 {
-	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
+	display_note(get_trans_view_str($type, $number, $title, false, 'viewlink', $id), 0, 1);
 }
 
 function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
 {
-	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+	display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
 }
 //-----------------------------------------------------------------------------------
 
@@ -327,6 +364,55 @@ function div_end()
 			$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
 		echo "</div>";
     }
+}
+
+//-----------------------------------------------------------------------------
+//	Tabbed area:
+// 	$name - prefix for widget internal elements:
+//		Nth tab submit name:  {$name}_N
+//		div id:	_{$name}_div
+//		sel (hidden) name: _{$name}_sel
+// $tabs - array of tabs; string: tab title or array(tab_title, enabled_status)
+
+function tabbed_content_start($name, $tabs, $dft='') {
+    global $Ajax;
+
+    $selname = '_'.$name.'_sel';
+	$div = '_'.$name.'_div';
+
+	$sel = find_submit($name.'_', false);
+	if($sel==null)
+		$sel = get_post($selname, (string)($dft==='' ? key($tabs) : $dft));
+
+	if ($sel!==@$_POST[$selname])
+		$Ajax->activate($name);
+
+	$_POST[$selname] = $sel;
+
+	div_start($name);
+	$str = "<ul class='ajaxtabs' rel='$div'>\n";
+	foreach($tabs as $tab_no => $tab) {
+		
+		$acc = access_string(is_array($tab) ? $tab[0] : $tab);
+		$disabled = (is_array($tab) && !$tab[1])  ? 'disabled ' : '';
+		$str .= ( "<li>"
+			."<button type='submit' name='{$name}_".$tab_no
+			."' class='".((string)$tab_no===$sel ? 'current':'ajaxbutton')."' $acc[1] $disabled>"
+			."<span>$acc[0]</span>"
+			."</button>\n"
+			."</li>\n" );
+	}
+
+	$str .= "</ul>\n";
+	$str .= "<div class='spaceBox'></div>\n";
+	$str .= "<input type='hidden' name='$selname' value='$sel'>\n";
+	$str .= "<div class='contentBox' id='$div'>\n";
+	echo $str;
+}
+
+function tabbed_content_end() {
+	echo "</div>"; // content box (don't change to div_end() unless div_start() is used above)
+	div_end(); // tabs widget
 }
 
 /* Table editor interfaces. Key is editor type
@@ -465,6 +551,46 @@ function editor_return($vars, $restore_fun='') {
 				set_focus($postname);
 			}
 	}
+}
+
+function confirm_dialog($submit, $msg) {
+	if (find_post($submit)) {
+		display_warning($msg);
+		br();
+		submit_center_first('DialogConfirm', _("Proceed"), '', true);
+		submit_center_last('DialogCancel', _("Cancel"), '', 'cancel');
+		return 0;
+	} else
+		return get_post('DialogConfirm', 0);
+}
+
+/*
+	Block menu/shortcut links during transaction procesing.
+*/
+function page_processing($msg = false)
+{
+	global $Ajax;
+
+	if ($msg === true)
+		$msg = _('Entered data has not been saved yet.\nDo you want to abandon changes?');
+
+	$js = "_validate._processing=" . (
+		$msg ? '\''.strtr($msg, array("\n"=>'\\n')) . '\';' : 'null;');
+	if (in_ajax()) {
+		$Ajax->addScript(true, $js);
+	} else
+		add_js_source($js);
+}
+
+function page_modified($status = true)
+{
+	global $Ajax;
+
+	$js = "_validate._modified=" . ($status ? 1:0).';';
+	if (in_ajax()) {
+		$Ajax->addScript(true, $js);
+	} else
+		add_js_source($js);
 }
 
 ?>

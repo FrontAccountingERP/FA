@@ -51,6 +51,10 @@ function login_fail()
 
 function check_page_security($page_security)
 {
+	global $SysPrefs;
+	
+	$msg = '';
+	
 	if (!$_SESSION["wa_current_user"]->check_user_access())
 	{
 		// notification after upgrade from pre-2.2 version
@@ -58,7 +62,11 @@ function check_page_security($page_security)
 			 _("Security settings have not been defined for your user account.")
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-
+	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) {
+		$msg = _('Access to application has been blocked until database upgrade is completed by system administrator.');
+	}
+	
+	if ($msg){
 		display_error($msg);
 		end_page();
 		kill_login();
@@ -75,6 +83,14 @@ function check_page_security($page_security)
 		end_page();
 		exit;
 	}
+	if (!$_SESSION['SysPrefs']->db_ok 
+		&& !in_array($page_security, array('SA_SOFTWAREUPGRADE', 'SA_OPEN', 'SA_BACKUP')))
+	{
+		display_error(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
+		end_page();
+		exit;
+	}
+
 }
 /*
 	Helper function for setting page security level depeding on 
@@ -115,6 +131,18 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_cleanup(&$parms)
+{
+	foreach($parms as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		if (is_array($value))
+			html_cleanup($parms[$name]);
+		else
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	}
+	reset($parms); // needed for direct key() usage later throughout the sources
+}
+
 //============================================================================
 //
 //
@@ -140,6 +168,10 @@ if (!isset($path_to_root))
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 
+include_once($path_to_root . "/includes/errors.inc");
+// colect all error msgs
+set_error_handler('error_handler' /*, errtypes */);
+
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
@@ -147,6 +179,9 @@ include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
+include_once($path_to_root . "/includes/prefs/sysprefs.inc");
+
+include_once($path_to_root . "/includes/hooks.inc");
 
 /*
 	Uncomment the setting below when using FA on shared hosting
@@ -158,11 +193,13 @@ include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FA'.md5(dirname(__FILE__)));
+//include_once($path_to_root.'/modules/www_statistics/includes/db_sessions.inc');
 session_start();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
+include_once($path_to_root . "/config.php");
 get_text_init();
 
 // Page Initialisation
@@ -170,20 +207,14 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
-	 isset($l['rtl']) ? 'rtl' : 'ltr');
+	 (isset($l['rtl']) && $l['rtl'] === true) ? 'rtl' : 'ltr');
 }
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
 
-// include $Hooks object if locale file exists
-if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
-{
-	include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
-	$Hooks = new Hooks();
-}
 
 include_once($path_to_root . "/includes/access_levels.inc");
-include_once($path_to_root . "/config.php");
+include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
 
 // Ajax communication object
@@ -196,19 +227,19 @@ $Editors = array();
 // page help. Currently help for function keys.
 $Pagehelp = array();
 
-$SysPrefs = new sys_prefs();
-
 $Refs = new references();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');
 ob_start('output_html',0);
 
-// colect all error msgs
-set_error_handler('error_handler' /*, errtypes */);
-
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
+
+html_cleanup($_GET);
+html_cleanup($_POST);
+html_cleanup($_REQUEST);
+html_cleanup($_SERVER);
 
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
@@ -223,7 +254,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @$_SERVER['REQUEST_URI']), 
+					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding)), 
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");
@@ -251,14 +282,18 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 	if (!$_SESSION["wa_current_user"]->old_db)
 		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
+	install_hooks();
+
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
 		$_SESSION["App"]->init();
 	}
 }
 
+$SysPrefs = &$_SESSION['SysPrefs'];
+
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
-	$_POST = strip_quotes($_POST);
+$_POST = strip_quotes($_POST);
 
 ?>

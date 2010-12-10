@@ -43,7 +43,7 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 			".TB_PREF."stock_moves.tran_date,
 			SUM(-".TB_PREF."stock_moves.qty) AS qty,
 			SUM(-".TB_PREF."stock_moves.qty*".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent)) AS amt,
-			SUM(-".TB_PREF."stock_moves.qty *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost)) AS cost
+			SUM(-IF(".TB_PREF."stock_moves.standard_cost <> 0, ".TB_PREF."stock_moves.qty * ".TB_PREF."stock_moves.standard_cost, ".TB_PREF."stock_moves.qty *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost))) AS cost
 		FROM ".TB_PREF."stock_master,
 			".TB_PREF."stock_category,
 			".TB_PREF."debtor_trans,
@@ -127,7 +127,7 @@ function print_inventory_sales()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($category, $location, $fromcust, $from, $to);
 	$total = $grandtotal = 0.0;
@@ -161,7 +161,7 @@ function print_inventory_sales()
 		$trans['amt'] *= $rate;
 		$cb = $trans['amt'] - $trans['cost'];
 		$rep->NewLine();
-		$rep->fontsize -= 2;
+		$rep->fontSize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		if ($fromcust == ALL_NUMERIC)
 		{
@@ -174,7 +174,7 @@ function print_inventory_sales()
 		$rep->AmountCol(4, 5, $trans['amt'], $dec);
 		$rep->AmountCol(5, 6, $trans['cost'], $dec);
 		$rep->AmountCol(6, 7, $cb, $dec);
-		$rep->fontsize += 2;
+		$rep->fontSize += 2;
 		$total += $trans['amt'];
 		$total1 += $trans['cost'];
 		$total2 += $cb;

@@ -26,7 +26,7 @@ page(_($help_context = "Exchange Rates"), false, false, "", $js);
 simple_page_mode(false);
 
 //---------------------------------------------------------------------------------------------
-function check_data()
+function check_data($selected_id)
 {
 	if (!is_date($_POST['date_']))
 	{
@@ -40,7 +40,7 @@ function check_data()
 		set_focus('BuyRate');
 		return false;
 	}
-	if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
+	if (!$selected_id && get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
 	{
 		display_error( _("The exchange rate for the date is already there."));
 		set_focus('date_');
@@ -55,7 +55,7 @@ function handle_submit()
 {
 	global $selected_id;
 
-	if (!check_data())
+	if (!check_data($selected_id))
 		return false;
 
 	if ($selected_id != "")
@@ -101,7 +101,6 @@ function del_link($row)
 
 function display_rates($curr_code)
 {
-	global $table_style;
 
 }
 
@@ -109,9 +108,9 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $table_style2, $Ajax;
+	global $selected_id, $Ajax;
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != "")
 	{
@@ -120,7 +119,7 @@ function display_rate_edit()
 		$myrow = get_exchange_rate($selected_id);
 
 		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
+		$_POST['BuyRate'] = maxprec_format($myrow["rate_buy"]);
 
 		hidden('selected_id', $selected_id);
 		hidden('date_', $_POST['date_']);
@@ -136,12 +135,11 @@ function display_rate_edit()
 	if (isset($_POST['get_rate']))
 	{
 		$_POST['BuyRate'] = 
-			exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+			maxprec_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
-	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true),
-		user_exrate_dec());
+	amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
+	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true), 'max');
 
 	end_table(1);
 
@@ -191,10 +189,7 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 
 set_global_curr_code($_POST['curr_abrev']);
 
-$sql = "SELECT date_, rate_buy, id FROM "
-	.TB_PREF."exchange_rates "
-	."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
-	 ORDER BY date_ DESC";
+$sql = get_sql_for_exchange_rates();
 
 $cols = array(
 	_("Date to Use From") => 'date', 

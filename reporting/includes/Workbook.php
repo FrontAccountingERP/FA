@@ -4878,7 +4878,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
     */
     function setInputEncoding($encoding)
     {
-    	global $encoding_string;
+    	global $encoding_string; 
          if ($encoding != 'UTF-16LE' && !function_exists('iconv')) {
              die("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
@@ -8265,6 +8265,8 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     */
     function _storeSharedStringsTable()
     {
+    	global $encoding_string;
+
         $record  = 0x00fc;  // Record identifier
         // sizes are upside down
         $this->_block_sizes = array_reverse($this->_block_sizes);
@@ -8287,7 +8289,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
         foreach (array_keys($this->_str_table) as $string) {
 
             $string_length = strlen($string);
-            $encoding      = 0; // assume there are no Unicode strings
+            $encoding      = $encoding_string ? 1:0; // this is FA specific assumption
             $split_string  = 0;
 
             // Block length is the total length of the strings that will be

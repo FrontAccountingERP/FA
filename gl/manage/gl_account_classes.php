@@ -19,19 +19,20 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-simple_page_mode(true);
+simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
 {
 	global $use_oldstyle_convert;
-	if (!is_numeric($_POST['id'])) 
+
+	if (strlen(trim($_POST['id'])) == 0) 
 	{
-		display_error( _("The account class ID must be numeric."));
+		display_error( _("The account class ID cannot be empty."));
 		set_focus('id');
 		return false;
 	}
-	if (strlen($_POST['name']) == 0) 
+	if (strlen(trim($_POST['name'])) == 0) 
 	{
 		display_error( _("The account class name cannot be empty."));
 		set_focus('name');
@@ -50,7 +51,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (can_process()) 
 	{
 
-    	if ($selected_id != -1) 
+    	if ($selected_id != "") 
     	{
     		if(update_account_class($selected_id, $_POST['name'], $_POST['ctype']))
 				display_notification(_('Selected account class settings has been updated'));
@@ -69,13 +70,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	if ($selected_id == -1)
+	if ($selected_id == "")
 		return false;
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE class_id=$selected_id";
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'chart_types', 'class_id'))	
 	{
 		display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
 		return false;
@@ -101,7 +98,7 @@ if ($Mode == 'Delete')
 //-----------------------------------------------------------------------------------
 if ($Mode == 'RESET')
 {
-	$selected_id = -1;
+	$selected_id = "";
 	$_POST['id']  = $_POST['name']  = $_POST['ctype'] =  '';
 }
 //-----------------------------------------------------------------------------------
@@ -109,7 +106,7 @@ if ($Mode == 'RESET')
 $result = get_account_classes(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
 	$th[2] = _("Balance Sheet");
@@ -140,22 +137,22 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
-if ($selected_id != -1) 
+if ($selected_id != "") 
 {
- if ($Mode == 'Edit') {
-	//editing an existing status code
-	$myrow = get_account_class($selected_id);
-
-	$_POST['id']  = $myrow["cid"];
-	$_POST['name']  = $myrow["class_name"];
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
-		$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-	else
-		$_POST['ctype']  = $myrow["ctype"];
-	hidden('selected_id', $selected_id);
- }
+ 	if ($Mode == 'Edit') {
+		//editing an existing status code
+		$myrow = get_account_class($selected_id);
+	
+		$_POST['id']  = $myrow["cid"];
+		$_POST['name']  = $myrow["class_name"];
+		if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+			$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
+		else
+			$_POST['ctype']  = $myrow["ctype"];
+		hidden('selected_id', $selected_id);
+ 	}
 	hidden('id');
 	label_row(_("Class ID:"), $_POST['id']);
 
@@ -175,7 +172,7 @@ else
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == "", '', 'both');
 
 end_form();
 

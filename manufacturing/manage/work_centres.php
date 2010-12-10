@@ -56,19 +56,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE workcentre_added=".db_escape($selected_id);
-	$result = db_query($sql, "check can delete work centre");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'bom', 'workcentre_added'))
 	{
 		display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 		return false;
 	}
-	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."wo_requirements WHERE workcentre=".db_escape($selected_id);
-	$result = db_query($sql, "check can delete work centre");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if (key_in_foreign_table($selected_id, 'wo_requirements', 'workcentre'))	
 	{
 		display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 		return false;
@@ -103,7 +97,7 @@ if ($Mode == 'RESET')
 $result = get_all_work_centres(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=50%");
+start_table(TABLESTYLE, "width=50%");
 $th = array(_("Name"), _("description"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -126,7 +120,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

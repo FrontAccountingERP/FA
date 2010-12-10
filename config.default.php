@@ -25,10 +25,11 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Special value 'syslog' can be used for system logger usage (see php manual).
 	//$error_logfile = '';
 	$error_logfile = dirname(__FILE__).'/tmp/errors.log';
-	$debug 			= 1;
-	$show_sql 		= 0;
-	$go_debug 		= 0;
-	$pdf_debug 		= 0;
+	$debug 			= 1;	// show sql on database errors
+
+	$show_sql 		= 0;	// show all sql queries in page footer for debugging purposes
+	$go_debug 		= 0;	// set to 1 for basic debugging, or 2 to see also backtrace after failure.
+	$pdf_debug 		= 0;	// display pdf source instead reports for debugging when $go_debug!=0
 	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
 	// Warning: this produces huge amount of data in sql_trail table.
 	// Don't forget switch the option off and flush the table manually after 
@@ -36,9 +37,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	//
 	$sql_trail 		= 0; // save all sql queries in sql_trail
 	$select_trail 	= 0; // track also SELECT queries
-	if ($go_debug == 1)
+	if ($go_debug > 0)
 	{
-		error_reporting(E_ALL);
+		error_reporting(-1);
 		ini_set("display_errors", "On");
 	}
 	else
@@ -55,8 +56,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	}		
 	// Main Title
 	$app_title = "FrontAccounting";
-	// application version
-	$version 		= "2.2.11";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
@@ -64,6 +63,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Powered by
 	$power_by 		= "FrontAccounting";
 	$power_url 		= "http://frontaccounting.com";
+
+	/* Save Report selections (a value > 0 means days to save. 0 = no save) */
+	$save_report_selections = 0;
 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
@@ -88,7 +90,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-	// 	context help feed from frontaccounting.net
+	// 	context help feed from frontaccounting.com
 	// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
 	// 	not used
 	$help_base_url = null;
@@ -109,6 +111,12 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
 	$print_invoice_no = 0;
 
+	/* 1 = print Subtotal tax excluded, tax and Total tax included */
+	$alternative_tax_include_on_docs = 0;
+
+	/* suppress tax rates on documents. 0 = no, 1 = yes. */
+	$suppress_tax_rates = 0;
+	
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
@@ -119,12 +127,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$pagesizes 		= array("Letter", "A4"); // default PDF pagesize
 
-	/* Default border and spacing for tables */
-   	/* Should be moved to CSS */
- 
-    $table_style    = "class='tablestyle'";
-    $table_style2   = "class='tablestyle2'";
- 
 	/* Accounts Payable */
 	/* System check to see if quantity charged on purchase invoices exceeds the quantity received.
 	If this parameter is checked the proportion by which the purchase invoice is an overcharge

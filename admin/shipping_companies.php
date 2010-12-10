@@ -14,6 +14,7 @@ $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 page(_($help_context = "Shipping Company"));
 include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/admin/db/shipping_db.inc");
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------------
@@ -32,15 +33,7 @@ function can_process()
 //----------------------------------------------------------------------------------------------
 if ($Mode=='ADD_ITEM' && can_process()) 
 {
-
-	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, phone2, address)
-		VALUES (" . db_escape($_POST['shipper_name']) . ", " .
-		db_escape($_POST['contact']). ", " .
-		db_escape($_POST['phone']). ", " .
-		db_escape($_POST['phone2']). ", " .
-		db_escape($_POST['address']) . ")";
-
-	db_query($sql,"The Shipping Company could not be added");
+	add_shipper($_POST['shipper_name'], $_POST['contact'], $_POST['phone'], $_POST['phone2'], $_POST['address']);
 	display_notification(_('New shipping company has been added'));
 	$Mode = 'RESET';
 }
@@ -49,15 +42,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 
 if ($Mode=='UPDATE_ITEM' && can_process()) 
 {
-
-	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($_POST['shipper_name']). " ,
-		contact =" . db_escape($_POST['contact']). " ,
-		phone =" . db_escape($_POST['phone']). " ,
-		phone2 =" . db_escape($_POST['phone2']). " ,
-		address =" . db_escape($_POST['address']). "
-		WHERE shipper_id = ".db_escape($selected_id);
-
-	db_query($sql,"The shipping company could not be updated");
+	update_shipper($selected_id, $_POST['shipper_name'], $_POST['contact'], $_POST['phone'], $_POST['phone2'], $_POST['address']);
 	display_notification(_('Selected shipping company has been updated'));
 	$Mode = 'RESET';
 }
@@ -68,10 +53,7 @@ if ($Mode == 'Delete')
 {
 // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE ship_via=".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'sales_orders', 'ship_via'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
@@ -79,19 +61,14 @@ if ($Mode == 'Delete')
 	else 
 	{
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE ship_via=".db_escape($selected_id);
-		$result = db_query($sql,"check failed");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if (key_in_foreign_table($selected_id, 'debtor_trans', 'ship_via'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 		} 
 		else 
 		{
-			$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=".db_escape($selected_id);
-			db_query($sql,"could not delete shipper");
+			delete_shipper($selected_id);
 			display_notification(_('Selected shipping company has been deleted'));
 		}
 	}
@@ -107,13 +84,10 @@ if ($Mode == 'RESET')
 }
 //----------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."shippers";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$sql .= " ORDER BY shipper_id";
-$result = db_query($sql,"could not get shippers");
+$result = get_shippers(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -139,17 +113,14 @@ end_table(1);
 
 //----------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
 		//editing an existing Shipper
 
-		$sql = "SELECT * FROM ".TB_PREF."shippers WHERE shipper_id=".db_escape($selected_id);
-
-		$result = db_query($sql, "could not get shipper");
-		$myrow = db_fetch($result);
+		$myrow = get_shipper($selected_id);
 
 		$_POST['shipper_name']	= $myrow["shipper_name"];
 		$_POST['contact']	= $myrow["contact"];

@@ -10,17 +10,21 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //-------------------------------------------------------------------------------------------------------------
-
-function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $supp_reference,
-	$amount, $amount_tax, $discount, $err_msg="", $rate=0)
+//
+//	FIXME - this should be revised for transaction update case.
+//
+function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $reference, $supp_reference,
+	$amount, $amount_tax, $discount, $err_msg="", $rate=0, $included=0)
 {
+	$new = $trans_no==0;
 	$date = date2sql($date_);
 	if ($due_date == "")
 		$due_date = "0000-00-00";
 	else
 		$due_date = date2sql($due_date);
 
-	$trans_no = get_next_trans_no($type);
+	if ($new)
+		$trans_no = get_next_trans_no($type);
 
 	$curr = get_supplier_currency($supplier_id);
 	
@@ -29,11 +33,11 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 
 
 	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date,
-		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
+		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount, tax_included) ";
 	$sql .= "VALUES (".db_escape($trans_no).", ".db_escape($type)
 	.", ".db_escape($supplier_id).", '$date', '$due_date',
 		".db_escape($reference).", ".db_escape($supp_reference).", ".db_escape($amount)
-		.", ".db_escape($amount_tax).", ".db_escape($rate).", ".db_escape($discount).")";
+		.", ".db_escape($amount_tax).", ".db_escape($rate).", ".db_escape($discount).", ".db_escape($included).")";
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction record";
@@ -126,6 +130,15 @@ function void_supp_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
+function clear_supp_trans($type, $type_no)
+{
+	$sql = "DELETE FROM ".TB_PREF."supp_trans 
+			WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+
+	db_query($sql, "could not clear supp transactions for type=$type and trans_no=$type_no");
+}
+//----------------------------------------------------------------------------------------
+
 function post_void_supp_trans($type, $type_no)
 {
 	if ($type == ST_SUPPAYMENT)
@@ -150,4 +163,83 @@ function post_void_supp_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
+function get_sql_for_supplier_inquiry()
+{
+    $date_after = date2sql($_POST['TransAfterDate']);
+    $date_to = date2sql($_POST['TransToDate']);
+
+    $sql = "SELECT trans.type, 
+		trans.trans_no,
+		trans.reference, 
+		supplier.supp_name, 
+		trans.supp_reference,
+    	trans.tran_date, 
+		trans.due_date,
+		supplier.curr_code, 
+    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+		trans.alloc AS Allocated,
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+    	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
+    	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
+    	WHERE supplier.supplier_id = trans.supplier_id
+     	AND trans.tran_date >= '$date_after'
+    	AND trans.tran_date <= '$date_to'
+		AND trans.ov_amount != 0";	// exclude voided transactions
+
+	$sql2 = "SELECT ".ST_SUPPRECEIVE." as type, 
+		trans.id as trans_no,
+		trans.reference, 
+		supplier.supp_name, 
+		'' as supp_reference,
+    	delivery_date as tran_date, 
+		'' as due_date,
+		supplier.curr_code, 
+    	'' AS TotalAmount,
+		'' AS Allocated,
+		0 as OverDue,
+    	1 as Settled
+    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier
+    	WHERE supplier.supplier_id = trans.supplier_id
+     	AND trans.delivery_date >= '$date_after'
+    	AND trans.delivery_date <= '$date_to'";
+
+   	if ($_POST['supplier_id'] != ALL_TEXT) {
+   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+   		$sql2 .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+	}
+	if (($_POST['filterType'] == '6')) 
+	{
+			$sql = $sql2;
+	} 
+	elseif (!isset($_POST['filterType']) || $_POST['filterType'] == ALL_TEXT || $_POST['filterType'] == '6') {
+		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr";
+   	}
+
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	{
+   		if (($_POST['filterType'] == '1')) 
+   		{
+   			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
+   		} 
+   		elseif (($_POST['filterType'] == '2')) 
+   		{
+   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
+   		} 
+   		elseif ($_POST['filterType'] == '3') 
+   		{
+			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
+   		} 
+   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
+   		{
+			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
+   		}
+
+   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
+   		{
+   			$today =  date2sql(Today());
+			$sql .= " AND trans.due_date < '$today' ";
+   		}
+   	}
+   	return $sql;
+}
 ?>

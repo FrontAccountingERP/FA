@@ -86,5 +86,97 @@ function get_gl_account_name($code)
 	display_db_error("could not retreive the account name for $code", $sql, true);
 }
 
+function gl_account_in_company_defaults($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sys_prefs WHERE (name='debtors_act' 
+		OR name='pyt_discount_act'
+		OR name='creditors_act' 
+		OR name='bank_charge_act' 
+		OR name='exchange_diff_act'
+		OR name='profit_loss_year_act'
+		OR name='retained_earnings_act'
+		OR name='freight_act'
+		OR name='default_sales_act' 
+		OR name='default_sales_discount_act'
+		OR name='default_prompt_payment_act'
+		OR name='default_inventory_act'
+		OR name='default_cogs_act'
+		OR name='default_adj_act'
+		OR name='default_inv_sales_act'
+		OR name='default_assembly_act') AND value=$acc";
+	$result = db_query($sql,"Couldn't test for default company GL codes");
 
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_stock_category($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_category WHERE 
+		dflt_inventory_act=$acc 
+		OR dflt_cogs_act=$acc
+		OR dflt_adjustment_act=$acc 
+		OR dflt_sales_act=$acc";
+	$result = db_query($sql,"Couldn't test for existing stock category GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_stock_master($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE 
+		inventory_account=$acc 
+		OR cogs_account=$acc
+		OR adjustment_account=$acc 
+		OR sales_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing stock GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_tax_types($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
+	$result = db_query($sql,"Couldn't test for existing tax GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_cust_branch($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE 
+		sales_account=$acc 
+		OR sales_discount_account=$acc
+		OR receivables_account=$acc
+		OR payment_discount_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing cust branch GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_suppliers($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
+		purchase_account=$acc
+		OR payment_discount_account=$acc
+		OR payable_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_quick_entry_lines($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
+		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
+	$result = db_query($sql,"Couldn't test for existing Quick Entry Line GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
 ?>

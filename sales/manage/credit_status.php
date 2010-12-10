@@ -58,11 +58,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master 
-		WHERE credit_status=".db_escape($selected_id);
-	$result = db_query($sql, "could not query customers");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'debtors_master', 'credit_status'))
 	{
 		display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 		return false;
@@ -97,7 +93,7 @@ if ($Mode == 'RESET')
 $result = get_all_credit_status(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=40%");
+start_table(TABLESTYLE, "width=40%");
 $th = array(_("Description"), _("Dissallow Invoices"),'','');
 inactive_control_column($th);
 table_header($th);
@@ -131,7 +127,7 @@ echo '<br>';
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

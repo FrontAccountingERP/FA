@@ -50,7 +50,7 @@ function get_invoices($customer_id, $to)
 			".TB_PREF."debtor_trans
 
 		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+			AND ".TB_PREF."debtor_trans.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
@@ -64,7 +64,7 @@ function get_invoices($customer_id, $to)
 
 function print_aged_customer_analysis()
 {
-	global $comp_path, $path_to_root, $systypes_array;
+    global $path_to_root, $systypes_array;
 
     	$to = $_POST['PARAM_0'];
     	$fromcust = $_POST['PARAM_1'];
@@ -128,9 +128,9 @@ function print_aged_customer_analysis()
 		$headers[2] = _('Currency');
     	$rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize());
 
-    	$rep->Font();
-    	$rep->Info($params, $cols, $headers, $aligns);
-    	$rep->Header();
+    $rep->Font();
+    $rep->Info($params, $cols, $headers, $aligns);
+    $rep->NewPage();
 
 	$total = array(0,0,0,0, 0);
 
@@ -230,16 +230,15 @@ function print_aged_customer_analysis()
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
-		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path .'/'. user_company(). "/images/test.png";
+		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
 		$x = ($rep->pageWidth - $w) / 2;
 		$rep->NewLine(2);
 		if ($rep->row - $h < $rep->bottomMargin)
-			$rep->Header();
+			$rep->NewPage();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
 	$rep->NewLine();

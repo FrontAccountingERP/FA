@@ -13,14 +13,18 @@ class suppliers_app extends application
 {
 	function suppliers_app() 
 	{
-		global $installed_extensions;
 		$this->application("AP", _($this->help_context = "&Purchases"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Purchase &Order Entry"),
 			"purchasing/po_entry_items.php?NewOrder=Yes", 'SA_PURCHASEORDER');
 		$this->add_lapp_function(0, _("&Outstanding Purchase Orders Maintenance"),
-			"purchasing/inquiry/po_search.php?", 'SA_SUPPTRANSVIEW');
+			"purchasing/inquiry/po_search.php?", 'SA_GRN');
+		$this->add_lapp_function(0, _("Direct &GRN"),
+			"purchasing/po_entry_items.php?NewGRN=Yes", 'SA_GRN');
+		$this->add_lapp_function(0, _("Direct &Invoice"),
+			"purchasing/po_entry_items.php?NewInvoice=Yes", 'SA_SUPPLIERINVOICE');
+
 		$this->add_rapp_function(0, _("&Payments to Suppliers"),
 			"purchasing/supplier_payment.php?", 'SA_SUPPLIERPAYMNT');
 		$this->add_rapp_function(0, "","");
@@ -46,16 +50,8 @@ class suppliers_app extends application
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Suppliers"),
 			"purchasing/manage/suppliers.php?", 'SA_SUPPLIER');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "AP")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 

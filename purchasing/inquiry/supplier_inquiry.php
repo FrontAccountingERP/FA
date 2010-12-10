@@ -22,7 +22,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Supplier Inquiry"), false, false, "", $js);
+page(_($help_context = "Supplier Inquiry"), isset($_GET['supplier_id']), false, "", $js);
 
 if (isset($_GET['supplier_id'])){
 	$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -41,7 +41,7 @@ start_form();
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
@@ -49,7 +49,7 @@ supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-supp_allocations_list_cell("filterType", null);
+supp_transactions_list_cell("filterType", null, true);
 
 submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
@@ -61,8 +61,6 @@ set_global_supplier($_POST['supplier_id']);
 
 function display_supplier_summary($supplier_record)
 {
-	global $table_style;
-
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	$nowdue = "1-" . $past1 . " " . _('Days');
@@ -70,7 +68,7 @@ function display_supplier_summary($supplier_record)
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 	
 
-    start_table("width=80% $table_style");
+    start_table(TABLESTYLE, "width=80%");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
 
@@ -135,7 +133,7 @@ function credit_link($row)
 function fmt_debit($row)
 {
 	$value = $row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
+	return $value>0 ? price_format($value) : '';
 
 }
 
@@ -158,54 +156,7 @@ function check_overdue($row)
 }
 //------------------------------------------------------------------------------------------------
 
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
-
-    // Sherifoz 22.06.03 Also get the description
-    $sql = "SELECT trans.type, 
-		trans.trans_no,
-		trans.reference, 
-		supplier.supp_name, 
-		trans.supp_reference,
-    	trans.tran_date, 
-		trans.due_date,
-		supplier.curr_code, 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
-		trans.alloc AS Allocated,
-		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
-    	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
-    	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
-    	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'
-		AND trans.ov_amount != 0";	// exclude voided transactions
-   	if ($_POST['supplier_id'] != ALL_TEXT)
-   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
-   	{
-   		if (($_POST['filterType'] == '1')) 
-   		{
-   			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
-   		} 
-   		elseif (($_POST['filterType'] == '2')) 
-   		{
-   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
-   		{
-			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
-   		} 
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
-   		{
-			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
-   		}
-
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
-   		{
-   			$today =  date2sql(Today());
-			$sql .= " AND trans.due_date < '$today' ";
-   		}
-   	}
+$sql = get_sql_for_supplier_inquiry();
 
 $cols = array(
 			_("Type") => array('fun'=>'systype_name', 'ord'=>''), 

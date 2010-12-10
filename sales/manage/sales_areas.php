@@ -35,16 +35,15 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($_POST['description'])." WHERE area_code = ".db_escape($selected_id);
+    		update_sales_area($selected_id, $_POST['description']);
 			$note = _('Selected sales area has been updated');
     	} 
     	else 
     	{
-    		$sql = "INSERT INTO ".TB_PREF."areas (description) VALUES (".db_escape($_POST['description']) . ")";
+    		add_sales_area($_POST['description']);
 			$note = _('New sales area has been added');
     	}
     
-    	db_query($sql,"The sales area could not be updated or added");
 		display_notification($note);    	
 		$Mode = 'RESET';
 	}
@@ -57,18 +56,14 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE area=".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'cust_branch', 'area'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this area because customer branches have been created using this area."));
 	} 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."areas WHERE area_code=".db_escape($selected_id);
-		db_query($sql,"could not delete sales area");
+		delete_sales_area($selected_id);
 
 		display_notification(_('Selected sales area has been deleted'));
 	} //end if Delete area
@@ -85,12 +80,10 @@ if ($Mode == 'RESET')
 
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."areas";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$result = db_query($sql,"could not get areas");
+$result = get_sales_areas(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array(_("Area Name"), "", "");
 inactive_control_column($th);
@@ -118,16 +111,13 @@ echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."areas WHERE area_code=".db_escape($selected_id);
-
-		$result = db_query($sql,"could not get area");
-		$myrow = db_fetch($result);
+		$myrow = get_sales_area($selected_id);
 
 		$_POST['description']  = $myrow["description"];
 	}

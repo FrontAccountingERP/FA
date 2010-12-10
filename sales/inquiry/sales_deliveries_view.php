@@ -98,13 +98,18 @@ if (get_post('_DeliveryNumber_changed'))
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['OutstandingOnly']);
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
 date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
+end_row();
+
+end_table();
+start_table(TABLESTYLE_NOBORDER);
+start_row();
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
@@ -114,7 +119,7 @@ hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 
 end_row();
 
-end_table();
+end_table(1);
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
@@ -124,7 +129,7 @@ if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != ""
 }
 else
 {
-	unset($selected_stock_item);
+	$selected_stock_item = null;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -168,62 +173,7 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = "SELECT trans.trans_no,
-		debtor.name,
-		branch.branch_code,
-		branch.br_name,
-		sorder.deliver_to,
-		trans.reference,
-		sorder.customer_ref,
-		trans.tran_date,
-		trans.due_date,
-		(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
-		debtor.curr_code,
-		Sum(line.quantity-line.qty_done) AS Outstanding,
-		Sum(line.qty_done) AS Done
-	FROM "
-	 .TB_PREF."sales_orders as sorder, "
-	 .TB_PREF."debtor_trans as trans, "
-	 .TB_PREF."debtor_trans_details as line, "
-	 .TB_PREF."debtors_master as debtor, "
-	 .TB_PREF."cust_branch as branch
-		WHERE
-		sorder.order_no = trans.order_ AND
-		trans.debtor_no = debtor.debtor_no
-			AND trans.type = ".ST_CUSTDELIVERY."
-			AND line.debtor_trans_no = trans.trans_no
-			AND line.debtor_trans_type = trans.type
-			AND trans.branch_code = branch.branch_code
-			AND trans.debtor_no = branch.debtor_no ";
-
-if ($_POST['OutstandingOnly'] == true) {
-	 $sql .= " AND line.qty_done < line.quantity ";
-}
-
-//figure out the sql required from the inputs available
-if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
-{
-	$delivery = "%".$_POST['DeliveryNumber'];
-	$sql .= " AND trans.trans_no LIKE ".db_escape($delivery);
- 	$sql .= " GROUP BY trans.trans_no";
-}
-else
-{
-	$sql .= " AND trans.tran_date >= '".date2sql($_POST['DeliveryAfterDate'])."'";
-	$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
-
-	if ($selected_customer != -1)
-		$sql .= " AND trans.debtor_no=".db_escape($selected_customer)." ";
-
-	if (isset($selected_stock_item))
-		$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
-
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-		$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
-
-	$sql .= " GROUP BY trans.trans_no ";
-
-} //end no delivery number selected
+$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item);
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view'), 

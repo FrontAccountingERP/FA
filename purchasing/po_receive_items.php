@@ -53,10 +53,8 @@ if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['P
 
 function display_po_receive_items()
 {
-	global $table_style;
-
 	div_start('grn_items');
-    start_table("colspan=7 $table_style width=90%");
+    start_table(TABLESTYLE, "colspan=7 width=90%");
     $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
     	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
     table_header($th);
@@ -105,9 +103,20 @@ function display_po_receive_items()
        	}
     }
 
-    $display_total = number_format2($total,user_price_dec());
-    label_row(_("Total value of items received"), $display_total, "colspan=8 align=right",
-    	"nowrap align=right");
+	$colspan = count($th)-1;
+
+	$display_sub_total = price_format($total/* + input_num('freight_cost')*/);
+
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
+	$taxes = $_SESSION['PO']->get_taxes(input_num('freight_cost'));
+	
+	$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['PO']->tax_included);
+
+	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+
+	start_row();
+	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
+	end_row();
     end_table();
 	div_end();
 }
@@ -116,18 +125,13 @@ function display_po_receive_items()
 
 function check_po_changed()
 {
-	/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
+	/*Now need to check that the order details are the same as they were when they were read
+	into the Items array. If they've changed then someone else must have altered them */
 	// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 	// Otherwise if you try to fullfill item quantities separately will give error.
-	$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
-		FROM ".TB_PREF."purch_order_details
-		WHERE order_no=".db_escape($_SESSION['PO']->order_no)
-		." ORDER BY po_detail_item";
+	$result = get_po_items($_SESSION['PO']->order_no);
 
-	$result = db_query($sql, "could not query purch order details");
-    check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
-
-	$line_no = 1;
+	$line_no = 0;
 	while ($myrow = db_fetch($result))
 	{
 		$ln_item = $_SESSION['PO']->line_items[$line_no];
@@ -232,37 +236,43 @@ function process_receive_po()
 	if (check_po_changed())
 	{
 		display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+
 		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php",
 		 _("Select a different purchase order for receiving goods against"));
+
 		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
 			 _("Re-Read the updated purchase order for receiving goods against"),
 			 "PONumber=" . $_SESSION['PO']->order_no);
+
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
 		$Ajax->activate('_page_body');
 		display_footer_exit();
 	}
+	
+	$grn = &$_SESSION['PO'];
+	$grn->orig_order_date = $_POST['DefaultReceivedDate'];
+	$grn->reference = $_POST['ref'];
+	$grn->Location = $_POST['Location'];
 
-	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
-		$_POST['ref'], $_POST['Location']);
+	$grn_no = add_grn($grn);
 
 	new_doc_date($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn_no");
 }
 
 //--------------------------------------------------------------------------------------------------
 
 if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']))
 {
-
-	create_new_po();
-
-	/*read in all the selected order into the Items cart  */
-	read_po($_GET['PONumber'], $_SESSION['PO']);
+	create_new_po(ST_PURCHORDER, $_GET['PONumber']);
+	$_SESSION['PO']->trans_type = ST_SUPPRECEIVE;
+	$_SESSION['PO']->reference = $Refs->get_next(ST_SUPPRECEIVE);
+	copy_from_cart();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -315,7 +325,6 @@ submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear 
 end_form();
 
 //--------------------------------------------------------------------------------------------------
-
 end_page();
 ?>
 

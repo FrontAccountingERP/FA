@@ -23,15 +23,15 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) 
 { /*Script was not passed the correct parameters */
 
-	echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
-	exit;
+	display_note(_("The script must be called with a valid transaction type and transaction number to review the general ledger postings for."));
+	end_page();
 }
 
 function display_gl_heading($myrow)
 {
-	global $table_style, $systypes_array;
+	global $systypes_array;
 	$trans_name = $systypes_array[$_GET['type_id']];
-    start_table("$table_style width=95%");
+    start_table(TABLESTYLE, "width=95%");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
     	_("Date"), _("Person/Item"));
     table_header($th);	
@@ -47,15 +47,7 @@ function display_gl_heading($myrow)
 
     end_table(1);
 }
-$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
-	.TB_PREF."gl_trans as gl
-	LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	." WHERE gl.type= ".db_escape($_GET['type_id']) 
-	." AND gl.type_no = ".db_escape($_GET['trans_no'])
-	." ORDER BY counter";
-$result = db_query($sql,"could not get transactions");
-//alert("sql = ".$sql);
+$result = get_gl_trans($_GET['type_id'], $_GET['trans_no']);
 
 if (db_num_rows($result) == 0)
 {
@@ -79,13 +71,14 @@ else
 $k = 0; //row colour counter
 $heading_shown = false;
 
+$credit = $debit = 0;
 while ($myrow = db_fetch($result)) 
 {
 	if ($myrow['amount'] == 0) continue;
 	if (!$heading_shown)
 	{
 		display_gl_heading($myrow);
-		start_table("$table_style width=95%");
+		start_table(TABLESTYLE, "width=95%");
 		table_header($th);
 		$heading_shown = true;
 	}	
@@ -102,14 +95,28 @@ while ($myrow = db_fetch($result))
 	display_debit_or_credit_cells($myrow['amount']);
 	label_cell($myrow['memo_']);
 	end_row();
-
+    if ($myrow['amount'] > 0 ) 
+    	$debit += $myrow['amount'];
+    else 
+    	$credit += $myrow['amount'];
 }
+start_row("class='inquirybg' style='font-weight:bold'");
+label_cell(_("Total"), "colspan=2");
+if ($dim >= 1)
+    label_cell('');
+if ($dim > 1)
+    label_cell('');
+amount_cell($debit);
+amount_cell(-$credit);
+label_cell('');
+end_row();
+
 //end of while loop
 if ($heading_shown)
 	end_table(1);
 
 is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 
-end_page(true);
+end_page(true, false, false, $_GET['type_id'], $_GET['trans_no']);
 
 ?>

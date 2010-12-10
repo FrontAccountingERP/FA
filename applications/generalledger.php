@@ -1,19 +1,18 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class general_ledger_app extends application 
+class general_ledger_app extends application
 {
-	function general_ledger_app() 
+	function general_ledger_app()
 	{
-		global $installed_extensions;
 		$this->application("GL", _($this->help_context = "&Banking and General Ledger"));
 
 		$this->add_module(_("Transactions"));
@@ -29,7 +28,9 @@ class general_ledger_app extends application
 			"gl/gl_budget.php?", 'SA_BUDGETENTRY');
 		$this->add_rapp_function(0, _("&Reconcile Bank Account"),
 			"gl/bank_account_reconcile.php?", 'SA_RECONCILE');
-			
+		$this->add_rapp_function(0, _("Revenue / &Costs Accruals"),
+			"gl/accruals.php?", 'SA_ACCRUALS');
+
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("&Journal Inquiry"),
 			"gl/inquiry/journal_inquiry.php?", 'SA_GLANALYTIC');
@@ -45,7 +46,7 @@ class general_ledger_app extends application
 		$this->add_rapp_function(1, _("Balance &Sheet Drilldown"),
 			"gl/inquiry/balance_sheet.php?", 'SA_GLANALYTIC');
 		$this->add_rapp_function(1, _("&Profit and Loss Drilldown"),
-			"gl/inquiry/profit_loss.php?", 'SA_GLANALYTIC');		
+			"gl/inquiry/profit_loss.php?", 'SA_GLANALYTIC');
 		$this->add_rapp_function(1, _("Banking &Reports"),
 			"reporting/reports_main.php?Class=5", 'SA_BANKREP');
 		$this->add_rapp_function(1, _("General Ledger &Reports"),
@@ -70,16 +71,11 @@ class general_ledger_app extends application
 			"gl/manage/gl_account_types.php?", 'SA_GLACCOUNTGROUP');
 		$this->add_rapp_function(2, _("GL Account &Classes"),
 			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "GL")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+		$this->add_rapp_function(2, "","");
+		$this->add_rapp_function(2, _("&Revaluation of Currency Accounts"),
+			"gl/manage/revaluate_currencies.php?", 'SA_EXCHANGERATE');
+
+		$this->add_extensions();
 	}
 }
 

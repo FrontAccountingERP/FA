@@ -71,69 +71,46 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE loc_code=".db_escape($selected_id);
-	$result = db_query($sql, "could not query stock moves");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'stock_moves', 'loc_code'))
 	{
 		display_error(_("Cannot delete this location because item movements have been created using this location."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."workorders WHERE loc_code=".db_escape($selected_id);
-	$result = db_query($sql, "could not query work orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'workorders', 'loc_code'))
 	{
 		display_error(_("Cannot delete this location because it is used by some work orders records."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE default_location='$selected_id'";
-	$result = db_query($sql, "could not query customer branches");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'cust_branch', 'default_location'))
 	{
 		display_error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 		return false;
 	}
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE loc_code=".db_escape($selected_id);
-	$result = db_query($sql, "could not query bom");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'bom', 'loc_code'))
 	{
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."grn_batch WHERE loc_code=".db_escape($selected_id);
-	$result = db_query($sql, "could not query grn batch");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	
+	if (key_in_foreign_table($selected_id, 'grn_batch', 'loc_code'))
 	{
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE into_stock_location=".db_escape($selected_id);
-	$result = db_query($sql, "could not query purch orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'purch_orders', 'into_stock_location'))
 	{
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE from_stk_loc=".db_escape($selected_id);
-	$result = db_query($sql, "could not query sales orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'sales_orders', 'from_stk_loc'))
 	{
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_location=".db_escape($selected_id);
-	$result = db_query($sql, "could not query sales pos");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'sales_pos', 'pos_location'))
 	{
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
@@ -162,12 +139,10 @@ if ($Mode == 'RESET')
 	$_POST['show_inactive'] = $sav;
 }
 
-$sql = "SELECT * FROM ".TB_PREF."locations";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$result = db_query($sql, "could not query locations");;
+$result = get_item_locations(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -193,7 +168,7 @@ end_table();
 
 echo '<br>';
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 $_POST['email'] = "";
 if ($selected_id != -1) 

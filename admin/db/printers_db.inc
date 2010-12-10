@@ -41,6 +41,11 @@ function get_printer($id)
 		return  db_fetch($result);
 }
 
+function delete_printer($id)
+{
+	$sql="DELETE FROM ".TB_PREF."printers WHERE id=".db_escape($id);
+	db_query($sql,"could not delete printer definition");
+}
 //============================================================================
 // printer profiles functions
 //

@@ -11,7 +11,10 @@
 ***********************************************************************/
 function display_error($msg, $center=true)
 {
-	trigger_error($msg, E_USER_ERROR);
+	global $go_debug;
+
+	$bt = $go_debug>1 ? ('<hr>'.get_backtrace(true)) : '';
+	trigger_error($msg.$bt, E_USER_ERROR);
 }
 
 function display_notification($msg, $center=true)
@@ -55,7 +58,7 @@ function stock_item_heading($stock_id)
 {
 	if ($stock_id != "") 
 	{
-		$result = db_query("SELECT description, units FROM ".TB_PREF."stock_master WHERE stock_id='$stock_id'");		
+		$result = db_query("SELECT description, units FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id));
         $myrow = db_fetch_row($result);
         
     	display_heading("$stock_id - $myrow[0]"); 

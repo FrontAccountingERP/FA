@@ -15,6 +15,11 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args(); while (count($args) < 9) $args[] = 0;
+	$args = (object)array_combine(array('supplier_id', 'date_', 'bank_account', 
+		'amount', 'discount', 'ref', 'memo_', 'rate', 'charge'), $args);
+	$args->trans_no = 0;
+	hook_db_prewrite( $args, ST_SUPPAYMENT);
 
    	$supplier_currency = get_supplier_currency($supplier_id);
     $bank_account_currency = get_bank_account_currency($bank_account);
@@ -38,7 +43,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	$trans_type = ST_SUPPAYMENT;
 
 	/* Create a supp_trans entry for the supplier payment */
-	$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,
+	$payment_id = write_supp_trans($trans_type, 0, $supplier_id, $date_, $date_,
 		$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 
 	// Now debit creditors account with payment + discount
@@ -81,6 +86,8 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 
 	$Refs->save($trans_type, $payment_id, $ref);
 
+	$args->trans_no = $payment_id;
+	hook_db_postwrite($args, ST_SUPPAYMENT);
 	commit_transaction();
 
 	return $payment_id;
@@ -91,6 +98,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 function void_supp_payment($type, $type_no)
 {
 	begin_transaction();
+	hook_db_prevoid($type, $type_no);
 
 	void_bank_trans($type, $type_no, true);
 	void_gl_trans($type, $type_no, true);

@@ -48,31 +48,16 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
-
-    		$sql = "UPDATE ".TB_PREF."salesman SET salesman_name=".db_escape($_POST['salesman_name']) . ",
-    			salesman_phone=".db_escape($_POST['salesman_phone']) . ",
-    			salesman_fax=".db_escape($_POST['salesman_fax']) . ",
-    			salesman_email=".db_escape($_POST['salesman_email']) . ",
-    			provision=".input_num('provision').",
-    			break_pt=".input_num('break_pt').",
-    			provision2=".input_num('provision2')."
-    			WHERE salesman_code = ".db_escape($selected_id);
+			update_salesman($selected_id, $_POST['salesman_name'], $_POST['salesman_phone'], $_POST['salesman_fax'],
+				$_POST['salesman_email'], input_num('provision'), input_num('break_pt'), input_num('provision2'));
     	}
     	else
     	{
     		/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-    		$sql = "INSERT INTO ".TB_PREF."salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
-    			provision, break_pt, provision2)
-    			VALUES (".db_escape($_POST['salesman_name']) . ", "
-				  .db_escape($_POST['salesman_phone']) . ", "
-				  .db_escape($_POST['salesman_fax']) . ", "
-				  .db_escape($_POST['salesman_email']) . ", ".
-    			input_num('provision').", ".input_num('break_pt').", "
-				.input_num('provision2').")";
+			add_salesman($_POST['salesman_name'], $_POST['salesman_phone'], $_POST['salesman_fax'],
+				$_POST['salesman_email'], input_num('provision'), input_num('break_pt'), input_num('provision2'));
     	}
 
-    	//run the sql from either of the above possibilites
-    	db_query($sql,"The insert or update of the sales person failed");
     	if ($selected_id != -1) 
 			display_notification(_('Selected sales person data have been updated'));
 		else
@@ -86,17 +71,13 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE salesman=".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0)
+	if (key_in_foreign_table($selected_id, 'cust_branch', 'salesman'))
 	{
 		display_error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
 	}
 	else
 	{
-		$sql="DELETE FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($selected_id);
-		db_query($sql,"The sales-person could not be deleted");
+		delete_salesman($selected_id);
 		display_notification(_('Selected sales person data have been deleted'));
 	}
 	$Mode = 'RESET';
@@ -111,12 +92,10 @@ if ($Mode == 'RESET')
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."salesman";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$result = db_query($sql,"could not get sales persons");
+$result = get_salesmen(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=60%");
+start_table(TABLESTYLE, "width=60%");
 $th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision")." 2", "", "");
 inactive_control_column($th);
 table_header($th);
@@ -154,10 +133,7 @@ if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
 		//editing an existing Sales-person
-		$sql = "SELECT *  FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($selected_id);
-
-		$result = db_query($sql,"could not get sales person");
-		$myrow = db_fetch($result);
+		$myrow = get_salesman($selected_id);
 
 		$_POST['salesman_name'] = $myrow["salesman_name"];
 		$_POST['salesman_phone'] = $myrow["salesman_phone"];
@@ -174,7 +150,7 @@ if ($selected_id != -1)
 		$_POST['provision2'] = percent_format(0);	
 }
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);

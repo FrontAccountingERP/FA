@@ -65,26 +65,15 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE tpe=".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
-
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0)
+	
+	if (key_in_foreign_table($selected_id, 'debtor_trans', 'tpe'))
 	{
 		display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 
 	}
 	else
 	{
-
-		$sql = "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE sales_type=".db_escape($selected_id);
-		$result = db_query($sql,"check failed");
-  		check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
-
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0)
+		if (key_in_foreign_table($selected_id, 'debtors_master', 'sales_type'))
 		{
 			display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 		}
@@ -109,7 +98,7 @@ if ($Mode == 'RESET')
 $result = get_all_sales_types(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array (_('Type Name'), _('Factor'), _('Tax Incl'), '','');
 inactive_control_column($th);
@@ -145,7 +134,7 @@ display_note(_("Marked sales type is the company base pricelist for prices calcu
  if (!isset($_POST['base']))
 	$_POST['base'] = 0;
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {
