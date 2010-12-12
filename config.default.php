@@ -20,6 +20,10 @@
 
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
+
+	if (!ini_get('date.timezone'))
+       ini_set('date.timezone', 'Europe/Berlin');
+
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).

@@ -18,8 +18,6 @@ this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
 "m/d/Y" for US/Canada format dates depending on setting in preferences.
 
 */
-if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))
-	@date_default_timezone_set(@date_default_timezone_get());
 
 function __date($year, $month, $day)
 {

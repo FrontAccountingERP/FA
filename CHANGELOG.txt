@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Dec-2010 Joe hunt
+# Removed Timezone warnings
+$ config.default.php
+  /includes/date_functions.inc
+  
 12-Dec-2010 Janusz Dobrowolski
 # [0000318] Database error after last changes related to bu 313
 $ /purchasing/includes/ui/po_ui.inc
