@@ -109,7 +109,7 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 		{
 			$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
-				. "&AccGrp=" . $type ."'>" . $typename ."</a>";
+				. "&AccGrp=" . $type ."'>" . $type . " " . $typename ."</a>";
 				
 			alt_table_row_color($k);
 			label_cell($url);
@@ -192,7 +192,7 @@ function display_balance_sheet()
 				{
 					$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
 						. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
-						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['name'] ."</a>";	
+						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['id']." ".$accounttype['name'] ."</a>";	
 					alt_table_row_color($k);
 					label_cell($url);
 					amount_cell($TypeTotal * $convert);
@@ -250,7 +250,7 @@ function display_balance_sheet()
 		$convert = get_class_type_convert($class["ctype"]); 
 		
 		//Print Class Name	
-		table_section_title(get_account_type_name($_POST["AccGrp"]));	
+		table_section_title($_POST["AccGrp"]. " " . get_account_type_name($_POST["AccGrp"]));	
 		
 		$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, 
 			$convert, $dimension, $dimension2, $drilldown, $path_to_root);

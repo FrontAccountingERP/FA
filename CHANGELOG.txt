@@ -19,7 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-12-Dec-2010 Joe hunt
+13-Dec-2010 Joe Hunt
+! Dispaly group no in Balance Sheet/Profit Loss Drilldown.
+$ /gl/inquiry/balance_sheep.php
+  /gl/inquiry/profit_loss.php
+  
+12-Dec-2010 Joe Hunt
 # Removed Timezone warnings
 $ config.default.php
   /includes/date_functions.inc
