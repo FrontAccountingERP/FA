@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Dec-2010 Janusz Dobrowolski
++ Added Georgian installer wizard translation by Giorgi Natsvlishvili
+$ /install/isession.inc
+  /install/lang/it_IT/LC_MESSAGES/ka_GE.mo (new)
+  /install/lang/it_IT/LC_MESSAGES/ka_GE.po (new)
+# Nonprintable CR filtered out from pdf texts.
+$ /reporting/includes/pdf_report.inc
+
 13-Dec-2010 Joe Hunt
 ! Dispaly group no in Balance Sheet/Profit Loss Drilldown.
 $ /gl/inquiry/balance_sheep.php
@@ -26,14 +34,14 @@ $ /gl/inquiry/balance_sheep.php
   
 12-Dec-2010 Joe Hunt
 # Removed Timezone warnings
-$ config.default.php
+$ /config.default.php
   /includes/date_functions.inc
   
 12-Dec-2010 Janusz Dobrowolski
-# [0000318] Database error after last changes related to bu 313
+# [0000318] Database error after last changes related to bug 313
 $ /purchasing/includes/ui/po_ui.inc
 
-------------------------------- Release 2.3 ------------------------------------
+------------------------------- Release 2.3.0 ------------------------------------
 09-Dec-2010 Joe Hunt
 ! Release 2.3.0
 $ version.php
