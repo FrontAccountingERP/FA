@@ -192,9 +192,12 @@ include_once($path_to_root . "/includes/hooks.inc");
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
+hook_session_start(@$_POST["company_login_name"]);
+
 session_name('FA'.md5(dirname(__FILE__)));
-//include_once($path_to_root.'/modules/www_statistics/includes/db_sessions.inc');
+
 session_start();
+session_regenerate_id();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
