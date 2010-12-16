@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Dec-2010 Janusz Dobrowolski
+# Cleanup on add_quick_entry() qid parameter added
+$ /gl/includes/db/gl_db_bank_accounts.inc
+# Could not change quick entry base amount description
+$ /gl/manage/gl_quick_entries.php
+# Fixed error handling
+$ /includes/ui/items_cart.inc
+
 15-Dec-2010 Janusz Dobrowolski
 + Added Georgian installer wizard translation by Giorgi Natsvlishvili
 $ /install/isession.inc
