@@ -139,7 +139,7 @@ function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2)
 	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines 
 		(qid, action, dest_id, amount, dimension_id, dimension2_id) 
 	VALUES 
-		($qid, ".db_escape($action).",".db_escape($dest_id).",
+		(".db_escape($qid).", ".db_escape($action).",".db_escape($dest_id).",
 			".db_escape($amount).", ".db_escape($dim).", ".db_escape($dim2).")";
 
 	db_query($sql, "could not insert quick entry line for $qid");
