@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Dec-2010 Joe Hunt
+# [0000304] Set locale functionality broken on Windows
+$ /includes/lang/gettext.php
+  /includes/packages.inc (missing include directive for hooks.inc)
+# Bad test code left over, cleaning up
+$ /includes/db/inventory_db.inc
+
 16-Dec-2010 Janusz Dobrowolski
 + Added hook for session handling, fixed bug [0000315] (session fixation)
 $ /includes/hooks.inc
