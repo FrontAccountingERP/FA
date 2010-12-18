@@ -265,8 +265,6 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	
 	$diff =  $sales_diff - $purchase_diff;
 	
-	display_notification('Sales Diff - '.$sales_diff.' Purchase Diff - '.$purchase_diff);
-	
 	if ($diff != 0)
 	{
 	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
