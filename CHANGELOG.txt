@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Dec-2010 Janusz Dobrowolski
+# Supressed strict warnings in reporting 
+$ /includes/errors.inc
+# Fixed errors in tax display in purchase transactions
+$ /purchasing/po_receive_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/po_db.inc
+
 17-Dec-2010 Joe Hunt
 # [0000304] Set locale functionality broken on Windows
 $ /includes/lang/gettext.php
