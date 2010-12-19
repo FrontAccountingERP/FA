@@ -229,8 +229,9 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
     $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, "
-    	.TB_PREF."purch_order_details.unit_price,
-		".TB_PREF."purch_order_details.std_cost_unit, units
+    	.TB_PREF."purch_order_details.unit_price,"
+    	.TB_PREF."purch_order_details.quantity_ordered,"
+		.TB_PREF."purch_order_details.std_cost_unit, units
     	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, "
     	.TB_PREF."purch_order_details, ".TB_PREF."stock_master";
     if ($invoice_no != 0)
@@ -305,7 +306,7 @@ function read_grn_items_to_order($grn_batch, &$order)
 		 	}
 
 			$order->add_to_order($order->lines_on_order, $myrow["item_code"],
-				1,$myrow["description"], $myrow["unit_price"],$units,
+				$myrow["qty_recd"],$myrow["description"], $myrow["unit_price"],$units,
 				sql2date($myrow["delivery_date"]), $myrow["quantity_inv"],
 				$myrow["qty_recd"]);
 
@@ -332,6 +333,7 @@ function read_grn($grn_batch, &$order)
 	if ($result)
 	{
 
+		$order->trans_type = ST_SUPPRECEIVE;
 		$order->orig_order_date = sql2date($row["delivery_date"]);
 		$order->location = $row["loc_code"];
 		$order->reference = $row["reference"];

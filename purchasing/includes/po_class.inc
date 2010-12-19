@@ -124,8 +124,12 @@ class purch_order
 		}
 		return 0;
 	}
-
-	function get_taxes($shipping_cost=null)
+	
+	//
+	//	Returns taxes for PO/GRN.
+	//	$receival=true in purchase receive context.
+	//
+	function get_taxes($shipping_cost=null, $receival=false)
 	{
 		$items = array();
 		$prices = array();
@@ -134,7 +138,7 @@ class purch_order
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
-			$prices[] = round($ln_itm->quantity * $ln_itm->price,  user_price_dec());
+			$prices[] = round($ln_itm->price * ($receival ? $ln_itm->receive_qty : $ln_itm->quantity),  user_price_dec());
 		}
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
 		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
