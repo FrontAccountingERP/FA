@@ -327,7 +327,7 @@ function get_bank_account_limit($account, $date, $user=null)
 	$bankacc = get_bank_account($account);
 	if ($bankacc['account_type'] != BT_CASH)
 		return null;
-	return get_balance_before_for_bank_account($account, $date);
+	return get_balance_before_for_bank_account($account, add_days($date,1));
 }
 
 ?>
