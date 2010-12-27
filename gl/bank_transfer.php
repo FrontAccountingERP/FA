@@ -123,6 +123,15 @@ function check_valid_entries()
 		return false;
 	}
 
+	$limit = get_bank_account_limit($_POST['FromBankAccount'], $_POST['DatePaid']);
+
+	if ($limit != null && ($limit < (input_num('charge') + input_num('amount'))))
+	{
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s) for source account."), price_format($limit)));
+		set_focus('amount');
+		return false;
+	}
+
 	if (isset($_POST['charge']) && !check_num('charge', 0)) 
 	{
 		display_error(_("The entered amount is invalid or less than zero."));

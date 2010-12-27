@@ -29,6 +29,7 @@ $ /admin/db/transactions_db.inc
 $ /sales/includes/db/cust_trans_db.inc
 ! Added balance limit for payments made from cash accounts
 $ /gl/gl_bank.php
+  /gl/bank_transfer.php
   /gl/includes/db/gl_db_bank_accounts.inc
   /purchasing/supplier_payment.php
 
