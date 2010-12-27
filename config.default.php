@@ -11,7 +11,7 @@
 ***********************************************************************/
     //--------------------------------------------------
 
-	// User configurable variables
+ 	// User configurable variables
 	//---------------------------------------------------
 
 	/*Show debug messages returned from an error on the page.
@@ -145,6 +145,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$check_price_charged_vs_order_price = True;
 
 	$config_allocation_settled_allowance = 0.005;
+
+	/* Alow negative prices for dummy/service items. To be moved to GL db settings */
+	$allow_negative_prices = 1;
 
 	// Internal configurable variables
 	//-----------------------------------------------------------------------------------

@@ -404,7 +404,10 @@ function can_process() {
    		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
    		return false;
-   	}
+   	} elseif ($_SESSION['Items']->get_items_total() < 0) {
+		display_error("Invoice total amount cannot be less than zero.");
+		return false;
+	}
 	return true;
 }
 
@@ -412,7 +415,6 @@ function can_process() {
 
 if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
-
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
 	$_SESSION['Items']->write(1);
@@ -448,8 +450,9 @@ if (isset($_POST['update'])) {
 
 function check_item_data()
 {
-	global $SysPrefs;
+	global $SysPrefs, $allow_negative_prices;
 	
+	$is_inventory_item = is_inventory_item(get_post('stock_id'));
 	if(!get_post('stock_id_text', true)) {
 		display_error( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
@@ -459,8 +462,8 @@ function check_item_data()
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
-	} elseif (!check_num('price', 0)) {
-		display_error( _("Price for item must be entered and can not be less than 0"));
+	} elseif (!check_num('price', 0) && (!$allow_negative_prices || $is_inventory_item)) {
+		display_error( _("Price for inventory item must be entered and can not be less than 0"));
 		set_focus('price');
 		return false;
 	} elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
@@ -470,8 +473,8 @@ function check_item_data()
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
 	} // Joe Hunt added 2008-09-22 -------------------------
-	elseif ($_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE && !$SysPrefs->allow_negative_stock() &&
-		is_inventory_item($_POST['stock_id']))
+	elseif ($is_inventory_item && $_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE 
+		&& !$SysPrefs->allow_negative_stock())
 	{
 		$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 		if (input_num('qty') > $qoh)
