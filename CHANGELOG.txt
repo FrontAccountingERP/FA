@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Dec-2010 Joe Hunt
+! Prepared for category icons in applications/application.php for themes
+$ /applications/application.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/supplier.php
+  /themes/aqua/renderer.php (commented member for the future)
+  /themes/cool/renderer.php (commented member for the future)
+  /themes/default/renderer.php (commented member for the future)
+  
 27-Dec-2010 Janusz Dobrowolski
 + Option for allowing negative prices for dummy/service items [0000343]
 $ /config.default.php

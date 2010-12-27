@@ -11,6 +11,16 @@
 ***********************************************************************/
 	class renderer
 	{
+		/* Uncomment this member if you want to use the category icons defined in /applications/applications.php
+		function get_icon($category)
+		{
+			global  $path_to_root;
+
+			$img = $category == '' ? 'right.gif' : $category.'.png';
+			return "<img src='$path_to_root/themes/cool/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
+		}
+		*/
+
 		function wa_header()
 		{
 			page(_($help_context = "Main Menu"), false, true);

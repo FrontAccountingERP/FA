@@ -9,7 +9,17 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-	class menu_item 
+
+define('MENU_ENTRY', 'menu_entry');
+define('MENU_TRANSACTION', 'menu_transaction');
+define('MENU_INQUIRY', 'menu_inquiry');
+define('MENU_REPORT', 'menu_report');
+define('MENU_MAINTENANCE', 'menu_maintenance');
+define('MENU_UPDATE', 'menu_update');
+define('MENU_SETTINGS', 'menu_settings');
+define('MENU_SYSTEM', 'menu_system');
+
+        class menu_item
 	{
 		var $label;
 		var $link;
@@ -46,12 +56,14 @@
 		var $label;
 		var $link;
 		var $access;
+                var $category;
 		
-		function app_function($label,$link,$access='SA_OPEN') 
+		function app_function($label,$link,$access='SA_OPEN',$category='')
 		{
 			$this->label = $label;
 			$this->link = $link;
 			$this->access = $access;
+            $this->category = $category;
 		}
 	}
 
@@ -70,17 +82,17 @@
 			$this->rappfunctions = array();
 		}
 		
-		function add_lapp_function($label,$link="",$access='SA_OPEN') 
+		function add_lapp_function($label,$link="",$access='SA_OPEN',$category='')
 		{
-			$appfunction = new app_function($label,$link,$access);
+			$appfunction = new app_function($label,$link,$access,$category);
 			//array_push($this->lappfunctions,$appfunction);
 			$this->lappfunctions[] = $appfunction;
 			return $appfunction;
 		}
 
-		function add_rapp_function($label,$link="",$access='SA_OPEN') 
+		function add_rapp_function($label,$link="",$access='SA_OPEN',$category='')
 		{
-			$appfunction = new app_function($label,$link,$access);
+			$appfunction = new app_function($label,$link,$access,$category);
 			//array_push($this->rappfunctions,$appfunction);
 			$this->rappfunctions[] = $appfunction;
 			return $appfunction;
@@ -113,14 +125,14 @@
 			return $module;
 		}
 		
-		function add_lapp_function($level, $label,$link="",$access='SA_OPEN') 
+		function add_lapp_function($level, $label,$link="",$access='SA_OPEN',$category='')
 		{
-			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
+			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access, $category);
 		}
 		
-		function add_rapp_function($level, $label,$link="",$access='SA_OPEN') 
+		function add_rapp_function($level, $label,$link="",$access='SA_OPEN',$category='')
 		{
-			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
+			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access, $category);
 		}
 		
 		function add_extensions()
