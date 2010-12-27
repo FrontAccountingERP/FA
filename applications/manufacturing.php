@@ -17,9 +17,9 @@ class manufacturing_app extends application
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Work &Order Entry"),
-			"manufacturing/work_order_entry.php?", 'SA_WORKORDERENTRY', MENU_ENTRY);
+			"manufacturing/work_order_entry.php?", 'SA_WORKORDERENTRY', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("&Outstanding Work Orders"),
-			"manufacturing/search_work_orders.php?outstanding_only=1", 'SA_MANUFTRANSVIEW', MENU_INQUIRY);
+			"manufacturing/search_work_orders.php?outstanding_only=1", 'SA_MANUFTRANSVIEW', MENU_TRANSACTION);
 
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("Costed Bill Of Material Inquiry"),
@@ -33,7 +33,7 @@ class manufacturing_app extends application
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Bills Of Material"),
-			"manufacturing/manage/bom_edit.php?", 'SA_BOM', MENU_INQUIRY);
+			"manufacturing/manage/bom_edit.php?", 'SA_BOM', MENU_ENTRY);
 		$this->add_lapp_function(2, _("&Work Centres"),
 			"manufacturing/manage/work_centres.php?", 'SA_WORKCENTRES', MENU_MAINTENANCE);
 

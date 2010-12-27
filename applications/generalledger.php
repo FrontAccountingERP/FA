@@ -17,19 +17,19 @@ class general_ledger_app extends application
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("&Payments"),
-			"gl/gl_bank.php?NewPayment=Yes", 'SA_PAYMENT', MENU_ENTRY);
+			"gl/gl_bank.php?NewPayment=Yes", 'SA_PAYMENT', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("&Deposits"),
-			"gl/gl_bank.php?NewDeposit=Yes", 'SA_DEPOSIT', MENU_ENTRY);
+			"gl/gl_bank.php?NewDeposit=Yes", 'SA_DEPOSIT', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("Bank Account &Transfers"),
-			"gl/bank_transfer.php?", 'SA_BANKTRANSFER', MENU_ENTRY);
+			"gl/bank_transfer.php?", 'SA_BANKTRANSFER', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Journal Entry"),
-			"gl/gl_journal.php?NewJournal=Yes", 'SA_JOURNALENTRY', MENU_ENTRY);
+			"gl/gl_journal.php?NewJournal=Yes", 'SA_JOURNALENTRY', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Budget Entry"),
-			"gl/gl_budget.php?", 'SA_BUDGETENTRY', MENU_ENTRY);
+			"gl/gl_budget.php?", 'SA_BUDGETENTRY', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Reconcile Bank Account"),
-			"gl/bank_account_reconcile.php?", 'SA_RECONCILE', MENU_INQUIRY);
+			"gl/bank_account_reconcile.php?", 'SA_RECONCILE', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("Revenue / &Costs Accruals"),
-			"gl/accruals.php?", 'SA_ACCRUALS', MENU_INQUIRY);
+			"gl/accruals.php?", 'SA_ACCRUALS', MENU_TRANSACTION);
 
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("&Journal Inquiry"),
@@ -54,7 +54,7 @@ class general_ledger_app extends application
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("Bank &Accounts"),
-			"gl/manage/bank_accounts.php?", 'SA_BANKACCOUNT', MENU_ENTRY);
+			"gl/manage/bank_accounts.php?", 'SA_BANKACCOUNT', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("&Quick Entries"),
 			"gl/manage/gl_quick_entries.php?", 'SA_QUICKENTRY', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("Account &Tags"),

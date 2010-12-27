@@ -33,7 +33,7 @@ class setup_app extends application
 		$this->add_rapp_function(0, _("Item Ta&x Types"),
 			"taxes/item_tax_types.php?", 'SA_ITEMTAXTYPE', MENU_MAINTENANCE);
 		$this->add_rapp_function(0, _("System and &General GL Setup"),
-			"admin/gl_setup.php?", 'SA_GLSETUP', MENU_MAINTENANCE);
+			"admin/gl_setup.php?", 'SA_GLSETUP', MENU_SETTINGS);
 		$this->add_rapp_function(0, _("&Fiscal Years"),
 			"admin/fiscalyears.php?", 'SA_FISCALYEARS', MENU_MAINTENANCE);
 		$this->add_rapp_function(0, _("&Print Profiles"),
