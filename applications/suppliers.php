@@ -19,21 +19,21 @@ class suppliers_app extends application
 		$this->add_lapp_function(0, _("Purchase &Order Entry"),
 			"purchasing/po_entry_items.php?NewOrder=Yes", 'SA_PURCHASEORDER', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("&Outstanding Purchase Orders Maintenance"),
-			"purchasing/inquiry/po_search.php?", 'SA_GRN', MENU_INQUIRY);
+			"purchasing/inquiry/po_search.php?", 'SA_GRN', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("Direct &GRN"),
 			"purchasing/po_entry_items.php?NewGRN=Yes", 'SA_GRN', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("Direct &Invoice"),
 			"purchasing/po_entry_items.php?NewInvoice=Yes", 'SA_SUPPLIERINVOICE', MENU_TRANSACTION);
 
 		$this->add_rapp_function(0, _("&Payments to Suppliers"),
-			"purchasing/supplier_payment.php?", 'SA_SUPPLIERPAYMNT', MENU_ENTRY);
+			"purchasing/supplier_payment.php?", 'SA_SUPPLIERPAYMNT', MENU_TRANSACTION);
 		$this->add_rapp_function(0, "","");
 		$this->add_rapp_function(0, _("Supplier &Invoices"),
-			"purchasing/supplier_invoice.php?New=1", 'SA_SUPPLIERINVOICE', MENU_ENTRY);
+			"purchasing/supplier_invoice.php?New=1", 'SA_SUPPLIERINVOICE', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("Supplier &Credit Notes"),
-			"purchasing/supplier_credit.php?New=1", 'SA_SUPPLIERCREDIT', MENU_ENTRY);
+			"purchasing/supplier_credit.php?New=1", 'SA_SUPPLIERCREDIT', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Allocate Supplier Payments or Credit Notes"),
-			"purchasing/allocations/supplier_allocation_main.php?", 'SA_SUPPLIERALLOC', MENU_INQUIRY);
+			"purchasing/allocations/supplier_allocation_main.php?", 'SA_SUPPLIERALLOC', MENU_TRANSACTION);
 
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("Purchase Orders &Inquiry"),
