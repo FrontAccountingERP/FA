@@ -315,4 +315,19 @@ function get_default_bank_account($curr)
 
 	return db_fetch($result);
 }
+//---------------------------------------------------------------------------------------------
+//
+//	This function returns current allowed bank payment limit, or null if limit is not set.
+//	As of FA 2.3 check is done only on cash account, for which limit is bank amount as of the date selected.
+//
+function get_bank_account_limit($account, $date, $user=null)
+{
+//	$user = current_user();
+
+	$bankacc = get_bank_account($account);
+	if ($bankacc['account_type'] != BT_CASH)
+		return null;
+	return get_balance_before_for_bank_account($account, $date);
+}
+
 ?>

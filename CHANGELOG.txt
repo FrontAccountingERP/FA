@@ -19,7 +19,7 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-2-Dec-2010 Janusz Dobrowolski
+27-Dec-2010 Janusz Dobrowolski
 + Option for allowing negative prices for dummy/service items [0000343]
 $ /config.default.php
   /sales/sales_order_entry.php
@@ -27,6 +27,10 @@ $ /config.default.php
 $ /admin/db/transactions_db.inc
 # [0000380] Database error during direct invoice processing in mysql strict mode.
 $ /sales/includes/db/cust_trans_db.inc
+! Added balance limit for payments made from cash accounts
+$ /gl/gl_bank.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /purchasing/supplier_payment.php
 
 19-Dec-2010 Janusz Dobrowolski
 # Supressed strict warnings in reporting 
