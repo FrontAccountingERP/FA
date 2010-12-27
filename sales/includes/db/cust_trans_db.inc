@@ -91,7 +91,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		".db_escape($Freight).",
 		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
 		".db_escape($dimension_id).", ".db_escape($dimension2_id).", "
-		.db_escape($payment_terms).")";
+		.db_escape($payment_terms, true).")";
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
 		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
