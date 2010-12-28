@@ -21,7 +21,9 @@ $ -> Affected files
 
 27-Dec-2010 Joe Hunt
 ! Prepared for category icons in applications/application.php for themes
-$ /applications/application.php
+  To activate, set $show_menu_category_icons = 1, in config.php
+$ /config.default.php
+  /applications/application.php
   /applications/customers.php
   /applications/dimensions.php
   /applications/generalledger.php
@@ -29,9 +31,33 @@ $ /applications/application.php
   /applications/manufacturing.php
   /applications/setup.php
   /applications/supplier.php
-  /themes/aqua/renderer.php (commented member for the future)
-  /themes/cool/renderer.php (commented member for the future)
-  /themes/default/renderer.php (commented member for the future)
+  /themes/aqua/renderer.php
+  /themes/aqua/images/menu_entry.png (new file)
+  /themes/aqua/images/menu_inquiry.png (new file)
+  /themes/aqua/images/menu_maintenance.png (new file)
+  /themes/aqua/images/menu_report.png (new file)
+  /themes/aqua/images/menu_settings.png (new file)
+  /themes/aqua/images/menu_system.png (new file)
+  /themes/aqua/images/menu_transaction.png (new file)
+  /themes/aqua/images/menu_update.png (new file)
+  /themes/cool/renderer.php
+  /themes/cool/images/menu_entry.png (new file)
+  /themes/cool/images/menu_inquiry.png (new file)
+  /themes/cool/images/menu_maintenance.png (new file)
+  /themes/cool/images/menu_report.png (new file)
+  /themes/cool/images/menu_settings.png (new file)
+  /themes/cool/images/menu_system.png (new file)
+  /themes/cool/images/menu_transaction.png (new file)
+  /themes/cool/images/menu_update.png (new file)
+  /themes/default/renderer.php
+  /themes/default/images/menu_entry.png (new file)
+  /themes/default/images/menu_inquiry.png (new file)
+  /themes/default/images/menu_maintenance.png (new file)
+  /themes/default/images/menu_report.png (new file)
+  /themes/default/images/menu_settings.png (new file)
+  /themes/default/images/menu_system.png (new file)
+  /themes/default/images/menu_transaction.png (new file)
+  /themes/default/images/menu_update.png (new file)
   
 27-Dec-2010 Janusz Dobrowolski
 + Option for allowing negative prices for dummy/service items [0000343]

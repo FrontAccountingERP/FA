@@ -13,11 +13,12 @@
 	{
 		function get_icon($category)
 		{
-			global  $path_to_root;
-			
-			// uncomment this line if you want to use the pre-defined categories.
-			//$img = $category == '' ? 'right.gif' : $category.'.png';
-			$img = 'right.gif';
+			global  $path_to_root, $show_menu_category_icons;
+;
+			if ($show_menu_category_icons)
+				$img = $category == '' ? 'right.gif' : $category.'.png';
+			else	
+				$img = 'right.gif';
 			return "<img src='$path_to_root/themes/cool/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
 		}
 

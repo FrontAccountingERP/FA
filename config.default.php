@@ -146,9 +146,12 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$config_allocation_settled_allowance = 0.005;
 
-	/* Alow negative prices for dummy/service items. To be moved to GL db settings */
+	/* Allow negative prices for dummy/service items. To be moved to GL db settings */
 	$allow_negative_prices = 1;
 
+	/* Show menu category icons in core themes */
+	$show_menu_category_icons = 0;
+	
 	// Internal configurable variables
 	//-----------------------------------------------------------------------------------
 
