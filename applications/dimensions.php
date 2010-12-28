@@ -22,7 +22,7 @@ class dimensions_app extends application
 			$this->add_lapp_function(0, _("Dimension &Entry"),
 				"dimensions/dimension_entry.php?", 'SA_DIMENSION', MENU_ENTRY);
 			$this->add_lapp_function(0, _("&Outstanding Dimensions"),
-				"dimensions/inquiry/search_dimensions.php?outstanding_only=1", 'SA_DIMTRANSVIEW', MENU_TRANSACTIONS);
+				"dimensions/inquiry/search_dimensions.php?outstanding_only=1", 'SA_DIMTRANSVIEW', MENU_TRANSACTION);
 
 			$this->add_module(_("Inquiries and Reports"));
 			$this->add_lapp_function(1, _("Dimension &Inquiry"),

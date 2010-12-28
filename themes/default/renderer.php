@@ -11,19 +11,18 @@
 ***********************************************************************/
 	class renderer
 	{
-		/* Uncomment this member if you want to use the category icons defined in /applications/applications.php
 		function get_icon($category)
 		{
 			global  $path_to_root;
-
-			$img = $category == '' ? 'right.gif' : $category.'.png';
+			
+			// uncomment this line if you want to use the pre-defined categories.
+			//$img = $category == '' ? 'right.gif' : $category.'.png';
+			$img = 'right.gif';
 			return "<img src='$path_to_root/themes/cool/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
 		}
-		*/
 
 		function wa_header()
 		{
-//			add_js_ufile("themes/default/renderer.js");
 			page(_($help_context = "Main Menu"), false, true);
 		}
 
@@ -141,7 +140,6 @@
 
 			$selected_app = $waapp->get_selected_application();
 
-			$img = "<img src='$path_to_root/themes/default/images/right.gif' style='vertical-align:middle;' width='17' height='17' border='0'>&nbsp;&nbsp;";
 			foreach ($selected_app->modules as $module)
 			{
 				// image
@@ -156,6 +154,7 @@
 
 				foreach ($module->lappfunctions as $appfunction)
 				{
+					$img = $this->get_icon($appfunction->category);
 					if ($appfunction->label == "")
 						echo "&nbsp;<br>";
 					elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
@@ -175,6 +174,7 @@
 					echo "<td width='50%' class='menu_group_items'>";
 					foreach ($module->rappfunctions as $appfunction)
 					{
+						$img = $this->get_icon($appfunction->category);
 						if ($appfunction->label == "")
 							echo "&nbsp;<br>";
 						elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
