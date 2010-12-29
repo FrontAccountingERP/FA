@@ -182,6 +182,15 @@ include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 
 include_once($path_to_root . "/includes/hooks.inc");
+//
+// include all extensions hook files.
+//
+foreach ($installed_extensions as $ext)
+{
+	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
+		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
+}
+
 
 /*
 	Uncomment the setting below when using FA on shared hosting

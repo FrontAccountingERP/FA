@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Dec-2010 Janusz Dobrowolski
+! Hook files inclusion moved to session.inc
+$ /includes/hooks.inc
+  /includes/session.inc
+
 27-Dec-2010 Joe Hunt
 ! Prepared for category icons in applications/application.php for themes
   To activate, set $show_menu_category_icons = 1, in config.php

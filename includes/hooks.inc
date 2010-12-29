@@ -164,14 +164,6 @@ class hooks {
 		return true;
 	}
 }
-//
-// include all extensions hook files.
-//
-foreach ($installed_extensions as $ext)
-{
-	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
-		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
-}
 
 /*
 	Installs hooks provided by extension modules
