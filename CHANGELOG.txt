@@ -23,6 +23,9 @@ $ -> Affected files
 ! Hook files inclusion moved to session.inc
 $ /includes/hooks.inc
   /includes/session.inc
+# Non-voidable transactions removed from selection on voiding page.
+$ /admin/void_transaction.php
+  /includes/ui/ui_lists.inc
 
 27-Dec-2010 Joe Hunt
 ! Prepared for category icons in applications/application.php for themes

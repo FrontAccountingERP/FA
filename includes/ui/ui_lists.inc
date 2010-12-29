@@ -1835,11 +1835,13 @@ function pagesizes_list_row($label, $name, $value=null)
 	echo "</td></tr>\n";
 }
 
-function systypes_list($name, $value=null, $spec_opt=false, $submit_on_change=false)
+function systypes_list($name, $value=null, $spec_opt=false, $submit_on_change=false, $exclude=array())
 {
 	global $systypes_array;
 
-	return array_selector($name, $value, $systypes_array, 
+	// emove non-voidable transactions if needed
+	$systypes = array_diff_key($systypes_array, array_flip($exclude));
+	return array_selector($name, $value, $systypes, 
 		array( 
 			'spec_option'=> $spec_opt,
 			'spec_id' => ALL_NUMERIC,
@@ -1849,19 +1851,19 @@ function systypes_list($name, $value=null, $spec_opt=false, $submit_on_change=fa
 	);
 }
 
-function systypes_list_cells($label, $name, $value=null, $submit_on_change=false)
+function systypes_list_cells($label, $name, $value=null, $submit_on_change=false, $exclude=array())
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo systypes_list($name, $value, false, $submit_on_change);
+	echo systypes_list($name, $value, false, $submit_on_change, $exclude);
 	echo "</td>\n";
 }
 
-function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
+function systypes_list_row($label, $name, $value=null, $submit_on_change=false, $exclude=array())
 {
 	echo "<tr><td class='label'>$label</td>";
-	systypes_list_cells(null, $name, $value, $submit_on_change);
+	systypes_list_cells(null, $name, $value, $submit_on_change, $exclude);
 	echo "</tr>\n";
 }
 
