@@ -89,12 +89,25 @@ function add_grn(&$po)
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
+    $clearing_act = get_company_pref('grn_clearing_act');
+	if ($clearing_act) {	// otherwise GRN clearing account is not used
+	    $total = 0;
+    	$supplier_accounts = get_supplier_accounts($po->supplier_id);
+	}
 	foreach ($po->line_items as $line_no => $order_line)
 	{
-
 		if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty))
 		{
+			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
+			if($clearing_act) {
+				$inv_act = (is_inventory_item($order_line->stock_id) ? $stock_gl_code["inventory_account"] : 
+					($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]));
+
+				$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $inv_act,
+					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+					$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id);
+			}
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 			if (is_inventory_item($order_line->stock_id))
@@ -126,6 +139,10 @@ function add_grn(&$po)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
+	if ($clearing_act) {
+		$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $clearing_act,
+			0, 0, -$total, $po->supplier_id);
+	}
 	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 
 	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);

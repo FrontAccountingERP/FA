@@ -189,6 +189,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$trans_type, $invoice_id, $entered_gl_code->amount,
 			$ex_rate, $date_, $supp_trans->supp_reference, $supp_trans->tax_included);
     }
+    
+    $clearing_act = get_company_pref('grn_clearing_act');
     foreach ($supp_trans->grn_items as $line_no => $entered_grn)
     {
 
@@ -200,14 +202,14 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
-		$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
-			($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]));
+		
+		$iv_act = $clearing_act ? $clearing_act : (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
+				($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]));
+
 		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
-		/*$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);*/
+
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
     	if ($trans_type == ST_SUPPINVOICE)
     	{

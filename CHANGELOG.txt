@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Dec-2010 Janusz Dobrowolski
++ Added option for using GRN Clearing Account for yet non invoiced GRNs.
+$ /purchasing/includes/po_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Added GRN clearing account setting
+$ /admin/gl_setup.php
+! Added set_company_pref() function
+$ /admin/db/company_db.inc
+
 29-Dec-2010 Janusz Dobrowolski
 ! Hook files inclusion moved to session.inc
 $ /includes/hooks.inc

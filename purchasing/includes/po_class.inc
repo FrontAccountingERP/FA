@@ -230,6 +230,12 @@ class po_line_details
 		$this->standard_cost =0;
 		$this->grn_item_id = $grn_item_id;
 	}
+	
+	function taxfree_charge_price($po)
+	{
+		return get_tax_free_price_for_item($this->stock_id, $this->price, 
+		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
+	}
 }
 
 ?>
