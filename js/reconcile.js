@@ -21,7 +21,7 @@ function blur_amount(i) {
 	if (i.name=='beg_balance')
 		change = -change;
 
-	price_format('difference', get_amount('difference',1,1)+change, user.pdec);
+	price_format('difference', get_amount('difference',1,1)+change, user.pdec, 1);
 }
 
 var balances = {

@@ -30,6 +30,8 @@ $ /purchasing/includes/po_class.inc
 $ /admin/gl_setup.php
 ! Added set_company_pref() function
 $ /admin/db/company_db.inc
+# JS error on focus move
+$ /js/reconcile.js
 
 29-Dec-2010 Janusz Dobrowolski
 ! Hook files inclusion moved to session.inc
