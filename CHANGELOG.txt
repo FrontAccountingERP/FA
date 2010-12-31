@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-Dec-2010 Joe Hunt
+# Fixed bug in earlier invoice_db (GRN Provision should have only one row)
+  Only GRN Clearring on stock items.
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+! Changed so supplier credit note items shows the invoice price/not grn price
+$ /purchasing/includes/db/grn_db.inc
+  /invoice_ui.inc
++ Added link for viewing GL Delivery if clearing account
+$ /purchasing/po_receive_items.php
+# Bug. $n undefined in /admin/gl_setup.php
+$ /admin/gl_setup.php
+  
 30-Dec-2010 Janusz Dobrowolski
 + Added option for using GRN Clearing Account for yet non invoiced GRNs.
 $ /purchasing/includes/po_class.inc

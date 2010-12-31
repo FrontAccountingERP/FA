@@ -92,7 +92,6 @@ function add_grn(&$po)
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act) {	// otherwise GRN clearing account is not used
 	    $total = 0;
-    	$supplier_accounts = get_supplier_accounts($po->supplier_id);
 	}
 	foreach ($po->line_items as $line_no => $order_line)
 	{
@@ -100,19 +99,17 @@ function add_grn(&$po)
 		{
 			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
-			if($clearing_act) {
-				$inv_act = (is_inventory_item($order_line->stock_id) ? $stock_gl_code["inventory_account"] : 
-					($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]));
-
-				$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $inv_act,
-					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-					$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id);
-			}
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
-			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+			//------------------- update average material cost and clearing account ----- Joe Hunt Mar-03-2008
 			if (is_inventory_item($order_line->stock_id))
+			{
+				if ($clearing_act)
+					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id);
 				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->receive_qty, $date_);
+			}		
 			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
@@ -139,9 +136,9 @@ function add_grn(&$po)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	if ($clearing_act) {
+	if ($clearing_act && $total != 0.0) {
 		$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $clearing_act,
-			0, 0, -$total, $po->supplier_id);
+			0, 0, -$total, null);
 	}
 	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 
@@ -247,6 +244,7 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 {
     $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, "
     	.TB_PREF."purch_order_details.unit_price,"
+    	.TB_PREF."purch_order_details.act_price,"
     	.TB_PREF."purch_order_details.quantity_ordered,"
 		.TB_PREF."purch_order_details.std_cost_unit, units
     	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, "
