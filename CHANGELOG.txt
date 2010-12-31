@@ -29,6 +29,7 @@ $ /purchasing/includes/db/grn_db.inc
   /invoice_ui.inc
 + Added link for viewing GL Delivery if clearing account
 $ /purchasing/po_receive_items.php
+  /purchasing/po_entry_items.php
 # Bug. $n undefined in /admin/gl_setup.php
 $ /admin/gl_setup.php
   
