@@ -580,6 +580,21 @@ function remove_not_invoice_item($id)
 
 	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
 		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+		
+    $clearing_act = get_company_pref('grn_clearing_act');
+	if ($clearing_act) {	// otherwise GRN clearing account is not used
+		if (is_inventory_item($myrow['item_code']))
+		{
+	    	$total = 0;
+			$stock_gl_code = get_stock_gl_code($myrow['item_code']);
+			$date = sql2date($grn["delivery_date"]);
+			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $stock_gl_code["inventory_account"],
+				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+				-$myrow['QtyOstdg'] * $myrow['unit_price'], $grn["supplier_id"], "", 0, _("GRN Removal"));
+			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
+				0, 0, -$total, null, "", 0, _("GRN Removal"));
+		}	
+	}
 
 	commit_transaction();
 }

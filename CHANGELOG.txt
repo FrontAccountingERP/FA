@@ -32,6 +32,8 @@ $ /purchasing/po_receive_items.php
   /purchasing/po_entry_items.php
 # Bug. $n undefined in /admin/gl_setup.php
 $ /admin/gl_setup.php
+! Added GL trans on Removal GRN items (Supp Invoice) if GRN Clearing
+$ /purchasing/includes/db/invoice_db.inc
   
 30-Dec-2010 Janusz Dobrowolski
 + Added option for using GRN Clearing Account for yet non invoiced GRNs.
