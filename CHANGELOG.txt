@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Jan-2011 Janusz Dobrowolski
+! Database host name up to 60 chars allowed.
+$ /admin/create_coy.php
+  /install/index.php
+
 31-Dec-2010 Joe Hunt
 # Fixed bug in earlier invoice_db (GRN Provision should have only one row)
   Only GRN Clearring on stock items.

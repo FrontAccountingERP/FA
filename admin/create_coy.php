@@ -311,7 +311,7 @@ function display_company_edit($selected_id)
 	else
 		$_POST['tbpref'] = $tb_pref_counter."_";
 	text_row_ex(_("Company"), 'name', 30);
-	text_row_ex(_("Host"), 'host', 30);
+	text_row_ex(_("Host"), 'host', 30, 60);
 	text_row_ex(_("Database User"), 'dbuser', 30);
 	if ($selected_id == -1)
 		text_row_ex(_("Database Password"), 'dbpassword', 30);
