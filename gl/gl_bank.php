@@ -224,6 +224,15 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
+	$limit = get_bank_account_limit($_POST['bank_account'], $_POST['date_']);
+
+	if ($limit != null && ($limit < $_SESSION['pay_items']->gl_items_total()))
+	{
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
+		set_focus('code_id');
+		$input_error = 1;
+	}
+
 	if (!$Refs->is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
@@ -247,7 +256,7 @@ if (isset($_POST['Process']))
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('date_');
 		$input_error = 1;
-	}
+	} 
 
 	if (get_post('PayType')==PT_CUSTOMER && (!get_post('person_id') || !get_post('PersonDetailID'))) {
 		display_error(_("You have to select customer and customer branch."));

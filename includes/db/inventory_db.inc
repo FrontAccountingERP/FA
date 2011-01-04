@@ -201,7 +201,7 @@ function get_purchases_from_trans($stock_id, $from)
 }
 
 //-------------------------------------------------------------------
-// Original Code V0
+/* Original Code V0 Leave as is a while
 function adjust_deliveries_v0($stock_id, $material_cost, $to)
 {
 	if (!is_inventory_item($stock_id))
@@ -234,7 +234,7 @@ function adjust_deliveries_v0($stock_id, $material_cost, $to)
 		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
    	}
 }
-
+*/
 //New written function
 function adjust_deliveries($stock_id, $material_cost, $to)
 {
@@ -265,11 +265,6 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	
 	$diff =  $sales_diff - $purchase_diff;
 	
-	display_notification('Sales Diff - '.$sales_diff.' Purchase Diff - '.$purchase_diff);
-	
-	$sql = "INSERT INTO trace values ('Diff', ".db_escape($diff).", '')";
-	$result = db_query($sql, "The dstock moves could not be retrieved");	
-		
 	if ($diff != 0)
 	{
 	   	$update_no = get_next_trans_no(ST_COSTUPDATE);

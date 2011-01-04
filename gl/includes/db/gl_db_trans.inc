@@ -214,7 +214,7 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return (float)$row[0];
 }
 
 //----------------------------------------------------------------------------------------------------

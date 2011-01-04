@@ -45,6 +45,15 @@ function can_process()
 		set_focus('past_due_days');
 		return false;
 	}
+
+	$grn_act = get_company_pref('grn_clearing_act');
+	if (get_post('grn_clearing_act') != $grn_act && db_num_rows(get_grn_items(0, '', true)))
+	{
+		display_error(_("Before GRN Clearing Account can be changed all GRNs have to be invoiced"));
+		$_POST['grn_clearing_act'] = $grn_act;
+		set_focus('grn_clearing_account');
+		return false;
+	}
 	return true;
 }
 
@@ -58,7 +67,7 @@ if (isset($_POST['submit']) && can_process())
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
 		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
 		'past_due_days', 'default_workorder_required', 'default_dim_required',
-		'default_delivery_required',
+		'default_delivery_required', 'grn_clearing_act',
 		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
 		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
 )));
@@ -74,6 +83,11 @@ start_form();
 start_outer_table(TABLESTYLE2);
 
 table_section(1);
+
+if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
+	set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
+	refresh_sys_prefs();
+}
 
 $myrow = get_company_prefs();
 
@@ -101,6 +115,8 @@ $_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
 $_POST['po_over_receive'] = percent_format($myrow['po_over_receive']);
 $_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
 $_POST['past_due_days'] = $myrow['past_due_days'];
+
+$_POST['grn_clearing_act'] = $myrow['grn_clearing_act'];
 
 $_POST['default_credit_limit'] = $myrow['default_credit_limit'];
 $_POST['legal_text'] = $myrow['legal_text'];
@@ -172,6 +188,8 @@ table_section_title(_("Suppliers and Purchasing Defaults"));
 gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
 
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
+
+gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', get_post('grn_clearing_act'), true, false, _("No postings on GRN"));
 
 table_section_title(_("Inventory"));
 

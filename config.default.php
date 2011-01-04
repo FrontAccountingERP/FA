@@ -11,7 +11,7 @@
 ***********************************************************************/
     //--------------------------------------------------
 
-	// User configurable variables
+ 	// User configurable variables
 	//---------------------------------------------------
 
 	/*Show debug messages returned from an error on the page.
@@ -20,6 +20,10 @@
 
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
+
+	if (!ini_get('date.timezone'))
+       ini_set('date.timezone', 'Europe/Berlin');
+
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).
@@ -142,6 +146,12 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$config_allocation_settled_allowance = 0.005;
 
+	/* Allow negative prices for dummy/service items. To be moved to GL db settings */
+	$allow_negative_prices = 1;
+
+	/* Show menu category icons in core themes */
+	$show_menu_category_icons = 0;
+	
 	// Internal configurable variables
 	//-----------------------------------------------------------------------------------
 

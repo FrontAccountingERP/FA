@@ -242,8 +242,7 @@ if (get_post('type') == QE_JOURNAL && get_post('bal_type') == 1)
 }
 else
 {
-		$_POST['base_desc'] = _("Base Amount");
-	text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
+	text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '');
 	amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
 }
 end_table(1);

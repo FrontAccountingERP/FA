@@ -201,7 +201,7 @@ function display_po_header(&$order)
     	/*If this is the first time the form loaded set up defaults */
 
         //$_POST['StkLocation'] = $_SESSION['UserStockLocation'];
-        $sql = "SELECT delivery_address, phone FROM ".TB_PREF."locations WHERE loc_code='" . db_escape($_POST['StkLocation']) . "'";
+        $sql = "SELECT delivery_address, phone FROM ".TB_PREF."locations WHERE loc_code=".db_escape($_POST['StkLocation']);
         $result = db_query($sql,"could not get location info");
 
         if (db_num_rows($result) == 1)

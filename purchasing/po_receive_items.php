@@ -34,6 +34,10 @@ if (isset($_GET['AddedID']))
 	display_notification_centered(_("Purchase Order Delivery has been processed"));
 
 	display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
+	
+    $clearing_act = get_company_pref('grn_clearing_act');
+	if ($clearing_act)	
+		display_note(get_gl_view_str($trans_type, $grn, _("View the GL Journal Entries for this Delivery")), 1);
 
 	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 
@@ -108,7 +112,7 @@ function display_po_receive_items()
 	$display_sub_total = price_format($total/* + input_num('freight_cost')*/);
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
-	$taxes = $_SESSION['PO']->get_taxes(input_num('freight_cost'));
+	$taxes = $_SESSION['PO']->get_taxes(input_num('freight_cost'), true);
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['PO']->tax_included);
 

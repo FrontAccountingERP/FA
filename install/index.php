@@ -337,7 +337,7 @@ start_form();
 			}
 			subpage_title(_('Database Server Settings'));
 			start_table(TABLESTYLE);
-			text_row_ex(_("Server Host:"), 'host', 30);
+			text_row_ex(_("Server Host:"), 'host', 30, 60);
 			text_row_ex(_("Database User:"), 'dbuser', 30);
 			text_row_ex(_("Database Password:"), 'dbpassword', 30);
 			text_row_ex(_("Database Name:"), 'dbname', 30);

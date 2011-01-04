@@ -182,6 +182,15 @@ include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 
 include_once($path_to_root . "/includes/hooks.inc");
+//
+// include all extensions hook files.
+//
+foreach ($installed_extensions as $ext)
+{
+	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
+		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
+}
+
 
 /*
 	Uncomment the setting below when using FA on shared hosting
@@ -192,9 +201,12 @@ include_once($path_to_root . "/includes/hooks.inc");
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
+hook_session_start(@$_POST["company_login_name"]);
+
 session_name('FA'.md5(dirname(__FILE__)));
-//include_once($path_to_root.'/modules/www_statistics/includes/db_sessions.inc');
+
 session_start();
+session_regenerate_id();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");

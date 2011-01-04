@@ -89,17 +89,27 @@ function add_grn(&$po)
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
+    $clearing_act = get_company_pref('grn_clearing_act');
+	if ($clearing_act) {	// otherwise GRN clearing account is not used
+	    $total = 0;
+	}
 	foreach ($po->line_items as $line_no => $order_line)
 	{
-
 		if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty))
 		{
+			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
-			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+			//------------------- update average material cost and clearing account ----- Joe Hunt Mar-03-2008
 			if (is_inventory_item($order_line->stock_id))
+			{
+				if ($clearing_act)
+					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id);
 				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->receive_qty, $date_);
+			}		
 			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
@@ -126,6 +136,10 @@ function add_grn(&$po)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
+	if ($clearing_act && $total != 0.0) {
+		$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $clearing_act,
+			0, 0, -$total, null);
+	}
 	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 
 	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
@@ -229,8 +243,10 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
     $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, "
-    	.TB_PREF."purch_order_details.unit_price,
-		".TB_PREF."purch_order_details.std_cost_unit, units
+    	.TB_PREF."purch_order_details.unit_price,"
+    	.TB_PREF."purch_order_details.act_price,"
+    	.TB_PREF."purch_order_details.quantity_ordered,"
+		.TB_PREF."purch_order_details.std_cost_unit, units
     	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, "
     	.TB_PREF."purch_order_details, ".TB_PREF."stock_master";
     if ($invoice_no != 0)
@@ -305,7 +321,7 @@ function read_grn_items_to_order($grn_batch, &$order)
 		 	}
 
 			$order->add_to_order($order->lines_on_order, $myrow["item_code"],
-				1,$myrow["description"], $myrow["unit_price"],$units,
+				$myrow["qty_recd"],$myrow["description"], $myrow["unit_price"],$units,
 				sql2date($myrow["delivery_date"]), $myrow["quantity_inv"],
 				$myrow["qty_recd"]);
 
@@ -332,6 +348,7 @@ function read_grn($grn_batch, &$order)
 	if ($result)
 	{
 
+		$order->trans_type = ST_SUPPRECEIVE;
 		$order->orig_order_date = sql2date($row["delivery_date"]);
 		$order->location = $row["loc_code"];
 		$order->reference = $row["reference"];

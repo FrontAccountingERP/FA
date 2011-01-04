@@ -164,14 +164,6 @@ class hooks {
 		return true;
 	}
 }
-//
-// include all extensions hook files.
-//
-foreach ($installed_extensions as $ext)
-{
-	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
-		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
-}
 
 /*
 	Installs hooks provided by extension modules
@@ -366,4 +358,18 @@ function hook_tax_report_done()
 function hook_price_in_words($amount, $document)
 {
 	return hook_invoke_last('price_in_words', $amount, $document);
+}
+//
+//	Session handling hook. This is special case of hook class which have to be run before session is started.
+//	If fa_session_manager class is defined in any installed extension, this class provides session handling
+//	for application, otherwise standard php session handling is used.
+//
+function hook_session_start($company)
+{
+	if (class_exists('fa_session_manager')) {
+		global $SessionManager;
+		$SessionManager = new fa_session_manager($company);
+		return $SessionManager->installed;
+	}
+	return false;
 }

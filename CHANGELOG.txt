@@ -19,7 +19,162 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-------------------------------- Release 2.3 ------------------------------------
+04-Jan-2011 Merged main trunk up to 2.3.1
+------------------------------- Release 2.3.1 ------------------------------------
+04-Jan-2011 Joe Hunt
+! Release 2.3.1
+$ version.php
+  /lang/new_language_template/LC_MESSAGES/empty.po
+
+04-Jan-2011 Janusz Dobrowolski
+! Database host name up to 60 chars allowed.
+$ /admin/create_coy.php
+  /install/index.php
+
+31-Dec-2010 Joe Hunt
+# Fixed bug in earlier invoice_db (GRN Provision should have only one row)
+  Only GRN Clearring on stock items.
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+! Changed so supplier credit note items shows the invoice price/not grn price
+$ /purchasing/includes/db/grn_db.inc
+  /invoice_ui.inc
++ Added link for viewing GL Delivery if clearing account
+$ /purchasing/po_receive_items.php
+  /purchasing/po_entry_items.php
+# Bug. $n undefined in /admin/gl_setup.php
+$ /admin/gl_setup.php
+! Added GL trans on Removal GRN items (Supp Invoice) if GRN Clearing
+$ /purchasing/includes/db/invoice_db.inc
+  
+30-Dec-2010 Janusz Dobrowolski
++ Added option for using GRN Clearing Account for yet non invoiced GRNs.
+$ /purchasing/includes/po_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Added GRN clearing account setting
+$ /admin/gl_setup.php
+! Added set_company_pref() function
+$ /admin/db/company_db.inc
+# JS error on focus move
+$ /js/reconcile.js
+
+29-Dec-2010 Janusz Dobrowolski
+! Hook files inclusion moved to session.inc
+$ /includes/hooks.inc
+  /includes/session.inc
+# Non-voidable transactions removed from selection on voiding page.
+$ /admin/void_transaction.php
+  /includes/ui/ui_lists.inc
+
+27-Dec-2010 Joe Hunt
+! Prepared for category icons in applications/application.php for themes
+  To activate, set $show_menu_category_icons = 1, in config.php
+$ /config.default.php
+  /applications/application.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/supplier.php
+  /themes/aqua/renderer.php
+  /themes/aqua/images/menu_entry.png (new file)
+  /themes/aqua/images/menu_inquiry.png (new file)
+  /themes/aqua/images/menu_maintenance.png (new file)
+  /themes/aqua/images/menu_report.png (new file)
+  /themes/aqua/images/menu_settings.png (new file)
+  /themes/aqua/images/menu_system.png (new file)
+  /themes/aqua/images/menu_transaction.png (new file)
+  /themes/aqua/images/menu_update.png (new file)
+  /themes/cool/renderer.php
+  /themes/cool/images/menu_entry.png (new file)
+  /themes/cool/images/menu_inquiry.png (new file)
+  /themes/cool/images/menu_maintenance.png (new file)
+  /themes/cool/images/menu_report.png (new file)
+  /themes/cool/images/menu_settings.png (new file)
+  /themes/cool/images/menu_system.png (new file)
+  /themes/cool/images/menu_transaction.png (new file)
+  /themes/cool/images/menu_update.png (new file)
+  /themes/default/renderer.php
+  /themes/default/images/menu_entry.png (new file)
+  /themes/default/images/menu_inquiry.png (new file)
+  /themes/default/images/menu_maintenance.png (new file)
+  /themes/default/images/menu_report.png (new file)
+  /themes/default/images/menu_settings.png (new file)
+  /themes/default/images/menu_system.png (new file)
+  /themes/default/images/menu_transaction.png (new file)
+  /themes/default/images/menu_update.png (new file)
+  
+27-Dec-2010 Janusz Dobrowolski
++ Option for allowing negative prices for dummy/service items [0000343]
+$ /config.default.php
+  /sales/sales_order_entry.php
+# [0000356] Database errror on PO voiding.
+$ /admin/db/transactions_db.inc
+# [0000380] Database error during direct invoice processing in mysql strict mode.
+$ /sales/includes/db/cust_trans_db.inc
+! Added balance limit for payments made from cash accounts
+$ /gl/gl_bank.php
+  /gl/bank_transfer.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /purchasing/supplier_payment.php
+
+19-Dec-2010 Janusz Dobrowolski
+# Supressed strict warnings in reporting 
+$ /includes/errors.inc
+# Fixed errors in tax display in purchase transactions
+$ /purchasing/po_receive_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/po_db.inc
+
+17-Dec-2010 Joe Hunt
+# [0000304] Set locale functionality broken on Windows
+$ /includes/lang/gettext.php
+  /includes/packages.inc (missing include directive for hooks.inc)
+# Bad test code left over, cleaning up
+$ /includes/db/inventory_db.inc
+
+16-Dec-2010 Janusz Dobrowolski
++ Added hook for session handling, fixed bug [0000315] (session fixation)
+$ /includes/hooks.inc
+  /includes/session.inc
+# Cleanup on add_quick_entry() qid parameter added
+$ /gl/includes/db/gl_db_bank_accounts.inc
+# Could not change quick entry base amount description
+$ /gl/manage/gl_quick_entries.php
+# Fixed error handling
+$ /includes/ui/items_cart.inc
+# Fixed get_gl_trans_from_to return type
+$ /gl/includes/db/gl_db_trans.inc
+
+15-Dec-2010 Janusz Dobrowolski
++ Added Georgian installer wizard translation by Giorgi Natsvlishvili
+$ /install/isession.inc
+  /install/lang/it_IT/LC_MESSAGES/ka_GE.mo (new)
+  /install/lang/it_IT/LC_MESSAGES/ka_GE.po (new)
+# Nonprintable CR filtered out from pdf texts.
+$ /reporting/includes/pdf_report.inc
+
+13-Dec-2010 Joe Hunt
+! Dispaly group no in Balance Sheet/Profit Loss Drilldown.
+$ /gl/inquiry/balance_sheep.php
+  /gl/inquiry/profit_loss.php
+  
+12-Dec-2010 Joe Hunt
+# Removed Timezone warnings
+$ /config.default.php
+  /includes/date_functions.inc
+  
+12-Dec-2010 Janusz Dobrowolski
+# [0000318] Database error after last changes related to bug 313
+$ /purchasing/includes/ui/po_ui.inc
+
+------------------------------- Release 2.3.0 ------------------------------------
 09-Dec-2010 Joe Hunt
 ! Release 2.3.0
 $ version.php

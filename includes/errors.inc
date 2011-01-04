@@ -21,7 +21,10 @@ function error_handler($errno, $errstr, $file, $line) {
 
 	// skip well known warnings we don't care about.
 	// Please use restrainedly to not risk loss of important messages
-	$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
+	$excluded_warnings = array(
+		'html_entity_decode', 'htmlspecialchars',	// nevermind encodings, special chars are processed anyway
+		'should be compatible with that'			// ignore cpdf/frontreport wrapper warnings
+	);
 	foreach($excluded_warnings as $ref) {
 		if (strpos($errstr, $ref) !== false) {
 			return true;

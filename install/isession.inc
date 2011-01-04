@@ -80,6 +80,7 @@ $inst_langs = array(
   'fr_FR' => array ( 'name' => 'Français',	'code' => 'fr_FR',	'encoding' => 'iso-8859-1'),
   'id_ID' => array ( 'name' => 'Indonesian','code' => 'id_ID',	'encoding' => 'iso-8859-1'),
   'it_IT' => array ( 'name' => 'Italian','code' => 'it_IT',	'encoding' => 'iso-8859-1'),
+  'ka_GE' => array ( 'name' => 'Georgian','code' => 'ka_GE',	'encoding' => 'utf-8'),
   'nl_BE' => array ( 'name' => 'Nederlands','code' => 'nl_BE',	'encoding' => 'iso-8859-1'),
   'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
   'pt_BR' => array ( 'name' => 'Português','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),

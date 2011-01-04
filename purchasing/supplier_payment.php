@@ -186,6 +186,16 @@ function check_inputs()
 		set_focus('DatePaid');
 		return false;
 	}
+
+	$limit = get_bank_account_limit($_POST['bank_account'], $_POST['DatePaid']);
+
+	if ($limit != null && ($limit < input_num('amount')))
+	{
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
+		set_focus('amount');
+		return false;
+	}
+
     if (!$Refs->is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));

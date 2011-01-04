@@ -139,12 +139,16 @@ function ref_view($row)
 function voiding_controls()
 {
 	global $selected_id;
+
+	$not_implemented =  array(ST_PURCHORDER, ST_SUPPRECEIVE, ST_SALESORDER, 
+		ST_SALESQUOTE, ST_COSTUPDATE);
+
 	start_form();
 
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true);
+	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true, $not_implemented);
 	if (list_updated('filterType'))
 		$selected_id = -1;
 		

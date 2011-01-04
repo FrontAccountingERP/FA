@@ -50,9 +50,8 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 	elseif ($type_name != null)
 		$sql .= " AND t.`$type_name` = ".db_escape($filtertype);
 
-	$sql .= " GROUP BY t.$type_name, t.$trans_no_name";
+	$sql .= " GROUP BY ".($type_name ? "t.$type_name," : '')." t.$trans_no_name";
 	$sql .= " ORDER BY t.$trans_no_name";
-
 	return $sql;
 }
 

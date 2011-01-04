@@ -127,7 +127,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		{	
 			$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2
-				. "&AccGrp=" . $type ."'>" . $typename ."</a>";
+				. "&AccGrp=" . $type ."'>" . $type . " " . $typename ."</a>";
 				
 			alt_table_row_color($k);
 			label_cell($url);
@@ -266,7 +266,7 @@ function display_profit_and_loss()
 				{
 					$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
 						. $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2
-						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['name'] ."</a>";
+						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['id'] . " " . $accounttype['name'] ."</a>";
 						
 					alt_table_row_color($k);
 					label_cell($url);
@@ -310,7 +310,7 @@ function display_profit_and_loss()
 		$convert = get_class_type_convert($class["ctype"]); 
 		
 		//Print Class Name	
-		table_section_title(get_account_type_name($_POST["AccGrp"]),4);	
+		table_section_title($_POST["AccGrp"] . " " . get_account_type_name($_POST["AccGrp"]),4);	
 		echo $tableheader;
 		
 		$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 

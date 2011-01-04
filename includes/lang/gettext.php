@@ -104,7 +104,8 @@ class gettext_native_support
 	 */
 	function check_support($lang_code, $encoding)
     {
-
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') // don't do this test if server is WIN
+			return true;
 		$old = setlocale(LC_CTYPE, '0'); // LC_MESSAGES does not exist on Win
 		$up = strtoupper($encoding);
 		$low = strtolower($encoding);

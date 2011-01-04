@@ -76,6 +76,13 @@ function get_company_prefs($tbpref = TB_PREF)
 	return get_company_pref(null, $tbpref);
 }
 
+function set_company_pref($pref, $category, $type, $length, $value)
+{
+	$sql = "REPLACE `0_sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
+		.", `type`=".db_escape($type).", `length`=".db_escape($length).", `value`=".db_escape($value);
+	return db_query($sql, "cannot set company pref");
+}
+
 function refresh_sys_prefs()
 {
 	flush_dir(company_path().'/js_cache'); // clear cache

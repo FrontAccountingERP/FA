@@ -137,6 +137,7 @@ function read_po_header($order_no, &$order)
 
       	$myrow = db_fetch($result);
 
+      	$order->trans_type = ST_PURCHORDER;
       	$order->order_no = $order_no;
       	
       	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
