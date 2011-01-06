@@ -391,6 +391,8 @@ function can_commit()
 
 function handle_commit_order()
 {
+	global $Refs, $type_shortcuts;
+
 	$cart = &$_SESSION['PO'];
 
 	if (can_commit()) {
@@ -437,24 +439,42 @@ function handle_commit_order()
 			$inv->reference = $ref;
 			$inv->supp_reference = $cart->supp_ref;
 			$inv->tax_included = $cart->tax_included;
+			$inv->tax_algorithm = $cart->tax_algorithm;
+			$inv->stored_algorithm = $cart->stored_algorithm;
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
-//			$inv->ov_discount 'this isn't used at all'
-			$inv->ov_amount = $inv->ov_gst = 0;
-			
+			$total = 0;
 			foreach($cart->line_items as $key => $line) {
 				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
 					$line->item_description, $line->receive_qty, 0, $line->receive_qty,
 					$line->price, $line->price, true, get_standard_cost($line->stock_id), '');
-				$inv->ov_amount += round2(($line->receive_qty * $line->price), user_price_dec());
+				$total += round2(($line->receive_qty * $line->price), user_price_dec());
 			}
-			$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
-			foreach( $taxes as $taxitem) {
-				$inv->ov_gst += round2($taxitem['Value'], user_price_dec());
+			if (!$inv->tax_included) {
+				$taxes = $inv->get_taxes($inv->tax_group_id, 0, false, $inv->tax_algorithm);
+				foreach( $taxes as $taxitem) {
+					$total += $taxitem['Value'];
+				}
 			}
+
 			$inv_no = add_supp_invoice($inv);
-			commit_transaction(); // save PO+GRN+PI
-			// FIXME payment for cash terms. (Needs cash account selection)
+			// presume supplier data need correction
+			if ($inv->stored_algorithm != $inv->tax_algorithm)
+				update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
+
+			if (get_post('cash_account')) {
+
+				$pmt_no = add_supp_payment($inv->supplier_id, $inv->tran_date, get_post('cash_account'),
+					$total, 0,	$Refs->get_next(ST_SUPPAYMENT), 
+					_('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
+				add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->tran_date);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no, $total);
+				update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no, $total);
+
+			}
+
+			commit_transaction(); // save PO+GRN+PI(+SP)
+
 			unset($_SESSION['PO']);
        		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
 		}
@@ -501,6 +521,17 @@ echo "<br>";
 display_po_items($_SESSION['PO']);
 
 start_table(TABLESTYLE2);
+
+if (list_updated('tax_algorithm')) {
+	$_SESSION['PO']->tax_algorithm = $_POST['tax_algorithm'];
+    $Ajax->activate('items_table');
+}
+
+if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE) {
+	tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
+	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
+}
+
 textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 
 end_table(1);

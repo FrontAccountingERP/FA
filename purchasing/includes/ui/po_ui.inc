@@ -19,13 +19,14 @@ function copy_from_cart()
 
 	$_POST['supplier_id'] = $cart->supplier_id;
 	$_POST['OrderDate'] = $cart->orig_order_date;
-	if ($cart->trans_type==ST_SUPPINVOICE)
+	if ($cart->trans_type == ST_SUPPINVOICE)
 		$_POST['due_date'] = $cart->due_date;
     $_POST['supp_ref'] = $cart->supp_ref;
     $_POST['ref'] = $cart->reference;
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
+    $_POST['tax_algorithm'] = $cart->tax_algorithm;
 }
 
 function copy_to_cart()
@@ -34,19 +35,21 @@ function copy_to_cart()
 
 	$cart->supplier_id = $_POST['supplier_id'];	
 	$cart->orig_order_date = $_POST['OrderDate'];
-	if ($cart->trans_type==ST_SUPPINVOICE)
+	if ($cart->trans_type == ST_SUPPINVOICE)
 		$cart->due_date = $_POST['due_date'];
 	$cart->reference = $_POST['ref'];
 	$cart->supp_ref = $_POST['supp_ref'];
 	$cart->Comments = $_POST['Comments'];	
 	$cart->Location = $_POST['StkLocation'];
 	$cart->delivery_address = $_POST['delivery_address'];
+	if (isset($_POST['tax_algorithm']))
+	    $cart->tax_algorithm = $_POST['tax_algorithm'];
 }
 // ------------------------------------------------------------------------------
 
 function get_supplier_details_to_order(&$order, $supplier_id)
 {
-	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included,
+	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included, supp.tax_algorithm,
 			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
 				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit,
 				terms.terms, terms.days_before_due, terms.day_in_following_month
@@ -71,7 +74,7 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 	$_POST['curr_code'] = $myrow["curr_code"];
 
 	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
-		$myrow["tax_group_id"], $myrow["tax_included"]);
+		$myrow["tax_group_id"], $myrow["tax_included"], $myrow["tax_algorithm"]);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -130,6 +133,7 @@ function display_po_header(&$order)
 		get_supplier_details_to_order($order, $_POST['supplier_id']); 
 	    get_duedate_from_terms($order);
 		$_POST['due_date'] = $order->due_date;
+		$_POST['tax_algorithm'] = $order->tax_algorithm;
 
 		// supplier default price update
 		foreach ($order->line_items as $line_no=>$item) {
@@ -141,6 +145,7 @@ function display_po_header(&$order)
 		}
 	    $Ajax->activate('items_table');
 	    $Ajax->activate('due_date');
+	    $Ajax->activate('tax_algorithm');
 	}
 	set_global_supplier($_POST['supplier_id']);
 
