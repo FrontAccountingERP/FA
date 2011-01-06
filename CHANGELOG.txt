@@ -19,6 +19,31 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jan-2011 Janusz Dobrowolski
++ Added cash payment and tax algorithm selection in purchase Direct Invoice.
+$ /purchasing/po_entry_items.php
+  /purchasing/includes/ui/po_ui.inc
++ Added tax calculation algorithm selection in sales and purchasing, driven by company/suppliers settings.
+$ /admin/gl_setup.php
+  /includes/sysnames.inc
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/manage/suppliers.php
+  /reporting/rep209.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/tax_calc.inc
+# Updated sources version
+$ /version.php
+
 04-Jan-2011 Merged main trunk up to 2.3.1
 ------------------------------- Release 2.3.1 ------------------------------------
 04-Jan-2011 Joe Hunt
