@@ -41,6 +41,8 @@ $ /admin/gl_setup.php
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
   /taxes/tax_calc.inc
+  /sql/alter2.4.php
+  /sql/alter2.4.sql
 # Updated sources version
 $ /version.php
 
