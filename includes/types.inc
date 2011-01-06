@@ -226,6 +226,12 @@ define('PTT_CASH', 2);
 define('PTT_DAYS', 3);
 define('PTT_FOLLOWING', 4);
 
+//----------------------------------------------------------------------------------
+// Tax calculation algorithms used in als and purchase (depends on supplier's invoicing software)
+
+define('TCA_TOTALS', 1); // taxes are calculated from respective net totals for all lines
+define('TCA_LINES', 2); // taxes calculated for every line, then summed
+
 include_once($path_to_root . '/includes/sysnames.inc');
 
 ?>

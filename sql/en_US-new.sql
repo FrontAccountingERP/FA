@@ -1648,6 +1648,7 @@ CREATE TABLE IF NOT EXISTS `0_suppliers` (
   `curr_code` char(3) default NULL,
   `payment_terms` int(11) default NULL,
   `tax_included` tinyint(1) NOT NULL default '0',
+  `tax_algorithm` tinyint(1) NOT NULL default '1',
   `dimension_id` int(11) default '0',
   `dimension2_id` int(11) default '0',
   `tax_group_id` int(11) default NULL,
@@ -1741,6 +1742,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
   `tax_included` tinyint(1) NOT NULL default '0',
+  `tax_algorihm` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
@@ -1801,6 +1803,7 @@ INSERT INTO `0_sys_prefs` VALUES('profit_loss_year_act', 'glsetup.general', 'var
 INSERT INTO `0_sys_prefs` VALUES('retained_earnings_act', 'glsetup.general', 'varchar', 15, '3590');
 INSERT INTO `0_sys_prefs` VALUES('bank_charge_act', 'glsetup.general', 'varchar', 15, '5690');
 INSERT INTO `0_sys_prefs` VALUES('exchange_diff_act', 'glsetup.general', 'varchar', 15, '4450');
+INSERT INTO `0_sys_prefs` VALUES('tax_algorithm', 'glsetup.general', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES('default_credit_limit', 'glsetup.customer', 'int', 11, '1000');
 INSERT INTO `0_sys_prefs` VALUES('accumulate_shipping', 'glsetup.customer', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('legal_text', 'glsetup.customer', 'tinytext', 0, '');

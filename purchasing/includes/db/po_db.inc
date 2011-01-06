@@ -141,7 +141,7 @@ function read_po_header($order_no, &$order)
       	$order->order_no = $order_no;
       	
       	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
-      		$myrow['tax_group_id'], $myrow["tax_included"]);
+      		$myrow['tax_group_id'], $myrow["tax_included"], $myrow["tax_algorithm"]);
 
 		$order->credit = get_current_supp_credit($order->supplier_id);
 

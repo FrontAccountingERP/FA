@@ -16,7 +16,7 @@ include_once($path_to_root . "/purchasing/includes/db/invoice_items_db.inc");
 function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 {
 	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due,
-		terms.day_in_following_month, supp.tax_included,
+		terms.day_in_following_month, supp.tax_included, supp.tax_algorithm,
 		supp.tax_group_id, tax_group.name AS tax_group_name,
 		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
 			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
@@ -31,6 +31,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 
     $supp_trans->supplier_id = $supplier_id;
     $supp_trans->tax_included = $myrow['tax_included'];
+    $supp_trans->tax_algorithm = $supp_trans->stored_algorithm = $myrow['tax_algorithm'];
     $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->terms = array( 
 		'description' => $myrow['terms'],
@@ -129,7 +130,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     	$tax_total += $taxes[$n]['Value'];
     }
 
-	$invoice_items_total = $supp_trans->get_items_total();
+	$invoice_items_total = $supp_trans->get_items_total(); // get total with/without tax dep. on tax_included
 //	$invoice_items_total = $supp_trans->get_total_taxfree($supp_trans->tax_group_id);
 
 	if($supp_trans->tax_included==0) {
@@ -156,7 +157,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
 		$supp_trans->reference, $supp_trans->supp_reference,
-		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included);
+		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included,
+		$supp_trans->tax_algorithm);
 
 	$total = 0;
     /* Now the control account */
@@ -411,6 +413,7 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 		$supp_trans->ov_discount = $trans_row["ov_discount"];
 		$supp_trans->ov_gst = $trans_row["ov_gst"];
 		$supp_trans->tax_included = $trans_row["tax_included"];
+		$supp_trans->stored_algorithm = $supp_trans->tax_algorithm = $trans_row["tax_algorithm"];
 
 		$id = $trans_row["trans_no"];
 

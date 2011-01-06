@@ -140,14 +140,17 @@ function get_taxes_for_item($stock_id, $tax_group_items_array)
 //-----------------------------------------------------------------------------------
 // return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value) 
 
-function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null)
+function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null, $tax_algorithm = null)
 {
+	if (!$tax_algorithm)
+		$tax_algorithm = get_company_pref('tax_algorithm');
 	// first create and set an array with all the tax types of the tax group
 	if($tax_items_array!=null)
 	  $ret_tax_array = $tax_items_array;
 	else
 	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
 
+	$dec = user_price_dec();
 	foreach($ret_tax_array as $k=>$t)
 		$ret_tax_array[$k]['Net'] = 0;
 
@@ -163,10 +166,10 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 				$index = $item_tax['tax_type_id'];
 				if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 				  $nprice = get_tax_free_price_for_item($items[$i], $prices[$i], $tax_group, $tax_included);
-				  $ret_tax_array[$index]['Value'] += ($nprice * $item_tax['rate'] / 100);
+				  $ret_tax_array[$index]['Value'] += round2($nprice * $item_tax['rate'] / 100, $dec);
 				  $ret_tax_array[$index]['Net'] += $nprice;
 				} else {
-				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
+				  $ret_tax_array[$index]['Value'] += round2($prices[$i] * $item_tax['rate'] / 100, $dec);
 				  $ret_tax_array[$index]['Net'] += $prices[$i];
 				}
 			}
@@ -189,25 +192,30 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 						$tax_rate += $item_tax['rate'];
 					}
 				}
-				$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
+				$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), $dec);
 			}	
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
 				if(isset($ret_tax_array[$index])) {
 				  if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
-					$ret_tax_array[$index]['Value'] += ($shipping_net * $item_tax['rate'] / 100);
+					$ret_tax_array[$index]['Value'] += round2($shipping_net * $item_tax['rate'] / 100, $dec);
 				    $ret_tax_array[$index]['Net'] += $shipping_net;
 				  } else {
-					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
+					$ret_tax_array[$index]['Value'] += round2($shipping_cost * $item_tax['rate'] / 100, $dec);
 				    $ret_tax_array[$index]['Net'] += $shipping_cost;
-				 }
+				  }
 				}
 			}
 		}
 	}
 	
-	//print_r($ret_tax_array);
+	if ($tax_algorithm == TCA_TOTALS ) {
+		// update taxes with 
+		foreach($ret_tax_array as $index => $item_tax) {
+			$ret_tax_array[$index]['Value'] = round2($item_tax['Net'] * $item_tax['rate'] / 100, $dec);
+		}
+	}
 
 	return $ret_tax_array;
 }

@@ -67,7 +67,7 @@ if (isset($_POST['submit']) && can_process())
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
 		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
 		'past_due_days', 'default_workorder_required', 'default_dim_required',
-		'default_delivery_required', 'grn_clearing_act',
+		'default_delivery_required', 'grn_clearing_act', 'tax_algorithm',
 		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
 		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
 )));
@@ -100,6 +100,7 @@ $_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
 $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
 $_POST['bank_charge_act'] = $myrow["bank_charge_act"];
+$_POST['tax_algorithm'] = $myrow["tax_algorithm"];
 $_POST['default_sales_act'] = $myrow["default_sales_act"];
 $_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
 $_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
@@ -140,6 +141,8 @@ gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST[
 gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 
 gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
+
+tax_algorithm_list_row(_("Tax Algorithm:"), 'tax_algorithm', $_POST['tax_algorithm']);
 
 //---------------
 

@@ -19,6 +19,7 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
+	$_POST['tax_algorithm'] = $supp_trans->tax_algorithm;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -30,6 +31,8 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
+ 	if (isset($_POST['tax_algorithm']))
+ 	    $supp_trans->tax_algorithm = $_POST['tax_algorithm'];
 
 	$supp_trans->ov_amount = 0; /* for starters */
 	if (count($supp_trans->grn_items) > 0)
@@ -137,10 +140,13 @@ function invoice_header(&$supp_trans)
 
 function invoice_totals(&$supp_trans)
 {
+	global $Ajax;
+
 	copy_to_trans($supp_trans);
 
 	$dim = get_company_pref('use_dimension');
  	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
+ 	div_start('tax_table');
    	start_table(TABLESTYLE, "width=95%");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
@@ -158,8 +164,14 @@ function invoice_totals(&$supp_trans)
 
     end_table(1);
     start_table(TABLESTYLE2);
+    tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
+	if (list_updated('tax_algorithm')) {
+		$supp_trans->tax_algorithm = $_POST['tax_algorithm'];
+	    $Ajax->activate('tax_table');
+	}
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
     end_table(1);
+	div_end();
 }
 
 //--------------------------------------------------------------------------------------------------

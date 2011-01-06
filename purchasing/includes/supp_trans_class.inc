@@ -40,6 +40,8 @@ class supp_trans
 	var $ov_gst;
 	var $gl_codes_counter=0;
 	var $credit = 0;
+	var $tax_algorithm;
+	var $stored_algorithm;
 
 	function supp_trans($trans_type)
 	{
@@ -114,7 +116,7 @@ class supp_trans
         if ($tax_group_id == null)
         	$tax_group_id = $this->tax_group_id;
         $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id, 
-        	$this->tax_included);
+        	$this->tax_included, null, $this->tax_algorithm);
 
 ///////////////// Joe Hunt 2009.08.18
 
@@ -156,7 +158,9 @@ class supp_trans
    		}	
    		return $total;
     }
-
+	//
+	//	Returns transaction total 
+	//
 	function get_items_total()
 	{
 		$total = 0;

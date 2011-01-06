@@ -199,8 +199,12 @@ function handle_commit_invoice()
 
 	if (!check_data())
 		return;
+	$inv = $_SESSION['supp_trans'];
+	$invoice_no = add_supp_invoice($inv);
 
-	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+	// presume supplier data need correction
+	if ($inv->stored_algorithm != $inv->tax_algorithm)
+		update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
 
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);
@@ -219,6 +223,7 @@ function check_item_data($n)
 {
 	global $check_price_charged_vs_order_price,
 		$check_qty_charged_vs_del_qty, $SysPrefs;
+
 	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));

@@ -1407,8 +1407,10 @@ function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 }
 //-----------------------------------------------------------------------------------------------
 
-function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false, $all_option=false)
 {
+	global $all_items;
+
 	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code, inactive
 		FROM ".TB_PREF."bank_accounts
 		WHERE ".TB_PREF."bank_accounts.account_type=".BT_CASH;
@@ -1418,6 +1420,8 @@ function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 	echo "<td>";
 	echo combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
+		'spec_option' => $all_option,
+		'spec_id' => $all_items,
 		'format' => '_format_add_curr',
 		'select_submit'=> $submit_on_change,
 		'async' => true
@@ -2326,5 +2330,33 @@ function coa_list_row($label, $name, $value=null)
 	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $coas );
 	echo "</td></tr>\n";
+}
+
+function tax_algorithm_list($name, $value=null, $submit_on_change = false)
+{
+	global $tax_algorithms;
+	
+	return array_selector($name, $value, $tax_algorithms, 
+		array( 
+			'select_submit'=> $submit_on_change,
+			'async' => true,
+			)
+	);
+}
+
+function tax_algorithm_list_cells($label, $name, $value=null, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	echo tax_algorithm_list($name, $value, $submit_on_change);
+	echo "</td>\n";
+}
+
+function tax_algorithm_list_row($label, $name, $value=null, $submit_on_change=false)
+{
+	echo "<tr><td class='label'>$label</td>";
+	tax_algorithm_list_cells(null, $name, $value, $submit_on_change);
+	echo "</tr>\n";
 }
 ?>
