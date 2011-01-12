@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+12-Jan-2011 Janusz Dobrowolski
++ Added access extensions hook method, cleanup
+$ /includes/hooks.inc
+# Fixed suplier reference allowed length.
+$ /purchasing/includes/ui/invoice_ui.inc
+# Sparse dot.
+$ /sql/alter2.3.sql
+# Backward compatiblity fix in bank account limit check.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+
 ------------------------------- Release 2.3.1 ------------------------------------
 04-Jan-2011 Joe Hunt
 ! Release 2.3.1
