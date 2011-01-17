@@ -14,7 +14,7 @@
 		function get_icon($category)
 		{
 			global  $path_to_root, $show_menu_category_icons;
-;
+
 			if ($show_menu_category_icons)
 				$img = $category == '' ? 'right.gif' : $category.'.png';
 			else	

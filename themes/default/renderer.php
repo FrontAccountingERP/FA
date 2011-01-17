@@ -14,12 +14,12 @@
 		function get_icon($category)
 		{
 			global  $path_to_root, $show_menu_category_icons;
-;
+
 			if ($show_menu_category_icons)
 				$img = $category == '' ? 'right.gif' : $category.'.png';
 			else	
 				$img = 'right.gif';
-			return "<img src='$path_to_root/themes/cool/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
+			return "<img src='$path_to_root/themes/default/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
 		}
 
 		function wa_header()
