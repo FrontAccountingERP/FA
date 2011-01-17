@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jan-2011 Janusz Dobrowolski
+# Removed sparse Add button
+$ /admin/inst_module.php
+# Check for qoh for supplier credit was missing.
+$ /purchasing/supplier_credit.php
+# Screen refresh on Update button fixed
+$ /sales/customer_credit_invoice.php
+# Fixed theme images location
+$ /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+# Fixed slow sql for po related invoices/credits
+$ /purchasing/includes/db/invoice_db.inc
+
 17-Jan-2011 Joe Hunt
 # [0000494] Cannot set second company pref when setup System and General GL 
 $ /admin/db/company_db.inc
