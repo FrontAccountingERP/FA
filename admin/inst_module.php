@@ -154,7 +154,6 @@ function display_extensions()
 	end_table(1);
 
 	submit_center_first('Refresh', _("Update"), '', null);
-	submit_center_last('Add', _("Add third-party extension"), '', false);
 
 	div_end();
 }
