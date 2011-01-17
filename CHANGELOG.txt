@@ -22,6 +22,8 @@ $ -> Affected files
 17-Jan-2011 Joe Hunt
 # [0000494] Cannot set second company pref when setup System and General GL 
 $ /admin/db/company_db.inc
+# {0000481] No warning when user does not supply db credentials in create_coy 
+$ /admin/create_coy.php
 
 12-Jan-2011 Janusz Dobrowolski
 + Added access extensions hook method, cleanup

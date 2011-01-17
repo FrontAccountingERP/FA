@@ -41,7 +41,10 @@ function check_data()
 	global $db_connections, $tb_pref_counter, $selected_id;
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
-		return false;
+	{
+		display_error(_("Database setting are not specified."));
+ 		return false;
+	}
 
 	foreach($db_connections as $id=>$con)
 	{
@@ -309,7 +312,15 @@ function display_company_edit($selected_id)
 		hidden('dbpassword', $_POST['dbpassword']);
 	}
 	else
+	{
 		$_POST['tbpref'] = $tb_pref_counter."_";
+		// Insert the current settings as default
+		$conn = $db_connections[user_company()];
+		$_POST['host']  = $conn['host'];
+		$_POST['dbuser']  = $conn['dbuser'];
+		$_POST['dbpassword']  = $conn['dbpassword'];
+		$_POST['dbname']  = $conn['dbname'];
+	}
 	text_row_ex(_("Company"), 'name', 30);
 	text_row_ex(_("Host"), 'host', 30, 60);
 	text_row_ex(_("Database User"), 'dbuser', 30);
