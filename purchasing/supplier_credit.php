@@ -135,7 +135,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value, $Refs;
+	global $total_grn_value, $total_gl_value, $Refs, $SysPrefs;
 	
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
@@ -190,6 +190,23 @@ function check_data()
 		return false;
 	}
 
+	if (!$SysPrefs->allow_negative_stock()) {
+		foreach ($_SESSION['supp_trans']->grn_items as $n => $item) {
+			if (is_inventory_item($item->item_code))
+			{
+				$qoh = get_qoh_on_date($item->item_code, $item->location, $_SESSION['supp_trans']->tran_date);
+				if ($item->qty_recd > $qoh)
+				{
+					$stock = get_item($item->item_code);
+					display_error(_("The return cannot be processed because there is an insufficient quantity for item:") .
+						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+						_("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock['stock_id'])));
+					return false;
+				}
+				return true;
+			}
+		}
+	}
 	return true;
 }
 
@@ -222,6 +239,7 @@ if (isset($_POST['PostCreditNote']))
 
 function check_item_data($n)
 {
+
 	if (!check_num('This_QuantityCredited'.$n, 0))
 	{
 		display_error(_("The quantity to credit must be numeric and greater than zero."));
