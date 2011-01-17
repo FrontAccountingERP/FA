@@ -164,10 +164,10 @@ function check_quantities()
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				  input_num('Line'.$line_no);
 			}
+			else {
+				$ok = 0;
+			}
 	  	}
-		else {
-			$ok = 0;
-		}
 
 		if (isset($_POST['Line'.$line_no.'Desc'])) {
 			$line_desc = $_POST['Line'.$line_no.'Desc'];
