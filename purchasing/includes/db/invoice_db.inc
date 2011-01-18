@@ -379,6 +379,7 @@ function get_po_invoices_credits($po_number)
 		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, "
 		.TB_PREF."purch_order_details, ".TB_PREF."purch_orders
 		WHERE ".TB_PREF."supp_invoice_items.supp_trans_no = ".TB_PREF."supp_trans.trans_no
+		AND ".TB_PREF."supp_invoice_items.supp_trans_type = ".TB_PREF."supp_trans.type
 		AND ".TB_PREF."supp_invoice_items.po_detail_item_id = ".TB_PREF."purch_order_details.po_detail_item
 		AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."supp_trans.supplier_id
 		AND ".TB_PREF."purch_orders.order_no = ".TB_PREF."purch_order_details.order_no

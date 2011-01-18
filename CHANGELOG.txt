@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jan-2011 Joe Hunt
+# Wrong linked credit data on invoices/credits table when view PO
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  
 17-Jan-2011 Janusz Dobrowolski
 # Removed sparse Add button
 $ /admin/inst_module.php

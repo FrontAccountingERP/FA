@@ -310,7 +310,8 @@ function read_grn_items_to_order($grn_batch, &$order)
 
 	 	while ($myrow = db_fetch($result))
 	 	{
-
+	 		if ($myrow['qty_recd'] == 0 && $myrow['quantity_inv'] == 0)
+				continue; // 2011-01-18 Joe Hunt. We will not have empty credited rows.
 		 	if (is_null($myrow["units"]))
 		 	{
 				$units = "";
