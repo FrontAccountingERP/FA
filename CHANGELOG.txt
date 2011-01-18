@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jan-2011 Janusz Dobrowolski
+# Fixed accruals postings date calculation.
+$ /gl/accruals.php
+# Fixed add_months() result for dates near end of month.
+$ /includes/date_functions.inc
+
 18-Jan-2011 Joe Hunt
 # Wrong linked credit data on invoices/credits table when view PO
 $ /purchasing/includes/db/grn_db.inc
