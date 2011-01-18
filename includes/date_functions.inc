@@ -207,30 +207,46 @@ function begin_month($date)
    	return __date($year, $month, 1);
 }
 
-function end_month($date)
+function days_in_month($month, $year)
 {
 	global $date_system;
-    list($day, $month, $year) = explode_date_to_dmy($date);
+
 	if ($date_system == 1)
 	{
-		list($year, $month, $day) = gregorian_to_jalali($year, $month, $day);
 		$days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, ((((((($year - (($year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29));
 	}
 	elseif ($date_system == 2)
 	{
-		list($year, $month, $day) = gregorian_to_islamic($year, $month, $day);
 		$days_in_month = array(30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, (((((11 * $year) + 14) % 30) < 11) ? 30 : 29));
 	}
 	else // gregorian date
 		$days_in_month = array(31, ((!($year % 4 ) && (($year % 100) || !($year % 400)))?29:28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-   	return __date($year, $month, $days_in_month[$month - 1]);
+
+	return $days_in_month[$month - 1];
+}
+
+function end_month($date)
+{
+	global $date_system;
+
+    list($day, $month, $year) = explode_date_to_dmy($date);
+	if ($date_system == 1)
+	{
+		list($year, $month, $day) = gregorian_to_jalali($year, $month, $day);
+	}
+	elseif ($date_system == 2)
+	{
+		list($year, $month, $day) = gregorian_to_islamic($year, $month, $day);
+	}
+
+   	return __date($year, $month, days_in_month($month, $year));
 }
 
 function add_days($date, $days) // accepts negative values as well
 {
 	global $date_system;
     list($day, $month, $year) = explode_date_to_dmy($date);
-   	$timet = Mktime(0,0,0, $month, $day + $days, $year);
+   	$timet = mktime(0,0,0, $month, $day + $days, $year);
     if ($date_system == 1 || $date_system == 2)
     {
     	if ($date_system == 1)
@@ -246,7 +262,13 @@ function add_months($date, $months) // accepts negative values as well
 {
 	global $date_system;
     list($day, $month, $year) = explode_date_to_dmy($date);
-   	$timet = Mktime(0,0,0, $month + $months, $day, $year);
+
+	$month += $months;
+	$year += ($month-1)/12;
+	$month = ($month-1)%12 + 1;
+
+   	$timet = mktime(0,0,0, $month, min($day, days_in_month($month, $year)), $year);
+	
     if ($date_system == 1 || $date_system == 2)
     {
     	if ($date_system == 1)
