@@ -17,7 +17,7 @@ if ($use_date_picker)
 // Begin the UI
 include_once($path_to_root . "/includes/ui.inc");
 
-$_SESSION['page_title'] = _($help_context = _("Revenue / Cost Accruals"));
+$_SESSION['page_title'] = _($help_context = "Revenue / Cost Accruals");
 page($_SESSION['page_title'], false, false,'', $js);
 
 //--------------------------------------------------------------------------------------------------
@@ -130,6 +130,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 						0, $ref, $am0 * -1);
 					add_gl_trans(ST_JOURNAL, $id, $date, get_post('res_act'), get_post('dimension_id'),
 						get_post('dimension2_id'), $ref, $am0);
+					add_audit_trail(ST_JOURNAL, $id, $date);
 					add_comments(ST_JOURNAL, $id, $date, $memo);
 					$Refs->save(ST_JOURNAL, $id, $ref);
 				}
