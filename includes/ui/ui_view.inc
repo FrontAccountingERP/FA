@@ -571,6 +571,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 		{
 			display_error( _("No Quick Entry lines are defined."));
 			set_focus('totamount');
+			return 0;
 		}	
 		$totrate = 0;
 		while ($row = db_fetch($result))
