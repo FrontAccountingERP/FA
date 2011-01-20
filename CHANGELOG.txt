@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+18-Jan-2011 Janusz Dobrowolski
+# Fixed help link
+$ /gl/accruals.php
+# Cleanup
+$ /includes/ui/ui_view.inc
+
 18-Jan-2011 Janusz Dobrowolski
 # Fixed accruals postings date calculation.
 $ /gl/accruals.php
