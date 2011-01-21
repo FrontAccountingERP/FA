@@ -110,6 +110,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	} else {
 		$src = array($_GET['DeliveryNumber']);
 	}
+
 	/*read in all the selected deliveries into the Items cart  */
 	$dn = new Cart(ST_CUSTDELIVERY, $src, true);
 
@@ -118,12 +119,6 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 			_("Select a different delivery to invoice"), "OutstandingOnly=1");
 		die ("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 	}
-
-	$dn->trans_type = ST_SALESINVOICE;
-	$dn->src_docs = $dn->trans_no;
-	$dn->trans_no = 0;
-	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
-	$dn->due_date = get_invoice_duedate($dn->payment, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
 	copy_from_cart();

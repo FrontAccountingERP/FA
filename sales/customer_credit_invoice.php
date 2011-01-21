@@ -124,25 +124,12 @@ function can_process()
 
 if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
-    $ci = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
-
-    $ci->trans_type = ST_CUSTCREDIT;
-    $ci->src_docs = $ci->trans_no;
-    $ci->src_date = $ci->document_date;
-    $ci->trans_no = 0;
-    $ci->document_date = new_doc_date();
-    $ci->reference = $Refs->get_next(ST_CUSTCREDIT);
-
-    for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
-	$ci->line_items[$line_no]->qty_dispatched = '0';
-    }
-
-    $_SESSION['Items'] = $ci;
+    $_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 	copy_from_cart();
 
 } elseif ( isset($_GET['ModifyCredit']) && $_GET['ModifyCredit']>0) {
 
-	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$_GET['ModifyCredit']);
+	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT, $_GET['ModifyCredit']);
 	copy_from_cart();
 
 } elseif (!processing_active()) {

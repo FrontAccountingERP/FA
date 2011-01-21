@@ -116,9 +116,12 @@ class cart
 		}
 		unset($line);
 		
-		if ($type == ST_CUSTDELIVERY)
+		if ($type == ST_CUSTDELIVERY) {
 			$this->order_no = key($this->trans_no);
-
+			$cust = get_customer($this->customer_id);
+			$this->dimension_id = $cust['dimension_id'];
+			$this->dimension2_id = $cust['dimension2_id'];
+		}
 		if ($type == ST_SALESINVOICE) {
 			$this->due_date = get_invoice_duedate($this->payment, $this->document_date);
 		}
@@ -167,7 +170,7 @@ class cart
 	//-------------------------------------------------------------------------
 	// Reading document into cart
 	//
-	function read($type, $trans_no = 0, $no_edit=false) {
+	function read($type, $trans_no = 0, $prep_child=false) {
 
 		global $SysPrefs, $Refs;
 
@@ -186,18 +189,13 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					// child transaction reedition - update with parent info unless it is freehand
-						if (!$no_edit)
+						if ($prep_child)
 							$this->set_parent_constraints($sodata, $trans_no[0]);
 					}
 			}
 			// prepare qtys for derivative document entry (not used in display)
-			if($no_edit) {
-				for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
-					$line = &$this->line_items[$line_no];
-					$line->src_id = $line->id; // save src line ids for update
-					$line->qty_dispatched = $line->quantity - $line->qty_done;
-				}
-			}
+			if ($prep_child)
+				$this->prepare_child();
 		} else { // new document
 				$this->trans_type = $type;
 				$this->trans_no = 0;

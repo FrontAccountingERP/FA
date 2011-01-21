@@ -89,30 +89,18 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	$ord = new Cart(ST_SALESORDER, $_GET['OrderNumber'], true);
 
-	/*read in all the selected order into the Items cart  */
-
 	if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different sales order to delivery"), "OutstandingOnly=1");
 		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 	}
 
-	$ord->trans_type = ST_CUSTDELIVERY;
-	$ord->src_docs = $ord->trans_no;
-	$ord->order_no = key($ord->trans_no);
-	$ord->trans_no = 0;
-	$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
-	$ord->document_date = new_doc_date();
-	$cust = get_customer($ord->customer_id);
-	// 2010-09-03 Joe Hunt
-	$ord->dimension_id = $cust['dimension_id'];
-	$ord->dimension2_id = $cust['dimension2_id'];
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
+	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",

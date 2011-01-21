@@ -237,7 +237,7 @@ function copy_to_cart()
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
-//	if ($cart->trans_type == ST_SALESINVOICE) {
+
 	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
@@ -247,7 +247,7 @@ function copy_to_cart()
 		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
 		$cart->freight_cost = input_num('freight_cost');
 		$cart->ship_via = 1;
-		$cart->deliver_to = '';//$_POST['deliver_to'];
+		$cart->deliver_to = '';
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
 		$cart->cust_ref = $_POST['cust_ref'];
@@ -265,7 +265,7 @@ function copy_to_cart()
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
-	// POS
+
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
@@ -354,7 +354,7 @@ function can_process() {
 	}
 
 
-		if (strlen($_POST['delivery_address']) <= 1) {
+		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
 			return false;
@@ -587,11 +587,7 @@ function create_cart($type, $trans_no)
 	if (isset($_GET['NewQuoteToSalesOrder']))
 	{
 		$trans_no = $_GET['NewQuoteToSalesOrder'];
-		$doc = new Cart(ST_SALESQUOTE, $trans_no);
-		$doc->trans_no = 0;
-		$doc->trans_type = ST_SALESORDER;
-		$doc->reference = $Refs->get_next($doc->trans_type);
-		$doc->document_date = $doc->due_date = new_doc_date();
+		$doc = new Cart(ST_SALESQUOTE, $trans_no, true);
 		$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
 		$_SESSION['Items'] = $doc;
 	}	
