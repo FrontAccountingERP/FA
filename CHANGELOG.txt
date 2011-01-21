@@ -20,7 +20,18 @@ Legend:
 $ -> Affected files
 
 
-18-Jan-2011 Janusz Dobrowolski
+21-Jan-2011 Janusz Dobrowolski
+# Sales quotations were presented in inquiry even when realized [0000498]
+$ /sales/includes/sales_db.inc
+  /sales/includes/db/sales_order_db.inc
+! Child document preparation moved to cart class.
+$ /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+
+19-Jan-2011 Janusz Dobrowolski
 # Fixed help link
 $ /gl/accruals.php
 # Cleanup
