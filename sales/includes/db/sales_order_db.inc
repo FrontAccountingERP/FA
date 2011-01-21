@@ -87,8 +87,10 @@ function add_sales_order(&$order)
 				$line->discount_percent)";
 		db_query($sql, "order Details Cannot be Added");
 
+	// Now mark quotation line as processed
+		if ($order->trans_type == ST_SALESORDER && $line->src_id)
+			update_parent_line(ST_SALESORDER, $line->src_id, $line->qty_dispatched); // clear all the quote despite all or the part was ordered
 	} /* inserted line items into sales order details */
-
 	add_audit_trail($order->trans_type, $order_no, $order->document_date);
 	$Refs->save($order->trans_type, $order_no, $order->reference);
 
@@ -542,7 +544,8 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 					." AND sorder.ord_date <= '$date_before'";
 		}
 		if ($trans_type == ST_SALESQUOTE && !check_value('show_all'))
-			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."'";
+			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
+
 		if ($selected_customer != -1)
 			$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
 
@@ -554,6 +557,7 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 
 		if ($_POST['order_view_mode']=='OutstandingOnly')
 			$sql .= " AND line.qty_sent < line.quantity";
+
 		elseif ($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
 			$sql .= " AND sorder.type=1";
 
