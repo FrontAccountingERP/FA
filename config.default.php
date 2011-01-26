@@ -120,7 +120,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	/* suppress tax rates on documents. 0 = no, 1 = yes. */
 	$suppress_tax_rates = 0;
-	
+
+	/* allow reopening closed transactions */
+	$allow_gl_reopen = 0;
+
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
@@ -204,25 +207,26 @@ if(isset($_SESSION["wa_current_user"])) {
 
 if (!defined('ICON_EDIT'))
 {
-	define("ICON_EDIT", "edit.gif");	
-	define("ICON_DELETE", "delete.gif");	
-	define("ICON_ADD", "ok.gif");	
-	define("ICON_UPDATE", "ok.gif");	
-	define("ICON_OK", "ok.gif");	
-	define("ICON_CANCEL", "cancel.png");	
-	define("ICON_GL", "gl.png");	
-	define("ICON_PRINT", "print.png");	
-	define("ICON_PDF", "pdf.gif");	
-	define("ICON_DOC", "invoice.gif");	
-	define("ICON_CREDIT", "credit.gif");	
-	define("ICON_RECEIVE", "receive.gif");	
-	define("ICON_DOWN", "download.gif");	
-	define("ICON_MONEY", "money.png");	
-	define("ICON_REMOVE", "remove.png");	
-	define("ICON_REPORT", "report.png");	
-	define("ICON_VIEW", "view.gif");	
+	define("ICON_EDIT", "edit.gif");
+	define("ICON_DELETE", "delete.gif");
+	define("ICON_ADD", "ok.gif");
+	define("ICON_UPDATE", "ok.gif");
+	define("ICON_OK", "ok.gif");
+	define("ICON_CANCEL", "cancel.png");
+	define("ICON_GL", "gl.png");
+	define("ICON_PRINT", "print.png");
+	define("ICON_PDF", "pdf.gif");
+	define("ICON_DOC", "invoice.gif");
+	define("ICON_CREDIT", "credit.gif");
+	define("ICON_RECEIVE", "receive.gif");
+	define("ICON_DOWN", "download.gif");
+	define("ICON_MONEY", "money.png");
+	define("ICON_REMOVE", "remove.png");
+	define("ICON_REPORT", "report.png");
+	define("ICON_VIEW", "view.gif");
  	define("ICON_SUBMIT", "ok.gif");
- 	define("ICON_ESCAPE", "escape.png");	
+ 	define("ICON_ESCAPE", "escape.png");
+ 	define("ICON_CLOSED", "closed.png");
 }
 
 ?>

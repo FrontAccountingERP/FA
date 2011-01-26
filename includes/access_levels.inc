@@ -227,6 +227,8 @@ $security_areas =array(
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
 	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
+	'SA_GLCLOSE' => array(SS_GL_C|14, _("Closing GL transactions")),
+	'SA_GLREOPEN' => array(SS_GL_C|15, _("Reopening GL transactions")), // see below
 	'SA_MULTIFISCALYEARS' => array(SS_GL_C|13, _("Allow entry on non closed Fiscal years")),
 
 	'SA_BANKTRANSVIEW' => array(SS_GL|1, _("Bank transactions view")),
@@ -247,6 +249,9 @@ $security_areas =array(
 	'SA_BANKREP' => array(SS_GL_A|3, _("Bank reports and inquiries")),
 	'SA_GLREP' => array(SS_GL_A|4, _("GL reports and inquiries")),
 );
+
+if (!@$allow_gl_reopen)
+	unset($security_areas['SA_GLREOPEN']);
 /*
 	This function should be called whenever we want to extend core access level system
 	with new security areas and/or sections i.e.: 

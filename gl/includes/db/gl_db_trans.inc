@@ -92,7 +92,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 			$amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");
 	else
 		return 0;
-}	
+}
 
 //--------------------------------------------------------------------------------
 
@@ -145,28 +145,31 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 function get_gl_trans($type, $trans_id)
 {
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
-		.TB_PREF."gl_trans as gl
-		LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
-		LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-		." WHERE gl.type= ".db_escape($type) 
-		." AND gl.type_no = ".db_escape($trans_id)
-		." ORDER BY counter";
+		.TB_PREF."gl_trans as gl"
+		. " LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
+			LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)";
+		$sql .= " WHERE gl.type= ".db_escape($type) 
+		." AND gl.type_no = ".db_escape($trans_id);
+	$sql .= " ORDER BY counter";
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
 
 //--------------------------------------------------------------------------------
 
-function get_gl_wo_cost_trans($trans_id, $person_id=-1)
+function get_gl_wo_cost_trans($trans_id, $cost_type=-1)
 {
-	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM "
-		.TB_PREF."gl_trans, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".ST_WORKORDER
-		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id)."
-		AND ".TB_PREF."gl_trans.person_type_id=".PT_WORKORDER;
-	if ($person_id != -1)
-		$sql .= " AND ".TB_PREF."gl_trans.person_id=".db_escape($person_id);
-	$sql .= " AND amount < 0";	
+	$sql = "SELECT costing.*, gl.*, chart.account_name, com.memo_ FROM "
+		.TB_PREF."wo_costing costing, "
+		.TB_PREF."gl_trans gl LEFT JOIN ".TB_PREF."comments com ON gl.type=com.type	AND gl.type_no=com.id,"
+		.TB_PREF."chart_master chart
+		WHERE 
+			costing.workorder_id=".db_escape($trans_id)
+		."	AND chart.account_code=gl.account
+			AND gl.type=costing.trans_type
+			AND gl.type_no=costing.trans_no";
+	if ($cost_type != -1)
+		$sql .= " AND costing.cost_type=".db_escape($cost_type);
+	$sql .= " AND amount < 0";
 
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
@@ -642,7 +645,10 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 	if (!$alsoclosed) {
 		$sql .= " AND gl_seq=0";
 	}
-	$sql .= " GROUP BY gl.type, gl.type_no";
+	else
+		$sql .= " AND NOT ISNULL(a.gl_seq)";
+
+		$sql .= " GROUP BY tran_date, gl_seq, gl.type, gl.type_no";
 	return $sql;
 }
 ?>

@@ -57,6 +57,9 @@ if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber']))
 
 page($_SESSION['page_title'], false, false, "", $js);
 
+if (isset($_GET['ModifyOrderNumber']))
+	check_is_closed(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
+
 //---------------------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -412,7 +415,6 @@ function handle_commit_order()
 			}
 			$order_no = add_po($cart);
 			new_doc_date($cart->orig_order_date); 
-        	$cart->order_no = $order_no;
 
 			if ($cart->trans_type == ST_PURCHORDER) {
 				unset($_SESSION['PO']);
