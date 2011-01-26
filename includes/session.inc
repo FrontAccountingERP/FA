@@ -228,6 +228,7 @@ $_SESSION['language']->set_language($_SESSION['language']->code);
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
+include_once($path_to_root . "/includes/app_entries.inc");
 
 // Ajax communication object
 $Ajax = new Ajax();
