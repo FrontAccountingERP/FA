@@ -78,7 +78,7 @@ function get_company_prefs($tbpref = TB_PREF)
 
 function set_company_pref($pref, $category, $type, $length, $value)
 {
-	$sql = "REPLACE `0_sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
+	$sql = "REPLACE `".TB_PREF."sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
 		.", `type`=".db_escape($type).", `length`=".db_escape($length).", `value`=".db_escape($value);
 	return db_query($sql, "cannot set company pref");
 }
