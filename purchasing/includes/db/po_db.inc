@@ -106,13 +106,13 @@ function update_po(&$po_obj)
 			.date2sql($po_line->req_del_date) . "',"
 			.db_escape($po_line->price) . ", "
 			.db_escape($po_line->quantity) . ")";
-		
+
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
 	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
+	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, _("Updated."));
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
 	commit_transaction();
 
@@ -124,7 +124,7 @@ function update_po(&$po_obj)
 function read_po_header($order_no, &$order)
 {
    	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name, ".TB_PREF."suppliers.tax_group_id,
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."locations.location_name
+   		".TB_PREF."suppliers.curr_code, ".TB_PREF."locations.location_name, ".TB_PREF."suppliers.tax_algorithm
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
 		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."locations.loc_code = into_stock_location
