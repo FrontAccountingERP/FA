@@ -485,5 +485,18 @@ function check_num($postname, $min=null, $max=null, $dflt=0) {
     return 1;
 }
 
+function check_is_closed($type, $type_no, $msg=null)
+{
+	global $systypes_array;
+	
+    if (($type_no > 0) && is_closed_trans($type, $type_no))
+    {
+    	if (!$msg)
+    		$msg = sprintf(_("%s #%s is closed for further edition."), $systypes_array[$type], $type_no);
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}
 
 ?>
