@@ -19,6 +19,69 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jan-2011 Janusz Dobrowolski
++ Added closing transactions entry/edition up to selected date
+$ /config.default.php
+  /applications/generalledger.php
+  /gl/manage/close_period.php (new)
+  /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/journal_inquiry.php
+  /includes/access_levels.inc
+  /includes/db/audit_trail_db.inc
+  /includes/ui/ui_input.inc
+  /purchasing/po_entry_items.php
+  /themes/aqua/images/closed.png (new)
+  /themes/cool/images/closed.png (new)
+  /themes/default/images/closed.png (new)
+  /sales/inquiry/customer_inquiry.php
+! Fixed transaction date check messages 
+$ /inventory/adjustments.php
+  /inventory/transfers.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_entry.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_payment.php
+  /gl/accruals.php
+  /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/manage/revaluate_currencies.php
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+! Reorganized work order costing to make correct registration of cost in journal.
+$ /includes/sysnames.inc
+  /includes/types.inc
+  /includes/ui/ui_view.inc
+  /manufacturing/includes/db/work_order_costing_db.inc (new)
+  /manufacturing/view/wo_costs_view.php (new)
+  /manufacturing/work_order_costs.php
+  /manufacturing/includes/manufacturing_db.inc
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /sql/alter2.4.php
+  /sql/alter2.4.sql
+! Added system table for transaction edition entry points
+$ /includes/app_entries.inc (new)
+  /includes/session.inc
++ Added user_check_access() helper
+$ /includes/current_user.inc
++ Added check for closed transaction
+$ /includes/data_checks.inc
++ Added check for closed date
+$ /includes/date_functions.inc
+# Added missing tax_algorithm retrieval in read_po_header()
+$ /purchasing/includes/db/po_db.inc
+# Fixed bug in set_company_pref
+$ /admin/db/company_db.inc
+# Fixed buggy qoh check message.
+$ /manufacturing/work_order_issue.php
+
 06-Jan-2011 Janusz Dobrowolski
 + Added cash payment and tax algorithm selection in purchase Direct Invoice.
 $ /purchasing/po_entry_items.php
