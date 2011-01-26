@@ -160,11 +160,11 @@ function is_date_in_fiscalyear($date, $convert=false)
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
-	if ($_SESSION["wa_current_user"]->can_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
+	if (user_check_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
 		return is_date_in_fiscalyears($date, false);
-	$myrow = get_current_fiscalyear();
-	if ($myrow['closed'] == 1)
+	if (is_date_closed($date))
 		return 0;
+	$myrow = get_current_fiscalyear();
 	if ($convert)
 		$date2 = sql2date($date);
 	else
@@ -176,6 +176,11 @@ function is_date_in_fiscalyear($date, $convert=false)
 		return 0;
 	}
 	return 1;
+}
+
+function is_date_closed($date)
+{
+	return !date1_greater_date2($date, sql2date(get_company_pref('gl_closing_date')));
 }
 
 function begin_fiscalyear()
