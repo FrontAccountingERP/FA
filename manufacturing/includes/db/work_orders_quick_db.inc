@@ -148,40 +148,21 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
 		$ocost = get_gl_wo_cost($woid, WO_OVERHEAD);
 		add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);
-	}
-	// credit additional costs
-	$item_accounts = get_stock_gl_code($stock_id);
-	if ($costs != 0.0)
-	{
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc,
-			0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
-		$is_bank_to = is_bank_account($cr_acc);
-    	if ($is_bank_to)
-    	{
-    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
-    			$date_, -$costs, PT_WORKORDER, WO_OVERHEAD, get_company_currency(),
-    			"Cannot insert a destination bank transaction");
-    	}
-			
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
-			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_OVERHEAD], $costs, 
-			PT_WORKORDER, WO_OVERHEAD);
-	}
-	if ($labour != 0.0)
-	{
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc,
-			0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
-		$is_bank_to = is_bank_account($cr_lab_acc);
-    	if ($is_bank_to)
-    	{
-    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
-    			$date_, -$labour, PT_WORKORDER, WO_LABOUR, get_company_currency(),
-    			"Cannot insert a destination bank transaction");
-    	}
-			
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
-			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, 
-			PT_WORKORDER, WO_LABOUR);
+
+	} else { // only for quick
+		// credit additional costs
+		$item_accounts = get_stock_gl_code($stock_id);
+
+		if ($costs != 0.0)
+		{
+			add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $item_accounts["assembly_account"],
+				$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
+		}
+		if ($labour != 0.0) // only for quick
+		{
+			add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $item_accounts["assembly_account"],
+				$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
+		}
 	}
 	// debit total components $total_cost
  	$stockitem = get_item($stock_id);
@@ -189,7 +170,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
  	if ($advanced)
  		$memo = $date_.": ".$memo;
     add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
-        0, 0, $memo, -$total_cost);	
+        0, 0, $memo, -$total_cost);
 }
 
 //--------------------------------------------------------------------------------------

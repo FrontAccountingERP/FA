@@ -29,9 +29,8 @@ class fa2_4 {
 		
 		if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
 			set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
-			refresh_sys_prefs();
 		}
-
+		if ($this->update_workorders())
 //		return  update_company_prefs(array('version_id'=>$db_version), $pref);
 		return true;
 	}
@@ -45,17 +44,45 @@ class fa2_4 {
 	//
 	//	Test if patch was applied before.
 	//
-	function installed($pref) {
-
-		$n = 1; // number of patches to be installed
+	function installed($pref)
+	{
+		$n = 2; // number of patches to be installed
 		$patchcnt = 0;
 
 		if (!check_table($pref, 'suppliers', 'tax_algorithm')) $patchcnt++;
+		if (!check_table($pref, 'wo_costing')) $patchcnt++;
 		return $n == $patchcnt ? true : ($patchcnt ? ($patchcnt.'/'. $n) : 0);
 	}
 
+	function update_workorders()
+	{
+		global $db;
+
+		$sql = "SELECT DISTINCT type, type_no, tran_date, person_id FROM ".TB_PREF."gl_trans WHERE `type`=".ST_WORKORDER
+		." AND person_type_id=1";
+		$res = db_query($sql);
+		if (!$res)
+		{
+			display_error("Cannot update work orders costs"
+				.':<br>'. db_error_msg($db));
+			return false;
+		}
+		while ($row = db_fetch($res))
+		{
+			$journal_id = get_next_trans_no(ST_JOURNAL);
+
+			$sql1 = "UPDATE ".TB_PREF."gl_trans SET `type`=".ST_JOURNAL.", type_no={$journal_id},
+				person_type_id=NULL, person_id=0
+				WHERE `type`=".ST_WORKORDER." AND type_no={$row['type_no']} AND tran_date='{$row['tran_date']}'
+				AND person_id='{$row['person_id']}'";
+			if (!db_query($sql1)) return false;
+			
+			$sql2 = "INSERT INTO ".TB_PREF."wo_costing (workorder_id, cost_type, trans_no) 
+				VALUES ({$row['type_no']}, {$row['person_id']}, {$journal_id})";
+			if (!db_query($sql2)) return false;
+		}
+		return true;
+	}
 }
 
 $install = new fa2_4;
-
-?>

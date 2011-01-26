@@ -9,106 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//--------------------------------------------------------------------------------------
-
-function add_material_cost($stock_id, $qty, $date_)
-{
-	$m_cost = 0;
-    $result = get_bom($stock_id);
-	while ($bom_item = db_fetch($result))
-	{
-		$standard_cost = get_standard_cost($bom_item['component']);
-		$m_cost += ($bom_item['quantity'] * $standard_cost);
-	}
-	//$dec = user_price_dec();
-	//price_decimal_format($m_cost, $dec);
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$material_cost =  $myrow['material_cost'];
-	//$qoh = get_qoh_on_date($stock_id, null, $date_);
-	$qoh = get_qoh_on_date($stock_id);
-	if ($qoh < 0)
-		$qoh = 0;
-	if ($qoh + $qty != 0)	
-		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
-	//$material_cost = round2($material_cost, $dec);	
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
-		WHERE stock_id=".db_escape($stock_id);
-	db_query($sql,"The cost details for the inventory item could not be updated");
-}
-
-function add_overhead_cost($stock_id, $qty, $date_, $costs)
-{
-	//$dec = user_price_dec();
-	//price_decimal_format($costs, $dec); 
-	if ($qty != 0)
-		$costs /= $qty;
-	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$overhead_cost =  $myrow['overhead_cost'];
-	//$qoh = get_qoh_on_date($stock_id, null, $date_);
-	$qoh = get_qoh_on_date($stock_id);
-	if ($qoh < 0)
-		$qoh = 0;
-	if ($qoh + $qty != 0)	
-		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
-	//$overhead_cost = round2($overhead_cost, $dec);	
-	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
-		WHERE stock_id=".db_escape($stock_id);
-	db_query($sql,"The cost details for the inventory item could not be updated");
-}
-
-function add_labour_cost($stock_id, $qty, $date_, $costs)
-{
-	//$dec = user_price_dec();
-	//price_decimal_format($costs, $dec); 
-	if ($qty != 0)
-		$costs /= $qty;
-	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$labour_cost =  $myrow['labour_cost'];
-	//$qoh = get_qoh_on_date($stock_id, null, $date_);
-	$qoh = get_qoh_on_date($stock_id);
-	if ($qoh < 0)
-		$qoh = 0;
-	if ($qoh + $qty != 0)	
-		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
-	//$labour_cost = round2($labour_cost, $dec);	
-	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
-		WHERE stock_id=".db_escape($stock_id);
-	db_query($sql,"The cost details for the inventory item could not be updated");
-}
-
-function add_issue_cost($stock_id, $qty, $date_, $costs)
-{
-	if ($qty != 0)
-		$costs /= $qty;
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$material_cost =  $myrow['material_cost'];
-	//$dec = user_price_dec();
-	//price_decimal_format($material_cost, $dec); 
-	//$qoh = get_qoh_on_date($stock_id, null, $date_);
-	$qoh = get_qoh_on_date($stock_id);
-	if ($qoh < 0)
-		$qoh = 0;
-	if ($qoh + $qty != 0)	
-		$material_cost = ($qty * $costs) /	($qoh + $qty);
-	//$material_cost = round2($material_cost, $dec);	
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
-		.db_escape($material_cost)
-		." WHERE stock_id=".db_escape($stock_id);
-	db_query($sql,"The cost details for the inventory item could not be updated");
-}
-
 function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
@@ -273,7 +173,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 	create_wo_requirements($woid, $stock_id);
 
 	add_comments(ST_WORKORDER, $woid, $releaseDate, $memo_);
-	add_audit_trail(ST_WORKORDER, $woid, $releaseDate,_("Released."));
+	add_audit_trail(ST_WORKORDER, $woid, $myrow['date_'], _("Released."));
 
 	commit_transaction();
 }
@@ -334,8 +234,7 @@ function void_work_order($woid)
 		// void all related stock moves
 		void_stock_move(ST_WORKORDER, $woid);
 
-		// void any related gl trans
-		void_gl_trans(ST_WORKORDER, $woid, true);
+		void_wo_costing($woid);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
@@ -390,8 +289,7 @@ function void_work_order($woid)
 		// void all related stock moves
 		void_stock_move(ST_WORKORDER, $woid);
 
-		// void any related gl trans
-		void_gl_trans(ST_WORKORDER, $woid, true);
+		void_wo_costing($wo);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);

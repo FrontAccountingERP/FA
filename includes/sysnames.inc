@@ -110,6 +110,7 @@ $wo_types_array = array (
 $wo_cost_types = array(
 	WO_LABOUR => _("Labour Cost"),
 	WO_OVERHEAD => _("Overhead Cost"),
+	WO_MATERIALS => _("Materials")
 );
 
 //----------------------------------------------------------------------------------
