@@ -11,6 +11,7 @@
 ***********************************************************************/
 $page_security = 'SA_MANUFISSUE';
 $path_to_root = "..";
+
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -26,6 +27,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
+
 page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
@@ -69,7 +71,6 @@ function handle_new_order()
 }
 
 //-----------------------------------------------------------------------------------------------
-
 function can_process()
 {
 	global $Refs;
@@ -82,7 +83,7 @@ function can_process()
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -103,8 +104,9 @@ function can_process()
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 	if ($failed_item != -1) 
 	{
+		$item = $_SESSION['issue_items']->line_items[$failed_item];
     	display_error( _("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
-    		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
+    		" " . $item->stock_id . " - " .  $item->item_description);
 		return false;
 	}
 
@@ -199,7 +201,6 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges'])) {
 	line_start_focus();
 }
-
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['trans_no']))
