@@ -166,10 +166,6 @@ function open_year($year)
 {
 	$myrow = get_fiscalyear($year);
 	$from = sql2date($myrow['begin']);
-
-	begin_transaction();
-	open_transactions($from);
-	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
