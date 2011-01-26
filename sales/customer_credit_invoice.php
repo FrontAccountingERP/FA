@@ -90,7 +90,7 @@ function can_process()
 		set_focus('CreditDate');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['CreditDate']))	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('CreditDate');
 		return false;
 	}
@@ -142,6 +142,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
 } elseif ( isset($_GET['ModifyCredit']) && $_GET['ModifyCredit']>0) {
 
+	check_is_closed(ST_CUSTCREDIT,$_GET['ModifyCredit']);
 	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$_GET['ModifyCredit']);
 	copy_from_cart();
 

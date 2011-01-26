@@ -35,7 +35,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		$input_error = 1;
 	}
@@ -61,7 +61,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			($freq==3?add_months($date_,$per):add_months($date_,3*$per))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
-			display_error(_("Some of the period dates are outside the fiscal year. Create a new fiscal year first!"));
+			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
 			set_focus('date_');
 			$input_error = 1;
 		}

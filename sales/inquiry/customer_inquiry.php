@@ -161,7 +161,7 @@ function credit_link($row)
 
 function edit_link($row)
 {
-	$str = '';
+/*	$str = '';
 
 	switch($row['type']) {
 	case ST_SALESINVOICE:
@@ -182,9 +182,9 @@ function edit_link($row)
    			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
 	}
-	if ($str != "" && !is_closed_trans($row['type'], $row["trans_no"]))
-		return pager_link(_('Edit'), $str, ICON_EDIT);
-	return '';	
+	if ($str != '')
+*/		return edit_trans_link($row['type'], $row['trans_no'], $row['type']==ST_CUSTCREDIT && $row['order_']==0 ?
+			"/sales/credit_note_entry.php?ModifyCredit=%d" : 0);
 }
 
 function prt_link($row)

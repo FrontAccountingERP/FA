@@ -87,6 +87,7 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
+
 //-----------------------------------------------------------------------------
 
 if (list_updated('branch_id')) {
@@ -337,7 +338,7 @@ function can_process() {
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
-		display_error(_("The entered date is not in fiscal year"));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		return false;
 	}
@@ -612,8 +613,9 @@ function create_cart($type, $trans_no)
 			$doc->line_items[$line_no]->qty_done = 0;
 		}
 		$_SESSION['Items'] = $doc;
-	} else
+	} else {
 		$_SESSION['Items'] = new Cart($type, array($trans_no));
+	}
 	copy_from_cart();
 }
 

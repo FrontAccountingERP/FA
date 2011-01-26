@@ -130,6 +130,8 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
+	check_is_closed(ST_SALESINVOICE, $_GET['ModifyInvoice']);
+
 	if ( get_sales_parent_numbers(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
@@ -263,7 +265,7 @@ function check_data()
 	}
 
 	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
-		display_error(_("The entered invoice date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('InvoiceDate');
 		return false;
 	}

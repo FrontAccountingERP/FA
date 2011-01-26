@@ -112,6 +112,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
+	check_is_closed(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
@@ -159,7 +160,7 @@ function check_data()
 	}
 
 	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
-		display_error(_("The entered date of delivery is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DispatchDate');
 		return false;
 	}
