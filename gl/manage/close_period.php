@@ -34,6 +34,12 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
+	if (!is_date_in_fiscalyears($date, false))
+	{
+		display_error(_("Selected date is not in fiscal year or the year is closed."));
+		set_focus('date');
+		return false;
+	}
 	if (date1_greater_date2(sql2date(get_company_pref('gl_closing_date')), $_POST['date']))
 	{
 		if (!$allow_gl_reopen) {
