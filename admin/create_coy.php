@@ -42,7 +42,7 @@ function check_data()
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 	{
-		display_error(_("Database setting are not specified."));
+		display_error(_("Database settings are not specified."));
  		return false;
 	}
 
