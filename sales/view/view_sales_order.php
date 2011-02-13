@@ -39,7 +39,7 @@ if (isset($_SESSION['View']))
 	unset ($_SESSION['View']);
 }
 
-$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
+$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no']);
 
 start_table(TABLESTYLE2, "width=95%", 5);
 echo "<tr valign=top><td>";
