@@ -20,6 +20,42 @@ Legend:
 $ -> Affected files
 
 
+13-Feb-2011 Janusz Dobrowolski
+! Updated gettext template
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+# Fixed invalid gettextized strings
+$ /includes/packages.inc
+  /gl/includes/db/gl_db_rates.inc
+# Typo
+$ /includes/access_levels.inc
+  /admin/create_coy.php
+# Fixed bug resulting in invalid postings when cash payment was selected for invoice against sales delivery.
+$ /sales/customer_invoice.php
+  /sales/includes/cart_class.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+# System settings are cached once a request.
+$ /admin/db/company_db.inc
+# Fixed inventory status display for items without reorder level set.
+$ /inventory/includes/db/items_locations_db.inc
+# Fixed error reporting in mail send method.
+$ /reporting/includes/class.mail.inc
+# Improved mail error handling.
+$ /reporting/includes/pdf_report.inc
+# Updated string handling in excel generator (reports were sometimes broken)
+$ /reporting/includes/Workbook.php
+# Fixed credit processing errors handling
+$ /sales/customer_credit_invoice.php
+! Fixed hook_invoke_all
+$ /includes/hooks.inc
+# [0000536] Fixed phone/email branch contact retrieval
+$ /sales/includes/ui/sales_order_ui.inc
+! Removed obsolete date selectors in Delivery against Order inquiry, fixed order selection.
+$ /sales/inquiry/sales_orders_view.php
+  /sales/includes/db/sales_order_db.inc
+# Fixed bad SO reference display
+$ /sales/view/view_sales_order.php
+
 21-Jan-2011 Janusz Dobrowolski
 # Sales quotations were presented in inquiry even when realized [0000498]
 $ /sales/includes/sales_db.inc
