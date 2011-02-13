@@ -246,7 +246,7 @@ function hook_invoke_all($method, &$data, $opts=null)
 
 	global $Hooks;
 	
-	$result = array();
+	$return = array();
 	foreach($Hooks as $ext => $hook)
 		if (method_exists($hook, $method)) {
 			set_ext_domain('modules/'.$ext);
@@ -258,7 +258,7 @@ function hook_invoke_all($method, &$data, $opts=null)
 				}
 		}
 	set_ext_domain();
-	return $result;
+	return $return;
 }
 /*
 	Returns first non-null result returned from hook.
