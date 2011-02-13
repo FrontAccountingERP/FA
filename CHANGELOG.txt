@@ -19,7 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
+------------------------------- Release 2.3.2 ------------------------------------
+13-Feb-2011 Joe Hunt
+! Release 2.3.2
+$ version.php
+! A global variable in config.php, $show_voided_gl_trans = 1 shows 0 amount 
+  transactions in gl inquiry and reports.
+$ /config.default.php
+  /gl/includes/db/gl_db_trans.inc
+  .
 13-Feb-2011 Janusz Dobrowolski
 ! Updated gettext template
 $ /lang/new_language_template/LC_MESSAGES/empty.po
