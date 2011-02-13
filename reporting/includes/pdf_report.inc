@@ -979,7 +979,7 @@ class FrontReport extends Cpdf
 					$this->SetLang(user_language());
 					display_error(_("You have no email contact defined for this type of document"));
 				} else {
-					$sent = 0;
+					$sent = $try = 0;
 					foreach($this->contactData as $contact) {
 						if (!isset($contact['email'])) 
 							continue;
@@ -1010,7 +1010,7 @@ class FrontReport extends Cpdf
 						}
 	    				$msg .= $doc_Kindest_regards . "\n\n";
     					$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
-    					$mail->to($to);
+    					$mail->to($to); $try++;
     					$mail->subject($subject);
     					$mail->text($msg . $sender);
     					$mail->attachment($fname);
@@ -1018,7 +1018,9 @@ class FrontReport extends Cpdf
 					} // foreach contact
 					unlink($fname);
 					$this->SetLang(user_language());
-					if (!$sent)
+					if (!$try) {
+						display_error(_("There is no contact email set for this document type."));
+					} elseif (!$sent)
 						display_error(_("Sending document by email failed"));
 					else
 						display_notification($this->title . " " . $myrow['reference'] . " " 
