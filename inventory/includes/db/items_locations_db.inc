@@ -84,11 +84,12 @@ function set_reorder_level($stock_id, $loc_code, $reorder_level)
 
 function get_loc_details($stock_id)
 {
-	$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name
-		FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-		WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-		AND ".TB_PREF."loc_stock.stock_id = ".db_escape($stock_id) 
-		." ORDER BY ".TB_PREF."loc_stock.loc_code";
+	$sql = "SELECT stock.loc_code, stock.location_name, "
+	.db_escape($stock_id)." as stock_id, reorders.reorder_level
+		FROM ".TB_PREF."locations stock LEFT JOIN ".TB_PREF."loc_stock reorders ON
+		reorders.loc_code=stock.loc_code
+		AND reorders.stock_id = ".db_escape($stock_id)
+		." ORDER BY reorders.loc_code";
 	return db_query($sql,"an item reorder could not be retreived");
 }
 
