@@ -488,17 +488,17 @@ function get_branch_to_order($customer_id, $branch_id) {
   	    return db_query($sql,"Customer Branch Record Retreive");
 }
 
-function get_sql_for_sales_orders_view($selected_customer, $trans_type)
+function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_no, $filter, 
+	$stock_item=null, $from='', $to='', $ref='', $location='')
 {
-	global $selected_stock_item;
-	
+
 	$sql = "SELECT 
 			sorder.order_no,
 			sorder.reference,
 			debtor.name,
 			branch.br_name,"
-			.($_POST['order_view_mode']=='InvoiceTemplates' 
-				|| $_POST['order_view_mode']=='DeliveryTemplates' ?
+			.($filter=='InvoiceTemplates' 
+				|| $filter=='DeliveryTemplates' ?
 			 "sorder.comments, " : "sorder.customer_ref, ")
 			."sorder.ord_date,
 			sorder.delivery_date,
@@ -519,46 +519,47 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 			AND sorder.branch_code = branch.branch_code
 			AND debtor.debtor_no = branch.debtor_no";
 
-	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
+	if (isset($trans_no) && $trans_no != "")
 	{
 		// search orders with number like 
-		$number_like = "%".$_POST['OrderNumber'];
-		$sql .= " AND sorder.order_no LIKE ".db_escape($number_like)
-				." GROUP BY sorder.order_no";
+		$number_like = "%".$trans_no;
+		$sql .= " AND sorder.order_no LIKE ".db_escape($number_like);
+//				." GROUP BY sorder.order_no";
 	}
-	elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "")
+	elseif ($ref != "")
 	{
 		// search orders with reference like 
-		$number_like = "%".$_POST['OrderReference']."%";
-		$sql .= " AND sorder.reference LIKE ".db_escape($number_like)
-				." GROUP BY sorder.order_no";
+		$number_like = "%".$ref."%";
+		$sql .= " AND sorder.reference LIKE ".db_escape($number_like);
+//				." GROUP BY sorder.order_no";
 	}
 	else	// ... or select inquiry constraints
 	{
-		if ($_POST['order_view_mode']!='DeliveryTemplates' && $_POST['order_view_mode']!='InvoiceTemplates')
+		if ($filter!='DeliveryTemplates' && $filter!='InvoiceTemplates' && $filter!='OutstandingOnly')
 		{
-			$date_after = date2sql($_POST['OrdersAfterDate']);
-			$date_before = date2sql($_POST['OrdersToDate']);
+			$date_after = date2sql($from);
+			$date_before = date2sql($to);
 
 			$sql .=  " AND sorder.ord_date >= '$date_after'"
 					." AND sorder.ord_date <= '$date_before'";
 		}
+	}
 		if ($trans_type == ST_SALESQUOTE && !check_value('show_all'))
 			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
 
 		if ($selected_customer != -1)
 			$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
 
-		if (isset($selected_stock_item))
-			$sql .= " AND line.stk_code=".db_escape($selected_stock_item);
+		if (isset($stock_item))
+			$sql .= " AND line.stk_code=".db_escape($stock_item);
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation']);
+		if ($location)
+			$sql .= " AND sorder.from_stk_loc = ".db_escape($location);
 
-		if ($_POST['order_view_mode']=='OutstandingOnly')
+		if ($filter=='OutstandingOnly')
 			$sql .= " AND line.qty_sent < line.quantity";
 
-		elseif ($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
+		elseif ($filter=='InvoiceTemplates' || $filter=='DeliveryTemplates')
 			$sql .= " AND sorder.type=1";
 
 		$sql .= " GROUP BY sorder.order_no,
@@ -567,7 +568,6 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 					sorder.customer_ref,
 					sorder.ord_date,
 					sorder.deliver_to";
-	}
 	return $sql;
 }
 ?>

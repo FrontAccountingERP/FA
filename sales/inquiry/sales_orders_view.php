@@ -194,26 +194,18 @@ if (isset($_POST['Update']) && isset($_POST['last'])) {
 			change_tpl_flag($id);
 }
 
+$show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'InvoiceTemplates', 'DeliveryTemplates'));
 //---------------------------------------------------------------------------------------------
 //	Order range form
 //
-if (get_post('_OrderNumber_changed')) // enable/disable selection controls
+if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // enable/disable selection controls
 {
-	$disable = get_post('OrderNumber') !== '';
+	$disable = get_post('OrderNumber') !== '' || get_post('OrderReference') !== '';
 
-  	if ($_POST['order_view_mode']!='DeliveryTemplates' 
-		&& $_POST['order_view_mode']!='InvoiceTemplates') {
+  	if ($show_dates) {
 			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 			$Ajax->addDisable(true, 'OrdersToDate', $disable);
 	}
-	$Ajax->addDisable(true, 'StockLocation', $disable);
-	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
-	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
-
-	if ($disable) {
-		$Ajax->addFocus(true, 'OrderNumber');
-	} else
-		$Ajax->addFocus(true, 'OrdersAfterDate');
 
 	$Ajax->activate('orders_tbl');
 }
@@ -223,19 +215,21 @@ start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
-if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
+ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
+if ($show_dates)
 {
-	ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
-end_row();
-end_table();
 
-start_table(TABLESTYLE_NOBORDER);
-start_row();
+if($show_dates) {
+	end_row();
+	end_table();
 
+	start_table(TABLESTYLE_NOBORDER);
+	start_row();
+}
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
 if ($trans_type == ST_SALESQUOTE)
@@ -251,7 +245,8 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-$sql = get_sql_for_sales_orders_view($selected_customer, $trans_type);
+$sql = get_sql_for_sales_orders_view($selected_customer, $trans_type, $_POST['OrderNumber'], $_POST['order_view_mode'],
+	@$selected_stock_item, @$_POST['OrdersAfterDate'], @$_POST['OrdersToDate'], @$_POST['OrderReference'], $_POST['StockLocation']);
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
