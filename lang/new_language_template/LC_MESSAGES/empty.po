@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-04 17:00+0100\n"
+"POT-Creation-Date: 2011-01-13 11:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,7 +268,6 @@ msgstr ""
 #: ../gl/includes/ui/gl_journal_ui.inc:122
 #: ../includes/ui/contacts_view.inc:64
 #: ../includes/ui/simple_crud_class.inc:52
-#: ../includes/ui/ui_input.inc:972
 #: ../inventory/prices.php:145
 #: ../inventory/purchasing_data.php:144
 #: ../inventory/includes/item_adjustments_ui.inc:87
@@ -468,8 +467,8 @@ msgid "Create backup"
 msgstr ""
 
 #: ../admin/backups.php:168
-#: ../sales/includes/ui/sales_order_ui.inc:594
-#: ../sales/includes/ui/sales_order_ui.inc:641
+#: ../sales/includes/ui/sales_order_ui.inc:590
+#: ../sales/includes/ui/sales_order_ui.inc:637
 msgid "Comments:"
 msgstr ""
 
@@ -613,7 +612,7 @@ msgstr ""
 #: ../includes/ui/contacts_view.inc:109
 #: ../inventory/manage/locations.php:202
 #: ../sales/manage/customers.php:203
-#: ../sales/includes/ui/sales_order_ui.inc:632
+#: ../sales/includes/ui/sales_order_ui.inc:628
 msgid "Address:"
 msgstr ""
 
@@ -779,7 +778,7 @@ msgstr ""
 #: ../sales/inquiry/sales_orders_view.php:317
 #: ../sales/includes/ui/sales_credit_ui.inc:293
 #: ../sales/includes/ui/sales_order_ui.inc:238
-#: ../sales/includes/ui/sales_order_ui.inc:562
+#: ../sales/includes/ui/sales_order_ui.inc:558
 msgid "Update"
 msgstr ""
 
@@ -2103,7 +2102,7 @@ msgstr ""
 #: ../manufacturing/includes/work_order_issue_ui.inc:129
 #: ../purchasing/includes/ui/po_ui.inc:436
 #: ../sales/includes/ui/sales_credit_ui.inc:295
-#: ../sales/includes/ui/sales_order_ui.inc:564
+#: ../sales/includes/ui/sales_order_ui.inc:560
 msgid "Cancel"
 msgstr ""
 
@@ -3622,7 +3621,7 @@ msgstr ""
 #: ../sales/view/view_invoice.php:96
 #: ../sales/inquiry/customer_allocation_inquiry.php:146
 #: ../sales/inquiry/customer_inquiry.php:217
-#: ../sales/includes/ui/sales_order_ui.inc:600
+#: ../sales/includes/ui/sales_order_ui.inc:596
 #: ../themes/exclusive/renderer.php:289
 #: ../themes/exclusive/renderer.php:383
 msgid "Due Date"
@@ -5589,7 +5588,7 @@ msgstr ""
 #: ../manufacturing/includes/work_order_issue_ui.inc:128
 #: ../purchasing/includes/ui/po_ui.inc:435
 #: ../sales/includes/ui/sales_credit_ui.inc:294
-#: ../sales/includes/ui/sales_order_ui.inc:563
+#: ../sales/includes/ui/sales_order_ui.inc:559
 msgid "Confirm changes"
 msgstr ""
 
@@ -5601,7 +5600,7 @@ msgstr ""
 #: ../manufacturing/includes/work_order_issue_ui.inc:130
 #: ../purchasing/includes/ui/po_ui.inc:437
 #: ../sales/includes/ui/sales_credit_ui.inc:296
-#: ../sales/includes/ui/sales_order_ui.inc:565
+#: ../sales/includes/ui/sales_order_ui.inc:561
 msgid "Cancel changes"
 msgstr ""
 
@@ -5612,7 +5611,7 @@ msgstr ""
 #: ../manufacturing/includes/work_order_issue_ui.inc:136
 #: ../purchasing/includes/ui/po_ui.inc:443
 #: ../sales/includes/ui/sales_credit_ui.inc:302
-#: ../sales/includes/ui/sales_order_ui.inc:571
+#: ../sales/includes/ui/sales_order_ui.inc:567
 msgid "Add Item"
 msgstr ""
 
@@ -5622,7 +5621,7 @@ msgstr ""
 #: ../manufacturing/includes/work_order_issue_ui.inc:137
 #: ../purchasing/includes/ui/po_ui.inc:444
 #: ../sales/includes/ui/sales_credit_ui.inc:303
-#: ../sales/includes/ui/sales_order_ui.inc:572
+#: ../sales/includes/ui/sales_order_ui.inc:568
 msgid "Add new item to document"
 msgstr ""
 
@@ -9838,7 +9837,7 @@ msgid "Received"
 msgstr ""
 
 #: ../purchasing/includes/ui/po_ui.inc:238
-#: ../sales/includes/ui/sales_order_ui.inc:615
+#: ../sales/includes/ui/sales_order_ui.inc:611
 msgid "Required Delivery Date"
 msgstr ""
 
@@ -12000,7 +11999,7 @@ msgstr ""
 #: ../reporting/includes/doctext.inc:34
 #: ../sales/view/view_sales_order.php:68
 #: ../sales/inquiry/sales_orders_view.php:278
-#: ../sales/includes/ui/sales_order_ui.inc:610
+#: ../sales/includes/ui/sales_order_ui.inc:606
 msgid "Valid until"
 msgstr ""
 
@@ -14229,7 +14228,7 @@ msgid "Customer Currency:"
 msgstr ""
 
 #: ../sales/includes/ui/sales_credit_ui.inc:112
-#: ../sales/includes/ui/sales_order_ui.inc:643
+#: ../sales/includes/ui/sales_order_ui.inc:639
 msgid "Shipping Company:"
 msgstr ""
 
@@ -14273,72 +14272,72 @@ msgstr ""
 msgid "Date of order receive"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:589
+#: ../sales/includes/ui/sales_order_ui.inc:585
 msgid "Cash payment"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:592
-#: ../sales/includes/ui/sales_order_ui.inc:621
+#: ../sales/includes/ui/sales_order_ui.inc:588
+#: ../sales/includes/ui/sales_order_ui.inc:617
 msgid "Deliver from Location:"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:593
+#: ../sales/includes/ui/sales_order_ui.inc:589
 msgid "Cash account:"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:599
+#: ../sales/includes/ui/sales_order_ui.inc:595
 msgid "Delivery Details"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:604
+#: ../sales/includes/ui/sales_order_ui.inc:600
 msgid "Invoice Delivery Details"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:605
+#: ../sales/includes/ui/sales_order_ui.inc:601
 msgid "Invoice before"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:609
+#: ../sales/includes/ui/sales_order_ui.inc:605
 msgid "Quotation Delivery Details"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:614
+#: ../sales/includes/ui/sales_order_ui.inc:610
 msgid "Order Delivery Details"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:627
+#: ../sales/includes/ui/sales_order_ui.inc:623
 msgid "Enter requested day of delivery"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:628
+#: ../sales/includes/ui/sales_order_ui.inc:624
 msgid "Enter Valid until Date"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:629
+#: ../sales/includes/ui/sales_order_ui.inc:625
 msgid "Deliver To:"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:630
+#: ../sales/includes/ui/sales_order_ui.inc:626
 msgid "Additional identifier for delivery e.g. name of receiving person"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:633
+#: ../sales/includes/ui/sales_order_ui.inc:629
 msgid "Delivery address. Default is address of customer branch"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:637
+#: ../sales/includes/ui/sales_order_ui.inc:633
 msgid "Contact Phone Number:"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:638
+#: ../sales/includes/ui/sales_order_ui.inc:634
 msgid "Phone number of ordering person. Defaults to branch phone number"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:639
+#: ../sales/includes/ui/sales_order_ui.inc:635
 msgid "Customer Reference:"
 msgstr ""
 
-#: ../sales/includes/ui/sales_order_ui.inc:640
+#: ../sales/includes/ui/sales_order_ui.inc:636
 msgid "Customer reference number for this order (if any)"
 msgstr ""
 
