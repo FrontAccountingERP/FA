@@ -159,7 +159,7 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		$Refs->save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
-		if ($invoice->payment_terms['cash_sale']) {
+		if ($invoice->payment_terms['cash_sale'] && $invoice->pos['pos_account']) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
 
@@ -168,7 +168,7 @@ function write_sales_invoice(&$invoice)
 			// and change line below.
 			$discount = 0; // $invoice->cash_discount*$amount;
 			$pmtno = write_customer_payment(0, $invoice->customer_id, 
-				$invoice->Branch, $invoice->cash_account, $date_,
+				$invoice->Branch, $invoice->pos['pos_account'], $date_,
 				$Refs->get_next(ST_CUSTPAYMENT), $amount-$discount, $discount,
 				_('Cash invoice').' '.$invoice_no);
 			add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no);

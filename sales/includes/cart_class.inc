@@ -64,9 +64,7 @@ class cart
 	var $tax_group_array = null; // saves db queries
 	var $price_factor;	 // ditto for price calculations
 
-	var	$pos;			// user assigned POS
-	var $cash_account;
-	var $account_name;
+	var	$pos;			// user assigned POS (contains cash accont number/name)
 	var $cash_discount;	// not used as of FA 2.1
 	var $dimension_id;
 	var $dimension2_id;
@@ -77,10 +75,10 @@ class cart
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
-	//  $trans_no!=0 && $no_edit==false => update with parent constarints for reedition
-	//  $trans_no!=0 && $no_edit==true => read only: for view, or later child doc entry
+	//  $trans_no!=0 && $prep_child==false => update with parent constarints for reedition
+	//  $trans_no!=0 && $prep_child==true => prepare for child doc entry
 	//
-	function Cart($type, $trans_no=0, $no_edit=false) {
+	function Cart($type, $trans_no=0, $prep_child=false) {
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
@@ -91,7 +89,7 @@ class cart
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
 		$this->pos = get_sales_point(user_pos());
-		$this->read($type, $trans_no, $no_edit);
+		$this->read($type, $trans_no, $prep_child);
 		$this->cart_id = uniqid('');
 	}
 	
@@ -139,23 +137,15 @@ class cart
 	function set_parent_constraints($sodata, $src_no) {
 
 		$srcdetails = get_sales_parent_lines($this->trans_type, $src_no);
-		
 		$src_type = get_parent_type($this->trans_type);
-		if ($src_type == ST_SALESORDER || $src_type == 0) {
-			$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
-		} else {	// get src_data from debtor_trans
-			$srcnum = array();
-			while ($line = db_fetch($srcdetails)) {
-				$srcnum[] = $line['debtor_trans_no'];
-			}
-			$this->src_docs = get_customer_trans_version($src_type, array_values($srcnum));
-		}
+
 		// calculate & save: qtys on other docs and free qtys on src doc
-		$line_no = 0;
+		$line_no = 0; $src_docs = array();
 		// Loop speed optimisation below depends on fact 
 		// that child line_items contains subset of parent lines in _the_same_ order !
-		while ($line_no < count($this->line_items) && $srcline = db_fetch($srcdetails)) {
+		while (($line_no < count($this->line_items)) && ($srcline = db_fetch($srcdetails))) {
 			$line = &$this->line_items[$line_no];
+			$src_docs[] = $srcline['debtor_trans_no'];
 			if ($srcline['id'] == $line->src_id) {
 				if ($this->trans_type == ST_SALESINVOICE)
 					$line->src_no = $srcline['debtor_trans_no'];
@@ -166,11 +156,18 @@ class cart
 				break;
 			}
 		}
+
+		if ($src_type == ST_SALESORDER || $src_type == 0) {
+			$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
+		} else {
+			// get src_data from debtor_trans
+			$this->src_docs = get_customer_trans_version($src_type, array_unique($src_docs));
+		}
 	}
 	//-------------------------------------------------------------------------
 	// Reading document into cart
 	//
-	function read($type, $trans_no = 0, $prep_child=false) {
+	function read($type, $trans_no=0, $prep_child=false) {
 
 		global $SysPrefs, $Refs;
 
@@ -180,7 +177,7 @@ class cart
 			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 				read_sales_order($trans_no[0], $this, $type);
 			} else {	// other type of sales transaction
-					read_sales_trans($type, $trans_no, $this);
+					read_sales_trans($type, $trans_no, $this); 
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
@@ -189,13 +186,14 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					// child transaction reedition - update with parent info unless it is freehand
-						if ($prep_child)
-							$this->set_parent_constraints($sodata, $trans_no[0]);
+					if (!$prep_child) // this is read for view/reedition
+						$this->set_parent_constraints($sodata, $trans_no[0]);
 					}
 			}
-			// prepare qtys for derivative document entry (not used in display)
+			// convert document into child and prepare qtys for entry
 			if ($prep_child)
 				$this->prepare_child();
+
 		} else { // new document
 				$this->trans_type = $type;
 				$this->trans_no = 0;
@@ -205,7 +203,7 @@ class cart
 				  $this->customer_id = get_global_customer();
 				else
 				  $this->customer_id = '';
-				$this->document_date = 	new_doc_date();
+				$this->document_date = new_doc_date();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = $Refs->get_next($this->trans_type);
@@ -244,26 +242,21 @@ class cart
 	// Writing new/modified sales document to database.
 	// Makes parent documents for direct delivery/invoice by recurent call.
 	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
-	function write($policy=0) {
+	function write($policy=0) { 
 		begin_transaction(); // prevents partial database changes in case of direct delivery/invoice
 		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 			// this is direct document - first add parent
-			$src = (PHP_VERSION<5) ? $this : clone( $this ); // make local copy of this cart
-			$src->trans_type = get_parent_type($src->trans_type);
-			$src->reference = 'auto';
-
-			$src->write(1);
-			$type = $this->trans_type;
 			$ref = $this->reference;
 			$date = $this->document_date;
-			// re-read document
-			$this->read($src->trans_type, key($src->trans_no), true);
+			$this->trans_type = get_parent_type($this->trans_type);
+
+			$this->reference = 'auto'; 
+			$trans_no = $this->write(1); 
+
+			// re-read parent document converting it to child
+			$this->read($this->trans_type, $trans_no, true); 
 			$this->document_date = $date;
 			$this->reference = $ref;
-			$this->trans_type = $type;
-			$this->src_docs= $this->trans_no;
-			$this->trans_no = 0;
-			$this->order_no= $this->trans_type==ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
 		}
 		$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
 		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
@@ -304,8 +297,6 @@ class cart
 		if ($this->payment_terms['cash_sale']) {
 			$this->Location = $this->pos['pos_location'];
 			$this->location_name = $this->pos['location_name'];
-			$this->cash_account = $this->pos['pos_account'];
-			$this->account_name = $this->pos['bank_account_name'];
 		}
 		$this->credit = get_current_cust_credit($customer_id);
 	}

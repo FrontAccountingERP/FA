@@ -323,6 +323,16 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	}
 }
 
+if(list_updated('payment')) {
+	$order = &$_SESSION['Items'];
+	$order->payment = get_post('payment');
+	$order->payment_terms = get_payment_terms($order->payment);
+	$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+	if ($order->payment_terms['cash_sale']) {
+		$_POST['Location'] = $order->Location = $order->pos['pos_location'];
+		$order->location_name = $order->pos['location_name'];
+	}
+}
 // find delivery spans for batch invoice display
 $dspans = array();
 $lastdn = ''; $spanlen=1;
@@ -362,7 +372,6 @@ if ($dim > 0)
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
 if ($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sale']) {
- // editable payment type
 	$paymcat = !$_SESSION['Items']->pos['cash_sale'] ? PM_CREDIT :
 		(!$_SESSION['Items']->pos['credit_sale'] ? PM_CASH : PM_ANY);
 	label_cells(_("Payment terms:"), sale_payment_list('payment', $paymcat),
