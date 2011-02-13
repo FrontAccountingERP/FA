@@ -125,7 +125,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$contents = url_get_contents("http://".$site.$filename);
 	}
 	if (!$contents) {
-		display_warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
+		display_warning(sprintf(_("Cannot retrieve currency rate from %s page. Please set the rate manually."), $provider));
 	}
 	if ($provider == 'ECB')
 	{

@@ -187,7 +187,7 @@ function get_control_file($file, $index = false) {
 				if ($index !== true) {
 					if ($index === false) break;
 					if (!isset($pkg[$index])) {
-						display_error(_("No key field '$index' in file '$file'"));
+						display_error(sprintf(_("No key field '%s' in file '%s'"), $index, $file));
 						return null;
 					}
 					$repo[$pkg[$index]] = $pkg;
