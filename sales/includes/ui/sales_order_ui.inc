@@ -583,6 +583,8 @@ function display_delivery_details(&$order)
 		start_table(TABLESTYLE2, "width=60%");
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
+ 		if (list_updated('Location'))
+ 			$Ajax->activate('items_table');
 		label_row(_("Cash account:"), $order->pos['bank_account_name']);
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 		end_table();

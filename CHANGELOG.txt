@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Feb-2011 Joe Hunt
+# When changing Location in Direct Cash Invoice The first Location is always chosen.
+$ /sales/includes/ui/sales_order_ui.inc
+  /sales/sales_order_entry.php
+
 ------------------------------- Release 2.3.2 ------------------------------------
 14-Feb-2011 Joe Hunt
 ! Release 2.3.2
