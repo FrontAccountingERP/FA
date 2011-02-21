@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+21-Feb-2011 Janusz Dobrowolski
+! Hiden warning in open_basedir/save_mode on rate retrieval.
+$ /gl/includes/db/gl_db_rates.inc
+
 18-Feb-2011 Joe Hunt
 # When changing Location in Direct Cash Invoice The first Location is always chosen.
 $ /sales/includes/ui/sales_order_ui.inc

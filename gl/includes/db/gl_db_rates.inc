@@ -112,7 +112,8 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
     	   curl_setopt ($ch, CURLOPT_HEADER, 0);
 	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-    	   curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       // prevent warning while save_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
+    	   @curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
 	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
     	   $contents = curl_exec ($ch);
 	       curl_close($ch);
