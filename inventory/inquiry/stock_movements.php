@@ -46,7 +46,7 @@ if (!isset($_POST['stock_id']))
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
 end_row();
 end_table();
 

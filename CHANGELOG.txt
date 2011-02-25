@@ -29,6 +29,13 @@ $ /gl/includes/db/gl_db_bank_trans.inc
 # [0000588] Inability to create recurrent invoice
 $ /sales/manage/recurrent_invoices.php
 
+25-Feb-2011 Janusz Dobrowolski
+Removed dummy/service items from stock movemens/status inquiries.
+$ /inventory/inquiry/stock_movements.php
+  /inventory/inquiry/stock_status.php
+Fixed delivery note's invoicing date description
+$ /reporting/includes/doctext.inc
+
 21-Feb-2011 Janusz Dobrowolski
 ! Hiden warning in open_basedir/save_mode on rate retrieval.
 $ /gl/includes/db/gl_db_rates.inc
