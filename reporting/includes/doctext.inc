@@ -34,6 +34,8 @@ if (isset($header2type))
 		$doc_Due_Date = _("Valid until");
 	elseif ($doctype == ST_SALESORDER)
 		$doc_Due_Date = _("Delivery Date");
+  	elseif($doctype == ST_CUSTDELIVERY)
+		$doc_Due_Date = _("To Be Invoiced Before");
   	else
 		$doc_Due_Date = _("Due Date");
 	$doc_Your_Ref = _("Your Ref");
