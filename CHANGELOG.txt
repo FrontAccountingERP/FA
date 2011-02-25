@@ -36,6 +36,13 @@ $ /inventory/inquiry/stock_movements.php
 Fixed delivery note's invoicing date description
 $ /reporting/includes/doctext.inc
 
+25-Feb-2011 Janusz Dobrowolski
+Removed dummy/service items from stock movemens/status inquiries.
+$ /inventory/inquiry/stock_movements.php
+  /inventory/inquiry/stock_status.php
+Fixed delivery note's invoicing date description
+$ /reporting/includes/doctext.inc
+
 21-Feb-2011 Janusz Dobrowolski
 ! Hiden warning in open_basedir/save_mode on rate retrieval.
 $ /gl/includes/db/gl_db_rates.inc
