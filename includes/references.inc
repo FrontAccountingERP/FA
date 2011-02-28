@@ -114,10 +114,10 @@ function is_new_reference($ref, $type)
 	$type = db_escape($type);
 	
 	if ($db_ref == null) { // journal or bank trans store references in refs table
-		$db_ref = TB_PREF."refs";
+		$db_name = TB_PREF."refs";
 		$db_type = 'type';
 		$db_trans = 'id';
-		$rb_ref = 'reference';
+		$db_ref = 'reference';
 	}
 
 	if ($db_type != null) {
