@@ -22,6 +22,10 @@ $ -> Affected files
 28-Feb-2011 Joe Hunt
 # [0000583] Unique Reference check fails when running manual Revaluation of Currency 
 $ /includes/references.inc
+# When voiding Inventory Adjustment transaction, the costs are not getting adjusted.
+$ /inventory/includes/db/items_adjust_db.inc
+# [0000587] Converted currencies are not rounded when using Funds transfers 
+$ /gl/includes/db/gl_db_bank_trans.inc
 
 21-Feb-2011 Janusz Dobrowolski
 ! Hiden warning in open_basedir/save_mode on rate retrieval.
