@@ -166,7 +166,7 @@ function callEditor(key) {
   var el = document.getElementsByName(editors[key][1])[0]; 
   if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
   _w = open(editors[key][0]+el.value+'&popup=1',
-	  "edit","Scrollbars=0,resizable=0,width=800,height=600");
+	  "edit","Scrollbars=0,resizable=0,width="+editors[key][2]+",height="+editors[key][3]);
   if (_w.opener == null)
 	  _w.opener = self;
   editors._call = key; // store call point for passBack 

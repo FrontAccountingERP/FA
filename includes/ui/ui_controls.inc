@@ -422,13 +422,13 @@ function tabbed_content_end() {
 */
 $popup_editors = array(
 	'customer' => array('/sales/manage/customers.php?debtor_no=', 
-		113,	_("Customers")),
+		113,	_("Customers"), 900, 500),
 	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
-		114, _("Branches")),
+		114, _("Branches"), 900, 700),
 	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
-		113, _("Suppliers")),
+		113, _("Suppliers"), 900, 700),
 	'item' => array('/inventory/manage/items.php?stock_id=', 
-		115, _("Items"))
+		115, _("Items"), 800, 600)
 );
 /*
 	Bind editors for various selectors.
@@ -443,7 +443,8 @@ function set_editor($type, $input, $caller=true)
 
 	$key = $caller===true ? $popup_editors[$type][1] : $caller;
 
-	$Editors[$key] = array( $path_to_root . $popup_editors[$type][0], $input);
+	$Editors[$key] = array( $path_to_root . $popup_editors[$type][0], $input, 
+		$popup_editors[$type][3], $popup_editors[$type][4]);
 	
 	$help = 'F' . ($key - 111) . ' - ';
 	$help .= $popup_editors[$type][2];
