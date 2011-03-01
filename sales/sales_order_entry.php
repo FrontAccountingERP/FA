@@ -244,14 +244,16 @@ function copy_to_cart()
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
 		$newpayment = true;
 	}
-	if ($newpayment && $cart->payment_terms['cash_sale']) {
-		$cart->due_date = $cart->document_date;
-		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-		$cart->freight_cost = input_num('freight_cost');
-		$cart->ship_via = 1;
-		$cart->deliver_to = '';
-		$cart->Location = $cart->pos['pos_location'];
-		$cart->location_name = $cart->pos['location_name'];
+	if ($cart->payment_terms['cash_sale']) {
+		if ($newpayment) {
+			$cart->due_date = $cart->document_date;
+			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
+			$cart->freight_cost = input_num('freight_cost');
+			$cart->ship_via = 1;
+			$cart->deliver_to = '';
+			$cart->Location = $cart->pos['pos_location'];
+			$cart->location_name = $cart->pos['location_name'];
+		}
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
 		$cart->cust_ref = $_POST['cust_ref'];
@@ -273,7 +275,7 @@ function copy_to_cart()
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
-	}	
+	}
 }
 
 //-----------------------------------------------------------------------------
