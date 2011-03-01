@@ -26,6 +26,8 @@ $ /includes/references.inc
 $ /inventory/includes/db/items_adjust_db.inc
 # [0000587] Converted currencies are not rounded when using Funds transfers 
 $ /gl/includes/db/gl_db_bank_trans.inc
+# [0000588] Inability to create recurrent invoice
+$ /sales/manage/recurrent_invoices.php
 
 21-Feb-2011 Janusz Dobrowolski
 ! Hiden warning in open_basedir/save_mode on rate retrieval.
