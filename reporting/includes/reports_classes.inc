@@ -49,6 +49,10 @@ class BoxReports
 	{
 		global $path_to_root, $pdf_debug, $Ajax;
 
+		if (find_submit('Rep') != -1) {
+			include($path_to_root.'/reporting/prn_redirect.php');
+			return;
+		}
 
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
@@ -59,6 +63,8 @@ class BoxReports
 		if (isset($_GET['Class']))
 			set_focus('class'.$_GET['Class']);
 
+		$cur_class = $_REQUEST['Class'];
+
 		foreach($this->ar_classes as $class_id => $name)
 		{
 			if (!isset($this->ar_reports[$class_id]))
@@ -67,36 +73,36 @@ class BoxReports
 			$acc = access_string($name);
 			$st_classes .= "<a href='"
 				.$_SERVER['PHP_SELF']."?Class=$class_id'"
-				." style='font-weight:". ($_REQUEST['Class'] == $class_id ? 'bold' : 'normal')."'"
+				." style='font-weight:". ($cur_class == $class_id ? 'bold' : 'normal')."'"
 				." class='repclass_link' id='".'class'.$class_id."'"
 				."$acc[1]>$acc[0]</a> <br>";
 
-			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
+			$style = $class_id==$cur_class ? '' : "style='display:none'";
 			$st_reports .= "<table class='repclass' id='TAB_" . $class_id ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$name</b></td></tr>\n";
 			foreach($this->ar_reports[$class_id] as $rep_id => $report)
 			{
 				$acc = access_string($report->name);
 				$st_reports .= "<tr><td><a class='repopts_link'"
-					." href='".$_SERVER['PHP_SELF']."?Class=$class_id&rep_id=$report->id'"
-					." style='font-weight:". (@$_GET['rep_id'] == $report->id ? 'bold' : 'normal')."'"
+					." href='".$_SERVER['PHP_SELF']."?Class=$class_id&REP_ID=$report->id'"
+					." style='font-weight:". (@$_REQUEST['REP_ID'] == $report->id ? 'bold' : 'normal')."'"
 					." id='".$id = default_focus()."'"
 					."$acc[1]>$acc[0]</a><tr><td>\n";
 
-				if (@$_REQUEST['rep_id'] == $report->id) {
+				if (@$_REQUEST['REP_ID'] == $report->id) {
 					$Ajax->activate($id);
 				}
 
-				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
-
-					$action = $path_to_root.'/reporting/prn_redirect.php';
-	
+				if (isset($_REQUEST['REP_ID']) && $_REQUEST['REP_ID']==$report->id) {
+					// parameters form
+					$action = $_SERVER['PHP_SELF'];
 					$st_params = "<table><tr><td>\n"
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
 						false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls(), $report->id);
-					$st_params .= "\n</form></td></tr></table>\n";
+					$st_params .= "\n<input type=hidden name='Class' value=".$cur_class.">"
+						."\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
 					$Ajax->addUpdate(true, 'rep_form', $st_params);
 				}
@@ -281,23 +287,17 @@ class BoxReports
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER')
-						return combo_input($name, '', $sql, 'debtor_no', 'name',array('spec_option'=>_("No Customer Filter"),'spec_id'=>ALL_NUMERIC));
-// FIX allitems numeric!
-//						return customer_list($name, null, _("No Customer Filter"));
+						return customer_list($name, null, _("No Customer Filter"));
 					else
-						return combo_input($name, '', $sql, 'debtor_no', 'name', null);
-//						return customer_list($name);
+						return customer_list($name);
 
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER')
-						return combo_input($name, '', $sql, 'supplier_id', 'supp_name',array('spec_option'=>_("No Supplier Filter"),'spec_id'=>ALL_NUMERIC));
-// FIX allitems numeric!
-//						return supplier_list($name, null, _("No Supplier Filter"));
+						return supplier_list($name, null, _("No Supplier Filter"));
 					else
-						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', null);
-//						return supplier_list($name);
+						return supplier_list($name);
 
 				case 'INVOICE':
 					$IV = $type_shortcuts[ST_SALESINVOICE];

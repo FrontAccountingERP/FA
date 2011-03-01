@@ -89,7 +89,7 @@ function print_statements()
 	}
 
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
-	if ($customer != ALL_NUMERIC)
+	if ($customer != ALL_TEXT)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
 		$sql .= " ORDER by name";

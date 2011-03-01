@@ -84,7 +84,7 @@ function print_aged_customer_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == ALL_TEXT)
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
@@ -135,7 +135,7 @@ function print_aged_customer_analysis()
 	$total = array(0,0,0,0, 0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master";
-	if ($fromcust != ALL_NUMERIC)
+	if ($fromcust != ALL_TEXT)
 		$sql .= " WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");

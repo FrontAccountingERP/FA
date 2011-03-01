@@ -104,7 +104,7 @@ function print_inventory_sales()
 	else
 		$loc = get_location_name($location);
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == ALL_TEXT)
 		$fromc = _('All');
 	else
 		$fromc = get_customer_name($fromcust);
@@ -112,7 +112,7 @@ function print_inventory_sales()
 	$cols = array(0, 75, 175, 250, 300, 375, 450,	515);
 
 	$headers = array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
-	if ($fromcust != ALL_NUMERIC)
+	if ($fromcust != ALL_TEXT)
 		$headers[2] = '';	
 
 	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
@@ -163,7 +163,7 @@ function print_inventory_sales()
 		$rep->NewLine();
 		$rep->fontSize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		if ($fromcust == ALL_NUMERIC)
+		if ($fromcust == ALL_TEXT)
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 			$rep->TextCol(2, 3, $trans['debtor_name']);

@@ -86,7 +86,7 @@ function print_aged_supplier_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromsupp == ALL_NUMERIC)
+	if ($fromsupp == ALL_TEXT)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
@@ -145,7 +145,7 @@ function print_aged_supplier_analysis()
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
-	if ($fromsupp != ALL_NUMERIC)
+	if ($fromsupp != ALL_TEXT)
 		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
 	$sql .= " ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");

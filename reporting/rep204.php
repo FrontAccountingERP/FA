@@ -49,7 +49,7 @@ function getTransactions($fromsupp)
 		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
 		AND qty_recd-quantity_inv <>0 ";
 
-	if ($fromsupp != ALL_NUMERIC)
+	if ($fromsupp != ALL_TEXT)
 		$sql .= "AND ".TB_PREF."grn_batch.supplier_id =".db_escape($fromsupp)." ";
 	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id,
 			".TB_PREF."grn_batch.id";
@@ -71,7 +71,7 @@ function print_outstanding_GRN()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == ALL_NUMERIC)
+	if ($fromsupp == ALL_TEXT)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);

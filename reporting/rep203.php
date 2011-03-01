@@ -68,7 +68,7 @@ function print_payment_report()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == ALL_NUMERIC)
+	if ($fromsupp == ALL_TEXT)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
@@ -110,7 +110,7 @@ function print_payment_report()
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
 		WHERE ";
-	if ($fromsupp != ALL_NUMERIC)
+	if ($fromsupp != ALL_TEXT)
 		$sql .= "supplier_id=".db_escape($fromsupp)." AND ";
 	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 		ORDER BY supp_name";
