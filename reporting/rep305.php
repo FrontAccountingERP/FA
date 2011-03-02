@@ -34,21 +34,44 @@ function getTransactions($from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 	
-	$sql = "SELECT DISTINCT ".TB_PREF."grn_batch.supplier_id, 
+	$sql = "SELECT ".TB_PREF."grn_batch.id batch_no,
+			".TB_PREF."grn_batch.supplier_id, 
             ".TB_PREF."purch_order_details.*,
-            ".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive
+            ".TB_PREF."stock_master.description,
+			".TB_PREF."grn_items.qty_recd,
+			".TB_PREF."grn_items.quantity_inv,
+			".TB_PREF."grn_items.id grn_item_id
         FROM ".TB_PREF."stock_master,
             ".TB_PREF."purch_order_details,
-            ".TB_PREF."grn_batch
+            ".TB_PREF."grn_batch,
+			".TB_PREF."grn_items 
         WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."purch_order_details.item_code
         AND ".TB_PREF."grn_batch.purch_order_no=".TB_PREF."purch_order_details.order_no
-        AND ".TB_PREF."purch_order_details.quantity_received>0
+		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id 
+		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
+        AND ".TB_PREF."grn_items.qty_recd>0
         AND ".TB_PREF."grn_batch.delivery_date>='$from'
         AND ".TB_PREF."grn_batch.delivery_date<='$to'
         ORDER BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."grn_batch.delivery_date"; 	
 	
     return db_query($sql,"No transactions were returned");
 
+}
+
+function getSuppInvDetails($grn_item_id)
+{
+	$sql = "SELECT
+			".TB_PREF."supp_invoice_items.supp_trans_no inv_no,
+			".TB_PREF."supp_invoice_items.quantity inv_qty,
+			".TB_PREF."supp_invoice_items.unit_price inv_price
+			FROM ".TB_PREF."grn_items, ".TB_PREF."supp_invoice_items
+			WHERE ".TB_PREF."grn_items.id = ".TB_PREF."supp_invoice_items.grn_item_id
+			AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."supp_invoice_items.po_detail_item_id
+			AND ".TB_PREF."grn_items.item_code = ".TB_PREF."supp_invoice_items.stock_id
+			AND ".TB_PREF."supp_invoice_items.grn_item_id = ".$grn_item_id."
+			ORDER BY ".TB_PREF."supp_invoice_items.id asc";
+
+	return db_query($sql,"No transactions were returned");
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -68,10 +91,10 @@ function print_grn_valuation()
 
     $dec = user_price_dec();
 
-	$cols = array(0, 75, 225, 275, 345, 390, 445,	515);
-	$headers = array(_('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'), _('Total'));
+	$cols = array(0, 75, 225, 260, 295, 330, 370, 410, 455, 515);
+	$headers = array(_('Stock ID'), _('Description'), _('PO No'), _('GRN')."#", _('Inv')."#", _('Qty'), _('Inv Price'), _('PO Price'), _('Total'));
 
-	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
+	$aligns = array('left',	'left',	'left', 'left', 'left', 'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
@@ -94,8 +117,8 @@ function print_grn_valuation()
 				$rep->Line($rep->row  - 4);
 				$rep->NewLine(2);
 				$rep->TextCol(0, 3, _('Total'));
-				$rep->AmountCol(3, 4, $qtotal, $qdec);
-				$rep->AmountCol(6, 7, $total, $dec);
+				$rep->AmountCol(5, 6, $qtotal, $qdec);
+				$rep->AmountCol(8, 9, $total, $dec);
 				$rep->NewLine();
 				$total = $qtotal = 0;
 			}
@@ -108,29 +131,55 @@ function print_grn_valuation()
 
 		$rep->NewLine();
 		$rep->TextCol(0, 1, $trans['item_code']);
-		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
+		$rep->TextCol(1, 2, $trans['description']);
 		$rep->TextCol(2, 3, $trans['order_no']);
 		$qdec = get_qty_dec($trans['item_code']);
-		$rep->AmountCol(3, 4, $trans['quantity_received'], $qdec);
-		$rep->AmountCol(4, 5, $trans['unit_price'], $dec);
-		$rep->AmountCol(5, 6, $trans['act_price'], $dec);
-		$amt = round2($trans['quantity_received'] * $trans['act_price'], $dec);
-		$rep->AmountCol(6, 7, $amt, $dec);
-		$total += $amt;
-		$qtotal += $trans['quantity_received'];
-		$grandtotal += $amt;
+		$rep->TextCol(3, 4, $trans['batch_no']);
+		
+		if ($trans['quantity_inv'])
+		{
+			$suppinv = getSuppInvDetails($trans['grn_item_id']);
+			while ($inv=db_fetch($suppinv))
+			{	
+				$inv['inv_price'] *= $rate;
+				$rep->TextCol(4, 5, $inv['inv_no']);
+				$rep->AmountCol(5, 6, $inv['inv_qty'], $qdec);
+				$rep->AmountCol(6, 7, $inv['inv_price'], $dec);
+				$rep->AmountCol(7, 8, $trans['unit_price'], $dec);
+				$amt = round2($inv['inv_qty'] * $inv['inv_price'], $dec);
+				$rep->AmountCol(8, 9, $amt, $dec);
+				$rep->NewLine();
+				$total += $amt;
+				$qtotal += $inv['inv_qty'];
+				$grandtotal += $amt;
+			}
+		}
+	
+		if ($trans['qty_recd'] - $trans['quantity_inv'] !=0 )
+		{
+			$rep->TextCol(4, 5, "--");
+			$rep->AmountCol(5, 6, $trans['qty_recd'] - $trans['quantity_inv'], $qdec);
+			$rep->AmountCol(7, 8, $trans['unit_price'], $dec);
+			$amt = round2(($trans['qty_recd'] - $trans['quantity_inv']) * $trans['unit_price'], $dec);
+			$rep->AmountCol(8, 9, $amt, $dec);
+			$total += $amt;
+			$qtotal += $trans['qty_recd'] - $trans['quantity_inv'];
+			$grandtotal += $amt;
+		}
+		else
+			$rep->NewLine(-1);
 	}
 	if ($stock_id != '')
 	{
 		$rep->Line($rep->row  - 4);
 		$rep->NewLine(2);
 		$rep->TextCol(0, 3, _('Total'));
-		$rep->AmountCol(3, 4, $qtotal, $qdec);
-		$rep->AmountCol(6, 7, $total, $dec);
+		$rep->AmountCol(5, 6, $qtotal, $qdec);
+		$rep->AmountCol(8, 9, $total, $dec);
 		$rep->Line($rep->row  - 4);
 		$rep->NewLine(2);
-		$rep->TextCol(0, 6, _('Grand Total'));
-		$rep->AmountCol(6, 7, $grandtotal, $dec);
+		$rep->TextCol(0, 7, _('Grand Total'));
+		$rep->AmountCol(8, 9, $grandtotal, $dec);
 	}
 
 	$rep->Line($rep->row  - 4);
