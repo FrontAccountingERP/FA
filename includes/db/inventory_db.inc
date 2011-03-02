@@ -369,10 +369,30 @@ function get_stock_moves($type, $type_no, $visible=false)
 
 function void_stock_move($type, $type_no)
 {
-	$sql = "UPDATE ".TB_PREF."stock_moves SET qty=0, price=0, discount_percent=0,
-		standard_cost=0	WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
-
-	db_query($sql, "Could not void stock moves");
+    //Chaitanya : Reversing stock move rather than voiding as it is hazardous to lose stock movement trail with respect to costing
+    /*$sql = "UPDATE ".TB_PREF."stock_moves SET qty=0, price=0, discount_percent=0,
+        standard_cost=0    WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+        
+    db_query($sql, "Could not void stock moves"); */
+    
+    $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+    $result = db_query($sql, "Could not void stock moves");
+    while ($row = db_fetch($result))
+    {
+        add_stock_move($type, $row["stock_id"], $type_no, $row["loc_code"],
+    		sql2date($row["tran_date"]), $row["reference"], -$row["qty"], $row["standard_cost"], $row["person_id"], $row["visible"],
+    		$row["price"], $row["discount_percent"]);
+        
+        // If there is cost difference, then cost has to be adjusted.
+        // IMP : Adjusting cost is suitable instead of normal averaging as it will not work properly for manufactured items. Reason being Avg cost is suitable only for purchased items
+        $curr_std_cost = get_standard_cost($row["stock_id"]);
+        if ($curr_std_cost != $row["standard_cost"])
+        {
+            $cost_diff = $row["standard_cost"] - $curr_std_cost;
+            update_average_material_cost(0, $row["stock_id"],
+                $cost_diff, -$row["qty"], sql2date($row["tran_date"]), true);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
