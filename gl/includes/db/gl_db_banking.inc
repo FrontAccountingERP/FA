@@ -145,13 +145,15 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	{
 		$currency = get_bank_account_currency($to_account);
 	
-		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	
+		if (add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	
 			$currency, PT_MISC, $person_id))
-		{
-			$ref1 = $Refs->get_next(ST_JOURNAL);
-			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
-			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
-		}	
+			$exchanged = true;
+	}
+	if ($exchanged == true)
+	{
+		$ref1 = $Refs->get_next(ST_JOURNAL);
+		$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
+		add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
 	}
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
