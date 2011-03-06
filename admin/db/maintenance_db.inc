@@ -720,7 +720,7 @@ function save_to_file($backupfile, $zip, $fileData)
         $c_len = strlen($zdata);
 
         // dos time
-        $timearray = getdate($zip);
+        $timearray = getdate();
         $dostime = (($timearray['year'] - 1980) << 25) | ($timearray['mon'] << 21) | ($timearray['mday'] << 16) |
             ($timearray['hours'] << 11) | ($timearray['minutes'] << 5) | ($timearray['seconds'] >> 1);
         $dtime = dechex($dostime);

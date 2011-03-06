@@ -109,12 +109,6 @@ $reports->addReport(RC_CUSTOMER, 111, _('&Print Sales Quotations'),
 			_('Currency Filter') => 'CURRENCY',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
-$reports->addReport(RC_CUSTOMER, 111, _('&Print Sales Quotations'),
-	array(	_('From') => 'QUOTATIONS',
-			_('To') => 'QUOTATIONS',
-			_('Currency Filter') => 'CURRENCY',
-			_('Email Customers') => 'YES_NO',
-			_('Comments') => 'TEXTBOX'));
 $reports->addReport(RC_CUSTOMER, 112, _('Print Receipts'),
 	array(	_('From') => 'RECEIPT',
 			_('To') => 'RECEIPT',
