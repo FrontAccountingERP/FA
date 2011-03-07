@@ -77,7 +77,7 @@ function can_delete($selected_id)
 		display_error(_("Cannot delete this item tax type because items have been created referring to it."));
 		return false;
 	}
-	if (key_in_foreign_table($selected_id, 'item_tax_types', 'dflt_tax_type'))
+	if (key_in_foreign_table($selected_id, 'stock_category', 'dflt_tax_type'))
 	{
 		display_error(_("Cannot delete this item tax type because item categories have been created referring to it."));
 		return false;
