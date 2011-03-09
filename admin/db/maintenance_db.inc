@@ -257,10 +257,14 @@ function db_import($filename, $connection, $force=true)
 
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
+		"delimiter" => 'table_queries',
 		"alter table" => 'table_queries', 
 		"insert" => 'data_queries', 
 		"update" => 'data_queries', 
-		"drop table if exists" => 'drop_queries');
+		"drop table if exists" => 'drop_queries',
+		"drop function if exists" => 'drop_queries',
+		"drop trigger if exists" => 'drop_queries',
+		);
 	$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 		'1022',	// duplicate key
 		'1050', // Table %s already exists
@@ -286,6 +290,7 @@ function db_import($filename, $connection, $force=true)
 
 	// parse input file
 	$query_table = '';
+	$delimiter = ';';
 	foreach($lines as $line_no => $line)
 	{
 		$line = trim($line);
@@ -296,8 +301,13 @@ function db_import($filename, $connection, $force=true)
 		{	// check if line begins with one of allowed queries
 		 	foreach($allowed_commands as $cmd => $table) 
 			{
-				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
+//				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
+				if (stripos($line, $cmd) === 0) 
 				{
+					if ($cmd == 'delimiter') {
+						$delimiter = trim(substr($line, 10));
+						continue 2;
+					}
 					$query_table = $table;
 					${$query_table}[] = array('', $line_no+1);
 					break;
@@ -307,16 +317,17 @@ function db_import($filename, $connection, $force=true)
 		 if($query_table != '')  // inside allowed query
 		 {
 		 	$table = $query_table;
-			if (substr($line, -1) == ';') // end of query found
+
+			if (substr($line, -strlen($delimiter)) == $delimiter) // end of query found
 			{
-				$line = substr($line, 0, strlen($line) - 1); // strip ';'
+				$line = substr($line, 0, strlen($line) - strlen($delimiter)); // strip delimiter
 				$query_table = '';
 			}
 			${$table}[count(${$table}) - 1][0] .= $line . "\n";
 		}
 		
 	}
-/*
+	
 	{ 	// for debugging purposes
 	global $path_to_root;
 	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w+');
@@ -325,7 +336,7 @@ function db_import($filename, $connection, $force=true)
 	fwrite($f, print_r($data_queries,true));
 	fclose($f);
 	}
-*/
+
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
 	{
@@ -367,6 +378,7 @@ function db_import($filename, $connection, $force=true)
 	}
 	
 	db_query("SET foreign_key_checks=1");
+	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
 
 	if (count($sql_errors)) {
 		// display first failure message; the rest are probably derivative 
