@@ -423,7 +423,10 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	label_cell($_POST['units'], '', 'units');
 	if ($order->trans_type == ST_PURCHORDER)
 		date_cells(null, 'req_del_date', '', null, 0, 0, 0);
-	amount_cells(null, 'price', null, null, null, $dec2);
+	if ($qty_rcvd > 0)	
+   		amount_decimal_cell($_POST['price']);
+   	else	
+		amount_cells(null, 'price', null, null, null, $dec2);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
