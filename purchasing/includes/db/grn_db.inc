@@ -40,8 +40,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
-	if ($price > -0.0001 && $price < 0.0001)
-		return $material_cost;
+	//if ($price > -0.0001 && $price < 0.0001) commented out by Chaitanya
+	//	return $material_cost;
 	if ($adj_only)
 		$exclude = ST_CUSTDELIVERY;
 	else
