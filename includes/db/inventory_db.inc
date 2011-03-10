@@ -11,35 +11,41 @@
 ***********************************************************************/
 function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
 {
-	if ($date_ == null)
-		$date_ = Today();
+    if ($date_ == null)
+    {
+        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+            WHERE stock_id=".db_escape($stock_id);
+        $date_ = Today();
+        $date = date2sql($date_);
+    }
+    else
+    {
+        $date = date2sql($date_);
+        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+            WHERE stock_id=".db_escape($stock_id)."
+            AND tran_date <= '$date'"; 
+    }
+        
+    if ($location != null)
+        $sql .= " AND loc_code = ".db_escape($location);
 
-	$date = date2sql($date_);
+    $result = db_query($sql, "QOH calulcation failed");
 
-	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
-		WHERE stock_id=".db_escape($stock_id)."
-		AND tran_date <= '$date'";
+    $myrow = db_fetch_row($result);
+    if ($exclude > 0)
+    {
+        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+            WHERE stock_id=".db_escape($stock_id)
+            ." AND type=".db_escape($exclude)
+            ." AND tran_date = '$date'";
 
-	if ($location != null)
-		$sql .= " AND loc_code = ".db_escape($location);
+        $result = db_query($sql, "QOH calulcation failed");
+        $myrow2 = db_fetch_row($result);
+        if ($myrow2 !== false)
+            $myrow[0] -= $myrow2[0];
+    }
 
-	$result = db_query($sql, "QOH calulcation failed");
-
-	$myrow = db_fetch_row($result);
-	if ($exclude > 0)
-	{
-		$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
-			WHERE stock_id=".db_escape($stock_id)
-			." AND type=".db_escape($exclude)
-			." AND tran_date = '$date'";
-
-		$result = db_query($sql, "QOH calulcation failed");
-		$myrow2 = db_fetch_row($result);
-		if ($myrow2 !== false)
-			$myrow[0] -= $myrow2[0];
-	}
-
-	return $myrow[0];
+    return $myrow[0];
 }
 
 //--------------------------------------------------------------------------------------
@@ -101,6 +107,19 @@ function last_negative_stock_begin_date($stock_id, $to)
 
 //-------------------------------------------------------------------
 // Newly written
+
+function get_already_delivered($stock_id, $location, $trans_no)
+{
+	$sql = "SELECT ".TB_PREF."stock_moves.qty
+		FROM ".TB_PREF."stock_moves
+		WHERE ".TB_PREF."stock_moves.stock_id = ".db_escape($stock_id)."
+		AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location)."
+		AND type=".ST_CUSTDELIVERY." AND trans_no=".db_escape($trans_no);
+	$result = db_query($sql, "Could not get stock moves");
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+
 function last_negative_stock_trans_id($stock_id, $to)
 {
 	$sql = "SELECT * from ".TB_PREF."stock_moves

@@ -266,24 +266,35 @@ function check_quantities()
 
 function check_qoh()
 {
-	global $SysPrefs;
+    global $SysPrefs;
+    $dn = &$_SESSION['Items'];
+    $newdelivery = ($dn->trans_no==0);
+    if (!$SysPrefs->allow_negative_stock()) {
+        foreach ($_SESSION['Items']->line_items as $itm) {
 
-	if (!$SysPrefs->allow_negative_stock())	{
-		foreach ($_SESSION['Items']->line_items as $itm) {
-
-			if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
-				$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
-
-				if ($itm->qty_dispatched > $qoh) {
-					display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-						" " . $itm->stock_id . " - " .  $itm->item_description);
-					return false;
-				}
-			}
-		}
-	}
-	return true;
+            if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
+                $qoh_by_date = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+                $qoh_abs = get_qoh_on_date($itm->stock_id, $_POST['Location'], null);
+                //If editing current delivery delivered qty should be added 
+                if (!$newdelivery)
+                {
+                    $delivered = get_already_delivered($itm->stock_id, $_POST['Location'], key($dn->trans_no));
+                    
+                    $qoh_abs = $qoh_abs - $delivered;
+                    $qoh_by_date = $qoh_by_date - $delivered;
+                }
+                $qoh = ($qoh_by_date < $qoh_abs ? $qoh_by_date : $qoh_abs); 
+                if ($itm->qty_dispatched > $qoh) {
+                    display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
+                        " " . $itm->stock_id . " - " . $itm->item_description);
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
+
 //------------------------------------------------------------------------------
 
 if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
