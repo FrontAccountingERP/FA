@@ -44,6 +44,7 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_moves
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+		AND ".TB_PREF."stock_master.mb_flag<>'D'
 		GROUP BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description, ";
 		if ($location != 'all')

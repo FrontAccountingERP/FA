@@ -38,8 +38,8 @@ if (isset($_GET['stock_id']))
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
-	    + $_POST['OldOverheadCost'];
+   	$old_cost = input_num('OldMaterialCost') + input_num('OldLabourCost')
+	    + input_num('OldOverheadCost');
    	$new_cost = input_num('material_cost') + input_num('labour_cost')
 	     + input_num('overhead_cost');
 
@@ -83,20 +83,14 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+//echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "</center><hr>";
 set_global_stock_item($_POST['stock_id']);
 
-$sql = "SELECT description, units, material_cost, labour_cost,
-	overhead_cost, mb_flag
-	FROM ".TB_PREF."stock_master
-	WHERE stock_id=".db_escape($_POST['stock_id']) . "
-	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
-$result = db_query($sql);
-check_db_error("The cost details for the item could not be retrieved", $sql);
+$myrow = get_item($_POST['stock_id']);
 
-$myrow = db_fetch($result);
 div_start('cost_table');
 hidden("OldMaterialCost", $myrow["material_cost"]);
 hidden("OldLabourCost", $myrow["labour_cost"]);

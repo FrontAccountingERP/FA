@@ -16,12 +16,21 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 {
 	$mb_flag = get_mb_flag($stock_id);
     
+	$update_no = -1;
+
     if (is_service($mb_flag))
     {
-    	display_db_error("Cannot do cost update for Service item : $stock_id", "");	
+    	//display_db_error("Cannot do cost update for Service item : $stock_id", "");	
+		
+		//Chaitanya
+		$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
+		WHERE stock_id=".db_escape($stock_id);
+		
+		db_query($sql,"The cost details for the inventory item could not be updated");
+		
+		return $update_no;
+		
     }		
-	
-	$update_no = -1;
 	
 	begin_transaction();
 	
@@ -35,25 +44,26 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	$qoh = get_qoh_on_date($_POST['stock_id']);
 	
    	$date_ = Today();
+	if (!is_date_in_fiscalyear($date_))
+		$date_ = end_fiscalyear();
+
 	if ($qoh > 0)
 	{
-    
-	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
-		if (!is_date_in_fiscalyear($date_))
-			$date_ = end_fiscalyear();
-	   
-		$stock_gl_code = get_stock_gl_code($stock_id);
-
 		$new_cost = $material_cost + $labour_cost + $overhead_cost;
 
-		$value_of_change = $qoh * ($new_cost - $last_cost);
+		$value_of_change = round2($qoh * ($new_cost - $last_cost), user_price_dec());
 
-		$memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], 
-			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
+		if ($value_of_change != 0)
+		{
+			$stock_gl_code = get_stock_gl_code($stock_id);
+	   		$update_no = get_next_trans_no(ST_COSTUPDATE);
+			$memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
+			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], 
+				$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
 
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
-			$value_of_change);
+			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
+				$value_of_change);
+		}		
    	}
 
 	add_audit_trail(ST_COSTUPDATE, $update_no, $date_);
