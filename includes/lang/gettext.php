@@ -91,6 +91,8 @@ class gettext_native_support
         setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
         if ($set === false) 
         {
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') // don't do this test if server is WIN
+				return 0;
             $str = sprintf('language code "%s", encoding "%s" not supported by your system',
                 $lang_code, $encoding);
             //$err = new GetText_Error($str);
