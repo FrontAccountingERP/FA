@@ -290,9 +290,10 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		
 				update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-			} */
+			} 
 			if (is_inventory_item($entered_grn->item_code))
 				update_stock_move_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+			*/	
 		//}
 		}
     	// ----------------------------------------------------------------------
@@ -523,12 +524,13 @@ function void_supp_invoice($type, $type_no)
 					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
 						$diff, -$details_row["quantity"], $old_date, true);
 				}
-				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
+				/*$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
 					update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
+				*/
          	}
         }
 	}
