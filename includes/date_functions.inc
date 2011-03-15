@@ -160,22 +160,26 @@ function is_date_in_fiscalyear($date, $convert=false)
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
-	if ($_SESSION["wa_current_user"]->can_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
-		return is_date_in_fiscalyears($date, false);
-	$myrow = get_current_fiscalyear();
-	if ($myrow['closed'] == 1)
-		return 0;
-	if ($convert)
-		$date2 = sql2date($date);
-	else
-		$date2 = $date;
-	$begin = sql2date($myrow['begin']);
-	$end = sql2date($myrow['end']);
-	if (date1_greater_date2($begin, $date2) || date1_greater_date2($date2, $end))
-	{
-		return 0;
-	}
-	return 1;
+    //Chaitanya
+    if ($convert)
+        $date2 = sql2date($date);
+    else
+        $date2 = $date;
+
+    if ($_SESSION["wa_current_user"]->can_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
+        return is_date_in_fiscalyears($date2, false); 
+
+    $myrow = get_current_fiscalyear();
+    if ($myrow['closed'] == 1)
+        return 0;
+    
+    $begin = sql2date($myrow['begin']);
+    $end = sql2date($myrow['end']);
+    if (date1_greater_date2($begin, $date2) || date1_greater_date2($date2, $end))
+    {
+        return 0;
+    }
+    return 1;
 }
 
 function begin_fiscalyear()
