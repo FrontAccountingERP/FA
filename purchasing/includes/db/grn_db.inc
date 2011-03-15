@@ -121,11 +121,12 @@ function add_grn(&$po)
 			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
 				$order_line->item_description); 
 
-			/*Need to insert a grn item */
-
+			/*Need to insert a grn item */ // also need to check for over-receive.(within allowance)
+			if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity)
+				$order_line->quantity = $order_line->receive_qty + $order_line->qty_received;
 			$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec,
 				$order_line->stock_id, $order_line->item_description,
-				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
+				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price, $order_line->quantity);
 
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
@@ -169,11 +170,12 @@ function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
 //-------------------------------------------------------------------------------------------------------------
 
 function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost,
-	$quantity_received, $price)
+	$quantity_received, $price, $quantity)
 {
 	$sql = "UPDATE ".TB_PREF."purch_order_details
         SET quantity_received = quantity_received + ".db_escape($quantity_received).",
         std_cost_unit=".db_escape($standard_unit_cost).",
+        quantity_ordered=".db_escape($quantity).",
         act_price=".db_escape($price)."
         WHERE po_detail_item = ".db_escape($po_detail_item);
 

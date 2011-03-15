@@ -423,8 +423,11 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	label_cell($_POST['units'], '', 'units');
 	if ($order->trans_type == ST_PURCHORDER)
 		date_cells(null, 'req_del_date', '', null, 0, 0, 0);
-	if ($qty_rcvd > 0)	
+	if ($qty_rcvd > 0)
+	{
    		amount_decimal_cell($_POST['price']);
+   		hidden('price', $_POST['price']);
+   	}	
    	else	
 		amount_cells(null, 'price', null, null, null, $dec2);
 

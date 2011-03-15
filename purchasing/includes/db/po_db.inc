@@ -98,14 +98,15 @@ function update_po(&$po_obj)
     foreach ($po_obj->line_items as $po_line)
     {
     	$sql = "INSERT INTO ".TB_PREF."purch_order_details (po_detail_item, order_no, item_code, 
-    		description, delivery_date, unit_price, quantity_ordered) VALUES ("
+    		description, delivery_date, unit_price, quantity_ordered, quantity_received) VALUES ("
 			.db_escape($po_line->po_detail_rec ? $po_line->po_detail_rec : 0). ","
 			.$po_obj->order_no . ","
 			.db_escape($po_line->stock_id). ","
 			.db_escape($po_line->item_description). ",'"
 			.date2sql($po_line->req_del_date) . "',"
 			.db_escape($po_line->price) . ", "
-			.db_escape($po_line->quantity) . ")";
+			.db_escape($po_line->quantity) . ", "
+			.db_escape($po_line->qty_received) . ")";
 		
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
