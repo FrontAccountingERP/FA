@@ -499,15 +499,16 @@ function display_grn_items(&$supp_trans, $mode=0)
     		if ($mode == 1)
     		{
 				label_cell($entered_grn->id);
-				label_cell(""); // PO
+				$row = get_grn_batch($grn_batch);
+				label_cell($row['purch_order_no']); // PO
 			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
             $dec = get_qty_dec($entered_grn->item_code);
             if ($mode == 1)
             {
-            	label_cell("");
-				qty_cell($entered_grn->qty_recd, false, $dec);
+           		label_cell(sql2date($row['delivery_date']));
+ 				qty_cell($entered_grn->qty_recd, false, $dec);
 				qty_cell($entered_grn->prev_quantity_inv, false, $dec);
             }
 			qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
