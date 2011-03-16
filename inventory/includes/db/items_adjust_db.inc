@@ -52,14 +52,7 @@ function void_stock_adjustment($type_no)
 {
 	hook_db_prevoid(ST_INVADJUST, $type_no);
 
-    //Average the cost while voiding
-    $adjustment_items = get_stock_adjustment_items($type_no);
-    while ($adjustment = db_fetch($adjustment_items))
-    {
-        update_average_material_cost(0, $adjustment['stock_id'],
-            $adjustment['standard_cost'], -$adjustment['qty'], sql2date($adjustment['tran_date']));
-    }
-	void_gl_trans(ST_INVADJUST, $type_no);
+   	void_gl_trans(ST_INVADJUST, $type_no);
 	void_stock_move(ST_INVADJUST, $type_no);
 }
 
