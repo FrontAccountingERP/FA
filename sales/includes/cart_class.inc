@@ -145,7 +145,7 @@ class cart
 		// that child line_items contains subset of parent lines in _the_same_ order !
 		while (($line_no < count($this->line_items)) && ($srcline = db_fetch($srcdetails))) {
 			$line = &$this->line_items[$line_no];
-			$src_docs[] = $srcline['debtor_trans_no'];
+			$src_docs[] = $srcline['trans_type']==ST_SALESORDER ?  $srcline['order_no'] : $srcline['debtor_trans_no'];
 			if ($srcline['id'] == $line->src_id) {
 				if ($this->trans_type == ST_SALESINVOICE)
 					$line->src_no = $srcline['debtor_trans_no'];
