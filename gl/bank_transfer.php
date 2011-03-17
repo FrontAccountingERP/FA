@@ -122,6 +122,11 @@ function check_valid_entries()
 		set_focus('amount');
 		return false;
 	}
+	if (input_num('amount') == 0) {
+		display_error(_("The total bank amount cannot be 0."));
+		set_focus('amount');
+		return false;
+	}
 
 	$limit = get_bank_account_limit($_POST['FromBankAccount'], $_POST['DatePaid']);
 
