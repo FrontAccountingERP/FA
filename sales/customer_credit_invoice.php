@@ -173,7 +173,7 @@ function copy_to_cart()
 	$cart->ship_via = $_POST['ShipperID'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['CreditDate'];
-	$cart->Location = $_POST['Location'];
+	$cart->Location = (isset($_POST['Location']) ? $_POST['Location'] : "");
 	$cart->Comments = $_POST['CreditText'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
