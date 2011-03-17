@@ -301,11 +301,18 @@ class BoxReports
 
 				case 'INVOICE':
 					$IV = $type_shortcuts[ST_SALESINVOICE];
+					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+						".TB_PREF."debtor_trans.type) AS TNO, concat('$IV ', ".TB_PREF."debtor_trans.$ref,' ', ".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
+
+				case 'CREDIT':
 					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+						".TB_PREF."debtor_trans.type) AS TNO, concat('$CN ', ".TB_PREF."debtor_trans.$ref,' ', ".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT." AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'DELIVERY':

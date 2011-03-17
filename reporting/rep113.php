@@ -15,7 +15,7 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Print Invoices
+// Title:	Print Credit Notes
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -26,11 +26,11 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-print_invoices();
+print_credits();
 
 //----------------------------------------------------------------------------------------------------
 
-function print_invoices()
+function print_credits()
 {
 	global $path_to_root, $alternative_tax_include_on_docs, $suppress_tax_rates;
 	
@@ -63,7 +63,7 @@ function print_invoices()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
+		$rep = new FrontReport(_('CREDIT NOTE'), "InvoiceBulk", user_pagesize());
 		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
@@ -72,33 +72,33 @@ function print_invoices()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-			if (!exists_customer_trans(ST_SALESINVOICE, $i))
+			if (!exists_customer_trans(ST_CUSTCREDIT, $i))
 				continue;
-			$sign = 1;
-			$myrow = get_customer_trans($i, ST_SALESINVOICE);
+			$sign = -1;
+			$myrow = get_customer_trans($i, ST_CUSTCREDIT);
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
-			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
+			$sales_order = null;
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
 			    $rep->SetHeaderType('Header2');
 				$rep->currency = $cur;
 				$rep->Font();
-				$rep->title = _('INVOICE');
-				$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
+				$rep->title = _('CREDIT NOTE');
+				$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
-				$rep->title = _('INVOICE');
+				$rep->title = _('CREDIT NOTE');
 			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
-			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
+			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
 			$rep->NewPage();
 
-   			$result = get_customer_trans_details(ST_SALESINVOICE, $i);
+   			$result = get_customer_trans_details(ST_CUSTCREDIT, $i);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
@@ -131,7 +131,7 @@ function print_invoices()
 					$rep->NewPage();
 			}
 
-			$comments = get_comments(ST_SALESINVOICE, $i);
+			$comments = get_comments(ST_CUSTCREDIT, $i);
 			if ($comments && db_num_rows($comments))
 			{
 				$rep->NewLine();
@@ -144,7 +144,7 @@ function print_invoices()
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
-			$doctype = ST_SALESINVOICE;
+			$doctype = ST_CUSTCREDIT;
 			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$rep->TextCol(3, 6, $doc_Sub_total, -2);
@@ -153,7 +153,7 @@ function print_invoices()
 			$rep->TextCol(3, 6, $doc_Shipping, -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
-			$tax_items = get_trans_tax_details(ST_SALESINVOICE, $i);
+			$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $i);
 			$first = true;
     		while ($tax_item = db_fetch($tax_items))
     		{
@@ -194,7 +194,7 @@ function print_invoices()
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
 			$rep->TextCol(6, 7, $DisplayTotal, -2);
-			$words = price_in_words($myrow['Total'], ST_SALESINVOICE);
+			$words = price_in_words($myrow['Total'], ST_CUSTCREDIT);
 			if ($words != "")
 			{
 				$rep->NewLine(1);
@@ -204,7 +204,7 @@ function print_invoices()
 			if ($email == 1)
 			{
 				$myrow['dimension_id'] = $paylink; // helper for pmt link
-				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, ST_SALESINVOICE);
+				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, ST_CUSTCREDIT);
 			}
 	}
 	if ($email == 0)

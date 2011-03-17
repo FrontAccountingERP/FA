@@ -42,16 +42,17 @@ if (isset($_SESSION['View']))
 $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no']);
 
 start_table(TABLESTYLE2, "width=95%", 5);
-echo "<tr valign=top><td>";
-display_heading2(_("Order Information"));
+
 if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
+	echo "<tr valign=top><td>";
+	display_heading2(_("Order Information"));
 	echo "</td><td>";
 	display_heading2(_("Deliveries"));
 	echo "</td><td>";
 	display_heading2(_("Invoices/Credits"));
+	echo "</td></tr>";
 }	
-echo "</td></tr>";
 
 echo "<tr valign=top><td>";
 
