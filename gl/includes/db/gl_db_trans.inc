@@ -339,7 +339,7 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0, $net_amount = null)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
@@ -349,15 +349,16 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTDELIVERY || $trans_type == ST_CUSTCREDIT)
 		$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
-	if ($tax['rate'] == 0) {
-//		display_warning(_("You should not post gl transactions  
-//			to tax account with	zero tax rate."));
-		$net_amount = 0;
-	} else { 
-		// calculate net amount
-		$net_amount = $amount/$tax['rate']*100; 
+	if ($net_amount===null) {
+		if ($tax['rate'] == 0) {
+//			display_warning(_("You should not post gl transactions  
+//				to tax account with	zero tax rate."));
+			$net_amount = 0;
+		} else { 
+			// calculate net amount
+			$net_amount = $amount/$tax['rate']*100; 
+		}
 	}
-		
 	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
 		$amount, $net_amount, $ex_rate, $date, $memo);
 			

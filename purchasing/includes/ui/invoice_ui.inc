@@ -363,6 +363,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             	hidden('order_price'.$n, $myrow['unit_price'], false).
             	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
             	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
+            	hidden('location'.$n, $myrow["loc_code"], false).
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);

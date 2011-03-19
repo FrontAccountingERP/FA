@@ -77,18 +77,18 @@ function write_sales_invoice(&$invoice)
 	}
 	$total = 0;
 	foreach ($invoice->line_items as $line_no => $invoice_line) {
-
+		$qty = $invoice_line->qty_dispatched;
 		$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
-			$invoice_line->price, 0, $invoice->tax_included,
+			$invoice_line->price * $qty, 0, $invoice->tax_included,
 			$invoice->tax_group_array);
 
 		$line_tax = get_full_price_for_item($invoice_line->stock_id,
-			$invoice_line->price, 0, $invoice->tax_included,
+			$invoice_line->price * $qty, 0, $invoice->tax_included,
 			$invoice->tax_group_array) - $line_taxfree_price;
 
 		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
 			$invoice_line->item_description, $invoice_line->qty_dispatched,
-			$invoice_line->line_price(), $line_tax,	$invoice_line->discount_percent,
+			$invoice_line->line_price(), $qty ? $line_tax/$qty : 0, $invoice_line->discount_percent,
 			$invoice_line->standard_cost, $invoice_line->src_id,
 			$trans_no ? $invoice_line->id : 0);
 
@@ -112,14 +112,14 @@ function write_sales_invoice(&$invoice)
 				$dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id : 
 					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
-					(-$line_taxfree_price * $invoice_line->qty_dispatched),
+					-$line_taxfree_price ,
 					$invoice->customer_id, "The sales price GL posting could not be inserted");
 
 				if ($invoice_line->discount_percent != 0) {
 
 					$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_,
 						$branch_data["sales_discount_account"], $dim, $dim2,
-						($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
+						($line_taxfree_price * $invoice_line->discount_percent),
 						$invoice->customer_id, "The sales discount GL posting could not be inserted");
 				} /*end of if discount !=0 */
 			}
