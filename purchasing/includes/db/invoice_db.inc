@@ -260,7 +260,54 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 					$total += add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], 'GRN Provision',
 						$diff_amt, null, null, null,
-						"The general ledger transaction could not be added for the GRN of the inventory item");	
+						"The general ledger transaction could not be added for the GRN of the inventory item");
+
+					//Chaitanya
+					//If QOH is 0 or negative then update_average_material_cost will be skipped
+					//Thus difference in PO and Supp Invoice should be handled separately
+					
+					$qoh = get_qoh_on_date($entered_grn->item_code);
+					if ($qoh <= 0)
+					{
+						global $Refs;
+
+						//Chaitanya : Post a journal entry
+						$id = get_next_trans_no(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL);
+						$stock_id = $entered_grn->item_code;
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+							$stock_gl_code["inventory_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, -$entered_grn->this_quantity_inv * $diff);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+							$stock_gl_code["adjustment_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, $entered_grn->this_quantity_inv * $diff);
+						
+						add_audit_trail(ST_JOURNAL, $id, $date_);
+						add_comments(ST_JOURNAL, $id, $date_, $memo);
+						$Refs->save(ST_JOURNAL, $id, $ref);						
+					}					
+					
+					/*$qoh = get_qoh_on_date($entered_grn->item_code);
+					if ($qoh <= 0)
+					{
+						$memo = "Diff. in cost: ".$diff;
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
+						$stock_gl_code["inventory_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						-$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
+						$stock_gl_code["adjustment_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);						
+					}*/				
 					
 					//add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
 					//	0, 0, 'GRN Provision', -$diff_amt, null, null, null,
@@ -497,14 +544,18 @@ function void_supp_invoice($type, $type_no)
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
          		if ($type == ST_SUPPCREDIT) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
-         		{	// We must get the corresponding invoice item to check for price chg.
+         		{	
 					$match = get_matching_invoice_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
-					if ($match !== false)
+					
+					//Chaitanya : Skipped costing block & handle in void_stock_move
+					// We must get the corresponding invoice item to check for price chg.
+					/*if ($match !== false)
 						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
 							$match["unit_price"], -$details_row["quantity"], sql2date($match['tran_date']), $match['tran_date'] !== $trans['tran_date']);
 					else		
 						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
-							$details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
+							$details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);*/
+							
 					$sql = "UPDATE ".TB_PREF."purch_order_details
         				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].", ";
         			if ($match !== false)
@@ -523,6 +574,37 @@ function void_supp_invoice($type, $type_no)
 					// Only adjust the avg for the diff
 					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
 						$diff, -$details_row["quantity"], $old_date, true);
+						
+					//Chaitanya : Reverse effect
+					//If QOH is 0 or negative then update_average_material_cost will be skipped
+					//Thus difference in PO and Supp Invoice should be handled separately
+					
+					$qoh = get_qoh_on_date($details_row["stock_id"]);
+					if ($diff*$details_row["quantity"] !=0 && $qoh <= 0)
+					{
+						global $Refs;
+
+						//Chaitanya : Post a journal entry
+						$id = get_next_trans_no(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL);
+						$stock_id = $details_row["stock_id"];
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = "Reversing Supplier invoice adjustment for zero inventory of ".$stock_id." Invoice: ".$trans['reference'];
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
+							$stock_gl_code["inventory_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, $details_row["quantity"] * $diff);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
+							$stock_gl_code["adjustment_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, -$details_row["quantity"] * $diff);
+						
+						add_audit_trail(ST_JOURNAL, $id, $old_date);
+						add_comments(ST_JOURNAL, $id, $old_date, $memo);
+						$Refs->save(ST_JOURNAL, $id, $ref);						
+					}	
 				}
 				/*$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
