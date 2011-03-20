@@ -64,7 +64,7 @@ function handle_new_order()
 
      Session_register("issue_items");
 
-     $_SESSION['issue_items'] = new items_cart(28);
+     $_SESSION['issue_items'] = new items_cart(ST_MANUISSUE);
      $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
 
@@ -93,7 +93,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 28)) 
+	if (!is_new_reference($_POST['ref'], ST_MANUISSUE)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
