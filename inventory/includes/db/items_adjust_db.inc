@@ -51,8 +51,7 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 function void_stock_adjustment($type_no)
 {
 	hook_db_prevoid(ST_INVADJUST, $type_no);
-
-   	void_gl_trans(ST_INVADJUST, $type_no);
+	void_gl_trans(ST_INVADJUST, $type_no);
 	void_stock_move(ST_INVADJUST, $type_no);
 }
 
@@ -82,6 +81,7 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
     	display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
     }
 
+	/* Logic shifted to function update_average_material_cost
 	//Chaitanya : If negative adjustment result in negative or zero inventory 
 	//then difference should be adjusted
 	$qoh = get_qoh_on_date($stock_id);
@@ -93,23 +93,26 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 		$ref = $Refs->get_next(ST_JOURNAL);
 		$diff = get_standard_cost($stock_id) - $standard_cost;
 		
-		$stock_gl_code = get_stock_gl_code($stock_id);
-		$memo = _("For zero inventory of ").$stock_id." INVADJ REF: ".$reference;
-		//Reverse the inventory effect if $qoh <=0
-		add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-			$stock_gl_code["inventory_account"],
-			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo, 
-			-$qoh * $diff);
-		//GL Posting to inventory adjustment account
-		add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-			$stock_gl_code["adjustment_account"],
-			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
-			$qoh * $diff);
-			
-		add_audit_trail(ST_JOURNAL, $id, $date_);
-		add_comments(ST_JOURNAL, $id, $date_, $memo);
-		$Refs->save(ST_JOURNAL, $id, $ref);			
-	}	
+		if ($diff !=0)
+		{
+			$stock_gl_code = get_stock_gl_code($stock_id);
+			$memo = _("For zero inventory of ").$stock_id." INVADJ REF: ".$reference;
+			//Reverse the inventory effect if $qoh <=0
+			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+				$stock_gl_code["inventory_account"],
+				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo, 
+				-$qoh * $diff);
+			//GL Posting to inventory adjustment account
+			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+				$stock_gl_code["adjustment_account"],
+				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
+				$qoh * $diff);
+				
+			add_audit_trail(ST_JOURNAL, $id, $date_);
+			add_comments(ST_JOURNAL, $id, $date_, $memo);
+			$Refs->save(ST_JOURNAL, $id, $ref);	
+		}		
+	}*/
 
 	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 

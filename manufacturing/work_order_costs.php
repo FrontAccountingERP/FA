@@ -76,7 +76,7 @@ function can_process()
 		display_error(_("The amount entered is not a valid number or less then zero."));
 		set_focus('costs');
 		return false;
-	}
+	}	
 
 	if (!is_date($_POST['date_']))
 	{
@@ -119,6 +119,14 @@ if (isset($_POST['process']) && can_process() == true)
 	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
 		$_POST['dim1'], $_POST['dim2'], $date.": ".$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
 			$_POST['PaymentType']);
+			
+	//Chaitanya : Apply the costs to manfuctured stock item as adjustement
+	$wo = get_work_order($_POST['selected_id']);
+	if ($_POST['PaymentType'] == 0)
+		add_labour_cost($wo['stock_id'], 0, $_POST['date_'], input_num('costs'), true);
+	else
+		add_overhead_cost($wo['stock_id'], 0, $_POST['date_'], input_num('costs'), true);
+			
 	commit_transaction();	
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);

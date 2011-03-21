@@ -99,7 +99,9 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+//Chaitanya : All items can be purchased
+echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 

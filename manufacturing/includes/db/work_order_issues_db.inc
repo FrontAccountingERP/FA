@@ -55,9 +55,11 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		if ($to_work_order)
 			$item->quantity = -$item->quantity;
 
+		//Chaitanya: Stamp the standard_cost
+		$standard_cost = get_standard_cost($item->stock_id);
 		// insert a -ve stock move for each item
 		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
-			$location, $date_, $memo_, -$item->quantity, 0);
+			$location, $date_, $memo_, -$item->quantity, $standard_cost);
 
 		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued)
 			VALUES (".db_escape($number).", ".db_escape($item->stock_id).", "
@@ -68,12 +70,20 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		$issue_cost = $standard_cost * $item->quantity;
 		$issue = get_stock_gl_code($item->stock_id);
         $stockitem = get_item($item->stock_id);
-        $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
+		
+		//Chaitanya : Compatibility for Service Items
+		if (!is_service($issue["mb_flag"]))
+			$ivaccount = $issue["inventory_account"];
+		else
+			$ivaccount = $issue["cogs_account"];		
+		
+        $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
                 $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
 		$issue_total += $issue_cost;
 	}	
 	if ($issue_total != 0)
-		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total);
+		//Chaitanya : Apply cost to QOH as adjustment only
+		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total, true);
 	$issue = get_stock_gl_code($details['stock_id']);
     $stockitem = get_item($details['stock_id']);
     add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"],
@@ -156,18 +166,63 @@ function void_work_order_issue($type_no)
 {
 	begin_transaction();
 	hook_db_prevoid(ST_MANUISSUE, $type_no);
+	
+	//Chaitanya : Skip processing already voided entry i.e. explicitly voided
+	$void_entry = get_voided_entry(ST_MANUISSUE, $type_no);
+	if ($void_entry)
+		return;
 
 	// void the actual issue items and their quantities
 	$sql = "UPDATE ".TB_PREF."wo_issue_items Set qty_issued = 0 WHERE issue_id="
 		.db_escape($type_no);
 	db_query($sql,"A work order issue item could not be voided");
 
-	// void all related stock moves
-	void_stock_move(ST_MANUISSUE, $type_no);
-
 	// void any related gl trans
-	void_gl_trans(ST_MANUISSUE, $type_no, true);
-
+	//Chaitanya : Nothing happens due to next statement as all gl postings are done against WO
+	//void_gl_trans(ST_MANUISSUE, $type_no, true);
+	
+	//Chaitanya : Reverse the gl posting
+	$issue = get_work_order_issue($type_no);
+	$manf_stock_id = $issue["stock_id"];
+	$date_ = sql2date($issue["issue_date"]);
+	$woid = $issue["workorder_id"];
+		
+	$result = get_stock_moves(ST_MANUISSUE, $type_no);
+	$total_cost = 0;
+	$issue_total = 0;
+	while ($myrow = db_fetch($result))
+	{
+		$issue_cost = $myrow["qty"]*$myrow["standard_cost"];
+		$issue = get_stock_gl_code($myrow["stock_id"]);
+        $stockitem = get_item($myrow["stock_id"]);
+		
+		//Chaitanya : Compatibility for Service Items
+		if (!is_service($issue["mb_flag"]))
+			$ivaccount = $issue["inventory_account"];
+		else
+			$ivaccount = $issue["cogs_account"];		
+		
+		if ($issue_cost != 0)
+		{
+			$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
+				$date_.": "._("Reversed the issue of")." ".$stockitem["description"],
+				-$issue_cost);			
+			$issue_total += $issue_cost;
+		}
+	}
+	if ($issue_total != 0)
+		//Chaitanya : Revese cost effect on manfactured stock item as adjustment only
+		add_issue_cost($manf_stock_id, 0, $date_, $issue_total, true);
+	$issue = get_stock_gl_code($manf_stock_id);
+    $stockitem = get_item($manf_stock_id);
+	if ($total_cost != 0)
+		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"],
+			0, 0, $date_.": "._("Reversed the issue to")." ".$stockitem["description"], 
+			-$total_cost);	
+	
+	//Chaitanya : Shifted below void all related stock moves
+	void_stock_move(ST_MANUISSUE, $type_no);
+	
 	commit_transaction();
 }
 

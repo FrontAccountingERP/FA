@@ -12,6 +12,10 @@
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
+	//Handle if inventory will become negative
+	if (is_inventory_item($stock_id))
+		handle_negative_inventory($stock_id, $qty, $price, $date);
+
 	// probably this function should be optimized
 	// passing transaction cart as argument. This would
 	// save a couple of db calls like get_supplier()
@@ -36,10 +40,23 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	}	
 	else
 		$price_in_home_currency = $price;
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+	
+	$price_in_home_currency_ = $price_in_home_currency;
+	
+	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
+	
+	//Chaitanya : For Manufactured Items 
+	//IF inventory adjustment is made for manufactured item, the material cost averages and labour, overhead remains as is, but in inventory valuation total standard_cost matters resulting in invalid  valuation.	
+	if (!$adj_only && $myrow['mb_flag'] == 'M') //For manufactured items price is adjusted
+	{
+		$standard_cost = get_standard_cost($stock_id);
+		//reduce overhead_cost and labour_cost from price as those will remain as is
+		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
+	}
+	
 	//if ($price > -0.0001 && $price < 0.0001) commented out by Chaitanya
 	//	return $material_cost;
 	if ($adj_only)
@@ -49,7 +66,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	$cost_adjust = false;
 	//$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
 	$qoh = get_qoh_on_date($stock_id);
-	
+
 	if ($adj_only)
 	{
 		if ($qoh > 0)
@@ -59,17 +76,18 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	{
 		if ($qoh < 0)
 		{
-			if ($qoh + $qty > 0)
+			if ($qoh + $qty >= 0)
 				$cost_adjust = true;
 			$qoh = 0;
 		}
-		if ($qoh + $qty != 0)
-			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+		if ($qoh + $qty > 0)
+			$material_cost 
+= ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}	
 	//$material_cost = round2($material_cost, $dec);
 	
-	if ($cost_adjust) // new 2010-02-10
-		adjust_deliveries($stock_id, $material_cost, $date);
+	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
+		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
