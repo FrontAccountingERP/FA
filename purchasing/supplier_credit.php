@@ -194,7 +194,7 @@ function check_data()
 		foreach ($_SESSION['supp_trans']->grn_items as $n => $item) {
 			if (is_inventory_item($item->item_code))
 			{
-				$qoh = get_qoh_on_date($item->item_code, $item->location, $_SESSION['supp_trans']->tran_date);
+				$qoh = get_qoh_on_date($item->item_code, null, $_SESSION['supp_trans']->tran_date);
 				if ($item->qty_recd > $qoh)
 				{
 					$stock = get_item($item->item_code);

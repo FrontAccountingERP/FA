@@ -351,7 +351,8 @@ if (isset($selected_id))
 
 	$_POST['wo_ref'] = $myrow["wo_ref"];
 	$_POST['stock_id'] = $myrow["stock_id"];
-	$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
+	//$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
+	$_POST['quantity'] = $myrow["units_reqd"];
 	$_POST['StockLocation'] = $myrow["loc_code"];
 	$_POST['released'] = $myrow["released"];
 	$_POST['closed'] = $myrow["closed"];
