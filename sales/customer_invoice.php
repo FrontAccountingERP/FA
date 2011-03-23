@@ -147,7 +147,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 	end_page();
 	exit;
-} elseif (!check_quantities()) {
+} elseif (!isset($_POST['process_invoice']) && !check_quantities()) {
 	display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 }
 if (isset($_POST['Update'])) {
