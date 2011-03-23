@@ -315,7 +315,7 @@ function get_sql_for_customer_inquiry()
    	{
    		if ($_POST['filterType'] == '1')
    		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_BANKPAYMENT.") ";
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
    		elseif ($_POST['filterType'] == '2')
    		{
@@ -324,7 +324,7 @@ function get_sql_for_customer_inquiry()
    		elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
-					." OR trans.type = ".ST_BANKDEPOSIT.") ";
+					." OR trans.type = ".ST_BANKDEPOSIT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
