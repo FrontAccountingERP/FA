@@ -115,7 +115,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 		AND ISNULL(v.date_)
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
-	if (isset($show_voided_gl_trans) && $show_voided_gl_trans == 1)
+	if (isset($show_voided_gl_trans) && $show_voided_gl_trans == 0)
 		$sql .= " AND ".TB_PREF."gl_trans.amount <> 0"; 
 	if ($trans_no > 0)
 		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE ".db_escape('%'.$trans_no);
