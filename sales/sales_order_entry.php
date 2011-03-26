@@ -493,6 +493,22 @@ function check_item_data()
 		}
 		return true;
 	}
+	$cost_home = get_standard_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
+	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
+	if (input_num('price') < $cost)
+	{
+		$dec = user_price_dec();
+		$curr = $_SESSION['Items']->customer_currency;
+		$price = number_format2(input_num('price'), $dec);
+		if ($cost_home == $cost)
+			$std_cost = number_format2($cost_home, $dec);
+		else
+		{
+			$price = $curr . " " . $price;
+			$std_cost = $curr . " " . number_format2($cost, $dec);
+		}
+		display_warning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
+	}	
 	return true;
 }
 
