@@ -266,13 +266,14 @@ function add_months($date, $months) // accepts negative values as well
 {
 	global $date_system;
     list($day, $month, $year) = explode_date_to_dmy($date);
-
 	$months += $year*12+$month;
 	$month = ($months-1)%12+1;
 	$year = ($months-$month)/12;
+	if ($month < 0)
+		$month += 12;
 
    	$timet = mktime(0,0,0, $month, min($day, days_in_month($month, $year)), $year);
-	
+
     if ($date_system == 1 || $date_system == 2)
     {
     	if ($date_system == 1)

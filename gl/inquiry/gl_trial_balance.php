@@ -27,6 +27,11 @@ if ($use_date_picker)
 
 page(_($help_context = "Trial Balance"), false, false, "", $js);
 
+$k = 0;
+$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+$cls_pdeb = $cls_pcre = $cls_cdeb = $cls_ccre = $cls_tdeb = $cls_tcre = $cls_pbal = $cls_cbal = $cls_tbal = 0;
+$grp_pdeb = $grp_pcre = $grp_cdeb = $grp_ccre = $grp_tdeb = $grp_tcre = $grp_pbal = $grp_cbal = $grp_tbal = 0;
+
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 //
@@ -59,46 +64,19 @@ function gl_inquiry_controls()
 
 //----------------------------------------------------------------------------------------------------
 
-function display_trial_balance()
+function display_trial_balance($type, $typename)
 {
 	global $path_to_root;
-
-	if (isset($_POST['TransFromDate']))
-	{
-		$row = get_current_fiscalyear();
-		if (date1_greater_date2($_POST['TransFromDate'], sql2date($row['end'])))
-		{
-			display_error(_("The from date cannot be bigger than the fiscal year end."));
-			set_focus('TransFromDate');
-			return;
-		}	
-	}	
-	div_start('balance_tbl');
-	if (!isset($_POST['Dimension']))
-		$_POST['Dimension'] = 0;
-	if (!isset($_POST['Dimension2']))
-		$_POST['Dimension2'] = 0;
-	start_table(TABLESTYLE);
-	$tableheader =  "<tr>
-        <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
-        <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
-		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
-		<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
-		<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
-		</tr><tr>
-		<td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
-		<td class='tableheader'>" . _("Debit") . "</td>
-		<td class='tableheader'>" . _("Credit") . "</td>
-        <td class='tableheader'>" . _("Debit") . "</td>
-        <td class='tableheader'>" . _("Credit") . "</td>
-        </tr>";
-
-    echo $tableheader;
+	
+	global $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
+	$printtitle = 0; //Flag for printing type name		
 
 	$k = 0;
 
-	$accounts = get_gl_accounts();
+	//$accounts = get_gl_accounts();
+	//Get Accounts directly under this group/type
+	$accounts = get_gl_accounts(null, null, $type);		
+	
 	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 	$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
@@ -107,6 +85,15 @@ function display_trial_balance()
 	
 	while ($account = db_fetch($accounts))
 	{
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{	
+			start_row("class='inquirybg' style='font-weight:bold'");
+			label_cell("Group - ".$type ." - ".$typename, "colspan=8");
+			end_row();		
+			$printtitle = 1;		
+		}	
+	
 		$prev = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransFromDate'], false, false);
 		$curr = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
@@ -146,6 +133,76 @@ function display_trial_balance()
 		end_row();
 	}
 
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			start_row("class='inquirybg' style='font-weight:bold'");
+			label_cell("Group - ".$type ." - ".$typename, "colspan=8");
+			end_row();		
+			$printtitle = 1;		
+		}
+		display_trial_balance($accounttype["id"], $accounttype["name"].' ('.$typename.')');
+	}
+}
+
+//----------------------------------------------------------------------------------------------------
+
+gl_inquiry_controls();
+
+if (isset($_POST['TransFromDate']))
+{
+	$row = get_current_fiscalyear();
+	if (date1_greater_date2($_POST['TransFromDate'], sql2date($row['end'])))
+	{
+		display_error(_("The from date cannot be bigger than the fiscal year end."));
+		set_focus('TransFromDate');
+		return;
+	}	
+}	
+div_start('balance_tbl');
+if (!isset($_POST['Dimension']))
+	$_POST['Dimension'] = 0;
+if (!isset($_POST['Dimension2']))
+	$_POST['Dimension2'] = 0;
+start_table(TABLESTYLE);
+$tableheader =  "<tr>
+	<td rowspan=2 class='tableheader'>" . _("Account") . "</td>
+	<td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
+	<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
+	<td colspan=2 class='tableheader'>" . _("This Period") . "</td>
+	<td colspan=2 class='tableheader'>" . _("Balance") . "</td>
+	</tr><tr>
+	<td class='tableheader'>" . _("Debit") . "</td>
+	<td class='tableheader'>" . _("Credit") . "</td>
+	<td class='tableheader'>" . _("Debit") . "</td>
+	<td class='tableheader'>" . _("Credit") . "</td>
+	<td class='tableheader'>" . _("Debit") . "</td>
+	<td class='tableheader'>" . _("Credit") . "</td>
+	</tr>";
+
+echo $tableheader;
+
+//display_trial_balance();
+
+$classresult = get_account_classes(false);
+while ($class = db_fetch($classresult))
+{
+	start_row("class='inquirybg' style='font-weight:bold'");
+	label_cell("Class - ".$class['cid'] ." - ".$class['class_name'], "colspan=8");
+	end_row();
+
+	//Get Account groups/types under this group/type with no parents
+	$typeresult = get_account_types(false, $class['cid'], -1);
+	while ($accounttype=db_fetch($typeresult))
+	{
+		display_trial_balance($accounttype["id"], $accounttype["name"]);
+	}
+}
+
 	//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
 	//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 	//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
@@ -170,15 +227,8 @@ function display_trial_balance()
 
 	end_table(1);
 	if (($pbal = round2($pbal, user_price_dec()))  != 0)
-		display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+		//display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	div_end();
-}
-
-//----------------------------------------------------------------------------------------------------
-
-gl_inquiry_controls();
-
-display_trial_balance();
 
 //----------------------------------------------------------------------------------------------------
 
