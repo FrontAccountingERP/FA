@@ -231,7 +231,7 @@ if($show_dates) {
 	start_row();
 }
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
-
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
 
@@ -246,7 +246,7 @@ end_table(1);
 //	Orders inquiry table
 //
 $sql = get_sql_for_sales_orders_view($selected_customer, $trans_type, $_POST['OrderNumber'], $_POST['order_view_mode'],
-	@$selected_stock_item, @$_POST['OrdersAfterDate'], @$_POST['OrdersToDate'], @$_POST['OrderReference'], $_POST['StockLocation']);
+	@$selected_stock_item, @$_POST['OrdersAfterDate'], @$_POST['OrdersToDate'], @$_POST['OrderReference'], $_POST['StockLocation'], $_POST['customer_id']);
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(

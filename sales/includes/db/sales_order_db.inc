@@ -489,7 +489,7 @@ function get_branch_to_order($customer_id, $branch_id) {
 }
 
 function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_no, $filter, 
-	$stock_item=null, $from='', $to='', $ref='', $location='')
+	$stock_item=null, $from='', $to='', $ref='', $location='', $customer_id=ALL_TEXT)
 {
 
 	$sql = "SELECT 
@@ -561,6 +561,10 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 
 		elseif ($filter=='InvoiceTemplates' || $filter=='DeliveryTemplates')
 			$sql .= " AND sorder.type=1";
+			
+		//Chaiatanya : New Filter
+		if ($customer_id != ALL_TEXT)
+			$sql .= " AND sorder.debtor_no = ".db_escape($customer_id);		
 
 		$sql .= " GROUP BY sorder.order_no,
 					sorder.debtor_no,
