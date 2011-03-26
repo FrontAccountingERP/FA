@@ -284,11 +284,6 @@ function display_company_edit($selected_id)
 {
 	global $def_coy, $db_connections, $tb_pref_counter;
 
-	if ($selected_id != -1)
-		$n = $selected_id;
-	else
-		$n = count($db_connections);
-
 	start_form();
 
 	start_table(TABLESTYLE2);
