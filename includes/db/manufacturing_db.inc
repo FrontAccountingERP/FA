@@ -205,7 +205,7 @@ function add_bom($selected_parent, $component, $workcentre_added, $loc_code, $qu
 }
 //--------------------------------------------------------------------------------------
 
-function update_bom($selected_parent, $selected_component, $work_centre_added, $loc_code, $quantity)
+function update_bom($selected_parent, $selected_component, $workcentre_added, $loc_code, $quantity)
 {
 	$sql = "UPDATE ".TB_PREF."bom SET workcentre_added=".db_escape($workcentre_added)
 	 . ",loc_code=".db_escape($loc_code) . ",
