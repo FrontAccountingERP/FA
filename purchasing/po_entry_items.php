@@ -335,6 +335,13 @@ function can_commit()
 		return false;
 	} 
 	
+	if ($_SESSION['PO']->trans_type != ST_PURCHORDER && !is_date_in_fiscalyear($_POST['OrderDate'])) 
+	{
+		display_error(_("The entered date is not in fiscal year"));
+		set_focus('OrderDate');
+		return false;
+	}
+
 	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !is_date($_POST['due_date'])) 
 	{
 		display_error(_("The entered due date is invalid."));

@@ -176,6 +176,13 @@ function can_process()
 		return false;
 	}
 
+	if (!is_date_in_fiscalyear($_POST['DefaultReceivedDate'])) 
+	{
+		display_error(_("The entered date is not in fiscal year"));
+		set_focus('DefaultReceivedDate');
+		return false;
+	}
+
     if (!$Refs->is_valid($_POST['ref']))
     {
 		display_error(_("You must enter a reference."));
