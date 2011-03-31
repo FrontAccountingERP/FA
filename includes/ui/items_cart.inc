@@ -31,6 +31,7 @@ class items_cart
 	var $person_id;
 	var $branch_id;
 	var $reference;
+	var $original_amount;
 	
 	function items_cart($type)
 	{
