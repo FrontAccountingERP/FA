@@ -9,14 +9,15 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-31 10:54+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Janusz Dobrowolski <janusz@iron.from.pl>\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: \n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: install/index.php:20 install/index.php:40
+#: install/index.php:20
+#: install/index.php:40
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr "Instalator FrontAccounting ERP"
 
@@ -29,19 +30,23 @@ msgstr "Krok %d: %s"
 msgid "Chart of accounts"
 msgstr "Plan kont"
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Encoding"
 msgstr "Kodowanie"
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Description"
 msgstr "Opis"
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Install"
 msgstr "Zainstaluj"
 
-#: install/index.php:65 install/index.php:93
+#: install/index.php:65
+#: install/index.php:93
 msgid "Installed"
 msgstr "Zainstalowany"
 
@@ -50,9 +55,7 @@ msgid "Language"
 msgstr "Jêzyk"
 
 #: install/index.php:123
-msgid ""
-"Cannot connect to database. User or password is invalid or you have no "
-"permittions to create database."
+msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
 msgstr "Nie mo¿na po³aæzyæ siê z baz± danych. Login lub has³o jest niepoprawne, lub brak uprawnieñ do tworzenia bazy danych."
 
 #: install/index.php:159
@@ -68,12 +71,8 @@ msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "Nie mo¿na zapisaæ pliku konfiguracji  'config_db.php'."
 
 #: install/index.php:172
-msgid ""
-"Configuration file 'config_db.php' is not writable. Change its permissions "
-"so it is, then re-run installation step."
-msgstr ""
-"Plik konfiguracji 'config_db.php' jest zabezpieczony przed zapisem. Zmieñ "
-"prawa dostêpu i powtórz krok instalacji."
+msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
+msgstr "Plik konfiguracji 'config_db.php' jest zabezpieczony przed zapisem. Zmieñ prawa dostêpu i powtórz krok instalacji."
 
 #: install/index.php:211
 msgid "Host name cannot be empty."
@@ -112,25 +111,20 @@ msgid "Select install wizard language:"
 msgstr "Wybierz jêzyk u¿ywany przy instalacji:"
 
 #: install/index.php:324
-msgid ""
-"All application preliminary requirements seems to be correct. Please press "
-"Continue button below."
-msgstr ""
-"Wszystkie wymagania systemu wydaj± siê byæ spe³nione. Kliknij klawisz "
-"poni¿ej aby rozpocz±æ instalacjê."
+msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
+msgstr "Wszystkie wymagania systemu wydaj± siê byæ spe³nione. Kliknij klawisz poni¿ej aby rozpocz±æ instalacjê."
 
-#: install/index.php:325 install/index.php:351 install/index.php:358
-#: install/index.php:365 install/index.php:384
+#: install/index.php:325
+#: install/index.php:351
+#: install/index.php:358
+#: install/index.php:365
+#: install/index.php:384
 msgid "Continue >>"
 msgstr "Kontynuuj >>"
 
 #: install/index.php:327
-msgid ""
-"Application cannot be installed. Please fix problems listed below in red, "
-"and press Refresh button."
-msgstr ""
-"Aplikacja nie mo¿e byæ zainstalowana. Usuñ wskazane problemy i kliknij "
-"klawisz 'Od¶wie¿'."
+msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
+msgstr "Aplikacja nie mo¿e byæ zainstalowana. Usuñ wskazane problemy i kliknij klawisz 'Od¶wie¿'."
 
 #: install/index.php:328
 msgid "Refresh"
@@ -160,13 +154,17 @@ msgstr "Nazwa Bazy Danych:"
 msgid "Use '0_' Table Prefix:"
 msgstr "Prefiks '0_' dla Nazw Tablic:"
 
-#: install/index.php:344 includes/system_tests.inc:38
-#: includes/system_tests.inc:113 includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Tak"
 
-#: install/index.php:344 includes/system_tests.inc:38
-#: includes/system_tests.inc:113 includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "No"
 msgstr "Nie"
 
@@ -179,19 +177,16 @@ msgid "Install Additional COAs from FA Repository:"
 msgstr "Instalacja Dodatkowych Planów Kont z Repozytorium FA:"
 
 #: install/index.php:348
-msgid ""
-"Use table prefix if you share selected database for more than one FA company."
+msgid "Use table prefix if you share selected database for more than one FA company."
 msgstr "U¿yj prefiksu je¶li ta sama baza danych bêdzie u¿ywana dla kilku firm."
 
 #: install/index.php:349
-msgid ""
-"Do not select additional langs nor COAs if you have no working internet "
-"connection right now. You can install them later."
-msgstr ""
-"Nie zaznaczaj wyboru dodatkowych jêzyków ani planów kont je¶li w tej chwili "
-"nie masz dostêpu do internetu. Bêdziesz je móg³ zainstalowaæ równie¿ pó¼niej."
+msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
+msgstr "Nie zaznaczaj wyboru dodatkowych jêzyków ani planów kont je¶li w tej chwili nie masz dostêpu do internetu. Bêdziesz je móg³ zainstalowaæ równie¿ pó¼niej."
 
-#: install/index.php:350 install/index.php:357 install/index.php:364
+#: install/index.php:350
+#: install/index.php:357
+#: install/index.php:364
 #: install/index.php:383
 msgid "<< Back"
 msgstr "<< Wróæ"
@@ -346,8 +341,7 @@ msgstr "Wy³±czony"
 
 #: includes/system_tests.inc:148
 msgid "To switch error logging set $error_logging in config.php file"
-msgstr ""
-"Aby w³±czyæ logowanie b³êdów ustaw zmienn± $error_logging w pliku config.php"
+msgstr "Aby w³±czyæ logowanie b³êdów ustaw zmienn± $error_logging w pliku config.php"
 
 #: includes/system_tests.inc:151
 msgid "Log file is not writeable"
@@ -365,9 +359,12 @@ msgstr "Struktura bazy danych nie jest zaktualizowana do bie¿±cej wersji"
 msgid "Company subdirectories consistency"
 msgstr "Prawid³owa struktura folderów firmowych"
 
-#: includes/system_tests.inc:193 includes/system_tests.inc:200
-#: includes/system_tests.inc:208 includes/system_tests.inc:225
-#: includes/system_tests.inc:340 includes/system_tests.inc:349
+#: includes/system_tests.inc:193
+#: includes/system_tests.inc:200
+#: includes/system_tests.inc:208
+#: includes/system_tests.inc:225
+#: includes/system_tests.inc:340
+#: includes/system_tests.inc:349
 #: includes/system_tests.inc:358
 #, php-format
 msgid "'%s' is not writeable"
@@ -403,12 +400,14 @@ msgstr "Lokalizacja '%s' nie jest zainstalowana w systemie"
 msgid "Main config file"
 msgstr "G³ówny plik konfiguracyjny "
 
-#: includes/system_tests.inc:295 includes/system_tests.inc:317
+#: includes/system_tests.inc:295
+#: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr "Nie mo¿na zapisaæ pliku '%s'. Sprawd¼ prawa zapisu do foderu FA."
 
-#: includes/system_tests.inc:296 includes/system_tests.inc:318
+#: includes/system_tests.inc:296
+#: includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr "Plik '%s' istnieje."
@@ -424,11 +423,8 @@ msgstr "Pik configuracyjny bazy danych"
 
 #: includes/system_tests.inc:322
 #, php-format
-msgid ""
-"'%s' file should be read-only if you do not plan to add or change companies"
-msgstr ""
-"Plik '%s' powinien byæ zabezpieczony przed zapisem je¶li nie planujesz "
-"dodawania ani zmiany firm"
+msgid "'%s' file should be read-only if you do not plan to add or change companies"
+msgstr "Plik '%s' powinien byæ zabezpieczony przed zapisem je¶li nie planujesz dodawania ani zmiany firm"
 
 #: includes/system_tests.inc:333
 msgid "Extensions system"
@@ -444,17 +440,12 @@ msgid "Non-standard theme directory '%s' is not writable"
 msgstr "Niestandardowy folder tematu '%s' jest zazpieczony przed zapisem"
 
 #: includes/system_tests.inc:385
-msgid ""
-"OpenSSL PHP extension have to be enabled to use extension repository system."
+msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr "System pakietów wymaga zaisnatlowanego rozszerzenia PHP OpenSSL."
 
 #: includes/system_tests.inc:388
-msgid ""
-"OpenSSL have to be available on your server to use extension repository "
-"system."
-msgstr ""
-"Serwer musi mieæ zainstalowane OpenSSL ¿eby mo¿na by³o korzystaæ z "
-"repozytorium pakietów rozszerzeñ FA."
+msgid "OpenSSL have to be available on your server to use extension repository system."
+msgstr "Serwer musi mieæ zainstalowane OpenSSL ¿eby mo¿na by³o korzystaæ z repozytorium pakietów rozszerzeñ FA."
 
 #: includes/system_tests.inc:411
 msgid "Test"
@@ -483,8 +474,7 @@ msgstr "Brak pola '%s' w pliku '%s'"
 
 #: includes/packages.inc:295
 msgid "Release file in repository is invalid, or public key is outdated."
-msgstr ""
-"Plik kontrolny wydania jest uszkodzony, lub klucz publiczny jest nieaktualny."
+msgstr "Plik kontrolny wydania jest uszkodzony, lub klucz publiczny jest nieaktualny."
 
 #: includes/packages.inc:311
 msgid "Repository version does not match application version."
@@ -492,23 +482,17 @@ msgstr "Wersja repozytorium nie zgadza siê z wersj± aplikacji."
 
 #: includes/packages.inc:325
 #, php-format
-msgid ""
-"Security alert: broken index file in repository '%s'. Please inform "
-"repository administrator about this issue."
-msgstr ""
-"Alarm bezpieczeñstwa: uszkodzony plik indeksu repozytorium '%s'. Poinformuj "
-"administratora repozytorium o tym problemie."
+msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
+msgstr "Alarm bezpieczeñstwa: uszkodzony plik indeksu repozytorium '%s'. Poinformuj administratora repozytorium o tym problemie."
 
 #: includes/packages.inc:358
 #, php-format
-msgid ""
-"Security alert: broken package '%s' in repository. Please inform repository "
-"administrator about this issue."
-msgstr ""
-"Alarm bezpieczeñstwa: uszkodzony plik '%s' w repozytorium. Poinformuj "
-"administratora repozytorium o tym problemie."
+msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
+msgstr "Alarm bezpieczeñstwa: uszkodzony plik '%s' w repozytorium. Poinformuj administratora repozytorium o tym problemie."
 
-#: includes/packages.inc:613 includes/packages.inc:664
+#: includes/packages.inc:613
+#: includes/packages.inc:664
 #, php-format
 msgid "Package '%s' not found."
 msgstr "Pakiet '%s' nie zosta³ znaleziony."
+

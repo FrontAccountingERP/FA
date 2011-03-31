@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FA2.3RC1+ inst wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-08 12:50+0200\n"
-"PO-Revision-Date: 2010-10-22 12:07+0200\n"
-"Last-Translator: Kyriakos Tsoukalas <kt@labyrinthos.gr>\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-03-31 19:34+0100\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: Labyrinth <kt@labyrinthos.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -18,448 +18,483 @@ msgstr ""
 "X-Poedit-Country: GREECE\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 
-#: /var/www/fa2.3/devel/../install/index.php:20
-#: /var/www/fa2.3/devel/../install/index.php:40
+#: install/index.php:20
+#: install/index.php:40
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr "Μάγος εγκατάστασης του FrontAccouting ERP"
 
-#: /var/www/fa2.3/devel/../install/index.php:41
+#: install/index.php:41
 #, php-format
 msgid "Step %d: %s"
 msgstr "Βήμα %d: %s"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
+#: install/index.php:48
 msgid "Chart of accounts"
 msgstr "Διάγραμμα απολογισμών"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Encoding"
 msgstr "Κωδικοποίηση"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Install"
 msgstr "Εγκατάσταση"
 
-#: /var/www/fa2.3/devel/../install/index.php:65
-#: /var/www/fa2.3/devel/../install/index.php:93
+#: install/index.php:65
+#: install/index.php:93
 msgid "Installed"
 msgstr "Εγκατεστημένο"
 
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:75
 msgid "Language"
 msgstr "Γλώσσα"
 
-#: /var/www/fa2.3/devel/../install/index.php:156
+#: install/index.php:123
+msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
+msgstr ""
+
+#: install/index.php:159
 msgid "Cannot save system configuration file 'config.php'."
 msgstr "Αδυναμία εγγραφής του αρχείου διαμόρφωσης συστήματος 'config.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:173
+#: install/index.php:166
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr "Αδυναμία ανοίγματος του αρχείου διαμόρφωσης 'config_db.php'"
 
-#: /var/www/fa2.3/devel/../install/index.php:176
+#: install/index.php:169
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "Αδυναμία εγγραφής στο αρχείο διαμόρφωσης 'config_db.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:179
+#: install/index.php:172
 msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
 msgstr "Το αρχείο διαμόρφωσης 'config_db.php' δεν είναι εγγράψιμο. Παρακαλώ αλλάξτε τα δικαιώματα ώστε να είναι και μετά τρέξτε ξανά το βήμα εγκατάστασης."
 
-#: /var/www/fa2.3/devel/../install/index.php:217
+#: install/index.php:211
 msgid "Host name cannot be empty."
 msgstr "Το όνομα φιλοξενητή δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:221
+#: install/index.php:215
 msgid "Database user name cannot be empty."
 msgstr "Το όνομα χρήστη βάσης δεδομένων δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:225
+#: install/index.php:219
 msgid "Database name cannot be empty."
 msgstr "Το όνομα της βάσης δεδομένων δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:277
+#: install/index.php:272
 msgid "Company name cannot be empty."
 msgstr "Το όνομα της επιχείρησης δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:281
+#: install/index.php:276
 msgid "Company admin name cannot be empty."
 msgstr "Το όνομα Διαχειριστή επιχείρησης δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:285
+#: install/index.php:280
 msgid "Company admin password cannot be empty."
 msgstr "Το συνθηματικό Διαχειριστή επιχείρησης δεν μπορεί να είναι κενό."
 
-#: /var/www/fa2.3/devel/../install/index.php:289
+#: install/index.php:284
 msgid "Company admin passwords differ."
 msgstr "Τα συνθηματικά Διαχειριστή επιχείρησης διαφέρουν."
 
-#: /var/www/fa2.3/devel/../install/index.php:320
+#: install/index.php:316
 msgid "System Diagnostics"
 msgstr "Διαγνωστικά συστήματος"
 
-#: /var/www/fa2.3/devel/../install/index.php:323
+#: install/index.php:318
 msgid "Select install wizard language:"
 msgstr "Επιλέξτε γλώσσα μάγου εγκατάστασης:"
 
-#: /var/www/fa2.3/devel/../install/index.php:329
+#: install/index.php:324
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "Όλα τα προκαταρκτικά απαιτούμενα φαίνεται να είναι σωστά. Παρακαλώ πιέστε το κουμπί Συνέχεια χαμηλότερα."
 
-#: /var/www/fa2.3/devel/../install/index.php:330
-#: /var/www/fa2.3/devel/../install/index.php:356
-#: /var/www/fa2.3/devel/../install/index.php:363
-#: /var/www/fa2.3/devel/../install/index.php:370
-#: /var/www/fa2.3/devel/../install/index.php:389
+#: install/index.php:325
+#: install/index.php:351
+#: install/index.php:358
+#: install/index.php:365
+#: install/index.php:384
 msgid "Continue >>"
 msgstr "Συνέχεια >>"
 
-#: /var/www/fa2.3/devel/../install/index.php:332
+#: install/index.php:327
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "Η εφαρμογή δεν μπορεί να εγκατασταθεί. Παρακαλώ διορθώστε τα προβλήματα που απαριθμούνται παρακάτω με κόκκινο και πατήστε το κουμπί Ανανέωση."
 
-#: /var/www/fa2.3/devel/../install/index.php:333
+#: install/index.php:328
 msgid "Refresh"
 msgstr "Ανανέωση"
 
-#: /var/www/fa2.3/devel/../install/index.php:343
+#: install/index.php:338
 msgid "Database Server Settings"
 msgstr "Επιλογές Εξυπηρετητή βάσης δεδομένων"
 
-#: /var/www/fa2.3/devel/../install/index.php:345
+#: install/index.php:340
 msgid "Server Host:"
 msgstr "Φιλοξενητής Εξυπηρετητή:"
 
-#: /var/www/fa2.3/devel/../install/index.php:346
+#: install/index.php:341
 msgid "Database User:"
 msgstr "Χρήστης βάσης δεδομένων:"
 
-#: /var/www/fa2.3/devel/../install/index.php:347
+#: install/index.php:342
 msgid "Database Password:"
 msgstr "Συνθηματικό βάσης δεδομένων:"
 
-#: /var/www/fa2.3/devel/../install/index.php:348
+#: install/index.php:343
 msgid "Database Name:"
 msgstr "Όνομα βάσης δεδομένων:"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
+#: install/index.php:344
 msgid "Use '0_' Table Prefix:"
 msgstr "Χρήση '0_' προθέματος πίνακα:"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Ναι"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "No"
 msgstr "Όχι"
 
-#: /var/www/fa2.3/devel/../install/index.php:350
+#: install/index.php:345
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Εγκατάσταση πρόσθετων πακέτων γλώσσας από την αποθήκη του FA:"
 
-#: /var/www/fa2.3/devel/../install/index.php:351
+#: install/index.php:346
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Εγκατάσταση Πρόσθετων ΔΑ από την Αποθήκη του FA:"
 
-#: /var/www/fa2.3/devel/../install/index.php:353
+#: install/index.php:348
 msgid "Use table prefix if you share selected database for more than one FA company."
 msgstr "Χρησιμοποιήστε πρόθεμα πίνακα εάν μοιράζεστε την βάση δεδομένων για περισσότερο από μια επιχείρηση FA."
 
-#: /var/www/fa2.3/devel/../install/index.php:354
+#: install/index.php:349
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "Μην επιλέξετε πρόσθετες γλώσσες ή ΔΑ αν δεν έχετε λειτουργική σύνδεση στο διαδίκτυο τώρα. Μπορείτε να τα εγκαταστήσετε αργότερα."
 
-#: /var/www/fa2.3/devel/../install/index.php:355
-#: /var/www/fa2.3/devel/../install/index.php:362
-#: /var/www/fa2.3/devel/../install/index.php:369
-#: /var/www/fa2.3/devel/../install/index.php:388
+#: install/index.php:350
+#: install/index.php:357
+#: install/index.php:364
+#: install/index.php:383
 msgid "<< Back"
 msgstr "<< Πίσω"
 
-#: /var/www/fa2.3/devel/../install/index.php:360
+#: install/index.php:355
 msgid "User Interface Languages Selection"
 msgstr "Επιλογή γλωσσών της διεπαφής χρήστη"
 
-#: /var/www/fa2.3/devel/../install/index.php:367
+#: install/index.php:362
 msgid "Charts of Accounts Selection"
 msgstr "Επιλογή διαγραμμάτων απολογισμών"
 
-#: /var/www/fa2.3/devel/../install/index.php:379
+#: install/index.php:374
 msgid "Company Settings"
 msgstr "Επιλογές Επιχείρησης"
 
-#: /var/www/fa2.3/devel/../install/index.php:381
+#: install/index.php:376
 msgid "Company Name:"
 msgstr "Όνομα Επιχείρησης:"
 
-#: /var/www/fa2.3/devel/../install/index.php:382
+#: install/index.php:377
 msgid "Admin Login:"
 msgstr "Είσοδος Διαχειριστή:"
 
-#: /var/www/fa2.3/devel/../install/index.php:383
+#: install/index.php:378
 msgid "Admin Password:"
 msgstr "Συνθηματικό Διαχειριστή:"
 
-#: /var/www/fa2.3/devel/../install/index.php:384
+#: install/index.php:379
 msgid "Reenter Password:"
 msgstr "Εισάγετε ξανά το συνθηματικό:"
 
-#: /var/www/fa2.3/devel/../install/index.php:385
+#: install/index.php:380
 msgid "Select Chart of Accounts:"
 msgstr "Επιλογή Διαγραμμάτων Απολογισμών:"
 
-#: /var/www/fa2.3/devel/../install/index.php:386
+#: install/index.php:381
 msgid "Select Default Language:"
 msgstr "Επιλογή προκαθορισμένης Γλώσσας:"
 
-#: /var/www/fa2.3/devel/../install/index.php:393
+#: install/index.php:388
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "Το FrontAccounting ERP εγκαταστάθηκε επιτυχώς."
 
-#: /var/www/fa2.3/devel/../install/index.php:394
+#: install/index.php:389
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Παρακαλώ μην ξεχάσετε να αφαιρέσετε το φάκελο του μάγου εγκατάστασης."
 
-#: /var/www/fa2.3/devel/../install/index.php:396
+#: install/index.php:392
 msgid "Click here to start."
 msgstr "Κάντε κλικ εδώ για να αρχίσετε."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:15
+#: includes/system_tests.inc:15
 msgid "Info"
 msgstr "Πληροφορίες"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:16
+#: includes/system_tests.inc:16
 msgid "Optional"
 msgstr "Προαιρετικό"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:17
+#: includes/system_tests.inc:17
 msgid "Recommended"
 msgstr "Προτείνεται"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:18
+#: includes/system_tests.inc:18
 msgid "Required "
 msgstr "Απαιτούμενο"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:24
+#: includes/system_tests.inc:24
 msgid "MySQL version"
 msgstr "Έκδοση MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:28
+#: includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
 msgstr "Αναβαθμίστε την έκδοση του εξυπηρετητή MySQL τουλάχιστον σε 4.1"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:35
+#: includes/system_tests.inc:35
 msgid "PHP MySQL extension"
 msgstr "επέκταση PHP MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:40
+#: includes/system_tests.inc:40
 msgid "Your PHP has to have MySQL extension enabled."
 msgstr "Η PHP πρέπει να έχει την επέκταση MySQL ενεργοποιημένη."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:46
+#: includes/system_tests.inc:46
 msgid "PHP version"
 msgstr "Έκδοση PHP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:50
+#: includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 4.3.3"
 msgstr "Αναβαθμίστε την έκδοση PHP σε τουλάχιστον 4.3.3"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:57
+#: includes/system_tests.inc:57
 msgid "Server system"
 msgstr "Σύστημα εξυπηρετητή"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:67
+#: includes/system_tests.inc:67
 msgid "Session save path"
 msgstr "Διαδρομή καταχωρήσεων συνεδρίας"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:79
+#: includes/system_tests.inc:79
 msgid "Removed install wizard folder"
 msgstr "Έγινε απομάκρυνση του φακέλου του μάγου εγκατάστασης"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:82
+#: includes/system_tests.inc:82
 msgid "Not removed"
 msgstr "Δεν έχει απομακρυνθεί"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:83
+#: includes/system_tests.inc:83
 msgid "Remove or rename install wizard folder for security reasons."
 msgstr "Διαγράψτε ή μετονομάστε τον φάκελο του μάγου εγκατάστασης για λόγους ασφαλείας."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:90
+#: includes/system_tests.inc:90
 msgid "Browser type"
 msgstr "Τύπος φυλλομετρητή"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:94
+#: includes/system_tests.inc:94
 msgid "Any browser is supported"
 msgstr "Οποιοσδήποτε φυλλομετρητής υποστηρίζεται"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:101
+#: includes/system_tests.inc:101
 msgid "Http server type"
 msgstr "Εξυπηρετητής τύπου HTTP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:105
+#: includes/system_tests.inc:105
 msgid "Any server is supported"
 msgstr "Οποιοσδήποτε εξυπηρετητής υποστηρίζεται"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:112
+#: includes/system_tests.inc:112
 msgid "Native gettext"
 msgstr "Μητρικό gettext"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:116
+#: includes/system_tests.inc:116
 msgid "In case of no gettext support, php emulation is used"
 msgstr "Στην περίπτωση μη υποστήριξης getext, χρησιμοποιείται εξομοίωση php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:124
+#: includes/system_tests.inc:124
 msgid "Debugging mode"
 msgstr "Καθεστώς εύρεσης προγραμματιστικού λάθους (debugging)"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:128
+#: includes/system_tests.inc:128
 msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr "Για να ενεργοποιήσετε την αποσφαλμάτωση ορίστε $go_debug>0 στο αρχείο config.php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:137
+#: includes/system_tests.inc:137
 msgid "Error logging"
 msgstr "Αποτυχία καταγράφησης"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:145
+#: includes/system_tests.inc:145
 msgid "Disabled"
 msgstr "Απενεργοποιημένο"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:148
+#: includes/system_tests.inc:148
 msgid "To switch error logging set $error_logging in config.php file"
 msgstr "Για να ενεργοποιήσετε την καταγραφή λαθών ορίστε $error_logging στο αρχείο config.php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:151
+#: includes/system_tests.inc:151
 msgid "Log file is not writeable"
 msgstr "Το αρχείο καταγραφών δεν είναι εγγράψιμο"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:161
+#: includes/system_tests.inc:161
 msgid "Current database version"
 msgstr "Τρέχουσα έκδοση βάσης δεδομένων"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:165
+#: includes/system_tests.inc:165
 msgid "Database structure seems to be not upgraded to current version"
 msgstr "Η δομή της βάσης δεδομένων φαίνεται μην είναι αναβαθμισμένη στην τρέχουσα έκδοση"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:180
+#: includes/system_tests.inc:180
 msgid "Company subdirectories consistency"
 msgstr "Συνέπεια υπο-φακέλων επιχείρησης"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:193
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:200
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:208
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:225
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:345
+#: includes/system_tests.inc:193
+#: includes/system_tests.inc:200
+#: includes/system_tests.inc:208
+#: includes/system_tests.inc:225
+#: includes/system_tests.inc:340
+#: includes/system_tests.inc:349
+#: includes/system_tests.inc:358
 #, php-format
 msgid "'%s' is not writeable"
 msgstr "Το '%s' δεν είναι εγγράψιμο"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:221
+#: includes/system_tests.inc:221
 msgid "Temporary directory"
 msgstr "Προσωρινός κατάλογος αρχείων"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:233
+#: includes/system_tests.inc:233
 msgid "Language configuration consistency"
 msgstr "Συνέπεια γλωσσικής διαμόρφωσης"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:242
+#: includes/system_tests.inc:242
 msgid "Languages folder should be writeable."
 msgstr "Ο φάκελος των γλωσσών πρέπει να είναι εγγράψιμος."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:250
+#: includes/system_tests.inc:251
 msgid "Languages configuration file should be writeable."
 msgstr "Το αρχείο παραμετροποίησης γλωσσών πρέπει να είναι εγγράψιμο."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:268
+#: includes/system_tests.inc:270
 #, php-format
 msgid "Missing %s translation file."
 msgstr "Έλλειψη του αρχείου μετάφρασης %s ."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:273
+#: includes/system_tests.inc:275
 #, php-format
 msgid "Missing system locale: %s"
 msgstr "Έλλειψη συνόλου τοπικής προσαρμογής του συστήματος: %s"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:286
+#: includes/system_tests.inc:288
 msgid "Main config file"
 msgstr "Βασικό αρχείο παραμετροποίησης"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:293
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:315
+#: includes/system_tests.inc:295
+#: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr "Αδυναμία εγγραφής αρχείου '%s'. Ελέγξτε τα δικαιώματα του φακέλου του FA."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:294
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:316
+#: includes/system_tests.inc:296
+#: includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr "Το αρχείο '%s' υπάρχει."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:298
+#: includes/system_tests.inc:300
 #, php-format
 msgid "'%s' file should be read-only"
 msgstr "το '%s' αρχείο θα έπρεπε να είναι μόνο για ανάγνωση"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:307
+#: includes/system_tests.inc:309
 msgid "Database auth file"
 msgstr "Αρχείο έγκρισης βάσης δεδομένων"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:320
+#: includes/system_tests.inc:322
 #, php-format
 msgid "'%s' file should be read-only if you do not plan to add or change companies"
 msgstr "Το '%s' αρχείο πρέπει να είναι μόνο για ανάγνωση εάν δεν σκοπεύετε να προσθέσετε ή να αφαιρέσετε επιχειρήσεις"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:331
+#: includes/system_tests.inc:333
 msgid "Extensions system"
 msgstr "Σύστημα επεκτάσεων"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:366
+#: includes/system_tests.inc:363
 msgid "Extensions configuration files and directories should be writeable"
 msgstr "Τα αρχεία και οι φάκελοι επεκτάσεων πρέπει να είναι εγγράψιμα"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:378
+#: includes/system_tests.inc:375
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
 msgstr "Ο φάκελος μη-προκαθορισμένου θέματος '%s' δεν είναι εγγράψιμος"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:388
+#: includes/system_tests.inc:385
 msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr "Η επέκταση OpenSSL PHP πρέπει να είναι ενεργοποιημένη για να χρησιμοποιεί το σύστημα αποθήκευσης επεκτάσεων."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:391
+#: includes/system_tests.inc:388
 msgid "OpenSSL have to be available on your server to use extension repository system."
 msgstr "Το OpenSSL πρέπει να είναι διαθέσιμο στον εξυπηρετητή σας για να χρησιμοποιήσετε το σύστημα αποθήκευσης επεκτάσεων"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Test"
 msgstr "Τεστ"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Test type"
 msgstr "Τύπος τεστ"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Value"
 msgstr "Τιμή"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Comments"
 msgstr "Σχόλια"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:438
+#: includes/system_tests.inc:435
 msgid "Ok"
 msgstr "ΟΚ"
+
+#: includes/packages.inc:190
+#, php-format
+msgid "No key field '%s' in file '%s'"
+msgstr ""
+
+#: includes/packages.inc:295
+msgid "Release file in repository is invalid, or public key is outdated."
+msgstr ""
+
+#: includes/packages.inc:311
+msgid "Repository version does not match application version."
+msgstr ""
+
+#: includes/packages.inc:325
+#, php-format
+msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:358
+#, php-format
+msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:613
+#: includes/packages.inc:664
+#, php-format
+msgid "Package '%s' not found."
+msgstr ""
 
