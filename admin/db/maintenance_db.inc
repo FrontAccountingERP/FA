@@ -327,7 +327,7 @@ function db_import($filename, $connection, $force=true)
 		}
 		
 	}
-	
+/*
 	{ 	// for debugging purposes
 	global $path_to_root;
 	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w+');
@@ -336,7 +336,7 @@ function db_import($filename, $connection, $force=true)
 	fwrite($f, print_r($data_queries,true));
 	fclose($f);
 	}
-
+*/
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
 	{
