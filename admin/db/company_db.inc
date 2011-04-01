@@ -37,7 +37,7 @@ function get_company_pref($prefs = null, $tbpref = null)
 	static $cached; // retrieve values from db once a request. Some values can't be cached between requests
 					// to ensure prefs integrity for all usrs (e.g. gl_close_date).
 	
-	if (!$cached) { // cached preferences
+ 	if (!$cached || !isset($_SESSION['SysPrefs'])) { // cached preferences
 
 		$_SESSION['SysPrefs'] = new sys_prefs();
 

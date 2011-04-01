@@ -118,9 +118,13 @@ class fa2_2 {
 		$patchcnt = 0;
 		if (!$this->beta) {
 			$n = 16;
-			if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
-			if (!check_table($pref, 'company', 'profit_loss_year_act')) $patchcnt++;
-			if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
+ 			if (check_table($pref, 'company')) // skip in 2.3
+ 				$n -= 3;
+ 			else {
+ 				if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
+ 				if (!check_table($pref, 'company', 'profit_loss_year_act'))	$patchcnt++;
+ 				if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
+ 			}
 			if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $patchcnt++;
 			if (!check_table($pref, 'users', 'sticky_doc_date')) $patchcnt++;
 			if (!check_table($pref, 'users', 'startup_tab')) $patchcnt++;
@@ -303,6 +307,9 @@ function sanitize_database($pref, $test = false) {
 			}
 		}
 
+ 		if (empty($keys)) { // comments table have no primary key, so let's give up
+ 			continue;
+ 		}
 	 	if ($test)
 		 	error_log("Table $table (".implode(',',$keys)."):(".implode(',',$textcols)."):");
 
@@ -326,9 +333,10 @@ function sanitize_database($pref, $test = false) {
 				$key[] = $k.'=\''.$rec[substr($k,1,-1)].'\'';
 			}
 			$sql .= implode( ' AND ', $key);
-		 	if ($test)
+ 		 	if ($test) {
+ 				error_log($sql);
 				error_log("\t(".implode(',',$val).") updated");
-			else
+			} else
 				db_query($sql, 'cannot update record');
 		}
 	}
