@@ -24,7 +24,7 @@ class fa2_3 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($pref, $force) 
+	function install($company, $force) 
 	{
 		global $db_version, $dflt_lang;
 
@@ -34,7 +34,7 @@ class fa2_3 {
 		if (!$this->beta) {
 			// all specials below are already done on 2.3beta
 
-			$sql = "SELECT debtor_no, payment_terms FROM {$pref}debtors_master";
+			$sql = "SELECT debtor_no, payment_terms FROM ".TB_PREF."debtors_master";
 		
 			$result = db_query($sql);
 			if (!$result) {
@@ -44,7 +44,7 @@ class fa2_3 {
 			}
 			// update all sales orders and transactions with customer std payment terms
 			while($cust = db_fetch($result)) {
-				$sql = "UPDATE {$pref}debtor_trans SET "
+				$sql = "UPDATE ".TB_PREF."debtor_trans SET "
 					."payment_terms = '" .$cust['payment_terms']
 					."' WHERE debtor_no='".$cust['debtor_no']."'";
 				if (db_query($sql)==false) {
@@ -52,7 +52,7 @@ class fa2_3 {
 					.':<br>'. db_error_msg($db));
 					return false;
 				}
-				$sql = "UPDATE {$pref}sales_orders SET "
+				$sql = "UPDATE ".TB_PREF."sales_orders SET "
 					."payment_terms = '" .$cust['payment_terms']
 					."' WHERE debtor_no='".$cust['debtor_no']."'";
 				if (db_query($sql)==false) {
@@ -61,11 +61,11 @@ class fa2_3 {
 					return false;
 				}
 			}
-			if (!$this->update_totals($pref)) {
+			if (!$this->update_totals()) {
 				display_error("Cannot update order totals");
 				return false;
 			}
-			if (!$this->update_line_relations($pref)) {
+			if (!$this->update_line_relations()) {
 				display_error("Cannot update sales document links");
 				return false;
 			}
@@ -81,18 +81,18 @@ class fa2_3 {
 
 			foreach($dropcol as $table => $columns)
 				foreach($columns as $col) {
-					if (db_query("ALTER TABLE `{$pref}{$table}` DROP `$col`")==false) {
+					if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`")==false) {
 						display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
 						return false;
 					}
 				}
 			// remove old preferences table after upgrade script has been executed
-			$sql = "DROP TABLE IF EXISTS `{$pref}company`";
+			$sql = "DROP TABLE IF EXISTS `".TB_PREF."company`";
 			if (!db_query($sql))
 				return false;
 		}
 		$this->update_lang_cfg();
-		return  update_company_prefs(array('version_id'=>$db_version), $pref);
+		return  update_company_prefs(array('version_id'=>$db_version));
 	}
 	//
 	//	Checking before install
@@ -131,33 +131,33 @@ class fa2_3 {
 	/*
 		Update order totals
 	*/
-	function update_totals($pref)
+	function update_totals()
 	{
 		global $path_to_root;
 
 		include_once("$path_to_root/sales/includes/cart_class.inc");
 		include_once("$path_to_root/purchasing/includes/po_class.inc");
 		$cart = new cart(ST_SALESORDER);
-		$sql = "SELECT order_no, trans_type FROM {$pref}sales_orders";
+		$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders";
 		$orders = db_query($sql);
 		if (!$orders)
 			return false;
 		while ($order = db_fetch($orders)) {
 			read_sales_order($order['order_no'], $cart, $order['trans_type']);
-			$result = db_query("UPDATE {$pref}sales_orders 
+			$result = db_query("UPDATE ".TB_PREF."sales_orders 
 				SET total=".$cart->get_trans_total()
 				." WHERE order_no=".$order[0]);
 			unset($cart->line_items);
 		}
 		unset($cart);
 		$cart = new purch_order();
-		$sql = "SELECT order_no FROM {$pref}purch_orders";
+		$sql = "SELECT order_no FROM ".TB_PREF."purch_orders";
 		$orders = db_query($sql);
 		if (!$orders)
 			 return false;
 		while ($order_no = db_fetch($orders)) {
 			read_po($order_no[0], $cart);
-			$result = db_query("UPDATE {$pref}purch_orders SET total=".$cart->get_trans_total());
+			$result = db_query("UPDATE ".TB_PREF."purch_orders SET total=".$cart->get_trans_total());
 			unset($cart->line_items);
 		}
 		return true;
@@ -200,14 +200,14 @@ class fa2_3 {
 		there can be sales documents with lines not properly linked to parents. This rare 
 		cases will be described in error log.
 	*/
-	function update_line_relations($pref)
+	function update_line_relations()
 	{
 		global $path_to_root, $systypes_array;
 
 		require_once("$path_to_root/includes/sysnames.inc");
 		
-		$sql =	"SELECT d.type, trans_no, order_ FROM {$pref}debtor_trans d
-			LEFT JOIN {$pref}voided v ON d.type=v.type AND d.trans_no=v.id
+		$sql =	"SELECT d.type, trans_no, order_ FROM ".TB_PREF."debtor_trans d
+			LEFT JOIN ".TB_PREF."voided v ON d.type=v.type AND d.trans_no=v.id
 				WHERE ISNULL(v.type) AND 
 				(d.type=".ST_CUSTDELIVERY
 				." OR d.type=".ST_SALESINVOICE
@@ -251,7 +251,7 @@ class fa2_3 {
 				if ($src_line['stock_id'] == $doc_line['stock_id']
 					&& ($src_line['quantity'] >= $doc_line['quantity'])) {
 
-					$sql = "UPDATE {$pref}debtor_trans_details SET src_id = {$src_line['id']}
+ 					$sql = "UPDATE ".TB_PREF."debtor_trans_details SET src_id = {$src_line['id']}
 						WHERE id = {$doc_line['id']}";
 					if (!db_query($sql))
 						return false;

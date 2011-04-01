@@ -123,8 +123,9 @@ function update_po(&$po_obj)
 
 function read_po_header($order_no, &$order)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name, ".TB_PREF."suppliers.tax_group_id,
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."locations.location_name, ".TB_PREF."suppliers.tax_algorithm
+    	$sql = "SELECT ".TB_PREF."purch_orders.*, "
+ 		.TB_PREF."suppliers.*, "
+		.TB_PREF."locations.location_name 
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
 		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."locations.loc_code = into_stock_location
@@ -141,7 +142,7 @@ function read_po_header($order_no, &$order)
       	$order->order_no = $order_no;
       	
       	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
-      		$myrow['tax_group_id'], $myrow["tax_included"], $myrow["tax_algorithm"]);
+      		$myrow['tax_group_id'], $myrow["tax_included"], @$myrow["tax_algorithm"]);
 
 		$order->credit = get_current_supp_credit($order->supplier_id);
 

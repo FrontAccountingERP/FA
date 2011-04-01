@@ -52,7 +52,7 @@ function get_installers()
 //
 //	Apply one differential data set.
 //
-function upgrade_step($index, $conn) 
+function upgrade_step($index, $company, $conn) 
 {
 	global $path_to_root, $installers;
 
@@ -75,7 +75,7 @@ function upgrade_step($index, $conn)
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
 
-			$ret &= $inst->install($pref, $force);
+ 			$ret &= $inst->install($company, $force);
 
 			error_log(_("Database upgrade finished."));
 
@@ -104,11 +104,11 @@ if (get_post('Upgrade'))
 			continue;
 		}
 	// create security backup	
-		db_backup($conn, 'no', 'Security backup before upgrade', $conn['tbpref']);
+		db_backup($conn, 'no', 'Security backup before upgrade');
 	// apply all upgrade data
 		foreach ($installers as $i => $inst) 
 		{
-			$ret = upgrade_step($i, $conn);
+			$ret = upgrade_step($i, $comp, $conn);
 			if (!$ret)
 				display_error(
 				sprintf(_("Database upgrade to version %s failed for company '%s'."),

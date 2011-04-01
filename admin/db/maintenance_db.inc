@@ -431,22 +431,26 @@ function db_unzip($mode, $path)
     	return explode("\n", $file_data);
 }
 
-function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
+function db_backup($conn, $ext='no', $comm='', $path=null)
 {
 	if ($conn['tbpref'] != "")
 		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
 	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-	return db_export($conn, clean_file_name($filename), $ext, $comm, $tbpref);
+	if (!isset($path))
+		$path = BACKUP_PATH;
+
+	return db_export($conn, $path . clean_file_name($filename), $ext, $comm);
 }
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, $no_default=false)
+function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
+
 
     $error = false;
     // set max string size before writing to file
@@ -462,7 +466,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
     	$backupfile = $filename . ".zip";
     else
     	$backupfile = $filename;
-    $company = get_company_pref('coy_name', $tbpref);
+    $company = $conn['name']; // get_company_pref('coy_name');
 
     //create comment
     $out="# MySQL dump of database '".$conn["dbname"]."' on host '".$conn["host"]."'\n";
@@ -587,7 +591,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 			}
 			elseif ($error)
 			{
-				@unlink(BACKUP_PATH . $backupfile);
+				@unlink($backupfile);
 				return false;
 			}
 
@@ -605,7 +609,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 	}
 	else
 	{
-		@unlink(BACKUP_PATH . $backupfile);
+		@unlink($backupfile);
 		return false;
 	}
 
@@ -617,7 +621,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 	}
 	else
 	{
-		@unlink(BACKUP_PATH . $backupfile);
+		@unlink($backupfile);
 		return false;
 	}
     return $backupfile;
@@ -674,13 +678,15 @@ function order_sql_tables($tables, $fks)
 
 // saves the string in $fileData to the file $backupfile as gz file or not ($zip)
 // returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
-function save_to_file($backupfile, $zip, $fileData)
+function save_to_file($path, $zip, $fileData)
 {
 	global $path_to_root;
 
+	$backupfile = basename($path);
+
     if ($zip == "gzip")
     {
-        if ($zp = @gzopen(BACKUP_PATH . $backupfile, "a9"))
+        if ($zp = @gzopen($path, "a9"))
         {
 			@gzwrite($zp, $fileData);
 			@gzclose($zp);
@@ -757,7 +763,7 @@ function save_to_file($backupfile, $zip, $fileData)
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
 
-        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen($path, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -772,7 +778,7 @@ function save_to_file($backupfile, $zip, $fileData)
     }
     else
     {
-        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen($path, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);

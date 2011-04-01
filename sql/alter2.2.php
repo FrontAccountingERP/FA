@@ -28,13 +28,14 @@ class fa2_2 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($pref, $force) 
+	function install($company, $force) 
 	{
-		global $db, $systypes_array;
+		global $db, $systypes_array, $db_connections;
 		
 		if (!$this->preconf)
 			return false;
 
+		$pref = $db_connections[$company]['tbpref'];
 		// Until 2.2 sanitizing text input with db_escape was not
 		// consequent enough. To avoid comparision problems we have to 
 		// fix this now.
@@ -45,7 +46,7 @@ class fa2_2 {
 
 		// set item category dflt accounts to values from company GL setup
 		$prefs = get_company_prefs();
-		$sql = "UPDATE {$pref}stock_category SET "
+		$sql = "UPDATE ".TB_PREF."stock_category SET "
 			."dflt_sales_act = '" . $prefs['default_inv_sales_act'] . "',"
 			."dflt_cogs_act = '". $prefs['default_cogs_act'] . "',"
 			."dflt_inventory_act = '" . $prefs['default_inventory_act'] . "',"
@@ -60,14 +61,14 @@ class fa2_2 {
 		foreach($systypes_array as $typeno => $typename) {
 			$info = get_systype_db_info($typeno);
 			if ($info == null || $info[3] == null) continue;
-			$tbl = str_replace(TB_PREF, $pref, $info[0]);
+ 			$tbl = $info[0];
 			$sql = "SELECT DISTINCT {$info[2]} as id,{$info[3]} as ref FROM $tbl";
 			if ($info[1])
 				$sql .= " WHERE {$info[1]}=$typeno";
 			$result = db_query($sql);
 			if (db_num_rows($result)) {
 				while ($row = db_fetch($result)) {
-					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
+					$res2 = db_query("INSERT INTO ".TB_PREF."refs VALUES("
 						. $row['id'].",".$typeno.",'".$row['ref']."')");
 					if (!$res2) {
 						display_error(_("Cannot copy references from $tbl")
@@ -78,7 +79,7 @@ class fa2_2 {
 			}
 		}
 
-		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
+		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `".TB_PREF."sales_orders`")) ||
 			!db_num_rows($ret))
 		{
 				display_error(_('Cannot query max sales order number.'));
@@ -87,7 +88,7 @@ class fa2_2 {
 		$row = db_fetch($ret);
 		$max_order = $row[0];
 		$next_ref = $max_order+1;
-		$sql = "UPDATE `{$pref}sys_types` 
+		$sql = "UPDATE `".TB_PREF."sys_types` 
 			SET `type_no`='$max_order',`next_reference`='$next_ref'
 			WHERE `type_id`=30";
 		if(!db_query($sql))
@@ -118,9 +119,13 @@ class fa2_2 {
 		$patchcnt = 0;
 		if (!$this->beta) {
 			$n = 16;
-			if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
-			if (!check_table($pref, 'company', 'profit_loss_year_act')) $patchcnt++;
-			if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
+ 			if (check_table($pref, 'company')) // skip in 2.3
+ 				$n -= 3;
+ 			else {
+ 				if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
+ 				if (!check_table($pref, 'company', 'profit_loss_year_act'))	$patchcnt++;
+ 				if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
+ 			}
 			if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $patchcnt++;
 			if (!check_table($pref, 'users', 'sticky_doc_date')) $patchcnt++;
 			if (!check_table($pref, 'users', 'startup_tab')) $patchcnt++;
@@ -205,7 +210,7 @@ function convert_roles($pref)
 			}
 			$sections  = array_keys($sections);
 			sort($sections); sort($area_set);
-			import_security_role($pref, $security_headings[$role_id], $sections, $area_set);
+			import_security_role($security_headings[$role_id], $sections, $area_set);
 			$new_ids[$role_id] = db_insert_id();
 		}
 		$result = get_users(true);
@@ -215,7 +220,7 @@ function convert_roles($pref)
 		}
 		foreach($users as $old_id => $uids)
 			foreach( $uids as $id) {
-				$sql = "UPDATE {$pref}users set role_id=".$new_ids[$old_id].
+				$sql = "UPDATE ".TB_PREF."users set role_id=".$new_ids[$old_id].
 					" WHERE id=$id";
 				$ret = db_query($sql, 'cannot update users roles');
 				if(!$ret) return false;
@@ -223,9 +228,9 @@ function convert_roles($pref)
 		return true;
 }
 
-function import_security_role($pref, $name, $sections, $areas)
+function import_security_role($name, $sections, $areas)
 {
-	$sql = "INSERT INTO {$pref}security_roles (role, description, sections, areas)
+	$sql = "INSERT INTO ".TB_PREF."security_roles (role, description, sections, areas)
 	VALUES (".db_escape('FA 2.1 '.$name).",".db_escape($name).","
 	.db_escape(implode(';',$sections)).",".db_escape(implode(';',$areas)).")";
 
@@ -303,6 +308,9 @@ function sanitize_database($pref, $test = false) {
 			}
 		}
 
+ 		if (empty($keys)) { // comments table have no primary key, so give up
+ 			continue;
+ 		}
 	 	if ($test)
 		 	error_log("Table $table (".implode(',',$keys)."):(".implode(',',$textcols)."):");
 

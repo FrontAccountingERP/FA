@@ -23,7 +23,7 @@ class fa2_4 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($pref, $force) 
+	function install($company, $force) 
 	{
 		global $db_version;
 		
@@ -31,7 +31,7 @@ class fa2_4 {
 			set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
 		}
 		if ($this->update_workorders())
-//		return  update_company_prefs(array('version_id'=>$db_version), $pref);
+//		return  update_company_prefs(array('version_id'=>$db_version));
 		return true;
 	}
 	//

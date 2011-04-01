@@ -12,9 +12,9 @@
 /*
 	Update main or gl company setup.
 */
-function update_company_prefs( $params, $pref = TB_PREF )
+function update_company_prefs($params)
 {
-	$sql = "UPDATE {$pref}sys_prefs SET value = ";
+	$sql = "UPDATE ".TB_PREF."sys_prefs SET value = ";
 	foreach($params as $name => $value) {
 		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
 			 "The company prefferences could not be updated "))
@@ -30,7 +30,7 @@ function update_company_prefs( $params, $pref = TB_PREF )
 	$prefs can be preference name, array of names, or null for all preferences.
 	
 */
-function get_company_pref($prefs = null, $tbpref = null)
+function get_company_pref($prefs = null)
 {
 	global $SysPrefs, $db_version;
 	
@@ -38,10 +38,10 @@ function get_company_pref($prefs = null, $tbpref = null)
 
 		$_SESSION['SysPrefs'] = new sys_prefs();
 
-		if (!isset($tbpref))
-			$tbpref = TB_PREF;
+		if (!isset($company))
+			$company = user_company();
 
-		$sql = "SELECT name, value FROM {$tbpref}sys_prefs";
+		$sql = "SELECT name, value FROM ".TB_PREF."sys_prefs";
 		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
 
 		if(!$result)
@@ -71,9 +71,9 @@ function get_company_pref($prefs = null, $tbpref = null)
 		return $ret;
 }
 
-function get_company_prefs($tbpref = TB_PREF)
+function get_company_prefs()
 {
-	return get_company_pref(null, $tbpref);
+	return get_company_pref(null);
 }
 
 function set_company_pref($pref, $category, $type, $length, $value)
