@@ -65,6 +65,8 @@ function gl_payment_controls()
 
 	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 
+	bank_balance_row($_POST['FromBankAccount']);
+
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 
     date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
