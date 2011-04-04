@@ -1317,37 +1317,4 @@ function display_backtrace($cond=true, $msg='') {
 	}
 }
 
-function get_backtrace($html = false)
-{
-	$str = '';
-	if ($html) $str .= '<table border=0>';
-	$trace = debug_backtrace();
-
-	foreach($trace as $trn => $tr) {
-		if (!$trn) continue;
-		if ($html) $str .= '<tr><td>';
-		$str .= $tr['file'].':'.$tr['line'].': ';
-		if ($html) $str .= '</td><td>';
-		if (isset($tr['type'])) {
-	 		if($tr['type'] == '::') {
-				$str .= $tr['class'].'::';
-			} else if($tr['type'] == '->') {
-				$str .= '('.$tr['class'].' Object)'.'->';
-			}
-		}
-
-		foreach($tr['args'] as $n=>$a) {
-			if (is_object($tr['args'][$n]))
-				$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
-			if (is_array($tr['args'][$n]))
-				$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
-			else
-				$tr['args'][$n] = "'".$tr['args'][$n]."'";
-		}
-		$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
-	}
-
-	if ($html) $str .= '</tr></table>';
-	return $str;
-}
 ?>

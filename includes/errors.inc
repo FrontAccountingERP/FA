@@ -12,6 +12,45 @@
 $messages = array(); // container for system messages
 $before_box = ''; // temporary container for output html data before error box
 
+function get_backtrace($html = false, $skip=0)
+{
+	$str = '';
+	if ($html) $str .= '<table border=0>';
+	$trace = debug_backtrace();
+
+	foreach($trace as $trn => $tr) {
+		if ($trn <= $skip) continue;
+		if ($html) $str .= '<tr><td>';
+		$str .= $tr['file'].':'.$tr['line'].': ';
+		if ($html) $str .= '</td><td>';
+		if (isset($tr['type'])) {
+	 		if($tr['type'] == '::') {
+				$str .= $tr['class'].'::';
+			} else if($tr['type'] == '->') {
+				$str .= '('.$tr['class'].' Object)'.'->';
+			}
+		}
+		$str .= $tr['function'].'(';
+		
+		if(is_array($tr['args'])) {
+			$args = array();
+			foreach($tr['args'] as $n=>$a) {
+				if (is_object($tr['args'][$n]))
+					$args[$n] = "(".get_class($tr['args'][$n])." Object)";
+				elseif (is_array($tr['args'][$n]))
+					$args[$n] = "(Array[".count($tr['args'][$n])."])";
+				else
+					$args[$n] = "'".$tr['args'][$n]."'";
+			}
+			$str .= implode(',',$args);
+		}
+		$str .= ')</td>';
+	}
+
+	if ($html) $str .= '</tr></table>';
+	return $str;
+}
+
 //-----------------------------------------------------------------------------
 //    Error handler - collects all php/user messages for
 //    display in message box.
@@ -30,10 +69,14 @@ function error_handler($errno, $errstr, $file, $line) {
 			return true;
 		}
 	}
-	
+
+	if ($go_debug>1) {
+		$bt = get_backtrace(true, 1);
+	}
+
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting()) {
-		$messages[] = array($errno, $errstr, $file, $line);
+		$messages[] = array($errno, $errstr, $file, $line, @$bt);
 	}
 	else if($errno&~E_NOTICE) { // log all not displayed messages 
 		$user = @$_SESSION["wa_current_user"]->loginname;
@@ -47,7 +90,7 @@ function error_handler($errno, $errstr, $file, $line) {
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
 function fmt_errors($center=false) {
-    global $messages, $path_to_root;
+    global $messages, $path_to_root, $go_debug;
   
   $msg_class = array(
   	E_USER_ERROR => 'err_msg',
@@ -74,8 +117,10 @@ function fmt_errors($center=false) {
 	    $str = $msg[1];
 		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
+		if ($go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
+		  $str .= '<br>'.$msg[4];
 		$content .= ($cnt ? '<hr>' : '').$str;
-	}		
+	}
 	$class = $msg_class[$type];
     $content = "<div class='$class'>$content</div>";
   } else

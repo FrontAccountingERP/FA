@@ -13,8 +13,7 @@ function display_error($msg, $center=true)
 {
 	global $go_debug;
 
-	$bt = $go_debug>1 ? ('<hr>'.get_backtrace(true)) : '';
-	trigger_error($msg.$bt, E_USER_ERROR);
+	trigger_error($msg, E_USER_ERROR);
 }
 
 function display_notification($msg, $center=true)
