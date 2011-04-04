@@ -33,11 +33,13 @@ function getTaxTransactions($from, $to)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
+	$sql = "SELECT tt.name as taxname, taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM ".TB_PREF."trans_tax_details taxrec
+		LEFT JOIN ".TB_PREF."tax_types tt
+			ON taxrec.tax_type_id=tt.id
 		LEFT JOIN ".TB_PREF."supp_trans strans
 			ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
 		LEFT JOIN ".TB_PREF."suppliers as supp ON strans.supplier_id=supp.supplier_id
@@ -49,7 +51,7 @@ function getTaxTransactions($from, $to)
 			AND taxrec.trans_type <> ".ST_CUSTDELIVERY."
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
-		ORDER BY taxrec.tran_date";
+		ORDER BY taxrec.trans_type, taxrec.tran_date, taxrec.trans_no, taxrec.ex_rate";
 //display_error($sql);
     return db_query($sql,"No transactions were returned");
 }
@@ -71,7 +73,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir, $systypes_array;
+	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -102,11 +104,11 @@ function print_tax_report()
 						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 						2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
 
-	$cols = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
+	$cols = array(0, 80, 130, 180, 270, 350, 400, 430, 480, 485, 520);
 
 	$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
-		_('Net'), _('Rate'), _('Tax'));
-	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
+		_('Net'), _('Rate'), _('Tax'), '', _('Name'));
+	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right','left');
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)
@@ -138,6 +140,8 @@ function print_tax_report()
 			$rep->AmountCol(5, 6, $trans['net_amount'], $dec);
 			$rep->AmountCol(6, 7, $trans['rate'], $dec);
 			$rep->AmountCol(7, 8, $trans['amount'], $dec);
+			
+			$rep->TextCol(9, 10, $trans['taxname']);
 
 			$rep->NewLine();
 

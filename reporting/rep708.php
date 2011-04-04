@@ -24,6 +24,108 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
+$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+$cls_pdeb = $cls_pcre = $cls_cdeb = $cls_ccre = $cls_tdeb = $cls_tcre = $cls_pbal = $cls_cbal = $cls_tbal = 0;
+$grp_pdeb = $grp_pcre = $grp_cdeb = $grp_ccre = $grp_tdeb = $grp_tcre = $grp_pbal = $grp_cbal = $grp_tbal = 0;
+
+//----------------------------------------------------------------------------------------------------
+
+function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balances, $dimension, $dimension2)
+{
+	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
+	
+	$printtitle = 0; //Flag for printing type name	
+	
+	//Get Accounts directly under this group/type
+	$accounts = get_gl_accounts(null, null, $type);	
+	
+	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+
+	$begin = begin_fiscalyear();
+	if (date1_greater_date2($begin, $from))
+		$begin = $from;
+	$begin = add_days($begin, -1);
+	while ($account=db_fetch($accounts))
+	{
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{	
+			$rep->row -= 4;
+			$rep->TextCol(0, 8, _("Group")." - ".$type ." - ".$typename);	
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();			
+		}
+		
+		$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
+		$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
+		$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
+
+		if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
+			continue;
+		$rep->TextCol(0, 1, $account['account_code']);
+		$rep->TextCol(1, 2,	$account['account_name']);
+		if ($balances != 0)
+		{
+			if ($prev['balance'] >= 0.0)
+				$rep->AmountCol(2, 3, $prev['balance'], $dec);
+			else
+				$rep->AmountCol(3, 4, abs($prev['balance']), $dec);
+			if ($curr['balance'] >= 0.0)
+				$rep->AmountCol(4, 5, $curr['balance'], $dec);
+			else
+				$rep->AmountCol(5, 6, abs($curr['balance']), $dec);
+			if ($tot['balance'] >= 0.0)
+				$rep->AmountCol(6, 7, $tot['balance'], $dec);
+			else
+				$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
+		}
+		else
+		{
+			$rep->AmountCol(2, 3, $prev['debit'], $dec);
+			$rep->AmountCol(3, 4, $prev['credit'], $dec);
+			$rep->AmountCol(4, 5, $curr['debit'], $dec);
+			$rep->AmountCol(5, 6, $curr['credit'], $dec);
+			$rep->AmountCol(6, 7, $tot['debit'], $dec);
+			$rep->AmountCol(7, 8, $tot['credit'], $dec);
+			$pdeb += $prev['debit'];
+			$pcre += $prev['credit'];
+			$cdeb += $curr['debit'];
+			$ccre += $curr['credit'];
+			$tdeb += $tot['debit'];
+			$tcre += $tot['credit'];
+		}	
+		$pbal += $prev['balance'];
+		$cbal += $curr['balance'];
+		$tbal += $tot['balance'];
+		$rep->NewLine();
+
+		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
+		{
+			$rep->Line($rep->row - 2);
+			$rep->NewPage();
+		}
+	}
+		
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			$rep->row -= 4;
+			$rep->TextCol(0, 8, _("Group")." - ".$type ." - ".$typename);	
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}
+		display_type($accounttype["id"], $accounttype["name"].' ('.$typename.')', $dec, $rep, $from, $to, $zero, $balances, $dimension, $dimension2);
+	}
+}
+
 //----------------------------------------------------------------------------------------------------
 
 print_trial_balance();
@@ -33,6 +135,7 @@ print_trial_balance();
 function print_trial_balance()
 {
 	global $path_to_root;
+	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -75,7 +178,8 @@ function print_trial_balance()
 
 	//$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
 	$cols = array(0, 50, 150, 210, 270,	330, 390, 450, 510,	570);
-	//------------0--1---2----3----4----5----6----7----8----9--
+	//$cols = array(0, 50, 190, 250, 310,	370, 430, 490, 550);
+	//------------0--1---2----3----4----5----6----7----8--
 
 	$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
 		_('Credit'), _('Debit'), _('Credit'));
@@ -109,65 +213,23 @@ function print_trial_balance()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 	$rep->NewPage();
-
-	$accounts = get_gl_accounts();
-
-	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-	$begin = begin_fiscalyear();
-	if (date1_greater_date2($begin, $from))
-		$begin = $from;
-	$begin = add_days($begin, -1);
-	while ($account=db_fetch($accounts))
+	
+	$classresult = get_account_classes(false);
+	while ($class = db_fetch($classresult))
 	{
-		$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
-		$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
-		$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
-
-		if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
-			continue;
-		$rep->TextCol(0, 1, $account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
-		if ($balances != 0)
-		{
-			if ($prev['balance'] >= 0.0)
-				$rep->AmountCol(2, 3, $prev['balance'], $dec);
-			else
-				$rep->AmountCol(3, 4, abs($prev['balance']), $dec);
-			if ($curr['balance'] >= 0.0)
-				$rep->AmountCol(4, 5, $curr['balance'], $dec);
-			else
-				$rep->AmountCol(5, 6, abs($curr['balance']), $dec);
-			if ($tot['balance'] >= 0.0)
-				$rep->AmountCol(6, 7, $tot['balance'], $dec);
-			else
-				$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
-		}
-		else
-		{
-			$rep->AmountCol(2, 3, $prev['debit'], $dec);
-			$rep->AmountCol(3, 4, $prev['credit'], $dec);
-			$rep->AmountCol(4, 5, $curr['debit'], $dec);
-			$rep->AmountCol(5, 6, $curr['credit'], $dec);
-			$rep->AmountCol(6, 7, $tot['debit'], $dec);
-			$rep->AmountCol(7, 8, $tot['credit'], $dec);
-			$pdeb += $prev['debit'];
-			$pcre += $prev['credit'];
-			$cdeb += $curr['debit'];
-			$ccre += $curr['credit'];
-			$tdeb += $tot['debit'];
-			$tcre += $tot['credit'];
-			
-		}	
-		$pbal += $prev['balance'];
-		$cbal += $curr['balance'];
-		$tbal += $tot['balance'];
+		$rep->Font('bold');
+		$rep->TextCol(0, 1, $class['cid']);
+		$rep->TextCol(1, 4, $class['class_name']);
+		$rep->Font();
 		$rep->NewLine();
 
-		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
+		//Get Account groups/types under this group/type with no parents
+		$typeresult = get_account_types(false, $class['cid'], -1);
+		while ($accounttype=db_fetch($typeresult))
 		{
-			$rep->Line($rep->row - 2);
-			$rep->NewPage();
+			display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $from, $to,	$zero, $balances, $dimension, $dimension2);
 		}
+		$rep->NewLine();
 	}
 	$rep->Line($rep->row);
 	$rep->NewLine();
@@ -204,7 +266,7 @@ function print_trial_balance()
 		$rep->AmountCol(7, 8, abs($tbal), $dec);
 	$rep->NewLine();
 		
-	$rep->Line($rep->row);
+	$rep->Line($rep->row + 10);
 	if (($pbal = round2($pbal, $dec)) != 0.0)
 	{
 		$rep->NewLine(2);

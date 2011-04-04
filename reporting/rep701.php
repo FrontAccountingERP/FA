@@ -25,7 +25,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, &$dec, &$rep, $showbalance)
+function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 {
 	$printtitle = 0; //Flag for printing type name	
 	
@@ -36,12 +36,15 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance)
 		//Print Type Title if it has atleast one non-zero account	
 		if (!$printtitle)
 		{
+			$prefix = '';
+			for ($sp=1; $sp<=$level; $sp++)
+			{
+				$prefix .= '         ';
+			}		
 			$printtitle = 1;
 			$rep->row -= 4;
-			$rep->Font('bold');
 			$rep->TextCol(0, 1, $type);
-			$rep->TextCol(1, 4, $typename);
-			$rep->Font();
+			$rep->TextCol(1, 4, $prefix.$typename);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();		
@@ -54,7 +57,7 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance)
 			$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
 		}
 		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
+		$rep->TextCol(1, 2,	$prefix.$account['account_name']);
 		$rep->TextCol(2, 3,	$account['account_code2']);
 		if ($showbalance == 1)	
 			$rep->AmountCol(3, 4, $balance, $dec);
@@ -76,8 +79,8 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance)
 			$rep->Line($rep->row);
 			$rep->NewLine();		
 		}
-
-		display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
+		$nextlevel = $level + 1;
+		display_type($accounttype["id"], $accounttype["name"].' ('.$typename.')', $dec, $rep, $showbalance, $nextlevel);
 	}
 }
 
@@ -128,7 +131,7 @@ function print_Chart_of_Accounts()
 		$typeresult = get_account_types(false, $class['cid'], -1);
 		while ($accounttype=db_fetch($typeresult))
 		{
-			display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
+			display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance, 0);
 		}
 		$rep->NewLine();
 	}
