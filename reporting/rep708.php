@@ -25,8 +25,6 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-$cls_pdeb = $cls_pcre = $cls_cdeb = $cls_ccre = $cls_tdeb = $cls_tcre = $cls_pbal = $cls_cbal = $cls_tbal = 0;
-$grp_pdeb = $grp_pcre = $grp_cdeb = $grp_ccre = $grp_tdeb = $grp_tcre = $grp_pbal = $grp_cbal = $grp_tbal = 0;
 
 //----------------------------------------------------------------------------------------------------
 
@@ -39,8 +37,6 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 	//Get Accounts directly under this group/type
 	$accounts = get_gl_accounts(null, null, $type);	
 	
-	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-
 	$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $from))
 		$begin = $from;
@@ -96,6 +92,7 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 			$tdeb += $tot['debit'];
 			$tcre += $tot['credit'];
 		}	
+
 		$pbal += $prev['balance'];
 		$cbal += $curr['balance'];
 		$tbal += $tot['balance'];
@@ -168,7 +165,6 @@ function print_trial_balance()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$dec = user_price_dec();
 
-	//$cols2 = array(0, 50, 230, 330, 430, 530);
 	$cols2 = array(0, 50, 190, 310, 430, 530);
 	//-------------0--1---2----3----4----5--
 
@@ -176,9 +172,7 @@ function print_trial_balance()
 
 	$aligns2 = array('left', 'left', 'left', 'left', 'left');
 
-	//$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
 	$cols = array(0, 50, 150, 210, 270,	330, 390, 450, 510,	570);
-	//$cols = array(0, 50, 190, 250, 310,	370, 430, 490, 550);
 	//------------0--1---2----3----4----5----6----7----8--
 
 	$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
@@ -235,10 +229,6 @@ function print_trial_balance()
 	$rep->NewLine();
 	$rep->Font('bold');
 
-	//$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
-	//$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
-	//$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
-
 	if ($balances == 0)
 	{
 		$rep->TextCol(0, 2, _("Total"));
@@ -267,7 +257,7 @@ function print_trial_balance()
 	$rep->NewLine();
 		
 	$rep->Line($rep->row + 10);
-	if (($pbal = round2($pbal, $dec)) != 0.0)
+	if (($pbal = round2($pbal, $dec)) != 0.0 && $dimension == 0 && $dimension2 == 0)
 	{
 		$rep->NewLine(2);
 		$rep->Font();
