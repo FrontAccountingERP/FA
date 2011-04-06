@@ -58,6 +58,7 @@ $reports->addReport(RC_CUSTOMER, 103, _('Customer &Detail Listing'),
 $reports->addReport(RC_CUSTOMER, 114, _('Sales &Summary Report'),
 	array(	_('Start Date') => 'DATEBEGINTAX',
 			_('End Date') => 'DATEENDTAX',
+			_('Tax Id Only') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
 $reports->addReport(RC_CUSTOMER, 104, _('&Price Listing'),

@@ -28,7 +28,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_sales_summary_report();
 
-function getTaxTransactions($from, $to)
+function getTaxTransactions($from, $to, $tax_id)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
@@ -42,8 +42,10 @@ function getTaxTransactions($from, $to)
 		FROM ".TB_PREF."debtor_trans dt
 			LEFT JOIN ".TB_PREF."debtors_master d ON d.debtor_no=dt.debtor_no
 			LEFT JOIN ".TB_PREF."trans_tax_details t ON (t.trans_type=dt.type AND t.trans_no=dt.trans_no)
-		WHERE (dt.type=".ST_SALESINVOICE." OR dt.type=".ST_CUSTCREDIT.")
-		AND dt.tran_date >=".db_escape($fromdate)." AND dt.tran_date<=".db_escape($todate)."
+		WHERE (dt.type=".ST_SALESINVOICE." OR dt.type=".ST_CUSTCREDIT.") ";
+	if ($tax_id)
+		$sql .= "AND tax_id<>'' ";
+	$sql .= "AND dt.tran_date >=".db_escape($fromdate)." AND dt.tran_date<=".db_escape($todate)."
 		GROUP BY d.debtor_no, d.name, d.tax_id ORDER BY d.name"; 
     return db_query($sql,"No transactions were returned");
 }
@@ -56,8 +58,14 @@ function print_sales_summary_report()
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
-	$comments = $_POST['PARAM_2'];
-	$destination = $_POST['PARAM_3'];
+	$tax_id = $_POST['PARAM_2'];
+	$comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($tax_id == 0)
+		$tid = _('No');
+	else
+		$tid = _('Yes');
+
 
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -69,7 +77,8 @@ function print_sales_summary_report()
 	$rep = new FrontReport(_('Sales Summary Report'), "SalesSummaryReport", user_pagesize());
 
 	$params =   array( 	0 => $comments,
-						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to));
+						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+						2 => array(  'text' => _('Tax Id Only'),'from' => $tid,'to' => ''));
 
 	$cols = array(0, 130, 180, 270, 350, 500);
 
@@ -81,7 +90,7 @@ function print_sales_summary_report()
 	
 	$totalnet = 0.0;
 	$totaltax = 0.0;
-	$transactions = getTaxTransactions($from, $to);
+	$transactions = getTaxTransactions($from, $to, $tax_id);
 
 	$rep->TextCol(0, 4, _("Values in domestic currency"));
 	$rep->NewLine(2);
