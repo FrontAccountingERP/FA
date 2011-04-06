@@ -34,7 +34,7 @@ function getTaxTransactions($from, $to, $tax_id)
 	$todate = date2sql($to);
 
 	$sql = "SELECT d.debtor_no, d.name AS cust_name, d.tax_id, 
-		CASE WHEN net_amount IS NULL THEN 
+		CASE WHEN net_amount IS NULL OR amount=0 THEN 
 			SUM(CASE WHEN dt.type=".ST_CUSTCREDIT." THEN (ov_amount+ov_freight+ov_discount)*-1 
 			ELSE (ov_amount+ov_freight+ov_discount) END *dt.rate) ELSE 
 			SUM(CASE WHEN dt.type=".ST_CUSTCREDIT." THEN -net_amount ELSE net_amount END *ex_rate) END AS total,
