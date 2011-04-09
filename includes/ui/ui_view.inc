@@ -441,12 +441,12 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
     {
     	if ($tax_included)
     	{
-        	label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) "
+        	label_row(_("Included") . " " . $taxitem['tax_type_name']
         		. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
     	}
     	else
     	{
-        	label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
+        	label_row($taxitem['tax_type_name'],
         		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
         	$total +=  round2($taxitem['Value'], user_price_dec());
     	}
@@ -633,7 +633,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					{
 						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
-						$res = get_tax_group_items($cart->tax_group_id);
+						$res = get_tax_group_rates($cart->tax_group_id);
 						while ($row = db_fetch($res))
 							$rates += $row['rate'];
 						if ($rates == 0)

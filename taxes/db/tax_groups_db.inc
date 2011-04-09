@@ -94,67 +94,58 @@ function delete_tax_group_items($id)
 	db_query($sql, "could not delete item tax group items");					
 }
 
-function get_tax_group_items($id)
+//
+//	Return all tax types with rate value updated according to tax group selected
+//	Call the function without arg to find shipment group taxes.
+//
+function get_tax_group_rates($group_id=null)
 {
-	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, ".TB_PREF."tax_types.rate, 
-		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
-		FROM ".TB_PREF."tax_group_items, ".TB_PREF."tax_types 
-		WHERE tax_group_id=".db_escape($id)."
-			AND ".TB_PREF."tax_types.id=tax_type_id";
-	
-	return db_query($sql, "could not get item tax type group items");
+	global $suppress_tax_rates;
+
+	$sql = 
+	"SELECT t.id as tax_type_id,"
+		.(isset($suppress_tax_rates) && $suppress_tax_rates == 1
+			? "t.name as tax_type_name,"
+			: "CONCAT(t.name, ' (', t.rate, '%)') as tax_type_name,")
+		."t.sales_gl_code,
+		  t.purchasing_gl_code,
+		  IF(g.tax_type_id, t.rate, NULL) as rate
+		FROM ".TB_PREF."tax_types t 
+		  LEFT JOIN ".TB_PREF."tax_group_items g ON t.id=g.tax_type_id
+			AND g.tax_group_id=". ($group_id ? db_escape($group_id) : "(SELECT id FROM ".TB_PREF."tax_groups WHERE tax_shipping=1)")
+		." WHERE !t.inactive";
+
+	return db_query($sql, "cannot get tax types as array");
 }
 
 function get_tax_group_items_as_array($id)
 {
-	$ret_tax_array = array();
-	
-	$tax_group_items = get_tax_group_items($id);
-	
-	while ($tax_group_item = db_fetch($tax_group_items)) 
+	$active_taxes = $ret_tax_array = array();
+
+	$tax_group_items = get_tax_group_rates($id);
+
+	while ($tax_group_item = db_fetch_assoc($tax_group_items)) 
 	{
-		$index = $tax_group_item['tax_type_id'];
-		$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
-		$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
-		$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
-		$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-		$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-		$ret_tax_array[$index]['Value'] = 0;
+		$tax_group_item['Value'] = 0;
+		$ret_tax_array[$tax_group_item['tax_type_id']] = $tax_group_item;
 	}
-	
+
 	return $ret_tax_array;
 }
 
-function get_shipping_tax_group_items()
-{
-
-	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, ".TB_PREF."tax_types.rate,
-		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
-		FROM " .TB_PREF."tax_group_items, ".TB_PREF."tax_types, ".TB_PREF."tax_groups
-		WHERE " .TB_PREF."tax_groups.tax_shipping=1
-		AND " .TB_PREF."tax_groups.id=tax_group_id
-		AND ".TB_PREF."tax_types.id=tax_type_id";
-	return db_query($sql, "could not get shipping tax group items");
-}
 
 function get_shipping_tax_as_array()
 {
-	$ret_tax_array = array();
+	$active_taxes = $ret_tax_array = array();
 
-	
-	$tax_group_items = get_shipping_tax_group_items();
+	$tax_group_items = get_tax_group_rates();
 
-	while ($tax_group_item = db_fetch($tax_group_items)) 
+	while ($tax_group_item = db_fetch_assoc($tax_group_items)) 
 	{
-		$index = $tax_group_item['tax_type_id'];
-		$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
-		$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
-		$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
-		$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
-		$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-		$ret_tax_array[$index]['Value'] = 0;
+		$tax_group_item['Value'] = 0;
+		$ret_tax_array[$tax_group_item['tax_type_id']] = $tax_group_item;
 	}
-	
+
 	return $ret_tax_array;
 }
-?>
+

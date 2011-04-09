@@ -40,24 +40,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The tax group name cannot be empty."));
 		set_focus('name');
 	} 
-	/* Editable rate has been removed 090920 Joe Hunt
-	else 
-	{
-		// make sure any entered rates are valid
-    	for ($i = 0; $i < 5; $i++) 
-    	{
-    		if (isset($_POST['tax_type_id' . $i]) && 
-    			$_POST['tax_type_id' . $i] != ALL_NUMERIC	&& 
-    			!check_num('rate' . $i, 0))
-    		{
-			display_error( _("An entered tax rate is invalid or less than zero."));
-    			$input_error = 1;
-			set_focus('rate');
-			break;
-    		}
-    	}
-	}
-	*/
+
 	if ($input_error != 1) 
 	{
 
@@ -65,18 +48,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	$taxes = array();
     	$rates = array();
 
-    	for ($i = 0; $i < 5; $i++) 
-    	{
-    		if (isset($_POST['tax_type_id' . $i]) &&
-   				$_POST['tax_type_id' . $i] != ANY_NUMERIC) 
-   			{
-        		$taxes[] = $_POST['tax_type_id' . $i];
-				$rates[] = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-				//Editable rate has been removed 090920 Joe Hunt
-        		//$rates[] = input_num('rate' . $i);
-    		}
-    	}
-
+		while (($id = find_submit('tax_type_id'))!=-1)
+		{
+       		$taxes[] = $id;
+			$rates[] = get_tax_type_default_rate($id);
+			unset($_POST['tax_type_id' . $id]);
+		}
     	if ($selected_id != -1) 
     	{
 	   		update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, 
@@ -134,7 +111,8 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
 	unset($_POST);
-	$_POST['show_inactive'] = $sav;
+	if($sav)
+		$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
@@ -160,10 +138,6 @@ while ($myrow = db_fetch($result))
 	else
 		label_cell(_("No"));
 
-	/*for ($i=0; $i< 5; $i++)
-		if ($myrow["type" . $i] != ALL_NUMERIC)
-			echo "<td>" . $myrow["type" . $i] . "</td>";*/
-
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
@@ -187,18 +161,7 @@ if ($selected_id != -1)
     	$_POST['name']  = $group["name"];
     	$_POST['tax_shipping'] = $group["tax_shipping"];
 
-    	$items = get_tax_group_items($selected_id);
-
-    	$i = 0;
-    	while ($tax_item = db_fetch($items)) 
-    	{
-    		$_POST['tax_type_id' . $i]  = $tax_item["tax_type_id"];
-    		$_POST['rate' . $i]  = percent_format($tax_item["rate"]);
-    		$i ++;
-    	}
-    	while($i<5) unset($_POST['tax_type_id'.$i++]);
 	}
-
 	hidden('selected_id', $selected_id);
 }
 text_row_ex(_("Description:"), 'name', 40);
@@ -208,30 +171,18 @@ end_table();
 
 display_note(_("Select the taxes that are included in this group."), 1, 1);
 
+// null means transport tax group, but for new we do not use real rates
+$items = get_tax_group_rates($selected_id!=-1 ? $selected_id : null);
+
+$th = array(_("Tax"), "");
+
 start_table(TABLESTYLE2);
-//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
-//Editable rate has been removed 090920 Joe Hunt
-$th = array(_("Tax"), _("Rate (%)"));
 table_header($th);
-for ($i = 0; $i < 5; $i++) 
+
+while($item = db_fetch_assoc($items)) 
 {
-	start_row();
-	if (!isset($_POST['tax_type_id' . $i]))
-		$_POST['tax_type_id' . $i] = 0;
-	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
-
-	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) 
-	{
-		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-		label_cell(percent_format($default_rate), "nowrap align=right");
-
-		//Editable rate has been removed 090920 Joe Hunt
-		//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-		//	$_POST['rate' . $i] = percent_format($default_rate);
-		//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
-		//  user_percent_dec()); 
-	}
-	end_row();
+	check_row($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+		$selected_id!=-1 && isset($item['rate']), "align='center'");
 }
 
 end_table(1);

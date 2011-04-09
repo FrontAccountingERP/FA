@@ -390,7 +390,9 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 function get_trans_tax_details($trans_type, $trans_no)
 {
 	$sql = "SELECT ".TB_PREF."trans_tax_details.*, "
-		.TB_PREF."tax_types.name AS tax_type_name
+		.TB_PREF."tax_types.name AS tax_type_name, "
+		.TB_PREF."trans_tax_details.rate AS effective_rate, "
+		.TB_PREF."tax_types.rate AS rate
 		FROM ".TB_PREF."trans_tax_details,".TB_PREF."tax_types
 		WHERE trans_type = ".db_escape($trans_type)."
 		AND trans_no = ".db_escape($trans_no)."
