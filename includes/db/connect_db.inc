@@ -36,7 +36,7 @@ $db_duplicate_error_code = 1062;
 function db_query($sql, $err_msg=null)
 {
 	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
-		$db_connections;
+		$db_connections, $db_last_inserted_id;
 	
 	// set current db prefix
 	$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
@@ -49,7 +49,9 @@ function db_query($sql, $err_msg=null)
 	}
 
 	$result = mysql_query($sql, $db);
+	
 	if($sql_trail) {
+		$db_last_inserted_id = mysql_insert_id($db);	// preserve in case trail insert is done
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
 			mysql_query(
 			"INSERT INTO ".$cur_prefix."sql_trail
@@ -150,8 +152,9 @@ function db_error_msg($conn)
 
 function db_insert_id()
 {
-	global $db;
-	return mysql_insert_id($db);
+	global $db_last_inserted_id, $sql_trail, $db;
+
+	return $sql_trail ? $db_last_inserted_id : mysql_insert_id($db);
 }
 
 function db_num_affected_rows()
