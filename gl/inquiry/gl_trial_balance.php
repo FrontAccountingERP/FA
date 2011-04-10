@@ -29,8 +29,6 @@ page(_($help_context = "Trial Balance"), false, false, "", $js);
 
 $k = 0;
 $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-$cls_pdeb = $cls_pcre = $cls_cdeb = $cls_ccre = $cls_tdeb = $cls_tcre = $cls_pbal = $cls_cbal = $cls_tbal = 0;
-$grp_pdeb = $grp_pcre = $grp_cdeb = $grp_ccre = $grp_tdeb = $grp_tcre = $grp_pbal = $grp_cbal = $grp_tbal = 0;
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -77,7 +75,6 @@ function display_trial_balance($type, $typename)
 	//Get Accounts directly under this group/type
 	$accounts = get_gl_accounts(null, null, $type);		
 	
-	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 	$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
@@ -226,8 +223,8 @@ while ($class = db_fetch($classresult))
 	end_row();
 
 	end_table(1);
-//	if (($pbal = round2($pbal, user_price_dec()))  != 0)
-		//display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+	if (($pbal = round2($pbal, user_price_dec()))  != 0)
+		display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	div_end();
 
 //----------------------------------------------------------------------------------------------------
