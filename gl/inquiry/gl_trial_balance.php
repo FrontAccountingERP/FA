@@ -226,7 +226,7 @@ while ($class = db_fetch($classresult))
 	end_row();
 
 	end_table(1);
-	if (($pbal = round2($pbal, user_price_dec()))  != 0)
+//	if (($pbal = round2($pbal, user_price_dec()))  != 0)
 		//display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	div_end();
 
