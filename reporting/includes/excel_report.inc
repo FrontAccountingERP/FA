@@ -695,6 +695,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
+		global $path_to_root;
 		++$this->y;
 		for ($i = 0; $i < $this->numcols; $i++)
 			$this->sheet->writeBlank($this->y, $i, $this->formatFooter);
@@ -714,7 +715,8 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 			}
 			closedir($d);
 		}
-		meta_forward($_SERVER['PHP_SELF'], "xls=1&filename=$this->filename&unique=$this->unique_name");
+
+		meta_forward($path_to_root.'/reporting/prn_redirect.php', "xls=1&filename=$this->filename&unique=$this->unique_name");
 		exit();
 	}
 }
