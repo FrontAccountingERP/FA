@@ -137,7 +137,7 @@ if (isset($_POST['addupdate']))
 	}
 	elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'],"'") || 
 		strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || 
-		strstr($_POST['NewStockID'], "&")) 
+		strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")) 
 	{
 		$input_error = 1;
 		display_error( _('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
