@@ -153,7 +153,6 @@ class cart
 				$line->quantity += $srcline['quantity'] - 
 					($src_type==ST_SALESORDER ? $srcline['qty_sent'] : $srcline['qty_done']); // add free qty on src doc
 				$line_no++;
-				break;
 			}
 		}
 
