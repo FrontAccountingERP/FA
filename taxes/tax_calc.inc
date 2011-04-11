@@ -196,7 +196,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				if ($item_tax['rate'] != null) {
 					$index = $item_tax['tax_type_id'];
-					if(isset($ret_tax_array[$index])) {
+					if (isset($item_tax[$index]['rate'])) { // use customer tax group on shipment 
 					  if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 						$ret_tax_array[$index]['Value'] += ($shipping_net * $item_tax['rate'] / 100);
 					    $ret_tax_array[$index]['Net'] += $shipping_net;
