@@ -33,22 +33,30 @@ function getTaxTransactions($from, $to, $tax_id)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT d.debtor_no, d.name AS cust_name, d.tax_id, 
-		CASE WHEN net_amount IS NULL OR amount=0 THEN 
-			SUM(CASE WHEN dt.type=".ST_CUSTCREDIT." THEN (ov_amount+ov_freight+ov_discount)*-1 
-			ELSE (ov_amount+ov_freight+ov_discount) END *dt.rate) ELSE 
-			SUM(CASE WHEN dt.type=".ST_CUSTCREDIT." THEN -net_amount ELSE net_amount END *ex_rate) END AS total,
-		SUM(CASE WHEN dt.type=".ST_CUSTCREDIT." THEN -amount ELSE amount END *ex_rate) AS tax
+	$sql = "SELECT d.debtor_no, d.name AS cust_name, d.tax_id, dt.type, dt.trans_no,  
+			CASE WHEN dt.type=".ST_CUSTCREDIT." THEN (ov_amount+ov_freight+ov_discount)*-1 
+			ELSE (ov_amount+ov_freight+ov_discount) END *dt.rate AS total
 		FROM ".TB_PREF."debtor_trans dt
 			LEFT JOIN ".TB_PREF."debtors_master d ON d.debtor_no=dt.debtor_no
-			LEFT JOIN ".TB_PREF."trans_tax_details t ON (t.trans_type=dt.type AND t.trans_no=dt.trans_no)
 		WHERE (dt.type=".ST_SALESINVOICE." OR dt.type=".ST_CUSTCREDIT.") ";
 	if ($tax_id)
 		$sql .= "AND tax_id<>'' ";
 	$sql .= "AND dt.tran_date >=".db_escape($fromdate)." AND dt.tran_date<=".db_escape($todate)."
-		GROUP BY d.debtor_no, d.name, d.tax_id ORDER BY d.name"; 
+		ORDER BY d.debtor_no"; 
     return db_query($sql,"No transactions were returned");
 }
+
+function getTaxes($type, $trans_no)
+{
+	$sql = "SELECT included_in_price, SUM(CASE WHEN trans_type=".ST_CUSTCREDIT." THEN -amount ELSE amount END * ex_rate) AS tax
+		FROM ".TB_PREF."trans_tax_details WHERE trans_type=$type AND trans_no=$trans_no GROUP BY included_in_price";
+
+    $result = db_query($sql,"No transactions were returned");
+    if ($result !== false)
+    	return db_fetch($result);
+    else
+    	return null;
+}    	
 
 //----------------------------------------------------------------------------------------------------
 
@@ -92,27 +100,56 @@ function print_sales_summary_report()
 	$totaltax = 0.0;
 	$transactions = getTaxTransactions($from, $to, $tax_id);
 
-	$rep->TextCol(0, 4, _("Values in domestic currency"));
+	$rep->TextCol(0, 4, _('Balances in Home Currency'));
 	$rep->NewLine(2);
 	
+	$custno = 0;
+	$tax = $total = 0;
+	$custname = $tax_id = "";
 	while ($trans=db_fetch($transactions))
 	{
-		$rep->TextCol(0, 1, $trans['cust_name']);
-		$rep->TextCol(1, 2,	$trans['tax_id']);
-		$rep->AmountCol(2, 3,	$trans['total'], $dec);
-		$rep->AmountCol(3, 4,	$trans['tax'], $dec);
-		$totalnet += $trans['total'];
-		$totaltax += $trans['tax'];
-
-		$rep->NewLine();
-
-		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
+		if ($custno != $trans['debtor_no'])
 		{
-			$rep->Line($rep->row - 2);
-			$rep->NewPage();
-		}
-	}
+			if ($custno != 0)
+			{
+				$rep->TextCol(0, 1, $custname);
+				$rep->TextCol(1, 2,	$tax_id);
+				$rep->AmountCol(2, 3, $total, $dec);
+				$rep->AmountCol(3, 4, $tax, $dec);
+				$totalnet += $total;
+				$totaltax += $tax;
+				$total = $tax = 0;
+				$rep->NewLine();
 
+				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
+				{
+					$rep->Line($rep->row - 2);
+					$rep->NewPage();
+				}
+			}
+			$custno = $trans['debtor_no'];
+			$custname = $trans['cust_name'];
+			$tax_id = $trans['tax_id'];
+		}	
+		$taxes = getTaxes($trans['type'], $trans['trans_no']);
+		if ($taxes != null)
+		{
+			if ($taxes['included_in_price'])
+				$trans['total'] -= $taxes['tax'];
+			$tax += $taxes['tax'];
+		}	
+		$total += $trans['total']; 
+	}
+	if ($custno != 0)
+	{
+		$rep->TextCol(0, 1, $custname);
+		$rep->TextCol(1, 2,	$tax_id);
+		$rep->AmountCol(2, 3, $total, $dec);
+		$rep->AmountCol(3, 4, $tax, $dec);
+		$totalnet += $total;
+		$totaltax += $tax;
+		$rep->NewLine();
+	}
 	$rep->Font('bold');
 	$rep->NewLine();
 	$rep->Line($rep->row + $rep->lineHeight);
