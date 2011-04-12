@@ -136,7 +136,7 @@ if (isset($_POST['Process']) && can_process())
 
 function check_item_data()
 {
-	if (!check_num('qty', 0))
+	if (input_num('qty') == 0 || !check_num('qty', 0))
 	{
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
