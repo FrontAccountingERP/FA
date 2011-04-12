@@ -148,15 +148,26 @@ function voiding_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true, $not_implemented);
+	systypes_list_cells(_("Type:"), 'filterType', null, true, $not_implemented);
 	if (list_updated('filterType'))
 		$selected_id = -1;
+
+	if (!isset($_POST['FromTransNo']))
+        $_POST['FromTransNo'] = "1";
+    if (!isset($_POST['ToTransNo']))
+        $_POST['ToTransNo'] = "999999";
+
+    ref_cells(_("from #:"), 'FromTransNo');
+
+    ref_cells(_("to #:"), 'ToTransNo');
+
+    submit_cells('ProcessSearch', _("Search"), '', '', 'default');
 		
 	end_row();
     end_table(1);
     
 	$trans_ref = false;
-	$sql = get_sql_for_view_transactions($_POST['filterType'], null, null, $trans_ref);
+	$sql = get_sql_for_view_transactions($_POST['filterType'], $_POST['FromTransNo'], $_POST['ToTransNo'], $trans_ref);
 	if ($sql == "")
 		return;
 
