@@ -391,6 +391,9 @@ function display_customer_trans_tax_details($tax_items, $columns)
 	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
+     	if (!$tax_item['amount'])
+     		continue;
+
     	$tax = number_format2($tax_item['amount'],user_price_dec());
 		if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
 			$tax_type_name = $tax_item['tax_type_name'];
@@ -421,6 +424,9 @@ function display_supp_trans_tax_details($tax_items, $columns)
 {
     while ($tax_item = db_fetch($tax_items))
     {
+     	if (!$tax_item['amount'])
+     		continue;
+
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
         	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) "
@@ -439,7 +445,7 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 
     foreach ($taxes as $taxitem)
     {
-    	if (isset($taxitem['rate'])) {
+    	if ($taxitem['Value'] != 0) {
 	    	if ($tax_included)
     		{
         		label_row(_("Included") . " " . $taxitem['tax_type_name']

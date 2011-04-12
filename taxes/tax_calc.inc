@@ -154,12 +154,11 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	for ($i = 0; $i < count($items); $i++)
 	{
 		$item_taxes = get_taxes_for_item($items[$i], $ret_tax_array);
-
 		if ($item_taxes != null) 
 		{
 			foreach ($item_taxes as $item_tax) 
 			{
-				if ($item_tax['rate'] != null) {
+				if ($item_tax['rate'] !== null) {
 					$index = $item_tax['tax_type_id'];
 					if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 					  $nprice = get_tax_free_price_for_item($items[$i], $prices[$i], $tax_group, $tax_included, null, $item_tax['tax_type_id']);
@@ -194,17 +193,16 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			}
 			foreach ($item_taxes as $item_tax) 
 			{
-				if ($item_tax['rate'] != null) {
+				if ($item_tax['rate'] !== null) {
 					$index = $item_tax['tax_type_id'];
-					if (isset($item_tax[$index]['rate'])) { // use customer tax group on shipment 
+					$rate = isset($ret_tax_array[$index]['rate']) ? $item_tax['rate'] : 0; // use customer tax group on shipment 
 					  if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
-						$ret_tax_array[$index]['Value'] += ($shipping_net * $item_tax['rate'] / 100);
-					    $ret_tax_array[$index]['Net'] += $shipping_net;
+						$ret_tax_array[$index]['Value'] += ($shipping_net * $rate / 100);
+				        $ret_tax_array[$index]['Net'] += $shipping_net;
 					  } else {
-						$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
-					    $ret_tax_array[$index]['Net'] += $shipping_cost;
-					 }
-					}
+						$ret_tax_array[$index]['Value'] += ($shipping_cost * $rate / 100);
+				        $ret_tax_array[$index]['Net'] += $shipping_cost;
+					  }
 				}
 			}
 		}

@@ -248,7 +248,6 @@ function copy_to_cart()
 		if ($newpayment) {
 			$cart->due_date = $cart->document_date;
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-			$cart->freight_cost = input_num('freight_cost');
 			$cart->ship_via = 1;
 			$cart->deliver_to = '';
 			$cart->Location = $cart->pos['pos_location'];
@@ -257,13 +256,13 @@ function copy_to_cart()
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
 		$cart->cust_ref = $_POST['cust_ref'];
-		$cart->freight_cost = input_num('freight_cost');
 		$cart->deliver_to = $_POST['deliver_to'];
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
 		$cart->ship_via = $_POST['ship_via'];
 		$cart->Location = $_POST['Location'];
 	}
+	$cart->freight_cost = input_num('freight_cost');
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
 	else
@@ -419,6 +418,11 @@ function can_process() {
 
 //-----------------------------------------------------------------------------
 
+if (isset($_POST['update'])) {
+	copy_to_cart();
+	$Ajax->activate('items_table');
+}
+
 if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items']->trans_no != 0);
@@ -446,10 +450,6 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	} else {
 		meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
 	}
-}
-
-if (isset($_POST['update'])) {
-	$Ajax->activate('items_table');
 }
 
 //--------------------------------------------------------------------------------

@@ -485,7 +485,7 @@ class cart
 		if ($tax_items != null) {
 			foreach ($tax_items as $item_tax) {
 				$index = $item_tax['tax_type_id'];
-				if (isset($this->tax_group_array[$index])) {
+				if (isset($this->tax_group_array[$index]['rate'])) {
 					$tax_rate += $item_tax['rate'];
 				}
 			}
