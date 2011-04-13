@@ -225,13 +225,16 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			//$old_price = $old[0];
 			 
 			$old_price = $old[2];
+			// adjust for tax included.
+			$old_price = get_tax_free_price_for_item($entered_grn->item_code, $old_price,
+				$supp_trans->tax_group_id, $entered_grn->tax_included);			
 
 			/*
  			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
 			*/
-			//if ($old_price != $entered_grn->chg_price) // price-change, so update
+			//if ($old_price != $line_taxfree) // price-change, so update
 			//{
-			//$diff = $entered_grn->chg_price - $old_price;
+			//$diff = $line_taxfree - $old_price;
 			$old_date = sql2date($old[1]);
 			if (!is_inventory_item($entered_grn->item_code))
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
@@ -245,7 +248,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 					$entered_grn->this_quantity_inv * $old_price, $supp_trans->supplier_id, "", $ex_rate);
 				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
-					$entered_grn->chg_price);	
+					$line_taxfree);	
 			
 				// always return due to change in currency.
 				/*$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
