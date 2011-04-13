@@ -116,6 +116,12 @@ $reports->addReport(RC_CUSTOMER, 109, _('&Print Sales Orders'),
 			_('Email Customers') => 'YES_NO',
 			_('Print as Quote') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
+$reports->addReport(RC_CUSTOMER, 111, _('&Print Sales Quotations'),
+	array(	_('From') => 'QUOTATIONS',
+			_('To') => 'QUOTATIONS',
+			_('Currency Filter') => 'CURRENCY',
+			_('Email Customers') => 'YES_NO',
+			_('Comments') => 'TEXTBOX'));
 $reports->addReport(RC_CUSTOMER, 112, _('Print Receipts'),
 	array(	_('From') => 'RECEIPT',
 			_('To') => 'RECEIPT',
