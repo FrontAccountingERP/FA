@@ -157,6 +157,8 @@ function print_invoices()
 			$first = true;
     		while ($tax_item = db_fetch($tax_items))
     		{
+    			if ($tax_item['amount'] == 0)
+    				continue;
     			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
     			
     			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)

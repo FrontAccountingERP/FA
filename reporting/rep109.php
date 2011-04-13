@@ -166,12 +166,11 @@ function print_sales_orders()
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{
+			if ($tax_item['Value'] == 0)
+				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
-				$tax_type_name = $tax_item['tax_type_name'];
-			else
-				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
+			$tax_type_name = $tax_item['tax_type_name'];
 
 			if ($myrow['tax_included'])
 			{
@@ -188,7 +187,7 @@ function print_sales_orders()
 					$first = false;
 				}
 				else
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . " " . $doc_Amount . ": " . $DisplayTax, -2);
 			}
 			else
 			{
