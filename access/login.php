@@ -12,21 +12,15 @@
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 		die(_("Restricted access"));
 	include_once($path_to_root . "/includes/ui.inc");
-	
+	include_once($path_to_root . "/includes/page/header.inc");
+
 	$js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
 {
 	document.forms[0].company_login_name.options[".$_SESSION["wa_current_user"]->company."].selected = true;
 }
-".get_js_png_fix()."</script>";
-	$js2 = "<script language='JavaScript' type='text/javascript'>
-function set_fullmode() {
-	document.getElementById('ui_mode').value = 1;
-	document.loginform.submit();
-	return true;
-}
 </script>";
-
+	add_js_file('login.js');
 	// Display demo user name and password within login form if "$allow_demo_mode" is true
 	if ($allow_demo_mode == true)
 	{
@@ -52,11 +46,11 @@ function set_fullmode() {
 	echo "<head><title>$title</title>\n";
    	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
 	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+	send_scripts();
 	if (!$login_timeout)
 	{
 		echo $js;
-	}	
-	echo $js2;
+	}
 	echo "</head>\n";
 
 	echo "<body id='loginscreen' $onload>\n";
@@ -88,7 +82,7 @@ function set_fullmode() {
 
 	password_row(_("Password:"), 'password', $password);
 
-		if ($login_timeout) {
+	if ($login_timeout) {
 		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
 	} else {
 		if (isset($_SESSION['wa_current_user']->company))
@@ -114,6 +108,8 @@ function set_fullmode() {
 			echo "<input type='hidden' name='$p' value='$val'>";
 	}
 	end_form(1);
+	$Ajax->addScript(true, "document.forms[0].password.focus();");
+
     echo "<script language='JavaScript' type='text/javascript'>
     //<![CDATA[
             <!--
