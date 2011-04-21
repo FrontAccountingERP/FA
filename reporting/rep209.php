@@ -58,7 +58,7 @@ function get_po_details($order_no)
 
 function print_po()
 {
-	global $path_to_root;
+	global $path_to_root, $show_po_item_codes;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -140,8 +140,11 @@ function print_po()
 			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
 			$DisplayNet = number_format2($Net,$dec);
-			//$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
-			$rep->TextCol(0, 2,	$myrow2['description'], -2);
+			if ($show_po_item_codes) {
+				$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
+				$rep->TextCol(1, 2,	$myrow2['description'], -2);
+			} else
+				$rep->TextCol(0, 2,	$myrow2['description'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
 			$rep->TextCol(3, 4,	$DisplayQty, -2);
 			$rep->TextCol(4, 5,	$myrow2['units'], -2);
