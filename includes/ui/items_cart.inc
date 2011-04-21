@@ -20,8 +20,6 @@ class items_cart
 
 	var	$order_id;
 
-	var $editing_item, $deleting_item;
-
 	var $from_loc;
 	var $to_loc;
 	var $tran_date;

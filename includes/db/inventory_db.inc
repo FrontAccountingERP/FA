@@ -345,7 +345,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 	//Chaitanya : If negative adjustment result in negative or zero inventory 
 	//then difference should be adjusted
 	$qoh = get_qoh_on_date($stock_id);
-	display_notification($qoh." : ".$quantity);
+
 	if ($qoh + $quantity <= 0 && $qoh > 0) //Positive inventory turning zero/negative
 	{
 		global $Refs;
