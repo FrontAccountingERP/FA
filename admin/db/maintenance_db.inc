@@ -301,8 +301,7 @@ function db_import($filename, $connection, $force=true)
 		{	// check if line begins with one of allowed queries
 		 	foreach($allowed_commands as $cmd => $table) 
 			{
-//				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
-				if (stripos($line, $cmd) === 0) 
+				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
 				{
 					if ($cmd == 'delimiter') {
 						$delimiter = trim(substr($line, 10));
