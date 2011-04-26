@@ -40,28 +40,35 @@ function check_data()
 {
 	global $db_connections, $tb_pref_counter, $selected_id;
 
-	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
-	{
-		display_error(_("Database settings are not specified."));
- 		return false;
-	}
-
-	foreach($db_connections as $id=>$con)
-	{
-	 if($id != $selected_id && $_POST['host'] == $con['host'] 
-	 	&& $_POST['dbname'] == $con['dbname'])
-	  	{
-			if ($_POST['tbpref'] == $con['tbpref'])
-			{
-				display_error(_("This database settings are already used by another company."));
-				return false;
-			}
-			if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == ''))
-			{
-				display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
-				return false;
-			}
-	  	}
+	if($selected_id != -1) {
+		if ($_POST['name'] == "")
+		{
+			display_error(_("Database settings are not specified."));
+	 		return false;
+		}
+	} else {
+		if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
+		{
+			display_error(_("Database settings are not specified."));
+	 		return false;
+		}
+		foreach($db_connections as $id=>$con)
+		{
+		 if($id != $selected_id && $_POST['host'] == $con['host'] 
+		 	&& $_POST['dbname'] == $con['dbname'])
+	  		{
+				if ($_POST['tbpref'] == $con['tbpref'])
+				{
+					display_error(_("This database settings are already used by another company."));
+					return false;
+				}
+				if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == ''))
+				{
+					display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+					return false;
+				}
+		  	}
+		}
 	}
 	return true;
 }
@@ -95,41 +102,43 @@ function handle_submit()
 
 	$new = !isset($db_connections[$selected_id]);
 
-	$db_connections[$selected_id]['name'] = $_POST['name'];
-	$db_connections[$selected_id]['host'] = $_POST['host'];
-	$db_connections[$selected_id]['dbuser'] = $_POST['dbuser'];
-	$db_connections[$selected_id]['dbpassword'] = $_POST['dbpassword'];
-	$db_connections[$selected_id]['dbname'] = $_POST['dbname'];
-	if (is_numeric($_POST['tbpref']))
-	{
-		$db_connections[$selected_id]['tbpref'] = $_POST['tbpref'] == 1 ?
-		  $tb_pref_counter."_" : '';
-	}
-	else if ($_POST['tbpref'] != "")
-		$db_connections[$selected_id]['tbpref'] = $_POST['tbpref'];
-	else
-		$db_connections[$selected_id]['tbpref'] = "";
-
 	if ((bool)$_POST['def'] == true)
 		$def_coy = $selected_id;
 
-	$conn = $db_connections[$selected_id];
-	if (($db = db_create_db($conn)) == 0)
-	{
-		display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
-		$error = true;
-	} else {
-		if (!db_import($path_to_root.'/sql/'.get_post('coa'), $conn, $selected_id)) {
-			display_error(_('Cannot create new company due to bugs in sql file.'));
+	$db_connections[$selected_id]['name'] = $_POST['name'];
+	if($new) {
+		$db_connections[$selected_id]['host'] = $_POST['host'];
+		$db_connections[$selected_id]['dbuser'] = $_POST['dbuser'];
+		$db_connections[$selected_id]['dbpassword'] = $_POST['dbpassword'];
+		$db_connections[$selected_id]['dbname'] = $_POST['dbname'];
+		if (is_numeric($_POST['tbpref']))
+		{
+			$db_connections[$selected_id]['tbpref'] = $_POST['tbpref'] == 1 ?
+			  $tb_pref_counter."_" : '';
+		}
+		else if ($_POST['tbpref'] != "")
+			$db_connections[$selected_id]['tbpref'] = $_POST['tbpref'];
+		else
+			$db_connections[$selected_id]['tbpref'] = "";
+
+		$conn = $db_connections[$selected_id];
+		if (($db = db_create_db($conn)) == 0)
+		{
+			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 			$error = true;
-		} else
-			if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-				update_admin_password($conn, md5($_POST['admpassword']));
-	}
-	set_global_connection();
-	if ($error) {
-		remove_connection($selected_id);
-		return false;
+		} else {
+			if (!db_import($path_to_root.'/sql/'.get_post('coa'), $conn, $selected_id)) {
+				display_error(_('Cannot create new company due to bugs in sql file.'));
+				$error = true;
+			} else
+				if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
+					update_admin_password($conn, md5($_POST['admpassword']));
+		}
+		set_global_connection();
+		if ($error) {
+			remove_connection($selected_id);
+			return false;
+		}
 	}
 	$error = write_config_db($new);
 	if ($error == -1)
@@ -316,26 +325,32 @@ function display_company_edit($selected_id)
 		$_POST['dbpassword']  = $conn['dbpassword'];
 		$_POST['dbname']  = $conn['dbname'];
 	}
+
 	text_row_ex(_("Company"), 'name', 30);
-	text_row_ex(_("Host"), 'host', 30, 60);
-	text_row_ex(_("Database User"), 'dbuser', 30);
+
 	if ($selected_id == -1)
+	{
+		text_row_ex(_("Host"), 'host', 30, 60);
+		text_row_ex(_("Database User"), 'dbuser', 30);
 		text_row_ex(_("Database Password"), 'dbpassword', 30);
-	text_row_ex(_("Database Name"), 'dbname', 30);
-	if ($selected_id == -1)
+		text_row_ex(_("Database Name"), 'dbname', 30);
 		yesno_list_row(_("Table Pref"), 'tbpref', 1, $_POST['tbpref'], _("None"), false);
-	else
+	} else {
+		label_row(_("Host"), $_POST['host']);
+		label_row(_("Database User"), $_POST['dbuser']);
+		label_row(_("Database Name"), $_POST['dbname']);
 		label_row(_("Table Pref"), $_POST['tbpref']);
+	}
 	yesno_list_row(_("Default"), 'def', null, "", "", false);
 
-	coa_list_row(_("Database Script"), 'coa');
-
-	text_row_ex(_("New script Admin Password"), 'admpassword', 20);
+	if ($selected_id == -1)
+	{
+		coa_list_row(_("Database Script"), 'coa');
+		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
+	}
 	end_table(1);
 
 	submit_center('save', _("Save"));
-//	echo "<center><input type='button' style='width:150px' value='". _("Save"). "'></center>";
-
 
 	end_form();
 }
