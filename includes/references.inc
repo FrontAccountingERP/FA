@@ -101,8 +101,10 @@ class references
 }
 
 //----------------------------------------------------------------------------
-
-function is_new_reference($ref, $type)
+//
+//	Check if reference was not used so far (for other transaction than $trans_no)
+//
+function is_new_reference($ref, $type, $trans_no=0)
 {
 	$db_info = get_systype_db_info($type);
 	$db_name = $db_info[0];
@@ -133,6 +135,10 @@ function is_new_reference($ref, $type)
 			WHERE $db_ref=$ref AND ISNULL(v.id)";
 	}
 
+	if ($trans_no)
+	{
+		$sql .= " AND $db_name.$db_trans != ".db_escape($trans_no);
+	}
 	$result = db_query($sql, "could not test for unique reference");
 
 	return (db_num_rows($result) == 0);

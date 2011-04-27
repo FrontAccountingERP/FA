@@ -20,7 +20,10 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		supp.tax_group_id, tax_group.name AS tax_group_name,
 		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
 			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
-		FROM ".TB_PREF."suppliers supp LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, ".TB_PREF."payment_terms terms, ".TB_PREF."tax_groups tax_group
+		FROM ".TB_PREF."suppliers supp LEFT JOIN "
+			.TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, "
+			.TB_PREF."payment_terms terms, "
+			.TB_PREF."tax_groups tax_group
 		WHERE supp.tax_group_id = tax_group.id
 		AND supp.payment_terms=terms.terms_indicator
 		AND supp.supplier_id = ".db_escape($supplier_id)." GROUP BY supp.supp_name";
@@ -113,16 +116,22 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 }
 //----------------------------------------------------------------------------------------
 
-function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref because we change locally
+function add_supp_invoice(&$supp_trans) // do not receive as ref because we change locally
 {
 	global $Refs;
 
 	//$company_currency = get_company_currency();
+	$trans_no = $supp_trans->trans_no;
+	$trans_type = $supp_trans->trans_type;
 	/*Start an sql transaction */
 	begin_transaction();
-	hook_db_prewrite($supp_trans, $supp_trans->trans_type);
+	hook_db_prewrite($supp_trans, $trans_type);
 	$tax_total = 0;
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
+	if ($trans_no) {
+		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
+		$Refs->restore_last($trans_type, $trans_no);
+	}
 
     foreach ($taxes as $n => $taxitem)
     {
@@ -137,13 +146,10 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$item_added_tax = $tax_total;
 	} else {
 		$item_added_tax = 0;
-		
 	}
 
-	$trans_type = $supp_trans->trans_type;
-	
 	if ($trans_type == ST_SUPPCREDIT)
-	{
+	{ 
 		// let's negate everything because it's a credit note
 		$invoice_items_total = -$invoice_items_total;
 		$tax_total = -$tax_total;
@@ -159,6 +165,9 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$supp_trans->reference, $supp_trans->supp_reference,
 		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included,
 		$supp_trans->tax_algorithm);
+
+
+	$supp_trans->trans_no = $invoice_id;
 
 	$total = 0;
     /* Now the control account */
@@ -191,7 +200,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$trans_type, $invoice_id, $entered_gl_code->amount,
 			$ex_rate, $date_, $supp_trans->supp_reference, $supp_trans->tax_included);
     }
-    
+
     $clearing_act = get_company_pref('grn_clearing_act');
     foreach ($supp_trans->grn_items as $line_no => $entered_grn)
     {
@@ -204,7 +213,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
-		
+
     	if ($trans_type == ST_SUPPCREDIT)
 		{
 			$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
@@ -250,8 +259,6 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 					$entered_grn->chg_price);	
 			
 				// always return due to change in currency.
-				/*$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
-					$diff, $entered_grn->this_quantity_inv, $old_date, true); */
 				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 					$diff, $entered_grn->this_quantity_inv, null, true);
 				
@@ -335,26 +342,26 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 	$Refs->save($trans_type, $invoice_id, $supp_trans->reference);
 
-	if ($invoice_no != 0)
+	if ($supp_trans->src_docs)
 	{
-		$invoice_alloc_balance = get_supp_trans_allocation_balance(ST_SUPPINVOICE, $invoice_no);
+		$invoice_alloc_balance = get_supp_trans_allocation_balance(ST_SUPPINVOICE, $supp_trans->src_docs);
 		if ($invoice_alloc_balance > 0) 
 		{ 	//the invoice is not already fully allocated 
 
-			$trans = get_supp_trans($invoice_no, ST_SUPPINVOICE);
+			$trans = get_supp_trans($supp_trans->src_docs, ST_SUPPINVOICE);
 			$total = $trans['Total'];
 
 			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
 			/*Now insert the allocation record if > 0 */
 			if ($allocate_amount != 0) 
 			{
-				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no, $allocate_amount);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $supp_trans->src_docs, $allocate_amount);
 				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id, $allocate_amount); // ***
-				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no,
+				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $supp_trans->src_docs,
 					$date_);
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
-				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
+				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $supp_trans->src_docs, $date_,
 					$allocate_amount, PT_SUPPLIER);
 
 				///////////////////////////////////////////////////////////////////////////
@@ -362,7 +369,6 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		}
 	}
 
-	$supp_trans->trans_no = $invoice_id;
 	hook_db_postwrite($supp_trans, $supp_trans->trans_type);
     commit_transaction();
 
@@ -392,9 +398,11 @@ function get_po_invoices_credits($po_number)
 
 function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 {
-	$sql = "SELECT ".TB_PREF."supp_trans.*, supp_name FROM ".TB_PREF."supp_trans,".TB_PREF."suppliers
+	$sql = "SELECT ".TB_PREF."supp_trans.*, supp_name 
+		FROM ".TB_PREF."supp_trans,".TB_PREF."suppliers
 		WHERE trans_no = ".db_escape($trans_no)." AND type = ".db_escape($trans_type)."
 		AND ".TB_PREF."suppliers.supplier_id=".TB_PREF."supp_trans.supplier_id";
+
 	$result = db_query($sql, "Cannot retreive a supplier transaction");
 
 	if (db_num_rows($result) == 1)
@@ -428,7 +436,10 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
              	if ($details_row["gl_code"] == 0)
              	{
              		$supp_trans->add_grn_to_trans($details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"],
-           				$details_row["description"], 0, 0, $details_row["quantity"], 0, $details_row["FullUnitPrice"],
+           				$details_row["description"], 
+           				$details_row['qty_recd'],
+           				$details_row['quantity_inv']-$details_row["quantity"],
+           				$details_row["quantity"], 0, $details_row["FullUnitPrice"],
            				0, 0);
              	}
              	else
@@ -549,17 +560,18 @@ function get_gl_account_info($acc)
 	return db_query($sql,"get account information");
 }
 
-function is_reference_already_there($supplier_id, $supp_reference)
+function is_reference_already_there($supplier_id, $supp_reference, $trans_no=0)
 {
-	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
 		.db_escape($supplier_id) . " AND supp_reference=" 
 		.db_escape($supp_reference) 
 		. " AND ov_amount!=0"; // ignore voided invoice references
-
+	if ($trans_no)
+		$sql .= " AND trans_no!=$trans_no";
 	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
 
 	$myrow = db_fetch_row($result);
-	return ($myrow[0] == 1);
+	return $myrow[0] > 0;
 }
 
 function remove_not_invoice_item($id)
@@ -601,4 +613,25 @@ function remove_not_invoice_item($id)
 
 	commit_transaction();
 }
+
+function find_src_invoices($cart)
+{
+	$invoices = $po_ids = array();
+	foreach($cart->grn_items as $item)
+		$po_ids[] = "'$item->po_detail_item'";	// credit item lines
+
+	if (count($po_ids)) {
+		$sql = "SELECT DISTINCT trans.trans_no, trans.reference, trans.supp_reference
+			FROM ".TB_PREF."supp_invoice_items items
+			LEFT JOIN ".TB_PREF."supp_trans trans ON trans.trans_no=items.supp_trans_no AND trans.`type`=items.supp_trans_type
+			WHERE items.po_detail_item_id IN (" . implode(',', $po_ids). ")"." AND items.supp_trans_type=20";
+		$result = db_query($sql, "cannot find source invoice details");
+		while ($rec = db_fetch($result))
+		{
+			$invoices[$rec['trans_no']] = $rec['supp_reference']; // array($rec['reference'], $rec['supp_reference']);
+		}
+	}
+	return $invoices;
+}
+
 ?>

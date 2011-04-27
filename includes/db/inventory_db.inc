@@ -152,21 +152,21 @@ function get_deliveries_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
 	
-	display_notification('Row0 - '.$row[0].' Row1- '.$row[1]);
+//	display_notification('Row0 - '.$row[0].' Row1- '.$row[1]);
 	
 	//return $row;
 	
 	// Get Std cost of previsous transaction before the cut-over delivery
 	// This is useful to get inventory valuation
 	$prev_trans = $from - 1;
-	display_notification('From - '.$from.' Prev- '.$prev_trans);
+//	display_notification('From - '.$from.' Prev- '.$prev_trans);
 	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND 
 			trans_id ='$prev_trans'";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$cost = db_fetch_row($result);	
 	
-	display_notification('Last Delivery Cost - '.$cost[0]);
+//	display_notification('Last Delivery Cost - '.$cost[0]);
 	
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
@@ -175,12 +175,12 @@ function get_deliveries_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$qoh = db_fetch_row($result);
 	
-	display_notification('QOH before last delivery - '.$qoh[0]);
+//	display_notification('QOH before last delivery - '.$qoh[0]);
 	
 	$qty = $row[0] - $qoh[0]; //Qoh is minus from delivered in -ve
 	$final_cost = $row[1] - $qoh[0]*$cost[0];
 	
-	display_notification('Qty - '.$qty.' cost- '.$final_cost);
+//	display_notification('Qty - '.$qty.' cost- '.$final_cost);
 	
 	return array($qty,$final_cost); 
 }
@@ -195,7 +195,7 @@ function get_purchases_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
 	
-	display_notification('Purchase Qty - '.$row[0].' Cost- '.$row[1]);
+//	display_notification('Purchase Qty - '.$row[0].' Cost- '.$row[1]);
 	
 	return $row;
 }

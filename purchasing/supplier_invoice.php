@@ -25,12 +25,34 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
-
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
+if (isset($_GET['ModifyInvoice']))
+	check_is_closed(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
+
+//--------------------------------------------------------------------------------------------------
+
+if (isset($_GET['New']))
+{
+	if (isset( $_SESSION['supp_trans']))
+	{
+		unset ($_SESSION['supp_trans']->grn_items);
+		unset ($_SESSION['supp_trans']->gl_codes);
+		unset ($_SESSION['supp_trans']);
+	}
+	$help_context = "Enter Supplier Invoice";
+	$_SESSION['page_title'] = _("Enter Supplier Invoice");
+
+	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE);
+} else if(isset($_GET['ModifyInvoice'])) {
+	$help_context = 'Modifying Purchase Invoice';
+	$_SESSION['page_title'] = sprintf( _("Modifying Purchase Invoice # %d"), $_GET['ModifyInvoice']);
+	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
+}
+
+page($_SESSION['page_title'], false, false, "", $js);
 //---------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
@@ -66,6 +88,8 @@ if (isset($_GET['New']))
 	}
 
 	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE);
+} else if(isset($_GET['ModifyInvoice'])) {
+	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -149,7 +173,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE, $_SESSION['supp_trans']->trans_no))
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');
@@ -182,7 +206,7 @@ function check_data()
 		return false;
 	}
 
-	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference']))
+	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
 	{ 	/*Transaction reference already entered */
 		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
 		return false;

@@ -37,7 +37,8 @@ $trans_editors = array(
 	//ST_INVADJUST =>  ,
 
 	ST_PURCHORDER =>  "/purchasing/po_entry_items.php?ModifyOrderNumber=%d",
-	//ST_SUPPINVOICE => ,
+	ST_SUPPINVOICE => "/purchasing/supplier_invoice.php?ModifyInvoice=%d",
+
 	//ST_SUPPCREDIT =>  ,
 	//ST_SUPPAYMENT =>  ,
 	//ST_SUPPRECEIVE => ,

@@ -145,8 +145,13 @@ function fmt_credit($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) 
+  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT) 
  		return print_document_link($row['trans_no']."-".$row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
+}
+
+function edit_link($row)
+{
+	return edit_trans_link($row['type'], $row['trans_no']);
 }
 
 function check_overdue($row)
@@ -171,7 +176,8 @@ $cols = array(
 			_("Credit") => array('align'=>'right', 'insert'=>true,'fun'=>'fmt_credit'), 
 			array('insert'=>true, 'fun'=>'gl_view'),
 			array('insert'=>true, 'fun'=>'credit_link'),
-			array('insert'=>true, 'fun'=>'prt_link')
+			array('insert'=>true, 'fun'=>'prt_link'),
+			array('insert'=>true, 'fun'=>'edit_link')
 			);
 
 if ($_POST['supplier_id'] != ALL_TEXT)

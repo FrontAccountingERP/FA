@@ -25,11 +25,46 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
+
+if (isset($_GET['ModifyCredit']))
+	check_is_closed(ST_SUPPINVOICE, $_GET['ModifyCredit']);
+
+//---------------------------------------------------------------------------------------------------
+
+if (isset($_GET['New']))
+{
+	if (isset( $_SESSION['supp_trans']))
+	{
+		unset ($_SESSION['supp_trans']->grn_items);
+		unset ($_SESSION['supp_trans']->gl_codes);
+		unset ($_SESSION['supp_trans']);
+	}
+
+	if (isset($_GET['invoice_no']))
+	{
+		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['invoice_no']);
+		$_SESSION['supp_trans']->src_doc = $_GET['invoice_no'];
+
+
+		$_SESSION['supp_trans']->trans_type = ST_SUPPCREDIT;
+		$_SESSION['supp_trans']->trans_no = 0;
+		$_SESSION['supp_trans']->supp_reference = '';
+		//		$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
+		$help_context = "Supplier Credit Note";
+		$_SESSION['page_title'] = _("Supplier Credit Note");
+
+		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
+	} elseif (isset($_GET['ModifyInvoice'])) {
+		$help_context = 'Modifying Purchase Invoice';
+		$_SESSION['page_title'] = sprintf( _("Modifying Supplier Credit # %d"), $_GET['ModifyCredit']);
+		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT, $_GET['ModifyCredit']);
+	}
+
+page($_SESSION['page_title'], false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -51,23 +86,6 @@ if (isset($_GET['AddedID']))
 	display_footer_exit();
 }
 
-//---------------------------------------------------------------------------------------------------
-
-if (isset($_GET['New']))
-{
-	if (isset( $_SESSION['supp_trans']))
-	{
-		unset ($_SESSION['supp_trans']->grn_items);
-		unset ($_SESSION['supp_trans']->gl_codes);
-		unset ($_SESSION['supp_trans']);
-	}
-
-	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
-	if (isset($_GET['invoice_no']))
-	{
-		$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
-	}
-}
 
 function clear_fields()
 {
@@ -91,7 +109,7 @@ if (isset($_POST['ClearFields']))
 	clear_fields();
 }
 
-if (isset($_POST['AddGLCodeToTrans'])){
+if (isset($_POST['AddGLCodeToTrans'])) {
 
 	$Ajax->activate('gl_items');
 	$input_error = false;
@@ -151,7 +169,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT, $_SESSION['supp_trans']->trans_no))
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');
@@ -202,10 +220,7 @@ function handle_commit_credit_note()
 	if (!check_data())
 		return;
 
-	if (isset($_POST['invoice_no']))
-		$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
-	else
-		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);

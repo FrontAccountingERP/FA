@@ -44,9 +44,12 @@ function add_supp_invoice_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $a
 
 function get_supp_invoice_items($supp_trans_type, $supp_trans_no)
 {
-	$sql = "SELECT *, unit_price AS FullUnitPrice FROM ".TB_PREF."supp_invoice_items
+	$sql = "SELECT *, unit_price AS FullUnitPrice FROM ".TB_PREF."supp_invoice_items inv,
+		".TB_PREF."grn_items grn
 		WHERE supp_trans_type = ".db_escape($supp_trans_type)."
-		AND supp_trans_no = ".db_escape($supp_trans_no)." ORDER BY id";
+		AND supp_trans_no = ".db_escape($supp_trans_no)
+		." AND grn.id =inv.grn_item_id"
+		." ORDER BY inv.id";
 	return db_query($sql, "Cannot retreive supplier transaction detail records");
 }
 

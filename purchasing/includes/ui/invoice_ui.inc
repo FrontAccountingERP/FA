@@ -68,19 +68,28 @@ function invoice_header(&$supp_trans)
 
 	table_section(1);
 
-	if (isset($_POST['invoice_no']))
+	if ($supp_trans->trans_type == ST_SUPPCREDIT && $supp_trans->src_docs)
 	{
-		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
-		$_POST['supplier_id'] = $trans['supplier_id'];
-		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+//		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
+//		$trans = get_supp_trans($supp_trans->supplier_id, ST_SUPPINVOICE);
+//		$_POST['supplier_id'] = $trans['supplier_id'];
+//		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+
+		$_POST['supplier_id'] = $supp_trans->supplier_id;
+		$supp = $supp_trans->supplier_name." - ".$supp_trans->currency;
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
-	}	
+	}
 	else
 	{
     	if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
     		$_POST['supplier_id'] = get_global_supplier();
 
-		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+		if (!$supp_trans->trans_no)
+			supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+		else
+			label_row(_("Supplier:"), $supp_trans->supplier_name
+			.($supp_trans->currency ? ' - '.$supp_trans->currency  : '')
+			.hidden('supplier_id', $_POST['supplier_id'], false));
 	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
@@ -331,14 +340,14 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 function display_grn_items_for_selection(&$supp_trans, $k)
 {
-	if ($supp_trans->trans_type == ST_SUPPINVOICE)
-		$result = get_grn_items(0, $supp_trans->supplier_id, true);
+	if ($supp_trans->trans_type == ST_SUPPINVOICE)	// outstanding grns and eventually for selected invoice
+		$result = get_grn_items(0, $supp_trans->supplier_id, true, false, $supp_trans->trans_no);
 	else
-	{
+	{ // only invoiced
 		if (isset($_POST['receive_begin']) && isset($_POST['receive_end']))
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
-		else if (isset($_POST['invoice_no']))
-			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+		else if ($supp_trans->src_docs)
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, array_keys($supp_trans->src_docs));
 		else	
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
 	}
@@ -360,13 +369,14 @@ function display_grn_items_for_selection(&$supp_trans, $k)
     			$grn_already_on_invoice = true;
     		}
     	}
+
     	if ($grn_already_on_invoice == false)
     	{
 
 			alt_table_row_color($k);
 
 			$n = $myrow["id"];
-    		label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
         	label_cell($myrow["id"].
             	hidden('qty_recd'.$n, $myrow["qty_recd"], false).
             	hidden('item_code'.$n, $myrow["item_code"], false).
@@ -385,10 +395,10 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
             	qty_cells(null, 'this_quantity_inv'.$n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
             		null, null, $dec);
-            else		
+            else
             	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
             		null, null, $dec);
-            $dec2 = 0; 		
+            $dec2 = 0;
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
             {
             	amount_cells(null, 'ChgPrice'.$n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2);
@@ -450,28 +460,28 @@ function display_grn_items(&$supp_trans, $mode=0)
 			$heading = _("Received Items Charged on this Invoice");
 		else
 			$heading = _("Received Items Credited on this Note");
-	}		
+	}
 
 	display_heading($heading);
 
 	if ($mode == 1)
 	{
-		if ($supp_trans->trans_type == ST_SUPPCREDIT && !isset($_POST['invoice_no']))
+		if ($supp_trans->trans_type == ST_SUPPCREDIT)
 		{
 			echo "</td>";
 			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
 			date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
 			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 			echo "<td>";
-		}	
-			
+		}
+
 		if ($heading2 != "")
 		{
 			display_note($heading2, 0, 0, "class='overduefg'");
-		}	
+		}
 		echo "</td><td width=10% align='right'>";
 		submit('InvGRNAll', _("Add All Items"), true, false,true);
-	}	
+	}
 
 	end_outer_table(0, false);
 
