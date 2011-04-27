@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2011 FrontAccounting, LLC
+* @copyright (C) 2005 - 2009 FrontAccounting, LLC
 * @license http://www.gnu.org/copyleft/gpl-3.0.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -9,6 +9,247 @@
 1. Changelog
 ------------
 This is a changelog for FrontAccounting All releases.
+
+2011-04-27 10:58 +0200 Joe Hunt
+(2752) Release 2.3.4
+ version.php
+
+2011-04-27 10:45 +0200 Janusz Dobrowolski
+(2751) Removed sparse grn item id from purchase invoice entry form.
+ purchasing/includes/ui/invoice_ui.inc
+
+2011-04-26 11:34 +0200 Janusz Dobrowolski
+(2750) Fixed bug in create_coy, resulting in database reset on company seting change.
+ admin/create_coy.php
+
+2011-04-21 18:37 +0200 Janusz Dobrowolski
+(2749) [0000619] Fixed javascript related timeout issues.
+ access/login.php
+ access/logout.php
+ includes/ui/ui_view.inc
+ js/login.js
+
+2011-04-21 15:42 +0200 Janusz Dobrowolski
+(2748) Cleanups.
+ includes/db/inventory_db.inc
+ includes/ui/items_cart.inc
+
+2011-04-21 15:41 +0200 Janusz Dobrowolski
+(2747) Added check for duplicate account group code.
+ gl/manage/gl_account_types.php
+
+2011-04-21 15:40 +0200 Janusz Dobrowolski
+(2746) Fixed php4 compatibility.
+ admin/db/maintenance_db.inc
+
+2011-04-21 15:39 +0200 Janusz Dobrowolski
+(2745) Optional printing item codes on purchase order report with config.php $show_po_item_codes
+ config.default.php
+ reporting/rep209.php
+
+2011-04-21 15:33 +0200 Janusz Dobrowolski
+(2744) Entry into Upgrade Software option triggered automatic config.php changes even without starting upgrade.
+ sql/alter2.3.php
+
+2011-04-15 12:59 +0200 Janusz Dobrowolski
+(2743) Removed sparse in_ID lang folder.
+ install/lang/in_ID/LC_MESSAGES/in_ID.mo
+ install/lang/in_ID/LC_MESSAGES/in_ID.po
+
+2011-04-14 01:19 +0200 Joe Hunt
+(2742) [0000714] Bug creating GL trans on inventory items in supplier invoice when tax included.
+ purchasing/includes/db/grn_db.inc
+ purchasing/includes/db/invoice_db.inc
+
+2011-04-13 14:50 +0200 Joe Hunt
+(2741) Minor bug in on screen Trial Balance (wrong Dimension warning)
+ gl/inquiry/gl_trial_balance.php
+
+2011-04-13 14:15 +0200 Janusz Dobrowolski
+(2740) Restored Sales Quotation option in Customer and Sales Reports
+ reporting/reports_main.php
+
+2011-04-13 11:40 +0200 Janusz Dobrowolski
+(2739) Rerun
+ taxes/tax_calc.inc
+
+2011-04-13 11:10 +0200 Janusz Dobrowolski
+(2738) Fixed shipping tax calculation for tax exempt customer.
+ taxes/tax_calc.inc
+
+2011-04-13 09:48 +0200 Joe Hunt
+(2737) Suppress zero tax on printed documents.
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep113.php
+ reporting/rep209.php
+
+2011-04-13 00:47 +0200 Janusz Dobrowolski
+(2736) Additional fixes in tax display/reporting
+ includes/ui/ui_view.inc
+ sales/includes/cart_class.inc
+ sales/sales_order_entry.php
+ taxes/tax_calc.inc
+
+2011-04-12 15:40 +0200 Joe Hunt
+(2735) [0000712] Work Order issue with 0 qty is accepted
+ manufacturing/work_order_issue.php
+
+2011-04-12 10:15 +0200 Joe Hunt
+(2734) Improved search filter in Void Transactions (like View Print Transactions)
+ admin/void_transaction.php
+
+2011-04-11 15:40 +0200 Joe Hunt
+(2733) Cleanup Sales Summary Report (again)
+ reporting/rep114.php
+
+2011-04-11 13:34 +0200 Janusz Dobrowolski
+(2732) Fixed shipment tax calculation regresion.
+ taxes/tax_calc.inc
+
+2011-04-10 21:04 +0200 Janusz Dobrowolski
+(2731) [0000692] Tab characters should be forbidden in item code.
+ inventory/manage/items.php
+
+2011-04-10 18:07 +0200 Janusz Dobrowolski
+(2730) Fixed excel report redirection (regresion after customer selector in reports improvement).
+ reporting/includes/excel_report.inc
+
+2011-04-10 13:10 +0200 Janusz Dobrowolski
+(2729) Not used tax rates removed from edition form display.
+ includes/ui/ui_view.inc
+
+2011-04-10 11:41 +0200 Joe Hunt
+(2728) Cleanup of on screen Trial Balance
+ gl/inquiry/gl_trial_balance.php
+
+2011-04-10 11:02 +0200 Janusz Dobrowolski
+(2727) [0000707] Fixed sales transaction edition (invalid max quantities for second and next lines)
+ sales/includes/cart_class.inc
+
+2011-04-10 10:43 +0200 Janusz Dobrowolski
+(2726) Fixed taxes display for multiply tax types included in price.
+ taxes/tax_calc.inc
+
+2011-04-10 10:41 +0200 Janusz Dobrowolski
+(2725) Fixed trial balance layout.
+ gl/inquiry/gl_trial_balance.php
+
+2011-04-09 13:47 +0200 Janusz Dobrowolski
+(2724) db_insert_id() returned wrong id when $sql_trail=1. Nasty bug resulting in unexpected problems in various places.
+ includes/db/connect_db.inc
+
+2011-04-09 12:15 +0200 Janusz Dobrowolski
+(2723) EOL formatting cleanup.
+ gl/inquiry/gl_trial_balance.php
+ reporting/rep114.php
+ reporting/rep701.php
+ reporting/rep708.php
+ reporting/rep709.php
+ sales/includes/db/sales_order_db.inc
+
+2011-04-09 11:59 +0200 Janusz Dobrowolski
+(2722) Changed tax grup retrieval functions to return all tax types (with filtered tax rates), rewritten tax group editor.
+ gl/includes/db/gl_db_trans.inc
+ includes/ui/ui_view.inc
+ taxes/db/tax_groups_db.inc
+ taxes/tax_groups.php
+
+2011-04-07 01:02 +0200 Joe Hunt
+(2721) Rerun of Sales Summary Report
+ reporting/rep114.php
+
+2011-04-06 23:57 +0200 Joe Hunt
+(2720) Cleanup Sales Summary Report
+ reporting/rep114.php
+ reporting/reports_main.php
+
+2011-04-06 15:41 +0200 Joe Hunt
+(2719) New report, Sales Summary Report, added under Sales Reports.
+ reporting/rep114.php
+ reporting/reports_main.php
+
+2011-04-05 14:03 +0200 Joe Hunt
+(2718) Cleanup Trial Report
+ reporting/rep708.php
+
+2011-04-05 00:16 +0200 Joe Hunt
+(2717) Improved reports, COA, Trial Balance and Tax Report by Chaitanya.
+ reporting/rep701.php
+ reporting/rep708.php
+ reporting/rep709.php
+
+2011-04-04 15:57 +0200 Joe Hunt
+(2716) Fixed logout error when setting show users online.
+ admin/db/users_db.inc
+
+2011-04-04 14:06 +0200 Janusz Dobrowolski
+(2715) Fixed error handling in trace debug mode (go_debug=2)
+ includes/errors.inc
+ includes/ui/ui_msgs.inc
+ includes/ui/ui_view.inc
+
+2011-04-03 23:58 +0200 Joe Hunt
+(2714) Display bank balance in payment forms.
+ gl/bank_transfer.php
+ gl/includes/ui/gl_bank_ui.inc
+ gl/inquiry/bank_inquiry.php
+ includes/ui/ui_input.inc
+ purchasing/supplier_payment.php
+
+2011-04-02 10:51 +0200 Janusz Dobrowolski
+(2713) Added tag version_2_3_3 for changeset 074d18d3b920
+ .hgtags
+
+2011-04-01 13:36 +0200 Janusz Dobrowolski
+(2710) Fixed upgrade routines from 2.1.x versions.
+ admin/db/company_db.inc
+ sql/alter2.2.php
+
+2011-04-01 12:54 +0200 Janusz Dobrowolski
+(2709) Debugging cod in maintenance_db.inc commented out
+ admin/db/maintenance_db.inc
+
+2011-03-31 22:54 +0200 Joe Hunt
+(2708) Version 2.3.3. All install language templates updated.
+ install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
+ install/lang/ar_EG/LC_MESSAGES/ar_EG.po
+ install/lang/da_DK/LC_MESSAGES/da_DK.mo
+ install/lang/da_DK/LC_MESSAGES/da_DK.po
+ install/lang/de_DE/LC_MESSAGES/de_DE.mo
+ install/lang/de_DE/LC_MESSAGES/de_DE.po
+ install/lang/el_GR/LC_MESSAGES/el_GR.mo
+ install/lang/el_GR/LC_MESSAGES/el_GR.po
+ install/lang/es_MX/LC_MESSAGES/es_MX.mo
+ install/lang/es_MX/LC_MESSAGES/es_MX.po
+ install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
+ install/lang/fr_FR/LC_MESSAGES/fr_FR.po
+ install/lang/id_ID/LC_MESSAGES/id_ID.mo
+ install/lang/id_ID/LC_MESSAGES/id_ID.po
+ install/lang/in_ID/LC_MESSAGES/in_ID.mo
+ install/lang/in_ID/LC_MESSAGES/in_ID.po
+ install/lang/it_IT/LC_MESSAGES/it_IT.mo
+ install/lang/it_IT/LC_MESSAGES/it_IT.po
+ install/lang/ka_GE/LC_MESSAGES/ka_GE.mo
+ install/lang/ka_GE/LC_MESSAGES/ka_GE.po
+ install/lang/new_language_template/LC_MESSAGES/empty.po
+ install/lang/nl_BE/LC_MESSAGES/nl_BE.mo
+ install/lang/nl_BE/LC_MESSAGES/nl_BE.po
+ install/lang/pl_PL/LC_MESSAGES/pl_PL.mo
+ install/lang/pl_PL/LC_MESSAGES/pl_PL.po
+ install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
+ install/lang/pt_BR/LC_MESSAGES/pt_BR.po
+ install/lang/sv_SE/LC_MESSAGES/sv_SE.mo
+ install/lang/sv_SE/LC_MESSAGES/sv_SE.po
+ install/lang/zh_CN/LC_MESSAGES/zh_CN.mo
+ install/lang/zh_CN/LC_MESSAGES/zh_CN.po
+ version.php
+
+2011-03-31 22:51 +0200 Joe Hunt
+(2707) New style CHANGELOG.txt (Automatic). Old CHANGELOG saved in new file in doc folder.
+ CHANGELOG.txt
+ doc/CHANGELOG.old.txt
 
 2011-03-31 11:09 +0200 Janusz Dobrowolski
 (2706) Updated main and installer language templates.
