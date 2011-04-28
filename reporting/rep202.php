@@ -29,7 +29,7 @@ print_aged_supplier_analysis();
 
 //----------------------------------------------------------------------------------------------------
 
-function get_invoices($supplier_id, $to)
+function get_invoices($supplier_id, $to, $all=true)
 {
 	$todate = date2sql($to);
 	$PastDueDays1 = get_company_pref('past_due_days');
@@ -54,8 +54,10 @@ function get_invoices($supplier_id, $to)
 			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
 			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
 			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > 0.004
-			ORDER BY ".TB_PREF."supp_trans.tran_date";
+			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > 0.004 ";
+	if (!$all)
+		$sql .= "AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc) > 0.004 ";  
+	$sql .= "ORDER BY ".TB_PREF."supp_trans.tran_date";
 
 
 	return db_query($sql, "The supplier details could not be retrieved");
@@ -70,11 +72,12 @@ function print_aged_supplier_analysis()
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
-	$summaryOnly = $_POST['PARAM_3'];
-    $no_zeros = $_POST['PARAM_4'];
-    $graphics = $_POST['PARAM_5'];
-    $comments = $_POST['PARAM_6'];
-	$destination = $_POST['PARAM_7'];
+   	$show_all = $_POST['PARAM_3'];
+	$summaryOnly = $_POST['PARAM_4'];
+    $no_zeros = $_POST['PARAM_5'];
+    $graphics = $_POST['PARAM_6'];
+    $comments = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -106,6 +109,8 @@ function print_aged_supplier_analysis()
 
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
+	if ($show_all) $show = _('Yes');
+	else $show = _('No');
 
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
@@ -125,7 +130,8 @@ function print_aged_supplier_analysis()
     				2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				3 => array('text' => _('Currency'),'from' => $currency,'to' => ''),
                     		4 => array('text' => _('Type'), 'from' => $summary,'to' => ''),
-				5 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+                    5 => array('text' => _('Show Also Allocated'), 'from' => $show, 'to' => ''),		
+				6 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
 	if ($convert)
 		$headers[2] = _('currency');
@@ -157,9 +163,13 @@ function print_aged_supplier_analysis()
 		if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
 		else $rate = 1.0;
 
-		$supprec = get_supplier_details($myrow['supplier_id'], $to);
-		foreach ($supprec as $i => $value)
-			$supprec[$i] *= $rate;
+		$supprec = get_supplier_details($myrow['supplier_id'], $to, $show_all);
+		if (!$supprec)
+			continue;
+		$supprec['Balance'] *= $rate;
+		$supprec['Due'] *= $rate;
+		$supprec['Overdue1'] *= $rate;
+		$supprec['Overdue2'] *= $rate;
 
 		$str = array($supprec["Balance"] - $supprec["Due"],
 			$supprec["Due"]-$supprec["Overdue1"],
@@ -183,7 +193,7 @@ function print_aged_supplier_analysis()
 		$rep->NewLine(1, 2);
 		if (!$summaryOnly)
 		{
-			$res = get_invoices($myrow['supplier_id'], $to);
+			$res = get_invoices($myrow['supplier_id'], $to, $show_all);
     		if (db_num_rows($res)==0)
 				continue;
     		$rep->Line($rep->row + 4);
