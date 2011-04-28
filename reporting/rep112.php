@@ -100,7 +100,7 @@ function print_receipts()
 		if ($fno[0] == $tno[0])
 			$types = array($fno[1]);
 		else
-			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT, ST_CUSTCREDIT);
+			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT);
 		foreach ($types as $j)
 		{
 			$myrow = get_receipt($j, $i);

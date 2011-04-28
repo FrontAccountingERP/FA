@@ -361,10 +361,9 @@ class BoxReports
 				case 'RECEIPT':
 					$BD = $type_shortcuts[ST_BANKDEPOSIT];
 					$CP = $type_shortcuts[ST_CUSTPAYMENT];
-					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_BANKDEPOSIT.", ' $BD ', if (type=".ST_CUSTPAYMENT.", ' $CP ', ' $CN ')), ".TB_PREF."debtors_master.name) as IName
+						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_BANKDEPOSIT.", ' $BD ', ' $CP '), ".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_BANKDEPOSIT." OR type=".ST_CUSTPAYMENT." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
