@@ -122,14 +122,14 @@ else
                 label_cell(get_dimension_string($item['dimension_id'], true));
             if ($dim > 1)
                 label_cell(get_dimension_string($item['dimension2_id'], true));
-            amount_cell($item["amount"]);
+            amount_cell(-$item["amount"]);
     		label_cell($item["memo_"]);
     		end_row();
     		$total_amount += $item["amount"];
 		}
 	}
 
-	label_row(_("Total"), number_format2($total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
+	label_row(_("Total"), number_format2(-$total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
 
 	end_table(1);
 
