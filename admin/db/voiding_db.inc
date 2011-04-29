@@ -29,17 +29,21 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			void_journal_trans($type, $type_no);
 			break;
 
-		case ST_BANKPAYMENT : // it's a payment
 		case ST_BANKDEPOSIT : // it's a deposit
 		case ST_BANKTRANSFER : // it's a transfer
+			if (!check_void_bank_trans($type, $type_no))
+				return false;
+		case ST_BANKPAYMENT : // it's a payment
 			if (!exists_bank_trans($type, $type_no))
 				return false;
 			void_bank_trans($type, $type_no);
 			break;
 
+		case ST_CUSTPAYMENT : // it's a customer payment
+			if (!check_void_bank_trans($type, $type_no))
+				return false;
 		case ST_SALESINVOICE : // it's a customer invoice
 		case ST_CUSTCREDIT : // it's a customer credit note
-		case ST_CUSTPAYMENT : // it's a customer payment
 		case ST_CUSTDELIVERY : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
