@@ -88,7 +88,12 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
 	$past2 = 2 * $past1;
 	// removed - supp_trans.alloc from all summations
 
-    $value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)";
+	if ($all)
+    	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)";
+    else	
+    	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.",
+    		(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc),
+    		(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc))";
 	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
     $sql = "SELECT supp.supp_name, supp.curr_code, ".TB_PREF."payment_terms.terms,
 
