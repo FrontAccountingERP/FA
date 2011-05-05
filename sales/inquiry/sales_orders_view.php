@@ -278,7 +278,9 @@ else
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	//array_substitute($cols, 3, 1, _("Cust Order Ref"));
-	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
+	array_append($cols, array(
+		array('insert'=>true, 'fun'=>'dispatch_link'),
+		array('insert'=>true, 'fun'=>'edit_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 	array_substitute($cols, 3, 1, _("Description"));
