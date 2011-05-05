@@ -238,8 +238,8 @@ function display_companies()
 
 	echo "
 		<script language='javascript'>
-		function deleteCompany(id) {
-			if (!confirm('" . _("Are you sure you want to delete company no. ") . "'+id))
+		function deleteCompany(id, name) {
+			if (!confirm('" . _("Are you sure you want to delete company no. ") . "'+id+' '+name+'?'))
 				return
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
@@ -278,8 +278,9 @@ function display_companies()
 			$delete = set_icon(ICON_DELETE, $delete);
 		}
     	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
+    	$name = "\"".$conn[$i]['name']."\"";
 		label_cell( $i == $coyno ? '' :
-			"<a href='javascript:deleteCompany(" . $i . ")'>$delete</a>");
+			"<a href='javascript:deleteCompany($i, $name)'>$delete</a>");
 		end_row();
 	}
 
@@ -320,6 +321,7 @@ function display_company_edit($selected_id)
 		$_POST['tbpref'] = $tb_pref_counter."_";
 		// Insert the current settings as default
 		$conn = $db_connections[user_company()];
+		$_POST['name'] = '';
 		$_POST['host']  = $conn['host'];
 		$_POST['dbuser']  = $conn['dbuser'];
 		$_POST['dbpassword']  = $conn['dbpassword'];
