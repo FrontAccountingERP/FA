@@ -66,24 +66,33 @@ class hooks {
 	//
 	//	Install additional tabs provided by extension
 	//
-	function install_tabs($app) {
-//		set_ext_domain('modules/example');        // set text domain for gettext
+	function install_tabs($app)
+	{
 //		$app->add_application(new example_class); // add menu tab defined by example_class
-//		set_ext_domain();
 	}
 	//
 	//	Install additonal menu options provided by extension
 	//
-	function install_options($app) {
+	function install_options($app)
+	{
 //		global $path_to_root;
-//		set_ext_domain('modules/example');
+//
 //		switch($app->id) {
 //			case 'orders':
 //				$app->add_rapp_function( 0, _("&Example option"), 
 //					$path_to_root.'/modules/example/example.php?', 'SA_OPEN');
 //		}
-//		set_ext_domain();
 	}
+	
+	function install_access()
+	{
+//		$security_areas['SA_EXAMPLE'] = array(SS_EXAMPLE|100, _("Example security area."));
+//
+//		$security_sections = array(SS_EXAMPLE => _("Example module implementation"));
+//
+//		return array($security_areas, $security_sections);
+	}
+
 	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.
@@ -168,7 +177,8 @@ class hooks {
 /*
 	Installs hooks provided by extension modules
 */
-function install_hooks() {
+function install_hooks()
+{
 	global $path_to_root, $Hooks, $installed_extensions;
 
 	$Hooks = array();
@@ -194,9 +204,10 @@ function install_hooks() {
 	Non active hooks are not included in $Hooks array, so we can use special function to 
 	activate.
 */
-function activate_hooks($ext, $comp) {
+function activate_hooks($ext, $comp)
+{
 	global $Hooks;
-	
+
 	$hooks = @$Hooks[$ext];
 	if (!$hooks) {
 		$hookclass = 'hooks_'.$ext;
@@ -213,7 +224,8 @@ function activate_hooks($ext, $comp) {
 /*
 	Calls hook $method defined in extension $ext (if any)
 */
-function hook_invoke($ext, $method, &$data, $opts=null) {
+function hook_invoke($ext, $method, &$data, $opts=null)
+{
 
 	global $Hooks;
 
@@ -229,11 +241,12 @@ function hook_invoke($ext, $method, &$data, $opts=null) {
 /*
 	Calls hook $methods defined in all extensions (if any)
 */
-function hook_invoke_all($method, &$data, $opts=null) {
+function hook_invoke_all($method, &$data, $opts=null)
+{
 
 	global $Hooks;
 	
-	$result = array();
+	$return = array();
 	foreach($Hooks as $ext => $hook)
 		if (method_exists($hook, $method)) {
 			set_ext_domain('modules/'.$ext);
@@ -245,15 +258,16 @@ function hook_invoke_all($method, &$data, $opts=null) {
 				}
 		}
 	set_ext_domain();
-	return $result;
+	return $return;
 }
 /*
 	Returns first non-null result returned from hook.
 */
-function hook_invoke_first($method, &$data, $opts=null) {
+function hook_invoke_first($method, &$data, $opts=null)
+{
 
 	global $Hooks;
-	
+
 	$result = null;
 	foreach($Hooks as $ext => $hook) {
 		if (method_exists($hook, $method)) {
@@ -271,7 +285,8 @@ function hook_invoke_first($method, &$data, $opts=null) {
 	extensions installed later.
 	
 */
-function hook_invoke_last($method, &$data, $opts=null) {
+function hook_invoke_last($method, &$data, $opts=null)
+{
 
 	global $Hooks;
 

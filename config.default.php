@@ -80,11 +80,17 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* use Audit Trails in GL */
 	$use_audit_trail = 0;
 
+	/* $show_voiced_gl_trans = 0, setting this to 1 will show the voided gl trans */
+	$show_voided_gl_trans = 0;
+
 	/* use old style convert (income and expense in BS, PL) */
 	$use_oldstyle_convert = 0;
 
 	/* show users online discretely in the footer */
 	$show_users_online = 0;
+
+	/* show item codes on purchase order */
+	$show_po_item_codes = 0;
 
 	/* default print destination. 0 = PDF/Printer, 1 = Excel */
 	$def_print_destination = 0;

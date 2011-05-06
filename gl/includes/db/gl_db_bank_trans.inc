@@ -32,7 +32,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	}
 	else
 		$amount_bank = $amount;
-
+	$amount_bank = round2($amount_bank, user_price_dec());	
 
 	// Also store the rate to the home
 	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);

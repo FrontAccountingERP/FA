@@ -100,20 +100,22 @@ while ($myrow = db_fetch($result))
     else 
     	$credit += $myrow['amount'];
 }
-start_row("class='inquirybg' style='font-weight:bold'");
-label_cell(_("Total"), "colspan=2");
-if ($dim >= 1)
+if ($heading_shown)
+{
+    start_row("class='inquirybg' style='font-weight:bold'");
+    label_cell(_("Total"), "colspan=2");
+    if ($dim >= 1)
+        label_cell('');
+    if ($dim > 1)
+        label_cell('');
+    amount_cell($debit);
+    amount_cell(-$credit);
     label_cell('');
-if ($dim > 1)
-    label_cell('');
-amount_cell($debit);
-amount_cell(-$credit);
-label_cell('');
-end_row();
+    end_row();
+	end_table(1);
+}
 
 //end of while loop
-if ($heading_shown)
-	end_table(1);
 
 is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 

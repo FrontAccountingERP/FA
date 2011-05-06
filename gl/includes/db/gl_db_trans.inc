@@ -92,7 +92,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 			$amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");
 	else
 		return 0;
-}
+}	
 
 //--------------------------------------------------------------------------------
 
@@ -100,6 +100,8 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$account=null, $dimension=0, $dimension2=0, $filter_type=null,
 	$amount_min=null, $amount_max=null)
 {
+	global $show_voided_gl_trans;
+	
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
 
@@ -113,6 +115,8 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 		AND ISNULL(v.date_)
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
+	if (isset($show_voided_gl_trans) && $show_voided_gl_trans == 0)
+		$sql .= " AND ".TB_PREF."gl_trans.amount <> 0"; 
 	if ($trans_no > 0)
 		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE ".db_escape('%'.$trans_no);
 
@@ -145,12 +149,12 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 function get_gl_trans($type, $trans_id)
 {
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
-		.TB_PREF."gl_trans as gl"
-		. " LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
-			LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)";
-		$sql .= " WHERE gl.type= ".db_escape($type) 
-		." AND gl.type_no = ".db_escape($trans_id);
-	$sql .= " ORDER BY counter";
+		.TB_PREF."gl_trans as gl
+		LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
+		LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
+		." WHERE gl.type= ".db_escape($type) 
+		." AND gl.type_no = ".db_escape($trans_id)
+		." ORDER BY counter";
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
 
@@ -338,7 +342,7 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0, $net_amount = null)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
@@ -348,18 +352,19 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTDELIVERY || $trans_type == ST_CUSTCREDIT)
 		$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
-	if ($tax['rate'] == 0) {
-//		display_warning(_("You should not post gl transactions  
-//			to tax account with	zero tax rate."));
-		$net_amount = 0;
-	} else { 
-		// calculate net amount
-		$net_amount = $amount/$tax['rate']*100; 
+	if ($net_amount===null) {
+		if ($tax['rate'] == 0) {
+//			display_warning(_("You should not post gl transactions  
+//				to tax account with	zero tax rate."));
+			$net_amount = 0;
+		} else { 
+			// calculate net amount
+			$net_amount = $amount/$tax['rate']*100; 
+		}
 	}
-		
 	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
 		$amount, $net_amount, $ex_rate, $date, $memo);
-			
+
 }
 
 //--------------------------------------------------------------------------------
@@ -388,7 +393,9 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 function get_trans_tax_details($trans_type, $trans_no)
 {
 	$sql = "SELECT ".TB_PREF."trans_tax_details.*, "
-		.TB_PREF."tax_types.name AS tax_type_name
+		.TB_PREF."tax_types.name AS tax_type_name, "
+		.TB_PREF."trans_tax_details.rate AS effective_rate, "
+		.TB_PREF."tax_types.rate AS rate
 		FROM ".TB_PREF."trans_tax_details,".TB_PREF."tax_types
 		WHERE trans_type = ".db_escape($trans_type)."
 		AND trans_no = ".db_escape($trans_no)."
@@ -648,7 +655,8 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 	else
 		$sql .= " AND NOT ISNULL(a.gl_seq)";
 
-		$sql .= " GROUP BY tran_date, gl_seq, gl.type, gl.type_no";
+	$sql .= " GROUP BY tran_date, gl_seq, gl.type, gl.type_no";
+
 	return $sql;
 }
 ?>

@@ -20,8 +20,6 @@ class items_cart
 
 	var	$order_id;
 
-	var $editing_item, $deleting_item;
-
 	var $from_loc;
 	var $to_loc;
 	var $tran_date;
@@ -31,6 +29,7 @@ class items_cart
 	var $person_id;
 	var $branch_id;
 	var $reference;
+	var $original_amount;
 	
 	function items_cart($type)
 	{

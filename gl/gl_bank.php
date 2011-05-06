@@ -69,7 +69,7 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_BANKPAYMENT;
 
-   	display_notification_centered(_("Payment $trans_no has been entered"));
+   	display_notification_centered(sprintf(_("Payment %d has been entered"), $trans_no));
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
@@ -101,7 +101,7 @@ if (isset($_GET['AddedDep']))
 	$trans_no = $_GET['AddedDep'];
 	$trans_type = ST_BANKDEPOSIT;
 
-   	display_notification_centered(_("Deposit $trans_no has been entered"));
+   	display_notification_centered(sprintf(_("Deposit %d has been entered"), $trans_no));
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
@@ -173,7 +173,7 @@ function create_cart($type, $trans_no)
 		$cart->tran_date = sql2date($bank_trans['trans_date']);
 		$cart->reference = $Refs->get($type, $trans_no);
 
-		$gl_amount = 0;
+		$cart->original_amount = $bank_trans['amount'];
 		$result = get_gl_trans($type, $trans_no);
 		if ($result) {
 			while ($row = db_fetch($result)) {
@@ -185,14 +185,14 @@ function create_cart($type, $trans_no)
 					$date = $row['tran_date'];
 					$cart->add_gl_item( $row['account'], $row['dimension_id'],
 						$row['dimension2_id'], $row['amount'], $row['memo_']);
-					$gl_amount += $row['amount'];
 				}
 			}
 		}
+
 		// apply exchange rate
 		foreach($cart->gl_items as $line_no => $line)
 			$cart->gl_items[$line_no]->amount *= $ex_rate;
-		
+
 	} else {
 		$cart->reference = $Refs->get_next($cart->trans_type);
 		$cart->tran_date = new_doc_date();
@@ -227,9 +227,9 @@ if (isset($_POST['Process']))
 
 	$limit = get_bank_account_limit($_POST['bank_account'], $_POST['date_']);
 
-	if ($limit != null && ($limit < $_SESSION['pay_items']->gl_items_total()))
+	if ($limit != null && (($limit - $_SESSION['pay_items']->original_amount) < $_SESSION['pay_items']->gl_items_total()))
 	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
 		$input_error = 1;
 	}

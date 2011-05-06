@@ -65,6 +65,8 @@ function gl_payment_controls()
 
 	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 
+	bank_balance_row($_POST['FromBankAccount']);
+
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 
     date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
@@ -119,6 +121,11 @@ function check_valid_entries()
 	if (!check_num('amount', 0)) 
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('amount');
+		return false;
+	}
+	if (input_num('amount') == 0) {
+		display_error(_("The total bank amount cannot be 0."));
 		set_focus('amount');
 		return false;
 	}

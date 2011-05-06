@@ -22,7 +22,7 @@ include($path_to_root . "/includes/ui.inc");
 simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
-function can_process() 
+function can_process($selected_id) 
 {
 	if (strlen(trim($_POST['id'])) == 0) 
 	{
@@ -34,6 +34,13 @@ function can_process()
 	{
 		display_error( _("The account group name cannot be empty."));
 		set_focus('name');
+		return false;
+	}
+	$type = get_account_type(trim($_POST['id']));
+	if ($type && ($type['id'] != $selected_id)) 
+	{
+		display_error( _("This account group id is already in use."));
+		set_focus('id');
 		return false;
 	}
 
@@ -52,7 +59,7 @@ function can_process()
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
-	if (can_process()) 
+	if (can_process($selected_id)) 
 	{
 
     	if ($selected_id != "") 

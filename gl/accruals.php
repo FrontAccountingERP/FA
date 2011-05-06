@@ -17,7 +17,7 @@ if ($use_date_picker)
 // Begin the UI
 include_once($path_to_root . "/includes/ui.inc");
 
-$_SESSION['page_title'] = _($help_context = _("Revenue / Cost Accruals"));
+$_SESSION['page_title'] = _($help_context = "Revenue / Cost Accruals");
 page($_SESSION['page_title'], false, false,'', $js);
 
 //--------------------------------------------------------------------------------------------------
@@ -55,10 +55,13 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	{
 		$periods = input_num('periods');
 		$per = $periods - 1;
-		$date_ = get_post('date_');
+		$date = $date_ = get_post('date_');
 		$freq = get_post('freq');
-		$lastdate = ($freq== 1?add_days($date_,7*$per):($freq==2?add_days($date_,14*$per):
-			($freq==3?add_months($date_,$per):add_months($date_,3*$per))));
+		$lastdate = ($freq == 1 ? add_days($date_, 7*$per)
+				: ($freq == 2 ? add_days($date_, 14*$per)
+				: ($freq == 3 ? add_months($date_, $per)
+				: add_months($date_, 3*$per))));
+
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
 			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
@@ -76,7 +79,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			if (get_post('memo_') != "")
 				$memo = $_POST['memo_'];
 			else
-				$memo = "Accruals for $amount";
+				$memo = sprintf(_("Accruals for %s"), $amount);
 			if (isset($_POST['go']))
 				begin_transaction();
 			else
@@ -105,16 +108,16 @@ if (isset($_POST['go']) || isset($_POST['show']))
 					switch($freq)
 					{
 						case 1:
-							$date_ = add_days($date_, 7);
+							$date = add_days($date_, $i*7);
 							break;
 						case 2:
-							$date_ = add_days($date_, 14);
+							$date = add_days($date_, $i*14);
 							break;
 						case 3:
-							$date_ = add_months($date_, 1);
+							$date = add_months($date_, $i*1);
 							break;
 						case 4:
-							$date_ = add_months($date_, 3);
+							$date = add_months($date_, $i*3);
 							break;
 					}
 					$am0 = $am;
@@ -123,17 +126,18 @@ if (isset($_POST['go']) || isset($_POST['show']))
 				{
 					$id = get_next_trans_no(ST_JOURNAL);
 					$ref = $Refs->get_next(ST_JOURNAL);
-					add_gl_trans(ST_JOURNAL, $id, $date_, get_post('acc_act'), 0,
+					add_gl_trans(ST_JOURNAL, $id, $date, get_post('acc_act'), 0,
 						0, $ref, $am0 * -1);
-					add_gl_trans(ST_JOURNAL, $id, $date_, get_post('res_act'), get_post('dimension_id'),
+					add_gl_trans(ST_JOURNAL, $id, $date, get_post('res_act'), get_post('dimension_id'),
 						get_post('dimension2_id'), $ref, $am0);
-					add_comments(ST_JOURNAL, $id, $date_, $memo);
+					add_audit_trail(ST_JOURNAL, $id, $date);
+					add_comments(ST_JOURNAL, $id, $date, $memo);
 					$Refs->save(ST_JOURNAL, $id, $ref);
 				}
 				else
 				{
 					alt_table_row_color($k);
-					label_cell($date_);
+					label_cell($date);
 					label_cell($_POST['acc_act'] . " " . get_gl_account_name($_POST['acc_act']));
 					if ($dim > 0)
 						label_cell("");
@@ -142,7 +146,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 					display_debit_or_credit_cells($am0 * -1);
 					label_cell($memo);
 					alt_table_row_color($k);
-					label_cell($date_);
+					label_cell($date);
 					label_cell($_POST['res_act'] . " " . get_gl_account_name($_POST['res_act']));
 					if ($dim > 0)
 						label_cell(get_dimension_string($_POST['dimension_id'], true));

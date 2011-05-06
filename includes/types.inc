@@ -123,6 +123,9 @@ function payment_person_name($type, $person_id, $full=true) {
 		case PT_QUICKENTRY :
 			$qe = get_quick_entry($person_id);
 			return ($full ? $payment_person_types[$type] . " ":"") . $qe["description"];
+		case PT_WORKORDER :
+			global $wo_cost_types;
+			return $wo_cost_types[$person_id];
 		case PT_CUSTOMER :
 			return ($full ?$payment_person_types[$type] . " ":"") . get_customer_name($person_id);
 		case PT_SUPPLIER :

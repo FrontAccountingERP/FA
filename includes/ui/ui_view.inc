@@ -391,6 +391,9 @@ function display_customer_trans_tax_details($tax_items, $columns)
 	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
+     	if (!$tax_item['amount'])
+     		continue;
+
     	$tax = number_format2($tax_item['amount'],user_price_dec());
 		if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
 			$tax_type_name = $tax_item['tax_type_name'];
@@ -421,6 +424,9 @@ function display_supp_trans_tax_details($tax_items, $columns)
 {
     while ($tax_item = db_fetch($tax_items))
     {
+     	if (!$tax_item['amount'])
+     		continue;
+
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
         	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) "
@@ -571,7 +577,8 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 		{
 			display_error( _("No Quick Entry lines are defined."));
 			set_focus('totamount');
-		}	
+			return 0;
+		}
 		$totrate = 0;
 		while ($row = db_fetch($result))
 		{
@@ -632,7 +639,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					{
 						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
-						$res = get_tax_group_items($cart->tax_group_id);
+						$res = get_tax_group_rates($cart->tax_group_id);
 						while ($row = db_fetch($res))
 							$rates += $row['rate'];
 						if ($rates == 0)
@@ -797,31 +804,6 @@ function default_focus($name=null, $form_no=0) {
 function reset_focus()
 {
 	unset($_POST['_focus']);
-}
-
-function get_js_png_fix()
-{
-	$js = "function fixPNG(myImage)\n"
-		. "{\n"
-		. " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
-		. " var version = parseFloat(arVersion[1])\n"
-    	. " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
-    	. " {\n"
-       	. "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
-	   	. "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
-	   	. "  var imgTitle = (myImage.title) ?\n"
-		. "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
-	   	. "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
-	   	. "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
-        . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
-        . "    + \"px; height:\" + myImage.height\n"
-        . "    + \"px;\" + imgStyle + \";\"\n"
-        . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
-        . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
-	   	. "  myImage.outerHTML = strNewHTML\n"
-    	. " }\n"
-		. "}\n";
-	return $js;
 }
 
 function get_js_date_picker()
@@ -1316,37 +1298,4 @@ function display_backtrace($cond=true, $msg='') {
 	}
 }
 
-function get_backtrace($html = false)
-{
-	$str = '';
-	if ($html) $str .= '<table border=0>';
-	$trace = debug_backtrace();
-
-	foreach($trace as $trn => $tr) {
-		if (!$trn) continue;
-		if ($html) $str .= '<tr><td>';
-		$str .= $tr['file'].':'.$tr['line'].': ';
-		if ($html) $str .= '</td><td>';
-		if (isset($tr['type'])) {
-	 		if($tr['type'] == '::') {
-				$str .= $tr['class'].'::';
-			} else if($tr['type'] == '->') {
-				$str .= '('.$tr['class'].' Object)'.'->';
-			}
-		}
-
-		foreach($tr['args'] as $n=>$a) {
-			if (is_object($tr['args'][$n]))
-				$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
-			if (is_array($tr['args'][$n]))
-				$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
-			else
-				$tr['args'][$n] = "'".$tr['args'][$n]."'";
-		}
-		$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
-	}
-
-	if ($html) $str .= '</tr></table>';
-	return $str;
-}
 ?>

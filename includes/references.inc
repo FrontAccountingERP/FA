@@ -116,10 +116,10 @@ function is_new_reference($ref, $type, $trans_no=0)
 	$type = db_escape($type);
 	
 	if ($db_ref == null) { // journal or bank trans store references in refs table
-		$db_ref = TB_PREF."refs";
+		$db_name = TB_PREF."refs";
 		$db_type = 'type';
 		$db_trans = 'id';
-		$rb_ref = 'reference';
+		$db_ref = 'reference';
 	}
 
 	if ($db_type != null) {
@@ -135,10 +135,6 @@ function is_new_reference($ref, $type, $trans_no=0)
 			WHERE $db_ref=$ref AND ISNULL(v.id)";
 	}
 
-	if ($trans_no)
-	{
-		$sql .= " AND $db_name.$db_trans != ".db_escape($trans_no);
-	}
 	$result = db_query($sql, "could not test for unique reference");
 
 	return (db_num_rows($result) == 0);
