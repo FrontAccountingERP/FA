@@ -52,13 +52,14 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	return $invno;
 }
 
-if (isset($_GET['recurrent']))
+$id = find_submit("create");
+if ($id != -1)
 {
 	$date = Today();
 	if (is_date_in_fiscalyear($date))
 	{
 		$invs = array();
-		$myrow = get_recurrent_invoice($_GET['recurrent']);
+		$myrow = get_recurrent_invoice($id);
 		if ($myrow['debtor_no'] == 0)
 		{
 			$cust = get_cust_branches_from_group($myrow['group_no']);
@@ -94,6 +95,7 @@ if (isset($_GET['recurrent']))
 
 $result = get_recurrent_invoices();
 
+start_form();
 start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
 table_header($th);
@@ -146,12 +148,13 @@ while ($myrow = db_fetch($result))
 	label_cell($end);
 	label_cell($last_sent);
  	if ($overdue)
- 		label_cell("<a href='$path_to_root/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
+		button_cell("create".$myrow["id"], _("Create Invoices"), "", ICON_DOC);
  	else
  		label_cell("");
 	end_row();
 }
 end_table();
+end_form();
 if ($due)
 	display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
 else
