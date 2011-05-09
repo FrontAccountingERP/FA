@@ -89,7 +89,7 @@ while ($myrow = db_fetch($result))
 {
 	$begin = sql2date($myrow["begin"]);
 	$end = sql2date($myrow["end"]);
-	$last_sent = sql2date($myrow["last_sent"]);
+	$last_sent = $myrow["last_sent"] == '0000-00-00' ? '' : sql2date($myrow["last_sent"]);
 	
 	alt_table_row_color($k);
 		

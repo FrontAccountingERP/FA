@@ -78,14 +78,14 @@ if (isset($_GET['recurrent']))
 		}
 		else 
 			$min = $max = 0;
-		display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+		display_notification(sprintf(_("%s recurrent invoice(s) created, # %s - # %s."), count($invs), $min, $max));
 		if (count($invs) > 0)
 		{
 			$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
 				'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
-			display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
-			$ar['PARAM_3'] = 1; 
-			display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+			display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
+			$ar['PARAM_3'] = 1; // email
+			display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 		}
 	}
 	else
@@ -104,11 +104,18 @@ while ($myrow = db_fetch($result))
 {
 	$begin = sql2date($myrow["begin"]);
 	$end = sql2date($myrow["end"]);
-	$last_sent = sql2date($myrow["last_sent"]);
-	if ($myrow['monthly'] > 0)
-		$due_date = begin_month($last_sent);
-	else
-		$due_date = $last_sent;
+
+	if ($myrow["last_sent"] == '0000-00-00')
+	{
+		$last_sent = '';
+		$due_date = $myrow["begin"];
+	} else {
+		$last_sent = sql2date($myrow["last_sent"]);
+		if ($myrow['monthly'] > 0)
+			$due_date = begin_month($last_sent);
+		else
+			$due_date = $last_sent;
+	}
  	$due_date = add_months($due_date, $myrow['monthly']);
  	$due_date = add_days($due_date, $myrow['days']);
  	$overdue = date1_greater_date2($today, $due_date) && date1_greater_date2($today, $begin)
