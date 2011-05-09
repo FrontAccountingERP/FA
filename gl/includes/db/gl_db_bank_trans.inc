@@ -87,11 +87,13 @@ function get_bank_trans_for_bank_account($bank_account, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
+	$sql = "SELECT t.* FROM "
+		.TB_PREF."bank_trans t LEFT JOIN ".TB_PREF."voided v ON t.type=v.type AND t.trans_no=v.id
+		WHERE t.bank_act = ".db_escape($bank_account) . "
+		AND ISNULL(v.date_)
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date, t.id";
 
 	return db_query($sql,"The transactions for '" . $bank_account . "' could not be retrieved");
 }
