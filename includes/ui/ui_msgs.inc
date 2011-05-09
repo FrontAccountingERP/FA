@@ -11,8 +11,6 @@
 ***********************************************************************/
 function display_error($msg, $center=true)
 {
-	global $go_debug;
-
 	trigger_error($msg, E_USER_ERROR);
 }
 

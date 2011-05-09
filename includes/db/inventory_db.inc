@@ -107,7 +107,6 @@ function last_negative_stock_begin_date($stock_id, $to)
 }
 
 //-------------------------------------------------------------------
-// Newly written
 
 function get_already_delivered($stock_id, $location, $trans_no)
 {
@@ -162,7 +161,6 @@ function get_deliveries_between($stock_id, $from, $to)
 	return db_fetch_row($result);
 }
 
-//Newly written
 function get_deliveries_from_trans($stock_id, $from)
 {
 	// -ve qty is delivery either by ST_CUSTDELIVERY or inventory adjustment
@@ -171,8 +169,6 @@ function get_deliveries_from_trans($stock_id, $from)
 			trans_id>='$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
-	
-	display_notification('Row0 - '.$row[0].' Row1- '.$row[1]);
 	
 	//return $row;
 	
@@ -187,14 +183,11 @@ function get_deliveries_from_trans($stock_id, $from)
 	$trans = db_fetch_row($result);
 	$prev_trans = $trans[0];*/
 	
-	display_notification('From - '.$from);
 	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)
 			." AND trans_id ='$from'";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$cost = db_fetch_row($result);	
-	
-	display_notification('Last Delivery Cost - '.$cost[0]);
 	
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
@@ -203,28 +196,20 @@ function get_deliveries_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$qoh = db_fetch_row($result);
 	
-	display_notification('QOH before last delivery - '.$qoh[0]);
-	
 	$qty = $row[0] - $qoh[0]; //Qoh is minus from delivered in -ve
 	$final_cost = $row[1] - $qoh[0]*$cost[0];
-	
-	display_notification('Qty - '.$qty.' cost- '.$final_cost);
 	
 	return array($qty,$final_cost); 
 }
 
-//Newly written
 function get_purchases_from_trans($stock_id, $from)
 {
 	// Calculate All inward stock moves i.e. qty > 0
 	$sql = "SELECT SUM(qty), SUM(qty*standard_cost) FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND qty > 0 AND 
 			trans_id>'$from' GROUP BY stock_id";
-	display_notification($sql);
 	$result = db_query($sql, "Could not get get_purchases_from_trans");
 	$row = db_fetch_row($result);
-	
-	display_notification('Purchase Qty - '.$row[0].' Cost- '.$row[1]);
 	
 	return $row;
 }
@@ -282,10 +267,6 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	$new_sales_cost = $row[0] * $material_cost;
 	$sales_diff = $new_sales_cost - $old_sales_cost;
 	
-	display_notification(_("new_sales_cost").' - '.$row[0] .' * '. $material_cost);
-	display_notification(_("new_sales_cost").' - '.$new_sales_cost.' old_sales_cost- '.$old_sales_cost);
-	display_notification(_("Sales Diff").' - '.$sales_diff);
-	
 	$row = get_purchases_from_trans($stock_id, $from);
 	$purchase_diff = 0;
 	$old_purchase_cost = 0;
@@ -296,12 +277,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 		$purchase_diff = $new_purchase_cost - $old_purchase_cost;
 	}
 	
-	display_notification(_("new_purchase_cost").' - '.$new_purchase_cost.' old_purchase_cost- '.$old_purchase_cost);
-	display_notification(_("purchase_diff").' - '.$purchase_diff);	
-	
 	$diff =  $sales_diff - $purchase_diff;
-	
-	display_notification(_("Final diff").' - '.$diff);	
 	
 	if ($diff != 0)
 	{
