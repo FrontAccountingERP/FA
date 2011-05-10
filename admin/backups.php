@@ -173,8 +173,8 @@ table_section(2);
 table_section_title(_("Backup scripts maintenance"));
 
 	start_row();
-	echo "<td style='padding-left:20px'align='left'>".get_backup_file_combo()."</td>";
-	echo "<td valign='top'>";
+	echo "<td style='padding-left:20px' align='left'>".get_backup_file_combo()."</td>";
+	echo "<td style='padding-left:20px' valign='top'>";
 	start_table();
 	submit_row('view',_("View Backup"), false, '', '', false);
 	submit_row('download',_("Download Backup"), false, '', '', false);
@@ -189,7 +189,7 @@ table_section_title(_("Backup scripts maintenance"));
 	end_row();
 start_row();
 echo "<td style='padding-left:20px' align='left'><input name='uploadfile' type='file'></td>";
-	submit_cells('upload',_("Upload file"),'', '', true);
+	submit_cells('upload',_("Upload file"),"style='padding-left:20px'", '', true);
 end_row();
 end_outer_table();
 
