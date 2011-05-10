@@ -25,6 +25,7 @@ page(_($help_context = "Revaluation of Currency Accounts"), false, false, "", $j
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
+	$JE = $_GET['JE'];
 	$trans_type = ST_JOURNAL;
 
 	if ($trans_no == 0)
@@ -35,6 +36,8 @@ if (isset($_GET['AddedID']))
 
 		display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 	}
+	if ($JE > 0)
+   		display_notification_centered(sprintf(_("%d Journal Entries for AR/AP accounts have been added"), $JE));
 
 	//display_footer_exit();
 }
@@ -81,9 +84,9 @@ function handle_submit()
 	if (!check_data())
 		return;
 
-	$trans_no = add_exchange_variation_all($_POST['date'], $_POST['ref'], $_POST['memo_']);
+	$trans = add_exchange_variation_all($_POST['date'], $_POST['ref'], $_POST['memo_']);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$trans[0]."&JE=".$trans[1]);
 	//clear_data();
 }
 

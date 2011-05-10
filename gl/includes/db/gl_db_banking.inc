@@ -91,12 +91,8 @@ function get_cust_account_home_balance($debtor_no, $rec_account, $to_date)
 	$to = date2sql($to_date);
 
     $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans t  
-    	LEFT JOIN ".TB_PREF."debtors_master d ON t.person_id = d.debtor_no
-    	LEFT JOIN ".TB_PREF."debtor_trans dt ON (t.type=dt.type AND t.type_no=dt.trans_no) 
-    	LEFT JOIN ".TB_PREF."cust_branch br ON dt.branch_code = br.branch_code
-			WHERE br.debtor_no=".db_escape($debtor_no)." AND t.account=br.receivables_account AND t.account='$rec_account' 
-			AND person_id=br.debtor_no AND person_type_id=".PT_CUSTOMER." 
-			AND t.tran_date <= '$to'";
+			WHERE t.person_id=".db_escape($debtor_no)." AND t.account='$rec_account' 
+			AND person_type_id=".PT_CUSTOMER." AND t.tran_date <= '$to'";
 	$result = db_query($sql, "The AR balance for customer $debtor_no could not be calculated");
 	$row = db_fetch_row($result);
 	return $row[0];
@@ -159,8 +155,9 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 	//------------- BEGIN inserted for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
 	if ($date == null)
 		$date = Today();
-	// debtors
 	$exchange_act = get_company_pref('exchange_diff_act');
+	$je = 0;
+	// debtors
 	$res = get_cust_account_curr_balances($date);
 	
 	while($row = db_fetch($res)) 
@@ -173,6 +170,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 			$amount = $foreign - $home;	
 			add_cust_supp_revaluation($row['receivables_account'], $exchange_act, $date, $amount, PT_CUSTOMER, 
 				$row['debtor_no'], $memo);
+			$je++;	
 		}
 	}
 	// creditors
@@ -188,12 +186,13 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 			$amount = $foreign - $home;	
 			add_cust_supp_revaluation($row['payable_account'], $exchange_act, $date, $amount, PT_SUPPLIER, 
 				$row['supplier_id'], $memo);
+			$je++;	
 		}
 	}
 	//------------- END
 	
 	commit_transaction();
-	return ($exchanged ? $trans_no : 0);
+	return array(($exchanged ? $trans_no : 0), $je);
 }
 //----------------------------------------------------------------------------------
 //	Add bank tranfer to database.
