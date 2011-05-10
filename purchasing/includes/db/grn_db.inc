@@ -30,9 +30,6 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
 			$supp['tax_included']);
 
-	//$dec = user_price_dec();
-	//price_decimal_format($price, $dec);
-	//$price = round2($price, $dec);
 	if ($currency != null)
 	{
 		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
@@ -48,23 +45,19 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
 	
-	//Chaitanya : For Manufactured Items 
-	//IF inventory adjustment is made for manufactured item, the material cost averages and labour, overhead remains as is, but in inventory valuation total standard_cost matters resulting in invalid  valuation.	
-	if (!$adj_only && $myrow['mb_flag'] == 'M') //For manufactured items price is adjusted
+	//Price adjustment for manufactured item
+	if (!$adj_only && $myrow['mb_flag'] == 'M') 
 	{
 		$standard_cost = get_standard_cost($stock_id);
 		//reduce overhead_cost and labour_cost from price as those will remain as is
 		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
 	}
 	
-	//if ($price > -0.0001 && $price < 0.0001) commented out by Chaitanya
-	//	return $material_cost;
 	if ($adj_only)
 		$exclude = ST_CUSTDELIVERY;
 	else
 		$exclude = 0;
 	$cost_adjust = false;
-	//$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
 	$qoh = get_qoh_on_date($stock_id);
 
 	if ($adj_only)
@@ -84,7 +77,6 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			$material_cost 
 = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}	
-	//$material_cost = round2($material_cost, $dec);
 	
 	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
