@@ -102,6 +102,9 @@ function fmt_errors($center=false) {
 //  $class = 'no_msg';
   if (count($messages)) {
 	foreach($messages as $cnt=>$msg) {
+		if ($go_debug && $msg[0]>E_USER_NOTICE)
+		 	$msg[0] = E_ERROR;
+
 		if ($msg[0]>$type) continue;
 
 		if ($msg[0]<$type) { 
@@ -114,9 +117,11 @@ function fmt_errors($center=false) {
 					$content = ''; 			// clean other messages
 			}
 		}
+		
 	    $str = $msg[1];
-		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
+		if (!in_array($msg[0], array(E_USER_NOTICE, E_USER_ERROR, E_USER_WARNING)) && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
+
 		if ($go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
 		  $str .= '<br>'.$msg[4];
 		$content .= ($cnt ? '<hr>' : '').$str;
