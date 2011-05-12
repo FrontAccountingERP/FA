@@ -86,18 +86,6 @@ function get_cust_account_curr_balances($date)
 	return  $result;
 }
 
-function get_cust_account_home_balance($debtor_no, $rec_account, $to_date)
-{
-	$to = date2sql($to_date);
-
-    $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans t  
-			WHERE t.person_id=".db_escape($debtor_no)." AND t.account='$rec_account' 
-			AND person_type_id=".PT_CUSTOMER." AND t.tran_date <= '$to'";
-	$result = db_query($sql, "The AR balance for customer $debtor_no could not be calculated");
-	$row = db_fetch_row($result);
-	return $row[0];
-}
-
 function get_supp_account_curr_balances($date)
 {
 	$to = date2sql($date);
@@ -115,14 +103,14 @@ function get_supp_account_curr_balances($date)
 	return  $result;
 }
 
-function get_supp_account_home_balance($supplier_id, $rec_account, $to_date)
+function get_account_home_balance($person_id, $person_type, $rec_account, $to_date)
 {
 	$to = date2sql($to_date);
 
-    $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans t  
-			WHERE t.person_id=".db_escape($supplier_id)." AND t.account='$rec_account' 
-			AND person_type_id=".PT_SUPPLIER." AND t.tran_date <= '$to'";
-	$result = db_query($sql, "The AP balance for customer $supplier_id could not be calculated");
+    $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans  
+			WHERE person_id=".db_escape($person_id)." AND account='$rec_account' 
+			AND person_type_id=$person_type AND tran_date <= '$to'";
+	$result = db_query($sql, "The AR/AP balance for customer $person_id could not be calculated");
 	$row = db_fetch_row($result);
 	return $row[0];
 }
@@ -164,7 +152,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 	{
 		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
 		$foreign = round2($row['amount']*$exrate, user_price_dec());
-		$home = round2(get_cust_account_home_balance($row['debtor_no'], $row['receivables_account'], $date), user_price_dec());
+		$home = round2(get_account_home_balance($row['debtor_no'], PT_CUSTOMER, $row['receivables_account'], $date), user_price_dec());
 		if ($foreign != $home) 
 		{
 			$amount = $foreign - $home;	
@@ -180,7 +168,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 	{
 		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
 		$foreign = round2($row['amount']*$exrate, user_price_dec());
-		$home = round2(get_supp_account_home_balance($row['supplier_id'], $row['payable_account'], $date), user_price_dec());
+		$home = round2(get_account_home_balance($row['supplier_id'], PT_SUPPLIER, $row['payable_account'], $date), user_price_dec());
 		if ($foreign != $home) 
 		{
 			$amount = $foreign - $home;	
@@ -190,7 +178,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 		}
 	}
 	//------------- END
-	
+		
 	commit_transaction();
 	return array(($exchanged ? $trans_no : 0), $je);
 }
