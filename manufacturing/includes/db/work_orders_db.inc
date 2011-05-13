@@ -421,8 +421,8 @@ function void_work_order($woid)
 		// void all related stock moves
 		void_stock_move(ST_WORKORDER, $woid);
 
-		// void any related gl trans
-		void_gl_trans(ST_WORKORDER, $woid, true);
+		// void any related bank/gl trans
+		void_bank_trans(ST_WORKORDER, $woid, true);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
@@ -480,8 +480,8 @@ function void_work_order($woid)
 		// void all related stock moves
 		void_stock_move(ST_WORKORDER, $woid);
 
-		// void any related gl trans
-		void_gl_trans(ST_WORKORDER, $woid, true);
+		// void any related bank/gl trans
+		void_bank_trans(ST_WORKORDER, $woid, true);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
