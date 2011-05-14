@@ -415,6 +415,15 @@ function tabbed_content_end() {
 	div_end(); // tabs widget
 }
 
+function tab_changed($name)
+{
+	$to = find_submit("{$name}_", false);
+	if (!$to) return null;
+
+	return array('from' => $from = get_post("_{$name}_sel"),
+		'to' => $to);
+}
+
 /* Table editor interfaces. Key is editor type
 	0 => url of editor page
 	1 => hotkey code
