@@ -86,7 +86,7 @@ function display_trial_balance($type, $typename)
 		if (!$printtitle)
 		{	
 			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell("Group - ".$type ." - ".$typename, "colspan=8");
+			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
 			end_row();		
 			$printtitle = 1;		
 		}	
@@ -138,7 +138,7 @@ function display_trial_balance($type, $typename)
 		if (!$printtitle)
 		{
 			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell("Group - ".$type ." - ".$typename, "colspan=8");
+			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
 			end_row();		
 			$printtitle = 1;		
 		}
@@ -189,7 +189,7 @@ $classresult = get_account_classes(false);
 while ($class = db_fetch($classresult))
 {
 	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell("Class - ".$class['cid'] ." - ".$class['class_name'], "colspan=8");
+	label_cell(_("Class")." - ".$class['cid'] ." - ".$class['class_name'], "colspan=8");
 	end_row();
 
 	//Get Account groups/types under this group/type with no parents
