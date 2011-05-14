@@ -89,7 +89,7 @@ function display_supplier_summary($supplier_record)
 div_start('totals_tbl');
 if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT))
 {
-	$supplier_record = get_supplier_details($_POST['supplier_id']);
+	$supplier_record = get_supplier_details($_POST['supplier_id'], $_POST['TransToDate']);
     display_supplier_summary($supplier_record);
 }
 div_end();
