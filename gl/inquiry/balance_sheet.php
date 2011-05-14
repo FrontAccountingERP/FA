@@ -57,28 +57,27 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 	//Get Accounts directly under this group/type
 	$result = get_gl_accounts(null, null, $type);	
 		
-	while ($account=db_fetch($result))
-	{
-		$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
-		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-		if (!$prev_balance && !$curr_balance)
-			continue;
-		
-		if ($drilldown && $levelptr == 0)
-		{
-			$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" 
-				. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
-				. "&account=" . $account['account_code'] . "'>" . $account['account_code'] 
-				." ". $account['account_name'] ."</a>";				
-				
-			start_row("class='stockmankobg'");
-			label_cell($url);
-			amount_cell(($curr_balance + $prev_balance) * $convert);
-			end_row();
-		}
-		
-		$acctstotal += $curr_balance + $prev_balance;
-	}
+ 	while ($account=db_fetch($result))
+    {
+        $net_balance = get_gl_trans_from_to("", $to, $account["account_code"], $dimension, $dimension2);
+        if (!$net_balance)
+            continue;
+        
+        if ($drilldown && $levelptr == 0)
+        {
+            $url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" 
+                . $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
+                . "&account=" . $account['account_code'] . "'>" . $account['account_code'] 
+                ." ". $account['account_name'] ."</a>";                
+                
+            start_row("class='stockmankobg'");
+            label_cell($url);
+            amount_cell(($net_balance) * $convert);
+            end_row();
+        }
+        
+        $acctstotal += $net_balance;
+    }	
 	
 	$levelptr = 1;
 
