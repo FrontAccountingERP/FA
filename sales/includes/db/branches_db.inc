@@ -164,7 +164,7 @@ function get_sql_for_customer_branches()
 		AND b.debtor_no = ".db_escape($_POST['customer_id']);
 
 	if (!get_post('show_inactive')) $sql .= " AND !b.inactive";
-	$sql .= " ORDER BY branch_ref";
+	$sql .= " GROUP BY b.branch_code ORDER BY branch_ref";
 
 	return $sql;
 }
