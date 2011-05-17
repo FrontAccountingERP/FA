@@ -129,7 +129,7 @@ function last_negative_stock_trans_id($stock_id, $to)
 	
 	$qty = 0;
 	$flag = 0;
-	$negative_trans_id = 1;
+	$negative_trans_id = -1;
 	
 	while ($myrow = db_fetch($result))
 	{
@@ -143,7 +143,10 @@ function last_negative_stock_trans_id($stock_id, $to)
 			$flag = 0;	
 	}
 		
-	return $negative_trans_id;
+	if ($flag == 1)
+		return $negative_trans_id;
+	else 
+		return false;
 }
 
 //-------------------------------------------------------------------
@@ -208,7 +211,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 		return;
 	
 	$from = last_negative_stock_trans_id($stock_id, $to);
-	if ($from == false || $from == "")
+	if ($from == false || $from == -1)
 		return;
 
 	$row = get_deliveries_from_trans($stock_id, $from);
