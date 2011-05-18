@@ -107,7 +107,7 @@ $reports->addReport(RC_CUSTOMER, 110, _('Print &Deliveries'),
 $reports->addReport(RC_CUSTOMER, 108, _('Print &Statements'),
 	array(	_('Customer') => 'CUSTOMERS_NO_FILTER',
 			_('Currency Filter') => 'CURRENCY',
-			_('Show Outstanding Only') => 'YES_NO',
+			_('Show Also Allocated') => 'YES_NO',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
 $reports->addReport(RC_CUSTOMER, 109, _('&Print Sales Orders'),

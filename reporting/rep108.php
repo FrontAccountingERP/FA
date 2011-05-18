@@ -30,7 +30,7 @@ print_statements();
 
 //----------------------------------------------------------------------------------------------------
 
-function getTransactions($debtorno, $date, $outstanding)
+function getTransactions($debtorno, $date, $show_also_allocated)
 {
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
@@ -43,7 +43,7 @@ function getTransactions($debtorno, $date, $outstanding)
     				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
     				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
 				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) != 0";
-	if ($outstanding)
+	if (!$show_also_allocated)
 		$sql .= " AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
 				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) - alloc <> 0";
 	$sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
@@ -61,7 +61,7 @@ function print_statements()
 
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
-	$outstanding = $_POST['PARAM_2'];
+	$show_also_allocated = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
 
@@ -101,7 +101,7 @@ function print_statements()
 
 		$myrow['order_'] = "";
 
-		$TransResult = getTransactions($myrow['debtor_no'], $date, $outstanding);
+		$TransResult = getTransactions($myrow['debtor_no'], $date, $show_also_allocated);
 		$baccount = get_default_bank_account($myrow['curr_code']);
 		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)
@@ -152,7 +152,7 @@ function print_statements()
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
 		$pastdue2 = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;
-		$CustomerRecord = get_customer_details($myrow['debtor_no']);
+		$CustomerRecord = get_customer_details($myrow['debtor_no'], null, $show_also_allocated);
 		$str = array($doc_Current, $nowdue, $pastdue1, $pastdue2, $doc_Total_Balance);
 		$str2 = array(number_format2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]),$dec),
 			number_format2(($CustomerRecord["Due"]-$CustomerRecord["Overdue1"]),$dec),
