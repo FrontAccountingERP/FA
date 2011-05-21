@@ -102,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
+				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0));
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
+				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0));
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
