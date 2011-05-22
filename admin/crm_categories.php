@@ -101,7 +101,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell($myrow["description"]);
 	
-	inactive_control_cell($myrow["id"], $myrow["inactive"], 'areas', 'id');
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_categories', 'id');
 
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	if ($myrow["system"])
