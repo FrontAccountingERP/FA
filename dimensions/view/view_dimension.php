@@ -83,7 +83,7 @@ if (!isset($_POST['TransToDate']))
 	$_POST['TransToDate'] = Today();
 date_cells(_("from:"), 'TransFromDate');
 date_cells(_("to:"), 'TransToDate');
-submit_cells('Show',_("Show"), '', false, 'default');
+submit_cells('Show',_("Show"), '', false);
 
 end_row();
 

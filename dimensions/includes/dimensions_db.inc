@@ -172,8 +172,7 @@ function get_dimension_balance($id, $from, $to)
 	$id = db_escape($id);
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
 		date2sql($from) . "' AND
-		tran_date <= '" . date2sql($to) . "' AND (dimension_id = " .
-		db_escape($id)." OR dimension2_id = " .db_escape($id).")";
+		tran_date <= '" . date2sql($to) . "' AND (dimension_id = $id OR dimension2_id = $id)";
 	$res = db_query($sql, "Sum of transactions could not be calculated");
 	$row = db_fetch_row($res);
 
