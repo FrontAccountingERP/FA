@@ -55,7 +55,7 @@ function can_process()
 
 //-------------------------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
 {
 
 	if (can_process())
@@ -91,7 +91,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 //-------------------------------------------------------------------------------------------------
 
-if ($Mode == 'Delete')
+if ($Mode == 'Delete' && check_csrf_token())
 {
 	delete_user($selected_id);
 	display_notification_centered(_("User has been deleted."));
