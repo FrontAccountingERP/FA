@@ -21,7 +21,7 @@ function add_user($user_id, $real_name, $password, $phone, $email, $role_id,
 		.", ".db_escape($pos).",".db_escape($profile).",".db_escape($rep_popup)
 		." )";
 
-	db_query($sql, "could not add user for $user_id");
+	return db_query($sql, "could not add user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ function update_user_password($id, $user_id, $password)
 	$sql = "UPDATE ".TB_PREF."users SET password=".db_escape($password) . ",
 		user_id = ".db_escape($user_id). " WHERE id=".db_escape($id);
 
-	db_query($sql, "could not update user password for $user_id");
+	return db_query($sql, "could not update user password for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ function update_user($id, $user_id, $real_name, $phone, $email, $role_id,
 		pos=".db_escape($pos).",
 		user_id = " . db_escape($user_id)
 		. " WHERE id=" . db_escape($id);
-	db_query($sql, "could not update user for $user_id");
+	return db_query($sql, "could not update user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
