@@ -53,11 +53,27 @@ function start_form($multi=false, $dummy=false, $action="", $name="")
 
 function end_form($breaks=0)
 {
+	global $Ajax;
+
+	$_SESSION['csrf_token'] = hash('sha256', uniqid(mt_rand(), true));
 	if ($breaks)
 		br($breaks);
-	echo "<input type=\"hidden\" name=\"_focus\" value=\"".get_post('_focus')."\">\n";
-	echo "<input type=\"hidden\" name=\"_modified\" value=\"".get_post('_modified', 0)."\">\n";
+	hidden('_focus');
+	hidden('_modified', get_post('_modified', 0));
+	hidden('_token', $_SESSION['csrf_token']);
 	echo "</form>\n";
+	$Ajax->activate('token');
+}
+
+function check_csrf_token()
+{
+	if ($_SESSION['csrf_token'] != @$_POST['_token'])
+	{
+		display_error(_("Request from outside of this page is forbidden."));
+		error_log(_("CSRF attack detected from: ").@$_SERVER['HTTP_HOST'].' ('.@$_SERVER['HTTP_REFERER'].')');
+		return false;
+	}
+	return true;
 }
 
 function start_table($class=false, $extra="", $padding='2', $spacing='0')
