@@ -520,6 +520,8 @@ function array_search_key($needle, $haystack, $valuekey=null)
 function flush_dir($path, $wipe = false) 
 {
 	$dir = opendir($path);
+	if(!$dir)
+		return;
 	while(false !== ($fname = readdir($dir))) {
 		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
   		if(is_dir($path.'/'.$fname)) {
