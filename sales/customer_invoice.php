@@ -63,6 +63,8 @@ if (isset($_GET['AddedID'])) {
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID']))  {

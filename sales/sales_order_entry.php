@@ -223,6 +223,8 @@ if (isset($_GET['AddedID'])) {
 		submenu_option(_("Enter a &New Direct Invoice"),
 			"/sales/sales_order_entry.php?NewInvoice=0");
 
+	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
+
 	display_footer_exit();
 } else
 	check_edit_conflicts();

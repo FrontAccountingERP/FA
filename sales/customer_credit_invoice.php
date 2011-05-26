@@ -59,6 +59,8 @@ if (isset($_GET['AddedID'])) {
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID'])) {

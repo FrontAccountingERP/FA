@@ -58,6 +58,8 @@ if (isset($_GET['AddedID']))
 	reset_focus();
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
+
 	display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) 
 {
