@@ -154,6 +154,7 @@ function get_gl_trans($type, $trans_id)
 		LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
 		." WHERE gl.type= ".db_escape($type) 
 		." AND gl.type_no = ".db_escape($trans_id)
+		." AND gl.amount <> 0"
 		." ORDER BY counter";
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
@@ -578,22 +579,6 @@ function void_gl_trans($type, $trans_id, $nested=false)
 	." AND type_no=".db_escape($trans_id);
 
 	db_query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
-
-	if (!$nested)
-		commit_transaction();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-function clear_gl_trans($type, $trans_id, $nested=false)
-{
-	if (!$nested)
-		begin_transaction();
-
-	$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE type=".db_escape($type)
-	." AND type_no=".db_escape($trans_id);
-
-	db_query($sql, "could not clear gl transactions for type=$type and trans_no=$trans_id");
 
 	if (!$nested)
 		commit_transaction();

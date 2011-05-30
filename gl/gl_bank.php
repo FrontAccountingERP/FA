@@ -142,7 +142,7 @@ function create_cart($type, $trans_no)
 	{
 		unset ($_SESSION['pay_items']);
 	}
-	
+
 	$cart = new items_cart($type);
     $cart->order_id = $trans_no;
 
@@ -293,7 +293,7 @@ if (isset($_POST['Process']))
 		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_'], false);
+		$_POST['ref'], $_POST['memo_'], true);
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];

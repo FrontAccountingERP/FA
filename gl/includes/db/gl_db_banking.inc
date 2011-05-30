@@ -307,8 +307,10 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		$args);
 	hook_db_prewrite($args, $trans_type);
 
-	if ($trans_no)
-		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
+	if ($trans_no) {
+		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
+		$Refs->restore_last($trans_type, $trans_no);
+	}
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -325,7 +327,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		// we need to negate it too
 		$cust_amount = -$cust_amount;
 
-		$trans_no = write_customer_trans($trans_type, $trans_no, $person_id, $person_detail_id, $date_,
+		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
         	$ref, $cust_amount);
 
     }
@@ -338,14 +340,13 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		// we need to negate it too
 		$supp_amount = -$supp_amount;
 
-		$trans_no = write_supp_trans($trans_type, $trans_no, $person_id, $date_, '',
+		$trans_no = write_supp_trans($trans_type, 0, $person_id, $date_, '',
 			$ref, "", $supp_amount, 0, 0);
 
     }
     else
     {
-    	if (!$trans_no)
-    		$trans_no = get_next_trans_no($trans_type);
+   		$trans_no = get_next_trans_no($trans_type);
     	$do_exchange_variance = $SysPrefs->auto_currency_revaluation();
     	if ($do_exchange_variance)
     		$trans_no1 = get_next_trans_no(ST_JOURNAL);
@@ -384,13 +385,13 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     		{
     			add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 
     				$currency, $person_type_id, $person_id);
-    		}		
+    		}
     	}
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
 		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
-			
+
 		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
 			$ex_rate, $date_, $memo_);
 	}
@@ -403,11 +404,11 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     {
     	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id))
-    	{	
+    	{
    			$ref1 = $Refs->get_next(ST_JOURNAL);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
-		}	
+		}
 	}
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
@@ -421,31 +422,6 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		commit_transaction();
 
 	return array($trans_type, $trans_no);
-}
-//----------------------------------------------------------------------------------------
-
-function clear_bank_transaction($type, $type_no)
-{
-
-	hook_db_prevoid($type, $type_no);
-
-	$sql = "DELETE FROM ".TB_PREF."bank_trans 
-		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
-
-	$result = db_query($sql, "could not clear bank transactions for type=$type and trans_no=$type_no");
-
-	clear_gl_trans($type, $type_no, true);
-
-	// in case it's a customer trans - probably better to check first
-	void_cust_allocations($type, $type_no);
-
-	// in case it's a supplier trans - probably better to check first
-	void_supp_allocations($type, $type_no);
-	clear_supp_trans($type, $type_no);
-
-	clear_trans_tax_details($type, $type_no);
-
-	delete_comments($type, $type_no);
 }
 
 ?>
