@@ -253,7 +253,9 @@ function write_lang()
 
 function db_import($filename, $connection, $force=true)
 {
-	global $db, $go_debug;
+	global $db, $go_debug, $sql_trail;
+
+	$sql_trail = false;
 
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
