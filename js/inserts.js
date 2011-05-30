@@ -156,9 +156,12 @@ function _set_combo_select(e) {
 				box.value='';
 				setFocus(box);
 			    return false;
+			 } else {
+			 	if (key == 13 && !e.length) // prevent chrome issue (blocked cursor after CR on empty selector)
+			 		return false;
 			 }
 		}
-}		
+}
 
 var _w;
 
