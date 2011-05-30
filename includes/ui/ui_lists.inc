@@ -477,7 +477,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	if ($editkey)
 		set_editor('customer', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
+	return combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
 	array(
 	    'format' => '_format_add_curr',
 	    'order' => array('debtor_ref'),
@@ -528,7 +528,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		set_editor('branch', $name, $editkey);
 
 	$where = $enabled ? array("disable_trans = 0") : array();
-	return  combo_input($name, $selected_id, $sql, 'branch_code', 'br_name',
+	return  combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
 	array(
 		'where' => $where,
 		'order' => array('branch_ref'),
