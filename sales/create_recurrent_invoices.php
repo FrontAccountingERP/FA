@@ -55,6 +55,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 $id = find_submit("create");
 if ($id != -1)
 {
+	$Ajax->activate('_page_body');
 	$date = Today();
 	if (is_date_in_fiscalyear($date))
 	{
