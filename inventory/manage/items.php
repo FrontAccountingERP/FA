@@ -276,7 +276,7 @@ if ($new_item)
 } 
 else 
 { // Must be modifying an existing item
-	if (get_post('NewStockID') != get_post('stock_id')) { // first item display
+	if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 
 		$_POST['NewStockID'] = $_POST['stock_id'];
 
