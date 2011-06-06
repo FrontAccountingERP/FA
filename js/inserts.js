@@ -243,7 +243,7 @@ var inserts = {
 					save_focus(e);
 					var asp = e.getAttribute('aspect')
 					if (asp && asp.indexOf('process') !== -1)
-						JsHttpRequest.request(this, null, 60000);
+						JsHttpRequest.request(this, null, 600000); // ten minutes for backup
 					else
 						JsHttpRequest.request(this);
 				}
@@ -447,7 +447,7 @@ function setHotKeys() {
 					if (((asp && asp.indexOf('default') !== -1) && key==13)||((asp && asp.indexOf('cancel') !== -1) && key==27)) {
 						if (validate(el)) {
 							if (asp.indexOf('process') !== -1)
-								JsHttpRequest.request(el, null, 60000);
+								JsHttpRequest.request(el, null, 600000);
 							else
 								JsHttpRequest.request(el);
 						}
