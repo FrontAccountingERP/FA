@@ -318,19 +318,33 @@ function get_default_bank_account($curr)
 
 function get_default_customer_bank_account($cust_id)
 {
-	$sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($cust_id);
+	if ($cust_id == "")
+	{
+		$sql = "SELECT debtor_no FROM ".TB_PREF."debtors_master WHERE inactive=0 ORDER BY debtor_ref LIMIT 1";
+		$result = db_query($sql, "could not retreive first customer");
+		$row = db_fetch_row($result);
+		$cust_id = $row[0];
+	}
+	$sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no=$cust_id";
 	$result = db_query($sql, "could not retreive default customer currency code");
-	$row = db_fetch($result);
-	$ba = get_default_bank_account($row['curr_code']);
+	$row = db_fetch_row($result);
+	$ba = get_default_bank_account($row[0]);
 	return $ba['id'];
 }
 
 function get_default_supplier_bank_account($supplier_id)
 {
+	if ($supplier_id == "")
+	{
+		$sql = "SELECT supplier_id FROM ".TB_PREF."suppliers WHERE inactive=0 ORDER BY supp_ref LIMIT 1";
+		$result = db_query($sql, "could not retreive first supplier");
+		$row = db_fetch_row($result);
+		$supplier_id = $row[0];
+	}
 	$sql = "SELECT curr_code FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 	$result = db_query($sql, "could not retreive default supplier currency code");
-	$row = db_fetch($result);
-	$ba = get_default_bank_account($row['curr_code']);
+	$row = db_fetch_row($result);
+	$ba = get_default_bank_account($row[0]);
 	return $ba['id'];
 }
 //---------------------------------------------------------------------------------------------
