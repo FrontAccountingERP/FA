@@ -251,7 +251,8 @@ start_form();
 		$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
 		table_section(2);
-
+		if (!list_updated('bank_account'))
+			$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);		
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 

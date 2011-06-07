@@ -274,6 +274,9 @@ start_form();
 
 	set_global_supplier($_POST['supplier_id']);
 	
+	if (!list_updated('bank_account'))
+		$_POST['bank_account'] = get_default_supplier_bank_account($_POST['supplier_id']);		
+	
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 	
 	bank_balance_row($_POST['bank_account']);

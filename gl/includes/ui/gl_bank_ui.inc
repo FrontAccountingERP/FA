@@ -20,8 +20,18 @@ function display_bank_header(&$order)
 
 	table_section(1);
 	
+	if (list_updated('PayType') || list_updated('person_id'))
+	{
+		if ($_POST['PayType'] == PT_CUSTOMER || $_POST['PayType'] == PT_SUPPLIER)
+		{
+			$Ajax->activate('person_id');
+			if ($_POST['PayType'] == PT_CUSTOMER)
+    			$_POST['bank_account'] = get_default_customer_bank_account($_POST['person_id']);
+    		else	
+    			$_POST['bank_account'] = get_default_supplier_bank_account($_POST['person_id']);
+		}
+	}	
     bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
-    
     if ($payment)
 		bank_balance_row($_POST['bank_account']);
     	
