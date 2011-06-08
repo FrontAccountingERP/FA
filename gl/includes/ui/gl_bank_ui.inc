@@ -20,26 +20,9 @@ function display_bank_header(&$order)
 
 	table_section(1);
 	
-	if (list_updated('PayType') || list_updated('person_id'))
-	{
-		if (list_updated('PayType'))
-		{
-			$_POST['person_id'] = "";
-			unset($_POST['bank_account']);
-		}	
-		if ($_POST['PayType'] == PT_CUSTOMER || $_POST['PayType'] == PT_SUPPLIER)
-		{
-			if ($_POST['PayType'] == PT_CUSTOMER)
-    			$_POST['bank_account'] = get_default_customer_bank_account($_POST['person_id']);
-    		else	
-    			$_POST['bank_account'] = get_default_supplier_bank_account($_POST['person_id']);
-		}
-	}	
-    bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
-    if ($payment)
-		bank_balance_row($_POST['bank_account']);
-    	
     date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
+
+	ref_row(_("Reference:"), 'ref', '');
 
 	table_section(2, "33%");
 
@@ -108,14 +91,25 @@ function display_bank_header(&$order)
     	//	break;
     }
 
+	table_section(3, "33%");
+
+	if (!list_updated('bank_account'))
+	{
+		if ($_POST['PayType'] == PT_CUSTOMER)
+			$_POST['bank_account'] = get_default_customer_bank_account($_POST['person_id']);
+		elseif ($_POST['PayType'] == PT_SUPPLIER)	
+			$_POST['bank_account'] = get_default_supplier_bank_account($_POST['person_id']);
+		else
+			unset($_POST['bank_account']);
+	}		
+    bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
+    if ($payment)
+		bank_balance_row($_POST['bank_account']);
+    	
 	$person_currency = payment_person_currency($_POST['PayType'], $_POST['person_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
-
-	table_section(3, "33%");
-
-	ref_row(_("Reference:"), 'ref', '');
 
 	end_outer_table(1); // outer table
 

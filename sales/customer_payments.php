@@ -184,7 +184,6 @@ if (isset($_POST['_DateBanked_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 if (list_updated('customer_id') || list_updated('bank_account')) {
-  $_SESSION['alloc']->read();
   $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------------
@@ -278,6 +277,7 @@ start_form();
 
 		if ($cust_currency == $bank_currency) {
 	  		div_start('alloc_tbl');
+ 	 		$_SESSION['alloc']->read();
 			show_allocatable(false);
 			div_end();
 		}
