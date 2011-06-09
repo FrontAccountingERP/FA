@@ -10,6 +10,16 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-06-09 16:03 +0200 Joe Hunt
+(2816) Release 2.3.5
+ CHANGELOG.txt
+ update.html
+ version.php
+
+2011-06-09 15:27 +0200 Janusz Dobrowolski
+(2815) Updated gettext template.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
 2011-06-08 12:07 +0200 Janusz Dobrowolski
 (2814) Cleanup in supplier_invoice.php (obsolete add_grn_to_trans parameter)
  purchasing/supplier_invoice.php
