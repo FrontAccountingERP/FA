@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2009 FrontAccounting, LLC
+* @copyright (C) 2005 - 2011 FrontAccounting, LLC
 * @license http://www.gnu.org/copyleft/gpl-3.0.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -9,6 +9,282 @@
 1. Changelog
 ------------
 This is a changelog for FrontAccounting All releases.
+
+2011-06-08 12:07 +0200 Janusz Dobrowolski
+(2814) Cleanup in supplier_invoice.php (obsolete add_grn_to_trans parameter)
+ purchasing/supplier_invoice.php
+
+2011-06-08 15:38 +0200 Joe Hunt
+(2813) Cleanup setting of customers/suppliers bank account in forms
+ gl/includes/db/gl_db_bank_accounts.inc
+ gl/includes/ui/gl_bank_ui.inc
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+
+2011-06-07 22:54 +0200 Joe Hunt
+(2812) Improved setting of default customer / supplier bank account
+ gl/includes/db/gl_db_bank_accounts.inc
+ gl/includes/ui/gl_bank_ui.inc
+
+2011-06-07 14:58 +0200 Joe Hunt
+(2811) Setting customer/supplier currency bank account in payment / deposit forms.
+ gl/includes/db/gl_db_bank_accounts.inc
+ gl/includes/ui/gl_bank_ui.inc
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+
+2011-06-07 10:55 +0200 Janusz Dobrowolski
+(2810) Fixed javascript bug in price_format for max decimals.
+ js/utils.js
+
+2011-06-06 12:20 +0200 Janusz Dobrowolski
+(2809) Fixed item settings display after data update in Items.
+ inventory/manage/items.php
+
+2011-06-06 12:19 +0200 Janusz Dobrowolski
+(2808) Timeout on long processing like backup/restore emlarged to 10min
+ js/inserts.js
+ js/utils.js
+
+2011-06-04 17:15 +0200 Joe Hunt
+(2807) Improved Creation and ability to edit Last Sent date in Recurrent Invoice
+ sales/create_recurrent_invoices.php
+ sales/manage/recurrent_invoices.php
+
+2011-06-03 14:31 +0200 Joe Hunt
+(2806) Missing Print/Email links after creating recurrent invoices.
+ sales/create_recurrent_invoices.php
+
+2011-05-30 19:47 +0200 Janusz Dobrowolski
+(2805) [0000753] Bank deposit/payment edition fixed (rewritten database rewrite scheme to void+add)
+ gl/gl_bank.php
+ gl/includes/db/gl_db_banking.inc
+ gl/includes/db/gl_db_trans.inc
+
+2011-05-30 18:05 +0200 Janusz Dobrowolski
+(2804) Customer/branch list was searched on name and not reference.
+ includes/ui/ui_lists.inc
+
+2011-05-30 18:04 +0200 Janusz Dobrowolski
+(2803) Fixed Chrome issue with blocked cursor focus when enter is received on empty selectors.
+ js/inserts.js
+
+2011-05-30 18:01 +0200 Janusz Dobrowolski
+(2802) [0000828] sql rail  swiched off during databse restore.
+ admin/db/maintenance_db.inc
+
+2011-05-26 10:06 +0200 Joe Hunt
+(2801) Added attachment link after most popular entry forms.
+ gl/gl_bank.php
+ gl/gl_journal.php
+ inventory/adjustments.php
+ manufacturing/work_order_entry.php
+ sales/credit_note_entry.php
+ sales/customer_credit_invoice.php
+ sales/customer_invoice.php
+ sales/sales_order_entry.php
+
+2011-05-25 10:52 +0200 Janusz Dobrowolski
+(2800) CSRF checks added in users editor.
+ admin/users.php
+
+2011-05-25 10:16 +0200 Janusz Dobrowolski
+(2799) Added CSRF attack prevention on password change.
+ admin/change_current_user_password.php
+ includes/ui/ui_controls.inc
+
+2011-05-25 10:16 +0200 Janusz Dobrowolski
+(2798) Result return added in add_user/update_user/update_user_password.
+ admin/db/users_db.inc
+
+2011-05-25 10:15 +0200 Janusz Dobrowolski
+(2797) Check added for directory existence in flush_dir() helper
+ includes/current_user.inc
+
+2011-05-15 20:34 +0200 Janusz Dobrowolski
+(2796) [0000806] Branches were repeated in Customer Branches table when more than one general contact defined.
+ sales/includes/db/branches_db.inc
+
+2011-05-22 16:15 +0200 Joe Hunt
+(2795) Wrong Balance in Search Dimension and changing dates in view_dimension didn't work.
+ dimensions/includes/dimensions_db.inc
+ dimensions/view/view_dimension.php
+
+2011-05-22 10:39 +0200 Joe Hunt
+(2794) 0000800: Cannot seem to update contact categories as inactive
+ admin/crm_categories.php
+
+2011-05-21 11:25 +0200 Joe Hunt
+(2793) 0000824: Quick Entries. Problems with latest MySql release.
+ gl/manage/gl_quick_entries.php
+
+2011-05-18 09:15 +0200 Joe Hunt
+(2792) Changed Print Statements to follow aged customer/supplier list in presentation
+ reporting/rep108.php
+ reporting/reports_main.php
+
+2011-05-17 23:22 +0200 Joe Hunt
+(2791) Correction in inventory_?db.inc. Chaitanya.
+ includes/db/inventory_db.inc
+
+2011-05-14 09:48 +0200 Janusz Dobrowolski
+(2790) [0000802] Fixed selection by date in supplier transactions inquiry.
+
+2011-05-14 10:09 +0200 Janusz Dobrowolski
+(2789) Added helper for catching tabbed content widget change.
+ includes/ui/ui_controls.inc
+
+2011-05-14 09:45 +0200 Janusz Dobrowolski
+(2788) Fixed subheaders gettext in Tial Balance inquiry.
+ gl/inquiry/gl_trial_balance.php
+
+2011-05-14 09:44 +0200 Janusz Dobrowolski
+(2787) Fixed problem with GRN clearing account initialization in GL setup.
+ admin/gl_setup.php
+
+2011-05-14 09:43 +0200 Janusz Dobrowolski
+(2786) Fixed wrong date displayed in View/Print transaction for edited journal entries.
+ admin/db/transactions_db.inc
+
+2011-05-11 15:03 +0200 Janusz Dobrowolski
+(2785) Added strict warnings display as errors in debug mode.
+ includes/errors.inc
+
+2011-05-14 09:32 +0200 Joe Hunt
+(2784) 0000802: Supplier Inquiry Summary Balance till a date
+ purchasing/inquiry/supplier_inquiry.php
+
+2011-05-14 09:14 +0200 Joe Hunt
+(2783) Fixed a minor bug in balance sheet drill down on screen. Chaitanya.
+ gl/inquiry/balance_sheet.php
+
+2011-05-13 09:29 +0200 Joe Hunt
+(2782) 0000799: function void_work_order misses void_bank_trans
+ manufacturing/includes/db/work_orders_db.inc
+
+2011-05-12 08:22 +0200 Joe Hunt
+(2781) Optimized gl_db_banking.inc, revaluation of AR/AP currencies
+ gl/includes/db/gl_db_banking.inc
+
+2011-05-10 15:05 +0200 Joe Hunt
+(2780) Cleanup inventory_db.inc, work_orders_db.inc and grn_db.inc by Chaitanya
+ includes/db/inventory_db.inc
+ manufacturing/includes/db/work_orders_db.inc
+ purchasing/includes/db/grn_db.inc
+
+2011-05-10 11:46 +0200 Janusz Dobrowolski
+(2779) Fixed backup/restore screen layout displayed in Chrome.
+ admin/backups.php
+
+2011-05-10 11:30 +0200 Janusz Dobrowolski
+(2778) Current fiscal year in en_US-*.sql set to 2011.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2011-05-10 10:09 +0200 Joe Hunt
+(2777) Improved notification in revaluation of currencies and fixed a summation bug.
+ gl/includes/db/gl_db_banking.inc
+ gl/manage/revaluate_currencies.php
+
+2011-05-09 20:53 +0200 Joe Hunt
+(2776) Using $_POST instead of $_GET when creating Recurrent Invoices.
+ sales/create_recurrent_invoices.php
+
+2011-05-09 16:41 +0200 Janusz Dobrowolski
+(2775) Cleanups in ui_msgs.inc and inventory_db.inc
+ includes/db/inventory_db.inc
+ includes/ui/ui_msgs.inc
+
+2011-05-09 16:40 +0200 Janusz Dobrowolski
+(2774) Voided bank transactions removed from bank inquiry.
+ gl/includes/db/gl_db_bank_trans.inc
+
+2011-05-09 16:33 +0200 Janusz Dobrowolski
+(2773) Fixed recurrent invoices messages, new recurrent invoices now show no last date.
+ sales/create_recurrent_invoices.php
+ sales/includes/db/recurrent_invoices_db.inc
+ sales/manage/recurrent_invoices.php
+
+2011-05-04 16:55 +0200 Janusz Dobrowolski
+(2772) Fixed message on po line removal in purchase invoice.
+ purchasing/includes/ui/invoice_ui.inc
+
+2011-05-04 16:54 +0200 Janusz Dobrowolski
+(2771) Parse error after last changes in bank_transfer.php
+ gl/bank_transfer.php
+
+2011-04-29 13:52 +0200 Janusz Dobrowolski
+(2770) Additional checks on bank transaction entry/delete to avoid overdraft in following transactions.
+ admin/db/voiding_db.inc
+ gl/bank_transfer.php
+ gl/gl_bank.php
+ gl/includes/db/gl_db_bank_trans.inc
+
+2011-04-29 13:25 +0200 Janusz Dobrowolski
+(2769) Fixed amount display at bank deposit view.
+ gl/view/gl_deposit_view.php
+
+2011-05-09 15:30 +0200 Joe Hunt
+(2768) Including AR/AP accounts when doing manuelly Revaluation of Currency Accounts
+ gl/includes/db/gl_db_banking.inc
+
+2011-05-05 23:15 +0200 Joe Hunt
+(2765) Allow editing of sales orders in Delivery Against Sales Orders
+ sales/inquiry/sales_orders_view.php
+
+2011-05-05 09:41 +0200 Joe Hunt
+(2764) Also display company name in warning when pressing delete company.
+ admin/create_coy.php
+
+2011-04-29 13:47 +0200 Joe Hunt
+(2763) Fixed summation error in Aged customer/supplier Lists
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep102.php
+ reporting/rep202.php
+ sales/includes/db/customers_db.inc
+
+2011-04-28 21:52 +0200 Joe Hunt
+(2762) Rerun of Aged Supplier List.
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep202.php
+
+2011-04-28 14:29 +0200 Joe Hunt
+(2761) Option for Show Also Allocated in Aged Customer/Supplier List.
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep102.php
+ reporting/rep202.php
+ reporting/reports_main.php
+ sales/includes/db/customers_db.inc
+
+2011-04-28 14:52 +0200 Janusz Dobrowolski
+(2760) Added tax summary to Sales Quotation report.
+ reporting/rep111.php
+
+2011-04-28 10:59 +0200 Joe Hunt
+(2759) Customer Credit Notes should not be included in Print Receipts.
+ reporting/includes/reports_classes.inc
+ reporting/rep112.php
+
+2011-04-28 01:00 +0200 Janusz Dobrowolski
+(2758) Direct sales invoice due date was not stored in database.
+ sales/includes/cart_class.inc
+
+2011-04-27 16:35 +0200 Janusz Dobrowolski
+(2756) Added tag version_2_3_4 for changeset b5cb2a38213b
+ .hgtags
+
+2011-04-27 15:26 +0200 Joe Hunt
+(2755) Rerun of old CHANGELOG.old.txt
+ doc/CHANGELOG.old.txt
+
+2011-04-27 14:55 +0200 Joe Hunt
+(2754) Rerun CHANGELOG.txt
+ CHANGELOG.txt
+
+2011-04-27 14:44 +0200 Joe Hunt
+(2753) New ChaNGELOG.txt and empty.po
+ doc/CHANGELOG.old.txt
+ lang/new_language_template/LC_MESSAGES/empty.po
 
 2011-04-27 10:58 +0200 Joe Hunt
 (2752) Release 2.3.4
