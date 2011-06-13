@@ -100,10 +100,11 @@ class hooks {
 	//
 	//	Returns: amount in words as string.
 
+/*	commented out in base class to enable use with hook_invoke_last
 	function price_in_words($amount, $doc_type)
 	{
 	}
-
+*/
 	//
 	// Exchange rate currency $curr as on date $date.
 	// Keep in mind FA has internally implemented 3 exrate providers
@@ -111,13 +112,14 @@ class hooks {
 	// with apprioprate provider set, otherwise implement your own.
 	// Returns: $curr value in home currency units as a real number.
 
+/*	commented out in base class to enable use with hook_invoke_last
 	function retrieve_exrate($curr, $date)
 	{
 //	 	$provider = 'ECB'; // 'ECB', 'YAHOO' or 'GOOGLE'
 //		return get_extern_rate($curr, $provider, $date);
 		return null;
 	}
-
+*/
 	// Generic function called at the end of Tax Report (report 709)
 	// Can be used e.g. for special database updates on every report printing
 	// or to print special tax report footer 
