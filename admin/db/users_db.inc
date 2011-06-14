@@ -89,8 +89,7 @@ function get_user($id)
 }
 
 //-----------------------------------------------------------------------------------------------
-//	This function is necessary for admin prefs update after upgrade from 2.1
-//
+
 function get_user_by_login($user_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id=".db_escape($user_id);
@@ -110,7 +109,10 @@ function delete_user($id)
 }
 
 //-----------------------------------------------------------------------------------------------
-
+//
+//	Obsolete, to be removed in 2.4. This function as been spleet into get_user_auth/get_user_by_login
+//	in FA 2.3.6
+//
 function get_user_for_login($user_id, $password)
 {
 	set_global_connection();
@@ -121,6 +123,18 @@ function get_user_for_login($user_id, $password)
 		." password=".db_escape($password);
 
 	return db_query($sql, "could not get validate user login for $user_id");
+}
+
+//-----------------------------------------------------------------------------------------------
+
+function get_user_auth($user_id, $password)
+{
+	set_global_connection();
+
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
+		." password=".db_escape($password);
+
+	return db_num_rows(db_query($sql, "could not get validate user login for $user_id")) != 0;
 }
 
 //-----------------------------------------------------------------------------------------------

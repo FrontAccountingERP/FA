@@ -100,11 +100,9 @@ class hooks {
 	//
 	//	Returns: amount in words as string.
 
-/*	commented out in base class to enable use with hook_invoke_last
 	function price_in_words($amount, $doc_type)
 	{
 	}
-*/
 	//
 	// Exchange rate currency $curr as on date $date.
 	// Keep in mind FA has internally implemented 3 exrate providers
@@ -112,14 +110,19 @@ class hooks {
 	// with apprioprate provider set, otherwise implement your own.
 	// Returns: $curr value in home currency units as a real number.
 
-/*	commented out in base class to enable use with hook_invoke_last
 	function retrieve_exrate($curr, $date)
 	{
 //	 	$provider = 'ECB'; // 'ECB', 'YAHOO' or 'GOOGLE'
 //		return get_extern_rate($curr, $provider, $date);
 		return null;
 	}
-*/
+
+	// External authentication
+	// If used should return true after successfull athentication, false otherwise.
+	function authenticate($login, $password)
+	{
+		return null;
+	}
 	// Generic function called at the end of Tax Report (report 709)
 	// Can be used e.g. for special database updates on every report printing
 	// or to print special tax report footer 
@@ -283,28 +286,26 @@ function hook_invoke_first($method, &$data, $opts=null)
 	return $result;
 }
 /*
-	Returns result of last hook installed. Helps implement hooks overriding by 
+	Returns last non-null result returned from modules method. Helps implement hooks overriding by 
 	extensions installed later.
-	
 */
 function hook_invoke_last($method, &$data, $opts=null)
 {
 
 	global $Hooks;
 
-	$found = false;
-	foreach($Hooks as $ext => $hook) {
+	$result = null;
+	$Reverse = array_reverse($Hooks);
+	foreach($Reverse as $ext => $hook) {
 		if (method_exists($hook, $method)) {
-			$found = $ext;
+			set_ext_domain('modules/'.$ext);
+			$result = $hook->$method($data, $opts);
+			if (isset($result))
+				break;
 		}
 	}
-	$ret = null;
-	if ($found) {
-		set_ext_domain('modules/'.$found);
-		$ret = $Hooks[$found]->$method($data, $opts);
-		set_ext_domain();
-	}
-	return $ret;
+	set_ext_domain();
+	return $result;
 }
 //------------------------------------------------------------------------------------------
 //	Database transaction hooks.
@@ -389,4 +390,12 @@ function hook_session_start($company)
 		return $SessionManager->installed;
 	}
 	return false;
+}
+//
+//	Third party authentication modules.
+//	Returns true after successfull authentication, false otherwise, null if no login hook is defined.
+//
+function hook_authenticate($login, $password)
+{
+	return hook_invoke_last('authenticate', $login, $password);
 }

@@ -63,11 +63,19 @@ class current_user
 		$this->set_company($company);
 	    $this->logged = false;
 
-		$Auth_Result = get_user_for_login($loginname, $password);
+		set_global_connection();
 
-		if (db_num_rows($Auth_Result) > 0)
+		// Use external authentication source if any.
+		// Keep in mind you need to have user data set for $loginname
+		// in FA users table anyway to successfully log in.
+		$Auth_Result = hook_authenticate($loginname, $password);
+
+		if (!isset($Auth_Result))	// if not used: standard method
+			$Auth_Result = get_user_auth($loginname, md5($password));
+
+		if ($Auth_Result)
 		{
-			$myrow = db_fetch($Auth_Result);
+			$myrow = get_user_by_login($loginname);
 			$this->old_db = isset($myrow["full_access"]);
 			if (! @$myrow["inactive"]) {
 				if ($this->old_db) { 
