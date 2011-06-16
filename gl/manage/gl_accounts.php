@@ -76,7 +76,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 
     	if ($selected_account) 
 		{
-			if (check_value('inactive') && is_bank_account($_POST['account_code']))
+			if (get_post('inactive') == 1 && is_bank_account($_POST['account_code']))
 			{
 				display_error(_("The account belongs to a bank account and cannot be inactivated."));
 			}	
