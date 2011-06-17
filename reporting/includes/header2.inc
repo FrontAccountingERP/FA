@@ -58,7 +58,7 @@
 		for ($i = 0; $i < 5; $i++)
 		{
 			$this->LineTo($col += $width, $iline2,$col, $iline4);
-		}	
+		}
 		$this->LineTo($right, $iline2 ,$right, $iline4);
 		$this->LineTo($this->leftMargin, $iline5 ,$this->leftMargin, $iline7);
 		$this->LineTo($this->cols[$cols - 2] + 4, $iline5 ,$this->cols[$cols - 2] + 4, $iline7);
@@ -93,19 +93,19 @@
 		// Company data
 		$this->TextWrapLines($ccol, $icol, $this->company['postal_address']);
 		$this->Font('italic');
-		if ($this->company['phone'] != "")
+		if (@$this->company['phone'])
 		{
 			$this->Text($ccol, _("Phone"), $c2col);
 			$this->Text($c2col, $this->company['phone'], $mcol);
 			$this->NewLine();
-		}	
-		if ($this->company['fax'] != "")
+		}
+		if (@$this->company['fax'])
 		{
 			$this->Text($ccol, _("Fax"), $c2col);
 			$this->Text($c2col, $this->company['fax'], $mcol);
 			$this->NewLine();
-		}	
-		if ($this->company['email'] != "")
+		}
+		if (@$this->company['email'])
 		{
 			$this->Text($ccol, _("Email"), $c2col);
 
@@ -117,13 +117,13 @@
 
 			$this->NewLine();
 		}
-		if ($this->company['gst_no'] != "")
+		if (@$this->company['gst_no'])
 		{
 			$this->Text($ccol, _("Our VAT No."), $c2col);
 			$this->Text($c2col, $this->company['gst_no'], $mcol);
 			$this->NewLine();
 		}
-		if ($this->formData['domicile'] != "")
+		if (@$this->formData['domicile'])
 		{
 			$this->Text($ccol, _("Domicile"), $c2col);
 			$this->Text($c2col, $this->company['domicile'], $mcol);
