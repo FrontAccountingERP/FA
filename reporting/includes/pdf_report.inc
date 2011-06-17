@@ -389,7 +389,7 @@ class FrontReport extends Cpdf
 			'ov_freight', 'ov_gst', 'ov_amount'),
 		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch'),
 		'sales_order' => array('deliver_to', 'delivery_address', 'customer_ref'),
-		'bankaccount' => array('bank_name', 'bank_account_number')
+		'bankaccount' => array('bank_name', 'bank_account_number', 'payment_service')
 		);
 
 		foreach($datnames as $var => $fields) {
@@ -402,6 +402,7 @@ class FrontReport extends Cpdf
 			}
 		}
 		$this->formData['doctype'] = $doctype;
+		$this->formData['document_amount'] = @$this->formData['ov_amount']+@$this->formData['ov_freight']+@$this->formData['ov_gst'];
 		if (count($contacts)) {
 			if (!is_array($contacts[0]))
 				$contacts = array($contacts); // change to array when single contact passed
@@ -427,7 +428,7 @@ class FrontReport extends Cpdf
 
 		$doctype = $this->formData['doctype'];
 		$header2type = true;
- 		
+
 		$this->SetLang(@$this->formData['rep_lang'] ? $this->formData['rep_lang'] : $dflt_lang);
 
  		 // leave layout files names without path to enable including
@@ -944,7 +945,7 @@ class FrontReport extends Cpdf
 			$this->{$this->headerTmpl}();
 	}
 
-	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
+	function End($email=0)
 	{
 		global $pdf_debug, $path_to_root;
 
@@ -958,7 +959,6 @@ class FrontReport extends Cpdf
 		}
 		else
 		{
-
 			$dir =  company_path(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
@@ -980,12 +980,12 @@ class FrontReport extends Cpdf
 					display_error(_("You have no email contact defined for this type of document"));
 				} else {
 					$sent = $try = 0;
+					$subject = $this->formData['document_name'] . ' '. $this->formData['document_number'];
 					foreach($this->contactData as $contact) {
 						if (!isset($contact['email'])) 
 							continue;
 						$emailtype = true;
 						$this->SetLang($contact['lang']);
-						include("includes/doctext.inc");
 
 						require_once($path_to_root . "/reporting/includes/class.mail.inc");
     					$mail = new email(str_replace(",", "", $this->company['coy_name']),
@@ -994,21 +994,24 @@ class FrontReport extends Cpdf
 
 	    				$to = str_replace(",", "", $contact['name'].' '.$contact['name2'])
 	    					." <" . $contact['email'] . ">";
-    					$msg = $doc_Dear_Sirs . " " . $contact['name2'] . ",\n\n" 
-    						. $doc_AttachedFile . " " . $subject ."\n\n";
-						if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
+    					$msg = _("Dear") . " " . $contact['name2'] . ",\n\n" 
+    						. _("Attached you will find ") . " " . $subject ."\n\n";
+
+						if (isset($this->formData['payment_service']))
 						{
-							if ($myrow['dimension_id'] == 1)
-							{
-								$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-								$txt = $doc_Payment_Link . " PayPal: ";
-								$nn = urlencode($this->title . " " . $myrow['reference']);
-								$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-									$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-								$msg .= $txt . $url . "\n\n";
-							}
+							$amt = number_format($this->formData['document_amount'], user_price_dec());
+							$service = $this->formData['payment_service'];
+							$url = payment_link($service, array(
+									'company_email' => $this->company['email'],
+									'amount' => $amt,
+									'currency' => $this->formData['curr_code'],
+									'comment' => $this->title . " " . $this->formData['document_number']
+									));
+							if ($url)
+								$msg.= _("You can pay through"). " $service: $url\n\n";
 						}
-	    				$msg .= $doc_Kindest_regards . "\n\n";
+
+	    				$msg .= _("Kindest regards") . "\n\n";
     					$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
     					$mail->to($to); $try++;
     					$mail->subject($subject);
@@ -1023,7 +1026,7 @@ class FrontReport extends Cpdf
 					} elseif (!$sent)
 						display_error(_("Sending document by email failed"));
 					else
-						display_notification($this->title . " " . $myrow['reference'] . " " 
+						display_notification($this->title . " " . $this->formData['document_number'] . " " 
 							. _("has been sent by email to destination."));
 				}
 			}

@@ -130,20 +130,18 @@ function print_sales_quotations()
 		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-		$linetype = true;
 		$doctype = ST_SALESQUOTE;
-		include($path_to_root . "/reporting/includes/doctext.inc");
 
-		$rep->TextCol(3, 6, $doc_Sub_total, -2);
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
-		$rep->TextCol(3, 6, $doc_Shipping, -2);
+		$rep->TextCol(3, 6, _("Shipping"), -2);
 		$rep->TextCol(6, 7,	$DisplayFreight, -2);
 		$rep->NewLine();
 
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		if ($myrow['tax_included'] == 0) {
-			$rep->TextCol(3, 6, $doc_TOTAL_ORDER, - 2);
+			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
 			$rep->NewLine();
 		}
@@ -174,7 +172,7 @@ function print_sales_quotations()
 					$first = false;
 				}
 				else
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . " " . $doc_Amount . ": " . $DisplayTax, -2);
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . " " . _("Amount") . ": " . $DisplayTax, -2);
 			}
 			else
 			{
@@ -189,7 +187,7 @@ function print_sales_quotations()
 
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		$rep->Font('bold');
-		$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
+		$rep->TextCol(3, 6, _("TOTAL ORDER VAT INCL."), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 		if ($words != "")
@@ -202,7 +200,7 @@ function print_sales_quotations()
 		{
 			if ($print_invoice_no == 1)
 				$myrow['reference'] = $i;
-			$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow);
+			$rep->End($email, '', $myrow);
 		}
 	}
 	if ($email == 0)

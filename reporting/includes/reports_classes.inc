@@ -221,8 +221,7 @@ class BoxReports
 					return yesno_list($name);
 
 				case 'PAYMENT_LINK':
-					$sel = array(_("No payment Link"), "PayPal");
-					return array_selector($name, null, $sel);
+					return payment_services($name, null);
 
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");

@@ -129,12 +129,10 @@ function print_remittances()
 			$rep->NewPage();
 			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
 
-			$linetype = true;
 			$doctype = ST_SUPPAYMENT;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
-			$rep->TextCol(0, 4,	$doc_Towards, -2);
+			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
 			
 			while ($myrow2=db_fetch($result))
@@ -155,15 +153,15 @@ function print_remittances()
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
-			$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
-			$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
 			$myrow['Total'] *= -1;
 			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, $doc_Total_Payment, - 2);
+			$rep->TextCol(3, 6, _("TOTAL REMITTANCE"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 			$words = price_in_words($myrow['Total'], ST_SUPPAYMENT);
 			if ($words != "")
@@ -175,7 +173,7 @@ function print_remittances()
 			if ($email == 1)
 			{
 				$myrow['DebtorName'] = $myrow['supp_name'];
-				$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
+				$rep->End($email, '', $myrow);
 			}
 		}	
 	}

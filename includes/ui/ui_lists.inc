@@ -2327,4 +2327,17 @@ function coa_list_row($label, $name, $value=null)
 	echo array_selector( $name, $value, $coas );
 	echo "</td></tr>\n";
 }
+
+function payment_services($name)
+{
+	global $payment_services;
+
+	$services = array_combine(array_keys($payment_services), array_keys($payment_services));
+
+	return array_selector($name, null, $services, array(
+			'spec_option'=> _("No payment Link"),
+			'spec_id' => '',
+		));
+}
+
 ?>

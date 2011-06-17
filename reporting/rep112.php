@@ -115,12 +115,10 @@ function print_receipts()
 			$rep->NewPage();
 			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
 
-			$linetype = true;
 			$doctype = ST_CUSTPAYMENT;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
-			$rep->TextCol(0, 4,	$doc_Towards, -2);
+			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
 			
 			while ($myrow2=db_fetch($result))
@@ -141,14 +139,14 @@ function print_receipts()
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
-			$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
-			$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
 			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, $doc_Total_Payment, - 2);
+			$rep->TextCol(3, 6, _("TOTAL RECEIPT"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 			$words = price_in_words($myrow['Total'], ST_CUSTPAYMENT);
 			if ($words != "")
@@ -158,16 +156,16 @@ function print_receipts()
 			}	
 			$rep->Font();
 			$rep->NewLine();
-			$rep->TextCol(6, 7, $doc_Received, - 2);
+			$rep->TextCol(6, 7, _("Received / Sign"), - 2);
 			$rep->NewLine();
-			$rep->TextCol(0, 2, $doc_by_Cheque, - 2);
+			$rep->TextCol(0, 2, _("By Cash / Cheque* / Draft No."), - 2);
 			$rep->TextCol(2, 4, "______________________________", - 2);
-			$rep->TextCol(4, 5, $doc_Dated, - 2);
+			$rep->TextCol(4, 5, _("Dated"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->NewLine(1);
-			$rep->TextCol(0, 2, $doc_Drawn, - 2);
+			$rep->TextCol(0, 2, _("Drawn on Bank"), - 2);
 			$rep->TextCol(2, 4, "______________________________", - 2);
-			$rep->TextCol(4, 5, $doc_Drawn_Branch, - 2);
+			$rep->TextCol(4, 5, _("Branch"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->TextCol(6, 7, "__________________");
 		}	

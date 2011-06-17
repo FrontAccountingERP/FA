@@ -143,14 +143,12 @@ function print_credits()
    			$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-			$linetype = true;
 			$doctype = ST_CUSTCREDIT;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 
-			$rep->TextCol(3, 6, $doc_Sub_total, -2);
+			$rep->TextCol(3, 6, _("Sub-total"), -2);
 			$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 			$rep->NewLine();
-			$rep->TextCol(3, 6, $doc_Shipping, -2);
+			$rep->TextCol(3, 6, _("Shipping"), -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
 			$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $i);
@@ -181,7 +179,7 @@ function print_credits()
 						$first = false;
     				}
     				else
-						$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+						$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 				}
     			else
     			{
@@ -194,7 +192,7 @@ function print_credits()
 			$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
+			$rep->TextCol(3, 6, _("TOTAL CREDIT"), - 2);
 			$rep->TextCol(6, 7, $DisplayTotal, -2);
 			$words = price_in_words($myrow['Total'], ST_CUSTCREDIT);
 			if ($words != "")
@@ -206,7 +204,7 @@ function print_credits()
 			if ($email == 1)
 			{
 				$myrow['dimension_id'] = $paylink; // helper for pmt link
-				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, ST_CUSTCREDIT);
+				$rep->End($email, '', $myrow, ST_CUSTCREDIT);
 			}
 	}
 	if ($email == 0)

@@ -153,15 +153,13 @@ function print_deliveries()
    			$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-			$linetype = true;
 			$doctype=ST_CUSTDELIVERY;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 			if ($packing_slip == 0)
 			{
-				$rep->TextCol(3, 6, $doc_Sub_total, -2);
+				$rep->TextCol(3, 6, _("Sub-total"), -2);
 				$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 				$rep->NewLine();
-				$rep->TextCol(3, 6, $doc_Shipping, -2);
+				$rep->TextCol(3, 6, _("Shipping"), -2);
 				$rep->TextCol(6, 7,	$DisplayFreight, -2);
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $i);
@@ -192,7 +190,7 @@ function print_deliveries()
 							$first = false;
     					}
     					else
-							$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+							$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 					}
     				else
     				{
@@ -205,7 +203,7 @@ function print_deliveries()
 				$DisplayTotal = number_format2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
 					$myrow["ov_amount"],$dec);
 				$rep->Font('bold');
-				$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2);
+				$rep->TextCol(3, 6, _("TOTAL DELIVERY INCL. VAT"), - 2);
 				$rep->TextCol(6, 7,	$DisplayTotal, -2);
 				$words = price_in_words($myrow['Total'], ST_CUSTDELIVERY);
 				if ($words != "")
@@ -217,7 +215,7 @@ function print_deliveries()
 			}	
 			if ($email == 1)
 			{
-				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, ST_CUSTDELIVERY);
+				$rep->End($email, '', $myrow, ST_CUSTDELIVERY);
 			}
 	}
 	if ($email == 0)

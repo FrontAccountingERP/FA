@@ -1300,4 +1300,32 @@ function display_backtrace($cond=true, $msg='') {
 	}
 }
 
+//
+// FIXME: $payment_services array will be moved to bank_accounts in 2.4.x
+//
+if (!isset($payment_services))
+{
+	$payment_services = array(
+		'PayPal' => "https://www.paypal.com/xclick/business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
+	);
+}
+/*
+*	Payment link generation. Options provided during invoice generation:
+*	company_email, comment, amount, currency
+*/
+function payment_link($name, $options)
+{
+	global $payment_services;
+
+	$link = @$payment_services[$name];
+
+	if (!$link) return null;
+
+	$patterns = array();
+	foreach ($options as $id => $option)
+		$patterns['<'.$id.'>'] = urlencode($options[$id]);
+
+	return strtr($link, $patterns);
+}
+
 ?>

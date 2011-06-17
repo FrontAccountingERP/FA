@@ -162,11 +162,9 @@ function print_po()
 		$DisplaySubTot = number_format2($SubTotal,$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-		$linetype = true;
 		$doctype = ST_PURCHORDER;
-		include($path_to_root . "/reporting/includes/doctext.inc");
 
-		$rep->TextCol(3, 6, $doc_Sub_total, -2);
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
 
@@ -196,7 +194,7 @@ function print_po()
 					$first = false;
 				}
 				else
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 			}
 			else
 			{
@@ -210,7 +208,7 @@ function print_po()
 		$rep->NewLine();
 		$DisplayTotal = number_format2($SubTotal, $dec);
 		$rep->Font('bold');
-		$rep->TextCol(3, 6, $doc_TOTAL_PO, - 2);
+		$rep->TextCol(3, 6, _("TOTAL PO"), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$words = price_in_words($SubTotal, ST_PURCHORDER);
 		if ($words != "")
@@ -225,7 +223,7 @@ function print_po()
 
 			if ($myrow['reference'] == "")
 				$myrow['reference'] = $myrow['order_no'];
-			$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
+			$rep->End($email, '', $myrow);
 		}
 	}
 	if ($email == 0)
