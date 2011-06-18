@@ -30,7 +30,7 @@
 		_("Unit"), _("Price"), _("Discount %"), _("Total"));
 
 	// for links use 'text' => 'url'
-	$Footer[0] = _("All amounts stated in") . @$this->formData['curr_code'];
+	$Footer[0] = _("All amounts stated in") . " - " . @$this->formData['curr_code'];
 
 	switch ($this->formData['doctype'])
 	{
@@ -88,7 +88,7 @@
 		case ST_CUSTCREDIT:
 			$this->title = _("CREDIT NOTE");
 			$this->formData['document_name'] =_("Credit No.");
-			$Footer[0] = _("Please quote Credit no. when paying. All amounts stated in") . $this->formData['curr_code'];
+			$Footer[0] = _("Please quote Credit no. when paying. All amounts stated in") . " - " . $this->formData['curr_code'];
 
 			$aux_info = array(
 				_("Customers Reference") => @$this->formData["customer_ref"],
@@ -103,7 +103,7 @@
 			$this->title = _("INVOICE");
 			$this->formData['document_name'] =_("Invoice No.");
 			$this->formData['domicile'] = $this->company['domicile'];
-			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). $this->formData['curr_code'];
+			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). " - " . $this->formData['curr_code'];
 
 			$deliveries = get_sales_parent_numbers(ST_SALESINVOICE, $this->formData['trans_no']);
 			if ($print_invoice_no == 0)
