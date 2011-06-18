@@ -693,7 +693,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
   		return ($px / $unit_offset_length);
   	}	
 
-	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
+	function End($email=0, $subject='')
 	{
 		global $path_to_root;
 		++$this->y;

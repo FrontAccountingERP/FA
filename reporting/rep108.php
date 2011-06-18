@@ -166,7 +166,7 @@ function print_statements()
 		for ($i = 0; $i < 5; $i++)
 			$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 		if ($email == 1)
-			$rep->End($email, _("Statement") . " " . _("as of") . " " . sql2date($date), $myrow, ST_STATEMENT);
+			$rep->End($email, _("Statement") . " " . _("as of") . " " . sql2date($date));
 
 	}
 	if ($email == 0)

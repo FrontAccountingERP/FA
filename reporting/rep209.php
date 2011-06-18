@@ -223,7 +223,7 @@ function print_po()
 
 			if ($myrow['reference'] == "")
 				$myrow['reference'] = $myrow['order_no'];
-			$rep->End($email, '', $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

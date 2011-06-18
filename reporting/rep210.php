@@ -173,7 +173,7 @@ function print_remittances()
 			if ($email == 1)
 			{
 				$myrow['DebtorName'] = $myrow['supp_name'];
-				$rep->End($email, '', $myrow);
+				$rep->End($email);
 			}
 		}	
 	}

@@ -151,7 +151,7 @@
 			$Addr1['address'] = $this->formData['address'];
 			$Addr2['title'] = _("Deliver To");
 			$Addr2['name'] = $this->company['coy_name'];
-			$Addr2['address'] = $this->formData['deliver_to'];
+			$Addr2['address'] = $this->company['postal_address'];
 			$this->formData['document_date'] = $this->formData['ord_date'];
 			$this->formData['document_number'] = $this->formData['order_no'];
 

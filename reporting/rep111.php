@@ -200,7 +200,7 @@ function print_sales_quotations()
 		{
 			if ($print_invoice_no == 1)
 				$myrow['reference'] = $i;
-			$rep->End($email, '', $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

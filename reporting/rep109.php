@@ -211,7 +211,7 @@ function print_sales_orders()
 		$rep->Font();
 		if ($email == 1)
 		{
-			$rep->End($email, '', $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

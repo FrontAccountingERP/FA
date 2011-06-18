@@ -215,7 +215,7 @@ function print_deliveries()
 			}	
 			if ($email == 1)
 			{
-				$rep->End($email, '', $myrow, ST_CUSTDELIVERY);
+				$rep->End($email);
 			}
 	}
 	if ($email == 0)

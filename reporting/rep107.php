@@ -202,7 +202,7 @@ function print_invoices()
 			$rep->Font();
 			if ($email == 1)
 			{
-				$rep->End($email, '', $myrow, ST_SALESINVOICE);
+				$rep->End($email);
 			}
 	}
 	if ($email == 0)

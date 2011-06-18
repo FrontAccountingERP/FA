@@ -945,7 +945,7 @@ class FrontReport extends Cpdf
 			$this->{$this->headerTmpl}();
 	}
 
-	function End($email=0)
+	function End($email=0, $subject='')
 	{
 		global $pdf_debug, $path_to_root;
 
@@ -980,7 +980,8 @@ class FrontReport extends Cpdf
 					display_error(_("You have no email contact defined for this type of document"));
 				} else {
 					$sent = $try = 0;
-					$subject = $this->formData['document_name'] . ' '. $this->formData['document_number'];
+					if(!$subject)
+						$subject = $this->formData['document_name'] . ' '. $this->formData['document_number'];
 					foreach($this->contactData as $contact) {
 						if (!isset($contact['email'])) 
 							continue;

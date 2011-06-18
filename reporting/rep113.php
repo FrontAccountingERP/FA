@@ -204,7 +204,7 @@ function print_credits()
 			if ($email == 1)
 			{
 				$myrow['dimension_id'] = $paylink; // helper for pmt link
-				$rep->End($email, '', $myrow, ST_CUSTCREDIT);
+				$rep->End($email);
 			}
 	}
 	if ($email == 0)
