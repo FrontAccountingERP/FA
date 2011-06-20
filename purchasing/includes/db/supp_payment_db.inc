@@ -78,7 +78,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
-		$date_, -($amount + $supp_charge), PT_SUPPLIER,
+		$date_, -($amount + $charge), PT_SUPPLIER,
 		$supplier_id, $bank_account_currency,
 		"Could not add the supplier payment bank transaction");
 
