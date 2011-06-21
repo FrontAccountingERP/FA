@@ -259,6 +259,9 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
 	login_timeout();
 
+	if (!$_SESSION["wa_current_user"]->old_db)
+		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+
 	install_hooks();
 
 	if (!$_SESSION["wa_current_user"]->logged_in())
@@ -292,9 +295,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		}
 	} else
 		set_global_connection();
-
-	if (!$_SESSION["wa_current_user"]->old_db)
-		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
