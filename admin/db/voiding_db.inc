@@ -69,8 +69,11 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			break;
 
 		case ST_PURCHORDER : // it's a PO
-		case ST_SUPPRECEIVE : // it's a GRN
 			return false;
+
+		case ST_SUPPRECEIVE : // it's a GRN
+			if (exists_grn_on_invoices($type_no))
+				return false;
 		case ST_SUPPINVOICE : // it's a suppler invoice
 		case ST_SUPPCREDIT : // it's a supplier credit note
 		case ST_SUPPAYMENT : // it's a supplier payment

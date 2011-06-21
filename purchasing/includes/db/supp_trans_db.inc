@@ -153,7 +153,7 @@ function post_void_supp_trans($type, $type_no)
 		return true;
 	}
 
-	if ($type == SUPPRECEIVE)
+	if ($type == ST_SUPPRECEIVE)
 	{
 	 	return void_grn($type_no);
 	}
