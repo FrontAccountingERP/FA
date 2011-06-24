@@ -51,11 +51,9 @@ function get_invoices($customer_id, $to, $all=true)
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
-			".TB_PREF."payment_terms,
 			".TB_PREF."debtor_trans
 
 		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtor_trans.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
