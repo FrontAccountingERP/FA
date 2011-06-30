@@ -410,7 +410,7 @@ function display_order_header(&$order, $editable, $date_text)
 	}
 
 	if($editable) {
-		$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
+		$str = sales_types_list_row(_("Price List:"), 'sales_type', null, true);
 	} else {
 		label_row(_("Price List:"), $order->sales_type_name);
 	}

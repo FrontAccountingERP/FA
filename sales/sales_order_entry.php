@@ -252,8 +252,6 @@ function copy_to_cart()
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
 			$cart->ship_via = 1;
 			$cart->deliver_to = '';
-			$cart->Location = $cart->pos['pos_location'];
-			$cart->location_name = $cart->pos['location_name'];
 		}
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
@@ -262,8 +260,8 @@ function copy_to_cart()
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
 		$cart->ship_via = $_POST['ship_via'];
-		$cart->Location = $_POST['Location'];
 	}
+	$cart->Location = $_POST['Location'];
 	$cart->freight_cost = input_num('freight_cost');
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
@@ -429,6 +427,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
+	
 	$_SESSION['Items']->write(1);
 	if (count($messages)) { // abort on failure or error messages are lost
 		$Ajax->activate('_page_body');
