@@ -19,6 +19,7 @@ $page_security = 'SA_GLREP';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -121,7 +122,7 @@ function print_GL_transactions()
 			$begin = "";
 		else
 		{
-			$begin = begin_fiscalyear();
+			$begin = get_fiscalyear_begin_for_date($from);
 			if (date1_greater_date2($begin, $from))
 				$begin = $from;
 			$begin = add_days($begin, -1);

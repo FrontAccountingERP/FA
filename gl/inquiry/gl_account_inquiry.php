@@ -14,6 +14,7 @@ $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -148,7 +149,7 @@ function show_results()
 		$begin = "";
 	else
 	{
-		$begin = begin_fiscalyear();
+		$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
 		if (date1_greater_date2($begin, $_POST['TransFromDate']))
 			$begin = $_POST['TransFromDate'];
 		$begin = add_days($begin, -1);

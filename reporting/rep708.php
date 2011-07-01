@@ -19,6 +19,7 @@ $page_security = 'SA_GLANALYTIC';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -37,7 +38,7 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 	//Get Accounts directly under this group/type
 	$accounts = get_gl_accounts(null, null, $type);	
 	
-	$begin = begin_fiscalyear();
+	$begin = get_fiscalyear_begin_for_date($from);
 	if (date1_greater_date2($begin, $from))
 		$begin = $from;
 	$begin = add_days($begin, -1);

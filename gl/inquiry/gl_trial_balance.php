@@ -75,7 +75,8 @@ function display_trial_balance($type, $typename)
 	//Get Accounts directly under this group/type
 	$accounts = get_gl_accounts(null, null, $type);		
 	
-	$begin = begin_fiscalyear();
+	$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
+	//$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
 	$begin = add_days($begin, -1);
