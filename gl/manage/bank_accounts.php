@@ -33,7 +33,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The bank account name cannot be empty."));
 		set_focus('bank_account_name');
 	} 
-	
+	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(get_post('account_code')) 
+			|| key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account', true))) {
+		$input_error = 1;
+		display_error(_("The GL account selected is already in use. Select another GL account."));
+		set_focus('account_code');
+	}
 	if ($input_error != 1)
 	{
     	if ($selected_id != -1) 

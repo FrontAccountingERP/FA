@@ -179,4 +179,14 @@ function gl_account_in_quick_entry_lines($acc)
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 
 }
+
+function gl_account_in_bank_accounts($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE 
+		account_code=".db_escape($acc);
+	$result = db_query($sql,"Couldn't test bank account GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
 ?>
