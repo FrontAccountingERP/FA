@@ -33,14 +33,19 @@ function display_gl_heading($myrow)
 	$trans_name = $systypes_array[$_GET['type_id']];
     start_table(TABLESTYLE, "width=95%");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
-    	_("Date"), _("Person/Item"));
-    table_header($th);	
-    start_row();	
+    	_("Date"));
+
+ 	if ($_GET['type_id'] != ST_JOURNAL)
+		$th[] = _("Counterparty");
+
+    table_header($th);
+    start_row();
     label_cell("$trans_name #" . $_GET['trans_no']);
     label_cell($myrow["reference"]);
 	label_cell(sql2date($myrow["tran_date"]));
-	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
-	
+ 	if ($_GET['type_id'] != ST_JOURNAL)
+		label_cell(get_counterparty_name($_GET['type_id'],$_GET['trans_no']));
+
 	end_row();
 
 	comments_display_row($_GET['type_id'], $_GET['trans_no']);
@@ -68,6 +73,7 @@ else if ($dim == 1)
 else		
 	$th = array(_("Account Code"), _("Account Name"),
 		_("Debit"), _("Credit"), _("Memo"));
+
 $k = 0; //row colour counter
 $heading_shown = false;
 
@@ -81,12 +87,15 @@ while ($myrow = db_fetch($result))
 		start_table(TABLESTYLE, "width=95%");
 		table_header($th);
 		$heading_shown = true;
-	}	
+	}
 
 	alt_table_row_color($k);
-	
-    label_cell($myrow['account']);
-	label_cell($myrow['account_name']);
+
+	$counterpartyname = get_subaccount_name($myrow["account"], $myrow["person_id"]);
+	$counterparty_id = $counterpartyname ? sprintf(' %05d', $myrow["person_id"]) : '';
+
+    label_cell($myrow['account'].$counterparty_id);
+	label_cell($myrow['account_name'] . ($counterpartyname ? ': '.$counterpartyname : ''));
 	if ($dim >= 1)
 		label_cell(get_dimension_string($myrow['dimension_id'], true));
 	if ($dim > 1)

@@ -137,6 +137,80 @@ function payment_person_name($type, $person_id, $full=true) {
 	}
 }
 
+//
+//	Returns counterparty (supplier/customer) name for selected transaction.
+//
+function get_counterparty_name($trans_type, $trans_no, $full=true)
+{
+	switch($trans_type)
+	{
+		case ST_SALESORDER:
+		case ST_SALESQUOTE:
+			$sql = "SELECT order.customer_id as person_id, debtor.name as name
+			FROM ".TB_PREF."sales_orders order, ".TB_PREF."debtors_master debtor
+			WHERE order_no=".db_escape($trans_no)." AND trans_type=".db_escape($trans_type)
+			." AND order.debtor_no=debtor.debtor_no";
+			break;
+
+		case ST_SALESINVOICE :
+		case ST_CUSTCREDIT :
+		case ST_CUSTPAYMENT :
+		case ST_CUSTDELIVERY :
+			$sql = "SELECT trans.debtor_no as person_id, debtor.name as name
+			FROM ".TB_PREF."debtor_trans trans, ".TB_PREF."debtors_master debtor
+			WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type)
+			." AND trans.debtor_no=debtor.debtor_no";
+			break;
+
+		case ST_PURCHORDER :
+			$sql = "SELECT order.supplier_id as person_id, supp.supp_name as name
+			FROM ".TB_PREF."purch_orders order, ".TB_PREF."suppliers supp
+			WHERE order_no=".db_escape($trans_no)
+			." AND order.supplier_id=supp.supplier_id";
+			break;
+
+		case ST_SUPPINVOICE :
+		case ST_SUPPCREDIT :
+		case ST_SUPPAYMENT :
+			$sql = "SELECT trans.supplier_id as person_id, supp.supp_name as name
+			FROM ".TB_PREF."supp_trans trans, ".TB_PREF."suppliers supp
+			WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type)
+			." AND trans.supplier_id=supp.supplier_id";
+			break;
+
+		case ST_SUPPRECEIVE :
+			$sql = "SELECT trans.supplier_id as person_id, supp.supp_name as name
+			FROM ".TB_PREF."grn_batch trans, ".TB_PREF."suppliers supp
+			WHERE id=".db_escape($trans_no)
+			." AND trans.supplier_id=supp.supplier_id";
+			break;
+
+		case ST_JOURNAL:	// FIXME - this one can have multiply counterparties of various types depending on person_type_id
+
+		default: 
+		/*	// internal operations
+		case ST_WORKORDER :
+		case ST_INVADJUST : // GRN/DN returns ?
+		case ST_BANKTRANSFER :
+		case ST_LOCTRANSFER :
+		case ST_MANUISSUE :
+		case ST_MANURECEIVE :
+		case ST_COSTUPDATE :
+		case ST_BANKPAYMENT :	// generic bank transactions
+		case ST_BANKDEPOSIT :*/
+			return null;
+	}
+
+	$result = db_query($sql, 'cannot retrieve counterparty name');
+	if (db_num_rows($result))
+	{
+		$row = db_fetch($result);
+		return sprintf("[%05s] %s", $row['person_id'], $row['name']);
+	}
+
+	return '';
+}
+
 function payment_person_has_items($type) {
 	switch ($type)
 	{

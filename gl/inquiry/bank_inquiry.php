@@ -102,7 +102,7 @@ while ($myrow = db_fetch($result))
 	label_cell($trandate);
 	display_debit_or_credit_cells($myrow["amount"]);
 	amount_cell($running_total);
-	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
+	label_cell(get_counterparty_name($myrow["type"], $myrow["trans_no"]));
 	label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 	end_row();
  	if ($myrow["amount"] > 0 ) 

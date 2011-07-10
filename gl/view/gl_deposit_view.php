@@ -68,7 +68,7 @@ label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), 
 label_cells(_("Date"), sql2date($to_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("From"), payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+label_cells(_("From"), get_counterparty_name(ST_BANKDEPOSIT, $trans_no), "class='tableheader2'", "colspan=$colspan1");
 label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 end_row();
 start_row();

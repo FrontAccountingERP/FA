@@ -41,6 +41,7 @@ page($_SESSION['page_title'], false, false,'', $js);
 function line_start_focus() {
   global 	$Ajax;
 
+  unset($_POST['Index']);
   $Ajax->activate('items_table');
   set_focus('_code_id_edit');
 }
@@ -109,7 +110,7 @@ function create_cart($type=0, $trans_no=0)
 				if ($row['amount'] == 0) continue;
 				$date = $row['tran_date'];
 				$cart->add_gl_item($row['account'], $row['dimension_id'], 
-					$row['dimension2_id'], $row['amount'], $row['memo_']);
+					$row['dimension2_id'], $row['amount'], $row['memo_'], '', $row['person_id']);
 			}
 		}
 		$cart->memo_ = get_comments_string($type, $trans_no);
@@ -266,7 +267,7 @@ function handle_update_item()
     		$amount = -input_num('AmountCredit');
 
     	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
-    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', get_post('person_id'));
     }
 	line_start_focus();
 }
@@ -292,7 +293,7 @@ function handle_new_item()
 		$amount = -input_num('AmountCredit');
 	
 	$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
-		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+		$_POST['dimension2_id'], $amount, $_POST['LineMemo'], '', get_post('person_id'));
 	line_start_focus();
 }
 
@@ -312,7 +313,7 @@ if (isset($_POST['CancelItemChanges']))
 
 if (isset($_POST['go']))
 {
-	display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
+	display_quick_entries($_SESSION['journal_items'], $_POST['quick'], input_num('totamount'), QE_JOURNAL);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }	

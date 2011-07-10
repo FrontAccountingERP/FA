@@ -2359,4 +2359,54 @@ function tax_algorithm_list_row($label, $name, $value=null, $submit_on_change=fa
 	tax_algorithm_list_cells(null, $name, $value, $submit_on_change);
 	echo "</tr>\n";
 }
+//----------------------------------------------------------------------------------------------
+
+function subledger_list($name, $account, $selected_id=null)
+{
+	global $all_items;
+
+	$type = is_subledger_account($account);
+	if (!$type)
+		return '';
+
+	if($type > 0)
+		$sql = "SELECT DISTINCT d.debtor_no as id, debtor_ref as name 
+		FROM "
+		.TB_PREF."debtors_master d,"
+		.TB_PREF."cust_branch c
+		WHERE d.debtor_no=c.debtor_no AND c.receivables_account=".db_escape($account);
+	else
+		$sql = "SELECT supplier_id as id, supp_ref as name 
+		FROM "
+		.TB_PREF."suppliers s
+		WHERE s.payable_account=".db_escape($account);
+
+	$mode = get_company_pref('no_customer_list');
+
+	return combo_input($name, $selected_id, $sql, 'id', 'name',
+	array(
+		'type' => 1,
+		'size' => 20,
+		'async' => false,
+	) );
+}
+
+function subledger_list_cells($label, $name, $account, $selected_id=null)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td nowrap>";
+	echo subledger_list($name, $account, $selected_id);
+	echo "</td>\n";
+}
+
+function subledger_list_row($label, $name, $selected_id=null, $all_option = false, 
+	$submit_on_change=false, $show_inactive=false, $editkey = false)
+{
+	echo "<tr><td class='label'>$label</td><td nowrap>";
+	echo subledger_list($name, $account, $selected_id);
+	echo "</td>\n</tr>\n";
+}
+
+
 ?>

@@ -26,7 +26,6 @@ class items_cart
 	var $transfer_type;
 	var $increase;
 	var $memo_;
-	var $person_id;
 	var $branch_id;
 	var $reference;
 	var $original_amount;
@@ -95,12 +94,12 @@ class items_cart
 
 	// ----------- GL item functions
 
-	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
+	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null, $person_id=null)
 	{
 		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  &&
 			isset($dimension2_id))
 		{
-			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
+			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description, $person_id);
 			return true;
 		}
 		else
@@ -112,9 +111,20 @@ class items_cart
 		return false;
 	}
 
-	function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
+	function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null, $person_id=null)
 	{
 	    $this->gl_items[$index]->code_id = $code_id;
+	    $this->gl_items[$index]->person_id = $person_id;
+
+		$gl_type = is_subledger_account($code_id, $person_id);
+		if ($gl_type)
+		{
+			$this->gl_items[$index]->person_type_id = $gl_type > 0 ? PT_CUSTOMER : PT_SUPPLIER;
+			$this->gl_items[$index]->person_name = get_subaccount_name($code_id, $person_id);
+		} else
+		{
+			$this->gl_items[$index]->person_type_id = $this->gl_items[$index]->person_name = '';
+		}
 		$this->gl_items[$index]->dimension_id = $dimension_id;
 		$this->gl_items[$index]->dimension2_id = $dimension2_id;
 		$this->gl_items[$index]->amount = $amount;
@@ -176,6 +186,18 @@ class items_cart
     	unset($this->gl_items);
 		$this->gl_items = array();
 
+	}
+	//
+	//	Check if cart contains virtual subaccount (AP/AR) postings
+	//
+	function has_sub_accounts()
+	{
+		foreach ($this->gl_items as $gl_item)
+		{
+			if ($gl_item->person_id)
+				return true;
+		}
+		return false;
 	}
 }
 
@@ -256,9 +278,12 @@ class gl_item
 	var $amount;
 	var $reference;
 	var $description;
+	var $person_id;
+	var $person_type_id;
+	var $person_name;
 
 	function gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference,
-		$description=null)
+		$description=null, $person_id=null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
 
@@ -268,6 +293,13 @@ class gl_item
 			$this->description = $description;
 
 		$this->code_id = $code_id;
+		$this->person_id = $person_id;
+		$gl_type = is_subledger_account($code_id, $person_id);
+		if ($gl_type)
+		{
+			$this->person_type_id = $gl_type > 0 ? PT_CUSTOMER : PT_SUPPLIER;
+			$this->person_name = get_subaccount_name($code_id, $person_id);
+		}
 		$this->dimension_id = $dimension_id;
 		$this->dimension2_id = $dimension2_id;
 		$this->amount = $amount;

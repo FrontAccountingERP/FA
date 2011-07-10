@@ -179,4 +179,30 @@ function gl_account_in_quick_entry_lines($acc)
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 
 }
+//
+//	Returns n>0 when account is AR, n<0 when account is AP
+//  (priority for AR accounts)
+//
+ function is_subledger_account($account)
+ {
+	$sql = "SELECT 1 FROM ".TB_PREF."cust_branch WHERE receivables_account=".db_escape($account)
+	." UNION SELECT -1 FROM ".TB_PREF."suppliers WHERE payable_account=".db_escape($account);
+
+ 	$result = db_query($sql,"Couldn't test AR/AP account");
+ 	$myrow = db_fetch_row($result);
+ 	return $myrow[0];
+ }
+
+function get_subaccount_name($code_id, $person_id)
+{
+	$sql = "SELECT debtor_ref as ref FROM ".TB_PREF."cust_branch branch LEFT JOIN ".TB_PREF."debtors_master d ON branch.debtor_no = d.debtor_no
+		WHERE branch.receivables_account=".db_escape($code_id)." AND d.debtor_no=".db_escape($person_id)
+		." UNION SELECT supp_ref as ref FROM ".TB_PREF."suppliers supp
+		WHERE payable_account=".db_escape($code_id)." AND supplier_id=".db_escape($person_id);
+	$result = db_query($sql, 'cannot retrieve counterparty name');
+	$row = db_fetch($result);
+
+	return  $row ? $row['ref'] : '';
+}
+
 ?>

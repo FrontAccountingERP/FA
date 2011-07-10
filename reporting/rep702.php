@@ -95,7 +95,7 @@ function print_list_of_journal_entries()
             $rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
             $rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
             $rep->DateCol(2, 3, $myrow['tran_date'], true);
-            $coms =  payment_person_name($myrow["person_type_id"],$myrow["person_id"]);
+            $coms =  get_subaccount_name($myrow["account"], $myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
             {

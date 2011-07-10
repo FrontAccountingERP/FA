@@ -43,9 +43,9 @@ function display_order_header(&$Order)
 	{
 		table_section(3, "40%");
 		start_row();
-		quick_entries_list_cells(_("Quick Entry").":", 'person_id', null, QE_JOURNAL, true);
-		$qid = get_quick_entry(get_post('person_id'));
-		if (list_updated('person_id')) {
+		quick_entries_list_cells(_("Quick Entry").":", 'quick', null, QE_JOURNAL, true);
+		$qid = get_quick_entry(get_post('quick'));
+		if (list_updated('quick')) {
 			unset($_POST['totamount']); // enable default
 		$Ajax->activate('totamount');
 		}
@@ -63,7 +63,7 @@ function display_order_header(&$Order)
 		end_row();
 
 	}
-		
+
 	end_outer_table(1);
 }
 
@@ -76,6 +76,9 @@ function display_gl_items($title, &$order)
 	display_heading($title);
 
 	$dim = get_company_pref('use_dimension');
+
+	$sub_type = is_subledger_account(get_post('code_id'));
+	$has_subaccounts = $order->has_sub_accounts();
 
     div_start('items_table');
 	start_table(TABLESTYLE, "colspan=7 width=95%");
@@ -90,19 +93,28 @@ function display_gl_items($title, &$order)
 			_("Debit"), _("Credit"), _("Memo"), "");
 
 	if (count($order->gl_items)) $th[] = '';
+	if ($sub_type || $has_subaccounts)
+		array_insert($th, 2, _("Counterparty"));
 
-	table_header($th);	
+	table_header($th);
 
 	$k = 0;
 
 	$id = find_submit('Edit');
+	if ($id == -1) 
+		$id = get_post('Index', -1);
+
 	foreach ($order->gl_items as $line => $item) 
 	{
 		if ($id != $line)
 		{
     		alt_table_row_color($k);
 
-			label_cells($item->code_id, $item->description);
+			$acc = $item->code_id . ($item->person_id ? sprintf(' %05d', $item->person_id) : '');
+			label_cells($acc, $item->description);
+
+			label_cell($item->person_name);
+
     		if ($dim >= 1)
    				label_cell(get_dimension_string($item->dimension_id, true));
     		if ($dim > 1)
@@ -111,7 +123,7 @@ function display_gl_items($title, &$order)
     		{
     			amount_cell(abs($item->amount));
     			label_cell("");
-    		}	
+    		}
     		else
     		{
     			label_cell("");
@@ -127,12 +139,12 @@ function display_gl_items($title, &$order)
 		} 
 		else 
 		{
-			gl_edit_item_controls($order, $dim, $line);
+			gl_edit_item_controls($order, $dim, $item->person_id, $line);
 		}
 	}
 
 	if ($id == -1)
-		gl_edit_item_controls($order, $dim);
+		gl_edit_item_controls($order, $dim, $sub_type);
 
 	if ($order->count_gl_items()) 
 	{
@@ -151,35 +163,47 @@ function display_gl_items($title, &$order)
 
 //---------------------------------------------------------------------------------
 
-function gl_edit_item_controls(&$order, $dim, $Index=null)
+function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 {
 	global $Ajax;
 	start_row();
 
 	$id = find_submit('Edit');
+	if ($id == -1) 
+		$continue = $id = get_post('Index', -1);
+
 	if ($Index != -1 && $Index == $id)
 	{
 	    // Modifying an existing row
 		$item = $order->gl_items[$Index];
-		$_POST['code_id'] = $item->code_id;
-		$_POST['dimension_id'] = $item->dimension_id;
-		$_POST['dimension2_id'] = $item->dimension2_id;
-		if ($item->amount > 0)
+		if (!isset($continue))
 		{
-			$_POST['AmountDebit'] = price_format($item->amount);
-			$_POST['AmountCredit'] = "";
+			$_POST['code_id'] = $item->code_id;
+			$_POST['dimension_id'] = $item->dimension_id;
+			$_POST['dimension2_id'] = $item->dimension2_id;
+			$_POST['person_id'] = $item->person_id;
+			if ($item->amount > 0)
+			{
+				$_POST['AmountDebit'] = price_format($item->amount);
+				$_POST['AmountCredit'] = "";
+			}
+			else
+			{
+				$_POST['AmountDebit'] = "";
+				$_POST['AmountCredit'] = price_format(abs($item->amount));
+			}
+			$_POST['description'] = $item->description;
+			$_POST['LineMemo'] = $item->reference;
 		}
-		else
-		{
-			$_POST['AmountDebit'] = "";
-			$_POST['AmountCredit'] = price_format(abs($item->amount));
-		}	
-		$_POST['description'] = $item->description;
-		$_POST['LineMemo'] = $item->reference;
-
 		hidden('Index', $id);
 		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
-		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true, _('[Select account]'), true, false, false);
+
+		if (is_subledger_account(get_post('code_id')))
+		{
+			subledger_list_cells(null, 'person_id', get_post('code_id'));
+		} elseif ($order->has_sub_accounts())
+			label_cell('');
 		if ($dim >= 1) 
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) 
@@ -188,20 +212,32 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
-	    // Adding a new row
-		$_POST['AmountDebit'] = '';  //price_format(0);
-		$_POST['AmountCredit'] = ''; //price_format(0);
-		$_POST['dimension_id'] = 0;
-		$_POST['dimension2_id'] = 0;
-		//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
-		$_POST['_code_id_edit'] = "";
-		$_POST['code_id'] = "";
-		if(isset($_POST['_code_id_update'])) {
-			    $Ajax->activate('code_id');
+
+		if (!list_updated('code_id'))
+		{
+		    // Adding a new row
+			$_POST['AmountDebit'] = '';  //price_format(0);
+			$_POST['AmountCredit'] = ''; //price_format(0);
+			$_POST['dimension_id'] = 0;
+			$_POST['dimension2_id'] = 0;
+			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
+			$_POST['_code_id_edit'] = "";
+			$_POST['code_id'] = "";
 		}
-		
+		if(isset($_POST['_code_id_update'])) {
+		    $Ajax->activate('code_id');
+		}
+
 		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
-		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true, _('[Select account]'), true, false, false);
+
+		if ($sub_accounts)
+		{
+			subledger_list_cells(null, 'person_id', get_post('code_id'));
+		}
+		elseif ($order->has_sub_accounts())
+			label_cell('');
+
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

@@ -322,17 +322,25 @@ function delete_this_fiscalyear($selected_id)
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE tran_date <= '$to'";
 	db_query($sql, "Could not delete exchange rates");
 	
-	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
+	$sql = "SELECT account, SUM(amount) AS amount, person_type_id, person_id FROM "
+		.TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account, person_type_id, person_id";
 	$result = db_query($sql, "Could not retrieve gl trans");
 	$trans_no = get_next_trans_no(ST_JOURNAL);
+
+	$last_account='';
 	while ($row = db_fetch($result))
 	{
-		$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
-		db_query($sql, "Could not delete gl trans");
-		if (is_account_balancesheet($row['account']))
+		if ($last_account != $row['account']) // deletes all subledgers postings, so do it once for account
 		{
-			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
-				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
+			$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
+			db_query($sql, "Could not delete gl trans");
+			$last_account = $row['account'];
+		}
+		if (is_account_balancesheet($row['account']) && $row['amount'])
+		{
+			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount, person_type_id, person_id) VALUES
+				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']}, "
+				.db_escape($row['person_type_id'], true).", ".db_escape($row['person_id'], true).")";
 			db_query($sql, "Could not insert gl trans");
 		}
 	}

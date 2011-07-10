@@ -103,12 +103,11 @@ function invoice_header(&$supp_trans)
 
    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type));
 
-	if (isset($_POST['invoice_no']))
+	if ($supp_trans->trans_type == ST_SUPPCREDIT)
 	{
-		label_row(_("Supplier's Ref.:"), $_POST['invoice_no'].hidden('invoice_no', $_POST['invoice_no'], false).hidden('supp_reference', $_POST['invoice_no'], false));
-	}	
-	else
-   		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
+		label_row(_("Source Invoices:"), implode(',' , $supp_trans->src_docs),'','','src_docs');
+	}
+		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 60);
 
 	table_section(2, "33%");
 
@@ -517,11 +516,12 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(ST_SUPPRECEIVE,$grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
     		if ($mode == 1)
     		{
 				label_cell($entered_grn->id);
-				label_cell(""); // PO
+ 				$row = get_grn_batch($grn_batch);
+				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"])); // PO
 			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);

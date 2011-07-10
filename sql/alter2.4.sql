@@ -21,4 +21,9 @@ CREATE TABLE `0_wo_costing` (
   PRIMARY KEY  (`id`)
 ) TYPE=InnoDB;
 
+UPDATE `0_gl_trans` gl
+		LEFT JOIN `0_cust_branch` br ON br.receivables_account=gl.account AND br.debtor_no=gl.person_id AND gl.person_type_id=2
+		LEFT JOIN `0_suppliers` sup ON sup.payable_account=gl.account AND sup.supplier_id=gl.person_id AND gl.person_type_id=3
+ SET `person_id` = IF(br.receivables_account, br.debtor_no, IF(sup.payable_account, sup.supplier_id, NULL)), 
+ 	`person_type_id` = IF(br.receivables_account, 2, IF(sup.payable_account, 3, NULL));
 

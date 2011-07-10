@@ -42,6 +42,9 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		else
 			$memo_ = $_SESSION["wa_current_user"]->username . " - " . $memo_;
 	}
+	if (!is_subledger_account($account))
+		$person_id = $person_type_id = null;
+
 	$sql = "INSERT INTO ".TB_PREF."gl_trans ( type, type_no, tran_date,
 		account, dimension_id, dimension2_id, memo_, amount";
 
@@ -497,9 +500,12 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 		// post to first found bank account using given gl acount code.
 		$is_bank_to = is_bank_account($journal_item->code_id);
 
-		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id,
-			$journal_item->dimension_id, $journal_item->dimension2_id,
-			$journal_item->reference, $journal_item->amount);
+ 		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id,
+ 			$journal_item->dimension_id, $journal_item->dimension2_id,
+			$journal_item->reference, $journal_item->amount, null, 
+			$journal_item->person_type_id, 
+			$journal_item->person_id);
+
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_id, $is_bank_to, $ref,
@@ -534,7 +540,9 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 
     		add_gl_trans($trans_type, $trans_id_reverse, $reversingDate,
     			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id,
-    			$journal_item->reference, -$journal_item->amount);
+    			$journal_item->reference, -$journal_item->amount, 
+    			null, $journal_item->person_type_id, $journal_item->person_id);
+
     		if ($is_bank_to)
     		{
     			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
