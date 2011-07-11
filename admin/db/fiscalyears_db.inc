@@ -341,6 +341,7 @@ function delete_this_fiscalyear($selected_id)
 	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
 	$result = db_query($sql, "Could not retrieve gl trans");
 	$trans_no = get_next_trans_no(ST_JOURNAL);
+	$new = false;
 	while ($row = db_fetch($result))
 	{
 		$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
@@ -350,9 +351,19 @@ function delete_this_fiscalyear($selected_id)
 			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
 				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
 			db_query($sql, "Could not insert gl trans");
+			$new = true;
 		}
 	}
-	
+	if ($new)
+	{
+		global $Refs;
+		$trans_type = ST_JOURNAL;
+		$reference = $Refs->get_next($trans_type);
+		$Refs->save($trans_type, $trans_no, $reference);
+		$date_ = sql2date($to);
+
+		add_audit_trail($trans_type, $trans_no, $date_);
+	}
 	$sql = "SELECT bank_act, SUM(amount) AS amount FROM ".TB_PREF."bank_trans WHERE trans_date <= '$to' GROUP BY bank_act";
 	$result = db_query($sql, "Could not retrieve bank trans");
 	while ($row = db_fetch($result))
