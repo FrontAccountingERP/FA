@@ -83,6 +83,12 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	}
 
 	// -------------------------------------------------------------------------
+	
+	//Negative Stock Handling First; Prior to add_stock_move
+	if ($cost_adjust)
+		adjust_deliveries($stock_id, get_standard_cost($stock_id), $date_);
+		
+	// -------------------------------------------------------------------------	
 
 	// insert a +ve stock move for the item being manufactured
 	add_stock_move(ST_WORKORDER, $stock_id, $woid,	$loc_code, $date_,
@@ -91,12 +97,6 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	// -------------------------------------------------------------------------
 
 	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
-
-	// -------------------------------------------------------------------------
-	
-	//Negative Stock Handling
-	if ($cost_adjust)
-		adjust_deliveries($stock_id, get_standard_cost($stock_id), $date_);
 		
 	//--------------------------------------------------------------------------
 
