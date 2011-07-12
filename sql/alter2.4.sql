@@ -27,3 +27,9 @@ UPDATE `0_gl_trans` gl
  SET `person_id` = IF(br.receivables_account, br.debtor_no, IF(sup.payable_account, sup.supplier_id, NULL)), 
  	`person_type_id` = IF(br.receivables_account, 2, IF(sup.payable_account, 3, NULL));
 
+ALTER TABLE `0_tax_group_items` ADD COLUMN `tax_shipping` tinyint(1) NOT NULL default '0' AFTER `rate`;
+UPDATE `0_tax_group_items` tgi
+	SET tgi.tax_shipping=1
+	WHERE tgi.rate=(SELECT 0_tax_types.rate FROM 0_tax_types, 0_tax_groups 
+		WHERE tax_shipping=1 AND tgi.tax_group_id=0_tax_groups.id AND tgi.tax_type_id=0_tax_types.id);
+ALTER TABLE `0_tax_groups` DROP COLUMN `tax_shipping`;

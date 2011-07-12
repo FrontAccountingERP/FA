@@ -492,7 +492,7 @@ class cart
 	function get_shipping_tax()
 	{
 
-		$tax_items = get_shipping_tax_as_array();
+		$tax_items = get_shipping_tax_as_array($this->tax_group_id);
 		$tax_rate = 0;
 		if ($tax_items != null) {
 			foreach ($tax_items as $item_tax) {

@@ -179,7 +179,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
 	if ($shipping_cost != 0) 
 	{
-		$item_taxes = get_shipping_tax_as_array();
+		$item_taxes = get_shipping_tax_as_array($tax_group);
 		if ($item_taxes != null) 
 		{
 			if ($tax_included == 1)
