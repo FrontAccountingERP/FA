@@ -1920,7 +1920,6 @@ DROP TABLE IF EXISTS `0_tax_groups`;
 CREATE TABLE IF NOT EXISTS `0_tax_groups` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(60) NOT NULL default '',
-  `tax_shipping` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
@@ -1930,8 +1929,8 @@ CREATE TABLE IF NOT EXISTS `0_tax_groups` (
 -- Dumping data for table `0_tax_groups`
 --
 
-INSERT INTO `0_tax_groups` VALUES(1, 'Tax', 0, 0);
-INSERT INTO `0_tax_groups` VALUES(2, 'Tax Exempt', 0, 0);
+INSERT INTO `0_tax_groups` VALUES(1, 'Tax', 0);
+INSERT INTO `0_tax_groups` VALUES(2, 'Tax Exempt', 0);
 
 -- --------------------------------------------------------
 
@@ -1944,6 +1943,7 @@ CREATE TABLE IF NOT EXISTS `0_tax_group_items` (
   `tax_group_id` int(11) NOT NULL default '0',
   `tax_type_id` int(11) NOT NULL default '0',
   `rate` double NOT NULL default '0',
+  `tax_shipping` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`tax_group_id`,`tax_type_id`)
 ) TYPE=InnoDB;
 
@@ -1951,7 +1951,7 @@ CREATE TABLE IF NOT EXISTS `0_tax_group_items` (
 -- Dumping data for table `0_tax_group_items`
 --
 
-INSERT INTO `0_tax_group_items` VALUES(1, 1, 5);
+INSERT INTO `0_tax_group_items` VALUES(1, 1, 5, 1);
 
 -- --------------------------------------------------------
 
