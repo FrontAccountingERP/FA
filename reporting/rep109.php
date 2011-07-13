@@ -166,6 +166,8 @@ function print_sales_orders()
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{
+			if ($tax_item['amount'] == 0)
+				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
 			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
