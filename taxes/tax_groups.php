@@ -176,21 +176,25 @@ table_header($th);
 while($item = db_fetch($items)) 
 {
 	start_row();
-	check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
-		$selected_id!=-1 && isset($item['rate']), true, false, "align='center'");
-	/*	
-	$upd = false;	
-	if (get_post('_tax_type_id' . $item['tax_type_id'].'_update'))	
+	if ($selected_id != -1)
 	{
-		$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
-		$Ajax->activate('_page_body');
-		$upd = true;
+		check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+			isset($item['rate']), true, false, "align='center'");
+		if (isset($item['rate']))
+			check_cells(null, 'tax_shipping' . $item['tax_type_id'], $item['tax_shipping']);
 	}
-	
-	if (($selected_id!=-1 && isset($item['rate']) || $upd))
-	*/
-	if ($selected_id!=-1 && isset($item['rate']))
-		check_cells(null, 'tax_shipping' . $item['tax_type_id'], $item['tax_shipping']);
+	else
+	{
+		check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+			null, true, false, "align='center'");
+		if (get_post('_tax_type_id' . $item['tax_type_id'].'_update'))	
+		{
+			//$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
+			$Ajax->activate('_page_body');
+		}
+		if (check_value('tax_type_id' . $item['tax_type_id'])==1)
+			check_cells(null, 'tax_shipping' . $item['tax_type_id'], null);
+	}		
 	end_row();	
 	
 }
