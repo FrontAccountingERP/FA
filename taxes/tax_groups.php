@@ -40,24 +40,6 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The tax group name cannot be empty."));
 		set_focus('name');
 	} 
-	/* Editable rate has been removed 090920 Joe Hunt
-	else 
-	{
-		// make sure any entered rates are valid
-    	for ($i = 0; $i < 5; $i++) 
-    	{
-    		if (isset($_POST['tax_type_id' . $i]) && 
-    			$_POST['tax_type_id' . $i] != ALL_NUMERIC	&& 
-    			!check_num('rate' . $i, 0))
-    		{
-			display_error( _("An entered tax rate is invalid or less than zero."));
-    			$input_error = 1;
-			set_focus('rate');
-			break;
-    		}
-    	}
-	}
-	*/
 	if ($input_error != 1) 
 	{
 
@@ -66,19 +48,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	$rates = array();
     	$tax_shippings = array();
 
-    	for ($i = 0; $i < 5; $i++) 
-    	{
-    		if (isset($_POST['tax_type_id' . $i]) &&
-   				$_POST['tax_type_id' . $i] != ANY_NUMERIC) 
-   			{
-        		$taxes[] = $_POST['tax_type_id' . $i];
-				$rates[] = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-        		$tax_shippings[] = check_value('tax_shipping' . $i);
-				//Editable rate has been removed 090920 Joe Hunt
-        		//$rates[] = input_num('rate' . $i);
-    		}
-    	}
-
+		while (($id = find_submit('tax_type_id'))!=-1)
+		{
+       		$taxes[] = $id;
+			$rates[] = get_tax_type_default_rate($id);
+			$tax_shippings[] = check_value('tax_shipping'.$id);
+			unset($_POST['tax_type_id' . $id]);
+			unset($_POST['tax_shipping' . $id]);
+		}
     	if ($selected_id != -1) 
     	{
 	   		update_tax_group($selected_id, $_POST['name'], $taxes, $rates, $tax_shippings);
@@ -135,7 +112,8 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
 	unset($_POST);
-	$_POST['show_inactive'] = $sav;
+	if ($sav)
+		$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
@@ -156,10 +134,6 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["name"]);
-
-	/*for ($i=0; $i< 5; $i++)
-		if ($myrow["type" . $i] != ALL_NUMERIC)
-			echo "<td>" . $myrow["type" . $i] . "</td>";*/
 
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
@@ -183,20 +157,9 @@ if ($selected_id != -1)
 
     	$_POST['name']  = $group["name"];
 
-    	$items = get_tax_group_items($selected_id);
-
-    	$i = 0;
-    	while ($tax_item = db_fetch($items)) 
-    	{
-    		$_POST['tax_type_id' . $i]  = $tax_item["tax_type_id"];
-    		$_POST['rate' . $i]  = percent_format($tax_item["rate"]);
-    		$_POST['tax_shipping' . $i]  = $tax_item["tax_shipping"];
-    		$i ++;
-    	}
-    	while($i<5) unset($_POST['tax_type_id'.$i++]);
 	}
-
 	hidden('selected_id', $selected_id);
+
 }
 text_row_ex(_("Description:"), 'name', 40);
 
@@ -204,33 +167,32 @@ end_table();
 
 display_note(_("Select the taxes that are included in this group."), 1, 1);
 
+$items = get_tax_group_rates($selected_id!=-1 ? $selected_id : null);
+
 start_table(TABLESTYLE2);
-//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
-//Editable rate has been removed 090920 Joe Hunt
-$th = array(_("Tax"), _("Rate (%)"), _("Shipping Tax"));
+$th = array(_("Tax"), "", _("Shipping Tax"));
 table_header($th);
-for ($i = 0; $i < 5; $i++) 
+
+while($item = db_fetch($items)) 
 {
 	start_row();
-	if (!isset($_POST['tax_type_id' . $i]))
-		$_POST['tax_type_id' . $i] = 0;
-	if (!isset($_POST['tax_shipping' . $i]))
-		$_POST['tax_shipping' . $i] = 0;
-	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
-
-	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) 
+	check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+		$selected_id!=-1 && isset($item['rate']), true, false, "align='center'");
+	/*	
+	$upd = false;	
+	if (get_post('_tax_type_id' . $item['tax_type_id'].'_update'))	
 	{
-		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-		label_cell(percent_format($default_rate), "nowrap align=right");
-		
-		check_cells(null, 'tax_shipping' . $i);
-		//Editable rate has been removed 090920 Joe Hunt
-		//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-		//	$_POST['rate' . $i] = percent_format($default_rate);
-		//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
-		//  user_percent_dec()); 
+		$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
+		$Ajax->activate('_page_body');
+		$upd = true;
 	}
-	end_row();
+	
+	if (($selected_id!=-1 && isset($item['rate']) || $upd))
+	*/
+	if ($selected_id!=-1 && isset($item['rate']))
+		check_cells(null, 'tax_shipping' . $item['tax_type_id'], $item['tax_shipping']);
+	end_row();	
+	
 }
 
 end_table(1);

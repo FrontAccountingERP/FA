@@ -445,16 +445,18 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 
     foreach ($taxes as $taxitem)
     {
-    	if ($tax_included)
-    	{
-        	label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) "
-        		. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
-    	}
-    	else
-    	{
-        	label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-        		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
-        	$total +=  round2($taxitem['Value'], user_price_dec());
+    	if ($taxitem['Value'] != 0) {
+	    	if ($tax_included)
+    		{
+        		label_row(_("Included") . " " . $taxitem['tax_type_name']
+        			. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
+	    	}
+    		else
+    		{
+        		label_row($taxitem['tax_type_name'],
+        			number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
+	        	$total +=  round2($taxitem['Value'], user_price_dec());
+    		}
     	}
     }
 
