@@ -67,7 +67,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$line_tax = get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
 			0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
-		if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
+		//if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt. This condition is removed after experience by Chaitanya
 			$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
 
 		/* add delivery details for all lines */
