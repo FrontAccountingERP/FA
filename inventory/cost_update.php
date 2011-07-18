@@ -38,8 +38,8 @@ if (isset($_GET['stock_id']))
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = input_num('OldMaterialCost') + input_num('OldLabourCost')
-	    + input_num('OldOverheadCost');
+	$old_cost = get_standard_cost($_POST['stock_id']);
+     
    	$new_cost = input_num('material_cost') + input_num('labour_cost')
 	     + input_num('overhead_cost');
 
@@ -92,9 +92,6 @@ set_global_stock_item($_POST['stock_id']);
 $myrow = get_item($_POST['stock_id']);
 
 div_start('cost_table');
-hidden("OldMaterialCost", $myrow["material_cost"]);
-hidden("OldLabourCost", $myrow["labour_cost"]);
-hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table(TABLESTYLE2);
 $dec1 = $dec2 = $dec3 = 0;
