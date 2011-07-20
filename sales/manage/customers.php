@@ -162,16 +162,18 @@ function customer_settings($selected_id)
 	
 	if (!$selected_id) 
 	{
-		$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
-		$_POST['dimension_id'] = 0;
-		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['curr_code']  = get_company_currency();
-		$_POST['credit_status']  = -1;
-		$_POST['payment_terms']  = $_POST['notes']  = '';
+	 	if (list_updated('customer_id') || !isset($_POST['CustName'])) {
+			$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
+			$_POST['dimension_id'] = 0;
+			$_POST['dimension2_id'] = 0;
+			$_POST['sales_type'] = -1;
+			$_POST['curr_code']  = get_company_currency();
+			$_POST['credit_status']  = -1;
+			$_POST['payment_terms']  = $_POST['notes']  = '';
 
-		$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
-		$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+			$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
+			$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+		}
 	}
 	else 
 	{
