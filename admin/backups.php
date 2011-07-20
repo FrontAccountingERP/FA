@@ -33,8 +33,11 @@ if (get_post('view')) {
 	}
 };
 if (get_post('download')) {
-	download_file(BACKUP_PATH . clean_file_name(get_post('backups')));
-	exit;
+	if (get_post('backups')) {
+		download_file(BACKUP_PATH . clean_file_name(get_post('backups')));
+		exit;
+	} else
+		display_error(_("Select backup file first."));
 }
 
 page(_($help_context = "Backup and Restore Database"), false, false, '', '');
@@ -131,19 +134,25 @@ if (get_post('creat')) {
 };
 
 if (get_post('restore')) {
-	if (db_import($backup_path, $conn))
-		display_notification(_("Restore backup completed."));
-	refresh_sys_prefs(); // re-read system setup
+	if ($backup_name) {
+		if (db_import($backup_path, $conn))
+			display_notification(_("Restore backup completed."));
+		refresh_sys_prefs(); // re-read system setup
+	} else
+		display_error(_("Select backup file first."));
 }
 
 if (get_post('deldump')) {
-	if (unlink($backup_path)) {
-		display_notification(_("File successfully deleted.")." "
-				. _("Filename") . ": " . $backup_name);
-		$Ajax->activate('backups');
-	}
-	else
-		display_error(_("Can't delete backup file."));
+	if ($backup_name) {
+		if (unlink($backup_path)) {
+			display_notification(_("File successfully deleted.")." "
+					. _("Filename") . ": " . $backup_name);
+			$Ajax->activate('backups');
+		}
+		else
+			display_error(_("Can't delete backup file."));
+	} else
+		display_error(_("Select backup file first."));
 }
 
 if (get_post('upload'))
@@ -151,14 +160,18 @@ if (get_post('upload'))
 	$tmpname = $_FILES['uploadfile']['tmp_name'];
 	$fname = trim(basename($_FILES['uploadfile']['name']));
 
-	if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
-		display_error(_("You can only upload *.sql backup files"));
-	elseif (is_uploaded_file($tmpname)) {
-		rename($tmpname, BACKUP_PATH . $fname);
-		display_notification( "File uploaded to backup directory");
-		$Ajax->activate('backups');
+	if ($fname) {
+		if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
+			display_error(_("You can only upload *.sql backup files"));
+		elseif (is_uploaded_file($tmpname)) {
+			rename($tmpname, BACKUP_PATH . $fname);
+			display_notification( "File uploaded to backup directory");
+			$Ajax->activate('backups');
+		} else
+			display_error(_("File was not uploaded into the system."));
 	} else
-		display_error(_("File was not uploaded into the system."));
+		display_error(_("Select backup file first."));
+
 }
 //-------------------------------------------------------------------------------
 start_form(true, true);
