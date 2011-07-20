@@ -166,10 +166,8 @@ function void_sales_delivery($type, $type_no, $transactions=true)
 
 	if ($order) {
 		$auto = (get_reference(ST_SALESORDER, $order) == "auto");
-		$order_items = get_sales_order_details($order, ST_SALESORDER);
 		while ($row = db_fetch($items_result)) {
-			$order_line = db_fetch($order_items);
-			update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity'], $auto);
+			update_parent_line(ST_CUSTDELIVERY, $row['src_id'], -$row['quantity'], $auto);
 		}
 	}
 
