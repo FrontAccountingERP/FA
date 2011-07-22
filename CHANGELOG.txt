@@ -10,6 +10,148 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-07-22 08:47 +0200 Joe Hunt
+(2849) Release 2.3.6
+ version.php
+
+2011-07-20 16:28 +0200 Janusz Dobrowolski
+(2848) [0000947] Fixed unneeded input fields reset after input error in Customers.
+ sales/manage/customers.php
+
+2011-07-20 16:19 +0200 Janusz Dobrowolski
+(2847) [0000946] Added filename selection checks.
+ admin/backups.php
+
+2011-07-20 16:09 +0200 Janusz Dobrowolski
+(2846) [0000936] Fixed invalid sales order update on voiding delivery note after SO line is removed.
+ sales/includes/db/sales_delivery_db.inc
+
+2011-07-20 13:53 +0200 Janusz Dobrowolski
+(2845) Fixed empty inventory sales report for all customers.
+ reporting/rep304.php
+
+2011-07-08 11:13 +0200 Janusz Dobrowolski
+(2844) Added checks on bank account creation to avoid selection of already used GL account.
+ gl/includes/db/gl_db_accounts.inc
+ gl/manage/bank_accounts.php
+
+2011-07-18 22:58 +0200 Joe Hunt
+(2843) 0000948: Cost Update form uses cached old cost
+ inventory/cost_update.php
+
+2011-07-14 17:38 +0200 Joe Hunt
+(2836) Removed condition in calculation of COGS in sales_delivery_db.inc. Chaitanya.
+ sales/includes/db/sales_delivery_db.inc
+
+2011-07-11 11:37 +0200 Joe Hunt
+(2835) Negative Stock Handling should be prior to add_stock_move
+ manufacturing/includes/db/work_orders_quick_db.inc
+
+2011-07-11 09:28 +0200 Joe Hunt
+(2834) Creation of audit trail and reference in GL was missing when deleting fiscal year.
+ admin/db/fiscalyears_db.inc
+
+2011-07-01 23:25 +0200 Joe Hunt
+(2832) 0000918: GL Inquiry, trial balance for a non-balance account for non-current year shows 0
+ admin/db/fiscalyears_db.inc
+ gl/inquiry/gl_account_inquiry.php
+ gl/inquiry/gl_trial_balance.php
+ reporting/rep704.php
+ reporting/rep708.php
+
+2011-06-30 13:13 +0200 Janusz Dobrowolski
+(2831) Fixed regression in cash invoice entry (location change ignored)
+ sales/includes/ui/sales_order_ui.inc
+ sales/sales_order_entry.php
+
+2011-06-29 10:49 +0200 Janusz Dobrowolski
+(2830) Fixed access control on redirected reports.
+ reporting/prn_redirect.php
+
+2011-06-24 12:49 +0200 Joe Hunt
+(2829) 0000910: Report Aged Customer Analysis Total doesn't match the record totals.
+ reporting/rep102.php
+
+2011-06-21 15:37 +0200 Janusz Dobrowolski
+(2828) Added GRN voiding.
+ admin/db/voiding_db.inc
+ admin/void_transaction.php
+ purchasing/includes/db/supp_trans_db.inc
+
+2011-06-21 15:36 +0200 Janusz Dobrowolski
+(2827) Added supplier reference uniqueness check in Direct Supplier Invoice.
+ purchasing/po_entry_items.php
+
+2011-06-21 15:24 +0200 Janusz Dobrowolski
+(2826) Cleanup (fixed installed_extensions indlusion).
+ includes/session.inc
+ purchasing/includes/ui/invoice_ui.inc
+
+2011-06-20 15:06 +0200 Joe Hunt
+(2825) 0000900: Supplier Payment in another currency the bank charge is wrongly calculated.
+ purchasing/includes/db/supp_payment_db.inc
+
+2011-06-18 15:27 +0200 Joe Hunt
+(2824) Cleanup in document footer text.
+ reporting/includes/doctext.inc
+
+2011-06-18 15:06 +0200 Janusz Dobrowolski
+(2823) A couple of additional fixes to changed document reports.
+ reporting/includes/doctext.inc
+ reporting/includes/excel_report.inc
+ reporting/includes/pdf_report.inc
+ reporting/rep107.php
+ reporting/rep108.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep111.php
+ reporting/rep113.php
+ reporting/rep209.php
+ reporting/rep210.php
+ reporting/rep409.php
+
+2011-06-17 14:16 +0200 Janusz Dobrowolski
+(2822) Warning in header2.inc fixed
+ reporting/includes/header2.inc
+
+2011-06-17 13:45 +0200 Janusz Dobrowolski
+(2821) Rewitten document reports layout for easier modifications, support for multiply payment services.
+ includes/ui/ui_lists.inc
+ includes/ui/ui_view.inc
+ purchasing/includes/ui/invoice_ui.inc
+ reporting/includes/doctext.inc
+ reporting/includes/header2.inc
+ reporting/includes/pdf_report.inc
+ reporting/includes/reports_classes.inc
+ reporting/rep107.php
+ reporting/rep108.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep111.php
+ reporting/rep112.php
+ reporting/rep113.php
+ reporting/rep209.php
+ reporting/rep210.php
+
+2011-06-16 23:41 +0200 Joe Hunt
+(2820) 0000877: Bug updating a GL account that is also a bank account.
+ gl/manage/gl_accounts.php
+
+2011-06-14 11:09 +0200 Janusz Dobrowolski
+(2819) Added hook for authentication from external sources like LDAP.
+ admin/db/users_db.inc
+ includes/current_user.inc
+ includes/hooks.inc
+ includes/session.inc
+
+2011-06-14 00:39 +0200 Janusz Dobrowolski
+(2818) Price_in_words and retrieve_ex_rate commented out in base hook class (required because of hook_invoke_last usage)
+ includes/hooks.inc
+
+2011-06-09 16:07 +0200 Joe Hunt
+(2817) Changelog
+ CHANGELOG.txt
+
 2011-06-09 16:03 +0200 Joe Hunt
 (2816) Release 2.3.5
  CHANGELOG.txt
