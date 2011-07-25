@@ -42,8 +42,8 @@
 			$aux_info = array(
 				_("Customers Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
-				_("Your VAT no.") => '',
-				_("Our Order No") => '',
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Quotation No") => $this->formData['order_no'],
 				_("Valid until") => sql2date($this->formData['delivery_date']),
 			);
 			break;
@@ -58,8 +58,8 @@
 			$aux_info = array(
 				_("Customers Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
-				_("Your VAT no.") => '',
-				_("Our Order No") => '',
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => $this->formData['order_no'],
 				_("Delivery Date") => sql2date($this->formData['delivery_date']),
 			);
 			break;
