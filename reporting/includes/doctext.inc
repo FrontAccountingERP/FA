@@ -153,7 +153,8 @@
 			$Addr2['name'] = $this->company['coy_name'];
 			$Addr2['address'] = $this->company['postal_address'];
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $this->formData['order_no'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
 
 			$aux_info = array(
 				_("Customers Reference") => $this->formData['supp_account_no'],
