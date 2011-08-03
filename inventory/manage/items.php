@@ -63,21 +63,22 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	}	
 	$filename .= "/".item_img_name($stock_id).".jpg";
 	
-	 //But check for the worst 
-	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
+	//But check for the worst 
+	$imagetype = exif_imagetype($_FILES['pic']['tmp_name']);
+	if ($imagetype != IMAGETYPE_GIF && $imagetype != IMAGETYPE_JPEG && $imagetype != IMAGETYPE_PNG)
+	{	//File type Check
+		display_warning( _('Only graphics files can be uploaded'));
+		$upload_file ='No';
+	}	
+	elseif (strtoupper(substr(trim($_FILES['pic']['name']), in_array(strlen($_FILES['pic']['name']) - 3)), array('JPG','PNG','GIF')))
 	{
-		display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
+		display_warning(_('Only graphics files are supported - a file extension of .jpg, .png or .gif is expected'));
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024)) 
 	{ //File Size Check
 		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
 		$upload_file ='No';
-	} 
-	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
-	{  //File type Check
-		display_warning( _('Only graphics files can be uploaded'));
-         	$upload_file ='No';
 	} 
 	elseif (file_exists($filename))
 	{
