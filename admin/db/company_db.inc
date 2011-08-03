@@ -191,7 +191,7 @@ function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
 			$tbl = $key;
 			$key = $stdkey;
 		}
-		$sqls[] = "(SELECT COUNT(*) as cnt FROM ".TB_PREF."$tbl WHERE $key=$id)\n";
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM `".TB_PREF."$tbl` WHERE `$key`=".db_escape($id).")\n";
 	}
 
 	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
