@@ -66,7 +66,6 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($fromcust);
 		$sql .= " GROUP BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name ORDER BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name";
-_vd($sql);
     return db_query($sql,"No transactions were returned");
 
 }
