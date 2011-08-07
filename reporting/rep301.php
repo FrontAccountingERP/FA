@@ -28,8 +28,9 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 print_inventory_valuation_report();
 
-function getTransactions($category, $location)
+function getTransactions($category, $location, $date)
 {
+	$date = date2sql($date);
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
@@ -44,7 +45,8 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_moves
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND ".TB_PREF."stock_master.mb_flag<>'D'
+		AND ".TB_PREF."stock_master.mb_flag<>'D' 
+		AND ".TB_PREF."stock_moves.tran_date <= '$date'
 		GROUP BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description, ";
 		if ($location != 'all')
@@ -69,11 +71,12 @@ function print_inventory_valuation_report()
 {
     global $path_to_root;
 
-    $category = $_POST['PARAM_0'];
-    $location = $_POST['PARAM_1'];
-    $detail = $_POST['PARAM_2'];
-    $comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$date = $_POST['PARAM_0'];
+    $category = $_POST['PARAM_1'];
+    $location = $_POST['PARAM_2'];
+    $detail = $_POST['PARAM_3'];
+    $comments = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -102,8 +105,9 @@ function print_inventory_valuation_report()
 	$aligns = array('left',	'left',	'left', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-    				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
+    					1 => array('text' => _('End Date'), 'from' => $date, 		'to' => ''),
+    				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
+    				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
     $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize());
 
@@ -111,7 +115,7 @@ function print_inventory_valuation_report()
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
 
-	$res = getTransactions($category, $location);
+	$res = getTransactions($category, $location, $date);
 	$total = $grandtotal = 0.0;
 	$catt = '';
 	while ($trans=db_fetch($res))

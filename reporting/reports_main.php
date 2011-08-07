@@ -175,7 +175,8 @@ $reports->addReport(RC_SUPPLIER, 210, _('Print Remittances'),
 $reports->addReportClass(_('Inventory'), RC_INVENTORY);
 
 $reports->addReport(RC_INVENTORY,  301, _('Inventory &Valuation Report'),
-	array(	_('Inventory Category') => 'CATEGORIES',
+	array(	_('End Date') => 'DATE',	
+			_('Inventory Category') => 'CATEGORIES',
 			_('Location') => 'LOCATIONS',
 			_('Summary Only') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
