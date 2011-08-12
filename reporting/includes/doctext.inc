@@ -38,7 +38,8 @@
 			$this->title = _("SALES QUOTATION");
 			$this->formData['document_name'] =_("Quotation No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $this->formData['order_no'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
 			$aux_info = array(
 				_("Customers Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
@@ -52,7 +53,8 @@
 			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 			$this->formData['document_name'] =_("Order No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $this->formData['order_no'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
 			$this->formData['document_amount'] = $this->formData['order_no'];
 
 			$aux_info = array(
@@ -151,7 +153,7 @@
 			$Addr1['address'] = $this->formData['address'];
 			$Addr2['title'] = _("Deliver To");
 			$Addr2['name'] = $this->company['coy_name'];
-			$Addr2['address'] = $this->company['postal_address'];
+			//$Addr2['address'] = $this->company['postal_address']; No, don't destroy delivery address!
 			$this->formData['document_date'] = $this->formData['ord_date'];
 			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
 				? $this->formData['reference'] : $this->formData['order_no'];
