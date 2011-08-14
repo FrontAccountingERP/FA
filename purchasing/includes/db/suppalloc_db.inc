@@ -103,8 +103,8 @@ function get_alloc_supp_sql($extra_fields=null, $extra_conditions=null, $extra_t
 	$sql = "SELECT
 		trans.type,
 		trans.trans_no,
-		trans.reference,
-		trans.tran_date,
+		IF(trans.supp_reference='',trans.reference,trans.supp_reference) as reference,
+ 		trans.tran_date,
 		supplier.supp_name, 
 		supplier.curr_code, 
 		ov_amount+ov_gst+ov_discount AS Total,
@@ -112,11 +112,7 @@ function get_alloc_supp_sql($extra_fields=null, $extra_conditions=null, $extra_t
 		trans.due_date,
 		trans.supplier_id,
 		supplier.address";
-/*	$sql = "SELECT trans.*,
-		ov_amount+ov_gst+ov_discount AS Total,
-		supplier.supp_name, supplier.address,
-		supplier.curr_code ";
-*/
+
 	if ($extra_fields)
 		$sql .= ", $extra_fields ";
 
@@ -128,7 +124,7 @@ function get_alloc_supp_sql($extra_fields=null, $extra_conditions=null, $extra_t
 
 	if ($extra_conditions)
 		$sql .= " AND $extra_conditions";
-
+	
 	return $sql;
 }
 
@@ -173,7 +169,7 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 			AND trans.supplier_id=".db_escape($supplier_id));
 	}
 
-	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
+	return db_query($sql." ORDER BY due_date", "Cannot retreive alloc to transactions");
 }
 
 function get_sql_for_supplier_allocation_inquiry()
