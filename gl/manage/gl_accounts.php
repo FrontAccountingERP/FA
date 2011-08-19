@@ -110,61 +110,60 @@ function can_delete($selected_account)
 {
 	if ($selected_account == "")
 		return false;
-	$acc = db_escape($selected_account);
 
-	if (key_in_foreign_table($acc, 'gl_trans', 'account', true))
+	if (key_in_foreign_table($selected_account, 'gl_trans', 'account', true))
 	{
 		display_error(_("Cannot delete this account because transactions have been created using this account."));
 		return false;
 	}
 
-	if (gl_account_in_company_defaults($acc))
+	if (gl_account_in_company_defaults($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 		return false;
 	}
 
-	if (key_in_foreign_table($acc, 'bank_accounts', 'account_code', true))	
+	if (key_in_foreign_table($selected_account, 'bank_accounts', 'account_code', true))	
 	{
 		display_error(_("Cannot delete this account because it is used by a bank account."));
 		return false;
 	}	
 
-	if (gl_account_in_stock_category($acc))
+	if (gl_account_in_stock_category($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Item Categories."));
 		return false;
 	}	
 	
-	if (gl_account_in_stock_master($acc))
+	if (gl_account_in_stock_master($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Items."));
 		return false;
 	}	
 	
-	if (gl_account_in_tax_types($acc))
+	if (gl_account_in_tax_types($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Taxes."));
 		return false;
 	}	
 	
-	if (gl_account_in_cust_branch($acc))
+	if (gl_account_in_cust_branch($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Customer Branches."));
 		return false;
 	}		
 	
-	if (gl_account_in_suppliers($acc))
+	if (gl_account_in_suppliers($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more suppliers."));
 		return false;
-	}									
-	
-	if (gl_account_in_quick_entry_lines($acc))
+	}
+
+	if (gl_account_in_quick_entry_lines($selected_account))
 	{
 		display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 		return false;
-	}									
+	}
 
 	return true;
 }

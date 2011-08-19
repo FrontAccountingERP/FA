@@ -103,7 +103,7 @@ function gl_account_in_company_defaults($acc)
 		OR name='default_cogs_act'
 		OR name='default_adj_act'
 		OR name='default_inv_sales_act'
-		OR name='default_assembly_act') AND value=$acc";
+		OR name='default_assembly_act') AND value=".db_escape($acc);
 	$result = db_query($sql,"Couldn't test for default company GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -112,6 +112,8 @@ function gl_account_in_company_defaults($acc)
 
 function gl_account_in_stock_category($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_category WHERE 
 		dflt_inventory_act=$acc 
 		OR dflt_cogs_act=$acc
@@ -125,6 +127,8 @@ function gl_account_in_stock_category($acc)
 
 function gl_account_in_stock_master($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE 
 		inventory_account=$acc 
 		OR cogs_account=$acc
@@ -138,6 +142,8 @@ function gl_account_in_stock_master($acc)
 
 function gl_account_in_tax_types($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
 	$result = db_query($sql,"Couldn't test for existing tax GL codes");
 
@@ -147,6 +153,8 @@ function gl_account_in_tax_types($acc)
 
 function gl_account_in_cust_branch($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE 
 		sales_account=$acc 
 		OR sales_discount_account=$acc
@@ -160,6 +168,8 @@ function gl_account_in_cust_branch($acc)
 
 function gl_account_in_suppliers($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
 		purchase_account=$acc
 		OR payment_discount_account=$acc
@@ -172,6 +182,8 @@ function gl_account_in_suppliers($acc)
 
 function gl_account_in_quick_entry_lines($acc)
 {
+	$acc = db_escape($acc);
+
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
 		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
 	$result = db_query($sql,"Couldn't test for existing Quick Entry Line GL codes");

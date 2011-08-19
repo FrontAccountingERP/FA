@@ -68,16 +68,15 @@ elseif( $Mode == 'Delete')
 	//the link to delete a selected record was clicked instead of the submit button
 
 	$cancel_delete = 0;
-	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	if (key_in_foreign_table($acc, 'bank_trans', 'bank_act', true))
+	if (key_in_foreign_table($selected_id, 'bank_trans', 'bank_act', true) || key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
 
-	if (key_in_foreign_table($acc, 'sales_pos', 'pos_account', true))
+	if (key_in_foreign_table($selected_id, 'sales_pos', 'pos_account', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
