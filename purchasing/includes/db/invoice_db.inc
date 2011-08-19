@@ -32,6 +32,16 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 
 	$myrow = db_fetch($result);
 
+    if ($supp_trans->tran_date == "")
+    {
+		$supp_trans->tran_date = Today();
+
+		if (!is_date_in_fiscalyear($supp_trans->tran_date))
+			$supp_trans->tran_date = end_fiscalyear();
+	}
+	if ($supp_trans->supplier_id != $supplier_id)
+	    get_duedate_from_terms($supp_trans);
+
     $supp_trans->supplier_id = $supplier_id;
     $supp_trans->tax_included = $myrow['tax_included'];
     $supp_trans->tax_algorithm = $supp_trans->stored_algorithm = $myrow['tax_algorithm'];
@@ -46,16 +56,6 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 	$supp_trans->tax_description = $myrow['tax_group_name'];
 	$supp_trans->tax_group_id = $myrow['tax_group_id'];
 
-    if ($supp_trans->tran_date == "")
-    {
-		$supp_trans->tran_date = Today();
-		if (!is_date_in_fiscalyear($supp_trans->tran_date))
-			$supp_trans->tran_date = end_fiscalyear();
-	}
-    //if ($supp_trans->due_date=="") {
-    //	get_duedate_from_terms($supp_trans);
-    //}
-    get_duedate_from_terms($supp_trans);
 }
 
 //--------------------------------------------------------------------------------------------------
