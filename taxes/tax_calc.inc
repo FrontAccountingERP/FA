@@ -150,6 +150,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	foreach($ret_tax_array as $k=>$t)
 		$ret_tax_array[$k]['Net'] = 0;
 
+	$dec = user_price_dec();
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
 	{
@@ -162,7 +163,8 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 					$index = $item_tax['tax_type_id'];
 					if ($tax_included == 1) {
 					  $nprice = get_tax_free_price_for_item($items[$i], $prices[$i], $tax_group, $tax_included, null, $item_tax['tax_type_id']);
-					  $ret_tax_array[$index]['Value'] += round2($prices[$i] - $nprice, $dec);
+					  //$ret_tax_array[$index]['Value'] += round2($prices[$i] - $nprice, $dec);
+					  $ret_tax_array[$index]['Value'] += round2($nprice*$item_tax['rate']/100, $dec);
 					  $ret_tax_array[$index]['Net'] += $nprice;
 					} else {
 					  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
@@ -189,14 +191,15 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 						$tax_rate += $item_tax['rate'];
 					}
 				}
-				$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
+				$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), $dec);
 			}
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
 				if ($item_tax['rate'] !== null && $ret_tax_array[$index]['rate'] !== null) {
 					  if($tax_included==1) {
-					    $ret_tax_array[$index]['Value'] += round2($shipping_cost - $shipping_net, $dec);
+					    //$ret_tax_array[$index]['Value'] += round2($shipping_cost - $shipping_net, $dec);
+						$ret_tax_array[$index]['Value'] += round2($shipping_net * $item_tax['rate'] / 100, $dec);
 					    $ret_tax_array[$index]['Net'] += $shipping_net;
 					  } else {
 						$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
