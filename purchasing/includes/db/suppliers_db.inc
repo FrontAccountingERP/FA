@@ -19,7 +19,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 		supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 		payment_terms, payable_account, purchase_account, payment_discount_account, notes, 
 		tax_group_id, tax_included)
-		VALUES (".db_escape($_POST['supp_name']). ", "
+		VALUES (".db_escape($supp_name). ", "
 		.db_escape($supp_ref). ", "
 		.db_escape($address) . ", "
 		.db_escape($supp_address) . ", "
@@ -27,7 +27,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 		.db_escape($website). ", "
 		.db_escape($supp_account_no). ", "
 		.db_escape($bank_account). ", "
-		.$credit_limit. ", "
+		.db_escape($credit_limit). ", "
 		.db_escape($dimension_id). ", "
 		.db_escape($dimension2_id). ", "
 		.db_escape($curr_code). ", "
