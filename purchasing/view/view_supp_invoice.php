@@ -73,7 +73,13 @@ label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap a
 
 end_table(1);
 
-is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+$voided = is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+
+if (!$voided) 
+{
+	display_allocations_to(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPINVOICE, $trans_no, 
+		($supp_trans->ov_amount + $supp_trans->ov_gst));
+}
 
 end_page(true, false, false, ST_SUPPINVOICE, $trans_no);
 

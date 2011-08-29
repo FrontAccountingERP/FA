@@ -474,14 +474,14 @@ function display_footer_exit()
 
 //--------------------------------------------------------------------------------------
 
-function display_allocations($alloc_result, $total)
+function display_allocations($alloc_result, $total, $payments=false)
 {
 	global $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
 
-    display_heading2(_("Allocations"));
+    display_heading2(($payments ? _("Payments") : _("Allocations")));
 
     start_table(TABLESTYLE, "width=80%");
 
@@ -534,6 +534,23 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
+			return;
+	}
+}
+
+//--------------------------------------------------------------------------------------
+
+function display_allocations_to($person_type, $person_id, $type, $type_no, $total)
+{
+	switch ($person_type)
+	{
+		case PT_CUSTOMER :
+			$alloc_result = get_allocatable_from_cust_transactions($person_id, $type_no, $type);
+			display_allocations($alloc_result, $total, true);
+			return;
+		case PT_SUPPLIER :
+			$alloc_result = get_allocatable_from_supp_transactions($person_id, $type_no, $type);
+			display_allocations($alloc_result, $total, true);
 			return;
 	}
 }

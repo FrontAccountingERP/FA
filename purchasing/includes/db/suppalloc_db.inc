@@ -172,6 +172,29 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 	return db_query($sql." ORDER BY due_date", "Cannot retreive alloc to transactions");
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
+function get_allocatable_from_supp_transactions($supplier_id, $trans_no=null, $type=null)
+{
+	if ($trans_no != null && $type!= null)
+	{
+		$sql = get_alloc_supp_sql("amt, supp_reference", "trans.trans_no = alloc.trans_no_from
+			AND trans.type = alloc.trans_type_from
+			AND alloc.trans_no_to=".db_escape($trans_no)."
+			AND alloc.trans_type_to=".db_escape($type)."
+			AND trans.supplier_id=".db_escape($supplier_id),
+			TB_PREF."supp_allocations as alloc");
+	}
+	else
+	{
+		$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
+			AND trans.type != ".ST_SUPPAYMENT."
+			AND trans.supplier_id=".db_escape($supplier_id));
+	}
+
+	return db_query($sql." ORDER BY due_date", "Cannot retreive alloc to transactions");
+}
+
 function get_sql_for_supplier_allocation_inquiry()
 {
  	$date_after = date2sql($_POST['TransAfterDate']);

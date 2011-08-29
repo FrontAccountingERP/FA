@@ -158,6 +158,32 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
+//-------------------------------------------------------------------------------------------------------------
+
+function get_allocatable_from_cust_transactions($customer_id, $trans_no=null, $type=null)
+{
+	if ($trans_no != null and $type != null)
+	{
+		$sql = get_alloc_trans_sql("amt", "trans.trans_no = alloc.trans_no_from
+			AND trans.type = alloc.trans_type_from
+			AND alloc.trans_no_to=".db_escape($trans_no)."
+			AND alloc.trans_type_to=".db_escape($type)."
+			AND trans.debtor_no=".db_escape($customer_id),
+			"".TB_PREF."cust_allocations as alloc");
+	}
+	else
+	{
+		$sql = get_alloc_trans_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
+			AND trans.type <> " . ST_CUSTPAYMENT . "
+			AND trans.type <> " . ST_BANKDEPOSIT . "
+			AND trans.type <> " . ST_CUSTCREDIT . "
+			AND trans.type <> " . ST_CUSTDELIVERY . "
+			AND trans.debtor_no=".db_escape($customer_id));
+	}
+
+	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
+}
+
 function get_sql_for_customer_allocation_inquiry()
 {
   	$data_after = date2sql($_POST['TransAfterDate']);
