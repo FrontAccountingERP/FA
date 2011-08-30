@@ -58,7 +58,10 @@ start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+if ($receipt['ov_discount'] != 0)
+	label_cells(_("Discount"), number_format2(-$receipt['ov_discount']*$receipt['rate'], user_price_dec()), "class='tableheader2'");
+else
+	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 
@@ -69,6 +72,12 @@ if ($show_both_amounts)
 	label_cells(_("Amount"), number_format2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
 label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 end_row();
+if ($receipt['ov_discount'] != 0)
+{
+	start_row();
+	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+	end_row();
+}
 comments_display_row(ST_SUPPAYMENT, $trans_no);
 
 end_table(1);
