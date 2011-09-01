@@ -10,6 +10,112 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-09-01 08:34 +0200 Janusz Dobrowolski
+(2875) Gettext template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2011-08-30 08:26 +0200 Joe Hunt
+(2873) Show discount in view supp payment, if any.
+ purchasing/view/view_supp_payment.php
+
+2011-08-29 16:42 +0200 Joe Hunt
+(2872) Display payments on view invoice like display allocation on view payments. Chaitanya.
+ includes/ui/ui_view.inc
+ purchasing/includes/db/suppalloc_db.inc
+ purchasing/view/view_supp_invoice.php
+ sales/includes/db/custalloc_db.inc
+ sales/view/view_invoice.php
+
+2011-08-28 22:28 +0200 Janusz Dobrowolski
+(2871) Rounding errors in tax calculations for tax_included sales fixed again.
+ taxes/tax_calc.inc
+
+2011-08-28 09:50 +0200 Janusz Dobrowolski
+(2870) Cleanup in add_supplier().
+ purchasing/includes/db/suppliers_db.inc
+
+2011-08-28 00:47 +0200 Joe Hunt
+(2869) Fixed severe error in tax calculation 8 days ago!
+ taxes/tax_calc.inc
+
+2011-08-19 10:22 +0200 Janusz Dobrowolski
+(2867) Fixed additional rounding errors posting when tax included invoice is saved.
+ taxes/tax_calc.inc
+
+2011-08-19 10:06 +0200 Janusz Dobrowolski
+(2866) Fixed improper checks on GL account deletion.
+ gl/includes/db/gl_db_accounts.inc
+ gl/manage/bank_accounts.php
+ gl/manage/gl_accounts.php
+
+2011-08-19 09:58 +0200 Janusz Dobrowolski
+(2865) Fixed log error during rate retrieval when open_basedir restriction is set.
+ gl/includes/db/gl_db_rates.inc
+
+2011-08-16 01:11 +0200 Joe Hunt
+(2864) 0000991: Default to premier bank account
+ gl/includes/ui/gl_bank_ui.inc
+
+2011-08-15 00:23 +0200 Joe Hunt
+(2863) 0000987: In Supplier Payments allocation list should display Supplier Reference if possible
+ purchasing/includes/db/suppalloc_db.inc
+
+2011-08-12 22:55 +0200 Joe Hunt
+(2862) 0000984: SO doesn't print the reference when the $print_invoice_no is set to 0.
+ reporting/includes/doctext.inc
+
+2011-08-07 23:05 +0200 Joe Hunt
+(2861) Cleanup in Inventory Sales Report. Removed a _vd().
+ reporting/rep304.php
+
+2011-08-07 16:44 +0200 Joe Hunt
+(2860) 0000978 : PDF report don't run in newer verions of PHP (case sensitive member functions).
+ reporting/includes/pdf_report.inc
+
+2011-08-07 09:22 +0200 Joe Hunt
+(2859) Inventory Valuation Report has now got End Date selection.
+ reporting/rep301.php
+ reporting/reports_main.php
+
+2011-08-04 00:00 +0200 Joe Hunt
+(2858) Added support for png and gif item images. Rerun.
+ company/0/images/102.jpg
+ inventory/manage/items.php
+
+2011-08-03 13:22 +0200 Janusz Dobrowolski
+(2857) Added support for png and gif item images.
+ company/0/images/102.jpg
+ inventory/manage/items.php
+
+2011-08-03 13:11 +0200 Janusz Dobrowolski
+(2856) Fixed key_in_foreign_table helper (problems with non-numeric keys).
+ admin/db/company_db.inc
+
+2011-08-03 13:09 +0200 Janusz Dobrowolski
+(2855) Fixed problem with unscrollable content in larger popup windows.
+ js/inserts.js
+
+2011-07-25 19:58 +0200 Janusz Dobrowolski
+(2854) Added missing aux info on sales order/quotation reports.
+ reporting/includes/doctext.inc
+ sales/includes/db/sales_order_db.inc
+
+2011-07-21 16:55 +0200 Janusz Dobrowolski
+(2853) Language template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2011-07-31 00:37 +0200 Joe Hunt
+(2852) 0000960: When printing PO's the PO# is the Trans_id not the Forms Reference number.
+ reporting/includes/doctext.inc
+
+2011-07-22 23:24 +0200 Joe Hunt
+(2851) Saved Report parameters didn't work any more.
+ reporting/prn_redirect.php
+
+2011-07-22 08:49 +0200 Joe Hunt
+(2850) New ChANGELOG.txt
+ CHANGELOG.txt
+
 2011-07-22 08:47 +0200 Joe Hunt
 (2849) Release 2.3.6
  version.php
