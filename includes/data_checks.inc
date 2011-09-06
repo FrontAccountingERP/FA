@@ -499,5 +499,3 @@ function check_is_closed($type, $type_no, $msg=null)
     }
 }
 
-
-?>

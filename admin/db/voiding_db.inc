@@ -29,24 +29,27 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			void_journal_trans($type, $type_no);
 			break;
 
-		case ST_BANKPAYMENT : // it's a payment
 		case ST_BANKDEPOSIT : // it's a deposit
 		case ST_BANKTRANSFER : // it's a transfer
+			if (!check_void_bank_trans($type, $type_no))
+				return false;
+		case ST_BANKPAYMENT : // it's a payment
 			if (!exists_bank_trans($type, $type_no))
 				return false;
 			void_bank_trans($type, $type_no);
 			break;
 
+		case ST_CUSTPAYMENT : // it's a customer payment
+			if (!check_void_bank_trans($type, $type_no))
+				return false;
 		case ST_SALESINVOICE : // it's a customer invoice
 		case ST_CUSTCREDIT : // it's a customer credit note
-		case ST_CUSTPAYMENT : // it's a customer payment
 		case ST_CUSTDELIVERY : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
 			if ($type == ST_CUSTDELIVERY)	// added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
 			{
-				$childs = get_sales_child_lines($type, $type_no, false);
-
+				$childs = get_sales_child_lines($type, $type_no, false); // 2011-03-17 This had been changed. Joe
 				if ($childs && db_num_rows($childs))
 						return false;
 			}
@@ -66,8 +69,11 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			break;
 
 		case ST_PURCHORDER : // it's a PO
-		case ST_SUPPRECEIVE : // it's a GRN
 			return false;
+
+		case ST_SUPPRECEIVE : // it's a GRN
+			if (exists_grn_on_invoices($type_no))
+				return false;
 		case ST_SUPPINVOICE : // it's a suppler invoice
 		case ST_SUPPCREDIT : // it's a supplier credit note
 		case ST_SUPPAYMENT : // it's a supplier payment

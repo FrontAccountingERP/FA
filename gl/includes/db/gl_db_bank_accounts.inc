@@ -315,6 +315,24 @@ function get_default_bank_account($curr)
 
 	return db_fetch($result);
 }
+
+function get_default_customer_bank_account($cust_id)
+{
+	$sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($cust_id);
+	$result = db_query($sql, "could not retreive default customer currency code");
+	$row = db_fetch_row($result);
+	$ba = get_default_bank_account($row[0]);
+	return $ba['id'];
+}
+
+function get_default_supplier_bank_account($supplier_id)
+{
+	$sql = "SELECT curr_code FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
+	$result = db_query($sql, "could not retreive default supplier currency code");
+	$row = db_fetch_row($result);
+	$ba = get_default_bank_account($row[0]);
+	return $ba['id'];
+}
 //---------------------------------------------------------------------------------------------
 //
 //	This function returns current allowed bank payment limit, or null if limit is not set.

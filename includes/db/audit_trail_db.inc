@@ -76,12 +76,11 @@ function close_transactions($todate) {
 
 	if (db_num_rows($result)) {
 		$last_year = 0;
-		while ($row = db_fetch($result)) {
 
+		while ($row = db_fetch($result)) {
 			if ($row['fiscal_year'] == null) {
 				$errors = 1; continue;
 			}
-
 			if ($last_year != $row['fiscal_year']) {
 				$last_year = $row['fiscal_year'];
 				$counter = 0; // reset counter on fiscal year change
@@ -123,6 +122,7 @@ function is_closed_trans($type, $trans_no) {
 //		." OR gl_seq>0)";
 
 	$res = db_query($sql, "Cannot check transaction");
+
 	return db_num_rows($res);
 
 }

@@ -260,6 +260,11 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
 	login_timeout();
 
+	if (!$_SESSION["wa_current_user"]->old_db)
+		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+
+	install_hooks();
+
 	if (!$_SESSION["wa_current_user"]->logged_in())
 	{
 		// Show login screen
@@ -278,7 +283,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
 			$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
 				$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
-				$_POST["user_name_entry_field"], md5($_POST["password"]));
+				$_POST["user_name_entry_field"], $_POST["password"]);
 			// select full vs fallback ui mode on login
 			$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
 			if (!$succeed)
@@ -291,11 +296,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		}
 	} else
 		set_global_connection();
-
-	if (!$_SESSION["wa_current_user"]->old_db)
-		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
-
-	install_hooks();
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();

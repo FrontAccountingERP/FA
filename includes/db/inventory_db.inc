@@ -65,7 +65,6 @@ function get_item_edit_info($stock_id)
 
 function get_standard_cost($stock_id)
 {
-	//Chaitanya : Compatibility with service items
 	$sql = "SELECT (material_cost + labour_cost + overhead_cost) AS std_cost
 		FROM ".TB_PREF."stock_master s WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql, "The standard cost cannot be retrieved");
@@ -130,7 +129,7 @@ function last_negative_stock_trans_id($stock_id, $to)
 	
 	$qty = 0;
 	$flag = 0;
-	$negative_trans_id = 1;
+	$negative_trans_id = -1;
 	
 	while ($myrow = db_fetch($result))
 	{
@@ -144,7 +143,10 @@ function last_negative_stock_trans_id($stock_id, $to)
 			$flag = 0;
 	}
 
-	return $negative_trans_id;
+	if ($flag == 1)
+		return $negative_trans_id;
+	else 
+		return false;
 }
 
 //-------------------------------------------------------------------
@@ -170,29 +172,11 @@ function get_deliveries_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
 	
-//	display_notification('Row0 - '.$row[0].' Row1- '.$row[1]);
-	
-	//return $row;
-	
-	// Get Std cost of previsous transaction before the cut-over delivery
-	// This is useful to get inventory valuation
-	//Chaitanya : Corrected
-	/*$sql = "SELECT max( `trans_id` )
-			FROM ".TB_PREF."stock_moves
-			WHERE stock_id = ".db_escape($stock_id)."
-			AND trans_id<'$from'";
-	$result = db_query($sql, "The deliveries could not be updated");
-	$trans = db_fetch_row($result);
-	$prev_trans = $trans[0];*/
-	
-//	display_notification('From - '.$from);
 	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)
 			." AND trans_id ='$from'";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$cost = db_fetch_row($result);	
-	
-//	display_notification('Last Delivery Cost - '.$cost[0]);
 	
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
@@ -201,17 +185,12 @@ function get_deliveries_from_trans($stock_id, $from)
 	$result = db_query($sql, "The deliveries could not be updated");
 	$qoh = db_fetch_row($result);
 	
-//	display_notification('QOH before last delivery - '.$qoh[0]);
-	
-	$qty = $row[0] - $qoh[0]; //Qoh is minus from delivered in -ve
+	$qty = $row[0] - $qoh[0]; //QOH prior to -ve stock is subtracted
 	$final_cost = $row[1] - $qoh[0]*$cost[0];
-	
-//	display_notification('Qty - '.$qty.' cost- '.$final_cost);
 	
 	return array($qty,$final_cost); 
 }
 
-//Newly written
 function get_purchases_from_trans($stock_id, $from)
 {
 	// Calculate All inward stock moves i.e. qty > 0
@@ -221,54 +200,18 @@ function get_purchases_from_trans($stock_id, $from)
 	$result = db_query($sql, "Could not get get_purchases_from_trans");
 	$row = db_fetch_row($result);
 	
-//	display_notification('Purchase Qty - '.$row[0].' Cost- '.$row[1]);
-	
 	return $row;
 }
 
 //-------------------------------------------------------------------
-/* Original Code V0 Leave as is a while
-function adjust_deliveries_v0($stock_id, $material_cost, $to)
-{
-	if (!is_inventory_item($stock_id))
-		return;
-	$from = last_negative_stock_begin_date($stock_id, $to);
-	if ($from == false || $from == "")
-		return;
-	$from = sql2date($from);
-	$row = get_deliveries_between($stock_id, $from, $to);
-	if ($row == false)
-		return;	
-	$old_cost = $row[1];
-	$new_cost = $row[0] * $material_cost;
-	$diff = $new_cost - $old_cost;
-	if ($diff != 0)
-	{
-	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
-		if (!is_date_in_fiscalyear($to))
-			$to = end_fiscalyear();
-	   
-		$stock_gl_code = get_stock_gl_code($stock_id);
 
-		$memo_ = sprintf(_("Cost was %s changed to %s for item '%s'"),
-			$old_cost, $new_cost, $stock_id);
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
-			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);
-
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 
-			0, 0, $memo_, -$diff);
-		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
-   	}
-}
-*/
-//New written function
 function adjust_deliveries($stock_id, $material_cost, $to)
 {
 	if (!is_inventory_item($stock_id))
 		return;
 	
 	$from = last_negative_stock_trans_id($stock_id, $to);
-	if ($from == false || $from == "")
+	if ($from == false || $from == -1)
 		return;
 
 	$row = get_deliveries_from_trans($stock_id, $from);
@@ -325,11 +268,10 @@ function get_stock_gl_code($stock_id)
 }
 
 //-----------------------------------------------------------------------------------------
-//Chaitanya : New Function handle negative stock effect
-//Called in add_stock_move
+
 function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 {
-	//Chaitanya : If negative adjustment result in negative or zero inventory 
+	//If negative adjustment result in negative or zero inventory 
 	//then difference should be adjusted
 	$qoh = get_qoh_on_date($stock_id);
 
@@ -374,11 +316,6 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
     $date_, $reference, $quantity, $std_cost, $person_id=0, $show_or_hide=1,
     $price=0, $discount_percent=0, $error_msg="")
 {
-	// Chaitanya : Removed following restriction considering WO issues
-	// Voiding issues and productions with Service items can not get the 
-	// Service items compatibility
-	// do not add a stock move if it's a non-inventory item
-
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
@@ -388,8 +325,8 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
 		.",	".db_escape($location).", '$date', "
 		.db_escape($person_id).", ".db_escape($reference).", "
 		.db_escape($quantity).", ".db_escape($std_cost).","
-		.db_escape($show_or_hide).", ".db_escape($price).", "
-		.db_escape($discount_percent).")";
+		.db_escape($show_or_hide).", "
+		.db_escape($price).", ".db_escape($discount_percent).")";
 
 	if ($error_msg == "")
 		$error_msg = "The stock movement record cannot be inserted";
@@ -399,7 +336,6 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
 	return db_insert_id();
 }
 
-//Chaitanya : Added function
 function update_stock_move($type, $trans_no, $stock_id, $cost)
 {
 	$sql = "UPDATE ".TB_PREF."stock_moves SET standard_cost=".db_escape($cost)
@@ -442,12 +378,7 @@ function get_stock_moves($type, $type_no, $visible=false)
 
 function void_stock_move($type, $type_no)
 {
-    //Chaitanya : Reversing stock move rather than voiding as it is hazardous to lose stock movement trail with respect to costing
-    /*$sql = "UPDATE ".TB_PREF."stock_moves SET qty=0, price=0, discount_percent=0,
-        standard_cost=0 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
-        
-    db_query($sql, "Could not void stock moves"); */
-    
+
     $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
@@ -456,8 +387,7 @@ function void_stock_move($type, $type_no)
 		if (is_inventory_item($row["stock_id"]))
 		{
 			// The cost has to be adjusted.
-			//Chaitanya : Transaction rates are stored either as price or standard_cost depending
-			//on types
+			// Transaction rates are stored either as price or standard_cost depending on types
 			$types = array(ST_SUPPCREDIT);
 			if (in_array($type,$types))
 				$trans_rate = $row["price"];

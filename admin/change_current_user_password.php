@@ -47,7 +47,7 @@ function can_process()
 	return true;
 }
 
-if (isset($_POST['UPDATE_ITEM']))
+if (isset($_POST['UPDATE_ITEM']) && check_csrf_token())
 {
 
 	if (can_process())

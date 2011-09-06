@@ -10,6 +10,119 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-08-31 23:39 +0200 Joe Hunt
+(2874) 0001013: Bank Statement w/Reconcile for print incorporated in core.
+ reporting/rep602.php
+ reporting/reports_main.php
+
+2011-08-19 10:04 +0200 Janusz Dobrowolski
+(2868) Due date should be preserved on purchase invoice edition start.
+ purchasing/includes/db/invoice_db.inc
+
+2011-07-13 14:52 +0200 Joe Hunt
+(2841) Fixed print of taxes on documents
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep209.php
+
+2011-07-13 14:00 +0200 Joe Hunt
+(2840) Rerun of tax_groups.php
+ taxes/tax_groups.php
+
+2011-07-13 10:57 +0200 Joe Hunt
+(2839) Rerun of tax_groups_db.inc
+ taxes/db/tax_groups_db.inc
+
+2011-07-13 10:52 +0200 Joe Hunt
+(2838) Rerun of new tax group and shipping files
+ includes/ui/ui_view.inc
+ taxes/db/tax_groups_db.inc
+ taxes/tax_calc.inc
+ taxes/tax_groups.php
+
+2011-07-12 17:16 +0200 Joe Hunt
+(2837) Update of default COAs
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2011-07-12 16:50 +0200 Joe Hunt
+(2836) 0000710: Shipping tax on all tax groups. And marking with tax type(s) it shall have.
+ sales/includes/cart_class.inc
+ sql/alter2.4.sql
+ taxes/db/tax_groups_db.inc
+ taxes/tax_calc.inc
+ taxes/tax_groups.php
+
+2011-07-10 23:01 +0200 Janusz Dobrowolski
+(2793) Implemented journal entries with multiply virtual AR/AP subaccounts.
+ admin/db/fiscalyears_db.inc
+ gl/bank_account_reconcile.php
+ gl/gl_journal.php
+ gl/includes/db/gl_db_accounts.inc
+ gl/includes/db/gl_db_trans.inc
+ gl/includes/ui/gl_journal_ui.inc
+ gl/inquiry/bank_inquiry.php
+ gl/view/gl_deposit_view.php
+ gl/view/gl_payment_view.php
+ gl/view/gl_trans_view.php
+ includes/types.inc
+ includes/ui/items_cart.inc
+ includes/ui/ui_lists.inc
+ purchasing/includes/db/invoice_items_db.inc
+ purchasing/includes/ui/invoice_ui.inc
+ reporting/rep601.php
+ reporting/rep702.php
+ sql/alter2.4.sql
+
+2011-05-06 14:07 +0200 Janusz Dobrowolski
+(2767) Added tag unstable_2_3_4 for changeset dd39e5e145c7
+ .hgtags
+
+2011-05-06 14:05 +0200 Janusz Dobrowolski
+(2758) Merged changes up to version 2.3.4 into unstable.
+ CHANGELOG.txt
+ access/login.php
+ access/logout.php
+ admin/create_coy.php
+ admin/db/maintenance_db.inc
+ admin/db/users_db.inc
+ admin/db/voiding_db.inc
+ admin/void_transaction.php
+ config.default.php
+ gl/accruals.php
+ gl/bank_transfer.php
+ gl/gl_bank.php
+ gl/includes/db/gl_db_bank_accounts.inc
+ gl/includes/db/gl_db_bank_trans.inc
+ gl/includes/db/gl_db_banking.inc
+ gl/includes/db/gl_db_rates.inc
+ gl/includes/db/gl_db_trans.inc
+ gl/includes/ui/gl_bank_ui.inc
+ gl/inquiry/bank_inquiry.php
+ gl/inquiry/gl_trial_balance.php
+ gl/manage/gl_account_types.php
+ gl/manage/gl_accounts.php
+ gl/view/gl_trans_view.php
+ includes/access_levels.inc
+ includes/data_checks.inc
+ includes/date_functions.inc
+ includes/db/connect_db.inc
+ includes/db/inventory_db.inc
+ includes/db/manufacturing_db.inc
+ includes/errors.inc
+ includes/hooks.inc
+ includes/lang/gettext.php
+ includes/packages.inc
+ includes/references.inc
+ includes/types.inc
+ includes/ui/items_cart.inc
+ includes/ui/ui_controls.inc
+ includes/ui/ui_input.inc
+ includes/ui/ui_msgs.inc
+ includes/ui/ui_view.inc
+ js/login.js
+
 2011-04-27 22:03 +0200 Janusz Dobrowolski
 (2743) Added Purchase Invice edition.
  includes/app_entries.inc

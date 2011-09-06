@@ -70,8 +70,13 @@ function exist_transaction($type, $type_no)
 			break;
 
 		case ST_PURCHORDER : // it's a PO
-		case ST_SUPPRECEIVE : // it's a GRN
 			return false;
+
+		case ST_SUPPRECEIVE : // it's a GRN
+			if (exists_grn_on_invoices($type_no))
+				return false;
+			break;
+
 		case ST_SUPPINVOICE : // it's a suppler invoice
 		case ST_SUPPCREDIT : // it's a supplier credit note
 		case ST_SUPPAYMENT : // it's a supplier payment
@@ -140,8 +145,7 @@ function voiding_controls()
 {
 	global $selected_id;
 
-	$not_implemented =  array(ST_PURCHORDER, ST_SUPPRECEIVE, ST_SALESORDER, 
-		ST_SALESQUOTE, ST_COSTUPDATE);
+	$not_implemented =  array(ST_PURCHORDER, ST_SALESORDER, ST_SALESQUOTE, ST_COSTUPDATE);
 
 	start_form();
 

@@ -81,6 +81,18 @@ function is_date_in_fiscalyears($date, $closed=true)
 	return db_fetch($result) !== false;
 }
 
+function get_fiscalyear_begin_for_date($date)
+{
+ 	$date = date2sql($date);
+	$sql = "SELECT begin FROM ".TB_PREF."fiscal_year WHERE '$date' >= begin AND '$date' <= end";
+	$result = db_query($sql, "could not get begin date of the fiscal year");
+	$row = db_fetch_row($result);
+	if ($row != false)
+		return sql2date($row[0]);
+	else
+		return begin_fiscalyear();
+}
+
 function check_begin_end_date($date1, $date2)
 {
 	$sql = "SELECT MAX(end), MIN(begin) FROM ".TB_PREF."fiscal_year";
@@ -166,6 +178,10 @@ function open_year($year)
 {
 	$myrow = get_fiscalyear($year);
 	$from = sql2date($myrow['begin']);
+
+	begin_transaction();
+	close_transactions(add_days($from, -1));
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -324,10 +340,12 @@ function delete_this_fiscalyear($selected_id)
 	
 	$sql = "SELECT account, SUM(amount) AS amount, person_type_id, person_id FROM "
 		.TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account, person_type_id, person_id";
+	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
 	$result = db_query($sql, "Could not retrieve gl trans");
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 
 	$last_account='';
+	$new = false;
 	while ($row = db_fetch($result))
 	{
 		if ($last_account != $row['account']) // deletes all subledgers postings, so do it once for account
@@ -344,7 +362,16 @@ function delete_this_fiscalyear($selected_id)
 			db_query($sql, "Could not insert gl trans");
 		}
 	}
-	
+	if ($new)
+	{
+		global $Refs;
+		$trans_type = ST_JOURNAL;
+		$reference = $Refs->get_next($trans_type);
+		$Refs->save($trans_type, $trans_no, $reference);
+		$date_ = sql2date($to);
+
+		add_audit_trail($trans_type, $trans_no, $date_);
+	}
 	$sql = "SELECT bank_act, SUM(amount) AS amount FROM ".TB_PREF."bank_trans WHERE trans_date <= '$to' GROUP BY bank_act";
 	$result = db_query($sql, "Could not retrieve bank trans");
 	while ($row = db_fetch($result))

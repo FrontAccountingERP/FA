@@ -38,9 +38,6 @@ function get_company_pref($prefs = null)
 
 		$_SESSION['SysPrefs'] = new sys_prefs();
 
-		if (!isset($company))
-			$company = user_company();
-
 		$sql = "SELECT name, value FROM ".TB_PREF."sys_prefs";
 		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
 
@@ -71,7 +68,7 @@ function get_company_pref($prefs = null)
 		return $ret;
 }
 
-function get_company_prefs()
+function set_company_pref($pref, $category, $type, $length, $value)
 {
 	return get_company_pref(null);
 }
@@ -187,7 +184,7 @@ function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
 			$tbl = $key;
 			$key = $stdkey;
 		}
-		$sqls[] = "(SELECT COUNT(*) as cnt FROM ".TB_PREF."$tbl WHERE $key=$id)\n";
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM `".TB_PREF."$tbl` WHERE `$key`=".db_escape($id).")\n";
 	}
 
 	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";

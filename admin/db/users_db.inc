@@ -21,7 +21,7 @@ function add_user($user_id, $real_name, $password, $phone, $email, $role_id,
 		.", ".db_escape($pos).",".db_escape($profile).",".db_escape($rep_popup)
 		." )";
 
-	db_query($sql, "could not add user for $user_id");
+	return db_query($sql, "could not add user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ function update_user_password($id, $user_id, $password)
 	$sql = "UPDATE ".TB_PREF."users SET password=".db_escape($password) . ",
 		user_id = ".db_escape($user_id). " WHERE id=".db_escape($id);
 
-	db_query($sql, "could not update user password for $user_id");
+	return db_query($sql, "could not update user password for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ function update_user($id, $user_id, $real_name, $phone, $email, $role_id,
 		pos=".db_escape($pos).",
 		user_id = " . db_escape($user_id)
 		. " WHERE id=" . db_escape($id);
-	db_query($sql, "could not update user for $user_id");
+	return db_query($sql, "could not update user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -110,7 +110,10 @@ function delete_user($id)
 }
 
 //-----------------------------------------------------------------------------------------------
-
+//
+//	Obsolete, to be removed in 2.4. This function as been spleet into get_user_auth/get_user_by_login
+//	in FA 2.3.6
+//
 function get_user_for_login($user_id, $password)
 {
 	set_global_connection();
@@ -121,6 +124,18 @@ function get_user_for_login($user_id, $password)
 		." password=".db_escape($password);
 
 	return db_query($sql, "could not get validate user login for $user_id");
+}
+
+//-----------------------------------------------------------------------------------------------
+
+function get_user_auth($user_id, $password)
+{
+	set_global_connection();
+
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
+		." password=".db_escape($password);
+
+	return db_num_rows(db_query($sql, "could not get validate user login for $user_id")) != 0;
 }
 
 //-----------------------------------------------------------------------------------------------

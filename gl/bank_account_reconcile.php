@@ -86,7 +86,7 @@ function fmt_credit($row)
 	return $value>0 ? price_format($value) : '';
 }
 
-function fmt_person($row)
+function fmt_person($trans)
 {
 	return get_counterparty_name($trans["type"], $trans["trans_no"]);
 }

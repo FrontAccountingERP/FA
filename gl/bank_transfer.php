@@ -132,11 +132,20 @@ function check_valid_entries()
 
 	$limit = get_bank_account_limit($_POST['FromBankAccount'], $_POST['DatePaid']);
 
-	if ($limit != null && ($limit < (input_num('charge') + input_num('amount'))))
+	$amnt_tr = input_num('charge') + input_num('amount');
+
+	if ($limit != null && ($limit < $amnt_tr))
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s) for source account."), price_format($limit)));
 		set_focus('amount');
 		return false;
+	}
+	if ($trans = check_bank_account_history(-$amnt_tr, $_POST['FromBankAccount'], $_POST['DatePaid'])) {
+
+		display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+			$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
+		set_focus('amount');
+		$input_error = 1;
 	}
 
 	if (isset($_POST['charge']) && !check_num('charge', 0)) 

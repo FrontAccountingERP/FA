@@ -477,7 +477,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	if ($editkey)
 		set_editor('customer', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
+	return combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
 	array(
 	    'format' => '_format_add_curr',
 	    'order' => array('debtor_ref'),
@@ -528,7 +528,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		set_editor('branch', $name, $editkey);
 
 	$where = $enabled ? array("disable_trans = 0") : array();
-	return  combo_input($name, $selected_id, $sql, 'branch_code', 'br_name',
+	return  combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
 	array(
 		'where' => $where,
 		'order' => array('branch_ref'),
@@ -2332,6 +2332,18 @@ function coa_list_row($label, $name, $value=null)
 	echo "</td></tr>\n";
 }
 
+function payment_services($name)
+{
+	global $payment_services;
+
+	$services = array_combine(array_keys($payment_services), array_keys($payment_services));
+
+	return array_selector($name, null, $services, array(
+			'spec_option'=> _("No payment Link"),
+			'spec_id' => '',
+		));
+}
+
 function tax_algorithm_list($name, $value=null, $submit_on_change = false)
 {
 	global $tax_algorithms;
@@ -2408,5 +2420,3 @@ function subledger_list_row($label, $name, $selected_id=null, $all_option = fals
 	echo "</td>\n</tr>\n";
 }
 
-
-?>

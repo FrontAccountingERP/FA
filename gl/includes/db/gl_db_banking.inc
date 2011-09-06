@@ -49,6 +49,73 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	return ($diff != 0);
 }
 
+//------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
+function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person_type_id, $person_id, $memo)
+{
+	global $Refs;
+	if ($amount == 0)
+		return;
+	$trans_no = get_next_trans_no(ST_JOURNAL);
+	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ledger_act, 0, 0, _("Exchange Variance"),
+		$amount, null, $person_type_id, $person_id);
+	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ex_act, 0, 0, 
+		_("Exchange Variance"),	-$amount, null, $person_type_id, $person_id);
+	add_comments(ST_JOURNAL, $trans_no, $date, $memo);
+	$ref = $Refs->get_next(ST_JOURNAL);
+	$Refs->save(ST_JOURNAL, $trans_no, $ref);
+	add_audit_trail(ST_JOURNAL, $trans_no, $date);
+}
+
+function get_cust_account_curr_balances($date)
+{
+	$to = date2sql($date);
+
+    $sql = "SELECT SUM(IF(t.type =".ST_CUSTCREDIT." OR t.type = ".ST_CUSTPAYMENT." OR t.type = ".ST_BANKDEPOSIT.",
+			-(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 
+	    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount))) AS amount,
+	    	dt.debtor_no, dt.name, dt.curr_code, b.receivables_account
+		FROM ".TB_PREF."debtor_trans t 
+			LEFT JOIN ".TB_PREF."debtors_master dt ON t.debtor_no = dt.debtor_no
+			LEFT JOIN ".TB_PREF."cust_branch b ON t.debtor_no = b.debtor_no
+			LEFT JOIN ".TB_PREF."voided as v ON v.type = t.type and v.id=t.trans_no
+    	WHERE ISNULL(v.date_) AND t.type <> ".ST_CUSTDELIVERY." AND t.tran_date <= '$to' 
+    		AND t.branch_code=b.branch_code AND dt.curr_code<>'".get_company_pref('curr_default')."' 
+    		GROUP BY t.debtor_no, b.receivables_account";
+
+    $result = db_query($sql,"Open balances in foreign currency for cannot be retrieved");
+	return  $result;
+}
+
+function get_supp_account_curr_balances($date)
+{
+	$to = date2sql($date);
+
+    $sql = "SELECT SUM(-(t.ov_amount + t.ov_gst + t.ov_discount)) AS amount,
+	    	supp.supplier_id, supp.supp_name, supp.curr_code, supp.payable_account
+		FROM ".TB_PREF."supp_trans t 
+			LEFT JOIN ".TB_PREF."suppliers supp ON t.supplier_id = supp.supplier_id
+			LEFT JOIN ".TB_PREF."voided as v ON v.type = t.type and v.id=t.trans_no
+    	WHERE ISNULL(v.date_) AND t.tran_date <= '$to' 
+    		AND supp.curr_code<>'".get_company_pref('curr_default')."' 
+    		GROUP BY t.supplier_id";
+
+    $result = db_query($sql,"Open balances in foreign currency for cannot be retrieved");
+	return  $result;
+}
+
+function get_account_home_balance($person_id, $person_type, $rec_account, $to_date)
+{
+	$to = date2sql($to_date);
+
+    $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans  
+			WHERE person_id=".db_escape($person_id)." AND account='$rec_account' 
+			AND person_type_id=$person_type AND tran_date <= '$to'";
+	$result = db_query($sql, "The AR/AP balance for customer $person_id could not be calculated");
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+//------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
+
 function add_exchange_variation_all($date=null, $ref="", $memo)
 {
 	global $Refs;
@@ -71,8 +138,48 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 		$Refs->save(ST_JOURNAL, $trans_no, $ref);
 		add_audit_trail(ST_JOURNAL, $trans_no, $date);
 	}	
+
+	//------------- BEGIN inserted for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
+	if ($date == null)
+		$date = Today();
+	$exchange_act = get_company_pref('exchange_diff_act');
+	$je = 0;
+	// debtors
+	$res = get_cust_account_curr_balances($date);
+	
+	while($row = db_fetch($res)) 
+	{
+		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
+		$foreign = round2($row['amount']*$exrate, user_price_dec());
+		$home = round2(get_account_home_balance($row['debtor_no'], PT_CUSTOMER, $row['receivables_account'], $date), user_price_dec());
+		if ($foreign != $home) 
+		{
+			$amount = $foreign - $home;	
+			add_cust_supp_revaluation($row['receivables_account'], $exchange_act, $date, $amount, PT_CUSTOMER, 
+				$row['debtor_no'], $memo);
+			$je++;	
+		}
+	}
+	// creditors
+	$res = get_supp_account_curr_balances($date);
+	
+	while($row = db_fetch($res)) 
+	{
+		$exrate = get_exchange_rate_from_home_currency($row['curr_code'], $date);
+		$foreign = round2($row['amount']*$exrate, user_price_dec());
+		$home = round2(get_account_home_balance($row['supplier_id'], PT_SUPPLIER, $row['payable_account'], $date), user_price_dec());
+		if ($foreign != $home) 
+		{
+			$amount = $foreign - $home;	
+			add_cust_supp_revaluation($row['payable_account'], $exchange_act, $date, $amount, PT_SUPPLIER, 
+				$row['supplier_id'], $memo);
+			$je++;	
+		}
+	}
+	//------------- END
+
 	commit_transaction();
-	return ($exchanged ? $trans_no : 0);
+	return array(($exchanged ? $trans_no : 0), $je);
 }
 //----------------------------------------------------------------------------------
 //	Add bank tranfer to database.
@@ -144,7 +251,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$currency = get_bank_account_currency($to_account);
-	
+
 		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, $person_id))
 			$exchanged = true;
@@ -199,8 +306,10 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		$args);
 	hook_db_prewrite($args, $trans_type);
 
-	if ($trans_no)
-		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
+	if ($trans_no) {
+		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
+		$Refs->restore_last($trans_type, $trans_no);
+	}
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -276,13 +385,13 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     		{
     			add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 
     				$currency, $person_type_id, $person_id);
-    		}		
+    		}
     	}
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
 		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
-			
+
 		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
 			$ex_rate, $date_, $memo_);
 	}
@@ -295,11 +404,11 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     {
     	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id))
-    	{	
+    	{
    			$ref1 = $Refs->get_next(ST_JOURNAL);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
-		}	
+		}
 	}
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
@@ -314,30 +423,3 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 	return array($trans_type, $trans_no);
 }
-//----------------------------------------------------------------------------------------
-
-function clear_bank_transaction($type, $type_no)
-{
-
-	hook_db_prevoid($type, $type_no);
-
-	$sql = "DELETE FROM ".TB_PREF."bank_trans 
-		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
-
-	$result = db_query($sql, "could not clear bank transactions for type=$type and trans_no=$type_no");
-
-	clear_gl_trans($type, $type_no, true);
-
-	// in case it's a customer trans - probably better to check first
-	void_cust_allocations($type, $type_no);
-
-	// in case it's a supplier trans - probably better to check first
-	void_supp_allocations($type, $type_no);
-	clear_supp_trans($type, $type_no);
-
-	clear_trans_tax_details($type, $type_no);
-
-	delete_comments($type, $type_no);
-}
-
-?>
