@@ -373,7 +373,7 @@ function can_commit()
 		return false;
 	}
 	if ($_SESSION['PO']->trans_type==ST_SUPPINVOICE 
-		&& is_reference_already_there($_SESSION['PO']->supplier_id, get_post('supp_ref'), $_SESSION['PO']->trans_no))
+		&& is_reference_already_there($_SESSION['PO']->supplier_id, get_post('supp_ref'), $_SESSION['PO']->order_no))
 	{
 		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . get_post('supp_ref') . ")");
 		set_focus('supp_ref');

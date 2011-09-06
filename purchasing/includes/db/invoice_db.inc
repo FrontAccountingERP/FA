@@ -635,17 +635,18 @@ function get_gl_account_info($acc)
 	return db_query($sql,"get account information");
 }
 
-function is_reference_already_there($supplier_id, $supp_reference)
+function is_reference_already_there($supplier_id, $supp_reference, $trans_no=0)
 {
-	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
 		.db_escape($supplier_id) . " AND supp_reference=" 
 		.db_escape($supp_reference) 
 		. " AND ov_amount!=0"; // ignore voided invoice references
-
+	if ($trans_no)
+		$sql .= " AND trans_no!=$trans_no";
 	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
 
 	$myrow = db_fetch_row($result);
-	return ($myrow[0] == 1);
+	return $myrow[0] > 0;
 }
 
 function remove_not_invoice_item($id)
