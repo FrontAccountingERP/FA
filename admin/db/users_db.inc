@@ -129,7 +129,6 @@ function get_user_for_login($user_id, $password)
 
 function get_user_auth($user_id, $password)
 {
-	set_global_connection();
 
 	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
 		." password=".db_escape($password);
