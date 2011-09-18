@@ -68,7 +68,7 @@ function get_company_pref($prefs = null)
 		return $ret;
 }
 
-function set_company_pref($pref, $category, $type, $length, $value)
+function get_company_prefs()
 {
 	return get_company_pref(null);
 }
