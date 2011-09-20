@@ -121,21 +121,21 @@ if (isset($_POST['delete']))
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no', true))
+	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no'))
 	{
 		$cancel_delete = 1;
 		display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 	} 
 	else 
 	{
-		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no', true))
+		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the customer record because orders have been created against it."));
 		} 
 		else 
 		{
-			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no', true))
+			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no'))
 			{
 				$cancel_delete = 1;
 				display_error(_("Cannot delete this customer because there are branch records set up against it."));

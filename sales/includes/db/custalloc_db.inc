@@ -202,7 +202,8 @@ function get_sql_for_customer_allocation_inquiry()
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+		trans.debtor_no
     	FROM "
 			.TB_PREF."debtor_trans as trans, "
 			.TB_PREF."debtors_master as debtor

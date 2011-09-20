@@ -39,6 +39,35 @@ check_db_has_customers(_("There are no customers defined in the system."));
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
+if (isset($_GET['customer_id']))
+{
+	$_POST['customer_id'] = $_GET['customer_id'];
+}
+
+if (!isset($_POST['bank_account']))
+{ // first page call
+	$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+
+	if (isset($_GET['SInvoice'])) {
+		//  get date and supplier
+		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
+		if($inv) {
+			$_POST['customer_id'] = $inv['debtor_no'];
+			$_POST['DateBanked'] = sql2date($inv['tran_date']);
+			foreach($_SESSION['alloc']->allocs as $line => $trans) {
+				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
+					$_POST['amount'] =
+						$_SESSION['alloc']->amount = price_format($_SESSION['alloc']->allocs[$line]->amount);
+					$_SESSION['alloc']->allocs[$line]->current_allocated =
+						$_SESSION['alloc']->allocs[$line]->amount;
+					break;
+				}
+			}
+			unset($inv);
+		} else
+			display_error(_("Invalid sales invoice number."));
+	}
+}
 
 if (list_updated('BranchID')) {
 	// when branch is selected via external editor also customer can change
@@ -55,6 +84,7 @@ if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = end_fiscalyear();
 	}
 }
+
 
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
@@ -184,6 +214,8 @@ if (isset($_POST['_DateBanked_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 if (list_updated('customer_id') || list_updated('bank_account')) {
+  $_SESSION['alloc']->read();
+  $_POST['memo_'] = $_POST['amount'] = '';
   $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------------
@@ -231,8 +263,6 @@ start_form();
 	table_section(1);
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
-	if (!isset($_POST['bank_account'])) // first page call
-		  $_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
 
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
@@ -277,7 +307,6 @@ start_form();
 
 		if ($cust_currency == $bank_currency) {
 	  		div_start('alloc_tbl');
- 	 		$_SESSION['alloc']->read();
 			show_allocatable(false);
 			div_end();
 		}

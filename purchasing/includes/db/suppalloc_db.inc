@@ -211,7 +211,8 @@ function get_sql_for_supplier_allocation_inquiry()
 		supplier.curr_code, 
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+		trans.supplier_id
     	FROM "
 			.TB_PREF."supp_trans as trans, "
 			.TB_PREF."suppliers as supplier

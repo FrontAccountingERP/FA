@@ -95,14 +95,15 @@ function fmt_balance($row)
 
 function alloc_link($row)
 {
-	$link = 
-	pager_link(_("Allocations"),
-		"/purchasing/allocations/supplier_allocate.php?trans_no=" .
-			$row["trans_no"]. "&trans_type=" . $row["type"], ICON_MONEY );
-
-	return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) 
+	if (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) 
 		&& (-$row["TotalAmount"] - $row["Allocated"]) > 0)
-		? $link : '';
+			return 	pager_link(_("Allocations"), "/purchasing/allocations/supplier_allocate.php?trans_no=" .
+				$row["trans_no"]. "&trans_type=" . $row["type"], ICON_MONEY );
+	elseif ($row["type"] == ST_SUPPINVOICE && ($row["TotalAmount"] - $row["Allocated"]) > 0)
+			return 	pager_link(_("Pay"), "/purchasing/supplier_payment.php?supplier_id=".$row["supplier_id"]
+				."&PInvoice=".$row["trans_no"], ICON_MONEY );
+	else
+		return '';
 }
 
 function fmt_debit($row)
