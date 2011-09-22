@@ -34,7 +34,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		set_focus('bank_account_name');
 	} 
 	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(get_post('account_code')) 
-			|| key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account', true))) {
+			|| key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account'))) {
 		$input_error = 1;
 		display_error(_("The GL account selected is already in use. Select another GL account."));
 		set_focus('account_code');
@@ -70,13 +70,13 @@ elseif( $Mode == 'Delete')
 	$cancel_delete = 0;
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	if (key_in_foreign_table($selected_id, 'bank_trans', 'bank_act', true) || key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account', true))
+	if (key_in_foreign_table($selected_id, 'bank_trans', 'bank_act') || key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
 
-	if (key_in_foreign_table($selected_id, 'sales_pos', 'pos_account', true))
+	if (key_in_foreign_table($selected_id, 'sales_pos', 'pos_account'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -135,7 +135,7 @@ while ($myrow = db_fetch($result))
 inactive_control_row($th);
 end_table(1);
 
-$is_used = $selected_id != -1 && key_in_foreign_table($selected_id, 'bank_trans', 'bank_act', true);
+$is_used = $selected_id != -1 && key_in_foreign_table($selected_id, 'bank_trans', 'bank_act');
 
 start_table(TABLESTYLE2);
 

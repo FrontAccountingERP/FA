@@ -79,19 +79,18 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 //-----------------------------------------------------------------------------------
 
-function can_delete($selected_id)
+function can_delete($type)
 {
-	if ($selected_id == "")
+	if ($type == "")
 		return false;
-	$type = db_escape($selected_id);
 
-	if (key_in_foreign_table($type, 'chart_master', 'account_type', true))
+	if (key_in_foreign_table($type, 'chart_master', 'account_type'))
 	{
 		display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 		return false;
 	}
 
-	if (key_in_foreign_table($type, 'chart_types', 'parent', true))
+	if (key_in_foreign_table($type, 'chart_types', 'parent'))
 	{
 		display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 		return false;

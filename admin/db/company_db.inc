@@ -177,10 +177,8 @@ function get_payment_terms_all($show_inactive)
 		value is name of foreign key field. For numeric keys $stdkey field name is used.
 	$stdkey - standard name of foreign key.
 */
-function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
+function key_in_foreign_table($id, $tables, $stdkey)
 {
-	if (!$escaped)
-		$id = db_escape($id);
 
 	if (!is_array($tables))
 		$tables = array($tables);
