@@ -95,6 +95,9 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 	}
 
+ 	// Adjust Shipping Charge based upon previous deliveries TAM
+	adjust_shipping_charge($ord, $_GET['OrderNumber']);
+ 
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 

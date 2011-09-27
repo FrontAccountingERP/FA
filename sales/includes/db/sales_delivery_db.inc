@@ -149,6 +149,18 @@ function write_sales_delivery(&$delivery,$bo_policy)
 }
 
 //--------------------------------------------------------------------------------------------------
+function adjust_shipping_charge(&$delivery, $trans_no)
+{
+  	$sql = "SELECT sum(ov_freight) as freight FROM ".TB_PREF."debtor_trans WHERE order_ = $trans_no AND type = " . ST_CUSTDELIVERY . " AND debtor_no = " . $delivery->customer_id;
+  	$result = db_query($sql, "Can not find delivery notes");
+  	$row = db_fetch_row($result);
+  	if (!$row[0]) $freight = 0;
+  	else $freight = $row[0];
+  	if ($freight < $delivery->freight_cost) $delivery->freight_cost = $delivery->freight_cost - $freight;
+  	else $delivery->freight_cost = 0;
+}
+
+//--------------------------------------------------------------------------------------------------
 
 function void_sales_delivery($type, $type_no, $transactions=true)
 {
