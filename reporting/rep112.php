@@ -71,14 +71,14 @@ function print_receipts()
 	$currency = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 85, 150, 225, 275, 360, 450, 515);
 
@@ -95,10 +95,10 @@ function print_receipts()
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
-		if ($fno[0] == $tno[0])
-			$types = array($fno[1]);
+		if ($from == $to)
+			$types = array($from);
 		else
 			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT);
 		foreach ($types as $j)

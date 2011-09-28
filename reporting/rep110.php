@@ -44,14 +44,14 @@ function print_deliveries()
 	$packing_slip = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
 	$dec = user_price_dec();
 
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -74,7 +74,7 @@ function print_deliveries()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
 			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
 				continue;
