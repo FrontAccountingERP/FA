@@ -5,8 +5,6 @@ body,td,th,input,textarea {
 }
 body {
 	background-color: #557799;
-	background-image: url(../admin/interface/background.png);
-	background-repeat: repeat-x;
 	margin: 0px;
 }
 form {
