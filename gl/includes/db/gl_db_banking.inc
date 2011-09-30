@@ -306,10 +306,11 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		'person_type_id', 'person_id', 'person_detail_id', 'ref', 'memo_', 'use_transaction'),
 		$args);
 	hook_db_prewrite($args, $trans_type);
-
+	$aid = 0;
 	if ($trans_no) {
 		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
 		$Refs->restore_last($trans_type, $trans_no);
+		$aid = has_attachment($trans_type, $trans_no);
 	}
 
 	$currency = get_bank_account_currency($from_account);
@@ -351,7 +352,12 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     	if ($do_exchange_variance)
     		$trans_no1 = get_next_trans_no(ST_JOURNAL);
     }
-
+	if ($aid != 0)
+	{
+		$row = get_attachment($aid);
+		update_attachment($aid, $row['type_no'], $trans_no, $row['description'],
+			$row['filename'], $row['unique_name'], $row['filesize'], $row['filetype']);
+	}
 	// do the source account postings
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,

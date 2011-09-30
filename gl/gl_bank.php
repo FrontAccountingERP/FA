@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/ui/gl_bank_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
+include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 $js = '';
 if ($use_popup_windows)
