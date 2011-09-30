@@ -230,6 +230,8 @@ function copy_to_cart()
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
+	$cart->dimension_id =  $_POST['dimension_id'];
+	$cart->dimension2_id =  $_POST['dimension2_id'];
 
 }
 //-----------------------------------------------------------------------------
@@ -245,6 +247,8 @@ function copy_from_cart()
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
 	$_POST['payment'] = $cart->payment;
+	$_POST['dimension_id'] = $cart->dimension_id;
+	$_POST['dimension2_id'] = $cart->dimension2_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -397,8 +401,15 @@ label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableh
 
 label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 // 2010-09-03 Joe Hunt
-if ($dim > 0) 
-	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
+//if ($dim > 0) 
+//	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
+if ($dim > 0) {
+	label_cell(_("Dimension").":", "class='tableheader2'");
+	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
+	dimensions_list_cells(null, 'dimension_id', null, true, ' ', false, 1, false);
+}		
+else
+	hidden('dimension_id', 0);
 
 end_row();
 start_row();
@@ -424,11 +435,19 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+/*
 if ($dim > 1) 
 	label_cells(_("Dimension"). " 2", get_dimension_string($_SESSION['Items']->dimension2_id), "class='tableheader2'");
 else if ($dim > 0)
 	label_cell("&nbsp;", "colspan=2");
-
+*/
+if ($dim > 1) {
+	label_cell(_("Dimension")." 2:", "class='tableheader2'");
+	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;
+	dimensions_list_cells(null, 'dimension2_id', null, true, ' ', false, 2, false);
+}		
+else
+	hidden('dimension2_id', 0);
 end_row();
 end_table();
 
