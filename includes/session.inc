@@ -206,7 +206,7 @@ hook_session_start(@$_POST["company_login_name"]);
 session_name('FA'.md5(dirname(__FILE__)));
 
 session_start();
-session_regenerate_id();
+session_regenerate_id(true);
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
