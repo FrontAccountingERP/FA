@@ -178,7 +178,7 @@ function update_extensions($extensions) {
 	}
 
 	// update per company files
-	$cnt = count($db_connections);
+ 	$cnt = max(1, count($db_connections));
 	for($i = 0; $i < $cnt; $i++) 
 	{
 		$newexts = $extensions;

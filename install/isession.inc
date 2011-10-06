@@ -93,7 +93,7 @@ $Ajax = new Ajax();
 get_text_init();
 
 $i_lang = isset($_POST['inst_lang']) ? $_POST['inst_lang'] : 
-	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : 'C');
+ 	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : array('C'));
 
 // Page Initialisation
 if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')
@@ -103,6 +103,8 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
 	 isset($l['rtl']) ? 'rtl' : 'ltr');
 }
+if (!isset($installed_languages))
+	$installed_languages = array();
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
 $_SESSION['get_text']->add_domain( $_SESSION['language']->code, $path_to_root."/install/lang");

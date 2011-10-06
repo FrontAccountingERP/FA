@@ -154,8 +154,12 @@ function end_flush() {
 
 	if (isset($Ajax))
 		$Ajax->run();
+
+ 	 // zlib extension adds 1 additional level of buffering
+ 	$min_level = defined('FORCE_GZIP') ? 1 : 0;
+
 	// flush all output buffers (works also with exit inside any div levels)
-	while(ob_get_level()) ob_end_flush();
+ 	while(ob_get_level() > $min_level) ob_end_flush();
 
 	// if any transaction was aborted unexpectedly rollback changes
 	cancel_transaction();
