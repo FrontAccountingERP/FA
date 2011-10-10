@@ -13,8 +13,9 @@
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
 	//Handle if inventory will become negative
-	if (is_inventory_item($stock_id))
-		handle_negative_inventory($stock_id, $qty, $price, $date);
+    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
+    if (is_inventory_item($stock_id) && !$adj_only) 
+        handle_negative_inventory($stock_id, $qty, $price, $date);	
 
 	// probably this function should be optimized
 	// passing transaction cart as argument. This would

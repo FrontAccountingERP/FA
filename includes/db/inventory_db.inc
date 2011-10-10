@@ -166,17 +166,20 @@ function get_deliveries_between($stock_id, $from, $to)
 function get_deliveries_from_trans($stock_id, $from)
 {
 	// -ve qty is delivery either by ST_CUSTDELIVERY or inventory adjustment
-	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
-		WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
-			trans_id>='$from' GROUP BY stock_id";
+    //Price for GRN and SUPPCREDIT and std_cost for other trans_types
+    $sql = "SELECT SUM(-qty), SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost))
+        FROM ".TB_PREF."stock_moves
+        WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
+            trans_id>='$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
 	
-	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
-		WHERE stock_id=".db_escape($stock_id)
-			." AND trans_id ='$from'";
-	$result = db_query($sql, "The deliveries could not be updated");
-	$cost = db_fetch_row($result);	
+    $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)
+        FROM ".TB_PREF."stock_moves
+        WHERE stock_id=".db_escape($stock_id)
+            ." AND trans_id ='$from'";
+    $result = db_query($sql, "The deliveries could not be updated");
+    $cost = db_fetch_row($result);
 	
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
