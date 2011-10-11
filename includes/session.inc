@@ -9,6 +9,100 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
+class SessionManager
+{
+   	function sessionStart($name, $limit = 0, $path = '/', $domain = null, $secure = null)
+	{
+		// Set the cookie name
+		session_name($name);
+
+		// Set SSL level
+		$https = isset($secure) ? $secure : isset($_SERVER['HTTPS']);
+
+		// Set session cookie options
+		session_set_cookie_params($limit, $path, $domain, $https, true);
+		session_start();
+
+		// Make sure the session hasn't expired, and destroy it if it has
+		if (self::validateSession())
+		{
+			// Check to see if the session is new or a hijacking attempt
+			if(!self::preventHijacking())
+			{
+				// Reset session data and regenerate id
+				$_SESSION = array();
+				$_SESSION['IPaddress'] = $_SERVER['REMOTE_ADDR'];
+				$_SESSION['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+				self::regenerateSession();
+
+			// Give a 5% chance of the session id changing on any request
+			}
+			elseif (rand(1, 100) <= 5)
+			{
+				self::regenerateSession();
+			}
+		}
+		else
+		{
+			$_SESSION = array();
+			session_destroy();
+			session_start();
+		}
+	}
+
+	function preventHijacking()
+	{
+		if (!isset($_SESSION['IPaddress']) || !isset($_SESSION['userAgent']))
+			return false;
+
+		if ($_SESSION['IPaddress'] != $_SERVER['REMOTE_ADDR'])
+			return false;
+
+		if ( $_SESSION['userAgent'] != $_SERVER['HTTP_USER_AGENT'])
+			return false;
+
+		return true;
+	}
+
+	function regenerateSession()
+	{
+		// If this session is obsolete it means there already is a new id
+		if (isset($_SESSION['OBSOLETE']) && ($_SESSION['OBSOLETE'] == true))
+			return;
+
+		// Set current session to expire in 10 seconds
+		$_SESSION['OBSOLETE'] = true;
+		$_SESSION['EXPIRES'] = time() + 10;
+
+		// Create new session without destroying the old one
+		session_regenerate_id(false);
+
+		// Grab current session ID and close both sessions to allow other scripts to use them
+		$newSession = session_id();
+		session_write_close();
+
+		// Set session ID to the new one, and start it back up again
+		session_id($newSession);
+		session_start();
+
+		// Now we unset the obsolete and expiration values for the session we want to keep
+		unset($_SESSION['OBSOLETE']);
+		unset($_SESSION['EXPIRES']);
+	}
+
+	function validateSession()
+	{
+		if (isset($_SESSION['OBSOLETE']) && !isset($_SESSION['EXPIRES']) )
+			return false;
+
+		if (isset($_SESSION['EXPIRES']) && $_SESSION['EXPIRES'] < time())
+			return false;
+
+		return true;
+	}
+}
+
 function output_html($text)
 {
 	global $before_box, $Ajax, $messages;
@@ -191,23 +285,27 @@ foreach ($installed_extensions as $ext)
 		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
 
-
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.
 	Make sure this directory exists and is writable!
 */
-//ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
+// ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
+SessionManager::sessionStart('FA'.md5(dirname(__FILE__)));
+
+//SessionManager::sessionStart('Blog_myBlog', 0, '/myBlog/', 'www.site.com');
+//SessionManager::sessionStart('Accounts_Bank', 0, '/', 'accounts.bank.com', true);
+/*
 hook_session_start(@$_POST["company_login_name"]);
 
 session_name('FA'.md5(dirname(__FILE__)));
 
 session_start();
 session_regenerate_id(true);
-
+*/
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
