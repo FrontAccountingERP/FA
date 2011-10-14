@@ -100,6 +100,12 @@ function handle_submit(&$selected_id)
 			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
+                
+        add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
+                $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
+                get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
+                $_POST['default_location'], $_POST['address'], 0, $_POST['group_no'],$_POST['default_ship_via'], $_POST['notes']);
+
 		commit_transaction();
 
 		display_notification(_("A new customer has been added."));
@@ -220,7 +226,13 @@ function customer_settings($selected_id)
 
 	if($selected_id)
 		record_status_list_row(_("Customer status:"), 'inactive');
-
+	else
+	{
+		table_section_title(_("Branch"));
+		locations_list_row(_("Default Inventory Location:"), 'default_location', null);
+		shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
+		tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	}
 	table_section(2);
 
 	table_section_title(_("Sales"));
@@ -251,6 +263,13 @@ function customer_settings($selected_id)
 	}
 
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+	if (!$selected_id)
+	{
+		table_section_title(_("Branch"));
+		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
+		sales_areas_list_row( _("Sales Area:"), 'area', null);
+		sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
+	}
 	end_outer_table(1);
 
 	div_start('controls');
