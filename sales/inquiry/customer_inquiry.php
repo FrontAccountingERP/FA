@@ -177,11 +177,15 @@ function edit_link($row)
 			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
 		}	    
 		break;
-	 case ST_CUSTDELIVERY:
+	case ST_CUSTDELIVERY:
   		if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false)
    			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
-	}
+	case ST_CUSTPAYMENT:
+  		if (get_voided_entry(ST_CUSTPAYMENT, $row["trans_no"]) === false)
+   			$str = "/sales/customer_payments.php?trans_no=".$row['trans_no'];
+		break;
+	}		
 	if ($str != "" && !is_closed_trans($row['type'], $row["trans_no"]))
 		return pager_link(_('Edit'), $str, ICON_EDIT);
 	return '';	

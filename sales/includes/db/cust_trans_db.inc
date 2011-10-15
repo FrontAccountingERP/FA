@@ -43,7 +43,7 @@ function get_customer_trans_version($type, $trans_no) {
 	$sql .= implode(' OR ', $trans_no) . ')';
 
 	$res = db_query($sql, 'document version retreival');
-
+	
 	$vers = array();
 	while($mysql=db_fetch($res)) {
 		$vers[$mysql['trans_no']] = $mysql['version'];
@@ -72,8 +72,10 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	if ($trans_type == ST_BANKPAYMENT)
 		$Total = -$Total;
 
-	if ($new) {
-	$trans_no = get_next_trans_no($trans_type);
+    if ($new || !exists_customer_trans($trans_type, $trans_no))
+    {
+        if ($new)
+        $trans_no = get_next_trans_no($trans_type);
 
 	$sql = "INSERT INTO ".TB_PREF."debtor_trans (
 		trans_no, type,
@@ -122,7 +124,8 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
-		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
+		// Chaitanya : Added bank_act to support Customer Payment Edit
+		$sql .= ",bank_act,".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType ";
 	}
 
@@ -160,6 +163,7 @@ function get_customer_trans($trans_id, $trans_type)
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_id)."
 			AND ".TB_PREF."bank_trans.type=$trans_type
+			AND ".TB_PREF."bank_trans.amount != 0
 			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
@@ -198,6 +202,19 @@ function exists_customer_trans($type, $type_no)
 	$result = db_query($sql, "Cannot retreive a debtor transaction");
 
 	return (db_num_rows($result) > 0);
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_customer_trans_from_ref($type, $ref)
+{
+	$sql = "SELECT trans_no FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($type)."
+		AND reference=".db_escape($ref);
+
+	$result = db_query($sql, "Cannot retreive a debtor transaction");
+
+	$row = db_fetch_row($result);
+	return $row[0];
 }
 
 //----------------------------------------------------------------------------------------
