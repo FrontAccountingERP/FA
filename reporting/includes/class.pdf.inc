@@ -175,7 +175,14 @@ class Cpdf extends FPDI {
 					default :		$fontname = "freesans5"; 	break;
 				}
 			}
-			// else use built-in adobe fonts helvetica.
+			elseif ($this->encoding === "ISO-8859-13")
+            {
+                switch ($this->l['a_meta_language'])
+                {
+                    default :        $fontname = "freesans13";     break;
+                }
+            }			
+            // else use built-in adobe fonts helvetica.
 		}
 		$this->SetFont($fontname, $style);
 	}
