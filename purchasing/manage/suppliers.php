@@ -12,8 +12,11 @@
 $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
 
-page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
+page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
@@ -99,15 +102,6 @@ function supplier_settings(&$supplier_id)
 	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 	text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
 
-	if (!$supplier_id) {
-		table_section_title(_("Contact Data"));
-		text_row(_("Contact Person:"), 'contact', null, 42, 40);
-		text_row(_("Phone Number:"), 'phone', null, 32, 30);
-		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-		text_row(_("Fax Number:"), 'fax', null, 32, 30);
-		email_row(_("E-mail:"), 'email', null, 35, 55);
-		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
-	}
 	table_section_title(_("Purchasing"));
 	text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
 	amount_row(_("Credit Limit:"), 'credit_limit', null);
@@ -127,6 +121,11 @@ function supplier_settings(&$supplier_id)
 	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account'],
 		false, false, _("Use Item Inventory/COGS Account"));
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
+	if (!$supplier_id) {
+		table_section_title(_("Contact Data"));
+		text_row(_("Phone Number:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+	}
 
 	table_section(2);
 	$dim = get_company_pref('use_dimension');
@@ -150,8 +149,24 @@ function supplier_settings(&$supplier_id)
 	table_section_title(_("General"));
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	if ($supplier_id)
+	{
 		record_status_list_row(_("Supplier status:"), 'inactive');
-
+		if (!@$_REQUEST['popup'])
+		{
+			start_row();
+			echo '<td class="label"> </td><td>';
+			echo viewer_link('<b>'. _('Supplier Inquiry').'</b>', "purchasing/inquiry/supplier_inquiry.php?supplier_id=$supplier_id&popup=1"); 
+			echo "</td>\n";	
+			end_row();
+		}	
+	}
+	else {
+		table_section_title(_("Contact Data"));
+		text_row(_("Contact Person:"), 'contact', null, 42, 40);
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
+	}
 	end_outer_table(1);
 
 	div_start('controls');

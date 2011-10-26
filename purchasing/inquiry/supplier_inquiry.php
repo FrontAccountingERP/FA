@@ -44,7 +44,7 @@ if (!isset($_POST['supplier_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
+supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, !@$_REQUEST['popup']);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
@@ -190,7 +190,9 @@ $table->width = "85%";
 
 display_db_pager($table);
 
+hidden('popup', @$_REQUEST['popup']);
 end_form();
-end_page();
+
+end_page(@$_REQUEST['popup'], false, false);
 
 ?>
