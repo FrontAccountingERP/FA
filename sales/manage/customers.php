@@ -72,7 +72,7 @@ function can_process()
 
 function handle_submit(&$selected_id)
 {
-	global $path_to_root, $Ajax;
+	global $path_to_root, $Ajax, $auto_create_branch;
 
 	if (!can_process())
 		return;
@@ -173,7 +173,7 @@ if (isset($_POST['delete']))
 
 function customer_settings($selected_id) 
 {
-	global $SysPrefs, $path_to_root;
+	global $SysPrefs, $path_to_root, $auto_create_branch;
 	
 	if (!$selected_id) 
 	{
