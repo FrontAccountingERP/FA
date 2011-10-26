@@ -12,8 +12,11 @@
 $page_security = 'SA_ITEM';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
-
-page(_($help_context = "Items"), @$_REQUEST['popup']);
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+	
+page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -347,6 +350,23 @@ stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 check_row(_("Editable description:"), 'editable');
 
 check_row(_("Exclude from sales:"), 'no_sale');
+
+if (!$new_item)
+{
+	if (!@$_REQUEST['popup'])
+	{
+		start_row();
+		echo '<td class="label"> </td><td>';
+		echo viewer_link('<b>'. _('Inventory Item Movement').'</b>', "inventory/inquiry/stock_movements.php?stock_id=$stock_id&popup=1"); 
+		echo "</td>\n";	
+		end_row();
+		start_row();
+		echo '<td class="label"> </td><td>';
+		echo viewer_link('<b>'. _('Inventory Item Status').'</b>', "inventory/inquiry/stock_status.php?stock_id=$stock_id&popup=1"); 
+		echo "</td>\n";	
+		end_row();
+	}	
+}
 
 table_section(2);
 

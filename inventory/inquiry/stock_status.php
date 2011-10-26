@@ -116,6 +116,6 @@ while ($myrow = db_fetch($loc_details))
 end_table();
 div_end();
 end_form();
-end_page();
+end_page(@$_REQUEST['popup'], false, false);
 
 ?>
