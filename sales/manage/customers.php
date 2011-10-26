@@ -100,12 +100,21 @@ function handle_submit(&$selected_id)
 			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
-                
-        add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
+         
+		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		{
+        	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
                 $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
                 get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
-                $_POST['default_location'], $_POST['address'], 0, $_POST['group_no'],$_POST['default_ship_via'], $_POST['notes']);
+                get_company_pref('default location'), $_POST['address'], 0, 0, get_company_pref('default_ship_via'), $_POST['notes']);
+                
+        	$selected_branch = db_insert_id();
+        
+			add_crm_person($_POST['CustName'], $_POST['cust_ref'], '', $_POST['address'], 
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], '', '');
 
+			add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
+		}
 		commit_transaction();
 
 		display_notification(_("A new customer has been added."));
@@ -225,13 +234,25 @@ function customer_settings($selected_id)
 	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 
 	if($selected_id)
+	{
+		if (!@$_REQUEST['popup'])
+		{
+			start_row();
+			echo '<td class="label">'._('Transactions').':</td>';
+	  		hyperlink_params_td($path_to_root . "/sales/inquiry/customer_inquiry.php",
+				'<b>'. _("Go to Customer Transactions").'</b>', 
+				"customer_id=".$selected_id);
+			end_row();
+		}	
 		record_status_list_row(_("Customer status:"), 'inactive');
-	else
+	}
+	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
-		locations_list_row(_("Default Inventory Location:"), 'default_location', null);
-		shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
-		tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+		text_row(_("Phone:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
 	}
 	table_section(2);
 
@@ -263,12 +284,12 @@ function customer_settings($selected_id)
 	}
 
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
-	if (!$selected_id)
+	if (!$selected_id && isset($auto_create_branch) && $auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
 		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
 		sales_areas_list_row( _("Sales Area:"), 'area', null);
-		sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
+		tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 	}
 	end_outer_table(1);
 

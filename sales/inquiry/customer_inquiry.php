@@ -41,7 +41,7 @@ if (!isset($_POST['customer_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, true);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate', '', null, 1);

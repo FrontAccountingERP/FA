@@ -68,6 +68,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$power_by 		= "FrontAccounting";
 	$power_url 		= "http://frontaccounting.com";
 
+	/* Creates automatic a default branch with contact. Value 0 do not create auto branch */
+	$auto_create_branch = 1;
+
 	/* Save Report selections (a value > 0 means days to save. 0 = no save) */
 	$save_report_selections = 0;
 
