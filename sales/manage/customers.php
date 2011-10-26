@@ -13,7 +13,10 @@ $page_security = 'SA_CUSTOMER';
 $path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
-page(_($help_context = "Customers"), @$_REQUEST['popup']); 
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Customers"), @$_REQUEST['popup'], false, "", $js); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -118,6 +121,10 @@ function handle_submit(&$selected_id)
 		commit_transaction();
 
 		display_notification(_("A new customer has been added."));
+
+		if (isset($auto_create_branch) && $auto_create_branch == 1)
+			display_notification(_("A default Branch has been automatically created, please check default Branch values by using link below."));
+		
 		$Ajax->activate('_page_body');
 	}
 }
@@ -235,16 +242,15 @@ function customer_settings($selected_id)
 
 	if($selected_id)
 	{
+		record_status_list_row(_("Customer status:"), 'inactive');
 		if (!@$_REQUEST['popup'])
 		{
 			start_row();
-			echo '<td class="label">'._('Transactions').':</td>';
-	  		hyperlink_params_td($path_to_root . "/sales/inquiry/customer_inquiry.php",
-				'<b>'. _("Go to Customer Transactions").'</b>', 
-				"customer_id=".$selected_id);
+			echo '<td class="label"> </td><td>';
+			echo viewer_link('<b>'. _('Customer Transactions').'</b>', "sales/inquiry/customer_inquiry.php?customer_id=$selected_id&popup=1"); 
+			echo "</td>\n";	
 			end_row();
 		}	
-		record_status_list_row(_("Customer status:"), 'inactive');
 	}
 	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
 	{
