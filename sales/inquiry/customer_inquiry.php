@@ -154,6 +154,8 @@ function fmt_credit($row)
 
 function credit_link($row)
 {
+	if (@$_REQUEST['popup'])
+		return '';
 	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
 		pager_link(_("Credit This") ,
 			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT):'';
@@ -163,6 +165,8 @@ function edit_link($row)
 {
 	$str = '';
 
+	if (@$_REQUEST['popup'])
+		return '';
 	switch($row['type']) {
 	case ST_SALESINVOICE:
 		if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false && $row['Allocated'] == 0)

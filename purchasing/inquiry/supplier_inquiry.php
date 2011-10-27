@@ -123,6 +123,8 @@ function gl_view($row)
 
 function credit_link($row)
 {
+	if (@$_REQUEST['popup'])
+		return '';
 	return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
 			"/purchasing/supplier_credit.php?New=1&invoice_no=".
