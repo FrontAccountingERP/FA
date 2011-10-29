@@ -308,7 +308,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	hook_db_prewrite($args, $trans_type);
 	$aid = 0;
 	if ($trans_no) {
-		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
+		$old_trans = $trans_no;
 		$Refs->restore_last($trans_type, $trans_no);
 		$aid = has_attachment($trans_type, $trans_no);
 	}
@@ -421,6 +421,11 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 	$Refs->save($trans_type, $trans_no, $ref);
 	add_audit_trail($trans_type, $trans_no, $date_);
+
+	// old transaction can be voided only after new transaction is entered,
+	//  otherwise the operation could fail for cash accounts due to temporary negative balance
+	if (@$old_trans) 
+			void_transaction($trans_type, $old_trans, Today(), _("Document reentered."));
 
 	$args->trans_no = $trans_no;
 	hook_db_postwrite($args, $trans_type);

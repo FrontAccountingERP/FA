@@ -155,7 +155,7 @@ function void_bank_trans($type, $type_no, $nested=false)
 
 /**
 *	Check account history to find transaction which would exceed authorized overdraft for given account.
-*	Returns null or transaction in conflict.
+*	Returns null or transaction in conflict. Running balance is checked on daily basis only, to enable ID change after edition.
 *	$delta_amount - tested change in bank balance at $date.
 **/
 function check_bank_account_history($delta_amount, $bank_account, $date, $user=null)
@@ -171,7 +171,8 @@ function check_bank_account_history($delta_amount, $bank_account, $date, $user=n
 	$date = date2sql($date);
 	$balance+= $delta_amount;
 
-	$sql = "SELECT * FROM ".TB_PREF."bank_trans WHERE bank_act=".db_escape($bank_account)." AND trans_date > '$date' ORDER BY trans_date ASC, id ASC";
+	$sql = "SELECT sum(amount) as amount FROM ".TB_PREF."bank_trans WHERE bank_act=".db_escape($bank_account)
+		." AND trans_date >= '$date' GROUP BY trans_date ORDER BY trans_date ASC";
 
 	$history = db_query($sql, "cannot retrieve cash account history");
 
