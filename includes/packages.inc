@@ -289,14 +289,19 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		$data = file_get_contents($loclist);
 		$cert = file_get_contents(PUBKEY_PATH.'/FA.pem');
 		if (!openssl_verify($data, $sig, $cert)) {
-			if ($refresh)
-				@unlink($loclist);
-			else {
+			if ($refresh) {
+				if (!@unlink($loclist))
+				{
+					display_error(sprintf(_("Cannot delete outdated '%s' file."), $loclist));
+					return null;
+				}
+			} else {
 				display_error(_('Release file in repository is invalid, or public key is outdated.'));
 				return null;
 			}
 		} else
 			$refresh = false;
+
 	} while($refresh);
 
 	$Release = get_control_file($loclist, 'Filename');
@@ -319,9 +324,12 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 				$refresh = false;
 			}
 			if ($parms['SHA1sum'] != sha1_file($locindex)) {	// check subdir index consistency
-				if ($refresh)
-					@unlink($locindex);
-				else {
+				if ($refresh) {
+					if (!@unlink($locindex)) {
+						display_error(sprintf(_("Cannot delete outdated '%s' file."), $locindex));
+						return null;
+					}
+				} else {
 					display_error(sprintf( _("Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."),
 						$fname));
 					return null;
