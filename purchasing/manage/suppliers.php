@@ -302,8 +302,8 @@ if (!$supplier_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
-		'transactions' => array(_('&Supplier Inquiry'), $supplier_id),
-		'orders' => array(_('&Purchase orders'), $supplier_id),
+		'transactions' => array(_('&Transactions'), $supplier_id),
+		'orders' => array(_('Purchase &Orders'), $supplier_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {

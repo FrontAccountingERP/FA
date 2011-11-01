@@ -450,8 +450,8 @@ if (!$stock_id)
 
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'movement' => array(_('Inventory Item &Movement'), $stock_id),
-		'status' => array(_('Inventory Item &Status'), $stock_id),
+		'movement' => array(_('&Transactions'), $stock_id),
+		'status' => array(_('&Status'), $stock_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
