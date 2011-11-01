@@ -32,20 +32,20 @@ if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
+$stock_id = get_post('stock_id');
 if (list_updated('stock_id')) {
-	$_POST['NewStockID'] = get_post('stock_id');
+	$_POST['NewStockID'] = $stock_id = get_post('stock_id');
     clear_data();
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
 
 if (get_post('cancel')) {
-	$_POST['NewStockID'] = $_POST['stock_id'] = '';
+	$_POST['NewStockID'] = $stock_id = $_POST['stock_id'] = '';
     clear_data();
 	set_focus('stock_id');
 	$Ajax->activate('_page_body');
 }
-$stock_id = get_post('stock_id');
 if (list_updated('category_id') || list_updated('mb_flag')) {
 	$Ajax->activate('details');
 }
@@ -205,6 +205,7 @@ if (isset($_POST['addupdate']))
 
 if (get_post('clone')) {
 	unset($_POST['stock_id']);
+	$stock_id = '';
 	unset($_POST['inactive']);
 	set_focus('NewStockID');
 	$Ajax->activate('_page_body');
@@ -244,11 +245,9 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 	}
 }
 
-function item_settings($stock_id) 
+function item_settings(&$stock_id) 
 {
 	global $SysPrefs, $path_to_root, $new_item, $pic_height;
-
-	div_start('details');
 
 	start_outer_table(TABLESTYLE2);
 
@@ -398,7 +397,7 @@ function item_settings($stock_id)
 
 	record_status_list_row(_("Item status:"), 'inactive');
 	end_outer_table(1);
-	div_end();
+
 	div_start('controls');
 	if (!isset($_POST['NewStockID']) || $new_item) 
 	{
@@ -443,13 +442,16 @@ else
 	hidden('stock_id', get_post('stock_id'));
 }
 
-if ($stock_id != "")
+div_start('details');
+
+$stock_id = get_post('stock_id');
+if (!$stock_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'movement' => array(_('&Movement'), $stock_id),
-		'status' => array(_('&Status'), $stock_id),
+		'movement' => array(_('Inventory Item &Movement'), $stock_id),
+		'status' => array(_('Inventory Item &Status'), $stock_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -472,6 +474,8 @@ tabbed_content_start('tabs', array(
 	};
 br();
 tabbed_content_end();
+
+div_end();
 
 
 hidden('popup', @$_REQUEST['popup']);
