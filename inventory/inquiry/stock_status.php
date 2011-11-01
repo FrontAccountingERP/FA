@@ -42,9 +42,11 @@ if (!@$_GET['popup'])
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center> " . _("Item:"). " ";
 if (!@$_GET['popup'])
+{
+	echo "<center> " . _("Item:"). " ";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+}	
 echo "<br>";
 
 echo "<hr></center>";
