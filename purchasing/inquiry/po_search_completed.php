@@ -11,18 +11,20 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root="../..";
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
-page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
-
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 500);
+	if ($use_date_picker)
+		$js .= get_js_date_picker();
+	page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
+}
 if (isset($_GET['order_number']))
 {
 	$order_number = $_GET['order_number'];
@@ -53,7 +55,8 @@ if (get_post('SearchOrders'))
 }
 //---------------------------------------------------------------------------------------------
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
@@ -98,9 +101,11 @@ function trans_view($trans)
 
 function edit_link($row) 
 {
-  return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?" . SID 
-	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	if (@$_GET['popup'])
+		return '';
+  	return pager_link( _("Edit"),
+		"/purchasing/po_entry_items.php?" . SID 
+		. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)
@@ -136,6 +141,9 @@ $table->width = "80%";
 
 display_db_pager($table);
 
-end_form();
-end_page();
+if (!@$_GET['popup'])
+{
+	end_form();
+	end_page();
+}	
 ?>

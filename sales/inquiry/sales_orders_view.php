@@ -11,9 +11,9 @@
 ***********************************************************************/
 $path_to_root = "../..";
 
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
-include($path_to_root . "/sales/includes/sales_ui.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $page_security = 'SA_SALESTRANSVIEW';
@@ -24,13 +24,15 @@ set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
 			'InvoiceTemplates' => 'SA_SALESINVOICE')
 );
-
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(900, 600);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
-
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 600);
+	if ($use_date_picker)
+		$js .= get_js_date_picker();
+	page($_SESSION['page_title'], false, false, "", $js);
+}
 if (get_post('type'))
 	$trans_type = $_POST['type'];
 elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
@@ -66,7 +68,6 @@ else
 	$_POST['order_view_mode'] = "Quotations";
 	$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
 }
-page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['selected_customer']))
 {
@@ -118,6 +119,8 @@ function prt_link($row)
 
 function edit_link($row) 
 {
+	if (@$_GET['popup'])
+		return '';
 	global $trans_type;
 	$modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
   return pager_link( _("Edit"),
@@ -210,7 +213,8 @@ if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // 
 	$Ajax->activate('orders_tbl');
 }
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
@@ -231,7 +235,8 @@ if($show_dates) {
 	start_row();
 }
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
-customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+if (!@$_GET['popup'])
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
 
@@ -313,6 +318,9 @@ $table->width = "80%";
 display_db_pager($table);
 submit_center('Update', _("Update"), true, '', null);
 
-end_form();
-end_page();
+if (!@$_GET['popup'])
+{
+	end_form();
+	end_page();
+}
 ?>

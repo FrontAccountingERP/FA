@@ -303,6 +303,7 @@ tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
 		'transactions' => array(_('&Supplier Inquiry'), $supplier_id),
+		'orders' => array(_('&Purchase orders'), $supplier_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -321,6 +322,11 @@ tabbed_content_start('tabs', array(
 			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
 			break;
 		case 'orders':
+			$_GET['supplier_id'] = $supplier_id;
+			$_GET['popup'] = 1;
+			$_SERVER['REQUEST_METHOD'] = 'GET';			
+			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
+			break;
 	};
 br();
 tabbed_content_end();

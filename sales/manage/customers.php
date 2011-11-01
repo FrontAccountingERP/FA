@@ -338,6 +338,7 @@ tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
 		'transactions' => array(_('Customer &Transactions'), $selected_id),
+		'orders' => array(_('&Orders'), $selected_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -356,6 +357,11 @@ tabbed_content_start('tabs', array(
 			include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
 			break;
 		case 'orders':
+			$_GET['customer_id'] = $selected_id;
+			$_GET['popup'] = 1;
+			$_SERVER['REQUEST_METHOD'] = 'GET';			
+			include_once($path_to_root."/sales/inquiry/sales_orders_view.php");
+			break;
 	};
 br();
 tabbed_content_end();
