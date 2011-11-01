@@ -165,6 +165,8 @@ function tmpl_checkbox($row)
 	global $trans_type;
 	if ($trans_type == ST_SALESQUOTE)
 		return '';
+	if (@$_GET['popup'])
+		return '';
 	$name = "chgtpl" .$row['order_no'];
 	$value = $row['type'] ? 1:0;
 
