@@ -18,13 +18,15 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
-
-page(_($help_context = "Inventory Item Movement"), @$_REQUEST['popup'], false, "", $js);
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(800, 500);
+	if ($use_date_picker)
+		$js .= get_js_date_picker();
+	page(_($help_context = "Inventory Item Movement"), @$_GET['popup'], false, "", $js);
+}	
 //------------------------------------------------------------------------------------------------
 
 check_db_has_stock_items(_("There are no items defined in the system."));
@@ -39,14 +41,16 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+if (!@$_GET['popup'])
+	stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
 end_row();
 end_table();
 
@@ -61,7 +65,8 @@ date_cells(_("To:"), 'BeforeDate');
 submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');
 end_row();
 end_table();
-end_form();
+if (!@$_GET['popup'])
+	end_form();
 
 set_global_stock_item($_POST['stock_id']);
 
@@ -185,6 +190,7 @@ end_row();
 
 end_table(1);
 div_end();
-end_page(@$_REQUEST['popup'], false, false);
+if (!@$_GET['popup'])
+	end_page(@$_GET['popup'], false, false);
 
 ?>

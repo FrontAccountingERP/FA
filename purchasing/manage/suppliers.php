@@ -149,17 +149,7 @@ function supplier_settings(&$supplier_id)
 	table_section_title(_("General"));
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	if ($supplier_id)
-	{
 		record_status_list_row(_("Supplier status:"), 'inactive');
-		if (!@$_REQUEST['popup'])
-		{
-			start_row();
-			echo '<td class="label"> </td><td>';
-			echo viewer_link('<b>'. _('Supplier Inquiry').'</b>', "purchasing/inquiry/supplier_inquiry.php?supplier_id=$supplier_id&popup=1"); 
-			echo "</td>\n";	
-			end_row();
-		}	
-	}
 	else {
 		table_section_title(_("Contact Data"));
 		text_row(_("Contact Person:"), 'contact', null, 42, 40);
@@ -312,6 +302,7 @@ if (!$supplier_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
+		'transactions' => array(_('&Supplier Inquiry'), $supplier_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -322,6 +313,12 @@ tabbed_content_start('tabs', array(
 		case 'contacts':
 			$contacts = new contacts('contacts', $supplier_id, 'supplier');
 			$contacts->show();
+			break;
+		case 'transactions':
+			$_GET['supplier_id'] = $supplier_id;
+			$_GET['popup'] = 1;
+			$_SERVER['REQUEST_METHOD'] = 'GET';			
+			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
 			break;
 		case 'orders':
 	};

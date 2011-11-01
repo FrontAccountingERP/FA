@@ -11,19 +11,21 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
-include($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
-page(_($help_context = "Supplier Inquiry"), isset($_GET['supplier_id']), false, "", $js);
-
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 500);
+	if ($use_date_picker)
+		$js .= get_js_date_picker();
+	page(_($help_context = "Supplier Inquiry"), isset($_GET['supplier_id']), false, "", $js);
+}
 if (isset($_GET['supplier_id'])){
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
@@ -36,7 +38,8 @@ if (isset($_GET['ToDate'])){
 
 //------------------------------------------------------------------------------------------------
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
@@ -44,7 +47,8 @@ if (!isset($_POST['supplier_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, !@$_REQUEST['popup']);
+if (!@$_GET['popup'])
+	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, !@$_GET['popup']);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
@@ -123,7 +127,7 @@ function gl_view($row)
 
 function credit_link($row)
 {
-	if (@$_REQUEST['popup'])
+	if (@$_GET['popup'])
 		return '';
 	return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
@@ -192,9 +196,9 @@ $table->width = "85%";
 
 display_db_pager($table);
 
-hidden('popup', @$_REQUEST['popup']);
-end_form();
-
-end_page(@$_REQUEST['popup'], false, false);
-
+if (!@$_GET['popup'])
+{
+	end_form();
+	end_page(@$_GET['popup'], false, false);
+}
 ?>

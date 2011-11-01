@@ -241,17 +241,7 @@ function customer_settings($selected_id)
 	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 
 	if($selected_id)
-	{
 		record_status_list_row(_("Customer status:"), 'inactive');
-		if (!@$_REQUEST['popup'])
-		{
-			start_row();
-			echo '<td class="label"> </td><td>';
-			echo viewer_link('<b>'. _('Customer Transactions').'</b>', "sales/inquiry/customer_inquiry.php?customer_id=$selected_id&popup=1"); 
-			echo "</td>\n";	
-			end_row();
-		}	
-	}
 	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
@@ -347,6 +337,7 @@ if (!$selected_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
+		'transactions' => array(_('Customer &Transactions'), $selected_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -357,6 +348,12 @@ tabbed_content_start('tabs', array(
 		case 'contacts':
 			$contacts = new contacts('contacts', $selected_id, 'customer');
 			$contacts->show();
+			break;
+		case 'transactions':
+			$_GET['customer_id'] = $selected_id;
+			$_GET['popup'] = 1;
+			$_SERVER['REQUEST_METHOD'] = 'GET';			
+			include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
 			break;
 		case 'orders':
 	};

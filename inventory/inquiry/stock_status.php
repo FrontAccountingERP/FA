@@ -13,13 +13,16 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-if (isset($_GET['stock_id'])){
-	$_POST['stock_id'] = $_GET['stock_id'];
-	page(_($help_context = "Inventory Item Status"), true);
-} else {
-	page(_($help_context = "Inventory Item Status"));
+if (!@$_GET['popup'])
+{
+	if (isset($_GET['stock_id'])){
+		page(_($help_context = "Inventory Item Status"), true);
+	} else {
+		page(_($help_context = "Inventory Item Status"));
+	}
 }
-
+if (isset($_GET['stock_id']))
+	$_POST['stock_id'] = $_GET['stock_id'];
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
@@ -33,13 +36,15 @@ if (list_updated('stock_id'))
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center> " . _("Item:"). " ";
-echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+if (!@$_GET['popup'])
+	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<br>";
 
 echo "<hr></center>";
@@ -115,7 +120,10 @@ while ($myrow = db_fetch($loc_details))
 
 end_table();
 div_end();
-end_form();
-end_page(@$_REQUEST['popup'], false, false);
+if (!@$_GET['popup'])
+{
+	end_form();
+	end_page(@$_GET['popup'], false, false);
+}	
 
 ?>
