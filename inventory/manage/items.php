@@ -462,13 +462,11 @@ tabbed_content_start('tabs', array(
 		case 'movement':
 			$_GET['stock_id'] = $stock_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");
 			break;
 		case 'status':
 			$_GET['stock_id'] = $stock_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
 	};
