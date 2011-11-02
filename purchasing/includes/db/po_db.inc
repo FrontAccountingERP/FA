@@ -269,6 +269,8 @@ function get_sql_for_po_search_completed()
 		AND porder.supplier_id = supplier.supplier_id
 		AND location.loc_code = porder.into_stock_location ";
 
+	if (isset($_GET['supplier_id']))
+		$sql .= "AND supplier.supplier_id=".@$_GET['supplier_id']." ";
 	if (isset($order_number) && $order_number != "")
 	{
 		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');

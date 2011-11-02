@@ -11,7 +11,8 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
-include($path_to_root . "/includes/session.inc");
+include($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -318,13 +319,11 @@ tabbed_content_start('tabs', array(
 		case 'transactions':
 			$_GET['supplier_id'] = $supplier_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
 			break;
 		case 'orders':
 			$_GET['supplier_id'] = $supplier_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
 			break;
 	};

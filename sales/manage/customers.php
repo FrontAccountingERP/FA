@@ -12,6 +12,7 @@
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "../..";
 
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_popup_windows)
@@ -353,13 +354,11 @@ tabbed_content_start('tabs', array(
 		case 'transactions':
 			$_GET['customer_id'] = $selected_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
 			break;
 		case 'orders':
 			$_GET['customer_id'] = $selected_id;
 			$_GET['popup'] = 1;
-			$_SERVER['REQUEST_METHOD'] = 'GET';			
 			include_once($path_to_root."/sales/inquiry/sales_orders_view.php");
 			break;
 	};
