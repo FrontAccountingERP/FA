@@ -24,15 +24,7 @@ set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
 			'InvoiceTemplates' => 'SA_SALESINVOICE')
 );
-if (!@$_GET['popup'])
-{
-	$js = "";
-	if ($use_popup_windows)
-		$js .= get_js_open_window(900, 600);
-	if ($use_date_picker)
-		$js .= get_js_date_picker();
-	page($_SESSION['page_title'], false, false, "", $js);
-}
+
 if (get_post('type'))
 	$trans_type = $_POST['type'];
 elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
@@ -67,6 +59,16 @@ else
 {
 	$_POST['order_view_mode'] = "Quotations";
 	$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
+}
+
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 600);
+	if ($use_date_picker)
+		$js .= get_js_date_picker();
+	page($_SESSION['page_title'], false, false, "", $js);
 }
 
 if (isset($_GET['selected_customer']))
