@@ -10,6 +10,221 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-11-10 08:37 +0100 Joe Hunt
+(2919) Release 2.3.8
+ version.php
+
+2011-11-07 11:58 +0100 Joe Hunt
+(2918) Fixed small bug in sales orders inquiry, page title.
+ sales/inquiry/sales_orders_view.php
+
+2011-11-02 14:52 +0100 Joe Hunt
+(2917) Removed SERVER REQUEST_METHOD setting
+ inventory/manage/items.php
+
+2011-11-02 12:04 +0100 Joe Hunt
+(2916) Fixed Next bug for pagers in customers and suppliers transactions.
+ purchasing/includes/db/po_db.inc
+ purchasing/manage/suppliers.php
+ sales/inquiry/customer_inquiry.php
+ sales/manage/customers.php
+
+2011-11-01 10:58 +0100 Joe Hunt
+(2915) Rerun. Layout miss.
+ inventory/inquiry/stock_status.php
+
+2011-11-01 10:33 +0100 Joe Hunt
+(2914) Cleanup. Optimized hotkeys in tabs.
+ inventory/manage/items.php
+ purchasing/manage/suppliers.php
+ sales/manage/customers.php
+
+2011-11-01 10:07 +0100 Joe Hunt
+(2913) Cleanup Items.php. Bugfix in extra tabs.
+ inventory/manage/items.php
+
+2011-11-01 02:36 +0100 Joe Hunt
+(2912) Rerun (no template selection allowed)
+ sales/inquiry/sales_orders_view.php
+
+2011-11-01 02:28 +0100 Joe Hunt
+(2911) Added sales orders and purchase orders in customer/supplier tabs inquiry.
+ purchasing/inquiry/po_search_completed.php
+ purchasing/manage/suppliers.php
+ sales/inquiry/sales_orders_view.php
+ sales/manage/customers.php
+
+2011-11-01 01:39 +0100 Joe Hunt
+(2910) Changed popup to tabs in customers, suppliers, items for transactions.
+ inventory/inquiry/stock_movements.php
+ inventory/inquiry/stock_status.php
+ inventory/manage/items.php
+ purchasing/inquiry/supplier_inquiry.php
+ purchasing/manage/suppliers.php
+ sales/inquiry/customer_inquiry.php
+ sales/manage/customers.php
+
+2011-10-29 22:37 +0200 Janusz Dobrowolski
+(2909) Fixed bank transaction dition problem (bank transaction balance check should be performed on daily basis)
+ gl/includes/db/gl_db_bank_trans.inc
+ gl/includes/db/gl_db_banking.inc
+
+2011-10-29 22:34 +0200 Janusz Dobrowolski
+(2908) Fixed problem in package repository communication.
+ includes/packages.inc
+
+2011-10-29 08:58 +0200 Joe Hunt
+(2907) 0001149: Undefined variable trying to delete a currency
+ gl/manage/currencies.php
+
+2011-10-27 08:42 +0200 Joe Hunt
+(2906) Cleanup. Don't show edit/credit links in popup transactions/inquiry.
+ purchasing/inquiry/supplier_inquiry.php
+ sales/inquiry/customer_inquiry.php
+
+2011-10-27 01:16 +0200 Joe Hunt
+(2905) Links from Items to Inventory Item Movement and Inventory Item Status.
+ inventory/inquiry/stock_movements.php
+ inventory/inquiry/stock_status.php
+ inventory/manage/items.php
+
+2011-10-27 00:36 +0200 Joe Hunt
+(2904) Supplier Inquiry link in Supplier form.
+ purchasing/inquiry/supplier_inquiry.php
+ purchasing/manage/suppliers.php
+
+2011-10-26 23:58 +0200 Joe Hunt
+(2903) Cleanup in customers.php and customer_inquiry.php
+ sales/inquiry/customer_inquiry.php
+ sales/manage/customers.php
+
+2011-10-26 15:20 +0200 Joe Hunt
+(2902) Rerun, forgot global variable.
+ sales/manage/customers.php
+
+2011-10-26 15:13 +0200 Joe Hunt
+(2901) Option for auto create branch when creating new customer. Link to Customer Transactions.
+ config.default.php
+ sales/inquiry/customer_inquiry.php
+ sales/manage/customers.php
+
+2011-10-23 23:53 +0200 Joe Hunt
+(2900) Option to use iso-8859-13 (The Baltic Countries) in pdf reports.
+ reporting/includes/class.pdf.inc
+
+2011-10-19 09:25 +0200 Joe Hunt
+(2899) FA tried to print logo for new clients even if it doesn't exist.
+ reporting/includes/header2.inc
+
+2011-10-15 12:04 +0200 Joe Hunt
+(2898) Allowing edit of Customer Payments. (Chaitanya and Joe)
+ sales/customer_payments.php
+ sales/includes/db/cust_trans_db.inc
+ sales/includes/db/payment_db.inc
+ sales/inquiry/customer_inquiry.php
+
+2011-10-14 15:37 +0200 Joe Hunt
+(2897) A default branch is created when creating a new customer.
+ sales/manage/customers.php
+
+2011-10-12 13:40 +0200 Joe Hunt
+(2896) Removed redundant file /themes/default/login.css
+ themes/default/login.css
+
+2011-10-11 08:27 +0200 Joe Hunt
+(2895) Fixed a IE9 compatible session regenerate id.
+ includes/session.inc
+
+2011-10-10 08:50 +0200 Joe Hunt
+(2894) Small changes in costing by Chaitanya.
+ includes/db/inventory_db.inc
+ purchasing/includes/db/grn_db.inc
+
+2011-10-06 22:29 +0200 Janusz Dobrowolski
+(2893) Old session files are now deleted on session id change.
+ includes/session.inc
+
+2011-10-06 21:38 +0200 Janusz Dobrowolski
+(2892) Fixed hangouts on php installations with zlib extension installed, fixed warnings logged during install.
+ admin/db/maintenance_db.inc
+ includes/errors.inc
+ install/index.php
+ install/isession.inc
+
+2011-09-29 12:29 +0200 Janusz Dobrowolski
+(2891) Fixed install css stylesheet (removed nonexistent background img)
+ install/stylesheet.css
+
+2011-09-28 21:19 +0200 Janusz Dobrowolski
+(2890) Fixed range selection for bulk document printing to avoid unexpected blank page when from/to selectors are mistakenly swapped.
+ reporting/rep107.php
+ reporting/rep110.php
+ reporting/rep112.php
+ reporting/rep113.php
+ reporting/rep210.php
+ reporting/rep409.php
+
+2011-09-22 10:52 +0200 Janusz Dobrowolski
+(2889) Cleanup on key_in_foreign_table calls, removed obsolete $escaped argument.
+ admin/db/company_db.inc
+ gl/manage/bank_accounts.php
+ gl/manage/currencies.php
+ gl/manage/gl_account_types.php
+ gl/manage/gl_accounts.php
+
+2011-10-01 00:38 +0200 Joe Hunt
+(2888) Bank payment/deposit edit. Attachment will follow the new edit number.
+ gl/gl_bank.php
+ gl/includes/db/gl_db_banking.inc
+
+2011-09-30 15:33 +0200 Joe Hunt
+(2887) Option for changing dimensions when editing Sales Invoice.
+ sales/customer_invoice.php
+
+2011-09-30 10:03 +0200 Joe Hunt
+(2886) 0001091: Stock Check Sheets and Inventory Planning Report slow with lots of category and items
+ reporting/rep302.php
+ reporting/rep303.php
+
+2011-09-29 15:14 +0200 Joe Hunt
+(2885) Fixed typos in ui_view.inc _number_to_words()
+ includes/ui/ui_view.inc
+
+2011-09-27 09:39 +0200 Joe Hunt
+(2884) 0001085: When doing multiple deliveries for an order should account for shipping costs already consumed
+ sales/customer_delivery.php
+ sales/includes/db/sales_delivery_db.inc
+
+2011-09-20 10:57 +0200 Janusz Dobrowolski
+(2883) Added links to payments for invoices in customer/supplier allocation inquiry
+ purchasing/includes/db/invoice_db.inc
+ purchasing/includes/db/suppalloc_db.inc
+ purchasing/inquiry/supplier_allocation_inquiry.php
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+ sales/includes/db/custalloc_db.inc
+ sales/inquiry/customer_allocation_inquiry.php
+ sales/manage/customers.php
+
+2011-09-07 21:14 +0200 Janusz Dobrowolski
+(2882) Removed obsolete set_global_connection() call in get_user_auth().
+ admin/db/users_db.inc
+
+2011-09-06 12:09 +0200 Janusz Dobrowolski
+(2881) Fixed supplier order reference uniquty, fixed company logo file deletion.
+ admin/company_preferences.php
+ purchasing/includes/db/invoice_db.inc
+ purchasing/po_entry_items.php
+
+2011-09-02 12:00 +0200 Janusz Dobrowolski
+(2877) Added tag version_2_3_7 for changeset bbd75fe337d1
+ .hgtags
+
+2011-09-01 09:01 +0200 Joe Hunt
+(2876) Release 2.3.7.
+ CHANGELOG.txt
+ version.php
+
 2011-09-01 08:34 +0200 Janusz Dobrowolski
 (2875) Gettext template update.
  lang/new_language_template/LC_MESSAGES/empty.po
