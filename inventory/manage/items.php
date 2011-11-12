@@ -15,6 +15,8 @@ include($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 	
 page(_($help_context = "Items"), false, false, "", $js);
 
