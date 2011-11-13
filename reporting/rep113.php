@@ -49,8 +49,8 @@ function print_credits()
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);
-	$from = min($fno[0], $fto[0]);
-	$to = max($fno[0], $fto[0]);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
