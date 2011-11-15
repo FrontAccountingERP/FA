@@ -25,22 +25,22 @@ class SessionManager
 		session_start();
 
 		// Make sure the session hasn't expired, and destroy it if it has
-		if (self::validateSession())
+		if ($this->validateSession())
 		{
 			// Check to see if the session is new or a hijacking attempt
-			if(!self::preventHijacking())
+			if(!$this->preventHijacking())
 			{
 				// Reset session data and regenerate id
 				$_SESSION = array();
 				$_SESSION['IPaddress'] = $_SERVER['REMOTE_ADDR'];
 				$_SESSION['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
-				self::regenerateSession();
+				$this->regenerateSession();
 
 			// Give a 5% chance of the session id changing on any request
 			}
 			elseif (rand(1, 100) <= 5)
 			{
-				self::regenerateSession();
+				$this->regenerateSession();
 			}
 		}
 		else
@@ -294,18 +294,9 @@ foreach ($installed_extensions as $ext)
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
-SessionManager::sessionStart('FA'.md5(dirname(__FILE__)));
+$Session_manager = new SessionManager();
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
 
-//SessionManager::sessionStart('Blog_myBlog', 0, '/myBlog/', 'www.site.com');
-//SessionManager::sessionStart('Accounts_Bank', 0, '/', 'accounts.bank.com', true);
-/*
-hook_session_start(@$_POST["company_login_name"]);
-
-session_name('FA'.md5(dirname(__FILE__)));
-
-session_start();
-session_regenerate_id(true);
-*/
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
