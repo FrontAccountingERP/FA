@@ -97,8 +97,8 @@ function print_receipts()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		if ($from == $to)
-			$types = array($from);
+		if ($fno[0] == $tno[0])
+			$types = array($fno[1]);
 		else
 			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT);
 		foreach ($types as $j)
