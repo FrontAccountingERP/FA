@@ -150,16 +150,16 @@ function error_box() {
 	Helper to avoid sparse log notices.
 */
 function end_flush() {
-	global $Ajax, $transaction_level;
+	global $Ajax;
 
 	if (isset($Ajax))
 		$Ajax->run();
 
- 	 // zlib extension adds 1 additional level of buffering
- 	$min_level = defined('FORCE_GZIP') ? 1 : 0;
-
-	// flush all output buffers (works also with exit inside any div levels)
- 	while(ob_get_level() > $min_level) ob_end_flush();
+ 	 // on some (but not all) php versions zlib extension adds 1 additional level of buffering, 
+ 	 // so flush the last buffer outside the loop to be on safe side 
+ 	while(ob_get_level() > 1)
+ 		ob_end_flush();
+	@ob_end_flush();
 
 	// if any transaction was aborted unexpectedly rollback changes
 	cancel_transaction();
