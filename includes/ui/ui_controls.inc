@@ -187,7 +187,7 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 			echo "<td align=center><a href='$path_to_root/admin/attachments.php?vw=$id' target='blanc_'>"._("View Attachment")."</a></td>\n";
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
 	}	
-	echo "<td align=center><a href='javascript:goBack();'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
+	echo "<td align=center><a href='javascript:goBack(\"$no_menu\");'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
 	end_row();
 	end_table();
 	if ($center)

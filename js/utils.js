@@ -251,8 +251,8 @@ function get_amount(doc, label) {
 		return isNaN(val) ? 0 : val;
 }
 
-function goBack() {
-	if (window.history.length <= 1)
+function goBack(no_menu) {
+	if (no_menu)
 	 window.close();
 	else
 	 window.history.go(-1);
