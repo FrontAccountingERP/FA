@@ -10,6 +10,50 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2011-11-23 23:56 +0100 Joe Hunt
+(2929) Changed TYPE= to ENGINE= ins core COA scripts. TYPE= was deprecated since 4.1.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2011-11-23 20:12 +0100 Janusz Dobrowolski
+(2928) Fixed problem with output buffering (blank page on some configurations).
+ includes/errors.inc
+
+2011-11-23 09:37 +0100 Joe Hunt
+(2927) 0001183: Can't close the popup dimension # view window
+ includes/ui/ui_controls.inc
+ js/utils.js
+
+2011-11-23 01:40 +0100 Joe Hunt
+(2926) Fixed double calculation of tax free price for an item.
+ purchasing/includes/db/grn_db.inc
+
+2011-11-17 09:19 +0100 Joe Hunt
+(2925) 1177: Print single receipt fails
+ reporting/rep112.php
+
+2011-11-15 09:11 +0100 Joe Hunt
+(2924) 0001173: Incompatible static implementation of Session Manager in /includes/session.inc
+ includes/session.inc
+
+2011-11-13 13:23 +0100 Joe Hunt
+(2923) Fixed a selection bug in Report Credit Notes. Caused all CN to print.
+ reporting/rep113.php
+
+2011-11-12 09:52 +0100 Joe Hunt
+(2922) Couldn't use the date picker in the new transaction tabs in customer/supplier/items.
+ inventory/manage/items.php
+ purchasing/manage/suppliers.php
+ sales/manage/customers.php
+
+2011-11-10 11:15 +0100 Janusz Dobrowolski
+(2921) Langauge template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2011-11-10 08:45 +0100 Joe Hunt
+(2920) New CHANGELOG.txt
+ CHANGELOG.txt
+
 2011-11-10 08:37 +0100 Joe Hunt
 (2919) Release 2.3.8
  version.php

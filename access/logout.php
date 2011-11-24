@@ -44,7 +44,7 @@ echo "</div></td>
 <br>\n";
 end_page(false, true);
 session_unset();
-session_destroy();
+@session_destroy();
 ?>
 
 
