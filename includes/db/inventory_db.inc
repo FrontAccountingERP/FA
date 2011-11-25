@@ -391,7 +391,7 @@ function void_stock_move($type, $type_no)
 		{        
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
-			$types = array(ST_SUPPCREDIT);
+			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
 			if (in_array($type,$types))
 				$trans_rate = $row["price"];
 			else
