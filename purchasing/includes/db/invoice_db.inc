@@ -652,41 +652,47 @@ function is_reference_already_there($supplier_id, $supp_reference, $trans_no=0)
 
 function remove_not_invoice_item($id)
 {
-	begin_transaction();
+    begin_transaction();
 
-	$myrow = get_grn_item_detail($id);
+    $myrow = get_grn_item_detail($id);
 
-	$grn = get_grn_batch($myrow['grn_batch_id']);
+    $grn = get_grn_batch($myrow['grn_batch_id']);
+    
+    $supp = get_supplier($grn["supplier_id"]);
 
-	$sql = "UPDATE ".TB_PREF."purch_order_details
-		SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
-	db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+    $sql = "UPDATE ".TB_PREF."purch_order_details
+        SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
+    db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
 
-	$sql = "UPDATE ".TB_PREF."grn_items
-		SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
-	db_query($sql, "The quantity invoiced off the items received record could not be updated");
+    $sql = "UPDATE ".TB_PREF."grn_items
+        SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
+    db_query($sql, "The quantity invoiced off the items received record could not be updated");
 
-	update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
-		$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+    update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
+        $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+        
+    $price = $myrow['unit_price'];
+    if ($supp['tax_included'])
+        $price = get_tax_free_price_for_item($myrow['item_code'], $myrow['unit_price'], $supp['tax_group_id'], $supp['tax_included']);        
 
-	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
-		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
-		
+    add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+        -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $price);
+        
     $clearing_act = get_company_pref('grn_clearing_act');
-	if ($clearing_act) {	// otherwise GRN clearing account is not used
-		if (is_inventory_item($myrow['item_code']))
-		{
-	    	$total = 0;
-			$stock_gl_code = get_stock_gl_code($myrow['item_code']);
-			$date = sql2date($grn["delivery_date"]);
-			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $stock_gl_code["inventory_account"],
-				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-				-$myrow['QtyOstdg'] * $myrow['unit_price'], $grn["supplier_id"], "", 0, _("GRN Removal"));
-			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
-				0, 0, -$total, null, "", 0, _("GRN Removal"));
-		}	
-	}
+    if ($clearing_act) {    // otherwise GRN clearing account is not used
+        if (is_inventory_item($myrow['item_code']))
+        {
+            $total = 0;
+            $stock_gl_code = get_stock_gl_code($myrow['item_code']);
+            $date = sql2date($grn["delivery_date"]);
+            $total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $stock_gl_code["inventory_account"],
+                $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+                -$myrow['QtyOstdg'] * $price, $grn["supplier_id"], "", 0, _("GRN Removal"));
+            $total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
+                0, 0, -$total, null, "", 0, _("GRN Removal"));
+        }    
+    }
 
-	commit_transaction();
+    commit_transaction();
 }
 ?>
