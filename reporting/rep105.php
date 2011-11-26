@@ -132,11 +132,6 @@ function print_order_status_list()
 
 	while ($myrow=db_fetch($result))
 	{
-		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
-		{
-			$orderno = 0;
-			$rep->NewPage();
-		}
 		$rep->NewLine(0, 2, false, $orderno);
 		if ($orderno != $myrow['order_no'])
 		{
@@ -168,11 +163,6 @@ function print_order_status_list()
 			$rep->Font();
 		}
 		$rep->NewLine();
-		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
-		{
-			$orderno = 0;
-			$rep->NewPage();
-		}
 	}
 	$rep->Line($rep->row);
 	$rep->End();

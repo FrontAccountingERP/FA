@@ -105,11 +105,6 @@ function print_salesman_list()
 
 	while ($myrow=db_fetch($result))
 	{
-		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
-		{
-			$salesman = 0;
-			$rep->NewPage();
-		}
 		$rep->NewLine(0, 2, false, $salesman);
 		if ($salesman != $myrow['salesman_code'])
 		{
@@ -152,11 +147,6 @@ function print_salesman_list()
 			$rep->AmountCol(5, 6, $amt, $dec);
 			$rep->AmountCol(6, 7, $prov, $dec);
 			$rep->NewLine();
-			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
-			{
-				$salesman = 0;
-				$rep->NewPage();
-			}
 		}
 		$subtotal += $amt;
 		$subprov += $prov;
