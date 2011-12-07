@@ -106,8 +106,9 @@ function print_receipts()
 			$myrow = get_receipt($j, $i);
 			if (!$myrow)
 				continue;			
-			$baccount = get_default_bank_account($myrow['curr_code']);
-			$params['bankaccount'] = $baccount['id'];
+			$res = get_bank_trans($j, $i);
+			$baccount = db_fetch($res);
+			$params['bankaccount'] = $baccount['bank_act'];
 
 			$rep->title = _('RECEIPT');
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
