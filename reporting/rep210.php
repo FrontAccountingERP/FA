@@ -109,8 +109,9 @@ function print_remittances()
 			$myrow = get_remittance($j, $i);
 			if (!$myrow)
 				continue;			
-			$baccount = get_default_bank_account($myrow['curr_code']);
-			$params['bankaccount'] = $baccount['id'];
+			$res = get_bank_trans($j, $i);
+			$baccount = db_fetch($res);
+			$params['bankaccount'] = $baccount['bank_act'];
 
 			if ($email == 1)
 			{
