@@ -1025,10 +1025,11 @@ class FrontReport extends Cpdf
 					if (!$try) {
 						display_error(_("There is no contact email set for this document type."));
 					} elseif (!$sent)
-						display_error(_("Sending document by email failed"));
+						display_error($this->title . " " . $this->formData['document_number'] . ". "
+							. _("Sending document by email failed") . ". " . _("Email:") . " " . $contact['email']);
 					else
 						display_notification($this->title . " " . $this->formData['document_number'] . " " 
-							. _("has been sent by email to destination."));
+							. _("has been sent by email to destination.") . " " . _("Email:") . " " . $contact['email']);
 				}
 			}
 			else
