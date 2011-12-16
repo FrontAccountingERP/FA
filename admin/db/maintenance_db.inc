@@ -18,6 +18,8 @@
  * @param $strSortType String containing either asc or desc [default to asc]
  * @desc Naturally sorts an array using by the column $strSortBy
  */
+define('EXPORT_MAX_INSERT', 50000);
+
 function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 {
    //    if the parameters are invalid
@@ -377,7 +379,7 @@ function db_import($filename, $connection, $force=true)
 			}
 		}
 	}
-	
+
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
 
@@ -555,12 +557,12 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 //			if ($auto_incr[$tablename])
 //				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
 			$out.=" ;";
-			$out.="\n\n\n";
+			$out.="\n\n";
 
 			// export data
 			if (!$error)
 			{
-				$out.="### Data of table `".$tablename."` ###\n\n";
+				$out.="### Data of table `".$tablename."` ###\n";
 
 				// check if field types are NULL or NOT NULL
 				$res3 = db_query("SHOW COLUMNS FROM `" . $tablename . "`");
@@ -573,18 +575,40 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 				}
 
 				$res2 = db_query("SELECT * FROM `" . $tablename . "`");
+				$maxinsert = 0;
+				$insert = '';
 				for ($j = 0; $j < db_num_rows($res2); $j++)
 				{
-					$out .= "INSERT INTO `" . $tablename . "` VALUES (";
 					$row2 = db_fetch_row($res2);
-					// run through each field
+					$values = '(';
 					for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
 					{
-						$out .= db_escape($row2[$k], $field_null[$k]);
+						$values .= db_escape($row2[$k], $field_null[$k]);
 						if ($k < ($nf - 1))
-							$out .= ", ";
+							$values .= ', ';
 					}
-					$out .= ");\n";
+					$values .= ')';
+					$len = strlen($values);
+					if ($maxinsert < $len+1)
+					{
+						$maxinsert = EXPORT_MAX_INSERT;
+						if ($insert)
+						{
+							$out .= $insert .';'; // flush insert query
+							$insert = '';
+						}
+					}
+
+					if ($insert == '')
+					{
+						$insert = "\nINSERT INTO `" . $tablename . "` VALUES\n";
+						$maxinsert -= strlen($insert);
+					} else {
+						$insert .= ",\n";
+					}
+
+					$maxinsert -= $len;
+					$insert .= $values;
 
 					// if saving is successful, then empty $out, else set error flag
 					if (strlen($out) > $max_size && $zip != "zip")
@@ -595,7 +619,8 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 							$error = true;
 					}
 				}
-
+				if ($insert)
+					$out .= $insert. ';';
 			// an error occurred! Try to delete file and return error status
 			}
 			elseif ($error)
