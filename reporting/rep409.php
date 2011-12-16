@@ -131,13 +131,13 @@ function print_workorders()
 		$rep->NewLine(1);
 		$rep->TextCol(0, 5," *** = "._("Insufficient stock"), -2);
 
-		$comments = get_comments(ST_WORKORDER, $i);
-		if ($comments && db_num_rows($comments))
+		$memo = get_comments_string(ST_WORKORDER, $i);
+		if ($memo != "")
 		{
 			$rep->NewLine();
-			while ($comment=db_fetch($comments))
-				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+			$rep->TextColLines(1, 5, $memo, -2);
 		}
+
 		if ($email == 1)
 		{
 			$myrow['DebtorName'] = $myrow['contact'];

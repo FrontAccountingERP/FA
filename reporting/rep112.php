@@ -138,6 +138,13 @@ function print_receipts()
 					$rep->NewPage();
 			}
 
+			$memo = get_comments_string($j, $i);
+			if ($memo != "")
+			{
+				$rep->NewLine();
+				$rep->TextColLines(1, 5, $memo, -2);
+			}
+
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
 			$rep->TextCol(3, 6, _("Total Allocated"), -2);

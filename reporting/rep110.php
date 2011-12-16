@@ -141,12 +141,11 @@ function print_deliveries()
 					$rep->NewPage();
 			}
 
-			$comments = get_comments(ST_CUSTDELIVERY, $i);
-			if ($comments && db_num_rows($comments))
+			$memo = get_comments_string(ST_CUSTDELIVERY, $i);
+			if ($memo != "")
 			{
 				$rep->NewLine();
-    			while ($comment=db_fetch($comments))
-    				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+				$rep->TextColLines(1, 5, $memo, -2);
 			}
 
    			$DisplaySubTot = number_format2($SubTotal,$dec);
