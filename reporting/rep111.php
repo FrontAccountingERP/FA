@@ -84,7 +84,7 @@ function print_sales_quotations()
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		$rep->title = _("SALES QUOTATION");
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
 		//$rep->headerFunc = 'Header2';
 		$rep->NewPage();

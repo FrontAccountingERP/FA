@@ -101,7 +101,7 @@ function print_deliveries()
 			}
 			else
 				$rep->title = _('DELIVERY NOTE');
-			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no']);
+			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();
 

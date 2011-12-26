@@ -92,7 +92,7 @@ function print_invoices()
 			}
 			else
 				$rep->title = _('INVOICE');
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
 			$baccount['payment_service'] = $pay_service;
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
 			$rep->NewPage();

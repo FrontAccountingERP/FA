@@ -98,7 +98,7 @@ function print_sales_orders()
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
 		$rep->NewPage();
 

@@ -94,7 +94,7 @@ function print_credits()
 			}
 			else
 				$rep->title = _('CREDIT NOTE');
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
 			$rep->NewPage();
 
