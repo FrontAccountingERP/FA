@@ -46,16 +46,16 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 	}
 }
 
-function end_page($no_menu=false, $is_index=false, $hide_back_link=false, $type_no=0, $trans_no=0)
+function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no=0, $trans_no=0)
 {
 	global $path_to_root;
 
-	if (!$is_index && !$hide_back_link && function_exists('hyperlink_back'))
-		hyperlink_back(true, $no_menu, $type_no, $trans_no);
+	if (!$is_index && function_exists('hyperlink_back'))
+		hyperlink_back(true, $no_menu, $type_no, $trans_no, $final_screen);
 	div_end();	// end of _page_body section
 
 	include($path_to_root . "/includes/page/footer.inc");
-	page_footer($no_menu, $is_index, $hide_back_link);
+	page_footer($no_menu, $is_index);
 }
 
 function cache_js_file($fpath, $text) 

@@ -166,7 +166,7 @@ function access_string($label, $clean=false)
 	return $clean ? $label : array($label, $access);
 }
 
-function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
+function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0, $final=false)
 {
 	global $path_to_root;
 
@@ -186,8 +186,8 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 		if ($id != 0)
 			echo "<td align=center><a href='$path_to_root/admin/attachments.php?vw=$id' target='blanc_'>"._("View Attachment")."</a></td>\n";
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
-	}	
-	echo "<td align=center><a href='javascript:goBack(".($no_menu ? "1":"0").");'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
+	}
+	echo "<td align=center><a href='javascript:goBack(".($final ? '-2' : '').");'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
 	end_row();
 	end_table();
 	if ($center)

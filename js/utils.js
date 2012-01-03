@@ -251,11 +251,11 @@ function get_amount(doc, label) {
 		return isNaN(val) ? 0 : val;
 }
 
-function goBack(no_menu) {
-	if (no_menu)
+function goBack(deep) {
+	if (window.opener)
 	 window.close();
 	else
-	 window.history.go(-1);
+	 window.history.go(deep || -1);
 }
 
 function setFocus(name, byId) {
