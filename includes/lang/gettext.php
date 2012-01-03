@@ -550,6 +550,17 @@ class gettext_php_support_compiler
 */
 function set_ext_domain($path='') {
 	global $path_to_root;
+	static $domain_stack = array('');
+
+	if ($path)	// save path on domain stack
+		array_unshift($domain_stack,  $path);
+	else
+	{
+		array_shift($domain_stack);
+		$path = $domain_stack[0];
+	}
+	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
+
 
 	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
 	// ignore change when extension does not provide translation structure

@@ -261,8 +261,8 @@ function hook_invoke_all($method, &$data, $opts=null)
 			} else if (isset($result)) {
 				$return[] = $result;
 				}
+			set_ext_domain();
 		}
-	set_ext_domain();
 	return $return;
 }
 /*
@@ -280,9 +280,9 @@ function hook_invoke_first($method, &$data, $opts=null)
 			$result = $hook->$method($data, $opts);
 			if (isset($result))
 				break;
+			set_ext_domain();
 		}
 	}
-	set_ext_domain();
 	return $result;
 }
 /*
@@ -302,9 +302,9 @@ function hook_invoke_last($method, &$data, $opts=null)
 			$result = $hook->$method($data, $opts);
 			if (isset($result))
 				break;
+			set_ext_domain();
 		}
 	}
-	set_ext_domain();
 	return $result;
 }
 //------------------------------------------------------------------------------------------
