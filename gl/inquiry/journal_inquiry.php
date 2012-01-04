@@ -107,7 +107,14 @@ function edit_link($row)
 {
 	global $editors;
 
-	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) ? 
+	$ok = true;
+	if ($row['type'] == ST_SALESINVOICE)
+	{
+		$myrow = get_customer_trans($row["type_no"], $row["type"]);
+		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["type_no"]) !== false)
+			$ok = false;
+	}		
+	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) && $ok ? 
 		pager_link(_("Edit"), 
 			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			ICON_EDIT) : '';
