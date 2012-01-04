@@ -168,7 +168,7 @@ function print_aged_customer_analysis()
 			$custrec["Overdue1"]-$custrec["Overdue2"],
 			$custrec["Overdue2"],
 			$custrec["Balance"]);
-		if ($no_zeros && array_sum($str) == 0) continue;
+		if ($no_zeros && floatcmp(array_sum($str), 0) == 0) continue;
 
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 2, $myrow['name']);

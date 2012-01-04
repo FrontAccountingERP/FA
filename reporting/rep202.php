@@ -182,7 +182,7 @@ function print_aged_supplier_analysis()
 			$supprec["Overdue2"],
 			$supprec["Balance"]);
 
-		if ($no_zeros && array_sum($str) == 0) continue;
+		if ($no_zeros && floatcmp(array_sum($str), 0) == 0) continue;
 
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 2,	$myrow['name']);
