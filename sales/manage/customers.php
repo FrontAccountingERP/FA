@@ -370,6 +370,6 @@ tabbed_content_end();
 
 hidden('popup', @$_REQUEST['popup']);
 end_form();
-end_page();
+end_page(@$_REQUEST['popup']);
 
 ?>

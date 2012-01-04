@@ -417,6 +417,28 @@ function _format_add_curr($row)
 		'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
+function add_edit_combo($combo_name,$url,$key_param='',$restrict_pages='')
+{
+	global $path_to_root, $page_security;
+
+	// Derive theme path
+	$theme_path = $path_to_root . '/themes/' . user_theme();
+
+	// Check if $url already has other parameters
+	if ($key_param) {
+		$key_param = ((strpos($url,'?')) ? '&' : '?') . $key_param;
+	}
+
+	$return_url = ($key_param) ?  "<a target = '_blank' href='$url${key_param}=' onclick=\"javascript:var combo_id=document.forms[0].$combo_name;openWindow(this.href+combo_id.options[combo_id.selectedIndex].value,this.target); return false;\" tabindex='-1'><img width='16' height='16' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'></a>" : "<a target = '_blank' href='$url${key_param}' onclick=\"javascript:openWindow(this.href,this.target); return false;\" tabindex='-1'><img width='16' height='16' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'></a>";
+
+	// Don't pass edit button code If restrict_pages contains instructions but fails security check
+	if ($restrict_pages && strpos($restrict_pages, $page_security) === false) {
+		return '';
+	}
+
+	return $return_url;
+}
+
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
 	$all=false, $editkey = false)
 {
@@ -429,7 +451,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	if ($editkey)
 		set_editor('supplier', $name, $editkey);
 		
-	return combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
+	$ret = combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
 	array(
 		'format' => '_format_add_curr',
 	    'order' => array('supp_ref'),
@@ -443,6 +465,12 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select supplier'),
 		'show_inactive'=>$all
 		));
+	if ($editkey)
+	{
+		global $path_to_root;
+		$ret .= add_edit_combo('supplier_id',"$path_to_root/purchasing/manage/suppliers.php?popup=1",'supplier_id');		
+	}
+	return $ret;
 }
 
 function supplier_list_cells($label, $name, $selected_id=null, $all_option=false, 
@@ -477,7 +505,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	if ($editkey)
 		set_editor('customer', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
+	$ret = combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
 	array(
 	    'format' => '_format_add_curr',
 	    'order' => array('debtor_ref'),
@@ -492,6 +520,12 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select customer'),
 		'show_inactive' => $show_inactive
 	) );
+	if ($editkey)
+	{
+		global $path_to_root;
+		$ret .= add_edit_combo('customer_id',"$path_to_root/sales/manage/customers.php?popup=1", "debtor_no");
+	}	
+	return $ret;
 }
 
 function customer_list_cells($label, $name, $selected_id=null, $all_option=false, 
@@ -508,6 +542,8 @@ function customer_list_cells($label, $name, $selected_id=null, $all_option=false
 function customer_list_row($label, $name, $selected_id=null, $all_option = false, 
 	$submit_on_change=false, $show_inactive=false, $editkey = false)
 {
+	global $path_to_root;
+
 	echo "<tr><td class='label'>$label</td><td nowrap>";
 	echo customer_list($name, $selected_id, $all_option, $submit_on_change,
 		$show_inactive, $editkey);
@@ -528,7 +564,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		set_editor('branch', $name, $editkey);
 
 	$where = $enabled ? array("disable_trans = 0") : array();
-	return  combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
+	$ret = combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
 	array(
 		'where' => $where,
 		'order' => array('branch_ref'),
@@ -537,6 +573,12 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		'select_submit'=> $submit_on_change,
 		'sel_hint' => _('Select customer branch')
 	) );
+	if ($editkey)
+	{
+		global $path_to_root;
+		$ret .= add_edit_combo('branch_id',"$path_to_root/sales/manage/customer_branches.php?popup=1",'SelectedBranch');
+	}	
+	return $ret;
 }
 //------------------------------------------------------------------------------------------------
 
@@ -718,7 +760,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 	if ($editkey)
 		set_editor('item', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
+	$ret = combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 	array_merge(
 	  array(
 		'format' => '_format_stock_items',
@@ -732,6 +774,13 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'category' => 2,
 		'order' => array('c.description','stock_id')
 	  ), $opts) );
+	if ($editkey)
+	{
+		global $path_to_root;
+		$ret .= add_edit_combo('stock_id',"$path_to_root/inventory/manage/items.php?popup=1",'stock_id');		
+	}
+	return $ret;
+	  
 }
 
 function _format_stock_items($row)

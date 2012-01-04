@@ -343,6 +343,6 @@ tabbed_content_end();
 
 end_form();
 
-end_page();
+end_page(@$_REQUEST['popup']);
 
 ?>
