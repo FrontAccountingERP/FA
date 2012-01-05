@@ -429,7 +429,14 @@ function add_edit_combo($combo_name,$url,$key_param='',$restrict_pages='')
 		$key_param = ((strpos($url,'?')) ? '&' : '?') . $key_param;
 	}
 
-	$return_url = ($key_param) ?  "<a target = '_blank' href='$url${key_param}=' onclick=\"javascript:var combo_id=document.forms[0].$combo_name;openWindow(this.href+combo_id.options[combo_id.selectedIndex].value,this.target); return false;\" tabindex='-1'><img width='16' height='16' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'></a>" : "<a target = '_blank' href='$url${key_param}' onclick=\"javascript:openWindow(this.href,this.target); return false;\" tabindex='-1'><img width='16' height='16' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'></a>";
+	$href1 = "href='$url${key_param}='";
+	$href2 = "href='$url${key_param}'";
+	$onclick1 = "onclick=\"javascript:var sel=(document.forms[0].$combo_name.selectedIndex == -1 ? '' : document.forms[0].$combo_name.options[document.forms[0].$combo_name.selectedIndex].value);openWindow(this.href+sel,this.target); return false;\"";
+	$onclick2 = "onclick=\"javascript:openWindow(this.href,this.target); return false;\"";
+	$img = "<img width='12' height='12' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'>";
+	$return_url = ($key_param) ?  
+		"<a target = '_blank' $href1 $onclick1 tabindex='-1'>$img</a>" : 
+		"<a target = '_blank' $href2 $onclick2 tabindex='-1'>$img</a>"; 
 
 	// Don't pass edit button code If restrict_pages contains instructions but fails security check
 	if ($restrict_pages && strpos($restrict_pages, $page_security) === false) {
