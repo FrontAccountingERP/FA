@@ -417,33 +417,17 @@ function _format_add_curr($row)
 		'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
-function add_edit_combo($combo_name,$url,$key_param='',$restrict_pages='')
+function add_edit_combo($type)
 {
-	global $path_to_root, $page_security;
+	global $path_to_root, $popup_editors;
 
 	// Derive theme path
 	$theme_path = $path_to_root . '/themes/' . user_theme();
 
-	// Check if $url already has other parameters
-	if ($key_param) {
-		$key_param = ((strpos($url,'?')) ? '&' : '?') . $key_param;
-	}
-
-	$href1 = "href='$url${key_param}='";
-	$href2 = "href='$url${key_param}'";
-	$onclick1 = "onclick=\"javascript:var sel=(document.forms[0].$combo_name.selectedIndex == -1 ? '' : document.forms[0].$combo_name.options[document.forms[0].$combo_name.selectedIndex].value);openWindow(this.href+sel,this.target); return false;\"";
-	$onclick2 = "onclick=\"javascript:openWindow(this.href,this.target); return false;\"";
+	$key = $popup_editors[$type][1];
+	$onclick = "onclick=\"javascript:callEditor($key); return false;\"";
 	$img = "<img width='12' height='12' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'>";
-	$return_url = ($key_param) ?  
-		"<a target = '_blank' $href1 $onclick1 tabindex='-1'>$img</a>" : 
-		"<a target = '_blank' $href2 $onclick2 tabindex='-1'>$img</a>"; 
-
-	// Don't pass edit button code If restrict_pages contains instructions but fails security check
-	if ($restrict_pages && strpos($restrict_pages, $page_security) === false) {
-		return '';
-	}
-
-	return $return_url;
+	return "<a target = '_blank' href='#' $onclick tabindex='-1'>$img</a>"; 
 }
 
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
@@ -473,10 +457,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'show_inactive'=>$all
 		));
 	if ($editkey)
-	{
-		global $path_to_root;
-		$ret .= add_edit_combo('supplier_id',"$path_to_root/purchasing/manage/suppliers.php?popup=1",'supplier_id');		
-	}
+		$ret .= add_edit_combo('supplier');		
 	return $ret;
 }
 
@@ -528,10 +509,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'show_inactive' => $show_inactive
 	) );
 	if ($editkey)
-	{
-		global $path_to_root;
-		$ret .= add_edit_combo('customer_id',"$path_to_root/sales/manage/customers.php?popup=1", "debtor_no");
-	}	
+		$ret .= add_edit_combo('customer');
 	return $ret;
 }
 
@@ -582,8 +560,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 	) );
 	if ($editkey)
 	{
-		global $path_to_root;
-		$ret .= add_edit_combo('branch_id',"$path_to_root/sales/manage/customer_branches.php?popup=1",'SelectedBranch');
+		$ret .= add_edit_combo('branch');
 	}	
 	return $ret;
 }
@@ -782,10 +759,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'order' => array('c.description','stock_id')
 	  ), $opts) );
 	if ($editkey)
-	{
-		global $path_to_root;
-		$ret .= add_edit_combo('stock_id',"$path_to_root/inventory/manage/items.php?popup=1",'stock_id');		
-	}
+		$ret .= add_edit_combo('item');		
 	return $ret;
 	  
 }

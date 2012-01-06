@@ -168,8 +168,10 @@ var _w;
 function callEditor(key) {
   var el = document.getElementsByName(editors[key][1])[0]; 
   if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+  var left = (screen.width - editors[key][2]) / 2;
+  var top = (screen.height - editors[key][3]) / 2;
   _w = open(editors[key][0]+el.value+'&popup=1',
-	  "edit","scrollbars=yes,resizable=0,width="+editors[key][2]+",height="+editors[key][3]);
+	  "edit","scrollbars=yes,resizable=0,width="+editors[key][2]+",height="+editors[key][3]+",left="+left+",top="+top+",screenX="+left+",screenY="+top);
   if (_w.opener == null)
 	  _w.opener = self;
   editors._call = key; // store call point for passBack 
@@ -279,8 +281,10 @@ var inserts = {
 	'button[aspect=popup]': function(e) {
 		e.onclick = function() {
 			if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+			 var left = (screen.width - 800)/2;
+			 var top = (screen.height - 600)/2;
 			  _w = open(document.location+'popup=1',
-				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top=50,left=50");
+				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top="+top+",left="+left+",screenX="+left+",screenY="+top);
 			  if (_w.opener == null)
 				  _w.opener = self;
 			//  editors._call = key; // store call point for passBack 
