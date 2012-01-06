@@ -99,7 +99,7 @@ function get_customer_details($customer_id, $to=null, $all=true)
  			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
 			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)." ";
 	if (!$all)
-		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > 0.004 ";  
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > ".FLOAT_COMP_DELTA." ";  
 	$sql .= "GROUP BY
 			  ".TB_PREF."debtors_master.name,
 			  ".TB_PREF."payment_terms.terms,

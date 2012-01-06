@@ -59,9 +59,9 @@ function get_invoices($supplier_id, $to, $all=true)
 			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
 			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
 			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > 0.004 ";
+			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > ".FLOAT_COMP_DELTA." ";
 	if (!$all)
-		$sql .= "AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) - ".TB_PREF."supp_trans.alloc > 0.004 ";  
+		$sql .= "AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) - ".TB_PREF."supp_trans.alloc > ".FLOAT_COMP_DELTA." ";  
 	$sql .= "ORDER BY ".TB_PREF."supp_trans.tran_date";
 
 

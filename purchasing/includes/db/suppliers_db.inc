@@ -114,7 +114,7 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
 			 supp.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			 AND supp.supplier_id = $supplier_id ";
 	if (!$all)
-		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > 0.004 ";  
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA." ";  
 	$sql .= "GROUP BY
 			  supp.supp_name,
 			  ".TB_PREF."payment_terms.terms,

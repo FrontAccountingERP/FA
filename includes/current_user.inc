@@ -217,7 +217,7 @@ if (!floatcmp($value1, $value2))
 	compare value is 0
 */
 
-define('FLOAT_COMP_DELTA', 0.0000001);
+define('FLOAT_COMP_DELTA', 0.004);
 
 function floatcmp($a, $b)
 {
