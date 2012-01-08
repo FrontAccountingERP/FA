@@ -419,8 +419,10 @@ function _format_add_curr($row)
 
 function add_edit_combo($type)
 {
-	global $path_to_root, $popup_editors;
+	global $path_to_root, $popup_editors, $use_icon_for_editkey;
 
+	if (!isset($use_icon_for_editkey) || $use_icon_for_editkey==0)
+		return "";
 	// Derive theme path
 	$theme_path = $path_to_root . '/themes/' . user_theme();
 

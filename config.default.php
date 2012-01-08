@@ -68,6 +68,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$power_by 		= "FrontAccounting";
 	$power_url 		= "http://frontaccounting.com";
 
+	/* Use icon for editkey (=true) righ of combobox. 1 = use, 0 = do not use */
+	$use_icon_for_editkey = 0;
+
 	/* Creates automatic a default branch with contact. Value 0 do not create auto branch */
 	$auto_create_branch = 1;
 
