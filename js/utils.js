@@ -35,7 +35,7 @@ function disp_msg(msg, cl) {
 // 
 JsHttpRequest.request= function(trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
-	tout = tout || 6000;	// default timeout value
+	tout = tout || 10000;	// default timeout value
 	document.getElementById('msgbox').innerHTML='';
 	set_mark(tout>10000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 0);
@@ -124,7 +124,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 				  window.location = data;
 			  } else if(cmd=='pu') {	// pop-up
 			  	  newwin = 1;
-			  	  window.open(data,'REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+			  	  window.open(data,'REP_WINDOW','toolbar=no,scrollbars=yes,resizable=yes,menubar=no');
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
@@ -171,8 +171,11 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 				if(upload) { // for form containing file inputs collect all 
 					// form elements and add value of trigger submit button
 					// (internally form is submitted via form.submit() not button click())
-					q[name] = submitObj.type=='submit' && el==submitObj ? el.value : el;
-					continue;
+					if (submitObj.type=='submit' && el==submitObj)
+					{
+						q[name] =  el.value
+						continue;
+					}
 				}
 				if (el.type )
 				  if( 
@@ -194,6 +197,9 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 								q[name].push(el.options[j].value);
 						}
 					}
+					else
+					if (el.type=='file')
+						q[name] = el
 					else
 					{
 						q[name] = el.value;
