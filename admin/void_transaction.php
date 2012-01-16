@@ -121,6 +121,8 @@ function select_link($row)
 {
 	if (!isset($row['type']))
 		$row['type'] = $_POST['filterType'];
+	if (!is_date_in_fiscalyear($row['trans_date'], true))
+		return "";
   	return button('Edit'.$row["trans_no"], _("Select"), _("Select"), ICON_EDIT);
 }
 
