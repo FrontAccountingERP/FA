@@ -31,7 +31,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote, $print_invoice_no;
+	global $path_to_root, $print_as_quote, $print_invoice_no, $no_zero_lines_amount;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -111,11 +111,14 @@ function print_sales_quotations()
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
 			$newrow = $rep->row;
 			$rep->row = $oldrow;
-			$rep->TextCol(2, 3,	$DisplayQty, -2);
-			$rep->TextCol(3, 4,	$myrow2['units'], -2);
-			$rep->TextCol(4, 5,	$DisplayPrice, -2);
-			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-			$rep->TextCol(6, 7,	$DisplayNet, -2);
+			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+			{
+				$rep->TextCol(2, 3,	$DisplayQty, -2);
+				$rep->TextCol(3, 4,	$myrow2['units'], -2);
+				$rep->TextCol(4, 5,	$DisplayPrice, -2);
+				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+				$rep->TextCol(6, 7,	$DisplayNet, -2);
+			}	
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))

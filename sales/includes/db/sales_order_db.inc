@@ -327,8 +327,9 @@ function get_sales_order_details($order_no, $trans_type) {
 		.TB_PREF."sales_order_details.quantity,
 		  discount_percent,
 		  qty_sent as qty_done, "
-		.TB_PREF."stock_master.units,
-		".TB_PREF."stock_master.material_cost + "
+		.TB_PREF."stock_master.units,"
+		.TB_PREF."stock_master.mb_flag,"
+		.TB_PREF."stock_master.material_cost + "
 			.TB_PREF."stock_master.labour_cost + "
 			.TB_PREF."stock_master.overhead_cost AS standard_cost
 	FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master

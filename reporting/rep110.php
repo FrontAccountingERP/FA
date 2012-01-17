@@ -34,7 +34,7 @@ print_deliveries();
 
 function print_deliveries()
 {
-	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates;
+	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -127,13 +127,16 @@ function print_deliveries()
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
-				$rep->TextCol(2, 3,	$DisplayQty, -2);
-				$rep->TextCol(3, 4,	$myrow2['units'], -2);
-				if ($packing_slip == 0)
-				{
-					$rep->TextCol(4, 5,	$DisplayPrice, -2);
-					$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-					$rep->TextCol(6, 7,	$DisplayNet, -2);
+				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+				{			
+					$rep->TextCol(2, 3,	$DisplayQty, -2);
+					$rep->TextCol(3, 4,	$myrow2['units'], -2);
+					if ($packing_slip == 0)
+					{
+						$rep->TextCol(4, 5,	$DisplayPrice, -2);
+						$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+						$rep->TextCol(6, 7,	$DisplayNet, -2);
+					}
 				}	
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
