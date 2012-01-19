@@ -365,64 +365,61 @@ start_form();
 	read_customer_data();
 
 	set_global_customer($_POST['customer_id']);
-	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	{
-		end_outer_table();
-		display_error(_("This customer account is on hold."));
-	} else {
-		$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
+	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
+		display_warning(_("This customer account is on hold."));
+	$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
-		table_section(2);
-		if (!list_updated('bank_account'))
-			$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);	
-			
-		//Chaitanya : 13-OCT-2011 - Is AJAX call really needed ???
-		//bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, false);
+	table_section(2);
+	if (!list_updated('bank_account'))
+		$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);	
 
-		text_row(_("Reference:"), 'ref', null, 20, 40);
+	//Chaitanya : 13-OCT-2011 - Is AJAX call really needed ???
+	//bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, false);
 
-		table_section(3);
+	text_row(_("Reference:"), 'ref', null, 20, 40);
 
-		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+	table_section(3);
 
-		$comp_currency = get_company_currency();
-		$cust_currency = get_customer_currency($_POST['customer_id']);
-		$bank_currency = get_bank_account_currency($_POST['bank_account']);
+	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-		if ($cust_currency != $bank_currency) {
-			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
-		}
+	$comp_currency = get_company_currency();
+	$cust_currency = get_customer_currency($_POST['customer_id']);
+	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-		amount_row(_("Bank Charge:"), 'charge');
-
-		end_outer_table(1);
-
-		if ($cust_currency == $bank_currency) {
-	  		div_start('alloc_tbl');
-			show_allocatable(false);
-			div_end();
-		}
-
-		start_table(TABLESTYLE, "width=60%");
-
-		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
-		amount_row(_("Amount of Discount:"), 'discount');
-
-		amount_row(_("Amount:"), 'amount');
-
-		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-		end_table(1);
-
-		if ($cust_currency != $bank_currency)
-			display_note(_("Amount and discount are in customer's currency."));
-
-		br();
-
-		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-			submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
-		else
-			submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+	if ($cust_currency != $bank_currency) {
+		exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 	}
+
+	amount_row(_("Bank Charge:"), 'charge');
+
+	end_outer_table(1);
+
+	if ($cust_currency == $bank_currency) {
+		div_start('alloc_tbl');
+		show_allocatable(false);
+		div_end();
+	}
+
+	start_table(TABLESTYLE, "width=60%");
+
+	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
+	amount_row(_("Amount of Discount:"), 'discount');
+
+	amount_row(_("Amount:"), 'amount');
+
+	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+	end_table(1);
+
+	if ($cust_currency != $bank_currency)
+		display_note(_("Amount and discount are in customer's currency."));
+
+	br();
+
+	if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
+	else
+		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 
 	br();
 
