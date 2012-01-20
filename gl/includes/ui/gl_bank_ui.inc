@@ -14,6 +14,7 @@ function display_bank_header(&$order)
 	global $Ajax, $Refs;
 	$payment = $order->trans_type == ST_BANKPAYMENT;
 
+	$customer_error = false;
 	div_start('pmt_header');
 
 	start_outer_table(TABLESTYLE2, "width=90%"); // outer table
@@ -74,6 +75,17 @@ function display_bank_header(&$order)
 				$_POST['PersonDetailID'] = ANY_NUMERIC;
         		hidden('PersonDetailID');
         	}
+        	$trans = get_customer_habit($_POST['person_id']); // take care of customers on hold
+        	if ($trans['dissallow_invoices'] != 0)
+        	{
+        		if ($payment)
+        		{
+        			$customer_error = true;
+					display_error(_("This customer account is on hold."));
+        		}
+        		else			
+					display_warning(_("This customer account is on hold."));
+        	}		
     		break;
 
 		case PT_QUICKENTRY :
@@ -114,6 +126,12 @@ function display_bank_header(&$order)
 	end_outer_table(1); // outer table
 
 	div_end();
+	if ($customer_error)
+	{
+		end_form();
+		end_page();
+		exit;
+	}
 }
 //---------------------------------------------------------------------------------
 
