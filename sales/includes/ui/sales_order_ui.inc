@@ -166,7 +166,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		{
 			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
-					$_POST['Location'], $_POST['OrderDate']);
+					$_POST['Location'], $_POST['delivery_date']);
 				if ($stock_item->qty_dispatched > $qoh) 
 				{
 					// oops, we don't have enough of one of the component items
