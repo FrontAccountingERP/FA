@@ -474,6 +474,7 @@ class gettext_php_support_parser
      */
     function _parse_line($line, $nbr)
     {
+        $line = str_replace("\\\"", "'", $line);
         if (preg_match('/^\s*?#/', $line)) { return; }
         if (preg_match('/^\s*?msgid \"(.*?)(?!<\\\)\"/', $line, $m)) {
             $this->_store_key();
@@ -559,8 +560,6 @@ function set_ext_domain($path='') {
 		array_shift($domain_stack);
 		$path = $domain_stack[0];
 	}
-	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
-
 
 	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
 	// ignore change when extension does not provide translation structure
