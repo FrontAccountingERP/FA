@@ -320,7 +320,10 @@ class gettext_php_support extends gettext_native_support
             $this->_jobs[] = array($domain, $path); 
             return;
         }
-
+        // Don't fill the domains with false data
+       	if (strpos($domain, $this->_lang_code) === false)
+        	return;
+ 
         $err = $this->_load_domain($domain, $path);
         if ($err != 0) 
         {
@@ -474,7 +477,7 @@ class gettext_php_support_parser
      */
     function _parse_line($line, $nbr)
     {
-        $line = str_replace("\\\"", "'", $line);
+        $line = str_replace("\\\"", "'", $line); // Should be inside preg_match, but I couldn't find the solution. This works.
         if (preg_match('/^\s*?#/', $line)) { return; }
         if (preg_match('/^\s*?msgid \"(.*?)(?!<\\\)\"/', $line, $m)) {
             $this->_store_key();
@@ -562,8 +565,8 @@ function set_ext_domain($path='') {
 	}
 
 	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
-	// ignore change when extension does not provide translation structure
-	if (file_exists($lang_path))
+	// ignore change when extension does not provide translation structure and test for valid session.
+	if (file_exists($lang_path) && isset($_SESSION['get_text']))
 		$_SESSION['get_text']->add_domain($_SESSION['language']->code,
 			$lang_path, $path ? '' : $_SESSION['language']->version);
 }

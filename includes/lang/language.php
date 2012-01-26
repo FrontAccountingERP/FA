@@ -88,6 +88,8 @@ if (!function_exists("_"))
 {
 	function _($text) 
 	{
+		if (!isset($_SESSION['get_text'])) // Don't allow using session if not is net.
+			return $text;
 		$retVal = $_SESSION['get_text']->gettext($text);
 		if ($retVal == "")
 			return $text;
