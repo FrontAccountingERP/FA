@@ -107,7 +107,7 @@ if (!isset($installed_languages))
 	$installed_languages = array();
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
-$_SESSION['get_text']->add_domain( $_SESSION['language']->code, $path_to_root."/install/lang");
+$GetText->add_domain( $_SESSION['language']->code, $path_to_root."/install/lang");
 
 include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");

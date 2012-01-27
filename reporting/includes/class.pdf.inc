@@ -79,21 +79,21 @@ class Cpdf extends FPDI {
 	*/
 	function SetLang($code=null) 
 	{
-		global $installed_languages, $dflt_lang, $path_to_root, $local_path_to_root;
+		global $installed_languages, $dflt_lang, $path_to_root, $local_path_to_root, $GetText;
 
 		if (!$code)
 			$code = $dflt_lang;
 
 		$lang = array_search_value($code, $installed_languages, 'code');
-		$_SESSION['get_text']->set_language($lang['code'], strtoupper($lang['encoding']));
+		$GetText->set_language($lang['code'], strtoupper($lang['encoding']));
 
 		// $local_path_to_root is  set inside find_custom_file.
 		// Select extension domain if po file is provided
 		// otherwise use global translation.
 		if (file_exists($local_path_to_root.'/lang/'.$lang['code'].'/LC_MESSAGES/'.$lang['code'].'.po'))
-			$_SESSION['get_text']->add_domain($lang['code'], $local_path_to_root . "/lang");
+			$GetText->add_domain($lang['code'], $local_path_to_root . "/lang");
 		else
-			$_SESSION['get_text']->add_domain($lang['code'], $path_to_root . "/lang", @$lang['version']);
+			$GetText->add_domain($lang['code'], $path_to_root . "/lang", @$lang['version']);
 		// re-read translated sys names.
 		include($path_to_root.'/includes/sysnames.inc');
 

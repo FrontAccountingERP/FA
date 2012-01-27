@@ -75,11 +75,8 @@ class SessionManager
 		$_SESSION['OBSOLETE'] = true;
 		$_SESSION['EXPIRES'] = time() + 10;
 
-		// Create new session destroying the old one if posiible
-		if (phpversion() >= "5.1.0")
-			session_regenerate_id(true);
-		else	
-			session_regenerate_id();
+		// Create new session without destroying the old one
+		session_regenerate_id();
  
 		// Grab current session ID and close both sessions to allow other scripts to use them
 		$newSession = session_id();
@@ -299,8 +296,6 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 $Session_manager = new SessionManager();
 $Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
-//session_name('FA'.md5(dirname(__FILE__)));
-//session_start();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
