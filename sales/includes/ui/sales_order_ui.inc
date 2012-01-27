@@ -588,6 +588,7 @@ function display_delivery_details(&$order)
 		label_row(_("Cash account:"), $order->pos['bank_account_name']);
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 		end_table();
+		hidden('delivery_date', $order->due_date);
 	} else {
 		if ($order->trans_type==ST_SALESINVOICE)
 		{
