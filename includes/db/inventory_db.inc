@@ -382,7 +382,11 @@ function get_stock_moves($type, $type_no, $visible=false)
 function void_stock_move($type, $type_no)
 {
    
-    $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+    $sql = "SELECT stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price, 
+    	sum(qty) qty FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no)." 
+    	GROUP BY stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price HAVING sum(qty) <> 0";
+
+
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
     {
