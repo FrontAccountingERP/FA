@@ -10,6 +10,195 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-02-03 09:48 +0100 Joe Hunt
+(2963) Release 2.3.10
+ version.php
+
+2012-02-02 08:24 +0100 Joe Hunt
+(2962) Fixed small bugs in function void_stock_move in file /includes/db/inventory_db.inc.
+ includes/db/inventory_db.inc
+
+2012-01-27 14:37 +0100 Joe Hunt
+(2961) Changed session gettext to use a global variable instead for smaller footprints in session files.
+ admin/db/users_db.inc
+ admin/inst_lang.php
+ includes/lang/gettext.php
+ includes/lang/language.php
+ includes/session.inc
+ install/isession.inc
+ reporting/includes/class.pdf.inc
+
+2012-01-27 09:39 +0100 Joe Hunt
+(2960) Switching to cash sales in documents didn't preserve the delivery date.
+ sales/includes/ui/sales_order_ui.inc
+
+2012-01-26 23:22 +0100 Joe Hunt
+(2959) Fixed a session_regenerate_id error leaving session files in /tmp folder.
+ includes/lang/gettext.php
+ includes/lang/language.php
+ includes/session.inc
+
+2012-01-25 13:00 +0100 Joe Hunt
+(2958) Fixed a translation bug in gettext php, that could create huge session files left.
+ includes/lang/gettext.php
+
+2012-01-22 23:23 +0100 Joe Hunt
+(2957) 0001309: Insufficient Quantities "Red Marker" doesn't take into account dispatched quantity
+ sales/includes/ui/sales_order_ui.inc
+
+2012-01-22 09:23 +0100 Joe Hunt
+(2956) 0001307: Insufficent quantities "marker" use wrong date in Sales Order
+ sales/includes/ui/sales_order_ui.inc
+
+2012-01-20 09:47 +0100 Joe Hunt
+(2955) Rerun of void_transaction.php
+ admin/void_transaction.php
+
+2012-01-20 09:33 +0100 Joe Hunt
+(2954) Implemented error/warning for customer on hold in bank payment/deposit.
+ gl/includes/ui/gl_bank_ui.inc
+
+2012-01-19 16:16 +0100 Joe Hunt
+(2953) Customer Payment from customers on hold now only throws a warning. You can still pay.
+ sales/customer_payments.php
+
+2012-01-17 10:13 +0100 Joe Hunt
+(2952) Do not print zero lines amount of 0.00 in Sales Documents if service item, $no_zero_lines_amount. 1 = do not
+ config.default.php
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep111.php
+ sales/includes/db/cust_trans_details_db.inc
+ sales/includes/db/sales_order_db.inc
+
+2012-01-17 00:59 +0100 Joe Hunt
+(2951) 0001285: Restrict the voiding transaction of closed fiscal year
+ admin/void_transaction.php
+
+2012-01-08 23:29 +0100 Joe Hunt
+(2950) Option in config.php for using an icon for editkey after combobox.
+ config.default.php
+ includes/ui/ui_lists.inc
+
+2012-01-08 16:16 +0100 Janusz Dobrowolski
+(2949) Several imporvements in ui helpers (nonajax button for long processes, fixed radio button etc).
+ includes/ui/ui_input.inc
+ js/inserts.js
+ js/utils.js
+
+2012-01-03 16:12 +0100 Janusz Dobrowolski
+(2948) Gettext domain was not properly restored after invoking hook provided by extension.
+ includes/hooks.inc
+ includes/lang/gettext.php
+
+2012-01-03 16:06 +0100 Janusz Dobrowolski
+(2947) Back link on final edition page now properly redirects user to previous menu tab,  improved sales document edition control.
+ includes/main.inc
+ includes/page/footer.inc
+ includes/ui/ui_controls.inc
+ js/utils.js
+ sales/includes/sales_ui.inc
+
+2012-01-06 15:51 +0100 Joe Hunt
+(2946) Improved float compare for AR/AP ledgers.
+ includes/current_user.inc
+ purchasing/includes/db/supp_trans_db.inc
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep102.php
+ reporting/rep202.php
+ sales/includes/db/customers_db.inc
+
+2012-01-06 12:55 +0100 Joe Hunt
+(2945) Optimized editkey graphics by using JS callEditor instead.
+ includes/ui/ui_lists.inc
+ js/inserts.js
+
+2012-01-06 10:12 +0100 Joe Hunt
+(2944) 0001266: Delivery Location wrong when different from PO
+ purchasing/includes/ui/grn_ui.inc
+
+2012-01-05 11:38 +0100 Joe Hunt
+(2943) Fixed a small bug in graphics editkeys (when search lists are enabled)
+ includes/ui/ui_lists.inc
+
+2012-01-05 00:33 +0100 Joe Hunt
+(2942) Do not allow editing of allocated sales invoices in Journal Inquiry.
+ gl/inquiry/journal_inquiry.php
+
+2012-01-04 14:25 +0100 Joe Hunt
+(2941) Improved float compare in certain files (AR/AP ledger)
+ includes/current_user.inc
+ reporting/rep101.php
+ reporting/rep102.php
+ reporting/rep201.php
+ reporting/rep202.php
+ sales/inquiry/customer_inquiry.php
+
+2012-01-04 11:19 +0100 Joe Hunt
+(2940) Added graphic edit/add icons in lists with $editkey.
+ includes/session.inc
+ includes/ui/ui_lists.inc
+ inventory/manage/items.php
+ purchasing/manage/suppliers.php
+ sales/manage/customer_branches.php
+ sales/manage/customers.php
+
+2011-12-26 10:16 +0100 Joe Hunt
+(2939) Multiple email accounts on contacts didn't work in sales documents
+ reporting/includes/pdf_report.inc
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep111.php
+ reporting/rep113.php
+
+2011-12-16 21:05 +0100 Janusz Dobrowolski
+(2938) [0001088] Database export optimization (minimized restore time).
+ admin/db/maintenance_db.inc
+ sales/inquiry/customer_inquiry.php
+
+2011-12-16 10:21 +0100 Joe Hunt
+(2937) Added memo/comments print in remittance and receipt. Optimized memo/prints in other docs.
+ reporting/rep107.php
+ reporting/rep110.php
+ reporting/rep112.php
+ reporting/rep113.php
+ reporting/rep210.php
+ reporting/rep409.php
+
+2011-12-08 00:46 +0100 Joe Hunt
+(2936) When sending documents by email, the email address follows the status message.
+ reporting/includes/pdf_report.inc
+
+2011-12-08 00:30 +0100 Joe Hunt
+(2935) Put correct bank account on receipt.
+ reporting/rep112.php
+
+2011-12-07 16:16 +0100 Joe Hunt
+(2934) Put correct bank account on remittance.
+ reporting/rep210.php
+
+2011-11-26 22:57 +0100 Joe Hunt
+(2933) Salesman listing not adding over page break in report.
+ reporting/rep105.php
+ reporting/rep106.php
+
+2011-11-25 13:48 +0100 Joe Hunt
+(2932) Small change in voiding stock move.
+ includes/db/inventory_db.inc
+
+2011-11-25 08:49 +0100 Joe Hunt
+(2931) Correction related to tax Included GRN Voiding
+ purchasing/includes/db/invoice_db.inc
+
+2011-11-24 09:54 +0100 Joe Hunt
+(2930) Release 2.3.9 and rerun of some files
+ CHANGELOG.txt
+ access/logout.php
+ includes/ui/ui_controls.inc
+ version.php
+
 2011-11-23 23:56 +0100 Joe Hunt
 (2929) Changed TYPE= to ENGINE= ins core COA scripts. TYPE= was deprecated since 4.1.
  sql/en_US-demo.sql
