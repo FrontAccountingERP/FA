@@ -774,14 +774,8 @@ function price_in_words($amount, $document=0)
 	if ($dec > 0)
 	{
 		$divisor = pow(10, $dec);
-		// algorithm rewritten due to a bug in sprintf (wrong with frac, 29, 57 and more).
         $frac = round2($amount - floor($amount), $dec) * $divisor;
-        for ($div = $divisor / 10; $div > 1; $div /= 10)
-        {
-        	if ($frac < $div)
-        		$frac = "0" . $frac;
-        }		
-		//$frac = sprintf("%0{$dec}d", $frac);
+		$frac = sprintf("%0{$dec}d", round2($frac, 0));
 		$and = _("and");
     	$frac = " $and $frac/$divisor";
     }
