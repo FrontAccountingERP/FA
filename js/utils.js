@@ -119,7 +119,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			  } else if(cmd=='fc') { // set focus
 				  _focus = data;
 			  } else if(cmd=='js') {	// evaluate js code
-				  eval(data);
+					setTimeout(function(){eval(data)}, 200); // timeout required by IE7/8
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
 			  } else if(cmd=='pu') {	// pop-up

@@ -508,7 +508,7 @@ function setHotKeys() {
 			ev.returnValue = false;
 			return false;
 		}
-		if (editors && editors[key]) {
+		if (editors!=='undefined' && editors[key]) {
 			callEditor(key);
 			return stopEv(ev); // prevent default binding
 		} 
