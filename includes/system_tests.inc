@@ -228,7 +228,7 @@ function tst_tmpdir()
 
 function tst_langs($install)
 {
-	global $installed_languages, $path_to_root;
+	global $installed_languages, $path_to_root, $GetText;
 	
 	$test['descr'] = _('Language configuration consistency');
 	$test['type'] = 3;
@@ -269,7 +269,7 @@ function tst_langs($install)
 			$test['result'] = false;
 			$test['comments'][] = sprintf( _('Missing %s translation file.'), $file);
 		}
-		if (!$_SESSION['get_text']->check_support($lang['code'], $lang['encoding']))
+		if (!$GetText->check_support($lang['code'], $lang['encoding']))
 		{
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_('Missing system locale: %s'), $lang['code'].".".$lang['encoding']);
