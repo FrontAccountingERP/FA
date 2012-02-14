@@ -1366,7 +1366,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_order_details` (
   `quantity_ordered` double NOT NULL default '0',
   `quantity_received` double NOT NULL default '0',
   PRIMARY KEY  (`po_detail_item`),
-  KEY `order` (`order_no`,`po_detail_item`)
+  KEY `order` (`order_no`,`po_detail_item`),
+  KEY `itemcode` (`item_code`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=6 ;
 
 --
@@ -1571,7 +1572,8 @@ CREATE TABLE IF NOT EXISTS `0_sales_order_details` (
   `quantity` double NOT NULL default '0',
   `discount_percent` double NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `sorder` (`trans_type`,`order_no`)
+  KEY `sorder` (`trans_type`,`order_no`),
+  KEY `stkcode` (`stk_code`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=6 ;
 
 --
