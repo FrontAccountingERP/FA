@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_tax_group($name, $taxes, $rates, $tax_shippings)
+function add_tax_group($name, $taxes, $tax_shippings)
 {
 	begin_transaction();
 
@@ -18,12 +18,12 @@ function add_tax_group($name, $taxes, $rates, $tax_shippings)
 	
 	$id = db_insert_id();
 	
-	add_tax_group_items($id, $taxes, $rates, $tax_shippings);	
+	add_tax_group_items($id, $taxes, $tax_shippings);	
 	
 	commit_transaction();	
 }
 
-function update_tax_group($id, $name, $taxes, $rates, $tax_shippings)
+function update_tax_group($id, $name, $taxes, $tax_shippings)
 {
 	begin_transaction();	
 
@@ -31,7 +31,7 @@ function update_tax_group($id, $name, $taxes, $rates, $tax_shippings)
 	db_query($sql, "could not update tax group");
 	
 	delete_tax_group_items($id);
-	add_tax_group_items($id, $taxes, $rates, $tax_shippings);	
+	add_tax_group_items($id, $taxes, $tax_shippings);	
 	
 	commit_transaction();			
 }
@@ -66,12 +66,12 @@ function delete_tax_group($id)
 	commit_transaction();
 }
 
-function add_tax_group_items($id, $items, $rates, $tax_shippings)
+function add_tax_group_items($id, $items, $tax_shippings)
 {
 	for ($i=0; $i < count($items); $i++) 
 	{
-		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id, rate, tax_shipping)
-			VALUES (".db_escape($id).",  ".db_escape($items[$i]).", " . $rates[$i] .", " . $tax_shippings[$i] .")";
+		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id, tax_shipping)
+			VALUES (".db_escape($id).",  ".db_escape($items[$i]).", " . $tax_shippings[$i] .")";
 		db_query($sql, "could not add item tax group item");					
 	}		
 }

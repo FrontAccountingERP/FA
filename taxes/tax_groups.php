@@ -45,25 +45,23 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 		// create an array of the taxes and array of rates
     	$taxes = array();
-    	$rates = array();
     	$tax_shippings = array();
 
 		while (($id = find_submit('tax_type_id'))!=-1)
 		{
        		$taxes[] = $id;
-			$rates[] = get_tax_type_default_rate($id);
 			$tax_shippings[] = check_value('tax_shipping'.$id);
 			unset($_POST['tax_type_id' . $id]);
 			unset($_POST['tax_shipping' . $id]);
 		}
     	if ($selected_id != -1) 
     	{
-	   		update_tax_group($selected_id, $_POST['name'], $taxes, $rates, $tax_shippings);
+	   		update_tax_group($selected_id, $_POST['name'], $taxes, $tax_shippings);
 			display_notification(_('Selected tax group has been updated'));
     	} 
     	else 
     	{
-	   		add_tax_group($_POST['name'], $taxes, $rates, $tax_shippings);
+	   		add_tax_group($_POST['name'], $taxes, $tax_shippings);
 			display_notification(_('New tax group has been added'));
     	}
 
