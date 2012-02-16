@@ -347,5 +347,20 @@ function get_bank_account_limit($account, $date, $user=null)
 		return null;
 	return max(0, get_balance_before_for_bank_account($account, add_days($date,1))); // in case of manco made before the check was implemented
 }
+ 
+function identify_bank_account($account_number)
+{
+	$number = db_escape($account_number);
+	$sql = "(SELECT id AS id, ".BO_COMPANY." AS type FROM ".TB_PREF."bank_accounts WHERE REPLACE(bank_account_number,' ', '')=$number)";
+	$sql .= " UNION (SELECT supplier_id AS id, ".BO_SUPPLIER." AS type FROM ".TB_PREF."suppliers WHERE REPLACE(bank_account,' ', '')=$number)";
+	$sql .= " UNION (SELECT branch_code AS id, ".BO_CUSTBRANCH." AS type FROM ".TB_PREF."cust_branch WHERE REPLACE(bank_account,' ', '')=$number)";
+
+	$result = db_query($sql, 'bank account identification failed');
+
+	if (db_num_rows($result))
+		return db_fetch($result);
+	else
+		return null;
+}
 
 ?>
