@@ -30,7 +30,9 @@ class fa2_4 {
 		if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
 			set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
 		}
-		if ($this->update_workorders())
+		$result = $this->update_workorders();
+		if ($result)
+			$result = $this->do_cleanup();
 //		return  update_company_prefs(array('version_id'=>$db_version));
 		return true;
 	}
@@ -82,6 +84,12 @@ class fa2_4 {
 			if (!db_query($sql2)) return false;
 		}
 		return true;
+	}
+
+	function do_cleanup()
+	{
+		$sql = "ALTER TABLE `".TB_PREF."tax_group_items` DROP COLUMN `rate`";
+		return db_query($sql);
 	}
 }
 
