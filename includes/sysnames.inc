@@ -16,7 +16,7 @@
 //
 global $systypes_array, $bank_account_types, $bank_transfer_types, 
 	$payment_person_types, $wo_types_array, $wo_cost_types, $class_types,
-	$quick_actions, $quick_entry_types, $stock_types, $tag_types;
+	$quick_actions, $quick_entry_types, $stock_types, $tag_types, $bank_owner;
 
 $systypes_array = array (
 	ST_JOURNAL => _("Journal Entry"),
@@ -187,6 +187,14 @@ $pterm_types = array(
 $tax_algorithms = array( 
 	TCA_LINES => _("Sum per line taxes"), 
 	TCA_TOTALS => _("Taxes from totals")
+);
+//----------------------------------------------------------------------------------
+
+$bank_owner_types = array(
+	BO_UNKNOWN => _("Unknown"),
+	BO_COMPANY => _("Company"),
+	BO_CUSTBRANCH => _("Customer"),
+	BO_SUPPLIER => _("Supplier")
 );
 
 ?>

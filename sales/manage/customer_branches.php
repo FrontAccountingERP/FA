@@ -81,7 +81,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
 				$_POST['default_location'], $_POST['br_post_address'], $_POST['disable_trans'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
 //			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 //				'cust_branch', 'branch_code');
 
@@ -93,7 +93,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
 				$_POST['default_location'], $_POST['br_post_address'], 0, $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
 			$selected_id = db_insert_id();
 
 			add_crm_person($_POST['contact_name'], $_POST['contact_name'], '', $_POST['br_post_address'], 
@@ -204,6 +204,7 @@ function branch_settings($selected_id) {
 		    $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
 			$_POST['group_no']  = $myrow["group_no"];
 			$_POST['notes']  = $myrow["notes"];
+			$_POST['bank_account']  = $myrow["bank_account"];
 
 		}
 	}
@@ -224,7 +225,7 @@ function branch_settings($selected_id) {
 
 			// We use the Item Sales Account as default!
 		    // $_POST['sales_account'] = $company_record["default_sales_act"];
-		    $_POST['sales_account'] = $_POST['notes']  = '';
+		    $_POST['sales_account'] = $_POST['notes']  = $_POST['bank_account'] = '';
 		    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 		    $_POST['receivables_account'] = $company_record['debtors_act'];
 		    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
@@ -251,6 +252,7 @@ function branch_settings($selected_id) {
 	gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
 	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account', null, true);
 	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
+	text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
 
 	table_section(2);
 

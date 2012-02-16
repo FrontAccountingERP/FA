@@ -306,6 +306,13 @@ define('PTT_FOLLOWING', 4);
 
 define('TCA_TOTALS', 1); // taxes are calculated from respective net totals for all lines
 define('TCA_LINES', 2); // taxes calculated for every line, then summed
+//
+//	Bank account owner types
+//
+define('BO_UNKNOWN', 0);
+define('BO_COMPANY', 1);
+define('BO_CUSTBRANCH', 2);
+define('BO_SUPPLIER', 3);
 
 include_once($path_to_root . '/includes/sysnames.inc');
 

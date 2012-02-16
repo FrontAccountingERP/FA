@@ -611,6 +611,7 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
+  `bank_account` varchar(60) DEFAULT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),
@@ -622,9 +623,9 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
 -- Dumping data for table `0_cust_branch`
 --
 
-INSERT INTO `0_cust_branch` VALUES(1, 1, 'Beefeater Ltd.', 'Beefeater', '', 1, 1, 'Main Branch', 'DEF', 2, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', 0);
-INSERT INTO `0_cust_branch` VALUES(2, 2, 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', 0);
-INSERT INTO `0_cust_branch` VALUES(3, 3, 'Brezan', 'Brezan', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', 0);
+INSERT INTO `0_cust_branch` VALUES(1, 1, 'Beefeater Ltd.', 'Beefeater', '', 1, 1, 'Main Branch', 'DEF', 2, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
+INSERT INTO `0_cust_branch` VALUES(2, 2, 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '','', 0);
+INSERT INTO `0_cust_branch` VALUES(3, 3, 'Brezan', 'Brezan', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
 
 -- --------------------------------------------------------
 

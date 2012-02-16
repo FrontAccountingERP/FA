@@ -576,6 +576,7 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
+  `bank_account` varchar(60) DEFAULT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),

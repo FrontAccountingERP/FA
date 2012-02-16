@@ -37,3 +37,4 @@ ALTER TABLE `0_tax_group_items` DROP COLUMN `rate`;
 ALTER TABLE `0_sales_order_details` ADD KEY `stkcode` (`stk_code`);
 ALTER TABLE `0_purch_order_details` ADD KEY `itemcode` (`item_code`);
 ALTER TABLE `0_sys_prefs` CHANGE `value` `value` TEXT NOT NULL DEFAULT '';
+ALTER TABLE `0_cust_branch` ADD COLUMN `bank_account` varchar(60) DEFAULT NULL AFTER `notes`;
