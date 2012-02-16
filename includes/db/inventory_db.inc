@@ -166,18 +166,21 @@ function get_deliveries_between($stock_id, $from, $to)
 function get_deliveries_from_trans($stock_id, $from)
 {
 	// -ve qty is delivery either by ST_CUSTDELIVERY or inventory adjustment
-	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
-		WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
-			trans_id>='$from' GROUP BY stock_id";
+    //Price for GRN and SUPPCREDIT and std_cost for other trans_types
+    $sql = "SELECT SUM(-qty), SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost))
+        FROM ".TB_PREF."stock_moves
+        WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
+            trans_id>='$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
-	
-	$sql = "SELECT standard_cost FROM ".TB_PREF."stock_moves
-		WHERE stock_id=".db_escape($stock_id)
-			." AND trans_id ='$from'";
-	$result = db_query($sql, "The deliveries could not be updated");
-	$cost = db_fetch_row($result);	
-	
+
+    $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)
+        FROM ".TB_PREF."stock_moves
+        WHERE stock_id=".db_escape($stock_id)
+            ." AND trans_id ='$from'";
+    $result = db_query($sql, "The deliveries could not be updated");
+    $cost = db_fetch_row($result);
+
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND
@@ -271,7 +274,7 @@ function get_stock_gl_code($stock_id)
 
 function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 {
-	//If negative adjustment result in negative or zero inventory 
+	//If negative adjustment result in negative or zero inventory
 	//then difference should be adjusted
 	$qoh = get_qoh_on_date($stock_id);
 
@@ -378,8 +381,10 @@ function get_stock_moves($type, $type_no, $visible=false)
 
 function void_stock_move($type, $type_no)
 {
+    $sql = "SELECT stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price, 
+    	sum(qty) qty FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no)." 
+    	GROUP BY stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price HAVING sum(qty) <> 0";
 
-    $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
     {
@@ -388,7 +393,7 @@ function void_stock_move($type, $type_no)
 		{
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
-			$types = array(ST_SUPPCREDIT);
+			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
 			if (in_array($type,$types))
 				$trans_rate = $row["price"];
 			else
@@ -397,7 +402,7 @@ function void_stock_move($type, $type_no)
 			update_average_material_cost(0, $row["stock_id"],
 				$trans_rate, -$row["qty"], sql2date($row["tran_date"]));
 		}
-		
+
 		//Post stock move for service items also
         add_stock_move($type, $row["stock_id"], $type_no, $row["loc_code"],
     		sql2date($row["tran_date"]), $row["reference"], -$row["qty"]

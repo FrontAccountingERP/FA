@@ -211,6 +211,20 @@ function number_format2($number, $decimals=0)
 	return $decimals==='max' ? rtrim($num, '0') : $num;
 
 }
+
+/* price/float comparision helper to be used in any suspicious place for zero values? 
+usage:
+if (!floatcmp($value1, $value2)) 
+	compare value is 0
+*/
+
+define('FLOAT_COMP_DELTA', 0.004);
+
+function floatcmp($a, $b)
+{
+    return $a - $b > FLOAT_COMP_DELTA ? 1 : $b - $a > FLOAT_COMP_DELTA ? -1 : 0;
+}
+
 //
 //	Current ui mode.
 //

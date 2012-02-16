@@ -26,19 +26,19 @@ define('GETTEXT_NATIVE', 1);
 define('GETTEXT_PHP', 2);
 
 function get_text_init($managerType = GETTEXT_NATIVE) {
-
-	if (!isset($_SESSION['get_text'])) {
+	global $GetText;
+	if (!isset($GetText)) {
 
         if ($managerType == GETTEXT_NATIVE) 
         {
             if (function_exists('gettext')) 
             {
-                $_SESSION['get_text'] = new gettext_native_support();
+                $GetText = new gettext_native_support();
                 return;
             }
         }
         // fail back to php support 
-		$_SESSION['get_text'] = new gettext_php_support();
+		$GetText = new gettext_php_support();
 	}
 }
 
@@ -190,7 +190,7 @@ class gettext_native_support
      */
     function gettext($key)
     {
-        $value = $this->_get_translation($key);
+    	$value = $this->_get_translation($key);
         if ($value === false) {
             $str = sprintf('Unable to locate gettext key "%s"', $key);
             //$err = new GetText_Error($str);
@@ -320,7 +320,10 @@ class gettext_php_support extends gettext_native_support
             $this->_jobs[] = array($domain, $path); 
             return;
         }
-
+        // Don't fill the domains with false data, it increased the error.log
+       	if (strpos($domain, $this->_lang_code) === false)
+        	return;
+ 
         $err = $this->_load_domain($domain, $path);
         if ($err != 0) 
         {
@@ -357,7 +360,6 @@ class gettext_php_support extends gettext_native_support
         $d = new gettext_domain();
         $d->name = $domain;
         $d->path = $path;
-        
         if (!file_exists($php_domain) || (filemtime($php_domain) < filemtime($src_domain))) 
         {
             
@@ -474,6 +476,7 @@ class gettext_php_support_parser
      */
     function _parse_line($line, $nbr)
     {
+        $line = str_replace("\\\"", "'", $line); // Should be inside preg_match, but I couldn't find the solution. This works.
         if (preg_match('/^\s*?#/', $line)) { return; }
         if (preg_match('/^\s*?msgid \"(.*?)(?!<\\\)\"/', $line, $m)) {
             $this->_store_key();
@@ -549,12 +552,21 @@ class gettext_php_support_compiler
 	Set current gettext domain path
 */
 function set_ext_domain($path='') {
-	global $path_to_root;
+	global $path_to_root, $GetText;
+	static $domain_stack = array('');
+
+	if ($path)	// save path on domain stack
+		array_unshift($domain_stack,  $path);
+	else
+	{
+		array_shift($domain_stack);
+		$path = $domain_stack[0];
+	}
 
 	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
-	// ignore change when extension does not provide translation structure
-	if (file_exists($lang_path))
-		$_SESSION['get_text']->add_domain($_SESSION['language']->code,
+	// ignore change when extension does not provide translation structure and test for valid gettext.
+	if (file_exists($lang_path) && isset($GetText))
+		$GetText->add_domain($_SESSION['language']->code,
 			$lang_path, $path ? '' : $_SESSION['language']->version);
 }
 ?>

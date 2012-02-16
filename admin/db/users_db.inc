@@ -89,8 +89,7 @@ function get_user($id)
 }
 
 //-----------------------------------------------------------------------------------------------
-//	This function is necessary for admin prefs update after upgrade from 2.1
-//
+
 function get_user_by_login($user_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id=".db_escape($user_id);
@@ -130,7 +129,6 @@ function get_user_for_login($user_id, $password)
 
 function get_user_auth($user_id, $password)
 {
-	set_global_connection();
 
 	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
 		." password=".db_escape($password);
@@ -162,10 +160,10 @@ function check_user_activity($id)
 //-----------------------------------------------------------------------------------------------
 function show_users_online()
 {
-	global $show_users_online, $db;
+	global $show_users_online, $db, $GetText;
 	
 	if (!isset($show_users_online) || $show_users_online == 0 || !defined('TB_PREF') || 
-		!isset($_SESSION['get_text']) || !isset($db))
+		!isset($GetText) || !isset($db))
 		return "";
 	$result = db_query("SHOW TABLES LIKE '".TB_PREF."useronline'");	
 	if (db_num_rows($result) == 1)

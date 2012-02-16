@@ -112,6 +112,7 @@ function hidden($name, $value=null, $echo=true)
 		'selector' - ditto with closing current popup editor window
 		'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
 		'process' - displays progress bar during call; optional icon
+		'nonajax' - ditto, non-ajax submit
 
 	$atype can contain also multiply type selectors separated by space, 
 	however make sense only combination of 'process' and one of defualt/selector/cancel
@@ -141,6 +142,9 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 
 				case 'cancel':
 					if ($icon===false) $icon=ICON_ESCAPE; break;
+
+				case 'nonajax':
+					$atype = false;
 			}
 		}
 	}
@@ -379,7 +383,10 @@ function check_row($label, $name, $value=null, $submit_on_change=false, $title=f
 }
 
 //-----------------------------------------------------------------------------------
-function radio($label, $name, $value, $selected, $submit_on_change=false) {
+function radio($label, $name, $value, $selected=null, $submit_on_change=false)
+{
+	if (!isset($selected))
+		$selected = get_post($name) == $value;
 
 	if ($submit_on_change === true)
 		$submit_on_change = 
@@ -954,7 +961,7 @@ function edit_trans_link($trans_type, $trans_no, $url='')
 function bank_balance_row($bank_acc, $parms='')
 {
 	global $path_to_root;
-	
+
 	$to = add_days(Today(), 1);
 	$bal = get_balance_before_for_bank_account($bank_acc, $to);
 	label_row( _("Bank Balance:"),

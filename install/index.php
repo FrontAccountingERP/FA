@@ -23,7 +23,8 @@ include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/system_tests.inc");
 include($path_to_root . "/admin/db/maintenance_db.inc");
 include($path_to_root . "/includes/packages.inc");
-@include($path_to_root . "/installed_extensions.php");
+if (file_exists($path_to_root . "/installed_extensions.php"))
+	include($path_to_root . "/installed_extensions.php");
 //-------------------------------------------------------------------------------------------------
 
 function subpage_title($txt) 
@@ -173,11 +174,10 @@ function do_install() {
 			return false;
 		}
 		// update default language
-		include_once($path_to_root . "/lang/installed_languages.inc");
+		if (file_exists($path_to_root . "/lang/installed_languages.inc"))
+			include_once($path_to_root . "/lang/installed_languages.inc");
 		$dflt_lang = $_POST['lang'];
 		write_lang();
-		if (!isset($installed_extensions))
-			update_extensions(array());
 		return true;
 	}
 	return false;
@@ -262,11 +262,11 @@ elseif(get_post('install_coas'))
 			$ret &= install_extension($package);
 		}
 	if ($ret) {
-		@include($path_to_root.'/installed_extensions.php');
+		if (file_exists($path_to_root . '/installed_extensions.php'))
+			include($path_to_root.'/installed_extensions.php');
 		$_POST['Page'] = 5;
 	}
-}
-elseif (isset($_POST['set_admin'])) {
+} elseif (isset($_POST['set_admin'])) {
 	// check company settings
 	if (get_post('name')=='') {
 		display_error(_('Company name cannot be empty.'));
@@ -371,6 +371,11 @@ start_form();
 					$_POST[$name] = $val;
 				set_focus('name');
 			}
+			if (!isset($installed_extensions)) {
+				$installed_extensions = array();
+				update_extensions($installed_extensions);
+			}
+
 			subpage_title(_('Company Settings'));
 			start_table(TABLESTYLE);
 			text_row_ex(_("Company Name:"), 'name', 30);

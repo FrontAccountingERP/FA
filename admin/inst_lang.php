@@ -30,7 +30,7 @@ simple_page_mode(true);
 //
 function display_languages()
 {
-	global $table_style, $installed_languages, $dflt_lang;
+	global $table_style, $installed_languages, $dflt_lang, $GetText;
 	
 	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"),
 		_("Installed"), _("Available"), _("Default"), "", "");
@@ -75,7 +75,7 @@ function display_languages()
 		else
 			alt_table_row_color($k);
 
-		$support = $_SESSION['get_text']->check_support($lang, $charset);
+		$support = $GetText->check_support($lang, $charset);
 
 		if (function_exists('gettext') && !$support && !get_post('DisplayAll')) continue;
 

@@ -107,7 +107,14 @@ function edit_link($row)
 {
 	global $editors;
 
-	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) ? 
+	$ok = true;
+	if ($row['type'] == ST_SALESINVOICE)
+	{
+		$myrow = get_customer_trans($row["type_no"], $row["type"]);
+		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["type_no"]) !== false)
+			$ok = false;
+	}		
+	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) && $ok ? 
 		pager_link(_("Edit"), 
 			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			ICON_EDIT) : '';
@@ -118,7 +125,7 @@ $sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDat
 
 $cols = array(
 	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 
-	_("Date") =>array('name'=>'tran_date','type'=>'date', 'ord' => check_value('AlsoClosed') ? 'asc' : 'desc'),
+	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
 	_("Reference"), 

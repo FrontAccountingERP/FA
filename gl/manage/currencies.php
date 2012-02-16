@@ -80,22 +80,20 @@ function handle_submit()
 
 //---------------------------------------------------------------------------------------------
 
-function check_can_delete()
+function check_can_delete($curr)
 {
-	global $selected_id;
-		
-	if ($selected_id == "")
+
+	if ($curr == "")
 		return false;
-	$curr = db_escape($selected_id);
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code', true))
+	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code'))
 	{
 		display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 		return false;
 	}
 
-	if (key_in_foreign_table($curr, 'suppliers', 'curr_code', true))
+	if (key_in_foreign_table($curr, 'suppliers', 'curr_code'))
 	{
 		display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 		return false;
@@ -108,7 +106,7 @@ function check_can_delete()
 	}
 	
 	// see if there are any bank accounts that use this currency
-	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code', true))
+	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code'))
 	{
 		display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 		return false;
@@ -122,7 +120,7 @@ function check_can_delete()
 function handle_delete()
 {
 	global $selected_id, $Mode;
-	if (check_can_delete()) {
+	if (check_can_delete($selected_id)) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 		delete_currency($selected_id);
 		display_notification(_('Selected currency has been deleted'));

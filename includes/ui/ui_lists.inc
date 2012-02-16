@@ -417,6 +417,21 @@ function _format_add_curr($row)
 		'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
+function add_edit_combo($type)
+{
+	global $path_to_root, $popup_editors, $use_icon_for_editkey;
+
+	if (!isset($use_icon_for_editkey) || $use_icon_for_editkey==0)
+		return "";
+	// Derive theme path
+	$theme_path = $path_to_root . '/themes/' . user_theme();
+
+	$key = $popup_editors[$type][1];
+	$onclick = "onclick=\"javascript:callEditor($key); return false;\"";
+	$img = "<img width='12' height='12' border='0' alt='Add/Edit' title='Add/Edit' src='$theme_path/images/".ICON_EDIT."'>";
+	return "<a target = '_blank' href='#' $onclick tabindex='-1'>$img</a>"; 
+}
+
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
 	$all=false, $editkey = false)
 {
@@ -428,8 +443,8 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 
 	if ($editkey)
 		set_editor('supplier', $name, $editkey);
-		
-	return combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
+
+	$ret = combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
 	array(
 		'format' => '_format_add_curr',
 	    'order' => array('supp_ref'),
@@ -443,6 +458,9 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select supplier'),
 		'show_inactive'=>$all
 		));
+	if ($editkey)
+		$ret .= add_edit_combo('supplier');		
+	return $ret;
 }
 
 function supplier_list_cells($label, $name, $selected_id=null, $all_option=false, 
@@ -477,7 +495,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	if ($editkey)
 		set_editor('customer', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
+	$ret = combo_input($name, $selected_id, $sql, 'debtor_no', 'debtor_ref',
 	array(
 	    'format' => '_format_add_curr',
 	    'order' => array('debtor_ref'),
@@ -492,6 +510,9 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select customer'),
 		'show_inactive' => $show_inactive
 	) );
+	if ($editkey)
+		$ret .= add_edit_combo('customer');
+	return $ret;
 }
 
 function customer_list_cells($label, $name, $selected_id=null, $all_option=false, 
@@ -508,6 +529,7 @@ function customer_list_cells($label, $name, $selected_id=null, $all_option=false
 function customer_list_row($label, $name, $selected_id=null, $all_option = false, 
 	$submit_on_change=false, $show_inactive=false, $editkey = false)
 {
+
 	echo "<tr><td class='label'>$label</td><td nowrap>";
 	echo customer_list($name, $selected_id, $all_option, $submit_on_change,
 		$show_inactive, $editkey);
@@ -528,7 +550,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		set_editor('branch', $name, $editkey);
 
 	$where = $enabled ? array("disable_trans = 0") : array();
-	return  combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
+	$ret = combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
 	array(
 		'where' => $where,
 		'order' => array('branch_ref'),
@@ -537,6 +559,11 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		'select_submit'=> $submit_on_change,
 		'sel_hint' => _('Select customer branch')
 	) );
+	if ($editkey)
+	{
+		$ret .= add_edit_combo('branch');
+	}
+	return $ret;
 }
 //------------------------------------------------------------------------------------------------
 
@@ -718,7 +745,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 	if ($editkey)
 		set_editor('item', $name, $editkey);
 
-	return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
+	$ret = combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 	array_merge(
 	  array(
 		'format' => '_format_stock_items',
@@ -732,6 +759,9 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'category' => 2,
 		'order' => array('c.description','stock_id')
 	  ), $opts) );
+	if ($editkey)
+		$ret .= add_edit_combo('item');
+	return $ret;
 }
 
 function _format_stock_items($row)
@@ -2419,4 +2449,3 @@ function subledger_list_row($label, $name, $selected_id=null, $all_option = fals
 	echo subledger_list($name, $account, $selected_id);
 	echo "</td>\n</tr>\n";
 }
-

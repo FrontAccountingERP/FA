@@ -182,7 +182,6 @@ $pterm_types = array(
 	PTT_DAYS => _("After No. of Days"),
 	PTT_FOLLOWING => _("Day In Following Month")
 );
-//----------------------------------------------------------------------------------
 
 $tax_algorithms = array( 
 	TCA_LINES => _("Sum per line taxes"), 

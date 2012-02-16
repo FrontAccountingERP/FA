@@ -117,6 +117,7 @@ function fmt_errors($center=false) {
 					$content = ''; 			// clean other messages
 			}
 		}
+
 	    $str = $msg[1];
 		if (!in_array($msg[0], array(E_USER_NOTICE, E_USER_ERROR, E_USER_WARNING)) && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
@@ -149,12 +150,16 @@ function error_box() {
 	Helper to avoid sparse log notices.
 */
 function end_flush() {
-	global $Ajax, $transaction_level;
+	global $Ajax;
 
 	if (isset($Ajax))
 		$Ajax->run();
-	// flush all output buffers (works also with exit inside any div levels)
-	while(ob_get_level()) ob_end_flush();
+
+ 	 // on some (but not all) php versions zlib extension adds 1 additional level of buffering, 
+ 	 // so flush the last buffer outside the loop to be on safe side 
+ 	while(ob_get_level() > 1)
+ 		ob_end_flush();
+	@ob_end_flush();
 
 	// if any transaction was aborted unexpectedly rollback changes
 	cancel_transaction();

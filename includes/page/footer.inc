@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
+function page_footer($no_menu=false, $is_index=false)
 {
 	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax, $sql_queries;
 

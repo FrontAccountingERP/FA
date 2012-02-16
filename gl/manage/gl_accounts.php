@@ -111,7 +111,7 @@ function can_delete($selected_account)
 	if ($selected_account == "")
 		return false;
 
-	if (key_in_foreign_table($selected_account, 'gl_trans', 'account', true))
+	if (key_in_foreign_table($selected_account, 'gl_trans', 'account'))
 	{
 		display_error(_("Cannot delete this account because transactions have been created using this account."));
 		return false;
@@ -123,7 +123,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	if (key_in_foreign_table($selected_account, 'bank_accounts', 'account_code', true))	
+	if (key_in_foreign_table($selected_account, 'bank_accounts', 'account_code'))
 	{
 		display_error(_("Cannot delete this account because it is used by a bank account."));
 		return false;

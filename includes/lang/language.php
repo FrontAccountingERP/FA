@@ -48,7 +48,7 @@ class language
 
 	function set_language($code) 
 	{
-	    global $path_to_root, $installed_languages;
+	    global $path_to_root, $installed_languages, $GetText;
 
 		$lang = array_search_value($code, $installed_languages, 'code');
 		$changed = $this->code != $code || $this->version != @$lang['version'];
@@ -67,8 +67,8 @@ class language
 			$this->is_locale_file = file_exists($locale);
 		}
 
-		$_SESSION['get_text']->set_language($this->code, $this->encoding);
-		$_SESSION['get_text']->add_domain($this->code, $path_to_root . "/lang", $this->version);
+		$GetText->set_language($this->code, $this->encoding);
+		$GetText->add_domain($this->code, $path_to_root . "/lang", $this->version);
 
 		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
 		// version set globally in php.ini
@@ -79,16 +79,15 @@ class language
 	}
 }
 
-function _set($key,$value) 
-{
-	$_SESSION['get_text']->set_var($key,$value);
-}
-
 if (!function_exists("_")) 
 {
 	function _($text) 
 	{
-		$retVal = $_SESSION['get_text']->gettext($text);
+		global $GetText;
+		if (!isset($GetText)) // Don't allow using gettext if not is net.
+			return $text;
+
+		$retVal = $GetText->gettext($text);
 		if ($retVal == "")
 			return $text;
 		return $retVal;

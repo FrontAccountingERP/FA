@@ -50,7 +50,7 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false, $class='', $
 	{
 		$label = _("GL");
 		$icon = ICON_GL;
-	}	
+	}
 	$url = ($type == ST_WORKORDER && !work_order_is_closed($trans_no)) ? "manufacturing/view/wo_costs_view.php?trans_no=$trans_no"
 		: "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 
@@ -586,9 +586,9 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					$begin = "";
 				else
 					$begin = begin_fiscalyear(); // from fiscalyear begin
-			}		
+			}
 			$base = get_gl_trans_from_to($begin, $cart->tran_date, $qe['base_desc']);
-				
+
 		}
 		if ($descr != '') $qe['description'] .= ': '.$descr;
 		$result = get_quick_entry_lines($id);
@@ -734,10 +734,10 @@ function _number_to_words($number)
 
     $ones = array("", "One", "Two", "Three", "Four", "Five", "Six", 
         "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
-        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen", 
+        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", 
         "Nineteen"); 
     $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", 
-        "Seventy", "Eigthy", "Ninety"); 
+        "Seventy", "Eighty", "Ninety"); 
 
     if ($Dn || $n) 
     { 
@@ -773,16 +773,16 @@ function price_in_words($amount, $document=0)
 	$dec = user_price_dec();
 	if ($dec > 0)
 	{
-		$divisor = pow(10, $dec);	
-		$frac = round2($amount - floor($amount), $dec) * $divisor;
-		$frac = sprintf("%0{$dec}d", $frac);
+		$divisor = pow(10, $dec);
+        $frac = round2($amount - floor($amount), $dec) * $divisor;
+		$frac = sprintf("%0{$dec}d", round2($frac, 0));
 		$and = _("and");
     	$frac = " $and $frac/$divisor";
     }
     else
     	$frac = "";
     return _number_to_words(intval($amount)) . $frac;
-}    
+}
 
 function get_js_open_window($width, $height)
 {
