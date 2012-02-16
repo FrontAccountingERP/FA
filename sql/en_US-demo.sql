@@ -693,6 +693,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
   `payment_terms` int(11) default NULL,
+  `tax_included` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `debtor_no` (`debtor_no`,`branch_code`),
   KEY `tran_date` (`tran_date`)
@@ -702,14 +703,14 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
 -- Dumping data for table `0_debtor_trans`
 --
 
-INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4, 0);
 
 -- --------------------------------------------------------
 

@@ -17,8 +17,13 @@ function write_credit_note(&$credit_note, $write_off_acc)
 {
 	global $Refs;
 
-	$credit_invoice = 	is_array($credit_note->src_docs) ?
-		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
+	if (is_array($credit_note->src_docs))
+	{
+		$docs = array_keys($credit_note->src_docs);
+		$credit_invoice = reset($docs);
+	}
+	else
+		$credit_invoice = $credit_note->src_docs;
 
 	$credit_date = $credit_note->document_date;
 	$tax_group_id = $credit_note->tax_group_id;
@@ -74,7 +79,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		$credit_note->freight_cost, $freight_added_tax,
 		$credit_note->sales_type, $credit_note->order_no, $credit_note->ship_via,
 		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id,
-		$credit_note->payment); 
+		$credit_note->payment, $credit_note->tax_included); 
 		// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
 
 	if ($trans_no==0) {
