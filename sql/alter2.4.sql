@@ -34,5 +34,6 @@ UPDATE `0_tax_group_items` tgi
 		WHERE tax_shipping=1 AND tgi.tax_group_id=0_tax_groups.id AND tgi.tax_type_id=0_tax_types.id);
 ALTER TABLE `0_tax_groups` DROP COLUMN `tax_shipping`;
 ALTER TABLE `0_tax_group_items` DROP COLUMN `rate`;
-ALTER TABLE 0_sales_order_details ADD KEY `stkcode` (`stk_code`);
-ALTER TABLE 0_purch_order_details ADD KEY `itemcode` (`item_code`);
+ALTER TABLE `0_sales_order_details` ADD KEY `stkcode` (`stk_code`);
+ALTER TABLE `0_purch_order_details` ADD KEY `itemcode` (`item_code`);
+ALTER TABLE `0_sys_prefs` CHANGE `value` `value` TEXT NOT NULL DEFAULT '';

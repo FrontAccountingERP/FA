@@ -1769,7 +1769,7 @@ CREATE TABLE IF NOT EXISTS `0_sys_prefs` (
   `category` varchar(30) default NULL,
   `type` varchar(20) NOT NULL default '',
   `length` smallint(6) default NULL,
-  `value` tinytext,
+  `value` text,
   PRIMARY KEY  (`name`),
   KEY `category` (`category`)
 ) ENGINE=MyISAM;

@@ -2010,7 +2010,7 @@ CREATE TABLE IF NOT EXISTS `0_sys_prefs` (
   `category` varchar(30) default NULL,
   `type` varchar(20) NOT NULL default '',
   `length` smallint(6) default NULL,
-  `value` tinytext,
+  `value` text,
   PRIMARY KEY  (`name`),
   KEY `category` (`category`)
 ) ENGINE=MyISAM;
@@ -2193,7 +2193,7 @@ CREATE TABLE IF NOT EXISTS `0_tax_group_items` (
 -- Dumping data for table `0_tax_group_items`
 --
 
-INSERT INTO `0_tax_group_items` VALUES(1, 1, 5, 1);
+INSERT INTO `0_tax_group_items` VALUES(1, 1, 1);
 
 -- --------------------------------------------------------
 
