@@ -41,7 +41,7 @@ function getTransactions($category, $location)
 		FROM (".TB_PREF."stock_master,
 			".TB_PREF."stock_category)
 		LEFT JOIN ".TB_PREF."stock_moves ON
-			(".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id OR ".TB_PREF."stock_master.stock_id IS NULL)
+			(".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id)
 		WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 	if ($category != 0)

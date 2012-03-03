@@ -56,7 +56,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_SALESINVOICE : // Sales Invoice
 		case ST_CUSTCREDIT : // Customer Credit Note
-			$rep = 107;
+			$rep = $type_no==ST_CUSTCREDIT ? 113 : 107;
 			// from, to, currency, bank acc, email, paylink, comments, type
 			$ar = array(
 				'PARAM_0' => $doc_no, 

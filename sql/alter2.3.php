@@ -28,6 +28,7 @@ class fa2_3 {
 	{
 		global $db_version, $dflt_lang;
 
+		$this->preconf = $this->fix_extensions();
 		if (!$this->preconf)
 			return false;
 
@@ -35,7 +36,7 @@ class fa2_3 {
 			// all specials below are already done on 2.3beta
 
 			$sql = "SELECT debtor_no, payment_terms FROM ".TB_PREF."debtors_master";
-		
+
 			$result = db_query($sql);
 			if (!$result) {
 				display_error("Cannot read customers"
@@ -110,7 +111,6 @@ class fa2_3 {
 	//
 	function installed($pref) {
 		$this->beta = !check_table($pref, 'suppliers', 'tax_included');
-		$this->preconf = $this->fix_extensions();
 
 		$n = 1; // number of patches to be installed
 		$patchcnt = 0;

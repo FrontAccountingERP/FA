@@ -50,7 +50,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		'description' => $myrow['terms'],
 		'days_before_due' => $myrow['days_before_due'], 
 		'day_in_following_month' => $myrow['day_in_following_month'] );
-		
+
 	$supp_trans->credit = $myrow['cur_credit'];
 
 	$supp_trans->tax_description = $myrow['tax_group_name'];
@@ -58,8 +58,11 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 
 }
 
-//--------------------------------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------------------------------
+//	Updates invoiced quantity in PO and GRN line, and act_price in PO
+//  Returns:
+// if chg_price is set:	 previous act_price, delivery date and unit_price from PO
+//
 function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoiced, $chg_price=null)
 {
 	if ($chg_price != null)
@@ -149,7 +152,7 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 	}
 
 	if ($trans_type == ST_SUPPCREDIT)
-	{ 
+	{
 		// let's negate everything because it's a credit note
 		$invoice_items_total = -$invoice_items_total;
 		$tax_total = -$tax_total;
@@ -236,13 +239,16 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 			//$old_price = $old[0];
 			 
 			$old_price = $old[2];
+			// adjust for tax included.
+			$old_price = get_tax_free_price_for_item($entered_grn->item_code, $old_price,
+				$supp_trans->tax_group_id, $entered_grn->tax_included);			
 
 			/*
  			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
 			*/
-			//if ($old_price != $entered_grn->chg_price) // price-change, so update
+			//if ($old_price != $line_taxfree) // price-change, so update
 			//{
-			//$diff = $entered_grn->chg_price - $old_price;
+			//$diff = $line_taxfree - $old_price;
 			$old_date = sql2date($old[1]);
 			if (!is_inventory_item($entered_grn->item_code))
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
@@ -256,9 +262,11 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 					$entered_grn->this_quantity_inv * $old_price, $supp_trans->supplier_id, "", $ex_rate);
 				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
-					$entered_grn->chg_price);	
-			
+					$line_taxfree);	
+
 				// always return due to change in currency.
+				/*$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
+					$diff, $entered_grn->this_quantity_inv, $old_date, true); */
 				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 					$diff, $entered_grn->this_quantity_inv, null, true);
 				
@@ -269,7 +277,54 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 					$total += add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], 'GRN Provision',
 						$diff_amt, null, null, null,
-						"The general ledger transaction could not be added for the GRN of the inventory item");	
+						"The general ledger transaction could not be added for the GRN of the inventory item");
+
+					//Chaitanya
+					//If QOH is 0 or negative then update_average_material_cost will be skipped
+					//Thus difference in PO and Supp Invoice should be handled separately
+					
+					$qoh = get_qoh_on_date($entered_grn->item_code);
+					if ($qoh <= 0)
+					{
+						global $Refs;
+
+						//Chaitanya : Post a journal entry
+						$id = get_next_trans_no(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL);
+						$stock_id = $entered_grn->item_code;
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+							$stock_gl_code["inventory_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, -$entered_grn->this_quantity_inv * $diff);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
+							$stock_gl_code["adjustment_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, $entered_grn->this_quantity_inv * $diff);
+						
+						add_audit_trail(ST_JOURNAL, $id, $date_);
+						add_comments(ST_JOURNAL, $id, $date_, $memo);
+						$Refs->save(ST_JOURNAL, $id, $ref);						
+					}					
+					
+					/*$qoh = get_qoh_on_date($entered_grn->item_code);
+					if ($qoh <= 0)
+					{
+						$memo = "Diff. in cost: ".$diff;
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
+						$stock_gl_code["inventory_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						-$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
+						$stock_gl_code["adjustment_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+						$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);						
+					}*/				
 					
 					//add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
 					//	0, 0, 'GRN Provision', -$diff_amt, null, null, null,
@@ -299,9 +354,10 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		
 				update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-			} */
+			} 
 			if (is_inventory_item($entered_grn->item_code))
 				update_stock_move_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+			*/	
 		//}
 		}
     	// ----------------------------------------------------------------------
@@ -326,12 +382,15 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 				$taxitem['tax_type_id'], $taxitem['rate'], $supp_trans->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
-    		if ($trans_type == ST_SUPPCREDIT)
-    			$taxitem['Value'] = -$taxitem['Value'];
-    		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
-    			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
-    			$supp_trans->supplier_id,
-    			"A general ledger transaction for the tax amount could not be added");
+			if (isset($taxitem['purchasing_gl_code']))
+			{
+	    		if ($trans_type == ST_SUPPCREDIT)
+    				$taxitem['Value'] = -$taxitem['Value'];
+    			$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
+    				$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
+    				$supp_trans->supplier_id,
+	    			"A general ledger transaction for the tax amount could not be added");
+	 		}
     	}
     }
 	
@@ -387,8 +446,10 @@ function get_po_invoices_credits($po_number)
 		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, "
 		.TB_PREF."purch_order_details, ".TB_PREF."purch_orders
 		WHERE ".TB_PREF."supp_invoice_items.supp_trans_no = ".TB_PREF."supp_trans.trans_no
+		AND ".TB_PREF."supp_invoice_items.supp_trans_type = ".TB_PREF."supp_trans.type
 		AND ".TB_PREF."supp_invoice_items.po_detail_item_id = ".TB_PREF."purch_order_details.po_detail_item
 		AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."supp_trans.supplier_id
+		AND ".TB_PREF."purch_orders.order_no = ".TB_PREF."purch_order_details.order_no
 		AND ".TB_PREF."purch_order_details.order_no = ".db_escape($po_number);
 
 	return db_query($sql, "The invoices/credits for the po $po_number could not be retreived");
@@ -413,7 +474,6 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 		$supp_trans->supplier_name = $trans_row["supp_name"];
 		$supp_trans->tran_date = sql2date($trans_row["tran_date"]);
 		$supp_trans->due_date = sql2date($trans_row["due_date"]);
-		//$supp_trans->Comments = $trans_row["TransText"];
 		$supp_trans->Comments = get_comments_string($trans_type, $trans_no);
 		$supp_trans->reference = $trans_row["reference"];
 		$supp_trans->supp_reference = $trans_row["supp_reference"];
@@ -510,12 +570,15 @@ function void_supp_invoice($type, $type_no)
          		if ($type == ST_SUPPCREDIT) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
          		{	// We must get the corresponding invoice item to check for price chg.
 					$match = get_matching_invoice_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
-					if ($match !== false)
+					//Chaitanya : Skipped costing block & handle in void_stock_move
+					// We must get the corresponding invoice item to check for price chg.
+					/*if ($match !== false)
 						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
 							$match["unit_price"], -$details_row["quantity"], sql2date($match['tran_date']), $match['tran_date'] !== $trans['tran_date']);
 					else		
 						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
-							$details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
+							$details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);*/
+
 					$sql = "UPDATE ".TB_PREF."purch_order_details
         				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].", ";
         			if ($match !== false)
@@ -534,13 +597,45 @@ function void_supp_invoice($type, $type_no)
 					// Only adjust the avg for the diff
 					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
 						$diff, -$details_row["quantity"], $old_date, true);
+						
+					//Chaitanya : Reverse effect
+					//If QOH is 0 or negative then update_average_material_cost will be skipped
+					//Thus difference in PO and Supp Invoice should be handled separately
+					
+					$qoh = get_qoh_on_date($details_row["stock_id"]);
+					if ($diff*$details_row["quantity"] !=0 && $qoh <= 0)
+					{
+						global $Refs;
+
+						//Chaitanya : Post a journal entry
+						$id = get_next_trans_no(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL);
+						$stock_id = $details_row["stock_id"];
+						$stock_gl_code = get_stock_gl_code($stock_id);
+						$memo = "Reversing Supplier invoice adjustment for zero inventory of ".$stock_id." Invoice: ".$trans['reference'];
+						//Reverse the inventory effect if $qoh <=0
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
+							$stock_gl_code["inventory_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, $details_row["quantity"] * $diff);
+						//GL Posting to inventory adjustment account
+						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
+							$stock_gl_code["adjustment_account"],
+							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+							$memo, -$details_row["quantity"] * $diff);
+						
+						add_audit_trail(ST_JOURNAL, $id, $old_date);
+						add_comments(ST_JOURNAL, $id, $old_date, $memo);
+						$Refs->save(ST_JOURNAL, $id, $ref);						
+					}	
 				}
-				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
+				/*$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
 					update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
+				*/
          	}
         }
 	}
@@ -578,40 +673,46 @@ function remove_not_invoice_item($id)
 {
 	begin_transaction();
 
-	$myrow = get_grn_item_detail($id);
+    $myrow = get_grn_item_detail($id);
 
-	$grn = get_grn_batch($myrow['grn_batch_id']);
+    $grn = get_grn_batch($myrow['grn_batch_id']);
+
+    $supp = get_supplier($grn["supplier_id"]);
 
 	$sql = "UPDATE ".TB_PREF."purch_order_details
 		SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
 	db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
 
-	$sql = "UPDATE ".TB_PREF."grn_items
-		SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
-	db_query($sql, "The quantity invoiced off the items received record could not be updated");
+    $sql = "UPDATE ".TB_PREF."grn_items
+        SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
+    db_query($sql, "The quantity invoiced off the items received record could not be updated");
 
-	update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
-		$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+    update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
+        $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+        
+    $price = $myrow['unit_price'];
+    if ($supp['tax_included'])
+        $price = get_tax_free_price_for_item($myrow['item_code'], $myrow['unit_price'], $supp['tax_group_id'], $supp['tax_included']);        
 
-	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
-		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
-		
+    add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+        -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $price);
+        
     $clearing_act = get_company_pref('grn_clearing_act');
-	if ($clearing_act) {	// otherwise GRN clearing account is not used
-		if (is_inventory_item($myrow['item_code']))
-		{
-	    	$total = 0;
-			$stock_gl_code = get_stock_gl_code($myrow['item_code']);
-			$date = sql2date($grn["delivery_date"]);
-			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $stock_gl_code["inventory_account"],
-				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-				-$myrow['QtyOstdg'] * $myrow['unit_price'], $grn["supplier_id"], "", 0, _("GRN Removal"));
-			$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
-				0, 0, -$total, null, "", 0, _("GRN Removal"));
-		}	
-	}
+    if ($clearing_act) {    // otherwise GRN clearing account is not used
+        if (is_inventory_item($myrow['item_code']))
+        {
+            $total = 0;
+            $stock_gl_code = get_stock_gl_code($myrow['item_code']);
+            $date = sql2date($grn["delivery_date"]);
+            $total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $stock_gl_code["inventory_account"],
+                $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+                -$myrow['QtyOstdg'] * $price, $grn["supplier_id"], "", 0, _("GRN Removal"));
+            $total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
+                0, 0, -$total, null, "", 0, _("GRN Removal"));
+        }    
+    }
 
-	commit_transaction();
+    commit_transaction();
 }
 
 function find_src_invoices($cart)
@@ -633,5 +734,3 @@ function find_src_invoices($cart)
 	}
 	return $invoices;
 }
-
-?>

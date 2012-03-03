@@ -63,6 +63,8 @@ if (isset($_GET['AddedID'])) {
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID']))  {
@@ -110,6 +112,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	} else {
 		$src = array($_GET['DeliveryNumber']);
 	}
+
 	/*read in all the selected deliveries into the Items cart  */
 	$dn = new Cart(ST_CUSTDELIVERY, $src, true);
 
@@ -118,12 +121,6 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 			_("Select a different delivery to invoice"), "OutstandingOnly=1");
 		die ("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 	}
-
-	$dn->trans_type = ST_SALESINVOICE;
-	$dn->src_docs = $dn->trans_no;
-	$dn->trans_no = 0;
-	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
-	$dn->due_date = get_invoice_duedate($dn->payment, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
 	copy_from_cart();
@@ -154,7 +151,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 	end_page();
 	exit;
-} elseif (!check_quantities()) {
+} elseif (!isset($_POST['process_invoice']) && !check_quantities()) {
 	display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 }
 if (isset($_POST['Update'])) {
@@ -235,6 +232,8 @@ function copy_to_cart()
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
+	$cart->dimension_id =  $_POST['dimension_id'];
+	$cart->dimension2_id =  $_POST['dimension2_id'];
 
 }
 //-----------------------------------------------------------------------------
@@ -250,6 +249,8 @@ function copy_from_cart()
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
 	$_POST['payment'] = $cart->payment;
+	$_POST['dimension_id'] = $cart->dimension_id;
+	$_POST['dimension2_id'] = $cart->dimension2_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -330,6 +331,16 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	}
 }
 
+if(list_updated('payment')) {
+	$order = &$_SESSION['Items'];
+	$order->payment = get_post('payment');
+	$order->payment_terms = get_payment_terms($order->payment);
+	$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+	if ($order->payment_terms['cash_sale']) {
+		$_POST['Location'] = $order->Location = $order->pos['pos_location'];
+		$order->location_name = $order->pos['location_name'];
+	}
+}
 // find delivery spans for batch invoice display
 $dspans = array();
 $lastdn = ''; $spanlen=1;
@@ -369,7 +380,6 @@ if ($dim > 0)
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
 if ($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sale']) {
- // editable payment type
 	$paymcat = !$_SESSION['Items']->pos['cash_sale'] ? PM_CREDIT :
 		(!$_SESSION['Items']->pos['credit_sale'] ? PM_CASH : PM_ANY);
 	label_cells(_("Payment terms:"), sale_payment_list('payment', $paymcat),
@@ -393,8 +403,15 @@ label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableh
 
 label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 // 2010-09-03 Joe Hunt
-if ($dim > 0) 
-	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
+//if ($dim > 0) 
+//	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
+if ($dim > 0) {
+	label_cell(_("Dimension").":", "class='tableheader2'");
+	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
+	dimensions_list_cells(null, 'dimension_id', null, true, ' ', false, 1, false);
+}		
+else
+	hidden('dimension_id', 0);
 
 end_row();
 start_row();
@@ -420,11 +437,19 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+/*
 if ($dim > 1) 
 	label_cells(_("Dimension"). " 2", get_dimension_string($_SESSION['Items']->dimension2_id), "class='tableheader2'");
 else if ($dim > 0)
 	label_cell("&nbsp;", "colspan=2");
-
+*/
+if ($dim > 1) {
+	label_cell(_("Dimension")." 2:", "class='tableheader2'");
+	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;
+	dimensions_list_cells(null, 'dimension2_id', null, true, ' ', false, 2, false);
+}		
+else
+	hidden('dimension2_id', 0);
 end_row();
 end_table();
 

@@ -71,14 +71,14 @@ function print_remittances()
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 85, 150, 225, 275, 360, 450, 515);
 
@@ -98,7 +98,7 @@ function print_remittances()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
 		if ($fno[0] == $tno[0])
 			$types = array($fno[1]);
@@ -108,9 +108,10 @@ function print_remittances()
 		{
 			$myrow = get_remittance($j, $i);
 			if (!$myrow)
-				continue;			
-			$baccount = get_default_bank_account($myrow['curr_code']);
-			$params['bankaccount'] = $baccount['id'];
+				continue;
+			$res = get_bank_trans($j, $i);
+			$baccount = db_fetch($res);
+			$params['bankaccount'] = $baccount['bank_act'];
 
 			if ($email == 1)
 			{
@@ -129,14 +130,12 @@ function print_remittances()
 			$rep->NewPage();
 			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
 
-			$linetype = true;
 			$doctype = ST_SUPPAYMENT;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
-			$rep->TextCol(0, 4,	$doc_Towards, -2);
+			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
-			
+
 			while ($myrow2=db_fetch($result))
 			{
 				$rep->TextCol(0, 1,	$systypes_array[$myrow2['type']], -2);
@@ -153,31 +152,37 @@ function print_remittances()
 					$rep->NewPage();
 			}
 
+			$memo = get_comments_string($j, $i);
+			if ($memo != "")
+			{
+				$rep->NewLine();
+				$rep->TextColLines(1, 5, $memo, -2);
+			}
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
-			$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
-			$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
 			$myrow['Total'] *= -1;
 			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, $doc_Total_Payment, - 2);
+			$rep->TextCol(3, 6, _("TOTAL REMITTANCE"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 			$words = price_in_words($myrow['Total'], ST_SUPPAYMENT);
 			if ($words != "")
 			{
 				$rep->NewLine(2);
 				$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
-			}	
+			}
 			$rep->Font();
 			if ($email == 1)
 			{
 				$myrow['DebtorName'] = $myrow['supp_name'];
-				$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
+				$rep->End($email);
 			}
-		}	
+		}
 	}
 	if ($email == 0)
 		$rep->End();

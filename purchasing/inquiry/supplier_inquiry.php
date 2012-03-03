@@ -11,11 +11,11 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
-include($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -44,7 +44,8 @@ if (!isset($_POST['supplier_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
+if (!$page_nested)
+	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, true);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
@@ -89,7 +90,7 @@ function display_supplier_summary($supplier_record)
 div_start('totals_tbl');
 if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT))
 {
-	$supplier_record = get_supplier_details($_POST['supplier_id']);
+	$supplier_record = get_supplier_details($_POST['supplier_id'], $_POST['TransToDate']);
     display_supplier_summary($supplier_record);
 }
 div_end();
@@ -105,6 +106,7 @@ function systype_name($dummy, $type)
 	global $systypes_array;
 	return $systypes_array[$type];
 }
+div_end();
 
 function trans_view($trans)
 {
@@ -123,6 +125,10 @@ function gl_view($row)
 
 function credit_link($row)
 {
+	global $page_nested;
+
+	if ($page_nested)
+		return '';
 	return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
 			"/purchasing/supplier_credit.php?New=1&invoice_no=".
@@ -145,19 +151,19 @@ function fmt_credit($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT) 
+  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) 
  		return print_document_link($row['trans_no']."-".$row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
-}
-
-function edit_link($row)
-{
-	return edit_trans_link($row['type'], $row['trans_no']);
 }
 
 function check_overdue($row)
 {
 	return $row['OverDue'] == 1
 		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+}
+
+function edit_link($row)
+{
+	return edit_trans_link($row['type'], $row['trans_no']);
 }
 //------------------------------------------------------------------------------------------------
 
@@ -185,8 +191,6 @@ if ($_POST['supplier_id'] != ALL_TEXT)
 	$cols[_("Supplier")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
-//------------------------------------------------------------------------------------------------
-
 
 /*show a table of the transactions returned by the sql */
 $table =& new_db_pager('trans_tbl', $sql, $cols);

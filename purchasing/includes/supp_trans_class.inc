@@ -48,6 +48,7 @@ class supp_trans
 
 	function supp_trans($trans_type, $trans_no=0)
 	{
+		$this->trans_type = $trans_type;
 		/*Constructor function initialises a new Supplier Transaction object */
 		$this->read($trans_type, $trans_no);
 	}

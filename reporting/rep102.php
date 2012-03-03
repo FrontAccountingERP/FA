@@ -27,16 +27,21 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_aged_customer_analysis();
 
-function get_invoices($customer_id, $to)
+function get_invoices($customer_id, $to, $all=true)
 {
 	$todate = date2sql($to);
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
-    $value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-		.TB_PREF."debtor_trans.ov_discount)";
+	if ($all)
+    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+			.TB_PREF."debtor_trans.ov_discount)";
+	else		
+    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
 	$due = "IF (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE.",".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
 	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
@@ -46,16 +51,16 @@ function get_invoices($customer_id, $to)
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
-			".TB_PREF."payment_terms,
 			".TB_PREF."debtor_trans
 
 		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtor_trans.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > 0.004
-			ORDER BY ".TB_PREF."debtor_trans.tran_date";
+			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > ".FLOAT_COMP_DELTA." ";
+	if (!$all)
+		$sql .= "AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) > ".FLOAT_COMP_DELTA." ";  
+	$sql .= "ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
 	return db_query($sql, "The customer details could not be retrieved");
 }
@@ -69,11 +74,12 @@ function print_aged_customer_analysis()
     	$to = $_POST['PARAM_0'];
     	$fromcust = $_POST['PARAM_1'];
     	$currency = $_POST['PARAM_2'];
-	$summaryOnly = $_POST['PARAM_3'];
-    	$no_zeros = $_POST['PARAM_4'];
-    	$graphics = $_POST['PARAM_5'];
-    	$comments = $_POST['PARAM_6'];
-	$destination = $_POST['PARAM_7'];
+    	$show_all = $_POST['PARAM_3'];
+	$summaryOnly = $_POST['PARAM_4'];
+    	$no_zeros = $_POST['PARAM_5'];
+    	$graphics = $_POST['PARAM_6'];
+    	$comments = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -84,7 +90,7 @@ function print_aged_customer_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == ALL_TEXT)
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
@@ -104,6 +110,8 @@ function print_aged_customer_analysis()
 
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
+	if ($show_all) $show = _('Yes');
+	else $show = _('No');
 
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
@@ -122,7 +130,8 @@ function print_aged_customer_analysis()
     				2 => array('text' => _('Customer'),	'from' => $from, 'to' => ''),
     				3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
                     		4 => array('text' => _('Type'),		'from' => $summary,'to' => ''),
-				5 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+                    5 => array('text' => _('Show Also Allocated'), 'from' => $show, 'to' => ''),		
+				6 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
 	if ($convert)
 		$headers[2] = _('Currency');
@@ -135,7 +144,7 @@ function print_aged_customer_analysis()
 	$total = array(0,0,0,0, 0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master";
-	if ($fromcust != ALL_NUMERIC)
+	if ($fromcust != ALL_TEXT)
 		$sql .= " WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -147,15 +156,19 @@ function print_aged_customer_analysis()
 
 		if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
 		else $rate = 1.0;
-		$custrec = get_customer_details($myrow['debtor_no'], $to);
-		foreach ($custrec as $i => $value)
-			$custrec[$i] *= $rate;
+		$custrec = get_customer_details($myrow['debtor_no'], $to, $show_all);
+		if (!$custrec)
+			continue;
+		$custrec['Balance'] *= $rate;
+		$custrec['Due'] *= $rate;
+		$custrec['Overdue1'] *= $rate;
+		$custrec['Overdue2'] *= $rate;
 		$str = array($custrec["Balance"] - $custrec["Due"],
 			$custrec["Due"]-$custrec["Overdue1"],
 			$custrec["Overdue1"]-$custrec["Overdue2"],
 			$custrec["Overdue2"],
 			$custrec["Balance"]);
-		if ($no_zeros && array_sum($str) == 0) continue;
+		if ($no_zeros && floatcmp(array_sum($str), 0) == 0) continue;
 
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 2, $myrow['name']);
@@ -171,7 +184,7 @@ function print_aged_customer_analysis()
 		$rep->NewLine(1, 2);
 		if (!$summaryOnly)
 		{
-			$res = get_invoices($myrow['debtor_no'], $to);
+			$res = get_invoices($myrow['debtor_no'], $to, $show_all);
     		if (db_num_rows($res)==0)
 				continue;
     		$rep->Line($rep->row + 4);

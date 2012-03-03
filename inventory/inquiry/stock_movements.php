@@ -23,8 +23,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-
-page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
+page(_($help_context = "Inventory Item Movement"), @$_GET['popup'], false, "", $js);
 //------------------------------------------------------------------------------------------------
 
 check_db_has_stock_items(_("There are no items defined in the system."));
@@ -46,7 +45,8 @@ if (!isset($_POST['stock_id']))
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+if (!$page_nested)
+	stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
 end_row();
 end_table();
 
@@ -61,7 +61,8 @@ date_cells(_("To:"), 'BeforeDate');
 submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');
 end_row();
 end_table();
-end_form();
+if (!@$_GET['popup'])
+	end_form();
 
 set_global_stock_item($_POST['stock_id']);
 

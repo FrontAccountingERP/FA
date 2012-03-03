@@ -165,7 +165,12 @@ label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 end_table(1);
 
-is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
+$voided = is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
+
+if (!$voided)
+{
+	display_allocations_to(PT_CUSTOMER, $myrow['debtor_no'], ST_SALESINVOICE, $trans_id, $myrow['Total']);
+}
 
 end_page(true, false, false, ST_SALESINVOICE, $trans_id);
 

@@ -59,6 +59,7 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 if (list_updated('supplier_id') || list_updated('bank_account')) {
   $_SESSION['alloc']->read();
+  $_POST['memo_'] = $_POST['amount'] = '';
   $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------
@@ -77,7 +78,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 			$_POST['memo_'] = $inv['supp_reference'];
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SUPPINVOICE && $trans->type_no == $_GET['PInvoice']) {
-					$_POST['amount'] = 
+					$_POST['amount'] =
 						$_SESSION['alloc']->amount = price_format($_SESSION['alloc']->allocs[$line]->amount);
 					$_SESSION['alloc']->allocs[$line]->current_allocated =
 						$_SESSION['alloc']->allocs[$line]->amount;
@@ -87,7 +88,6 @@ if (!isset($_POST['bank_account'])) { // first page call
 			unset($inv);
 		} else
 			display_error(_("Invalid purchase invoice number."));
-
 	}
 }
 if (isset($_GET['AddedID'])) {
@@ -273,8 +273,13 @@ start_form();
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
 	set_global_supplier($_POST['supplier_id']);
-	
+
+	if (!list_updated('bank_account'))
+		$_POST['bank_account'] = get_default_supplier_bank_account($_POST['supplier_id']);		
+
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
+
+	bank_balance_row($_POST['bank_account']);
 
 	table_section(2);
 
@@ -297,9 +302,9 @@ start_form();
 	end_outer_table(1); // outer table
 
 	if ($bank_currency == $supplier_currency) {
-  	div_start('alloc_tbl');
+  		div_start('alloc_tbl');
 		show_allocatable(false);
-	div_end();
+		div_end();
 	}
 
 	start_table(TABLESTYLE, "width=60%");

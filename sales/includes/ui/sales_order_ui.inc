@@ -108,9 +108,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	// FIX - implement editable contact selector in sales order 
 	$contact = get_branch_contacts($branch_id, 'order', $customer_id);
-
 	$order->set_branch($branch_id, $myrow["tax_group_id"],
-	$myrow["tax_group_name"], @$contact[0]["phone"], @$contact[0]["email"]);
+	$myrow["tax_group_name"], @$contact["phone"], @$contact["email"]);
 
 	$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"]
 		: (trim($myrow["br_address"]) != '' ? $myrow["br_address"]:$deliver);
@@ -167,8 +166,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 		{
 			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
-					$_POST['Location'], $_POST['OrderDate']);
-				if ($stock_item->qty_dispatched > $qoh) 
+					$_POST['Location'], $_POST['delivery_date']);
+				if (($stock_item->qty_dispatched -$stock_item->qty_done) > $qoh)
 				{
 					// oops, we don't have enough of one of the component items
 					start_row("class='stockmankobg'");
@@ -394,8 +393,6 @@ function display_order_header(&$order, $editable, $date_text)
 			$order->payment_terms = get_payment_terms($order->payment);
 			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 			if ($order->payment_terms['cash_sale']) {
-				$order->cash_account = $order->pos['pos_account'];
-				$order->account_name = $order->pos['bank_account_name'];
 				$_POST['Location'] = $order->Location = $order->pos['pos_location'];
 				$order->location_name = $order->pos['location_name'];
 			}
@@ -413,7 +410,7 @@ function display_order_header(&$order, $editable, $date_text)
 	}
 
 	if($editable) {
-		$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
+		$str = sales_types_list_row(_("Price List:"), 'sales_type', null, true);
 	} else {
 		label_row(_("Price List:"), $order->sales_type_name);
 	}
@@ -586,9 +583,12 @@ function display_delivery_details(&$order)
 		start_table(TABLESTYLE2, "width=60%");
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
-		label_row(_("Cash account:"), $order->account_name);
+ 		if (list_updated('Location'))
+ 			$Ajax->activate('items_table');
+		label_row(_("Cash account:"), $order->pos['bank_account_name']);
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 		end_table();
+		hidden('delivery_date', $order->due_date);
 	} else {
 		if ($order->trans_type==ST_SALESINVOICE)
 		{

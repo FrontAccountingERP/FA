@@ -224,6 +224,8 @@ if (isset($_GET['AddedID'])) {
 		submenu_option(_("Enter a &New Direct Invoice"),
 			"/sales/sales_order_entry.php?NewInvoice=0");
 
+	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
+
 	display_footer_exit();
 } else
 	check_edit_conflicts();
@@ -238,27 +240,30 @@ function copy_to_cart()
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
-//	if ($cart->trans_type == ST_SALESINVOICE) {
+
+	$newpayment = false;
 	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
+		$newpayment = true;
 	}
 	if ($cart->payment_terms['cash_sale']) {
-		$cart->due_date = $cart->document_date;
-		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-		$cart->freight_cost = input_num('freight_cost');
-		$cart->ship_via = 1;
-		$cart->deliver_to = '';//$_POST['deliver_to'];
+		if ($newpayment) {
+			$cart->due_date = $cart->document_date;
+			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
+			$cart->ship_via = 1;
+			$cart->deliver_to = '';
+		}
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
 		$cart->cust_ref = $_POST['cust_ref'];
-		$cart->freight_cost = input_num('freight_cost');
 		$cart->deliver_to = $_POST['deliver_to'];
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
-		$cart->Location = $_POST['Location'];
 		$cart->ship_via = $_POST['ship_via'];
 	}
+	$cart->Location = $_POST['Location'];
+	$cart->freight_cost = input_num('freight_cost');
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
 	else
@@ -266,11 +271,11 @@ function copy_to_cart()
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
-	// POS
+
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
-	}	
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -355,7 +360,7 @@ function can_process() {
 	}
 
 
-		if (strlen($_POST['delivery_address']) <= 1) {
+		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
 			return false;
@@ -414,10 +419,16 @@ function can_process() {
 
 //-----------------------------------------------------------------------------
 
+if (isset($_POST['update'])) {
+	copy_to_cart();
+	$Ajax->activate('items_table');
+}
+
 if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
+	
 	$_SESSION['Items']->write(1);
 	if (count($messages)) { // abort on failure or error messages are lost
 		$Ajax->activate('_page_body');
@@ -441,10 +452,6 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	} else {
 		meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
 	}
-}
-
-if (isset($_POST['update'])) {
-	$Ajax->activate('items_table');
 }
 
 //--------------------------------------------------------------------------------
@@ -488,6 +495,22 @@ function check_item_data()
 		}
 		return true;
 	}
+	$cost_home = get_standard_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
+	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
+	if (input_num('price') < $cost)
+	{
+		$dec = user_price_dec();
+		$curr = $_SESSION['Items']->customer_currency;
+		$price = number_format2(input_num('price'), $dec);
+		if ($cost_home == $cost)
+			$std_cost = number_format2($cost_home, $dec);
+		else
+		{
+			$price = $curr . " " . $price;
+			$std_cost = $curr . " " . number_format2($cost, $dec);
+		}
+		display_warning(sprintf(_("Price %s is below Standard Cost %s"), $price, $std_cost));
+	}	
 	return true;
 }
 
@@ -588,11 +611,7 @@ function create_cart($type, $trans_no)
 	if (isset($_GET['NewQuoteToSalesOrder']))
 	{
 		$trans_no = $_GET['NewQuoteToSalesOrder'];
-		$doc = new Cart(ST_SALESQUOTE, $trans_no);
-		$doc->trans_no = 0;
-		$doc->trans_type = ST_SALESORDER;
-		$doc->reference = $Refs->get_next($doc->trans_type);
-		$doc->document_date = $doc->due_date = new_doc_date();
+		$doc = new Cart(ST_SALESQUOTE, $trans_no, true);
 		$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
 		$_SESSION['Items'] = $doc;
 	}	
@@ -613,9 +632,8 @@ function create_cart($type, $trans_no)
 			$doc->line_items[$line_no]->qty_done = 0;
 		}
 		$_SESSION['Items'] = $doc;
-	} else {
+	} else
 		$_SESSION['Items'] = new Cart($type, array($trans_no));
-	}
 	copy_from_cart();
 }
 

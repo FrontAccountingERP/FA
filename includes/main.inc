@@ -22,21 +22,24 @@ include_once($path_to_root . "/includes/db/audit_trail_db.inc");
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
-	
+
+$page_nested = -1;
+
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false, $css='')
 {
 
-   	global $path_to_root, $page_security;
+   	global $path_to_root, $page_security, $page_nested;
 
+	if (++$page_nested) return;
 
    	$hide_menu = $no_menu;
 
-   	include($path_to_root . "/includes/page/header.inc");
+   	include_once($path_to_root . "/includes/page/header.inc");
 
    	page_header($title, $no_menu, $is_index, $onload, $js, $css);
 	check_page_security($page_security);
 //	error_box();
-	if($script_only) {		
+	if($script_only) {
 		echo '<noscript>';
 		echo display_heading(_('This page is usable only with javascript enabled browsers.'));
 		echo '</noscript>';
@@ -48,13 +51,15 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 
 function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no=0, $trans_no=0)
 {
-	global $path_to_root;
+	global $path_to_root, $page_nested;
+
+	if ($page_nested-- > 0) return;
 
 	if (!$is_index && function_exists('hyperlink_back'))
 		hyperlink_back(true, $no_menu, $type_no, $trans_no, $final_screen);
 	div_end();	// end of _page_body section
 
-	include($path_to_root . "/includes/page/footer.inc");
+	include_once($path_to_root . "/includes/page/footer.inc");
 	page_footer($no_menu, $is_index);
 }
 

@@ -65,6 +65,7 @@ if (isset($_GET['AddedID']))
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+		hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$stype&trans_no=$id");
 	}
 	
 	safe_exit();
@@ -351,7 +352,8 @@ if (isset($selected_id))
 
 	$_POST['wo_ref'] = $myrow["wo_ref"];
 	$_POST['stock_id'] = $myrow["stock_id"];
-	$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
+	//$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
+	$_POST['quantity'] = $myrow["units_reqd"];
 	$_POST['StockLocation'] = $myrow["loc_code"];
 	$_POST['released'] = $myrow["released"];
 	$_POST['closed'] = $myrow["closed"];

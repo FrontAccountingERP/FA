@@ -1,456 +1,495 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE TEAM\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Julio C. Perea Pastrana <perea_jc@3dente.com>\n"
-"Language-Team: \n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
+"Language-Team: Translation Team\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: MEXICO\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
 
-#: /var/www/fa2.3/devel/../install/index.php:20
-#: /var/www/fa2.3/devel/../install/index.php:40
+#: install/index.php:20
+#: install/index.php:40
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr "Asistente de Instalación"
 
-#: /var/www/fa2.3/devel/../install/index.php:41
+#: install/index.php:41
 #, php-format
 msgid "Step %d: %s"
 msgstr "Paso %d: %s"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
+#: install/index.php:48
 msgid "Chart of accounts"
 msgstr "Plan contable"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Encoding"
 msgstr "Encoding"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Description"
 msgstr "Descripción"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:48
+#: install/index.php:75
 msgid "Install"
 msgstr "Instalar"
 
-#: /var/www/fa2.3/devel/../install/index.php:65
-#: /var/www/fa2.3/devel/../install/index.php:93
+#: install/index.php:65
+#: install/index.php:93
 msgid "Installed"
 msgstr "Instalado"
 
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: install/index.php:75
 msgid "Language"
 msgstr "Idioma"
 
-#: /var/www/fa2.3/devel/../install/index.php:156
+#: install/index.php:123
+msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
+msgstr ""
+
+#: install/index.php:159
 msgid "Cannot save system configuration file 'config.php'."
 msgstr "No se puede guardar el archivo 'config.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:173
+#: install/index.php:166
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr "No se puede abrir el archivo 'config_db.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:176
+#: install/index.php:169
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "No se puede escribir en el archivo 'config_db.php'"
 
-#: /var/www/fa2.3/devel/../install/index.php:179
+#: install/index.php:172
 msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
 msgstr "El archivo 'config_db.php' no tiene permisos de escritura. Corrige los permisos y reinicia este paso de la instalación."
 
-#: /var/www/fa2.3/devel/../install/index.php:217
+#: install/index.php:211
 msgid "Host name cannot be empty."
 msgstr "El nombre del host es requerido."
 
-#: /var/www/fa2.3/devel/../install/index.php:221
+#: install/index.php:215
 msgid "Database user name cannot be empty."
 msgstr "El nombre de usuario de la base de datos es requerido."
 
-#: /var/www/fa2.3/devel/../install/index.php:225
+#: install/index.php:219
 msgid "Database name cannot be empty."
 msgstr "El nombre de la base de datos es requerida."
 
-#: /var/www/fa2.3/devel/../install/index.php:277
+#: install/index.php:272
 msgid "Company name cannot be empty."
 msgstr "El nombre de la empresa es requerido."
 
-#: /var/www/fa2.3/devel/../install/index.php:281
+#: install/index.php:276
 msgid "Company admin name cannot be empty."
 msgstr "El nombre del administrador de la empresa es requerido"
 
-#: /var/www/fa2.3/devel/../install/index.php:285
+#: install/index.php:280
 msgid "Company admin password cannot be empty."
 msgstr "El password de la empresa es requerido."
 
-#: /var/www/fa2.3/devel/../install/index.php:289
+#: install/index.php:284
 msgid "Company admin passwords differ."
 msgstr "La confirmación del password del administrador es diferente."
 
-#: /var/www/fa2.3/devel/../install/index.php:320
+#: install/index.php:316
 msgid "System Diagnostics"
 msgstr "Diagnóstico del sistema"
 
-#: /var/www/fa2.3/devel/../install/index.php:323
+#: install/index.php:318
 msgid "Select install wizard language:"
 msgstr "Selecciona el idioma del asistente de instalación:"
 
-#: /var/www/fa2.3/devel/../install/index.php:329
+#: install/index.php:324
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "Todos los requisitos preliminares estan correctos. Pulsa el botón Continuar"
 
-#: /var/www/fa2.3/devel/../install/index.php:330
-#: /var/www/fa2.3/devel/../install/index.php:356
-#: /var/www/fa2.3/devel/../install/index.php:363
-#: /var/www/fa2.3/devel/../install/index.php:370
-#: /var/www/fa2.3/devel/../install/index.php:389
+#: install/index.php:325
+#: install/index.php:351
+#: install/index.php:358
+#: install/index.php:365
+#: install/index.php:384
 msgid "Continue >>"
 msgstr "Continuar >>"
 
-#: /var/www/fa2.3/devel/../install/index.php:332
+#: install/index.php:327
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "No se puede instalar el sistema. Por favor, corrige los problemas marcados en rojo y presiona el botón recargar. "
 
-#: /var/www/fa2.3/devel/../install/index.php:333
+#: install/index.php:328
 msgid "Refresh"
 msgstr "Recargar"
 
-#: /var/www/fa2.3/devel/../install/index.php:343
+#: install/index.php:338
 msgid "Database Server Settings"
 msgstr "Configuración del servidor de base de datos"
 
-#: /var/www/fa2.3/devel/../install/index.php:345
+#: install/index.php:340
 msgid "Server Host:"
 msgstr "Host:"
 
-#: /var/www/fa2.3/devel/../install/index.php:346
+#: install/index.php:341
 msgid "Database User:"
 msgstr "Usuario:"
 
-#: /var/www/fa2.3/devel/../install/index.php:347
+#: install/index.php:342
 msgid "Database Password:"
 msgstr "Password:"
 
-#: /var/www/fa2.3/devel/../install/index.php:348
+#: install/index.php:343
 msgid "Database Name:"
 msgstr "Base de datos"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
+#: install/index.php:344
 msgid "Use '0_' Table Prefix:"
 msgstr "Usar prefijo '0_' en tablas:"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Si"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "No"
 msgstr "No"
 
-#: /var/www/fa2.3/devel/../install/index.php:350
+#: install/index.php:345
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Instalar paquetes de idioma adicional desde el repositorio:"
 
-#: /var/www/fa2.3/devel/../install/index.php:351
+#: install/index.php:346
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Instalar COA's adicionales desde el repositorio"
 
-#: /var/www/fa2.3/devel/../install/index.php:353
+#: install/index.php:348
 msgid "Use table prefix if you share selected database for more than one FA company."
 msgstr "Seleccionar usar prefijo si has elegido compartir la base de datos para más de una empresa."
 
-#: /var/www/fa2.3/devel/../install/index.php:354
+#: install/index.php:349
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "No selecciones instalar lenguajes ni COA’s adicionales si en este momento no tienes Internet. Estos los puedes instalar más tarde."
 
-#: /var/www/fa2.3/devel/../install/index.php:355
-#: /var/www/fa2.3/devel/../install/index.php:362
-#: /var/www/fa2.3/devel/../install/index.php:369
-#: /var/www/fa2.3/devel/../install/index.php:388
+#: install/index.php:350
+#: install/index.php:357
+#: install/index.php:364
+#: install/index.php:383
 msgid "<< Back"
 msgstr "<< Regresar"
 
-#: /var/www/fa2.3/devel/../install/index.php:360
+#: install/index.php:355
 msgid "User Interface Languages Selection"
 msgstr "Selección el lenguaje del usuario en el sistema"
 
-#: /var/www/fa2.3/devel/../install/index.php:367
+#: install/index.php:362
 msgid "Charts of Accounts Selection"
 msgstr "Seleción el plan contable"
 
-#: /var/www/fa2.3/devel/../install/index.php:379
+#: install/index.php:374
 msgid "Company Settings"
 msgstr "Configuraciones de la empresa"
 
-#: /var/www/fa2.3/devel/../install/index.php:381
+#: install/index.php:376
 msgid "Company Name:"
 msgstr "Nombre de la empresa:"
 
-#: /var/www/fa2.3/devel/../install/index.php:382
+#: install/index.php:377
 msgid "Admin Login:"
 msgstr "Login del Admin:"
 
-#: /var/www/fa2.3/devel/../install/index.php:383
+#: install/index.php:378
 msgid "Admin Password:"
 msgstr "Password del Admin:"
 
-#: /var/www/fa2.3/devel/../install/index.php:384
+#: install/index.php:379
 msgid "Reenter Password:"
 msgstr "Re-ingresar password:"
 
-#: /var/www/fa2.3/devel/../install/index.php:385
+#: install/index.php:380
 msgid "Select Chart of Accounts:"
 msgstr "Selecciona el plan contable:"
 
-#: /var/www/fa2.3/devel/../install/index.php:386
+#: install/index.php:381
 msgid "Select Default Language:"
 msgstr "Selecciona el idioma por default:"
 
-#: /var/www/fa2.3/devel/../install/index.php:393
+#: install/index.php:388
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "El sistema ha sido instalado."
 
-#: /var/www/fa2.3/devel/../install/index.php:394
+#: install/index.php:389
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Por favor, no olvides borrar la carpeta del asistente de instalación."
 
-#: /var/www/fa2.3/devel/../install/index.php:396
+#: install/index.php:392
 msgid "Click here to start."
 msgstr "Click para iniciar."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:15
+#: includes/system_tests.inc:15
 msgid "Info"
 msgstr "Info"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:16
+#: includes/system_tests.inc:16
 msgid "Optional"
 msgstr "Opcional"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:17
+#: includes/system_tests.inc:17
 msgid "Recommended"
 msgstr "Recomendado"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:18
+#: includes/system_tests.inc:18
 msgid "Required "
 msgstr "Requerido"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:24
+#: includes/system_tests.inc:24
 msgid "MySQL version"
 msgstr "Versión de MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:28
+#: includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
 msgstr "Debes actualizar el servidor MySQL, cuando menos a la versión 4.1"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:35
+#: includes/system_tests.inc:35
 msgid "PHP MySQL extension"
 msgstr "Extensión PHP MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:40
+#: includes/system_tests.inc:40
 msgid "Your PHP has to have MySQL extension enabled."
 msgstr "Tu PHP debe tener habilitada la extensión MySQL."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:46
+#: includes/system_tests.inc:46
 msgid "PHP version"
 msgstr "Version de PHP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:50
+#: includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 4.3.3"
 msgstr "Debes actualizar PHP, cuando menos a la versión 4.3.3"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:57
+#: includes/system_tests.inc:57
 msgid "Server system"
 msgstr "Servidor del sistema"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:67
+#: includes/system_tests.inc:67
 msgid "Session save path"
 msgstr "Ruta para guardar Session"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:79
+#: includes/system_tests.inc:79
 msgid "Removed install wizard folder"
 msgstr "El asistente de instalación ha sido eliminado"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:82
+#: includes/system_tests.inc:82
 msgid "Not removed"
 msgstr "No se elimino"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:83
+#: includes/system_tests.inc:83
 msgid "Remove or rename install wizard folder for security reasons."
 msgstr "Eliminar o renombrar el asistente de instalación"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:90
+#: includes/system_tests.inc:90
 msgid "Browser type"
 msgstr "Tipo de navegador web"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:94
+#: includes/system_tests.inc:94
 msgid "Any browser is supported"
 msgstr "Cualquier navegador web es soportado"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:101
+#: includes/system_tests.inc:101
 msgid "Http server type"
 msgstr "Tipo de servidor HTTP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:105
+#: includes/system_tests.inc:105
 msgid "Any server is supported"
 msgstr "Cualquier servidor es soportado"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:112
+#: includes/system_tests.inc:112
 msgid "Native gettext"
 msgstr "Gettext nativo"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:116
+#: includes/system_tests.inc:116
 msgid "In case of no gettext support, php emulation is used"
 msgstr "En caso de no soportar gettext, se usara la emulación PHP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:124
+#: includes/system_tests.inc:124
 msgid "Debugging mode"
 msgstr "Modo Debugging"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:128
+#: includes/system_tests.inc:128
 msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr "Para cambiar a modo Debugging debes poner $go_debug>0 en el archivo config.php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:137
+#: includes/system_tests.inc:137
 msgid "Error logging"
 msgstr "Error de acceso"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:145
+#: includes/system_tests.inc:145
 msgid "Disabled"
 msgstr "Deshabilitado"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:148
+#: includes/system_tests.inc:148
 msgid "To switch error logging set $error_logging in config.php file"
 msgstr "Para cambiar a modo error logging pon $error_logging en el archivo config.php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:151
+#: includes/system_tests.inc:151
 msgid "Log file is not writeable"
 msgstr "El archivo de log's no tiene permisos de escritura"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:161
+#: includes/system_tests.inc:161
 msgid "Current database version"
 msgstr "Versión de la base de datos actual"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:165
+#: includes/system_tests.inc:165
 msgid "Database structure seems to be not upgraded to current version"
 msgstr "La estructura de base de datos parece no estar actualizada a la versión actual"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:180
+#: includes/system_tests.inc:180
 msgid "Company subdirectories consistency"
 msgstr "Consistencia de los directorios de la empresa"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:193
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:200
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:208
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:225
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:345
+#: includes/system_tests.inc:193
+#: includes/system_tests.inc:200
+#: includes/system_tests.inc:208
+#: includes/system_tests.inc:225
+#: includes/system_tests.inc:340
+#: includes/system_tests.inc:349
+#: includes/system_tests.inc:358
 #, php-format
 msgid "'%s' is not writeable"
 msgstr "'%s' no tiene permisos de escritura"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:221
+#: includes/system_tests.inc:221
 msgid "Temporary directory"
 msgstr "Directorio temporal"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:233
+#: includes/system_tests.inc:233
 msgid "Language configuration consistency"
 msgstr "Consistencia del lenguaje de configuración"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:242
+#: includes/system_tests.inc:242
 msgid "Languages folder should be writeable."
 msgstr "La carpeta de idiomas debe tener permisos de escritura."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:250
+#: includes/system_tests.inc:251
 msgid "Languages configuration file should be writeable."
 msgstr "El archivo de configuración d idiomas debe tener permisos de escritura."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:268
+#: includes/system_tests.inc:270
 #, php-format
 msgid "Missing %s translation file."
 msgstr "Falta archivo de traducción %s"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:273
+#: includes/system_tests.inc:275
 #, php-format
 msgid "Missing system locale: %s"
 msgstr "Falta configuración regional del sistema:"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:286
+#: includes/system_tests.inc:288
 msgid "Main config file"
 msgstr "Archivo de configuración principal"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:293
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:315
+#: includes/system_tests.inc:295
+#: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr "No se puede escribir el archivo '% s'. Compruebe que el sistema tiene permisos de escritura."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:294
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:316
+#: includes/system_tests.inc:296
+#: includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr "Ya existe el archivo '%s'"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:298
+#: includes/system_tests.inc:300
 #, php-format
 msgid "'%s' file should be read-only"
 msgstr "El archivo '% s' debe ser de sólo lectura"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:307
+#: includes/system_tests.inc:309
 msgid "Database auth file"
 msgstr "Archivo de autenticación de base de datos"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:320
+#: includes/system_tests.inc:322
 #, php-format
 msgid "'%s' file should be read-only if you do not plan to add or change companies"
 msgstr "El archivo '% s' debe ser de sólo lectura si no vas a agregar o cambiar empresa"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:331
+#: includes/system_tests.inc:333
 msgid "Extensions system"
 msgstr "Sistema de Extensiones"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:366
+#: includes/system_tests.inc:363
 msgid "Extensions configuration files and directories should be writeable"
 msgstr "Los archivos y directorios de configuración de extensiones deben tener permisos de escritura"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:378
+#: includes/system_tests.inc:375
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
 msgstr "El directorio del tema '% S' no tiene permisos de escritura"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:388
+#: includes/system_tests.inc:385
 msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr "La extension PHP OpenSSL tienen que estar habilitada para utilizar el sistema de repositorios."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:391
+#: includes/system_tests.inc:388
 msgid "OpenSSL have to be available on your server to use extension repository system."
 msgstr "OpenSSL tienen que estar disponible en tu servidor para utilizar el sistema de repositorios."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Test"
 msgstr "Prueba"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Test type"
 msgstr "Tipo de prueba"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Value"
 msgstr "Valor"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: includes/system_tests.inc:411
 msgid "Comments"
 msgstr "Comentarios"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:438
+#: includes/system_tests.inc:435
 msgid "Ok"
 msgstr "Ok"
+
+#: includes/packages.inc:190
+#, php-format
+msgid "No key field '%s' in file '%s'"
+msgstr ""
+
+#: includes/packages.inc:295
+msgid "Release file in repository is invalid, or public key is outdated."
+msgstr ""
+
+#: includes/packages.inc:311
+msgid "Repository version does not match application version."
+msgstr ""
+
+#: includes/packages.inc:325
+#, php-format
+msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:358
+#, php-format
+msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:613
+#: includes/packages.inc:664
+#, php-format
+msgid "Package '%s' not found."
+msgstr ""
 

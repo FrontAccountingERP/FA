@@ -59,6 +59,8 @@ if (isset($_GET['AddedID'])) {
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID'])) {
@@ -124,26 +126,12 @@ function can_process()
 
 if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
-    $ci = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
-
-    $ci->trans_type = ST_CUSTCREDIT;
-    $ci->src_docs = $ci->trans_no;
-    $ci->src_date = $ci->document_date;
-    $ci->trans_no = 0;
-    $ci->document_date = new_doc_date();
-    $ci->reference = $Refs->get_next(ST_CUSTCREDIT);
-
-    for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
-	$ci->line_items[$line_no]->qty_dispatched = '0';
-    }
-
-    $_SESSION['Items'] = $ci;
+    $_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 	copy_from_cart();
 
 } elseif ( isset($_GET['ModifyCredit']) && $_GET['ModifyCredit']>0) {
 
-	check_is_closed(ST_CUSTCREDIT,$_GET['ModifyCredit']);
-	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$_GET['ModifyCredit']);
+	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT, $_GET['ModifyCredit']);
 	copy_from_cart();
 
 } elseif (!processing_active()) {
@@ -165,10 +153,10 @@ function check_quantities()
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				  input_num('Line'.$line_no);
 			}
+			else {
+				$ok = 0;
+			}
 	  	}
-		else {
-			$ok = 0;
-		}
 
 		if (isset($_POST['Line'.$line_no.'Desc'])) {
 			$line_desc = $_POST['Line'.$line_no.'Desc'];
@@ -187,7 +175,7 @@ function copy_to_cart()
 	$cart->ship_via = $_POST['ShipperID'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['CreditDate'];
-	$cart->Location = $_POST['Location'];
+	$cart->Location = (isset($_POST['Location']) ? $_POST['Location'] : "");
 	$cart->Comments = $_POST['CreditText'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
@@ -218,11 +206,13 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
     $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
-	processing_end();
-	if ($new_credit) {
-	   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
-	} else {
-	   	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
+	if($credit_no) {
+		processing_end();
+		if ($new_credit) {
+		   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+		} else {
+		   	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
+		}
 	}
 }
 

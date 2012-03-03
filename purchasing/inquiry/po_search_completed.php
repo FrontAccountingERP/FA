@@ -11,10 +11,10 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root="../..";
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
@@ -98,9 +98,13 @@ function trans_view($trans)
 
 function edit_link($row) 
 {
-  return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?" . SID 
-	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	global $page_nested;
+
+	if ($page_nested)
+		return '';
+  	return pager_link( _("Edit"),
+		"/purchasing/po_entry_items.php?" . SID 
+		. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)

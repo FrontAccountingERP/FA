@@ -63,7 +63,7 @@ if (isset($_GET['New']))
 		$_SESSION['page_title'] = sprintf( _("Modifying Supplier Credit # %d"), $_GET['ModifyCredit']);
 		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT, $_GET['ModifyCredit']);
 	}
-
+}
 page($_SESSION['page_title'], false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
@@ -82,10 +82,9 @@ if (isset($_GET['AddedID']))
 
     hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-	
+
 	display_footer_exit();
 }
-
 
 function clear_fields()
 {
@@ -153,8 +152,8 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value, $Refs;
-	
+	global $total_grn_value, $total_gl_value, $Refs, $SysPrefs;
+
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -208,6 +207,23 @@ function check_data()
 		return false;
 	}
 
+	if (!$SysPrefs->allow_negative_stock()) {
+		foreach ($_SESSION['supp_trans']->grn_items as $n => $item) {
+			if (is_inventory_item($item->item_code))
+			{
+				$qoh = get_qoh_on_date($item->item_code, null, $_SESSION['supp_trans']->tran_date);
+				if ($item->qty_recd > $qoh)
+				{
+					$stock = get_item($item->item_code);
+					display_error(_("The return cannot be processed because there is an insufficient quantity for item:") .
+						" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+						_("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock['stock_id'])));
+					return false;
+				}
+				return true;
+			}
+		}
+	}
 	return true;
 }
 
@@ -220,7 +236,10 @@ function handle_commit_credit_note()
 	if (!check_data())
 		return;
 
-	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+	if (isset($_POST['invoice_no']))
+		$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
+	else
+		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);
@@ -237,6 +256,7 @@ if (isset($_POST['PostCreditNote']))
 
 function check_item_data($n)
 {
+
 	if (!check_num('This_QuantityCredited'.$n, 0))
 	{
 		display_error(_("The quantity to credit must be numeric and greater than zero."));

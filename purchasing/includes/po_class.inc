@@ -145,6 +145,7 @@ class purch_order
 		}
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
 		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array, $this->tax_algorithm);
+
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 	    if ($this->curr_code == 'CHF') {
 			$val = $taxes['1']['Value'];

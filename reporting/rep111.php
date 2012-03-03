@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/taxes/tax_calc.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote, $print_invoice_no;
+	global $path_to_root, $print_as_quote, $print_invoice_no, $no_zero_lines_amount;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -83,17 +84,20 @@ function print_sales_quotations()
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		$rep->title = _("SALES QUOTATION");
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
 		//$rep->headerFunc = 'Header2';
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
 		$SubTotal = 0;
+		$items = $prices = array();
 		while ($myrow2=db_fetch($result))
 		{
 			$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 			   user_price_dec());
+			$prices[] = $Net;
+			$items[] = $myrow2['stk_code'];
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 			$DisplayQty = number_format2($myrow2["quantity"],get_qty_dec($myrow2['stk_code']));
@@ -107,11 +111,14 @@ function print_sales_quotations()
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
 			$newrow = $rep->row;
 			$rep->row = $oldrow;
-			$rep->TextCol(2, 3,	$DisplayQty, -2);
-			$rep->TextCol(3, 4,	$myrow2['units'], -2);
-			$rep->TextCol(4, 5,	$DisplayPrice, -2);
-			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-			$rep->TextCol(6, 7,	$DisplayNet, -2);
+			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+			{
+				$rep->TextCol(2, 3,	$DisplayQty, -2);
+				$rep->TextCol(3, 4,	$myrow2['units'], -2);
+				$rep->TextCol(4, 5,	$DisplayPrice, -2);
+				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+				$rep->TextCol(6, 7,	$DisplayNet, -2);
+			}
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
@@ -125,23 +132,64 @@ function print_sales_quotations()
 		$DisplaySubTot = number_format2($SubTotal,$dec);
 		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 
-		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-		$linetype = true;
 		$doctype = ST_SALESQUOTE;
-		include($path_to_root . "/reporting/includes/doctext.inc");
 
-		$rep->TextCol(3, 6, $doc_Sub_total, -2);
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
-		$rep->TextCol(3, 6, $doc_Shipping, -2);
+		$rep->TextCol(3, 6, _("Shipping"), -2);
 		$rep->TextCol(6, 7,	$DisplayFreight, -2);
 		$rep->NewLine();
+
+		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
+		if ($myrow['tax_included'] == 0) {
+			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);
+			$rep->TextCol(6, 7,	$DisplayTotal, -2);
+			$rep->NewLine();
+		}
+
+		$tax_items = get_tax_for_items($items, $prices, $myrow["freight_cost"],
+		  $myrow['tax_group_id'], $myrow['tax_included'],  null);
+		$first = true;
+		foreach($tax_items as $tax_item)
+		{
+			if ($tax_item['Value'] == 0)
+				continue;
+			$DisplayTax = number_format2($tax_item['Value'], $dec);
+
+			$tax_type_name = $tax_item['tax_type_name'];
+
+			if ($myrow['tax_included'])
+			{
+				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+				{
+					if ($first)
+					{
+						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
+						$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+						$rep->NewLine();
+					}
+					$rep->TextCol(3, 6, $tax_type_name, -2);
+					$rep->TextCol(6, 7,	$DisplayTax, -2);
+					$first = false;
+				}
+				else
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . " " . _("Amount") . ": " . $DisplayTax, -2);
+			}
+			else
+			{
+				$SubTotal += $tax_item['Value'];
+				$rep->TextCol(3, 6, $tax_type_name, -2);
+				$rep->TextCol(6, 7,	$DisplayTax, -2);
+			}
+			$rep->NewLine();
+		}
+
+		$rep->NewLine();
+
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		$rep->Font('bold');
-		if ($myrow['tax_included'] == 0)
-			$rep->TextCol(3, 6, $doc_TOTAL_ORDER, - 2);
-		else	
-			$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
+		$rep->TextCol(3, 6, _("TOTAL ORDER VAT INCL."), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 		if ($words != "")
@@ -154,7 +202,7 @@ function print_sales_quotations()
 		{
 			if ($print_invoice_no == 1)
 				$myrow['reference'] = $i;
-			$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

@@ -9,175 +9,264 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-if (isset($header2type))
-{
-	$doc_Cust_no = _("Cust no");
-	$doc_Date = _("Date");
-	if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) // Purchase Order
+/*****
+*
+*	Set document type dependent elements of common page layout.
+*
+*/
+	$Addr1 = array(
+			'title' => _("Charge To"),
+			'name' => @$this->formData['br_name'] ? $this->formData['br_name'] : @$this->formData['DebtorName'],
+			'address' => @$this->formData['br_address'] ? $this->formData['br_address'] : @$this->formData['address']
+	);
+	$Addr2 = array(
+			'title' => _("Delivered To"),
+			'name' => @$this->formData['deliver_to'],
+			'address' => @$this->formData['delivery_address']
+	);
+
+	// default item column headers
+	$this->headers = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		_("Unit"), _("Price"), _("Discount %"), _("Total"));
+
+	// for links use 'text' => 'url'
+	$Footer[0] = _("All amounts stated in") . " - " . @$this->formData['curr_code'];
+
+	switch ($this->formData['doctype'])
 	{
-		$doc_Charge_To = _("Order To");
-		if ($doctype == ST_PURCHORDER)
-			$doc_Delivered_To = _("Deliver To");
-		else	
-			$doc_Delivered_To = _("Charge To");
-	}
-	else
-	{
-		if ($doctype == ST_CUSTPAYMENT)
-			$doc_Charge_To = _("With thanks from");
-		else	
-			$doc_Charge_To = _("Charge To");
-		$doc_Delivered_To = _("Delivered To");
-	}	
-	$doc_Shipping_Company = _("Shipping Company");
-	if ($doctype == ST_SALESQUOTE)
-		$doc_Due_Date = _("Valid until");
-	elseif ($doctype == ST_SALESORDER)
-		$doc_Due_Date = _("Delivery Date");
-  	else
-		$doc_Due_Date = _("Due Date");
-	$doc_Your_Ref = _("Your Ref");
-	if ($doctype == ST_WORKORDER)
-	{
-		$doc_Our_Ref = _("Type");
-		$doc_Your_VAT_no = _("Manufactured Item");
-		$doc_Payment_Terms = _("Required By");
-		$doc_Customers_Ref = _("Reference");
-		$doc_Our_Order_No = _("Into Location");
-		$doc_Due_Date = _("Quantity");
-	}	
-	else
-	{
-		if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
-			$doc_Our_Ref = _("Type");
-		else	
-			$doc_Our_Ref = _("Sales Person");
-		$doc_Your_VAT_no = _("Your VAT no.");
-		$doc_Payment_Terms = _("Payment Terms");
-		$doc_Customers_Ref = _("Customers Reference");
-		$doc_Our_Order_No = _("Our Order No");
-	}
-	$doc_Our_VAT_no = _("Our VAT No.");
-	$doc_Domicile = _("Domicile");
-	$doc_Extra = "";
-	if($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
-		$doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
-		if ($doctype == ST_CUSTPAYMENT)
-	 		$doc_Extra = _("* Subject to Realisation of the Cheque.");
- 		$doc_Bank_Account = '';
-	 	$doc_Please_Quote = _("All amounts stated in");
-  } else {
-	 $doc_Bank_Account = _("Bank Account");
-	 $doc_Please_Quote = $doctype==ST_SALESINVOICE ? 
-	 _("Please quote Invoice no. when paying. All amounts stated in") :
-	 _("Please quote Credit no. when paying. All amounts stated in");
-	}
-	$doc_Address = _("Address");
-	$doc_Phone_Fax_Email = _("Phone/Fax/Email");
-	$doc_Bank = _("Bank");
-	$doc_Payment_Link = _("You can pay through");
-	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || 
-		$doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_WORKORDER ||	$doctype == ST_SUPPAYMENT || 
-		$doctype == ST_CUSTPAYMENT)
-	{
-		if ($doctype == ST_SALESQUOTE)
+		case ST_SALESQUOTE:
 			$this->title = _("SALES QUOTATION");
-		elseif ($doctype == ST_PURCHORDER)
-			$this->title = _("PURCHASE ORDER");
-		elseif ($doctype == ST_CUSTDELIVERY)
-			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
-		elseif ($doctype == ST_SALESORDER)
+			$this->formData['document_name'] =_("Quotation No.");
+			$this->formData['document_date'] = $this->formData['ord_date'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
+			$aux_info = array(
+				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Sales Person") => get_salesman_name($this->formData['salesman']),
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Quotation No") => $this->formData['order_no'],
+				_("Valid until") => sql2date($this->formData['delivery_date']),
+			);
+			break;
+
+		case ST_SALESORDER:
 			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		elseif ($doctype == ST_SALESINVOICE)
-			$this->title = _("INVOICE");
-		elseif ($doctype == ST_WORKORDER)
-			$this->title = _("WORK ORDER");
-		elseif ($doctype == ST_SUPPAYMENT)
-			$this->title = _("REMITTANCE");
-		elseif ($doctype == ST_CUSTPAYMENT)
-			$this->title = _("RECEIPT");
-		else
+			$this->formData['document_name'] =_("Order No.");
+			$this->formData['document_date'] = $this->formData['ord_date'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
+			$this->formData['document_amount'] = $this->formData['order_no'];
+
+			$aux_info = array(
+				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Sales Person") => get_salesman_name($this->formData['salesman']),
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => $this->formData['order_no'],
+				_("Delivery Date") => sql2date($this->formData['delivery_date']),
+			);
+			break;
+
+		case ST_CUSTDELIVERY:
+			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
+			$this->formData['document_name'] = _("Delivery Note No.");
+			if (@$packing_slip)
+				$Payment_Terms = '';
+			$ref = $this->formData['order_'];
+			if ($print_invoice_no == 0)
+			{
+				$ref = get_reference(ST_SALESORDER, $this->formData['order_']);
+				if (!$ref)
+					$ref = $this->formData['order_'];
+			}
+			$aux_info = array(
+				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Sales Person") => get_salesman_name($this->formData['salesman']),
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => $ref,
+				_("To Be Invoiced Before") => sql2date($this->formData['due_date']),
+			);
+			break;
+
+		case ST_CUSTCREDIT:
 			$this->title = _("CREDIT NOTE");
-		if ($doctype == ST_PURCHORDER)
+			$this->formData['document_name'] =_("Credit No.");
+			$Footer[0] = _("Please quote Credit no. when paying. All amounts stated in") . " - " . $this->formData['curr_code'];
+
+			$aux_info = array(
+				_("Customers Reference") => @$this->formData["customer_ref"],
+				_("Sales Person") => get_salesman_name($this->formData['salesman']),
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => $this->formData['order_'],
+				_("Due Date") => '',
+			);
+			break;
+
+		case ST_SALESINVOICE:
+			$this->title = _("INVOICE");
+			$this->formData['document_name'] =_("Invoice No.");
+			$this->formData['domicile'] = $this->company['domicile'];
+			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). " - " . $this->formData['curr_code'];
+
+			$deliveries = get_sales_parent_numbers(ST_SALESINVOICE, $this->formData['trans_no']);
+			if ($print_invoice_no == 0)
+			{
+				foreach($deliveries as $n => $delivery) {
+					$deliveries[$n] = get_reference(ST_CUSTDELIVERY, $delivery);
+				}
+			}
+			$aux_info = array(
+				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Sales Person") => get_salesman_name($this->formData['salesman']),
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Delivery Note No.") => implode(',', $deliveries),
+				_("Due Date") => sql2date($this->formData['due_date']),
+			);
+			break;
+
+		case ST_SUPPAYMENT:
+			global $systypes_array;
+
+			$this->title = _("REMITTANCE");
+			$this->formData['document_name'] =_("Remittance No.");
+			$Addr1['title'] = _("Order To");
+			$Addr1['name'] = $this->formData['supp_name'];
+			$Addr1['address'] = $this->formData['address'];
+			$Addr2['title'] = _("Charge To");
+			$Addr2['name'] = '';
+			$Addr2['address'] = '';
+
+			$aux_info = array(
+				_("Customers Reference") => $this->formData['supp_account_no'],
+				_("Type") =>$systypes_array[$this->formData["type"]],
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => '',
+				_("Due Date") => sql2date($this->formData['tran_date']),
+			);
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
+			break;
+
+		case ST_PURCHORDER:
+			$this->title = _("PURCHASE ORDER");
+			$this->formData['document_name'] =_("Purchase Order No.");
+			$Addr1['title'] = _("Order To");
+			$Addr1['name'] = $this->formData['supp_name'];
+			$Addr1['address'] = $this->formData['address'];
+			$Addr2['title'] = _("Deliver To");
+			$Addr2['name'] = $this->company['coy_name'];
+			//$Addr2['address'] = $this->company['postal_address']; No, don't destroy delivery address!
+			$this->formData['document_date'] = $this->formData['ord_date'];
+			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+				? $this->formData['reference'] : $this->formData['order_no'];
+
+			$aux_info = array(
+				_("Customers Reference") => $this->formData['supp_account_no'],
+				_("Sales Person") => '',
+				_("Your VAT no.") => '',
+				_("Our Order No") => '',
+				_("Due Date") => '',
+			);
+
 			$this->headers = array(_("Item Code"), _("Item Description"),
 				_("Delivery Date"), _("Quantity"), 	_("Unit"), _("Price"), _("Total"));
-		elseif ($doctype == ST_WORKORDER)
+			break;
+
+		case ST_CUSTPAYMENT:
+			global $systypes_array;
+
+			$this->title = _("RECEIPT");
+			$this->formData['document_name'] =_("Receipt No.");
+			$Addr1['title'] = _("With thanks from");
+			$aux_info = array(
+				_("Customers Reference") => $this->formData["debtor_ref"],
+				_("Type") =>$systypes_array[$this->formData["type"]],
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => $this->formData['order_'],
+				_("Due Date") => sql2date($this->formData['tran_date']),
+			);
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
+			break;
+
+		case ST_WORKORDER:
+			global $wo_types_array;
+
+			$this->title = _("WORK ORDER");
+			$this->formData['document_name'] =_("Work Order No.");
+			$this->formData['document_date'] = $this->formData['date_'];
+			$this->formData['document_number'] = $this->formData['id'];
+			$Addr1['name'] = $this->formData['location_name'];
+			$Addr1['address'] = $this->formData['delivery_address'];
+			$aux_info = array(
+				_("Reference") => $this->formData['wo_ref'],
+				_("Type") => $wo_types_array[$this->formData["type"]],
+				_("Manufactured Item") => $this->formData["StockItemName"],
+				_("Into Location") => $this->formData["location_name"],
+				_("Quantity") => $this->formData["units_issued"],
+			);
+			$Payment_Terms = _("Required By").": ".sql2date($this->formData["required_by"]);
 			$this->headers = array(_("Item Code"), _("Item Description"),
 				_("From Location"), _("Work Centre"), 	_("Unit Quantity"), _("Total Quantity"), _("Units Issued"));
-		elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
-			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
-		else
-			$this->headers = array(_("Item Code"), _("Item Description"),	_("Quantity"),
-				_("Unit"), _("Price"), _("Discount %"), _("Total"));
-	}
-	else if ($doctype == ST_STATEMENT)
-	{
-		$this->title = _("STATEMENT");
-		$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Charges"),
-			_("Credits"), _("Allocated"), _("Outstanding"));
-	}
-}
-if (isset($emailtype))
-{
-	$doc_Dear_Sirs = _("Dear");
-	$doc_AttachedFile = _("Attached you will find ");
-	$doc_Kindest_regards = _("Kindest regards");
-	$doc_Payment_Link = _("You can pay through");
-}
-if (isset($header2type) || isset($linetype))
-{
-	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? _("Delivery Note No.") : 
-		($doctype == ST_CUSTPAYMENT ? _("Receipt No.") :
-		($doctype == ST_SUPPAYMENT ? _("Remittance No.") :
-		($doctype == ST_PURCHORDER ? _("Purchase Order No.") :
-		($doctype == ST_SALESORDER ? _("Order No.") :
-		($doctype == ST_SALESQUOTE ? _("Quotation No.") :
-		($doctype == ST_SALESINVOICE ? _("Invoice No.") :
-		($doctype == ST_WORKORDER ? _("Work Order No.") : _("Credit No.")))))))));
+			unset($Footer[0]);
+			break;
 
-	$doc_Delivery_no = _("Delivery Note No.");
-	$doc_Order_no = _("Order No.");
-}
-if (isset($linetype))
-{
 
-	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || 
-		$doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY)
-	{
-		$doc_Sub_total = _("Sub-total");
-		$doc_Shipping = _("Shipping");
-		$doc_Included = _("Included");
-		$doc_Amount = _("Amount");
-		$doc_TOTAL_INVOICE = $doctype ==ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
-		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
-		$doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
-		$doc_TOTAL_PO = _("TOTAL PO");
-		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
+		case ST_STATEMENT:
+			$this->formData['document_name'] = '';
+			$this->formData['domicile'] = $this->company['domicile'];
+			$Payment_Terms = '';
+			$this->title = _("STATEMENT");
+			$aux_info = array(
+				_("Customers Reference") => '',
+				_("Sales Person") => '',
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Our Order No") => '',
+				_("Delivery Date") => '',
+			);
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Charges"),
+				_("Credits"), _("Allocated"), _("Outstanding"));
 	}
-	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
+
+	// default values
+	if (!isset($this->formData['document_date']))
+		$this->formData['document_date'] = $this->formData['tran_date'];
+
+	if (!isset($this->formData['document_number']))
+		$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+			? $this->formData['reference'] : @$this->formData['trans_no'];
+
+	if (!isset($Payment_Terms))
 	{
-		$doc_Towards = _("As advance / full / part / payment towards:");
-		$doc_by_Cheque = _("By Cash / Cheque* / Draft No.");
-		$doc_Dated = _("Dated");
-		$doc_Drawn = _("Drawn on Bank");
-		$doc_Drawn_Branch = _("Branch");
-		$doc_Received = _("Received / Sign");
-		$doc_Total_Allocated = _("Total Allocated");
-		$doc_Left_To_Allocate = _("Left to Allocate");
-		if ($doctype == ST_CUSTPAYMENT)
-			$doc_Total_Payment = _("TOTAL RECEIPT");
-		else	
-			$doc_Total_Payment = _("TOTAL REMITTANCE");
+		$id = $this->formData['payment_terms'];
+		$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
+		$result = db_query($sql,"could not get paymentterms");
+		$row = db_fetch($result);
+		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
 	}
-	elseif ($doctype == ST_STATEMENT)
+
+	// footer generic content
+	if (@$this->formData['bank_name'])
+		$Footer[] = _("Bank"). ": ".$this->formData['bank_name']. ", " . _("Bank Account") . ": " . $this->formData['bank_account_number'];
+
+	if (@$this->formData['payment_service'])	//payment link
 	{
-		$doc_Outstanding = _("Outstanding Transactions");
-		$doc_Current = _("Current");
-		$doc_Total_Balance = _("Total Balance");
-		$doc_Statement = _("Statement");
-		$doc_as_of = _("as of");
-		$doc_Days = _("Days");
-		$doc_Over = _("Over");
+		$amt = number_format($this->formData["ov_freight"] + $this->formData["ov_gst"] + $this->formData["ov_amount"], user_price_dec());
+		$service = $this->formData['payment_service'];
+		$url = payment_link($service, array(
+			'company_email' => $this->company['email'],
+			'amount' => $amt,
+			'currency' => $this->formData['curr_code'],
+			'comment' => $this->title . " " . $this->formData['reference']
+			));
+		$Footer[_("You can pay through"). " $service: "] = "$url";
 	}
-}
-?>
+
+	if ($this->formData['doctype'] == ST_CUSTPAYMENT)
+ 		$Footer[] = _("* Subject to Realisation of the Cheque.");
+
+	if ($this->params['comments'] != '')
+		$Footer[] = $this->params['comments'];
+
+	if (($this->formData['doctype'] == ST_SALESINVOICE || $this->formData['doctype'] == ST_STATEMENT) && $this->company['legal_text'] != "") 
+	{
+		foreach(explode("\n", $this->company['legal_text']) as $line)
+			$Footer[] = $line;
+	}

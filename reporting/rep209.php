@@ -58,7 +58,7 @@ function get_po_details($order_no)
 
 function print_po()
 {
-	global $path_to_root;
+	global $path_to_root, $show_po_item_codes;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -140,8 +140,11 @@ function print_po()
 			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
 			$DisplayNet = number_format2($Net,$dec);
-			//$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
-			$rep->TextCol(0, 2,	$myrow2['description'], -2);
+			if ($show_po_item_codes) {
+				$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
+				$rep->TextCol(1, 2,	$myrow2['description'], -2);
+			} else
+				$rep->TextCol(0, 2,	$myrow2['description'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
 			$rep->TextCol(3, 4,	$DisplayQty, -2);
 			$rep->TextCol(4, 5,	$myrow2['units'], -2);
@@ -159,11 +162,9 @@ function print_po()
 		$DisplaySubTot = number_format2($SubTotal,$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-		$linetype = true;
 		$doctype = ST_PURCHORDER;
-		include($path_to_root . "/reporting/includes/doctext.inc");
 
-		$rep->TextCol(3, 6, $doc_Sub_total, -2);
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
 
@@ -172,7 +173,7 @@ function print_po()
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{
-			if ($tax_item['amount'] == 0)
+			if ($tax_item['Value'] == 0)
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
@@ -196,7 +197,7 @@ function print_po()
 					$first = false;
 				}
 				else
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 			}
 			else
 			{
@@ -210,7 +211,7 @@ function print_po()
 		$rep->NewLine();
 		$DisplayTotal = number_format2($SubTotal, $dec);
 		$rep->Font('bold');
-		$rep->TextCol(3, 6, $doc_TOTAL_PO, - 2);
+		$rep->TextCol(3, 6, _("TOTAL PO"), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$words = price_in_words($SubTotal, ST_PURCHORDER);
 		if ($words != "")
@@ -225,7 +226,7 @@ function print_po()
 
 			if ($myrow['reference'] == "")
 				$myrow['reference'] = $myrow['order_no'];
-			$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

@@ -71,14 +71,14 @@ function print_receipts()
 	$currency = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 85, 150, 225, 275, 360, 450, 515);
 
@@ -95,19 +95,20 @@ function print_receipts()
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
 		if ($fno[0] == $tno[0])
 			$types = array($fno[1]);
 		else
-			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT, ST_CUSTCREDIT);
+			$types = array(ST_BANKDEPOSIT, ST_CUSTPAYMENT);
 		foreach ($types as $j)
 		{
 			$myrow = get_receipt($j, $i);
 			if (!$myrow)
-				continue;			
-			$baccount = get_default_bank_account($myrow['curr_code']);
-			$params['bankaccount'] = $baccount['id'];
+				continue;
+			$res = get_bank_trans($j, $i);
+			$baccount = db_fetch($res);
+			$params['bankaccount'] = $baccount['bank_act'];
 
 			$rep->title = _('RECEIPT');
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
@@ -115,14 +116,12 @@ function print_receipts()
 			$rep->NewPage();
 			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
 
-			$linetype = true;
 			$doctype = ST_CUSTPAYMENT;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
-			$rep->TextCol(0, 4,	$doc_Towards, -2);
+			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
-			
+
 			while ($myrow2=db_fetch($result))
 			{
 				$rep->TextCol(0, 1,	$systypes_array[$myrow2['type']], -2);
@@ -139,38 +138,45 @@ function print_receipts()
 					$rep->NewPage();
 			}
 
+			$memo = get_comments_string($j, $i);
+			if ($memo != "")
+			{
+				$rep->NewLine();
+				$rep->TextColLines(1, 5, $memo, -2);
+			}
+
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
-			$rep->TextCol(3, 6, $doc_Total_Allocated, -2);
+			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
-			$rep->TextCol(3, 6, $doc_Left_To_Allocate, -2);
+			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
 			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, $doc_Total_Payment, - 2);
+			$rep->TextCol(3, 6, _("TOTAL RECEIPT"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
 			$words = price_in_words($myrow['Total'], ST_CUSTPAYMENT);
 			if ($words != "")
 			{
 				$rep->NewLine(1);
 				$rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, - 2);
-			}	
+			}
 			$rep->Font();
 			$rep->NewLine();
-			$rep->TextCol(6, 7, $doc_Received, - 2);
+			$rep->TextCol(6, 7, _("Received / Sign"), - 2);
 			$rep->NewLine();
-			$rep->TextCol(0, 2, $doc_by_Cheque, - 2);
+			$rep->TextCol(0, 2, _("By Cash / Cheque* / Draft No."), - 2);
 			$rep->TextCol(2, 4, "______________________________", - 2);
-			$rep->TextCol(4, 5, $doc_Dated, - 2);
+			$rep->TextCol(4, 5, _("Dated"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->NewLine(1);
-			$rep->TextCol(0, 2, $doc_Drawn, - 2);
+			$rep->TextCol(0, 2, _("Drawn on Bank"), - 2);
 			$rep->TextCol(2, 4, "______________________________", - 2);
-			$rep->TextCol(4, 5, $doc_Drawn_Branch, - 2);
+			$rep->TextCol(4, 5, _("Branch"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->TextCol(6, 7, "__________________");
-		}	
+		}
 	}
 	$rep->End();
 }

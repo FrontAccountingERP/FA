@@ -98,21 +98,21 @@ function update_po(&$po_obj)
     foreach ($po_obj->line_items as $po_line)
     {
     	$sql = "INSERT INTO ".TB_PREF."purch_order_details (po_detail_item, order_no, item_code, 
-    		description, delivery_date, unit_price, quantity_ordered) VALUES ("
+    		description, delivery_date, unit_price, quantity_ordered, quantity_received) VALUES ("
 			.db_escape($po_line->po_detail_rec ? $po_line->po_detail_rec : 0). ","
 			.$po_obj->order_no . ","
 			.db_escape($po_line->stock_id). ","
 			.db_escape($po_line->item_description). ",'"
 			.date2sql($po_line->req_del_date) . "',"
 			.db_escape($po_line->price) . ", "
-			.db_escape($po_line->quantity) . ")";
-
+			.db_escape($po_line->quantity) . ", "
+			.db_escape($po_line->qty_received) . ")";
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
 	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, _("Updated."));
+	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
 	commit_transaction();
 
@@ -140,7 +140,7 @@ function read_po_header($order_no, &$order)
 
       	$order->trans_type = ST_PURCHORDER;
       	$order->order_no = $order_no;
-      	
+
       	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
       		$myrow['tax_group_id'], $myrow["tax_included"], @$myrow["tax_algorithm"]);
 
@@ -269,6 +269,8 @@ function get_sql_for_po_search_completed()
 		AND porder.supplier_id = supplier.supplier_id
 		AND location.loc_code = porder.into_stock_location ";
 
+	if (isset($_GET['supplier_id']))
+		$sql .= "AND supplier.supplier_id=".@$_GET['supplier_id']." ";
 	if (isset($order_number) && $order_number != "")
 	{
 		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');

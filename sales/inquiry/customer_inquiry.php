@@ -11,7 +11,7 @@
 ***********************************************************************/
 $page_security = 'SA_SALESTRANSVIEW';
 $path_to_root = "../..";
-include($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
@@ -24,7 +24,6 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
-
 
 if (isset($_GET['customer_id']))
 {
@@ -41,7 +40,8 @@ if (!isset($_POST['customer_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+if (!$page_nested)
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, !@$_GET['popup']);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate', '', null, 1);
@@ -154,6 +154,10 @@ function fmt_credit($row)
 
 function credit_link($row)
 {
+	global $page_nested;
+	
+	if ($page_nested)
+		return '';
 	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
 		pager_link(_("Credit This") ,
 			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT):'';
@@ -161,30 +165,14 @@ function credit_link($row)
 
 function edit_link($row)
 {
-/*	$str = '';
+	global $page_nested;
 
-	switch($row['type']) {
-	case ST_SALESINVOICE:
-		if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false && $row['Allocated'] == 0)
-			$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
-		break;
-	case ST_CUSTCREDIT:
-  		if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) // 2008-11-19 Joe Hunt
-		{	 
-			if ($row['order_']==0) // free-hand credit note
-			    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
-			else	// credit invoice
-			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
-		}	    
-		break;
-	 case ST_CUSTDELIVERY:
-  		if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false)
-   			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
-		break;
-	}
-	if ($str != '')
-*/		return edit_trans_link($row['type'], $row['trans_no'], $row['type']==ST_CUSTCREDIT && $row['order_']==0 ?
-			"/sales/credit_note_entry.php?ModifyCredit=%d" : 0);
+	$str = '';
+	if ($page_nested)
+		return '';
+
+	return edit_trans_link($row['type'], $row['trans_no'], $row['type']==ST_CUSTCREDIT && $row['order_']==0 ?
+		"/sales/credit_note_entry.php?ModifyCredit=%d" : 0);
 }
 
 function prt_link($row)
@@ -200,7 +188,7 @@ function prt_link($row)
 function check_overdue($row)
 {
 	return $row['OverDue'] == 1
-		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+		&& floatcmp($row["TotalAmount"], $row["Allocated"]) != 0;
 }
 //------------------------------------------------------------------------------------------------
 $sql = get_sql_for_customer_inquiry();
@@ -244,5 +232,4 @@ display_db_pager($table);
 
 end_form();
 end_page();
-
 ?>

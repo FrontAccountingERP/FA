@@ -337,10 +337,8 @@ function delete_this_fiscalyear($selected_id)
 	db_query($sql, "Could not delete exchange rates");
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE tran_date <= '$to'";
 	db_query($sql, "Could not delete exchange rates");
-	
 	$sql = "SELECT account, SUM(amount) AS amount, person_type_id, person_id FROM "
 		.TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account, person_type_id, person_id";
-	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
 	$result = db_query($sql, "Could not retrieve gl trans");
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 
@@ -360,6 +358,7 @@ function delete_this_fiscalyear($selected_id)
 				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']}, "
 				.db_escape($row['person_type_id'], true).", ".db_escape($row['person_id'], true).")";
 			db_query($sql, "Could not insert gl trans");
+			$new = true;
 		}
 	}
 	if ($new)

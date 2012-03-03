@@ -173,7 +173,7 @@ function get_deliveries_from_trans($stock_id, $from)
             trans_id>='$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);
-
+	
     $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)
         FROM ".TB_PREF."stock_moves
         WHERE stock_id=".db_escape($stock_id)
@@ -187,7 +187,7 @@ function get_deliveries_from_trans($stock_id, $from)
 			trans_id<'$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$qoh = db_fetch_row($result);
-	
+
 	$qty = $row[0] - $qoh[0]; //QOH prior to -ve stock is subtracted
 	$final_cost = $row[1] - $qoh[0]*$cost[0];
 	
@@ -428,8 +428,3 @@ function get_location_name($loc_code)
 
 	display_db_error("could not retreive the location name for $loc_code", $sql, true);
 }
-
-//--------------------------------------------------------------------------------------------------
-
-
-?>

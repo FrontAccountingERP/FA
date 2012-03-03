@@ -64,9 +64,7 @@ function handle_new_order()
 		unset ($_SESSION['issue_items']);
 	}
 
-     Session_register("issue_items");
-
-     $_SESSION['issue_items'] = new items_cart(28);
+     $_SESSION['issue_items'] = new items_cart(ST_MANUISSUE);
      $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
 
@@ -94,7 +92,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 28)) 
+	if (!is_new_reference($_POST['ref'], ST_MANUISSUE)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -138,7 +136,7 @@ if (isset($_POST['Process']) && can_process())
 
 function check_item_data()
 {
-	if (!check_num('qty', 0))
+	if (input_num('qty') == 0 || !check_num('qty', 0))
 	{
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
@@ -201,6 +199,7 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges'])) {
 	line_start_focus();
 }
+
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['trans_no']))

@@ -34,7 +34,7 @@ print_deliveries();
 
 function print_deliveries()
 {
-	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates;
+	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -44,14 +44,14 @@ function print_deliveries()
 	$packing_slip = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
 	$dec = user_price_dec();
 
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -74,7 +74,7 @@ function print_deliveries()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
 			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
 				continue;
@@ -101,7 +101,7 @@ function print_deliveries()
 			}
 			else
 				$rep->title = _('DELIVERY NOTE');
-			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no']);
+			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();
 
@@ -111,7 +111,7 @@ function print_deliveries()
 			{
 				if ($myrow2["quantity"] == 0)
 					continue;
-					
+
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
@@ -127,41 +127,41 @@ function print_deliveries()
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
-				$rep->TextCol(2, 3,	$DisplayQty, -2);
-				$rep->TextCol(3, 4,	$myrow2['units'], -2);
-				if ($packing_slip == 0)
+				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
 				{
-					$rep->TextCol(4, 5,	$DisplayPrice, -2);
-					$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-					$rep->TextCol(6, 7,	$DisplayNet, -2);
-				}	
+					$rep->TextCol(2, 3,	$DisplayQty, -2);
+					$rep->TextCol(3, 4,	$myrow2['units'], -2);
+					if ($packing_slip == 0)
+					{
+						$rep->TextCol(4, 5,	$DisplayPrice, -2);
+						$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+						$rep->TextCol(6, 7,	$DisplayNet, -2);
+					}
+				}
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 					$rep->NewPage();
 			}
 
-			$comments = get_comments(ST_CUSTDELIVERY, $i);
-			if ($comments && db_num_rows($comments))
+			$memo = get_comments_string(ST_CUSTDELIVERY, $i);
+			if ($memo != "")
 			{
 				$rep->NewLine();
-    			while ($comment=db_fetch($comments))
-    				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+				$rep->TextColLines(1, 5, $memo, -2);
 			}
 
    			$DisplaySubTot = number_format2($SubTotal,$dec);
    			$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-			$linetype = true;
 			$doctype=ST_CUSTDELIVERY;
-			include($path_to_root . "/reporting/includes/doctext.inc");
 			if ($packing_slip == 0)
 			{
-				$rep->TextCol(3, 6, $doc_Sub_total, -2);
+				$rep->TextCol(3, 6, _("Sub-total"), -2);
 				$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 				$rep->NewLine();
-				$rep->TextCol(3, 6, $doc_Shipping, -2);
+				$rep->TextCol(3, 6, _("Shipping"), -2);
 				$rep->TextCol(6, 7,	$DisplayFreight, -2);
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $i);
@@ -192,7 +192,7 @@ function print_deliveries()
 							$first = false;
     					}
     					else
-							$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+							$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 					}
     				else
     				{
@@ -205,7 +205,7 @@ function print_deliveries()
 				$DisplayTotal = number_format2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
 					$myrow["ov_amount"],$dec);
 				$rep->Font('bold');
-				$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2);
+				$rep->TextCol(3, 6, _("TOTAL DELIVERY INCL. VAT"), - 2);
 				$rep->TextCol(6, 7,	$DisplayTotal, -2);
 				$words = price_in_words($myrow['Total'], ST_CUSTDELIVERY);
 				if ($words != "")
@@ -217,7 +217,7 @@ function print_deliveries()
 			}	
 			if ($email == 1)
 			{
-				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, ST_CUSTDELIVERY);
+				$rep->End($email);
 			}
 	}
 	if ($email == 0)

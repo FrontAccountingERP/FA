@@ -402,7 +402,9 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	{
 //		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
+		//Chaitanya : Manufcatured item can be purchased
+		stock_items_list_cells(null, 'stock_id', null, false, true, true);
+		//stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -428,7 +430,13 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	label_cell($_POST['units'], '', 'units');
 	if ($order->trans_type == ST_PURCHORDER)
 		date_cells(null, 'req_del_date', '', null, 0, 0, 0);
-	amount_cells(null, 'price', null, null, null, $dec2);
+	if ($qty_rcvd > 0)
+	{
+   		amount_decimal_cell($_POST['price']);
+   		hidden('price', $_POST['price']);
+   	}	
+   	else	
+		amount_cells(null, 'price', null, null, null, $dec2);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());

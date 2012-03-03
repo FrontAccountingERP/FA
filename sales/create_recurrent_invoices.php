@@ -23,7 +23,7 @@ if ($use_popup_windows)
 
 page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
-function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
+function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to)
 {
 	global $Refs;
 
@@ -33,11 +33,11 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 
 	$doc->trans_type = ST_SALESORDER;
 	$doc->trans_no = 0;
-	$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+	$doc->document_date = $date; 
 
 	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
 	$doc->reference = $Refs->get_next($doc->trans_type);
-	//$doc->Comments='';
+	$doc->Comments = sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1));
 
 	foreach ($doc->line_items as $line_no=>$item) {
 		$line = &$doc->line_items[$line_no];
@@ -48,28 +48,44 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$cart->trans_type = ST_SALESINVOICE;
 	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
-	update_last_sent_recurrent_invoice($tmpl_no, $cart->document_date);
+	update_last_sent_recurrent_invoice($tmpl_no, $to);
 	return $invno;
 }
 
-if (isset($_GET['recurrent']))
+function calculate_from($myrow)
 {
+	if ($myrow["last_sent"] == '0000-00-00')
+		$from = sql2date($myrow["begin"]);
+	else
+		$from = sql2date($myrow["last_sent"]);
+	return $from;	
+}
+
+$id = find_submit("create");
+if ($id != -1)
+{
+	$Ajax->activate('_page_body');
 	$date = Today();
 	if (is_date_in_fiscalyear($date))
 	{
 		$invs = array();
-		$myrow = get_recurrent_invoice($_GET['recurrent']);
+		$myrow = get_recurrent_invoice($id);
+		$from = calculate_from($myrow);
+ 		$to = add_months($from, $myrow['monthly']);
+ 		$to = add_days($to, $myrow['days']);
 		if ($myrow['debtor_no'] == 0)
 		{
 			$cust = get_cust_branches_from_group($myrow['group_no']);
 			while ($row = db_fetch($cust))
 			{
-				$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
+				$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id'],
+					$date, $from, $to);
 			}	
 		}
 		else
 		{
-			$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
+			$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id'],
+				$date, $from, $to);
 		}
 		if (count($invs) > 0)
 		{
@@ -78,14 +94,14 @@ if (isset($_GET['recurrent']))
 		}
 		else 
 			$min = $max = 0;
-		display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+		display_notification(sprintf(_("%s recurrent invoice(s) created, # %s - # %s."), count($invs), $min, $max));
 		if (count($invs) > 0)
 		{
 			$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
 				'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
-			display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
-			$ar['PARAM_3'] = 1; 
-			display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+			display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
+			$ar['PARAM_3'] = 1; // email
+			display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 		}
 	}
 	else
@@ -94,6 +110,7 @@ if (isset($_GET['recurrent']))
 
 $result = get_recurrent_invoices();
 
+start_form();
 start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
 table_header($th);
@@ -104,13 +121,10 @@ while ($myrow = db_fetch($result))
 {
 	$begin = sql2date($myrow["begin"]);
 	$end = sql2date($myrow["end"]);
-	$last_sent = sql2date($myrow["last_sent"]);
-	if ($myrow['monthly'] > 0)
-		$due_date = begin_month($last_sent);
-	else
-		$due_date = $last_sent;
- 	$due_date = add_months($due_date, $myrow['monthly']);
+	$last_sent = calculate_from($myrow);
+ 	$due_date = add_months($last_sent, $myrow['monthly']);
  	$due_date = add_days($due_date, $myrow['days']);
+
  	$overdue = date1_greater_date2($today, $due_date) && date1_greater_date2($today, $begin)
  		&& date1_greater_date2($end, $today);
 	if ($overdue)
@@ -137,14 +151,15 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['monthly']);
 	label_cell($begin);
 	label_cell($end);
-	label_cell($last_sent);
+	label_cell(($myrow['last_sent']=="0000-00-00")?"":$last_sent);
  	if ($overdue)
- 		label_cell("<a href='$path_to_root/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
+		button_cell("create".$myrow["id"], _("Create Invoices"), "", ICON_DOC);
  	else
  		label_cell("");
 	end_row();
 }
 end_table();
+end_form();
 if ($due)
 	display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
 else

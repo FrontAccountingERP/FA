@@ -17,7 +17,7 @@ function add_recurrent_invoice($description, $order_no, $debtor_no, $group_no, $
 		group_no, days, monthly, begin, end, last_sent) VALUES (".db_escape($description) . ", "
 		.db_escape($order_no).", ".db_escape($debtor_no).", "
 		.db_escape($group_no).", ".$days.", ".$monthly.", '"
-		.date2sql($begin)."', '".date2sql($end)."', '".date2sql(Add_Years($begin, -5))."')";
+		.date2sql($begin)."', '".date2sql($end)."', '0000-00-00')";
    	db_query($sql,"The recurrent invoice could not be added");
 }
 

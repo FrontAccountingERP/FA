@@ -96,7 +96,7 @@ function print_supplier_balances()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == ALL_NUMERIC)
+	if ($fromsupp == ALL_TEXT)
 		$supp = _('All');
 	else
 		$supp = get_supplier_name($fromsupp);
@@ -136,7 +136,7 @@ function print_supplier_balances()
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
-	if ($fromsupp != ALL_NUMERIC)
+	if ($fromsupp != ALL_TEXT)
 		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
 	$sql .= " ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -175,7 +175,7 @@ function print_supplier_balances()
 		$rep->Line($rep->row + 4);
 		while ($trans=db_fetch($res))
 		{
-			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
+			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);

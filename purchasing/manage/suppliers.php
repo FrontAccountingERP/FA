@@ -11,9 +11,15 @@
 ***********************************************************************/
 $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
-include($path_to_root . "/includes/session.inc");
+include($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 
-page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
+page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
@@ -29,7 +35,7 @@ $supplier_id = get_post('supplier_id');
 //--------------------------------------------------------------------------------------------
 function supplier_settings(&$supplier_id)
 {
-	
+
 	start_outer_table(TABLESTYLE2);
 
 	table_section(1);
@@ -101,15 +107,6 @@ function supplier_settings(&$supplier_id)
 	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 	text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
 
-	if (!$supplier_id) {
-		table_section_title(_("Contact Data"));
-		text_row(_("Contact Person:"), 'contact', null, 42, 40);
-		text_row(_("Phone Number:"), 'phone', null, 32, 30);
-		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-		text_row(_("Fax Number:"), 'fax', null, 32, 30);
-		email_row(_("E-mail:"), 'email', null, 35, 55);
-		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
-	}
 	table_section_title(_("Purchasing"));
 	text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
 	amount_row(_("Credit Limit:"), 'credit_limit', null);
@@ -133,8 +130,15 @@ function supplier_settings(&$supplier_id)
 	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account'],
 		false, false, _("Use Item Inventory/COGS Account"));
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
-
-	if ($supplier_id) table_section(2);
+	if (!$supplier_id) {
+		table_section_title(_("Contact Data"));
+		text_row(_("Phone Number:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		table_section_title(_("Contact Data"));
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
+	}
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 	{
@@ -147,6 +151,7 @@ function supplier_settings(&$supplier_id)
 		hidden('dimension_id', 0);
 	if ($dim < 2)
 		hidden('dimension2_id', 0);
+	table_section(2);
 
 
 	table_section_title(_("Addresses"));
@@ -157,7 +162,6 @@ function supplier_settings(&$supplier_id)
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	if ($supplier_id)
 		record_status_list_row(_("Supplier status:"), 'inactive');
-
 	end_outer_table(1);
 
 	div_start('controls');
@@ -303,6 +307,8 @@ if (!$supplier_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
+		'transactions' => array(_('&Transactions'), $supplier_id),
+		'orders' => array(_('Purchase &Orders'), $supplier_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -314,13 +320,22 @@ tabbed_content_start('tabs', array(
 			$contacts = new contacts('contacts', $supplier_id, 'supplier');
 			$contacts->show();
 			break;
+		case 'transactions':
+			$_GET['supplier_id'] = $supplier_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
+			break;
 		case 'orders':
+			$_GET['supplier_id'] = $supplier_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
+			break;
 	};
 br();
 tabbed_content_end();
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 
-end_page();
+end_page(@$_REQUEST['popup']);
 
 ?>

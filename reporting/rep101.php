@@ -108,7 +108,7 @@ function print_customer_balances()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == ALL_TEXT)
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
@@ -146,7 +146,7 @@ function print_customer_balances()
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
-	if ($fromcust != ALL_NUMERIC)
+	if ($fromcust != ALL_TEXT)
 		$sql .= "WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -189,7 +189,7 @@ function print_customer_balances()
 		$rep->Line($rep->row + 4);
 		while ($trans = db_fetch($res))
 		{
-			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
+			if ($no_zeros && floatcmp($trans['TotalAmount'], $trans['Allocated']) == 0) continue;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);

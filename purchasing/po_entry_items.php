@@ -330,7 +330,7 @@ function can_commit()
 		set_focus('supplier_id');
 		return false;
 	} 
-	
+
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
@@ -343,13 +343,14 @@ function can_commit()
 		set_focus('OrderDate');
 		return false;
 	}
+
 	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !is_date($_POST['due_date'])) 
 	{
 		display_error(_("The entered due date is invalid."));
 		set_focus('due_date');
 		return false;
 	} 
-	
+
 	if (!$_SESSION['PO']->order_no) 
 	{
     	if (!$Refs->is_valid(get_post('ref'))) 
@@ -358,7 +359,7 @@ function can_commit()
 			set_focus('ref');
     		return false;
     	} 
-    	
+
     	if (!is_new_reference(get_post('ref'), $_SESSION['PO']->trans_type)) 
     	{
     		display_error(_("The entered reference is already in use."));
@@ -366,10 +367,17 @@ function can_commit()
     		return false;
     	}
 	}
-	
+
 	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && !$Refs->is_valid(get_post('supp_ref'))) 
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
+		set_focus('supp_ref');
+		return false;
+	}
+	if ($_SESSION['PO']->trans_type==ST_SUPPINVOICE 
+		&& is_reference_already_there($_SESSION['PO']->supplier_id, get_post('supp_ref'), $_SESSION['PO']->order_no))
+	{
+		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . get_post('supp_ref') . ")");
 		set_focus('supp_ref');
 		return false;
 	}
@@ -420,6 +428,7 @@ function handle_commit_order()
 			}
 			$order_no = add_po($cart);
 			new_doc_date($cart->orig_order_date); 
+        	$cart->order_no = $order_no;
 
 			if ($cart->trans_type == ST_PURCHORDER) {
 				unset($_SESSION['PO']);
@@ -451,6 +460,7 @@ function handle_commit_order()
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
 			$total = 0;
+
 			foreach($cart->line_items as $key => $line) {
 				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
 					$line->item_description, $line->receive_qty, 0, $line->receive_qty,

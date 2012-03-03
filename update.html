@@ -8,6 +8,17 @@
 <body dir="ltr" lang="en-US">
 <p style="margin-bottom: 0cm;"><strong><font color="#cc6600"><font style="font-size: 20pt;" size="5"><i>Front</i></font></font></strong><strong><font style="font-size: 20pt;" size="5">Accounting
 Update</font></strong></p>
+<h2>Important Notes for release 2.3.5.</h2>Change in the behaviour of <span style="font-weight: bold; font-style: italic;">Recurrent Invoices</span>.<br><ul><li>Now
+the Last Sent day is stamped with the former Last Sent (or Begin date
+the first time) + months + days. Before the Last Sent day was stamped
+with tthe creation date (today). The Invoice date is still todays date.
+</li><li>If you for some reason want to make a pause in the recurrent
+invoices, you can now edit the Last Sent day in the Management section
+of Sales tab.</li><li>Before the days value, together with a month
+value, decided which day in the month the invoice was due.. &nbsp;This
+does not&nbsp;work now. You can&nbsp;change the day in the month you
+want the recurrency to happen by setting the Last Sent day with the new
+day in the Management section.&nbsp;</li><li>If you create a new Recurrent Invoice the Beginning date can be set to the day in the month you want the recurrencies to be due.</li></ul>
 <h2>Important Notes</h2>
 <p>Upgrade process can be done only by administrator of the first
 company created during FrontAccounting installation. This person is
@@ -81,7 +92,8 @@ release version to be displayed on every FA update just remove or
 comment out $version variable in </span></strong><strong><span style="font-style: normal;"><span style="">config.php</span></span></strong><strong><span style="">.</span></strong></p>
 <p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3RC2]</span></span></strong></p>
-<p><strong> <span style="">$save_report_selections &nbsp;= 0; &nbsp;// A value &gt; 0 means days to save the report selections</span></strong></p>
+<p><strong> <span style="">$save_report_selections &nbsp;= 0; &nbsp;// A value &gt; 0 means days to save the report selections.</span></strong></p><p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.3]</span></span></strong></p><p><strong> <span style="">$save_po_item_codes &nbsp;= 0; &nbsp;//&nbsp; show item codes on purchase order&nbsp;</span></strong></p><p><strong><span style="">$def_print_destination = 0; // &nbsp;default print destination. 0 = PDF/Printer, 1 = Excel</span></strong></p><p><strong><span style="">$alternative_tax_include_on_docs = 0; // &nbsp;1 = print Subtotal tax excluded, tax and Total tax included</span></strong></p><p><strong><span style="">$suppress_tax_rates = 0; // &nbsp;suppress tax rates on documents. 0 = no, 1 = yes.</span></strong></p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong>
 
 <strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong><h2><strong><b>2. Database upgrade</b></strong></h2>
 <p><strong><span style="">This step can be skipped

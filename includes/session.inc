@@ -102,6 +102,7 @@ class SessionManager
 		return true;
 	}
 }
+
 function output_html($text)
 {
 	global $before_box, $Ajax, $messages;

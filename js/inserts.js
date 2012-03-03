@@ -18,6 +18,14 @@ var _hotkeys = {
 function validate(e) {
 	if (e.name && (typeof _validate[e.name] == 'function'))
 		return _validate[e.name](e);
+	else {
+		var n = e.name.indexOf('[');
+		if(n!=-1) {
+			var key = e.name.substring(n+1, e.name.length-1);
+			if (key.length>1 && _validate[e.name.substring(0,n)])
+				return _validate[e.name.substring(0,n)][key](e);
+		}
+	}
 	return true;
 }
 
@@ -150,23 +158,32 @@ function _set_combo_select(e) {
 		    event = event||window.event;
 		    key = event.keyCode||event.which;
 		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
-		    if (box && key == 32 && this.className == 'combo2') {
+	  		if(key == 8 || (key==37 && event.altKey)) {
+				event.returnValue = false;
+  			  	return false;
+  			}
+		    if (box && (key == 32) && (this.className == 'combo2')) {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
 				setFocus(box);
 			    return false;
+			 } else {
+			 	if (key == 13 && !e.length) // prevent chrome issue (blocked cursor after CR on empty selector)
+			 		return false;
 			 }
 		}
-}		
+}
 
 var _w;
 
 function callEditor(key) {
   var el = document.getElementsByName(editors[key][1])[0]; 
   if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+  var left = (screen.width - editors[key][2]) / 2;
+  var top = (screen.height - editors[key][3]) / 2;
   _w = open(editors[key][0]+el.value+'&popup=1',
-	  "edit","Scrollbars=0,resizable=0,width=800,height=600");
+	  "edit","scrollbars=yes,resizable=0,width="+editors[key][2]+",height="+editors[key][3]+",left="+left+",top="+top+",screenX="+left+",screenY="+top);
   if (_w.opener == null)
 	  _w.opener = self;
   editors._call = key; // store call point for passBack 
@@ -228,9 +245,24 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
-
 	'button': function(e) {
-		e.onclick = function(){ return validate(e); }
+		e.onclick = function(){
+			if (validate(e)) {
+				setTimeout(function() {	var asp = e.getAttribute('aspect');
+					set_mark((asp && (asp.indexOf('process') !== -1)) ? 'progressbar.gif' : 'ajax-loader.gif');
+				}, 100);
+				return true;
+			}
+		},
+		e.onkeydown = function(ev) {	// block unintentional page escape with 'history back' key pressed on buttons
+			ev = ev||window.event;
+ 			key = ev.keyCode||ev.which;
+	  		if(key == 8 || (key==37 && ev.altKey)) {
+				ev.returnValue = false;
+  			  	return false;
+  			}
+		}
+
 	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
 	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': 
@@ -239,8 +271,8 @@ var inserts = {
 				if (validate(e)) {
 					save_focus(e);
 					var asp = e.getAttribute('aspect')
-					if (asp && asp.indexOf('process') !== -1)
-						JsHttpRequest.request(this, null, 60000);
+					if (asp && (asp.indexOf('process') !== -1))
+						JsHttpRequest.request(this, null, 600000); // ten minutes for backup
 					else
 						JsHttpRequest.request(this);
 				}
@@ -276,8 +308,10 @@ var inserts = {
 	'button[aspect=popup]': function(e) {
 		e.onclick = function() {
 			if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+			 var left = (screen.width - 800)/2;
+			 var top = (screen.height - 600)/2;
 			  _w = open(document.location+'popup=1',
-				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top=50,left=50");
+				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top="+top+",left="+left+",screenX="+left+",screenY="+top);
 			  if (_w.opener == null)
 				  _w.opener = self;
 			//  editors._call = key; // store call point for passBack 
@@ -291,9 +325,19 @@ var inserts = {
 			e.onfocus = function() {
 			    save_focus(this);
 			};
-  		  var c = e.className;
-		  if (c == 'combo' || c == 'combo2' || c == 'combo3')
+		}
+  		var c = e.className;
+		if (c == 'combo' || c == 'combo2' || c == 'combo3')
 			_set_combo_select(e);
+		else {
+			e.onkeydown = function(ev) {	// block unintentional page escape with 'history back' key pressed on buttons
+				ev = ev||window.event;
+ 				key = ev.keyCode||ev.which;
+	  			if(key == 8 || (key=37 && ev.altKey)) {
+					ev.returnValue = false;
+	  			  	return false;
+  				}
+			}
 		}
 	},
 	'a.printlink': 	function(l) {
@@ -351,8 +395,14 @@ var inserts = {
 		    }
 		}
 //	    }
+	},
+	'textarea': function(e) {
+		if(e.onfocus==undefined) {
+			e.onfocus = function() {
+			    save_focus(this);
+			};
+		}
 	}
-
 /*	'tr.editrow': function(e) {
 		  	e.onkeydown = function(ev) { 
 	  		ev = ev||window.event;
@@ -434,7 +484,6 @@ function setHotKeys() {
 				for (var i=0; i<form.elements.length; i++){
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
-					
 
 					if (el.className!='editbutton' && (asp && asp.indexOf('selector') !== -1) && (key==13 || key==27)) {
 						passBack(key==13 ? el.getAttribute('rel') : false);
@@ -443,8 +492,11 @@ function setHotKeys() {
 					}
 					if (((asp && asp.indexOf('default') !== -1) && key==13)||((asp && asp.indexOf('cancel') !== -1) && key==27)) {
 						if (validate(el)) {
+							if (asp.indexOf('nonajax') !== -1)
+								el.click();
+							else
 							if (asp.indexOf('process') !== -1)
-								JsHttpRequest.request(el, null, 60000);
+								JsHttpRequest.request(el, null, 600000);
 							else
 								JsHttpRequest.request(el);
 						}
@@ -456,7 +508,7 @@ function setHotKeys() {
 			ev.returnValue = false;
 			return false;
 		}
-		if (editors && editors[key]) {
+		if (editors!=='undefined' && editors[key]) {
 			callEditor(key);
 			return stopEv(ev); // prevent default binding
 		} 

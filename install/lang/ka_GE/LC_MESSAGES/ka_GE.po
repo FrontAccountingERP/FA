@@ -1,0 +1,497 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: FrontAccounting Install Wizard 2.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-03-31 22:41+0100\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
+"Language-Team: Language <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: install/index.php:20
+#: install/index.php:40
+msgid "FrontAccouting ERP Installation Wizard"
+msgstr "FrontAccouting ERP დაყენების გიდი"
+
+#: install/index.php:41
+#, php-format
+msgid "Step %d: %s"
+msgstr "ნაბიჯი %d: %s"
+
+#: install/index.php:48
+msgid "Chart of accounts"
+msgstr "ანგარიშთა გეგმა"
+
+#: install/index.php:48
+#: install/index.php:75
+msgid "Encoding"
+msgstr "კოდირება"
+
+#: install/index.php:48
+#: install/index.php:75
+msgid "Description"
+msgstr "აღწერა"
+
+#: install/index.php:48
+#: install/index.php:75
+msgid "Install"
+msgstr "დააყენე"
+
+#: install/index.php:65
+#: install/index.php:93
+msgid "Installed"
+msgstr "დაყენებული"
+
+#: install/index.php:75
+msgid "Language"
+msgstr "ენა"
+
+#: install/index.php:123
+msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
+msgstr ""
+
+#: install/index.php:159
+msgid "Cannot save system configuration file 'config.php'."
+msgstr "სისტემის კონფიგურაციის ფაილის 'config.php'-ის შენახვა შეუძლებელია"
+
+#: install/index.php:166
+msgid "Cannot open 'config_db.php' configuration file."
+msgstr "კონფიგურაციის ფაილის 'config_db.php' გახსნა შეუძლებელია."
+
+#: install/index.php:169
+msgid "Cannot write to the 'config_db.php' configuration file."
+msgstr "კონფიგურაციის ფაილის 'config_db.php' ცვლილება შეუძლებელია."
+
+#: install/index.php:172
+msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
+msgstr "კონფიგურაციის ფაილის 'config_db.php' ცვლილება შეუძლებელია. შეცვალე მასზე უფლებები და სცადე ეს ნაბიჯი კიდევ."
+
+#: install/index.php:211
+msgid "Host name cannot be empty."
+msgstr "ჰოსტის სახელი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:215
+msgid "Database user name cannot be empty."
+msgstr "მონაცემთა ბაზის მომხრმარებლის სახელი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:219
+msgid "Database name cannot be empty."
+msgstr "მონაცემთა ბაზის სახელი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:272
+msgid "Company name cannot be empty."
+msgstr "კომპანიის სახელი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:276
+msgid "Company admin name cannot be empty."
+msgstr "კომპანიის ადმინის სახელი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:280
+msgid "Company admin password cannot be empty."
+msgstr "კომპანიის ადმინის პაროლი არ შეიძლება იყოს ცარიელი."
+
+#: install/index.php:284
+msgid "Company admin passwords differ."
+msgstr "კომპანიის ადმინის პაროლები განსხვავდება."
+
+#: install/index.php:316
+msgid "System Diagnostics"
+msgstr "სისტემის დიაგნოსტიკა."
+
+#: install/index.php:318
+msgid "Select install wizard language:"
+msgstr "აირჩიე დაყენების გიდის ენა:"
+
+#: install/index.php:324
+msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
+msgstr "პროგრამის ყველა საწყისი მოთხოვნა სავარაუდოდ სწორია. დააჭირე გააგრძელე ღილაკს."
+
+#: install/index.php:325
+#: install/index.php:351
+#: install/index.php:358
+#: install/index.php:365
+#: install/index.php:384
+msgid "Continue >>"
+msgstr "გააგრძელე>>"
+
+#: install/index.php:327
+msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
+msgstr "პროგრამის დაყენება შეუძლებელია. გაასწორე ქვემოთ წითლად ჩამოთვლილი და დააჭირე განაახლე ღილაკს."
+
+#: install/index.php:328
+msgid "Refresh"
+msgstr "განაახლე"
+
+#: install/index.php:338
+msgid "Database Server Settings"
+msgstr "მონაცემთა ბაზის სერვერის პარამეტრები"
+
+#: install/index.php:340
+msgid "Server Host:"
+msgstr "ჰოსტი სერვერი:"
+
+#: install/index.php:341
+msgid "Database User:"
+msgstr "მონაცემთა ბაზის მომხმარებელი:"
+
+#: install/index.php:342
+msgid "Database Password:"
+msgstr "მონაცემთა ბაზის პაროლი:"
+
+#: install/index.php:343
+msgid "Database Name:"
+msgstr "მონაცემთა ბაზის სახელი:"
+
+#: install/index.php:344
+msgid "Use '0_' Table Prefix:"
+msgstr "გამოიყენე '0_' ცხრილის პრეფიქსი:"
+
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
+msgid "Yes"
+msgstr "დიახ"
+
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
+msgid "No"
+msgstr "არა"
+
+#: install/index.php:345
+msgid "Install Additional Language Packs from FA Repository:"
+msgstr "დააყენე დამატებითი ენა პროგრამის საცავიდან:"
+
+#: install/index.php:346
+msgid "Install Additional COAs from FA Repository:"
+msgstr "დააყენე დამატებითი ანგარიშთა გეგმა პროგრამის საცავიდან:"
+
+#: install/index.php:348
+msgid "Use table prefix if you share selected database for more than one FA company."
+msgstr "გამოიყენე ცხრილის პრეფიქსი თუ უნაწილებ მონაცემთა ბაზას ერთზე მეტ კომპანიას."
+
+#: install/index.php:349
+msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
+msgstr "არ აირჩიო დამატებითი ენა ან/და ანგარიშთა გეგმა თუ არ გაქვს ინტერნეტითან კავშირი. შეგიძლია ეს გააკეთო მოგვიანებით."
+
+#: install/index.php:350
+#: install/index.php:357
+#: install/index.php:364
+#: install/index.php:383
+msgid "<< Back"
+msgstr "<<უკან"
+
+#: install/index.php:355
+msgid "User Interface Languages Selection"
+msgstr "მომხმარებილის ინტერეფეისის ენის არჩევა"
+
+#: install/index.php:362
+msgid "Charts of Accounts Selection"
+msgstr "ანაგარიშთა გეგმის არჩევა"
+
+#: install/index.php:374
+msgid "Company Settings"
+msgstr "კომპანიის პარამეტრები"
+
+#: install/index.php:376
+msgid "Company Name:"
+msgstr "კომპანიის სახელი:"
+
+#: install/index.php:377
+msgid "Admin Login:"
+msgstr "ადმინის სახელი:"
+
+#: install/index.php:378
+msgid "Admin Password:"
+msgstr "ადმინის პაროლი:"
+
+#: install/index.php:379
+msgid "Reenter Password:"
+msgstr "თავიდან შეიყვანე პაროლი:"
+
+#: install/index.php:380
+msgid "Select Chart of Accounts:"
+msgstr "აირჩიე ანგარიშთა გეგმა:"
+
+#: install/index.php:381
+msgid "Select Default Language:"
+msgstr "აირჩიე ძირითადი ენა:"
+
+#: install/index.php:388
+msgid "FrontAccounting ERP has been installed successsfully."
+msgstr "FrontAccounting ERP დაყენდა წარმატებით."
+
+#: install/index.php:389
+msgid "Please do not forget to remove install wizard folder."
+msgstr "არ დაგავიწყდეს წაშალო install დირექტორია."
+
+#: install/index.php:392
+msgid "Click here to start."
+msgstr "დასაწყებად დააჭირე აქ."
+
+#: includes/system_tests.inc:15
+msgid "Info"
+msgstr "ინფო"
+
+#: includes/system_tests.inc:16
+msgid "Optional"
+msgstr "ნებაყოფილობითი"
+
+#: includes/system_tests.inc:17
+msgid "Recommended"
+msgstr "რეკომენდირებული"
+
+#: includes/system_tests.inc:18
+msgid "Required "
+msgstr "საჭირო"
+
+#: includes/system_tests.inc:24
+msgid "MySQL version"
+msgstr "MySQL ვერსია"
+
+#: includes/system_tests.inc:28
+msgid "Upgrade MySQL server to version at least 4.1"
+msgstr "განაახლე MySQL სერვერი მინიმუმ 4.1 ვერსიამდე"
+
+#: includes/system_tests.inc:35
+msgid "PHP MySQL extension"
+msgstr "PHP MySQL გაფართოვება"
+
+#: includes/system_tests.inc:40
+msgid "Your PHP has to have MySQL extension enabled."
+msgstr "შენი PHP-ს გაუაქტიურე MySQL გაფართოება."
+
+#: includes/system_tests.inc:46
+msgid "PHP version"
+msgstr "PHP ვერსია"
+
+#: includes/system_tests.inc:50
+msgid "Upgrade PHP to version at least 4.3.3"
+msgstr "განაახლე PHP მინიმუმ 4.3.3 ვერსიამდე"
+
+#: includes/system_tests.inc:57
+msgid "Server system"
+msgstr "სერვერის სისტემა"
+
+#: includes/system_tests.inc:67
+msgid "Session save path"
+msgstr "სესიის დამახსოვრების მისამართი"
+
+#: includes/system_tests.inc:79
+msgid "Removed install wizard folder"
+msgstr "დასაყენებელი გიდის დირექტორია მოშორებულია"
+
+#: includes/system_tests.inc:82
+msgid "Not removed"
+msgstr "არ არის მოშორებული"
+
+#: includes/system_tests.inc:83
+msgid "Remove or rename install wizard folder for security reasons."
+msgstr "უსაფრთხოების თვალსაზრისით მოაშორე ან გადაარქვი დასაყენებელი გიდის დირექტორია(ს)."
+
+#: includes/system_tests.inc:90
+msgid "Browser type"
+msgstr "ბრაუზერის ტიპი"
+
+#: includes/system_tests.inc:94
+msgid "Any browser is supported"
+msgstr "ნებისმიერ ბრაუზერთან თავსებადია"
+
+#: includes/system_tests.inc:101
+msgid "Http server type"
+msgstr "Http სერვერის ტიპი"
+
+#: includes/system_tests.inc:105
+msgid "Any server is supported"
+msgstr "ნებისმიერ სერვერთან თავსებადია"
+
+#: includes/system_tests.inc:112
+msgid "Native gettext"
+msgstr "gettext თავსებადი"
+
+#: includes/system_tests.inc:116
+msgid "In case of no gettext support, php emulation is used"
+msgstr "gettext-ის მხარდაჭერის არ არსებობისას, გამოიყენება php ემულაცია"
+
+#: includes/system_tests.inc:124
+msgid "Debugging mode"
+msgstr "შეცდომების გამოვლინება გააქტიურებულია"
+
+#: includes/system_tests.inc:128
+msgid "To switch debugging on set $go_debug>0 in config.php file"
+msgstr "შეცდომების გამოვლინების გასააქტიურებლად მიუთითე $go_debug>0 config.php ფაილში"
+
+#: includes/system_tests.inc:137
+msgid "Error logging"
+msgstr "შეცდომების ჩაწერა"
+
+#: includes/system_tests.inc:145
+msgid "Disabled"
+msgstr "გათიშულია"
+
+#: includes/system_tests.inc:148
+msgid "To switch error logging set $error_logging in config.php file"
+msgstr "შეცდომების ჩაწერის გასააქტიურებლად მიუთითე $error_logging config.php ფაილში"
+
+#: includes/system_tests.inc:151
+msgid "Log file is not writeable"
+msgstr "შეცდომების ფაილის შეცვლა შეუძლებელია"
+
+#: includes/system_tests.inc:161
+msgid "Current database version"
+msgstr "მიმდინარე მონაცემთა ბაზის ვერსია"
+
+#: includes/system_tests.inc:165
+msgid "Database structure seems to be not upgraded to current version"
+msgstr "მონაცემთა ბაზის სტრუქტურა არ არის განახლებული მიმდინარე ვერსიამდე"
+
+#: includes/system_tests.inc:180
+msgid "Company subdirectories consistency"
+msgstr "კომპანიის ქვედირექტორიების თანმიმდევრულობა."
+
+#: includes/system_tests.inc:193
+#: includes/system_tests.inc:200
+#: includes/system_tests.inc:208
+#: includes/system_tests.inc:225
+#: includes/system_tests.inc:340
+#: includes/system_tests.inc:349
+#: includes/system_tests.inc:358
+#, php-format
+msgid "'%s' is not writeable"
+msgstr "%s ის შეცვლა შეუძლებელია"
+
+#: includes/system_tests.inc:221
+msgid "Temporary directory"
+msgstr "დრეოებითი დირექტორია"
+
+#: includes/system_tests.inc:233
+msgid "Language configuration consistency"
+msgstr "ენის კონფიგურაციის თანმიდევრულობა"
+
+#: includes/system_tests.inc:242
+msgid "Languages folder should be writeable."
+msgstr "ენების დირექტორია ცვლილება შესაძებელი უნდა იყოს."
+
+#: includes/system_tests.inc:251
+msgid "Languages configuration file should be writeable."
+msgstr "ენების კონფიგურაციის ფაილის ცვლილება შესაძლებელი უნდა იყოს."
+
+#: includes/system_tests.inc:270
+#, php-format
+msgid "Missing %s translation file."
+msgstr "%s სათარგმნი ფაილის არ მოიპოვება."
+
+#: includes/system_tests.inc:275
+#, php-format
+msgid "Missing system locale: %s"
+msgstr "%s სისტემის ლოკალე არ მოიპოვება"
+
+#: includes/system_tests.inc:288
+msgid "Main config file"
+msgstr "მთავარი კონფიგურაციის ფაილი"
+
+#: includes/system_tests.inc:295
+#: includes/system_tests.inc:317
+#, php-format
+msgid "Can't write '%s' file. Check FA directory write permissions."
+msgstr "ფაილის %s ის შეცვლა შეუძებელია. შეამოწმე FA დირექტორიის ცვლილების უფლება."
+
+#: includes/system_tests.inc:296
+#: includes/system_tests.inc:318
+#, php-format
+msgid "'%s' file exists."
+msgstr "ფაილის %s  არსებობს."
+
+#: includes/system_tests.inc:300
+#, php-format
+msgid "'%s' file should be read-only"
+msgstr "ფაილის %s შეცვლა შეუძლებელი უნდა იყოს"
+
+#: includes/system_tests.inc:309
+msgid "Database auth file"
+msgstr "მონაცემთა ბაზის აუთენთიკური ფაილი"
+
+#: includes/system_tests.inc:322
+#, php-format
+msgid "'%s' file should be read-only if you do not plan to add or change companies"
+msgstr "ფაილის %s შეცვლა შეუძლებელი უნდა იყოს, თუ არ გეგმავ დაამატო ან შეცვალო კომპანია"
+
+#: includes/system_tests.inc:333
+msgid "Extensions system"
+msgstr "გაფართოებების სისტემა"
+
+#: includes/system_tests.inc:363
+msgid "Extensions configuration files and directories should be writeable"
+msgstr "გაფართოებების კონფიგურაციის ფაილების და დაირექტორიების ცვლილება შესაძლებელი უნდა იყოს"
+
+#: includes/system_tests.inc:375
+#, php-format
+msgid "Non-standard theme directory '%s' is not writable"
+msgstr "არა სტანდარტული კომპოზიციის დირექტორიის %s შეცვლა შეუძლებელია"
+
+#: includes/system_tests.inc:385
+msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
+msgstr "OpenSSL PHP გაფართოვება უნდა გააქტიურო, რათა გამოიყენო გაფართოებების საცავი."
+
+#: includes/system_tests.inc:388
+msgid "OpenSSL have to be available on your server to use extension repository system."
+msgstr "OpenSSL PHP გაფართოვება უნდა მოიპოვებოდეს შენს სერვერზე, რათა გამოიყენო გაფართოებების საცავი."
+
+#: includes/system_tests.inc:411
+msgid "Test"
+msgstr "ტესტი"
+
+#: includes/system_tests.inc:411
+msgid "Test type"
+msgstr "ტესტის ტიპი"
+
+#: includes/system_tests.inc:411
+msgid "Value"
+msgstr "მონაცემი"
+
+#: includes/system_tests.inc:411
+msgid "Comments"
+msgstr "კომენტარი"
+
+#: includes/system_tests.inc:435
+msgid "Ok"
+msgstr "დიახ"
+
+#: includes/packages.inc:190
+#, php-format
+msgid "No key field '%s' in file '%s'"
+msgstr ""
+
+#: includes/packages.inc:295
+msgid "Release file in repository is invalid, or public key is outdated."
+msgstr ""
+
+#: includes/packages.inc:311
+msgid "Repository version does not match application version."
+msgstr ""
+
+#: includes/packages.inc:325
+#, php-format
+msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:358
+#, php-format
+msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
+msgstr ""
+
+#: includes/packages.inc:613
+#: includes/packages.inc:664
+#, php-format
+msgid "Package '%s' not found."
+msgstr ""
+

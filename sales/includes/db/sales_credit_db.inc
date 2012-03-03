@@ -180,6 +180,9 @@ function add_credit_movements_item(&$credit_note, &$credit_line,
 	$credit_type, $price, $credited_invoice=0)
 {
 
+    //Chaitanya : Stamp current cost in stock moves $credit_line does not fetch cost
+    $curr_std_cost = get_standard_cost($credit_line->stock_id);
+
 	if ($credit_type == "Return") {
 
 		$reference = "Return ";
@@ -193,20 +196,20 @@ function add_credit_movements_item(&$credit_note, &$credit_line,
 		if ($credited_invoice)
 			$reference .= "Ex Inv: " . $credited_invoice;
 
-	add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
-		key($credit_note->trans_no), $credit_note->Location,
-		$credit_note->document_date, $reference, -$credit_line->qty_dispatched,
-		$credit_line->standard_cost,  0, $price,
-		$credit_line->discount_percent);
-
-		}
-	add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
-		key($credit_note->trans_no), $credit_note->Location,
-		$credit_note->document_date, $reference, $credit_line->qty_dispatched,
-		$credit_line->standard_cost,  0, $price,
-		$credit_line->discount_percent);
+   	 	add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
+        	key($credit_note->trans_no), $credit_note->Location,
+        	$credit_note->document_date, $reference, -$credit_line->qty_dispatched,
+        	$curr_std_cost,  0, $price,
+        	$credit_line->discount_percent);
 
 	}
+    add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
+        key($credit_note->trans_no), $credit_note->Location,
+        $credit_note->document_date, $reference, $credit_line->qty_dispatched,
+        $curr_std_cost,  0, $price,
+        $credit_line->discount_percent);
+
+}
 
 //----------------------------------------------------------------------------------------
 

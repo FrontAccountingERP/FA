@@ -13,12 +13,10 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-if (isset($_GET['stock_id'])){
+page(_($help_context = "Inventory Item Status"));
+
+if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
-	page(_($help_context = "Inventory Item Status"), true);
-} else {
-	page(_($help_context = "Inventory Item Status"));
-}
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -38,8 +36,11 @@ start_form();
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center> " . _("Item:"). " ";
-echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+if (!$page_nested)
+{
+	echo "<center> " . _("Item:"). " ";
+	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+}
 echo "<br>";
 
 echo "<hr></center>";

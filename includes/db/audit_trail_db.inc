@@ -20,7 +20,6 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 			. "'$date',". db_escape($descr). ")";
 
 	db_query($sql, "Cannot add audit info");
-	
 	// all audit records beside just inserted one should have gl_seq set to NULL
 	// to avoid need for subqueries (not existing in MySQL 3) all over the code
 	$sql = "UPDATE ".TB_PREF."audit_trail audit LEFT JOIN ".TB_PREF."fiscal_year year ON year.begin<='$date' AND year.end>='$date'
@@ -85,7 +84,7 @@ function close_transactions($todate) {
 				$last_year = $row['fiscal_year'];
 				$counter = 0; // reset counter on fiscal year change
 			}
-			
+
 			$seq = $row['closed'] ? ++$counter : 0;
 			if ($row['gl_seq'] != $seq)	{ // update transaction status only when gl_seq has changed
 				$sql2 = "UPDATE ".TB_PREF."audit_trail SET"
@@ -95,6 +94,7 @@ function close_transactions($todate) {
 			}
 		}
 	}
+
 	if ($errors) 
 		display_warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
 	else
@@ -124,7 +124,6 @@ function is_closed_trans($type, $trans_no) {
 	$res = db_query($sql, "Cannot check transaction");
 
 	return db_num_rows($res);
-
 }
 
 ?>

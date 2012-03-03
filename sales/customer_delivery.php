@@ -89,24 +89,15 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	$ord = new Cart(ST_SALESORDER, $_GET['OrderNumber'], true);
 
-	/*read in all the selected order into the Items cart  */
-
 	if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different sales order to delivery"), "OutstandingOnly=1");
 		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 	}
 
-	$ord->trans_type = ST_CUSTDELIVERY;
-	$ord->src_docs = $ord->trans_no;
-	$ord->order_no = key($ord->trans_no);
-	$ord->trans_no = 0;
-	$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
-	$ord->document_date = new_doc_date();
-	$cust = get_customer($ord->customer_id);
-	// 2010-09-03 Joe Hunt
-	$ord->dimension_id = $cust['dimension_id'];
-	$ord->dimension2_id = $cust['dimension2_id'];
+ 	// Adjust Shipping Charge based upon previous deliveries TAM
+	adjust_shipping_charge($ord, $_GET['OrderNumber']);
+ 
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
@@ -279,24 +270,35 @@ function check_quantities()
 
 function check_qoh()
 {
-	global $SysPrefs;
+    global $SysPrefs;
+    $dn = &$_SESSION['Items'];
+    $newdelivery = ($dn->trans_no==0);
+    if (!$SysPrefs->allow_negative_stock()) {
+        foreach ($_SESSION['Items']->line_items as $itm) {
 
-	if (!$SysPrefs->allow_negative_stock())	{
-		foreach ($_SESSION['Items']->line_items as $itm) {
+            if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
+                $qoh_by_date = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+                $qoh_abs = get_qoh_on_date($itm->stock_id, $_POST['Location'], null);
+                //If editing current delivery delivered qty should be added 
+                if (!$newdelivery)
+                {
+                    $delivered = get_already_delivered($itm->stock_id, $_POST['Location'], key($dn->trans_no));
 
-			if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
-				$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
-
-				if ($itm->qty_dispatched > $qoh) {
-					display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-						" " . $itm->stock_id . " - " .  $itm->item_description);
-					return false;
-				}
-			}
-		}
-	}
-	return true;
+                    $qoh_abs = $qoh_abs - $delivered;
+                    $qoh_by_date = $qoh_by_date - $delivered;
+                }
+                $qoh = ($qoh_by_date < $qoh_abs ? $qoh_by_date : $qoh_abs); 
+                if ($itm->qty_dispatched > $qoh) {
+                    display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
+                        " " . $itm->stock_id . " - " . $itm->item_description);
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
+
 //------------------------------------------------------------------------------
 
 if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {

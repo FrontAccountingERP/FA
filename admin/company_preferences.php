@@ -93,9 +93,8 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				display_error(_('The existing image could not be removed'));
 				$input_error = 1;
 			}
-			else
-				$_POST['coy_logo'] = "";
 		}
+		$_POST['coy_logo'] = "";
 	}
 	if ($_POST['add_pct'] == "")
 		$_POST['add_pct'] = -1;

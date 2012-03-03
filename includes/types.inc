@@ -151,7 +151,6 @@ function get_counterparty_name($trans_type, $trans_no, $full=true)
 			WHERE order_no=".db_escape($trans_no)." AND trans_type=".db_escape($trans_type)
 			." AND order.debtor_no=debtor.debtor_no";
 			break;
-
 		case ST_SALESINVOICE :
 		case ST_CUSTCREDIT :
 		case ST_CUSTPAYMENT :

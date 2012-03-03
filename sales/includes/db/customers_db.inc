@@ -24,7 +24,6 @@ function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
 		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
 		" . $pymt_discount . ", " . $credit_limit 
 		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
-
 	db_query($sql,"The customer could not be added");
 }
 
@@ -61,7 +60,7 @@ function delete_customer($customer_id)
 	commit_transaction();
 }
 
-function get_customer_details($customer_id, $to=null)
+function get_customer_details($customer_id, $to=null, $all=true)
 {
 
 	if ($to == null)
@@ -71,10 +70,13 @@ function get_customer_details($customer_id, $to=null)
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
-
-    $value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
-    	* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
-
+	if ($all)
+    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
+    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
+    else		
+    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
+    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
+    		trans.alloc),0)";
 	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
     $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
 		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
@@ -94,9 +96,10 @@ function get_customer_details($customer_id, $to=null)
 		WHERE
 			 ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
  			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)."
-
-		GROUP BY
+			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)." ";
+	if (!$all)
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > ".FLOAT_COMP_DELTA." ";  
+	$sql .= "GROUP BY
 			  ".TB_PREF."debtors_master.name,
 			  ".TB_PREF."payment_terms.terms,
 			  ".TB_PREF."payment_terms.days_before_due,

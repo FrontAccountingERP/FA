@@ -123,6 +123,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$memo, -$bom_cost);
 
 	}
+	$item_accounts = get_stock_gl_code($stock_id);
 	if ($advanced)
 	{
 		$wo = get_work_order($woid);
@@ -151,7 +152,6 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 
 	} else { // only for quick
 		// credit additional costs
-		$item_accounts = get_stock_gl_code($stock_id);
 
 		if ($costs != 0.0)
 		{

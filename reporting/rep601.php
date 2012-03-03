@@ -118,7 +118,7 @@ function print_bank_transactions()
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
 				$rep->TextCol(2, 3,	$myrow['ref']);
 				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
-				$rep->TextCol(4, 5,	get_counterparty_name($myrow["type"], $myrow["type_no"], false));
+				$rep->TextCol(4, 5,	get_counterparty_name($myrow["type"], $myrow["trans_no"], false));
 				if ($myrow['amount'] > 0.0)
 				{
 					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);

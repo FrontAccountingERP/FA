@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
 $js = "";
 if ($use_date_picker)
@@ -34,7 +35,7 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (!is_date_in_fiscalyears($date, false))
+	if (!is_date_in_fiscalyears($_POST['date'], false))
 	{
 		display_error(_("Selected date is not in fiscal year or the year is closed."));
 		set_focus('date');

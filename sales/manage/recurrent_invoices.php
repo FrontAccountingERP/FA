@@ -36,18 +36,35 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The area description cannot be empty."));
 		set_focus('description');
 	}
+	if (!is_date($_POST['begin'])) {
+		$input_error = 1;
+		display_error(_("The entered date is invalid."));
+		set_focus('begin');
+	}
+	if (!is_date($_POST['end'])) {
+		$input_error = 1;
+		display_error(_("The entered date is invalid."));
+		set_focus('end');
+	}
+	if (isset($_POST['last_sent']) && !is_date($_POST['last_sent'])) {
+		$input_error = 1;
+		display_error(_("The entered date is invalid."));
+		set_focus('last_sent');
+	}
 
 	if ($input_error != 1)
 	{
     	if ($selected_id != -1) 
     	{
-    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], $_POST['debtor_no'], 
-    			$_POST['group_no'], input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
+    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], input_num('debtor_no'), 
+    			input_num('group_no'), input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
+    		if (isset($_POST['last_sent']))	
+				update_last_sent_recurrent_invoice($selected_id, $_POST['last_sent']);
 			$note = _('Selected recurrent invoice has been updated');
     	} 
     	else 
     	{
-    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], $_POST['debtor_no'], $_POST['group_no'],
+    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], input_num('debtor_no'), input_num('group_no'),
     			input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
 			$note = _('New recurrent invoice has been added');
     	}
@@ -89,7 +106,7 @@ while ($myrow = db_fetch($result))
 {
 	$begin = sql2date($myrow["begin"]);
 	$end = sql2date($myrow["end"]);
-	$last_sent = sql2date($myrow["last_sent"]);
+	$last_sent = $myrow["last_sent"] == '0000-00-00' ? '' : sql2date($myrow["last_sent"]);
 	
 	alt_table_row_color($k);
 		
@@ -139,6 +156,7 @@ if ($selected_id != -1)
 		$_POST['monthly']  = $myrow["monthly"];
 		$_POST['begin']  = sql2date($myrow["begin"]);
 		$_POST['end']  = sql2date($myrow["end"]);
+		$_POST['last_sent']  = ($myrow['last_sent']=="0000-00-00"?"":sql2date($myrow["last_sent"]));
 	} 
 	hidden("selected_id", $selected_id);
 }
@@ -162,6 +180,9 @@ small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);
 date_row(_("Begin:"), 'begin');
 
 date_row(_("End:"), 'end', null, null, 0, 0, 5);
+
+if ($selected_id != -1 && $_POST['last_sent'] != "")
+	date_row(_("Last Created"), 'last_sent');
 
 end_table(1);
 

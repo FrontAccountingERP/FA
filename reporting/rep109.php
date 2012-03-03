@@ -33,7 +33,7 @@ $print_as_quote = 0;
 
 function print_sales_orders()
 {
-	global $path_to_root, $print_as_quote;
+	global $path_to_root, $print_as_quote, $no_zero_lines_amount;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -98,7 +98,7 @@ function print_sales_orders()
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
 		$rep->NewPage();
 
@@ -124,11 +124,14 @@ function print_sales_orders()
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
 			$newrow = $rep->row;
 			$rep->row = $oldrow;
-			$rep->TextCol(2, 3,	$DisplayQty, -2);
-			$rep->TextCol(3, 4,	$myrow2['units'], -2);
-			$rep->TextCol(4, 5,	$DisplayPrice, -2);
-			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-			$rep->TextCol(6, 7,	$DisplayNet, -2);
+			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+			{
+				$rep->TextCol(2, 3,	$DisplayQty, -2);
+				$rep->TextCol(3, 4,	$myrow2['units'], -2);
+				$rep->TextCol(4, 5,	$DisplayPrice, -2);
+				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+				$rep->TextCol(6, 7,	$DisplayNet, -2);
+			}
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
@@ -143,20 +146,18 @@ function print_sales_orders()
 		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-		$linetype = true;
 		$doctype = ST_SALESORDER;
-		include($path_to_root . "/reporting/includes/doctext.inc");
 
-		$rep->TextCol(3, 6, $doc_Sub_total, -2);
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
-		$rep->TextCol(3, 6, $doc_Shipping, -2);
+		$rep->TextCol(3, 6, _("Shipping"), -2);
 		$rep->TextCol(6, 7,	$DisplayFreight, -2);
 		$rep->NewLine();
 
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		if ($myrow['tax_included'] == 0) {
-			$rep->TextCol(3, 6, $doc_TOTAL_ORDER, - 2);
+			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
 			$rep->NewLine();
 		}
@@ -166,14 +167,11 @@ function print_sales_orders()
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{
-			if ($tax_item['amount'] == 0)
+			if ($tax_item['Value'] == 0)
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
-				$tax_type_name = $tax_item['tax_type_name'];
-			else
-				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
+			$tax_type_name = $tax_item['tax_type_name'];
 
 			if ($myrow['tax_included'])
 			{
@@ -190,7 +188,7 @@ function print_sales_orders()
 					$first = false;
 				}
 				else
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_type_name . $doc_Amount . ": " . $DisplayTax, -2);
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . " " . _("Amount"). ": " . $DisplayTax, -2);
 			}
 			else
 			{
@@ -205,7 +203,7 @@ function print_sales_orders()
 
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		$rep->Font('bold');
-		$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
+		$rep->TextCol(3, 6, _("TOTAL ORDER VAT INCL."), - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
 		if ($words != "")
@@ -216,7 +214,7 @@ function print_sales_orders()
 		$rep->Font();
 		if ($email == 1)
 		{
-			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
+			$rep->End($email);
 		}
 	}
 	if ($email == 0)

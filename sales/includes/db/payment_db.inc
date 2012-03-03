@@ -24,18 +24,21 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	hook_db_prewrite($args, ST_CUSTPAYMENT);
 
 	$company_record = get_company_prefs();
-
-	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, 
-		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, "", 0, $rate);
-
-	$bank_gl_account = get_bank_gl_account($bank_account);
-
+	
+	//Chaitanya : 13_OCT_2011 : Voiding Tasks first
+	//Reason : After modifying the customer trans, it was getting voided later
 	if ($trans_no != 0) {
 	  delete_comments(ST_CUSTPAYMENT, $trans_no);
 	  void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
 	  void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
 	  void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 	}
+
+	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, 
+		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, "", 0, $rate);
+   
+	$bank_gl_account = get_bank_gl_account($bank_account);
+
 	$total = 0;
 	/* Bank account entry first */
 	$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,

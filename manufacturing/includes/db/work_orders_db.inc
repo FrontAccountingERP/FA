@@ -173,7 +173,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 	create_wo_requirements($woid, $stock_id);
 
 	add_comments(ST_WORKORDER, $woid, $releaseDate, $memo_);
-	add_audit_trail(ST_WORKORDER, $woid, $myrow['date_'], _("Released."));
+	add_audit_trail(ST_WORKORDER, $woid, sql2date($myrow['date_']), _("Released."));
 
 	commit_transaction();
 }

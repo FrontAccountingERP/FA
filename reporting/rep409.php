@@ -37,14 +37,12 @@ function print_workorders()
 	$email = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
-	$dec = user_price_dec();
+	if (!$from || !$to) return;
 
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
+	$from = min($fno[0], $tno[0]);
+	$to = max($fno[0], $tno[0]);
 
 	$cols = array(4, 60, 190, 255, 320, 385, 450, 515);
 
@@ -64,7 +62,7 @@ function print_workorders()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	for ($i = $fno[0]; $i <= $tno[0]; $i++)
+	for ($i = $from; $i <= $to; $i++)
 	{
 		$myrow = get_work_order($i);
 		if ($myrow === false)
@@ -133,18 +131,18 @@ function print_workorders()
 		$rep->NewLine(1);
 		$rep->TextCol(0, 5," *** = "._("Insufficient stock"), -2);
 
-		$comments = get_comments(ST_WORKORDER, $i);
-		if ($comments && db_num_rows($comments))
+		$memo = get_comments_string(ST_WORKORDER, $i);
+		if ($memo != "")
 		{
 			$rep->NewLine();
-			while ($comment=db_fetch($comments))
-				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+			$rep->TextColLines(1, 5, $memo, -2);
 		}
+
 		if ($email == 1)
 		{
 			$myrow['DebtorName'] = $myrow['contact'];
 			$myrow['reference'] = $myrow['wo_ref'];
- 			$rep->End($email, _("Work Order No.") . " " . $myrow['wo_ref'], $myrow);
+ 			$rep->End($email);
 		}
 	}
 	if ($email == 0)

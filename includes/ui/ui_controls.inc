@@ -32,10 +32,15 @@ function get_post($name, $dflt='')
 				((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 }
 //---------------------------------------------------------------------------------
+$form_nested = -1;
 
 function start_form($multi=false, $dummy=false, $action="", $name="")
 {
 	// $dummy - leaved for compatibility with 2.0 API
+	global $form_nested;
+
+	if (++$form_nested) return;
+
 
 	if ($name != "")
 		$name = "name='$name'";
@@ -53,7 +58,9 @@ function start_form($multi=false, $dummy=false, $action="", $name="")
 
 function end_form($breaks=0)
 {
-	global $Ajax;
+	global $Ajax, $form_nested;
+
+	if ($form_nested-- > 0) return;
 
 	$_SESSION['csrf_token'] = hash('sha256', uniqid(mt_rand(), true));
 	if ($breaks)

@@ -13,6 +13,7 @@ $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
@@ -69,11 +70,17 @@ display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst,user_price_dec());
 
-label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
+label_row(_("TOTAL INVOICE").' ('.$supplier_curr_code.')', $display_total, "colspan=1 align=right", "nowrap align=right");
 
 end_table(1);
 
-is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+$voided = is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+
+if (!$voided) 
+{
+	display_allocations_to(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPINVOICE, $trans_no, 
+		($supp_trans->ov_amount + $supp_trans->ov_gst));
+}
 
 end_page(true, false, false, ST_SUPPINVOICE, $trans_no);
 

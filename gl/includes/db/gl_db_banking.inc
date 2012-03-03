@@ -251,8 +251,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$currency = get_bank_account_currency($to_account);
-
-		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,
+		if (add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	
 			$currency, PT_MISC, $person_id))
 			$exchanged = true;
 	}

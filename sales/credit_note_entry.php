@@ -74,6 +74,8 @@ if (isset($_GET['AddedID'])) {
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+
 	display_footer_exit();
 } else
 	check_edit_conflicts();
@@ -94,7 +96,7 @@ function copy_to_cn()
 	$cart->Comments = $_POST['CreditText'];
 	$cart->document_date = $_POST['OrderDate'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
-	$cart->Location = $_POST["Location"];
+	$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
 	$cart->sales_type = $_POST['sales_type_id'];
 	if ($cart->trans_no == 0)
 		$cart->reference = $_POST['ref'];
@@ -126,7 +128,7 @@ function copy_from_cn()
 function handle_new_credit($trans_no)
 {
 	processing_start();
-	$_SESSION['Items'] = new Cart(11,$trans_no);
+	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$trans_no);
 	copy_from_cn();
 }
 
@@ -255,7 +257,7 @@ if (isset($_POST['CancelItemChanges']))
 //-----------------------------------------------------------------------------
 
 if (!processing_active()) {
-	handle_new_credit();
+	handle_new_credit(0);
 }
 
 //-----------------------------------------------------------------------------

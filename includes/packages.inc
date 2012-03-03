@@ -301,6 +301,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 			}
 		} else
 			$refresh = false;
+
 	} while($refresh);
 
 	$Release = get_control_file($loclist, 'Filename');

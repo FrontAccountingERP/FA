@@ -204,17 +204,17 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
         $qty_dispatched = (float)$qty_dispatched;
 
 //	echo "update line: $line_id, $doc_type, $qty_dispatched";
-	if ($doc_type==0)
+	if ($doc_type == 0)
 		return false;
 	else {
-		if ($doc_type==ST_SALESORDER)
+		if ($doc_type==ST_SALESORDER || $doc_type==ST_SALESQUOTE)
 		{
 			$sql = "UPDATE ".TB_PREF."sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched";
 			if ($auto)
 				$sql .= ", quantity = quantity + $qty_dispatched";
 			$sql .= " WHERE id=".db_escape($line_id);
-		}		
+		}
 		else
 			$sql = "UPDATE ".TB_PREF."debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched

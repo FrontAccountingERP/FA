@@ -11,9 +11,9 @@
 ***********************************************************************/
 $path_to_root = "../..";
 
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
-include($path_to_root . "/sales/includes/sales_ui.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $page_security = 'SA_SALESTRANSVIEW';
@@ -24,12 +24,6 @@ set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
 			'InvoiceTemplates' => 'SA_SALESINVOICE')
 );
-
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(900, 600);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
 
 if (get_post('type'))
 	$trans_type = $_POST['type'];
@@ -66,6 +60,12 @@ else
 	$_POST['order_view_mode'] = "Quotations";
 	$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
 }
+
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 600);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['selected_customer']))
@@ -118,6 +118,10 @@ function prt_link($row)
 
 function edit_link($row) 
 {
+	global $page_nested;
+	
+	if ($page_nested)
+		return '';
 	global $trans_type;
 	$modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
   return pager_link( _("Edit"),
@@ -159,8 +163,11 @@ function order_link($row)
 
 function tmpl_checkbox($row)
 {
-	global $trans_type;
+	global $trans_type, $page_nested;
 	if ($trans_type == ST_SALESQUOTE)
+		return '';
+
+	if ($page_nested)
 		return '';
 	$name = "chgtpl" .$row['order_no'];
 	$value = $row['type'] ? 1:0;
@@ -194,26 +201,18 @@ if (isset($_POST['Update']) && isset($_POST['last'])) {
 			change_tpl_flag($id);
 }
 
+$show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'InvoiceTemplates', 'DeliveryTemplates'));
 //---------------------------------------------------------------------------------------------
 //	Order range form
 //
-if (get_post('_OrderNumber_changed')) // enable/disable selection controls
+if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // enable/disable selection controls
 {
-	$disable = get_post('OrderNumber') !== '';
+	$disable = get_post('OrderNumber') !== '' || get_post('OrderReference') !== '';
 
-  	if ($_POST['order_view_mode']!='DeliveryTemplates' 
-		&& $_POST['order_view_mode']!='InvoiceTemplates') {
+  	if ($show_dates) {
 			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
 			$Ajax->addDisable(true, 'OrdersToDate', $disable);
 	}
-	$Ajax->addDisable(true, 'StockLocation', $disable);
-	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
-	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
-
-	if ($disable) {
-		$Ajax->addFocus(true, 'OrderNumber');
-	} else
-		$Ajax->addFocus(true, 'OrdersAfterDate');
 
 	$Ajax->activate('orders_tbl');
 }
@@ -223,21 +222,24 @@ start_form();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
-if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
+ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
+if ($show_dates)
 {
-	ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
-end_row();
-end_table();
 
-start_table(TABLESTYLE_NOBORDER);
-start_row();
+if($show_dates) {
+	end_row();
+	end_table();
 
+	start_table(TABLESTYLE_NOBORDER);
+	start_row();
+}
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
-
+if (!@$_GET['popup'])
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
 
@@ -251,7 +253,8 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-$sql = get_sql_for_sales_orders_view($selected_customer, $trans_type);
+$sql = get_sql_for_sales_orders_view($selected_customer, $trans_type, $_POST['OrderNumber'], $_POST['order_view_mode'],
+	@$selected_stock_item, @$_POST['OrdersAfterDate'], @$_POST['OrdersToDate'], @$_POST['OrderReference'], $_POST['StockLocation'], $_POST['customer_id']);
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
@@ -283,7 +286,9 @@ else
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	//array_substitute($cols, 3, 1, _("Cust Order Ref"));
-	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
+	array_append($cols, array(
+		array('insert'=>true, 'fun'=>'dispatch_link'),
+		array('insert'=>true, 'fun'=>'edit_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 	array_substitute($cols, 3, 1, _("Description"));

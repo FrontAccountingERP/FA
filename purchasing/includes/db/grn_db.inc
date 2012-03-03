@@ -12,6 +12,11 @@
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
+	//Handle if inventory will become negative
+    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
+    if (is_inventory_item($stock_id) && !$adj_only)
+        handle_negative_inventory($stock_id, $qty, $price, $date);	
+
 	// probably this function should be optimized
 	// passing transaction cart as argument. This would
 	// save a couple of db calls like get_supplier()
@@ -26,9 +31,6 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
 			$supp['tax_included']);
 
-	//$dec = user_price_dec();
-	//price_decimal_format($price, $dec);
-	//$price = round2($price, $dec);
 	if ($currency != null)
 	{
 		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
@@ -36,20 +38,30 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	}	
 	else
 		$price_in_home_currency = $price;
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+
+	$price_in_home_currency_ = $price_in_home_currency;
+	
+	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
-	if ($price > -0.0001 && $price < 0.0001)
-		return $material_cost;
+	
+	//Price adjustment for manufactured item
+	if (!$adj_only && $myrow['mb_flag'] == 'M') 
+	{
+		$standard_cost = get_standard_cost($stock_id);
+		//reduce overhead_cost and labour_cost from price as those will remain as is
+		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
+	}
+
 	if ($adj_only)
 		$exclude = ST_CUSTDELIVERY;
 	else
 		$exclude = 0;
 	$cost_adjust = false;
-	//$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+
 	$qoh = get_qoh_on_date($stock_id);
-	
+
 	if ($adj_only)
 	{
 		if ($qoh > 0)
@@ -59,17 +71,16 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	{
 		if ($qoh < 0)
 		{
-			if ($qoh + $qty > 0)
+			if ($qoh + $qty >= 0)
 				$cost_adjust = true;
 			$qoh = 0;
 		}
-		if ($qoh + $qty != 0)
+		if ($qoh + $qty > 0)
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
-	}	
-	//$material_cost = round2($material_cost, $dec);
-	
-	if ($cost_adjust) // new 2010-02-10
-		adjust_deliveries($stock_id, $material_cost, $date);
+	}
+
+	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
+		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -106,10 +117,10 @@ function add_grn(&$po)
 				if ($clearing_act)
 					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id);
+						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id, '', 0, $order_line->stock_id);
 				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->receive_qty, $date_);
-			}		
+			}
 			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
@@ -132,7 +143,7 @@ function add_grn(&$po)
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
 				$order_line->receive_qty, $order_line->standard_cost,
-            		$po->supplier_id, 1, $order_line->price);
+            		$po->supplier_id, 1, $order_line->taxfree_charge_price($po));
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
@@ -170,11 +181,12 @@ function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
 //-------------------------------------------------------------------------------------------------------------
 
 function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost,
-	$quantity_received, $price)
+	$quantity_received, $price, $quantity)
 {
 	$sql = "UPDATE ".TB_PREF."purch_order_details
         SET quantity_received = quantity_received + ".db_escape($quantity_received).",
         std_cost_unit=".db_escape($standard_unit_cost).",
+        quantity_ordered=".db_escape($quantity).",
         act_price=".db_escape($price)."
         WHERE po_detail_item = ".db_escape($po_detail_item);
 
@@ -239,16 +251,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
     add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
        	$entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
 }
-/*
-	Returns selected  grn items:
-	
-	$grn_batch_id != 0  - only items for selected grn
-	$supplier_id!=''    - only items for selected supplier
-	$outsanding_only==true - only not fully invoiced items
-	$is_invoiced_only==true - only those which are at least partially invoiced
-	$invoice_no!=0 - for selected invoice(s)
-	$begin!='' or $end!='' - within selected delivery time range
-*/
+
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
 	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
@@ -329,7 +332,8 @@ function read_grn_items_to_order($grn_batch, &$order)
 
 	 	while ($myrow = db_fetch($result))
 	 	{
-
+	 		if ($myrow['qty_recd'] == 0 && $myrow['quantity_inv'] == 0)
+				continue; // 2011-01-18 Joe Hunt. We will not have empty credited rows.
 		 	if (is_null($myrow["units"]))
 		 	{
 				$units = "";

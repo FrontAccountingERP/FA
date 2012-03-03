@@ -12,8 +12,15 @@
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "../..";
 
+include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
-page(_($help_context = "Customers"), @$_REQUEST['popup']); 
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+	
+page(_($help_context = "Customers"), @$_REQUEST['popup'], false, "", $js); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -72,7 +79,7 @@ function can_process()
 
 function handle_submit(&$selected_id)
 {
-	global $path_to_root, $Ajax;
+	global $path_to_root, $Ajax, $auto_create_branch;
 
 	if (!can_process())
 		return;
@@ -100,9 +107,28 @@ function handle_submit(&$selected_id)
 			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
+         
+		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		{
+        	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
+                $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
+                get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
+                get_company_pref('default location'), $_POST['address'], 0, 0, get_company_pref('default_ship_via'), $_POST['notes']);
+                
+        	$selected_branch = db_insert_id();
+        
+			add_crm_person($_POST['CustName'], $_POST['cust_ref'], '', $_POST['address'], 
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], '', '');
+
+			add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
+		}
 		commit_transaction();
 
 		display_notification(_("A new customer has been added."));
+
+		if (isset($auto_create_branch) && $auto_create_branch == 1)
+			display_notification(_("A default Branch has been automatically created, please check default Branch values by using link below."));
+		
 		$Ajax->activate('_page_body');
 	}
 }
@@ -121,21 +147,21 @@ if (isset($_POST['delete']))
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no', true))
+	if (key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no'))
 	{
 		$cancel_delete = 1;
 		display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 	} 
 	else 
 	{
-		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no', true))
+		if (key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the customer record because orders have been created against it."));
 		} 
 		else 
 		{
-			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no', true))
+			if (key_in_foreign_table($selected_id, 'cust_branch', 'debtor_no'))
 			{
 				$cancel_delete = 1;
 				display_error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -158,20 +184,22 @@ if (isset($_POST['delete']))
 
 function customer_settings($selected_id) 
 {
-	global $SysPrefs, $path_to_root;
+	global $SysPrefs, $path_to_root, $auto_create_branch;
 	
 	if (!$selected_id) 
 	{
-		$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
-		$_POST['dimension_id'] = 0;
-		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['curr_code']  = get_company_currency();
-		$_POST['credit_status']  = -1;
-		$_POST['payment_terms']  = $_POST['notes']  = '';
+	 	if (list_updated('customer_id') || !isset($_POST['CustName'])) {
+			$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
+			$_POST['dimension_id'] = 0;
+			$_POST['dimension2_id'] = 0;
+			$_POST['sales_type'] = -1;
+			$_POST['curr_code']  = get_company_currency();
+			$_POST['credit_status']  = -1;
+			$_POST['payment_terms']  = $_POST['notes']  = '';
 
-		$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
-		$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+			$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
+			$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+		}
 	}
 	else 
 	{
@@ -218,7 +246,14 @@ function customer_settings($selected_id)
 
 	if($selected_id)
 		record_status_list_row(_("Customer status:"), 'inactive');
-
+	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
+	{
+		table_section_title(_("Branch"));
+		text_row(_("Phone:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+	}
 	table_section(2);
 
 	table_section_title(_("Sales"));
@@ -249,6 +284,13 @@ function customer_settings($selected_id)
 	}
 
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+	if (!$selected_id && isset($auto_create_branch) && $auto_create_branch == 1)
+	{
+		table_section_title(_("Branch"));
+		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
+		sales_areas_list_row( _("Sales Area:"), 'area', null);
+		tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
+	}
 	end_outer_table(1);
 
 	div_start('controls');
@@ -299,6 +341,8 @@ if (!$selected_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
+		'transactions' => array(_('&Transactions'), $selected_id),
+		'orders' => array(_('Sales &Orders'), $selected_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -310,13 +354,20 @@ tabbed_content_start('tabs', array(
 			$contacts = new contacts('contacts', $selected_id, 'customer');
 			$contacts->show();
 			break;
+		case 'transactions':
+			$_GET['customer_id'] = $selected_id;
+			include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
+			break;
 		case 'orders':
+			$_GET['customer_id'] = $selected_id;
+			include_once($path_to_root."/sales/inquiry/sales_orders_view.php");
+			break;
 	};
 br();
 tabbed_content_end();
 
 hidden('popup', @$_REQUEST['popup']);
 end_form();
-end_page();
+end_page(@$_REQUEST['popup']);
 
 ?>

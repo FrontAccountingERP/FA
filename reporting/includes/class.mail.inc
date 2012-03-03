@@ -151,9 +151,11 @@ class email
         }
 			$this->body .= "--".$this->boundary."--\n";
 
+		$ret = 0;
         foreach($this->to as $mail)
         {
-			$ret = mail($mail, $this->subject, $this->body, $this->header);
+			if (mail($mail, $this->subject, $this->body, $this->header))
+				$ret++;
         }
         return $ret;
     }

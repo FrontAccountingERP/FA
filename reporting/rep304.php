@@ -60,9 +60,9 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 		if ($category != 0)
 			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
-		if ($location != 'all')
+		if ($location != '')
 			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
-		if ($fromcust != -1)
+		if ($fromcust != '')
 			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($fromcust);
 		$sql .= " GROUP BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name ORDER BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name";
@@ -97,14 +97,12 @@ function print_inventory_sales()
 	else
 		$cat = get_category_name($category);
 
-	if ($location == ALL_TEXT)
-		$location = 'all';
-	if ($location == 'all')
+	if ($location == '')
 		$loc = _('All');
 	else
 		$loc = get_location_name($location);
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == '')
 		$fromc = _('All');
 	else
 		$fromc = get_customer_name($fromcust);
@@ -112,8 +110,8 @@ function print_inventory_sales()
 	$cols = array(0, 75, 175, 250, 300, 375, 450,	515);
 
 	$headers = array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
-	if ($fromcust != ALL_NUMERIC)
-		$headers[2] = '';	
+	if ($fromcust != '')
+		$headers[2] = '';
 
 	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
 
@@ -163,7 +161,7 @@ function print_inventory_sales()
 		$rep->NewLine();
 		$rep->fontSize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		if ($fromcust == ALL_NUMERIC)
+		if ($fromcust == ALL_TEXT)
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 			$rep->TextCol(2, 3, $trans['debtor_name']);

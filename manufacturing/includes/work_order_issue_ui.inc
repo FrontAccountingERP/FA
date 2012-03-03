@@ -89,7 +89,8 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, 
 			$order->line_items[$id]->stock_id, $dec);
-		$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
+		//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
+		$std_cost = $order->line_items[$id]->standard_cost;
 		$_POST['units'] = $order->line_items[$id]->units;
 
 		hidden('stock_id', $_POST['stock_id']);
@@ -113,14 +114,17 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(0, $dec);
-		$_POST['std_cost'] = price_format($item_info["standard_cost"]);
+		//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
+		$std_cost = $item_info["standard_cost"];
 		$_POST['units'] = $item_info["units"];
 	}
 
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 	label_cell($_POST['units'], '', 'units');
 
-	amount_cells(null, 'std_cost', $_POST['std_cost']);
+	//amount_cells(null, 'std_cost', $_POST['std_cost']);
+	hidden('std_cost', $std_cost);
+	amount_cell($std_cost);
 
 	if ($id != -1)
 	{
