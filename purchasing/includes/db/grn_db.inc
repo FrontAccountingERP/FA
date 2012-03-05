@@ -364,7 +364,7 @@ function read_grn($grn_batch, &$order)
 
 		$order->trans_type = ST_SUPPRECEIVE;
 		$order->orig_order_date = sql2date($row["delivery_date"]);
-		$order->location = $row["loc_code"];
+		$order->Location = $row["loc_code"];
 		$order->reference = $row["reference"];
 
 		read_grn_items_to_order($grn_batch, $order);

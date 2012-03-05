@@ -36,7 +36,7 @@ function display_grn_summary(&$po, $editable=false)
     	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
     	    	
         if (!isset($_POST['Location']))
-        	$_POST['Location'] = $po->location;
+        	$_POST['Location'] = $po->Location;
         label_cell(_("Deliver Into Location"), "class='tableheader2'");
         locations_list_cells(null, "Location", $_POST['Location']);
         
@@ -51,7 +51,7 @@ function display_grn_summary(&$po, $editable=false)
     else 
     {
     	label_cells(_("Reference"), $po->reference, "class='tableheader2'");
-    	label_cells(_("Deliver Into Location"), get_location_name($po->location), "class='tableheader2'");
+    	label_cells(_("Deliver Into Location"), get_location_name($po->Location), "class='tableheader2'");
 		label_cells(_("Supplier's Reference"), $po->supp_ref, "class='tableheader2'");
     }
     
