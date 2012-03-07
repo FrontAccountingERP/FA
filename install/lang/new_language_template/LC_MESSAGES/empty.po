@@ -8,6 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-07 20:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,58 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: install/index.php:20 install/index.php:40
+#: install/index.php:20 install/index.php:41
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr ""
 
-#: install/index.php:41
+#: install/index.php:42
 #, php-format
 msgid "Step %d: %s"
 msgstr ""
 
-#: install/index.php:48
+#: install/index.php:49
 msgid "Chart of accounts"
 msgstr ""
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:49 install/index.php:76
 msgid "Encoding"
 msgstr ""
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:49 install/index.php:76
 msgid "Description"
 msgstr ""
 
-#: install/index.php:48 install/index.php:75
+#: install/index.php:49 install/index.php:76
 msgid "Install"
 msgstr ""
 
-#: install/index.php:65 install/index.php:93
+#: install/index.php:66 install/index.php:94
 msgid "Installed"
 msgstr ""
 
-#: install/index.php:75
+#: install/index.php:76
 msgid "Language"
 msgstr ""
 
-#: install/index.php:123
+#: install/index.php:124
 msgid ""
 "Cannot connect to database. User or password is invalid or you have no "
 "permittions to create database."
 msgstr ""
 
-#: install/index.php:159
+#: install/index.php:160
 msgid "Cannot save system configuration file 'config.php'."
 msgstr ""
 
-#: install/index.php:166
+#: install/index.php:167
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr ""
 
-#: install/index.php:169
+#: install/index.php:170
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr ""
 
-#: install/index.php:172
+#: install/index.php:173
 msgid ""
 "Configuration file 'config_db.php' is not writable. Change its permissions "
 "so it is, then re-run installation step."
@@ -116,7 +117,7 @@ msgid ""
 msgstr ""
 
 #: install/index.php:325 install/index.php:351 install/index.php:358
-#: install/index.php:365 install/index.php:384
+#: install/index.php:365 install/index.php:389
 msgid "Continue >>"
 msgstr ""
 
@@ -184,7 +185,7 @@ msgid ""
 msgstr ""
 
 #: install/index.php:350 install/index.php:357 install/index.php:364
-#: install/index.php:383
+#: install/index.php:388
 msgid "<< Back"
 msgstr ""
 
@@ -196,43 +197,43 @@ msgstr ""
 msgid "Charts of Accounts Selection"
 msgstr ""
 
-#: install/index.php:374
+#: install/index.php:379
 msgid "Company Settings"
 msgstr ""
 
-#: install/index.php:376
+#: install/index.php:381
 msgid "Company Name:"
 msgstr ""
 
-#: install/index.php:377
+#: install/index.php:382
 msgid "Admin Login:"
 msgstr ""
 
-#: install/index.php:378
+#: install/index.php:383
 msgid "Admin Password:"
 msgstr ""
 
-#: install/index.php:379
+#: install/index.php:384
 msgid "Reenter Password:"
 msgstr ""
 
-#: install/index.php:380
+#: install/index.php:385
 msgid "Select Chart of Accounts:"
 msgstr ""
 
-#: install/index.php:381
+#: install/index.php:386
 msgid "Select Default Language:"
 msgstr ""
 
-#: install/index.php:388
+#: install/index.php:393
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr ""
 
-#: install/index.php:389
+#: install/index.php:394
 msgid "Please do not forget to remove install wizard folder."
 msgstr ""
 
-#: install/index.php:392
+#: install/index.php:397
 msgid "Click here to start."
 msgstr ""
 
@@ -468,29 +469,34 @@ msgstr ""
 msgid "No key field '%s' in file '%s'"
 msgstr ""
 
-#: includes/packages.inc:295
+#: includes/packages.inc:295 includes/packages.inc:329
+#, php-format
+msgid "Cannot delete outdated '%s' file."
+msgstr ""
+
+#: includes/packages.inc:299
 msgid "Release file in repository is invalid, or public key is outdated."
 msgstr ""
 
-#: includes/packages.inc:311
+#: includes/packages.inc:316
 msgid "Repository version does not match application version."
 msgstr ""
 
-#: includes/packages.inc:325
+#: includes/packages.inc:333
 #, php-format
 msgid ""
 "Security alert: broken index file in repository '%s'. Please inform "
 "repository administrator about this issue."
 msgstr ""
 
-#: includes/packages.inc:358
+#: includes/packages.inc:366
 #, php-format
 msgid ""
 "Security alert: broken package '%s' in repository. Please inform repository "
 "administrator about this issue."
 msgstr ""
 
-#: includes/packages.inc:613 includes/packages.inc:664
+#: includes/packages.inc:621 includes/packages.inc:672
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""

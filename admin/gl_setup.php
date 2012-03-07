@@ -84,7 +84,7 @@ start_outer_table(TABLESTYLE2);
 
 table_section(1);
 
-if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
+if (get_company_pref('grn_clearing_act') === null) { // available from 2.3.1, can be not defined on pre-2.4 installations
 	set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
 	refresh_sys_prefs();
 }

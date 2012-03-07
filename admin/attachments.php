@@ -92,7 +92,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
 			$fp = fopen($dir."/index.php", "w");
 			fwrite($fp, $index_file);
-			fclose($fp); _vd($dir);
+			fclose($fp);
 		}
 		// file name compatible with POSIX
 		// protect against directory traversal
