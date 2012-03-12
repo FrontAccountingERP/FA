@@ -110,10 +110,16 @@ function handle_submit(&$selected_id)
          
 		if (isset($auto_create_branch) && $auto_create_branch == 1)
 		{
+			$result = get_item_locations(false);
+			$loc = db_fetch($result);
+			if ($loc === false)
+				$location = "";
+			else
+				$location = $loc['loc_code'];
         	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
                 $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
                 get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
-                get_company_pref('default location'), $_POST['address'], 0, 0, get_company_pref('default_ship_via'), $_POST['notes']);
+                $location, $_POST['address'], 0, 0, get_company_pref('default_ship_via'), $_POST['notes']);
                 
         	$selected_branch = db_insert_id();
         
