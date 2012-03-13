@@ -221,7 +221,7 @@ define('FLOAT_COMP_DELTA', 0.004);
 
 function floatcmp($a, $b)
 {
-    return $a - $b > FLOAT_COMP_DELTA ? 1 : $b - $a > FLOAT_COMP_DELTA ? -1 : 0;
+    return $a - $b > FLOAT_COMP_DELTA ? 1 : ($b - $a > FLOAT_COMP_DELTA ? -1 : 0);
 }
 
 //
