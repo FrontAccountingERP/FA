@@ -61,6 +61,11 @@ class sys_prefs
 		return $this->prefs['default_delivery_required'];
 	}
 
+	function default_receival_required_by() 
+	{
+		return $this->prefs['default_receival_required'];
+	}
+
 	function default_dimension_required_by() 
 	{
 		return $this->prefs['default_dim_required'];

@@ -30,6 +30,9 @@ class fa2_4 {
 		if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
 			set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
 		}
+		if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
+			set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, 10);
+		}
 		$result = $this->update_workorders();
 		if ($result)
 			$result = $this->do_cleanup();

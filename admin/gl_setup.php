@@ -66,7 +66,7 @@ if (isset($_POST['submit']) && can_process())
 		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
 		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
-		'past_due_days', 'default_workorder_required', 'default_dim_required',
+		'past_due_days', 'default_workorder_required', 'default_dim_required', 'default_receival_required',
 		'default_delivery_required', 'grn_clearing_act', 'tax_algorithm',
 		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
 		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
@@ -85,6 +85,10 @@ start_outer_table(TABLESTYLE2);
 table_section(1);
 if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
 	set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
+	refresh_sys_prefs();
+}
+if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
+	set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10');
 	refresh_sys_prefs();
 }
 
@@ -125,6 +129,7 @@ $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 $_POST['default_dim_required'] = $myrow['default_dim_required'];
 $_POST['default_delivery_required'] = $myrow['default_delivery_required'];
+$_POST['default_receival_required'] = $myrow['default_receival_required'];
 
 //---------------
 
@@ -151,7 +156,7 @@ text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_cre
 
 check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
 
-textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
+textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 4);
 
 gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
@@ -170,14 +175,15 @@ gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_
 
 text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
 
-//----------------
+//---------------
 
 table_section(2);
 
 table_section_title(_("Dimension Defaults"));
 
 text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
-//---------------
+
+//----------------
 
 table_section_title(_("Suppliers and Purchasing"));
 
@@ -192,6 +198,8 @@ gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['credito
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
 
 gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', get_post('grn_clearing_act'), true, false, _("No postings on GRN"));
+
+text_row(_("Receival Required By:"), 'default_receival_required', $_POST['default_receival_required'], 6, 6, '', "", _("days"));
 
 table_section_title(_("Inventory"));
 
