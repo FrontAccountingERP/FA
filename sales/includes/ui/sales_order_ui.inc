@@ -72,6 +72,8 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $des
 
 function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 {
+	global $SysPrefs;
+	
 	$ret_error = "";
 
 	$myrow = get_customer_to_order($customer_id);
@@ -116,9 +118,11 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
-	if ($order->trans_type == ST_SALESINVOICE || $order->trans_type == ST_SALESORDER) {
+	if ($order->trans_type == ST_SALESINVOICE) {
 		$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 	}
+	elseif ($order->trans_type == ST_SALESORDER)
+		$order->due_date = add_days($order->document_date, $SysPrefs->default_delivery_required_by());
 	if($order->payment_terms['cash_sale']) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else

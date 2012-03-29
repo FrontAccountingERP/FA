@@ -358,7 +358,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 
 function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 {
-   global $Ajax;
+   global $Ajax, $SysPrefs;
 
 	alt_table_row_color($rowcounter);
 
@@ -415,7 +415,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
-			$_POST['req_del_date'] = add_days(Today(), 10);
+			$_POST['req_del_date'] = add_days(Today(), $SysPrefs->default_delivery_required_by());
 		$qty_rcvd = '';
 	}
 
