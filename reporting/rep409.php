@@ -81,7 +81,7 @@ function print_workorders()
 		else
 			$rep->title = _('WORK ORDER');
 
-		$contact[] = array('email' =>$myrow['email'],'lang' => $dflt_lang,
+		$contact = array('email' =>$myrow['email'],'lang' => $dflt_lang, // ???
 			'name' => $myrow['contact'], 'name2' => '', 'contact');
 
 		$rep->SetCommonData($myrow, null, null, '', 26, $contact);
