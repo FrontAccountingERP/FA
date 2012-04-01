@@ -641,7 +641,7 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 
 	default_focus($name);
 
-	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" 
+	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"10\" maxlength=\"12\" value=\"" 
 	 . $_POST[$name]. "\""
 	 .($title ? " title='$title'": '')." > $post_label";
 	echo "</td>\n";
