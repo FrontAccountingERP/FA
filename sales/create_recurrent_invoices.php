@@ -20,6 +20,8 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 
 page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
@@ -61,11 +63,15 @@ function calculate_from($myrow)
 	return $from;	
 }
 
+if (!isset($_POST['date'])) {
+  $_POST['date'] = Today();
+}
+
 $id = find_submit("create");
 if ($id != -1)
 {
 	$Ajax->activate('_page_body');
-	$date = Today();
+	$date = $_POST['date'];
 	if (is_date_in_fiscalyear($date))
 	{
 		$invs = array();
@@ -111,11 +117,17 @@ if ($id != -1)
 $result = get_recurrent_invoices();
 
 start_form();
+start_table(TABLESTYLE_NOBORDER);
+start_row();
+date_cells(_("Invoice date:"), 'date', '');
+end_row();
+end_table();
+
 start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
 table_header($th);
 $k = 0;
-$today = add_days(Today(), 1);
+$today = add_days($_POST['date'], 1);
 $due = false;
 while ($myrow = db_fetch($result)) 
 {
