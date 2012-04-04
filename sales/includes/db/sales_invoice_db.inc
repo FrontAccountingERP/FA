@@ -59,22 +59,23 @@ function write_sales_invoice(&$invoice)
 	if (is_array($sales_order))
 			$sales_order = $sales_order[0]; // assume all crucial SO data are same for every delivery
 
-	$invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
-		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
-		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
-		$invoice->sales_type, $sales_order, $invoice->ship_via, 
-		$invoice->due_date, 0, 0, $invoice->dimension_id, 
-		$invoice->dimension2_id, $invoice->payment); 
-		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
+ 	if ($trans_no != 0) {
+         delete_comments(ST_SALESINVOICE, $trans_no);
+         void_gl_trans(ST_SALESINVOICE, $trans_no, true);
+         void_cust_allocations(ST_SALESINVOICE, $trans_no); // ?
+         void_trans_tax_details(ST_SALESINVOICE, $trans_no);
+    } 
+    $invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
+	$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
+	$items_added_tax, $invoice->freight_cost, $freight_added_tax,
+	$invoice->sales_type, $sales_order, $invoice->ship_via, 
+	$invoice->due_date, 0, 0, $invoice->dimension_id, 
+	$invoice->dimension2_id, $invoice->payment); 
+	// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
-	} else {
-		delete_comments(ST_SALESINVOICE, $invoice_no);
-		void_gl_trans(ST_SALESINVOICE, $invoice_no, true);
-		void_cust_allocations(ST_SALESINVOICE, $invoice_no); // ?
-		void_trans_tax_details(ST_SALESINVOICE, $invoice_no);
-	}
+
 	$total = 0;
 	foreach ($invoice->line_items as $line_no => $invoice_line) {
 		$qty = $invoice_line->qty_dispatched;
