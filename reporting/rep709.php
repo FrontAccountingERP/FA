@@ -122,7 +122,7 @@ function print_tax_report()
 
 	while ($trans=db_fetch($transactions))
 	{
-		if (in_array($trans['trans_type'], array(ST_CUSTCREDIT,ST_SUPPINVOICE))) {
+		if (in_array($trans['trans_type'], array(ST_CUSTCREDIT,ST_SUPPINVOICE,ST_JOURNAL))) {
 			$trans['net_amount'] *= -1;
 			$trans['amount'] *= -1;
 		}
