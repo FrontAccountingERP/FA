@@ -75,7 +75,7 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
-
+	}
 	$total = 0;
 	foreach ($invoice->line_items as $line_no => $invoice_line) {
 		$qty = $invoice_line->qty_dispatched;
