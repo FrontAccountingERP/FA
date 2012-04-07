@@ -71,6 +71,10 @@ function gl_payment_controls()
 
     date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+
+	table_section(2);
+
 	$from_currency = get_bank_account_currency($_POST['FromBankAccount']);
 	$to_currency = get_bank_account_currency($_POST['ToBankAccount']);
 	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) 
@@ -85,10 +89,6 @@ function gl_payment_controls()
 		amount_row(_("Amount:"), 'amount');
 		amount_row(_("Bank Charge:"), 'charge');
 	}
-
-	table_section(2);
-
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
