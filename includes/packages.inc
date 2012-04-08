@@ -288,7 +288,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		$sig = url_get_contents(REPO_URL.'/Release.sig');
 		$data = file_get_contents($loclist);
 		$cert = file_get_contents(PUBKEY_PATH.'/FA.pem');
-		if (!openssl_verify($data, $sig, $cert)) {
+		if (openssl_verify($data, $sig, $cert) <= 0) {
 			if ($refresh) {
 				if (!@unlink($loclist))
 				{
