@@ -283,7 +283,8 @@ function get_sales_order_header($order_no, $trans_type)
 	  ."stype.sales_type, "
 	  ."stype.id AS sales_type_id, "
 	  ."stype.tax_included, "
-	  ."ship.shipper_name, "
+	  ."stype.factor, "
+ 	  ."ship.shipper_name, "
 	  ."tax_group.name AS tax_group_name , "
 	  ."tax_group.id AS tax_group_id, "
 	  ."cust.tax_id "
@@ -357,7 +358,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 	  $myrow["tax_group_name"], $myrow["contact_phone"]);
 
 	$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], 
-	    $myrow["tax_included"], 0); // no default price calculations on edit
+	    $myrow["tax_included"], $myrow["factor"]); // no default price calculations on edit
 
 	$order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 
