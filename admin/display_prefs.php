@@ -40,7 +40,7 @@ if (isset($_POST['setprefs']))
 			'theme', 'page_size', 'language', 'startup_tab',
 			'show_gl' => 0, 'show_codes'=> 0, 'show_hints' => 0,
 			'rep_popup' => 0, 'graphic_links' => 0, 'sticky_doc_date' => 0,
-			'query_size' => 10.0)));
+			'query_size' => 10.0, 'transaction_days' => 30)));
 
 		if ($chg_lang)
 			$_SESSION['language']->set_language($_POST['language']);
@@ -136,6 +136,8 @@ text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 
 check_row(_("Remember last document date:"), 'sticky_doc_date', sticky_doc_date(),
 	false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+
+text_row_ex(_("Transaction days:"), 'transaction_days', 5, 5, '', user_transaction_days());
 
 end_outer_table(1);
 

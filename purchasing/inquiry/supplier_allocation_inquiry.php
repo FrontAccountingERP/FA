@@ -47,7 +47,7 @@ start_row();
 
 supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 date_cells(_("To:"), 'TransToDate', '', null, 1);
 
 supp_allocations_list_cell("filterType", null);

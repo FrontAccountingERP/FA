@@ -46,7 +46,7 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 date_cells(_("To:"), 'TransToDate');
 
 submit_cells('Show',_("Show"),'','', 'default');

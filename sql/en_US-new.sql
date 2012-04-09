@@ -2070,6 +2070,7 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
   `startup_tab` varchar(20) NOT NULL default '',
+  `transaction_days` smallint(6) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`)

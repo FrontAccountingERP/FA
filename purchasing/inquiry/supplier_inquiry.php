@@ -47,7 +47,7 @@ start_row();
 if (!$page_nested)
 	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, true);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 date_cells(_("To:"), 'TransToDate');
 
 supp_transactions_list_cell("filterType", null, true);

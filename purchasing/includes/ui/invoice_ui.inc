@@ -468,7 +468,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 		if ($supp_trans->trans_type == ST_SUPPCREDIT)
 		{
 			echo "</td>";
-			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
+			date_cells(_("Received between"), 'receive_begin', "", null, 
+				-$_SESSION["wa_current_user"]->prefs->transaction_days(), 0, 0, "valign=middle");
 			date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
 			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 			echo "<td>";

@@ -160,7 +160,7 @@ function inquiry_controls()
 	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
-    date_cells(_("From:"), 'TransFromDate', '', null, -30);
+    date_cells(_("From:"), 'TransFromDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 	date_cells(_("To:"), 'TransToDate');
 	
 	//Compare Combo

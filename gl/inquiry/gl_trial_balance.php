@@ -46,7 +46,7 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 
-    date_cells(_("From:"), 'TransFromDate', '', null, -30);
+    date_cells(_("From:"), 'TransFromDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);

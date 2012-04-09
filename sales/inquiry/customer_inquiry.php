@@ -43,7 +43,7 @@ start_row();
 if (!$page_nested)
 	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, !@$_GET['popup']);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 date_cells(_("To:"), 'TransToDate', '', null, 1);
 
 if (!isset($_POST['filterType']))

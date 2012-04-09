@@ -434,6 +434,12 @@ function user_startup_tab()
 	return $_SESSION["wa_current_user"]->prefs->start_up_tab();
 }
 
+function user_transaction_days()
+{
+    return $_SESSION["wa_current_user"]->prefs->transaction_days();
+}
+
+
 function user_check_access($sec_area)
 {
 	return $_SESSION["wa_current_user"]->can_access($sec_area);

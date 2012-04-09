@@ -35,7 +35,8 @@ class user_prefs
 	var $graphic_links; // use graphic links
 	var $sticky_date;	// save date on subsequent document entry
 	var $startup_tab;  // default start-up menu tab
-	
+	var $transaction_days; // transaction days in inquiries.
+
 	function user_prefs($user=null)
 	{
 		if ($user == null) { 
@@ -49,7 +50,8 @@ class user_prefs
 			$this->price_dec = 2;
 			$this->language = $dflt_lang;
 			$this->theme = 'default';
-			
+			$this->transaction_days = -30;
+
 		} else {
 			$this->language = $user["language"];
 			$_SESSION['language']->set_language($this->language);
@@ -82,6 +84,7 @@ class user_prefs
 				$this->sticky_date = 0;
 				$this->startup_tab = "orders";
 			}
+			$this->transaction_days = $user['transaction_days'];
 		}
 	}
 	
@@ -221,6 +224,11 @@ class user_prefs
 	{
 		return $this->startup_tab;
 	}
+
+    function transaction_days() 
+    {
+        return $this->transaction_days;
+    }
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 
 	{

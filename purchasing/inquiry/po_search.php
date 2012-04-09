@@ -61,7 +61,7 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'order_number', '',null, '', true);
 
-date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
+date_cells(_("from:"), 'OrdersAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
 date_cells(_("to:"), 'OrdersToDate');
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
