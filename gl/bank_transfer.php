@@ -154,7 +154,7 @@ function check_valid_entries()
 		set_focus('charge');
 		return false;
 	}
-	if (isset($_POST['charge']) && input_num('charge') > 0 && get_company_pref('bank_charge_act') == '') {
+	if (isset($_POST['charge']) && input_num('charge') > 0 && get_bank_charge_account($_POST['FromBankAccount']) == '') {
 		display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 		set_focus('charge');
 		return false;

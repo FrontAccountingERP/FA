@@ -233,7 +233,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	if ($charge != 0)
 	{
 		/* Now Debit bank charge account with charges */
-		$charge_act = get_company_pref('bank_charge_act');
+		$charge_act = get_bank_charge_account($from_account);
 		$total += add_gl_trans($trans_type, $trans_no, $date_,
 			$charge_act, 0, 0, $person_id, $charge, $currency);
 	}

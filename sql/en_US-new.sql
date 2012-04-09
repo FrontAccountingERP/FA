@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `0_bank_accounts` (
   `bank_curr_code` char(3) NOT NULL default '',
   `dflt_curr_act` tinyint(1) NOT NULL default '0',
   `id` smallint(6) NOT NULL auto_increment,
+  `bank_charge_act` varchar(15) NOT NULL default '',
   `last_reconciled_date` timestamp NOT NULL default '0000-00-00 00:00:00',
   `ending_reconcile_balance` double NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
@@ -115,8 +116,8 @@ CREATE TABLE IF NOT EXISTS `0_bank_accounts` (
 -- Dumping data for table `0_bank_accounts`
 --
 
-INSERT INTO `0_bank_accounts` VALUES('1060', 0, 'Current account', 'N/A', 'N/A', '', 'USD', 1, 1, '0000-00-00 00:00:00', 0, 0);
-INSERT INTO `0_bank_accounts` VALUES('1065', 3, 'Petty Cash account', 'N/A', 'N/A', '', 'USD', 0, 2, '0000-00-00 00:00:00', 0, 0);
+INSERT INTO `0_bank_accounts` VALUES('1060', 0, 'Current account', 'N/A', 'N/A', '', 'USD', 1, 1, '5690', '0000-00-00 00:00:00', 0, 0);
+INSERT INTO `0_bank_accounts` VALUES('1065', 3, 'Petty Cash account', 'N/A', 'N/A', '', 'USD', 0, 2, '5690', '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 

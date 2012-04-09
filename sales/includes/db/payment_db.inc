@@ -72,7 +72,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	if ($charge != 0)	{
 		/* Now Debit bank charge account with charges */
-		$charge_act = get_company_pref('bank_charge_act');
+		$charge_act = get_bank_charge_account($bank_account);
 		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 			$charge_act, 0, 0, $charge, $customer_id,
 			"Cannot insert a GL transaction for the payment bank charge debit", $rate);

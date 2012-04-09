@@ -62,7 +62,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 
 	if ($supp_charge != 0)
 	{
-		$charge_act = get_company_pref('bank_charge_act');
+		$charge_act = get_bank_charge_account($bank_account);
 		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $charge_act, 0, 0,
 			$supp_charge, $supplier_id, "", $rate);
 	}
