@@ -57,6 +57,10 @@ if (isset($_POST['go']) || isset($_POST['show']))
 		$per = $periods - 1;
 		$date = $date_ = get_post('date_');
 		$freq = get_post('freq');
+		if ($freq == 3 || $freq == 4) {
+			$date_ = begin_month($date_); // avoid skip on shorter months
+			$date  = end_month($date_); // avoid skip on shorter months
+		}
 		$lastdate = ($freq == 1 ? add_days($date_, 7*$per)
 				: ($freq == 2 ? add_days($date_, 14*$per)
 				: ($freq == 3 ? add_months($date_, $per)
