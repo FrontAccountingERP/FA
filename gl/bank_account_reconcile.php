@@ -91,15 +91,13 @@ function fmt_person($trans)
 	return get_counterparty_name($trans["type"], $trans["trans_no"]);
 }
 
-$update_pager = false;
 function update_data()
 {
-	global $Ajax, $update_pager;
+	global $Ajax;
 	
 	unset($_POST["beg_balance"]);
 	unset($_POST["end_balance"]);
 	$Ajax->activate('summary');
-	$update_pager = true;
 }
 //---------------------------------------------------------------------------------------------
 // Update db record if respective checkbox value has changed.
