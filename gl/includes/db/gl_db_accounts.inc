@@ -195,15 +195,15 @@ function gl_account_in_quick_entry_lines($acc)
 //	Returns n>0 when account is AR, n<0 when account is AP
 //  (priority for AR accounts)
 //
- function is_subledger_account($account)
- {
+function is_subledger_account($account)
+{
 	$sql = "SELECT 1 FROM ".TB_PREF."cust_branch WHERE receivables_account=".db_escape($account)
 	." UNION SELECT -1 FROM ".TB_PREF."suppliers WHERE payable_account=".db_escape($account);
 
- 	$result = db_query($sql,"Couldn't test AR/AP account");
- 	$myrow = db_fetch_row($result);
- 	return $myrow[0];
- }
+	$result = db_query($sql,"Couldn't test AR/AP account");
+	$myrow = db_fetch_row($result);
+	return $myrow[0];
+}
 
 function get_subaccount_name($code_id, $person_id)
 {
