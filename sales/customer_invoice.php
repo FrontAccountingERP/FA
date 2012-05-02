@@ -281,12 +281,6 @@ function check_data()
 			set_focus('ref');
 			return false;
 		}
-
-		if (!is_new_reference($_POST['ref'], 10)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
-			return false;
-		}
 	}
 
 	if ($_POST['ChargeFreightCost'] == "") {
@@ -314,19 +308,27 @@ function check_data()
 
 //-----------------------------------------------------------------------------
 if (isset($_POST['process_invoice']) && check_data()) {
-
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
-	if ($newinvoice) new_doc_date($_SESSION['Items']->document_date);
+	if ($newinvoice) 
+		new_doc_date($_SESSION['Items']->document_date);
 
 	$invoice_no = $_SESSION['Items']->write();
-	processing_end();
-
-	if ($newinvoice) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
-	} else {
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
+	if ($invoice_no == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 	}
+	else
+	{
+		processing_end();
+
+		if ($newinvoice) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
+		} else {
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
+		}
+	}	
 }
 
 if(list_updated('payment')) {

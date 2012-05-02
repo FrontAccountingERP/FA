@@ -404,12 +404,8 @@ function can_process() {
 		set_focus('ref');
 		return false;
 	}
-   	if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], 
-   		$_SESSION['Items']->trans_type)) {
-   		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
-   		return false;
-   	} elseif ($_SESSION['Items']->get_items_total() < 0) {
+	
+   	if ($_SESSION['Items']->get_items_total() < 0) {
 		display_error("Invoice total amount cannot be less than zero.");
 		return false;
 	}
@@ -427,30 +423,38 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
-	
-	$_SESSION['Items']->write(1);
-	if (count($messages)) { // abort on failure or error messages are lost
-		$Ajax->activate('_page_body');
-		display_footer_exit();
+
+	$ret = $_SESSION['Items']->write(1);
+	if ($ret == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 	}
-	$trans_no = key($_SESSION['Items']->trans_no);
-	$trans_type = $_SESSION['Items']->trans_type;
-	new_doc_date($_SESSION['Items']->document_date);
-	processing_end();
-	if ($modified) {
-		if ($trans_type == ST_SALESQUOTE)
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
-		else	
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
-	} elseif ($trans_type == ST_SALESORDER) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-	} elseif ($trans_type == ST_SALESQUOTE) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
-	} elseif ($trans_type == ST_SALESINVOICE) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
-	} else {
-		meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
-	}
+	else
+	{
+		if (count($messages)) { // abort on failure or error messages are lost
+			$Ajax->activate('_page_body');
+			display_footer_exit();
+		}
+		$trans_no = key($_SESSION['Items']->trans_no);
+		$trans_type = $_SESSION['Items']->trans_type;
+		new_doc_date($_SESSION['Items']->document_date);
+		processing_end();
+		if ($modified) {
+			if ($trans_type == ST_SALESQUOTE)
+				meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+			else	
+				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+		} elseif ($trans_type == ST_SALESORDER) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+		} elseif ($trans_type == ST_SALESQUOTE) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
+		} elseif ($trans_type == ST_SALESINVOICE) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
+		} else {
+			meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
+		}
+	}	
 }
 
 //--------------------------------------------------------------------------------

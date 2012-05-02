@@ -260,6 +260,11 @@ class cart
 			$this->due_date = $due_date;
 		}
 		$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
+		if ($this->reference != 'auto' && $this->trans_no == 0 && !is_new_reference($this->reference, $this->trans_type))
+		{
+			commit_transaction();
+			return -1;
+		}	
 		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
 		foreach($this->line_items as $lineno => $line) {
 			$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);

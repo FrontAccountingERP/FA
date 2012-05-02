@@ -50,6 +50,11 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$cart->trans_type = ST_SALESINVOICE;
 	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
+	if ($invno == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		display_footer_exit();
+	}		
 	update_last_sent_recurrent_invoice($tmpl_no, $to);
 	return $invno;
 }

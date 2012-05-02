@@ -167,12 +167,6 @@ function check_data()
 			set_focus('ref');
 			return false;
 		}
-
-		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
-			return false;
-		}
 	}
 	if ($_POST['ChargeFreightCost'] == "") {
 		$_POST['ChargeFreightCost'] = price_format(0);
@@ -301,7 +295,6 @@ function check_qoh()
 //------------------------------------------------------------------------------
 
 if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
-
 	$dn = &$_SESSION['Items'];
 
 	if ($_POST['bo_policy']) {
@@ -314,13 +307,20 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	copy_to_cart();
 	if ($newdelivery) new_doc_date($dn->document_date);
 	$delivery_no = $dn->write($bo_policy);
-
-	processing_end();
-	if ($newdelivery) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
-	} else {
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
+	if ($delivery_no == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 	}
+	else
+	{
+		processing_end();
+		if ($newdelivery) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
+		} else {
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
+		}
+	}	
 }
 
 if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
