@@ -500,9 +500,10 @@ function display_allocations($alloc_result, $total, $payments=false)
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
     	$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
+    	if ($payments && ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT))
+    		$alloc_row['Total'] = -$alloc_row['Total'];
     	amount_cell($alloc_row['Total']);
-    	//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
-    	amount_cell($alloc_row['Total'] - $alloc_row['amt']);
+   		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
     	amount_cell($alloc_row['amt']);
     	end_row();
 
