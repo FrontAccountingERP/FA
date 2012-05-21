@@ -10,6 +10,181 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-05-21 10:54 +0200 Joe Hunt
+(3016) Release 2.3.11
+ version.php
+
+2012-05-03 08:25 +0200 Joe Hunt
+(3015) Rerun of /includes/ui/ui_view.inc
+ includes/ui/ui_view.inc
+
+2012-05-03 01:03 +0200 Joe Hunt
+(3014) Cosmetic fix in viewing supp invoice payments section.
+ includes/ui/ui_view.inc
+
+2012-05-02 22:52 +0200 Joe Hunt
+(3013) Rerun of /sales/includes/cart_class.inc.
+ sales/includes/cart_class.inc
+
+2012-05-02 18:57 +0200 Joe Hunt
+(3012) Better check for duplicate references in multiuser environments for sales documents.
+ sales/create_recurrent_invoices.php
+ sales/credit_note_entry.php
+ sales/customer_credit_invoice.php
+ sales/customer_delivery.php
+ sales/customer_invoice.php
+ sales/includes/cart_class.inc
+ sales/sales_order_entry.php
+
+2012-04-29 20:32 +0200 Joe Hunt
+(3011) 0001561: Supplier Credit Notes rasies false error about QOH
+ purchasing/supplier_credit.php
+
+2012-04-29 20:21 +0200 Joe Hunt
+(3010) The GRN Valuation Report had tax included in price if this was set on supplier.
+ reporting/rep305.php
+
+2012-04-28 01:22 +0200 Joe Hunt
+(3009) 0001555: Problem (auto)creating customer branch: also no shipping location
+ sales/manage/customers.php
+
+2012-04-21 11:37 +0200 Joe Hunt
+(3008) Improved report Journal Entries (rep702.php) to show memo in multiple lines.
+ reporting/rep702.php
+
+2012-04-20 11:33 +0200 Janusz Dobrowolski
+(3007) Fixed lang domain switching in hooks_invoke_first/hook_invoke_last
+ includes/hooks.inc
+
+2012-04-19 21:45 +0200 Janusz Dobrowolski
+(3006) Fixed false overdraft problem on cash accounts
+ gl/includes/db/gl_db_bank_trans.inc
+
+2012-04-19 21:44 +0200 Janusz Dobrowolski
+(3005) Fixed login problem on IIS.
+ includes/session.inc
+
+2012-04-08 19:22 +0200 Janusz Dobrowolski
+(3002) Fixed system tests and error handling for extension repository functions.
+ includes/packages.inc
+ includes/system_tests.inc
+
+2012-04-08 15:04 +0200 Joe Hunt
+(3001) 0001502: Report uses default language, not user's preferred language
+ reporting/includes/pdf_report.inc
+
+2012-04-08 15:02 +0200 Joe Hunt
+(3000) 0001501: Price null when editing an order with a price list
+ sales/includes/db/sales_order_db.inc
+
+2012-04-07 23:37 +0200 Joe Hunt
+(2999) Layout improvements in Bank Transfer.
+ gl/bank_transfer.php
+
+2012-04-07 16:31 +0200 Joe Hunt
+(2998) Rerun of /gl/includes/db/gl_db_trans.inc and /reporting/rep709.php.
+ gl/includes/db/gl_db_trans.inc
+ reporting/rep709.php
+
+2012-04-06 08:30 +0200 Joe Hunt
+(2997) 0001497: Tax for journal entry the other way round
+ reporting/rep709.php
+
+2012-04-06 07:50 +0200 Joe Hunt
+(2996) Rerun of sales_invoice_db. Parse error.
+ sales/includes/db/sales_invoice_db.inc
+
+2012-04-04 09:25 +0200 Joe Hunt
+(2995) 0001488: Modifying Sales Invoice (with allocations) causes negative allocations
+ sales/includes/db/sales_invoice_db.inc
+
+2012-04-03 14:47 +0200 Joe Hunt
+(2994) Changing the Invoice date when creating recurrent invoices.
+ sales/create_recurrent_invoices.php
+
+2012-04-01 08:16 +0200 Joe Hunt
+(2993) Date-field increased from 9 to 10 characters. Problems on Mac to see it all.
+ includes/ui/ui_input.inc
+
+2012-03-31 07:58 +0200 Janusz Dobrowolski
+(2992) Fixed email multiplication when bulk work order report is generated.
+ reporting/rep409.php
+
+2012-03-29 11:12 +0200 Joe Hunt
+(2990) Required Delivery Date was not implemented properly.
+ purchasing/includes/ui/po_ui.inc
+ sales/includes/ui/sales_order_ui.inc
+
+2012-03-13 09:18 +0100 Joe Hunt
+(2989) Bug. WHERE clause version=1 in rep304.php should be skipped.
+ reporting/rep304.php
+
+2012-03-13 09:13 +0100 Joe Hunt
+(2988) Bug in floatcmp(). Missing parenthesis in the last condition.
+ includes/current_user.inc
+
+2012-03-12 22:27 +0100 Joe Hunt
+(2987) Rerun of autocreation branch location.
+ sales/manage/customers.php
+
+2012-03-12 16:50 +0100 Joe Hunt
+(2986) When autocreating branch, no location were saved.
+ sales/manage/customers.php
+
+2012-03-07 20:51 +0100 Janusz Dobrowolski
+(2985) Fixed multiplied amounts in Journal Inquiry.
+ gl/includes/db/gl_db_trans.inc
+
+2012-03-07 20:50 +0100 Janusz Dobrowolski
+(2984) Cleanups.
+ admin/attachments.php
+ admin/gl_setup.php
+ install/lang/new_language_template/LC_MESSAGES/empty.po
+ lang/new_language_template/LC_MESSAGES/empty.po
+ sales/manage/sales_people.php
+
+2012-03-05 14:14 +0100 Joe Hunt
+(2982) Fixed typo in location variable.
+ purchasing/includes/db/grn_db.inc
+ purchasing/includes/ui/grn_ui.inc
+
+2012-02-13 12:40 +0100 Janusz Dobrowolski
+(2972) Fixed regression in gettext tests in System Diagnostics.
+ includes/system_tests.inc
+
+2012-02-12 12:02 +0100 Janusz Dobrowolski
+(2971) Added tag version_2_3_8 for changeset b2ead0b2a3e3
+ .hgtags
+
+2012-02-12 12:01 +0100 Janusz Dobrowolski
+(2970) Added tag version_2_3_9 for changeset a8b119b77f05
+ .hgtags
+
+2012-02-12 11:59 +0100 Janusz Dobrowolski
+(2969) Added tag version_2_3_10 for changeset 390d9d69797c
+ .hgtags
+
+2012-02-11 21:06 +0100 Janusz Dobrowolski
+(2968) Fixes for IE7/8 to avoid problems with javascript on some screens.
+ js/inserts.js
+ js/utils.js
+
+2012-02-11 20:52 +0100 Janusz Dobrowolski
+(2967) Fixed bug in attachments uploading.
+ admin/attachments.php
+
+2012-02-08 01:00 +0100 Joe Hunt
+(2966) Rerun of /includes/ui/ui_view.inc
+ includes/ui/ui_view.inc
+
+2012-02-08 00:42 +0100 Joe Hunt
+(2965) Rounding error in includes/ui/ui_view.inc -> price_in_words()
+ includes/ui/ui_view.inc
+
+2012-02-03 10:13 +0100 Joe Hunt
+(2964) Changelog.txt
+ CHANGELOG.txt
+
 2012-02-03 09:48 +0100 Joe Hunt
 (2963) Release 2.3.10
  version.php
