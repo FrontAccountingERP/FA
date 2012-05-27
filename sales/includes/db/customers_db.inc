@@ -155,8 +155,11 @@ function get_customer_contacts($customer_id, $action=null)
 	$results = array();
 	$res = get_crm_persons('customer', $action, $customer_id);
 	while($contact = db_fetch($res))
+	{
+		if ($contact['lang'] == 'C') // Fix for improper lang in demo sql files.
+			$contact['lang'] = '';
 		$results[] = $contact;
-
+	}	
 	return $results;
 }
 

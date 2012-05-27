@@ -520,15 +520,15 @@ CREATE TABLE IF NOT EXISTS `0_crm_persons` (
 -- Dumping data for table `0_crm_persons`
 --
 
-INSERT INTO `0_crm_persons` VALUES(1, 'Beefeater', '', NULL, NULL, NULL, NULL, NULL, '', 'C', '', 0);
+INSERT INTO `0_crm_persons` VALUES(1, 'Beefeater', '', NULL, NULL, NULL, NULL, NULL, '', '', '', 0);
 INSERT INTO `0_crm_persons` VALUES(2, 'Ghostbusters', '', NULL, NULL, NULL, NULL, NULL, '', NULL, '', 0);
-INSERT INTO `0_crm_persons` VALUES(3, 'Brezan', '', NULL, NULL, NULL, NULL, NULL, '', 'C', '', 0);
+INSERT INTO `0_crm_persons` VALUES(3, 'Brezan', '', NULL, NULL, NULL, NULL, NULL, '', '', '', 0);
 INSERT INTO `0_crm_persons` VALUES(4, 'Beefeater', 'Main Branch', NULL, '', '', '', '', '', NULL, '', 0);
 INSERT INTO `0_crm_persons` VALUES(5, 'Ghostbusters', 'Main Branch', NULL, 'Address 1\nAddress 2\nAddress 3', '', '', '', '', NULL, '', 0);
 INSERT INTO `0_crm_persons` VALUES(6, 'Brezan', 'Main Branch', NULL, 'Address 1\nAddress 2\nAddress 3', '', '', '', '', NULL, '', 0);
-INSERT INTO `0_crm_persons` VALUES(7, 'Junk Beer', 'Contact', NULL, 'Address 1\nAddress 2\nAddress 3', '+45 55667788', '', '', '', 'C', '', 0);
+INSERT INTO `0_crm_persons` VALUES(7, 'Junk Beer', 'Contact', NULL, 'Address 1\nAddress 2\nAddress 3', '+45 55667788', '', '', '', '', '', 0);
 INSERT INTO `0_crm_persons` VALUES(8, 'Lucky Luke', 'Luke', NULL, 'Address 1\nAddress 2\nAddress 3', '(111) 222.333.444', '', '', '', NULL, '', 0);
-INSERT INTO `0_crm_persons` VALUES(9, 'Money Makers', 'Makers', NULL, 'Address 1\nAddress 2\nAddress 3', '+44 444 555 666', '', '', '', 'C', '', 0);
+INSERT INTO `0_crm_persons` VALUES(9, 'Money Makers', 'Makers', NULL, 'Address 1\nAddress 2\nAddress 3', '+44 444 555 666', '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
