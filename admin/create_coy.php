@@ -130,9 +130,13 @@ function handle_submit()
 			if (!db_import($path_to_root.'/sql/'.get_post('coa'), $conn, $selected_id)) {
 				display_error(_('Cannot create new company due to bugs in sql file.'));
 				$error = true;
-			} else
-				if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-					update_admin_password($conn, md5($_POST['admpassword']));
+			} 
+			if (!$error)
+			{
+				if (!isset($_POST['admpassword']) || $_POST['admpassword'] == "")
+					$_POST['admpassword'] = "password";
+				update_admin_password($conn, md5($_POST['admpassword']));
+			}	
 		}
 		set_global_connection();
 		if ($error) {
@@ -286,6 +290,7 @@ function display_companies()
 
 	end_table();
     display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
+    display_note(_("If no Admin Password is entered, the new Admin Password will be '<b>password</b>' by default "), 1, 0, "class='currentfg'");
 }
 
 //---------------------------------------------------------------------------------------------
