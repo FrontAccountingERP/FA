@@ -131,7 +131,7 @@ function handle_submit()
 				display_error(_('Cannot create new company due to bugs in sql file.'));
 				$error = true;
 			} 
-			if (!$error)
+			else
 			{
 				if (!isset($_POST['admpassword']) || $_POST['admpassword'] == "")
 					$_POST['admpassword'] = "password";
