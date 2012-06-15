@@ -176,8 +176,8 @@ function print_deliveries()
  		   				$tax_type_name = $tax_item['tax_type_name'];
  		   			else
  		   				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
- 
- 					if ($tax_item['included_in_price'])
+
+ 					if ($myrow['tax_included'])
     				{
    						if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
     					{
