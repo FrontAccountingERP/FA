@@ -25,6 +25,23 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
+function get_invoice_range($from, $to)
+{
+	global $print_invoice_no;
+
+	$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+
+	$sql = "SELECT trans.trans_no, trans.reference
+		FROM ".TB_PREF."debtor_trans trans 
+			LEFT JOIN ".TB_PREF."voided voided ON trans.type=voided.type AND trans.trans_no=voided.id
+		WHERE trans.type=".ST_SALESINVOICE
+			." AND ISNULL(voided.id)"
+			." AND trans.reference>=".db_escape(get_reference(ST_SALESINVOICE, $from))
+			." AND trans.reference<=".db_escape(get_reference(ST_SALESINVOICE, $to))
+		." ORDER BY trans.tran_date, trans.$ref";
+
+	return db_query($sql, "Cant retrieve invoice range");
+}
 
 print_invoices();
 
@@ -34,6 +51,8 @@ function print_invoices()
 {
 	global $path_to_root, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
 	
+	$show_this_payment = true; // include payments invoiced here in summary
+
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
@@ -52,25 +71,23 @@ function print_invoices()
 	$from = min($fno[0], $tno[0]);
 	$to = max($fno[0], $tno[0]);
 
+	//-------------code-Descr-Qty--uom--tax--prc--Disc-Tot--//
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
 	// $headers in doctext.inc
-	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
+	$aligns = array('left',	'left',	'right', 'center', 'right', 'right', 'right');
 
 	$params = array('comments' => $comments);
 
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
-	for ($i = $from; $i <= $to; $i++)
+
+	$range = get_invoice_range($from, $to);
+	while($row = db_fetch($range))
 	{
+			$i = $row['trans_no'];
 			if (!exists_customer_trans(ST_SALESINVOICE, $i))
 				continue;
 			$sign = 1;
@@ -81,21 +98,38 @@ function print_invoices()
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 			if ($email == 1)
-			{
 				$rep = new FrontReport("", "", user_pagesize());
-			    $rep->SetHeaderType('Header2');
-				$rep->currency = $cur;
-				$rep->Font();
-				$rep->title = _('INVOICE');
-				$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
-				$rep->Info($params, $cols, null, $aligns);
-			}
-			else
-				$rep->title = _('INVOICE');
+		    $rep->SetHeaderType('Header2');
+			$rep->currency = $cur;
+			$rep->Font();
+			$rep->title = _('INVOICE');
+			$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
+			$rep->Info($params, $cols, null, $aligns);
+
 			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
 			$baccount['payment_service'] = $pay_service;
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
 			$rep->NewPage();
+			// calculate summary start row for later use
+			$summary_start_row = $rep->bottomMargin + (20 * $rep->lineHeight);
+
+			if ($rep->formData['prepaid'])
+			{
+				$result = get_sales_order_invoices($myrow['order_']);
+				$prepayments = array();
+				while($inv = db_fetch($result))
+				{
+					$prepayments[] = $inv;
+					if ($inv['trans_no'] == $i)
+					break;
+				}
+
+				if (count($prepayments) > ($show_this_payment ? 0 : 1))
+					$summary_start_row += (count($prepayments)+3) * $rep->lineHeight;
+				else
+					unset($prepayments);
+			}
+
    			$result = get_customer_trans_details(ST_SALESINVOICE, $i);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
@@ -113,22 +147,23 @@ function print_invoices()
 		  			$DisplayDiscount ="";
 	    		else
 		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
-				$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
+				$c=0;
+				$rep->TextCol($c++, $c,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
-				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
+				$rep->TextColLines($c++, $c, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
 				if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
 				{
-					$rep->TextCol(2, 3,	$DisplayQty, -2);
-					$rep->TextCol(3, 4,	$myrow2['units'], -2);
-					$rep->TextCol(4, 5,	$DisplayPrice, -2);
-					$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-					$rep->TextCol(6, 7,	$DisplayNet, -2);
+					$rep->TextCol($c++, $c,	$DisplayQty, -2);
+					$rep->TextCol($c++, $c,	$myrow2['units'], -2);
+					$rep->TextCol($c++, $c,	$DisplayPrice, -2);
+					$rep->TextCol($c++, $c,	$DisplayDiscount, -2);
+					$rep->TextCol($c++, $c,	$DisplayNet, -2);
 				}
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
-				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+				if ($rep->row < $summary_start_row)
 					$rep->NewPage();
 			}
 
@@ -142,7 +177,41 @@ function print_invoices()
    			$DisplaySubTot = number_format2($SubTotal,$dec);
    			$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
 
-    		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+			// set to start of summary line:
+    		$rep->row = $summary_start_row;
+			if (isset($prepayments))
+			{
+				// Partial invoices table
+				$rep->NewLine();
+				$rep->TextCol(1, 4,_("Prepayments invoiced to this order up to day:"));
+				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
+				$rep->cols[3] -= 20;
+				$rep->aligns[3] = 'right';
+				$rep->NewLine(); $c = 1; $tot_pym=0;
+				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
+				$rep->TextCol($c++, $c, _("Date"));
+				$rep->TextCol($c++, $c,	_("Invoice reference"));
+				$rep->TextCol($c++, $c,	_("Amount"));
+
+				foreach ($prepayments as $invoice)
+				{
+					if ($show_this_payment || ($invoice['reference'] != $myrow['reference']))
+					{
+						$rep->NewLine();
+						$c = 1; $tot_pym += $invoice['prep_amount'];
+						$rep->TextCol($c++, $c,	sql2date($invoice['tran_date']));
+						$rep->TextCol($c++, $c,	$invoice['reference']);
+						$rep->TextCol($c++, $c, number_format2($invoice['prep_amount'], $dec));
+					}
+					if ($invoice['reference']==$myrow['reference']) break;
+				}
+				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
+				$rep->NewLine();
+				$rep->TextCol(2, 3,	_("Total payments:"));
+				$rep->TextCol(3, 4,	number_format2($tot_pym, $dec));
+			}
+
+
 			$doctype = ST_SALESINVOICE;
 
 			$rep->TextCol(3, 6, _("Sub-total"), -2);
@@ -193,9 +262,18 @@ function print_invoices()
 			$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
 			$rep->Font('bold');
-			$rep->TextCol(3, 6, _("TOTAL INVOICE"), - 2);
+			if (!$myrow['prepaid']) $rep->Font('bold');
+				$rep->TextCol(3, 6, $rep->formData['prepaid'] ? _("TOTAL ORDER VAT INCL.") : _("TOTAL INVOICE"), - 2);
 			$rep->TextCol(6, 7, $DisplayTotal, -2);
-			$words = price_in_words($myrow['Total'], ST_SALESINVOICE);
+			if ($rep->formData['prepaid'])
+			{
+				$rep->NewLine();
+				$rep->Font('bold');
+				$rep->TextCol(3, 6, $rep->formData['prepaid']=='final' ? _("THIS INVOICE") : _("TOTAL INVOICE"), - 2);
+				$rep->TextCol(6, 7, number_format2($myrow['prep_amount'], $dec), -2);
+			}
+			$words = price_in_words($rep->formData['prepaid'] ? $myrow['prep_amount'] : $myrow['Total']
+				, array( 'type' => ST_SALESINVOICE, 'currency' => $myrow['curr_code']));
 			if ($words != "")
 			{
 				$rep->NewLine(1);

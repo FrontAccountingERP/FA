@@ -114,7 +114,7 @@ class allocation
 			$this->person_id = get_post($this->person_type ? 'supplier_id':'customer_id');
 			$this->date_ = get_post($this->person_type ? 'DatePaid':'DateBanked', Today());
 		}
-
+		
 	/* Now populate the array of possible (and previous actual) allocations 
 		for this customer/supplier. First get the transactions that have 
 		outstanding balances ie Total-alloc >0 */
@@ -126,6 +126,7 @@ class allocation
 
 		while ($myrow = db_fetch($trans_items))
 		{
+//_vd($myrow);
 			$this->add_item($myrow["type"], $myrow["trans_no"],
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
@@ -146,9 +147,9 @@ class allocation
 		else
 		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id, 
 				$trans_no, $type);
-
 		while ($myrow = db_fetch($trans_items))
 		{
+//_vd($myrow);
 			$this->add_or_update_item ($myrow["type"], $myrow["trans_no"],
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
@@ -164,9 +165,9 @@ class allocation
 		begin_transaction();
 
 		if ($this->person_type)
-			clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
+			clear_supp_alloctions($this->type, $this->trans_no);
 		else
-		 	clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
+		 	clear_cust_alloctions($this->type, $this->trans_no);
 
 		// now add the new allocations
 		$total_allocated = 0;
@@ -185,22 +186,22 @@ class allocation
 	 				add_cust_allocation($alloc_item->current_allocated,
 						$this->type, $this->trans_no,
  			     		$alloc_item->type, $alloc_item->type_no, $this->date_);
-			
+
 	 				update_debtor_trans_allocation($alloc_item->type, 
 						$alloc_item->type_no, $alloc_item->current_allocated);
 				}
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-				exchange_variation($this->type, $this->trans_no,
+				if (!in_array($alloc_item->type, array(ST_SALESQUOTE, ST_SALESORDER, ST_PURCHORDER)))
+				 exchange_variation($this->type, $this->trans_no,
 					$alloc_item->type, $alloc_item->type_no, $this->date_,
 					$alloc_item->current_allocated,
 					$this->person_type ? PT_SUPPLIER : PT_CUSTOMER);
-				
 
 				//////////////////////////////////////////////////////////////
 				$total_allocated += $alloc_item->current_allocated;
 			}
 
-		}  /*end of the loop through the array of allocations made */
+		}  //end of the loop through the array of allocations made
 		if ($this->person_type)
 			update_supp_trans_allocation($this->type, $this->trans_no, 
 				$total_allocated);
@@ -265,29 +266,31 @@ function show_allocatable($show_totals) {
 	   	table_header($th);
 
 		foreach ($_SESSION['alloc']->allocs as $alloc_item)
-	    {
-			alt_table_row_color($k);
-    		label_cell($systypes_array[$alloc_item->type]);
-	   		label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
-	   		label_cell($alloc_item->ref);
-    		label_cell($alloc_item->date_, "align=right");
-    		label_cell($alloc_item->due_date, "align=right");
-	    	amount_cell($alloc_item->amount);
-			amount_cell($alloc_item->amount_allocated);
+		{
+ 		    if ($alloc_item->amount > $alloc_item->amount_allocated) {
+				alt_table_row_color($k);
+    			label_cell($systypes_array[$alloc_item->type]);
+	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
+	   			label_cell($alloc_item->ref);
+	    		label_cell($alloc_item->date_, "align=right");
+    			label_cell($alloc_item->due_date, "align=right");
+	    		amount_cell($alloc_item->amount);
+				amount_cell($alloc_item->amount_allocated);
 
-	    	$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
-    		amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
+		    	$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
+    			amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
 
-	    	$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
-    		amount_cell($un_allocated, false,'', 'maxval'.$counter);
-			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
-				 . _("All") . "</a>");
-			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
-				 . _("None") . "</a>".hidden("un_allocated" . $counter, 
-				 price_format($un_allocated), false));
-			end_row();
+	    		$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
+    			amount_cell($un_allocated, false,'', 'maxval'.$counter);
+				label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
+					 . _("All") . "</a>");
+				label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
+					 . _("None") . "</a>".hidden("un_allocated" . $counter, 
+					 price_format($un_allocated), false));
+				end_row();
 
-   	    	$total_allocated += input_num('amount' . $counter);
+   		    	$total_allocated += input_num('amount' . $counter);
+			}
 	   	    $counter++;
 	   	}
 		if ($show_totals) {
@@ -325,7 +328,7 @@ function check_allocations()
 	$total_allocated = 0;
 
 	for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
-	{
+	if (isset($_POST['amount' . $counter])) {
 		if (!check_num('amount' . $counter, 0))
 		{
 			display_error(_("The entry for one or more amounts is invalid or negative."));

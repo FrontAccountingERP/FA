@@ -103,7 +103,7 @@ function alloc_link($row)
 		return $link;
 	}
 	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
-		($row['TotalAmount'] - $row['Allocated']) > 0)
+		(floatcmp($row['TotalAmount'], $row['Allocated']) > 0))
 	{
 		/*its a receipt  which could have an allocation*/
 		return $link;

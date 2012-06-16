@@ -74,13 +74,20 @@ class cart
 	var $payment_terms; // cached payment terms
 	var $credit;
 	
+	// prepayment mode:
+	var $prepaid;		// true for documents issued in prepayment mode
+	var $prep_amount;	// prepayment required for SO, invoiced amount for prepaiament invoice
+	var $sum_paid; 		// sum of all allocated prepayments both to order and related invoices
+	var $alloc; 		// sum of payments allocated to this document
+	var $prepayments = array(); // allocation records for this document
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
-	//  $trans_no!=0 && $no_edit==false => update with parent constarints for reedition
-	//  $trans_no!=0 && $no_edit==true => read only: for view, or later child doc entry
+	//  $trans_no!=0 && $prepare_child==false => update with parent constarints for reedition
+	//  $trans_no!=0 && $prepare_child==true => prepare for child doc entry
+	//	$prepare_child is set to ST_SALESINVOICE for prepayment invoices
 	//
-	function Cart($type, $trans_no=0, $prep_child=false) {
+	function Cart($type, $trans_no=0, $prepare_child=false) {
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
@@ -91,18 +98,19 @@ class cart
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
 		$this->pos = get_sales_point(user_pos());
-		$this->read($type, $trans_no, $prep_child);
+		$this->read($type, $trans_no, $prepare_child);
 		$this->cart_id = uniqid('');
 	}
 	
 	//
 	//	Prepare cart to new child document entry, just after initial parent doc read.
 	//
-	function prepare_child()
+	function prepare_child($type)
 	{
 		global $Refs;
 
-		$type = get_child_type($this->trans_type);
+		if ($type === true)
+			$type = get_child_type($this->trans_type);
 
 		$this->trans_type = $type;
 		$this->reference = $Refs->get_next($this->trans_type);
@@ -111,7 +119,8 @@ class cart
 		for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 			$line = &$this->line_items[$line_no];
 			$line->src_id = $line->id; // save src line ids for update
-			$line->qty_dispatched = $type == ST_CUSTCREDIT ? '0' : $line->quantity - $line->qty_done;
+			$line->qty_dispatched = $type == ST_CUSTCREDIT ? '0' : 
+				 (($this->prepaid && $type == ST_SALESINVOICE) ? $line->quantity : $line->quantity - $line->qty_done);
 			$line->qty_old = 0;
 		}
 		unset($line);
@@ -168,7 +177,7 @@ class cart
 	//-------------------------------------------------------------------------
 	// Reading document into cart
 	//
-	function read($type, $trans_no=0, $prep_child=false) {
+	function read($type, $trans_no=0, $prepare_child=false) {
 
 		global $SysPrefs, $Refs;
 
@@ -178,7 +187,8 @@ class cart
 			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 				read_sales_order($trans_no[0], $this, $type);
 			} else {	// other type of sales transaction
-					read_sales_trans($type, $trans_no, $this); 
+					read_sales_trans($type, $trans_no, $this);
+					$this->prepayments = get_payments_for($trans_no[0], $type);
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
@@ -187,13 +197,13 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					// child transaction reedition - update with parent info unless it is freehand
-					if (!$prep_child) // this is read for view/reedition
+					if (!$this->is_prepaid() && !$prepare_child) // this is read for view/reedition
 						$this->set_parent_constraints($sodata, $trans_no[0]);
 					}
 			}
 			// convert document into child and prepare qtys for entry
-			if ($prep_child)
-				$this->prepare_child();
+			if ($prepare_child)
+				$this->prepare_child($prepare_child);
 
 		} else { // new document
 				$this->trans_type = $type;
@@ -245,7 +255,7 @@ class cart
 	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
 	function write($policy=0) {
 		begin_transaction(); // prevents partial database changes in case of direct delivery/invoice
-		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
+		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY) && !$this->is_prepaid()) {
 			// this is direct document - first add parent
 			$ref = $this->reference;
 			$date = $this->document_date;
@@ -514,6 +524,52 @@ class cart
 		}
 
 		return $total;
+	}
+
+	/*
+		Returns true for documents issued in prepayment cycle.
+	*/
+	function is_prepaid()
+	{
+		return $this->prepaid; //floatcmp($this->prep_amount, 0) > 0;
+	}
+	/*
+		Order is ready for delivery in prepament mode.
+	*/
+	function is_released()
+	{
+		return floatcmp($this->sum_paid, $this->prep_amount) >= 0;
+	}
+
+	/*
+		Check whether order has been already invoiced/send or not.
+	*/
+	function is_started()
+	{
+		if ($this->trans_no==0)
+			return false;
+		$order_no = array_keys($this->trans_no);
+
+		return  is_sales_order_started(reset($order_no));
+	}
+
+	/*
+		Check payment terms and prepayments selected for this invoice,
+		and updates	partial/final invoice value respectively.
+	*/
+	function update_payments()
+	{
+		$remainder = prepaid_invoice_remainder($this->order_no);
+
+		// recalculate prepaid part from payments
+		if ($this->payment_terms['days_before_due'] < 0)
+		{	// this is partial invoice for selected prepayments made.
+			$paid = 0;
+			foreach($this->prepayments as $payment)
+				$paid += $payment['amt'];
+			$this->prep_amount = min($remainder, $paid);
+		} else	// this is final invoice
+			$this->prep_amount = $remainder;
 	}
 } /* end of class defintion */
 

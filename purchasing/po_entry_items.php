@@ -399,7 +399,13 @@ function can_commit()
      	display_error (_("The order cannot be placed because there are no lines entered on this order."));
      	return false;
 	}
-		
+	if (floatcmp(input_num('prep_amount'), $_SESSION['PO']->get_trans_total()) > 0)
+	{
+		display_error(_("Required prepayment is greater than total invoice value."));
+		set_focus('prep_amount');
+		return false;
+	}
+
 	return true;
 }
 

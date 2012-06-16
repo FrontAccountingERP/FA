@@ -119,7 +119,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	if ($order->trans_type == ST_SALESINVOICE || $order->trans_type == ST_SALESORDER) {
 		$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
 	}
-	if($order->payment_terms['cash_sale']) {
+	if ($order->payment_terms['cash_sale']) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
 		$order->set_location($myrow["default_location"], $myrow["location_name"]);
@@ -386,7 +386,8 @@ function display_order_header(&$order, $editable, $date_text)
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 
 	table_section(3);
-	if ($order->pos['cash_sale'] || $order->pos['credit_sale']) {
+	if (($order->pos['cash_sale'] || $order->pos['credit_sale']) 
+		&& !$order->is_started()) {
 		 // editable payment type 
 		if (get_post('payment') !== $order->payment) {
 			$order->payment = get_post('payment');
@@ -402,11 +403,10 @@ function display_order_header(&$order, $editable, $date_text)
 		$paymcat = !$order->pos['cash_sale'] ? PM_CREDIT : 
 			(!$order->pos['credit_sale'] ? PM_CASH : PM_ANY);
 		// all terms are available for SO
-		sale_payment_list_cells(_('Payment:'), 'payment', 
-			(in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER)) 
-			? PM_ANY : $paymcat), null);
+		$is_order = in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER));
+		sale_payment_list_cells(_('Payment:'), 'payment', $is_order ? PM_ANY : $paymcat, null, true, $is_order);
 	} else {
-		label_cells(_('Payment:'), $order->payment_terms['terms']);
+		label_cells(_('Payment:'), $order->payment_terms['terms'], "class='label'");
 	}
 
 	if($editable) {
@@ -615,6 +615,14 @@ function display_delivery_details(&$order)
 		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
+		if ($order->payment_terms['days_before_due'] < 0)
+		{
+			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update
+			if (!$order->is_started())
+				amount_row(_("Pre-Payment Required:"), 'prep_amount');
+			else
+				label_row(_("Pre-Payment Required:"), price_format($order->prep_amount), "class='label'");
+		}
 		if (list_updated('Location'))
 			$Ajax->activate('items_table');
 

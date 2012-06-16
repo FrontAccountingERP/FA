@@ -20,9 +20,13 @@ $page_security = 'SA_SALESTRANSVIEW';
 
 set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
-			'InvoiceTemplates' => 'SA_SALESINVOICE'),
+			'InvoiceTemplates' => 'SA_SALESINVOICE',
+			'DeliveryTemplates' => 'SA_SALESDELIVERY',
+			'PrepaidOrders' => 'SA_SALESINVOICE'),
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
-			'InvoiceTemplates' => 'SA_SALESINVOICE')
+			'InvoiceTemplates' => 'SA_SALESINVOICE',
+			'DeliveryTemplates' => 'SA_SALESDELIVERY',
+			'PrepaidOrders' => 'SA_SALESINVOICE')
 );
 
 if (get_post('type'))
@@ -48,6 +52,11 @@ if ($trans_type == ST_SALESORDER)
 	{
 		$_POST['order_view_mode'] = 'DeliveryTemplates';
 		$_SESSION['page_title'] = _($help_context = "Select Template for Delivery");
+	}
+	elseif (isset($_GET['PrepaidOrders']) && ($_GET['PrepaidOrders'] == true))
+	{
+		$_POST['order_view_mode'] = 'PrepaidOrders';
+		$_SESSION['page_title'] = _($help_context = "Invoicing Prepayment Orders");
 	}
 	elseif (!isset($_POST['order_view_mode']))
 	{
@@ -131,10 +140,14 @@ function edit_link($row)
 function dispatch_link($row)
 {
 	global $trans_type;
+
+	if ($row['ord_payments'] + $row['inv_payments'] < $row['prep_amount'])
+ 		return '';
+
 	if ($trans_type == ST_SALESORDER)
   		return pager_link( _("Dispatch"),
 			"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
-	else		
+	else
   		return pager_link( _("Sales Order"),
 			"/sales/sales_order_entry.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 }
@@ -178,6 +191,16 @@ function tmpl_checkbox($row)
  	_('Set this order as a template for direct deliveries/invoices'))
 	. hidden('last['.$row['order_no'].']', $value, false);
 }
+
+function invoice_prep_link($row)
+{
+	// invoicing should be available only for partially allocated orders
+	return 
+		$row['inv_payments'] < $row['total'] ?
+		pager_link($row['ord_payments']  ? _("Prepayment Invoice") : _("Final Invoice"),
+		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], $row['ord_payments']  ? ICON_MONEY : ICON_DOC) : '';
+}
+
 //---------------------------------------------------------------------------------------------
 // Update db record if respective checkbox value has changed.
 //
@@ -298,6 +321,10 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	array_substitute($cols, 3, 1, _("Description"));
 	array_append($cols, array(
 			array('insert'=>true, 'fun'=>'delivery_link'))
+	);
+} else if ($_POST['order_view_mode'] == 'PrepaidOrders') {
+	array_append($cols, array(
+			array('insert'=>true, 'fun'=>'invoice_prep_link'))
 	);
 
 } elseif ($trans_type == ST_SALESQUOTE) {

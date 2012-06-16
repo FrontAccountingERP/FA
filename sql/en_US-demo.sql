@@ -574,7 +574,8 @@ CREATE TABLE IF NOT EXISTS `0_cust_allocations` (
   `trans_type_from` int(11) default NULL,
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
   KEY `From` (`trans_type_from`,`trans_no_from`),
   KEY `To` (`trans_type_to`,`trans_no_to`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=2 ;
@@ -689,6 +690,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `ov_freight_tax` double NOT NULL default '0',
   `ov_discount` double NOT NULL default '0',
   `alloc` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
   `rate` double NOT NULL default '1',
   `ship_via` int(11) default NULL,
   `dimension_id` int(11) NOT NULL default '0',
@@ -704,14 +706,14 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
 -- Dumping data for table `0_debtor_trans`
 --
 
-INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
-INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3, 0);
-INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4, 0);
-INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3, 0);
-INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3, 0);
-INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
-INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3, 0);
-INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 0, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 0, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
+INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3, 0);
+INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 0, 1, 1, 0, 0, 4, 0);
 
 -- --------------------------------------------------------
 
@@ -1338,6 +1340,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   `total` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
+  `alloc` double NOT NULL DEFAULT '0',
   `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
@@ -1347,8 +1351,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
 -- Dumping data for table `0_purch_orders`
 --
 
-INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
-INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
+INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0, 0, 0);
+INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1545,6 +1549,8 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
   `delivery_date` date NOT NULL default '0000-00-00',
   `payment_terms` int(11) default NULL,
   `total` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
+  `alloc` double NOT NULL DEFAULT '0',
   PRIMARY KEY  (`trans_type`,`order_no`)
 ) ENGINE=InnoDB;
 
@@ -1552,11 +1558,11 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
 -- Dumping data for table `0_sales_orders`
 --
 
-INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2009-06-22', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2009-06-22', 4, 0);
-INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2009-07-01', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2009-06-22', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2009-06-22', 4, 0);
+INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2009-06-22', 3, 0, 0, 0);
+INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2009-06-22', 4, 0, 0, 0);
+INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2009-07-01', 3, 0, 0, 0);
+INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2009-06-22', 3, 0, 0, 0);
+INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2009-06-22', 4, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1921,6 +1927,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_allocations` (
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
   PRIMARY KEY  (`id`),
+  UNIQUE KEY(`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
   KEY `From` (`trans_type_from`,`trans_no_from`),
   KEY `To` (`trans_type_to`,`trans_no_to`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=2 ;
@@ -2076,6 +2083,7 @@ INSERT INTO `0_sys_prefs` VALUES('default_workorder_required', 'glsetup.manuf', 
 INSERT INTO `0_sys_prefs` VALUES('version_id', 'system', 'varchar', 11, '2.3rc');
 INSERT INTO `0_sys_prefs` VALUES('auto_curr_reval', 'setup.company', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550');
+INSERT INTO `0_sys_prefs` VALUES ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
 
 -- --------------------------------------------------------
 

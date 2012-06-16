@@ -56,7 +56,7 @@ function get_customer_trans_version($type, $trans_no) {
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
 	$sales_type=0, $order_no=0, $ship_via=0, $due_date="",
-	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0, $payment_terms=null, $tax_included=0)
+	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0, $payment_terms=null, $tax_included=0, $prep_amount=0)
 {
 	$new = $trans_no==0;
 	$curr = get_customer_currency($debtor_no);
@@ -85,7 +85,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc,
-		dimension_id, dimension2_id, payment_terms, tax_included
+		dimension_id, dimension2_id, payment_terms, tax_included, prep_amount
 		) VALUES (".db_escape($trans_no).", ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
@@ -94,7 +94,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
 		".db_escape($dimension_id).", ".db_escape($dimension2_id).", "
 		.db_escape($payment_terms, true).", "
-		.db_escape($tax_included).")";
+		.db_escape($tax_included).", ".db_escape($prep_amount).")";
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
 		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
@@ -106,6 +106,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
 		payment_terms=".db_escape($payment_terms).",
 		tax_included=".db_escape($tax_included)."
+		prep_amount =".db_escape($prep_amount)."
 		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
@@ -118,11 +119,14 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 function get_customer_trans($trans_id, $trans_type)
 {
+	global $go_debug;
+
 	$sql = "SELECT trans.*,"
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
 		."cust.name AS DebtorName, cust.address, "
 		."cust.curr_code, "
-		."cust.tax_id ";
+		."cust.tax_id,
+		trans.prep_amount>0 as prepaid";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
@@ -180,12 +184,16 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if (db_num_rows($result) == 0) {
 		// can't return nothing
+		if($go_debug)
+			display_backtrace();
 		display_db_error("no debtor trans found for given params", $sql, true);
 		exit;
 	}
 
 	if (db_num_rows($result) > 1) {
 		// can't return multiple
+		if($go_debug)
+			display_backtrace();
 		display_db_error("duplicate debtor transactions found for given params", $sql, true);
 		exit;
 	}
@@ -254,7 +262,7 @@ function void_customer_trans($type, $type_no)
 {
 	// clear all values and mark as void
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
-		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+		ov_freight_tax=0, alloc=0, prep_amount=0, version=version+1 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	db_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 }
@@ -380,7 +388,7 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 			trans.due_date,
 			(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
 			debtor.curr_code,
-			Sum(line.quantity-line.qty_done) AS Outstanding,
+			Sum(line.quantity-line.qty_done) AND sorder.prep_amount=0 AS Outstanding,
 			Sum(line.qty_done) AS Done
 		FROM "
 		 .TB_PREF."sales_orders as sorder, "

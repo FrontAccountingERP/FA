@@ -468,20 +468,20 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 function display_footer_exit()
 {
 	br(2);
-	end_page(false, false, true);
+	end_page(false, true);
 	exit;
 }
 
 //--------------------------------------------------------------------------------------
 
-function display_allocations($alloc_result, $total, $payments=false)
+function display_allocations($alloc_result, $total, $title, $show_summary=true)
 {
 	global $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
 
-    display_heading2(($payments ? _("Payments") : _("Allocations")));
+    display_heading2($title);
 
     start_table(TABLESTYLE, "width=80%");
 
@@ -492,7 +492,6 @@ function display_allocations($alloc_result, $total, $payments=false)
 
     while ($alloc_row = db_fetch($alloc_result))
     {
-
     	alt_table_row_color($k);
 
     	label_cell($systypes_array[$alloc_row['type']]);
@@ -512,12 +511,14 @@ function display_allocations($alloc_result, $total, $payments=false)
    	label_cell(_("Total Allocated:"), "align=right colspan=5");
 	amount_cell($total_allocated);
 	end_row();
-	start_row();
-    label_cell(_("Left to Allocate:"), "align=right colspan=5");
-    $total = round2($total, user_price_dec());
-    amount_cell($total - $total_allocated);
-    end_row();
-
+	if ($show_summary)
+	{
+		start_row();
+	    label_cell(_("Left to Allocate:"), "align=right colspan=5");
+	    $total = round2($total, user_price_dec());
+    	amount_cell($total - $total_allocated);
+    	end_row();
+	}
     end_table(1);
 }
 
@@ -529,11 +530,11 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	{
 		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total);
+			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total);
+			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 	}
 }
@@ -546,11 +547,11 @@ function display_allocations_to($person_type, $person_id, $type, $type_no, $tota
 	{
 		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_from_cust_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total, true);
+			display_allocations($alloc_result, $total, $type == ST_SALESORDER ? _("Pre-Payments") : _("Payments"), false);
 			return;
 		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_from_supp_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total, true);
+			display_allocations($alloc_result, $total, $type == ST_PURCHORDER ? _("Pre-Payments") : _("Payments"), false);
 			return;
 	}
 }

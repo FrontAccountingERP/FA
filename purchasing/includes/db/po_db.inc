@@ -32,7 +32,7 @@ function add_po(&$po_obj)
 
      /*Insert to purchase order header record */
      $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, 
-     	requisition_no, into_stock_location, delivery_address, total, tax_included) VALUES(";
+     	requisition_no, into_stock_location, delivery_address, total, tax_included, prep_amount) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', " .
@@ -41,7 +41,8 @@ function add_po(&$po_obj)
          db_escape($po_obj->Location) . ", " .
          db_escape($po_obj->delivery_address) . ", " .
          db_escape($po_obj->get_trans_total()). ", " .
-         db_escape($po_obj->tax_included) . ")";
+         db_escape($po_obj->tax_included). ", " .
+         db_escape($po_obj->prep_amount). ")";
 
 	db_query($sql, "The purchase order header record could not be inserted");
 
@@ -86,6 +87,7 @@ function update_po(&$po_obj)
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address).",
 		total=". db_escape($po_obj->get_trans_total()).",
+		prep_amount=". db_escape($po_obj->prep_amount).",
 		tax_included=". db_escape($po_obj->tax_included);
     $sql .= " WHERE order_no = " . $po_obj->order_no;
 	db_query($sql, "The purchase order could not be updated");
@@ -109,6 +111,12 @@ function update_po(&$po_obj)
 			.db_escape($po_line->qty_received) . ")";
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
+
+//_vd($po_obj->prepayments);
+	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->orig_order_date, $po_obj->get_trans_total(), $po_obj->prepayments);
+//_vd($p = get_payments_for($po_obj->order_no, ST_PURCHORDER));
+//_vd(get_supp_trans($p[0]['trans_no_from'], $p[0]['trans_type_from']));
+//exit;
 
 	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
@@ -152,6 +160,9 @@ function read_po_header($order_no, &$order)
       	$order->supp_ref = $myrow["requisition_no"];
       	$order->reference = $myrow["reference"];
       	$order->delivery_address = $myrow["delivery_address"];
+      	$order->alloc = $myrow["alloc"];
+      	$order->prep_amount = $myrow["prep_amount"];
+      	$order->prepayments = get_payments_for($order_no, ST_PURCHORDER);
 
       	return true;
 	}
@@ -350,4 +361,5 @@ function get_sql_for_po_search()
 	$sql .= " GROUP BY porder.order_no";
 	return $sql;
 }
+
 ?>

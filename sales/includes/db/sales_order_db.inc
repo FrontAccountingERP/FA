@@ -22,7 +22,7 @@ function add_sales_order(&$order)
 	$total = $order->get_trans_total();
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
-		freight_cost, from_stk_loc, delivery_date, payment_terms, total)
+		freight_cost, from_stk_loc, delivery_date, payment_terms, total, prep_amount)
 		VALUES (" .db_escape($order_no) . "," .db_escape($order_type) . "," . db_escape($order->customer_id) .
 		 ", " .db_escape($order->trans_type) . "," .db_escape($order->Branch) . ", ".
 			db_escape($order->cust_ref) .",". 
@@ -38,7 +38,8 @@ function add_sales_order(&$order)
 			db_escape($order->Location) .", " .
 			db_escape($del_date) . "," .
 			db_escape($order->payment) . "," .
-			db_escape($total). ")";
+			db_escape($total) . "," .
+			db_escape($order->prep_amount).")";
 
 	db_query($sql, "order Cannot be Added");
 
@@ -91,8 +92,6 @@ function add_sales_order(&$order)
 		if ($order->trans_type == ST_SALESORDER && $line->src_id)
 			update_parent_line(ST_SALESORDER, $line->src_id, $line->qty_dispatched); // clear all the quote despite all or the part was ordered
 	} /* inserted line items into sales order details */
-	add_audit_trail($order->trans_type, $order_no, $order->document_date);
-	$Refs->save($order->trans_type, $order_no, $order->reference);
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date);
 	$Refs->save($order->trans_type, $order_no, $order->reference);
@@ -168,7 +167,8 @@ function update_sales_order($order)
 	$total = $order->get_trans_total();
 
 	begin_transaction();
-
+	if ($order->trans_type == ST_SALESORDER)
+		$allocs = get_payments_for($order_no, ST_SALESORDER);
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
 		branch_code = " . db_escape($order->Branch) . ",
@@ -186,14 +186,11 @@ function update_sales_order($order)
 		delivery_date = " .db_escape($del_date). ",
 		version = ".($version+1).",
 		payment_terms = " .db_escape($order->payment). ",
-		total = ". db_escape($total) ."
+		total = ". db_escape($total). ",
+		prep_amount = ". db_escape($order->prep_amount) ."
 	 WHERE order_no=" . db_escape($order_no) ."
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
-
-	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
-
-	db_query($sql, "Old order Cannot be Deleted");
 
 	if ($loc_notification == 1)
 	{
@@ -232,23 +229,35 @@ function update_sales_order($order)
 				}
 			}
 		}
-		$sql = "INSERT INTO ".TB_PREF."sales_order_details
-		 (id, order_no, trans_type, stk_code,  description, unit_price, quantity,
-		  discount_percent, qty_sent)
-		 VALUES (";
-		$sql .= db_escape($line->id ? $line->id : 0) . ","
-		  .$order_no . ",".$order->trans_type.","
-		  .db_escape($line->stock_id) . ","
-		  .db_escape($line->item_description) . ", "
-		  .db_escape($line->price) . ", "
-		  .db_escape($line->quantity) . ", "
-		  .db_escape($line->discount_percent) . ", "
-		  .db_escape($line->qty_done) ." )";
+		if (!$line->id) //new line
+			$sql = "INSERT INTO ".TB_PREF."sales_order_details
+			 (order_no, trans_type, stk_code,  description, unit_price, quantity,
+			  discount_percent, qty_sent)
+			 VALUES (".$order_no . ",".$order->trans_type.","
+				  .db_escape($line->stock_id) . ","
+				  .db_escape($line->item_description) . ", "
+				  .db_escape($line->price) . ", "
+				  .db_escape($line->quantity) . ", "
+				  .db_escape($line->discount_percent) . ", "
+				  .db_escape($line->qty_done) ." )";
+		else
+		$sql = "UPDATE ".TB_PREF."sales_order_details
+			SET id=".db_escape($line->id).",
+				order_no=$order_no,
+				trans_type=".$order->trans_type.",
+				stk_code=".db_escape($line->stock_id).",
+				description=".db_escape($line->item_description).",
+				unit_price=".db_escape($line->price).",
+				quantity=".db_escape($line->quantity).",
+		    	discount_percent=".db_escape($line->discount_percent).",
+			    qty_sent=".db_escape($line->qty_done)."
+			 WHERE id = ".db_escape($line->id);
 
-		db_query($sql, "Old order Cannot be Inserted");
-
+		db_query($sql, "Old order Cannot be updated");
 	} /* inserted line items into sales order details */
 
+	if ($order->trans_type == ST_SALESORDER)
+		reallocate_payments($order_no, ST_SALESORDER, $ord_date, $total, $allocs);
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
 	$Refs->save($order->trans_type, $order_no, $order->reference);
 	commit_transaction();
@@ -289,8 +298,17 @@ function get_sales_order_header($order_no, $trans_type)
 	  ."ship.shipper_name, "
 	  ."tax_group.name AS tax_group_name , "
 	  ."tax_group.id AS tax_group_id, "
-	  ."cust.tax_id "
-	."FROM ".TB_PREF."sales_orders sorder, "
+	  ."cust.tax_id,"
+	  ."sorder.alloc,"
+	  ."IFNULL(allocs.ord_allocs, 0)+IFNULL(inv.inv_allocs ,0) AS sum_paid,"
+	  ."sorder.prep_amount>0 as prepaid"
+	." FROM ".TB_PREF."sales_orders sorder
+			LEFT JOIN (SELECT trans_no_to, sum(amt) ord_allocs FROM ".TB_PREF."cust_allocations
+				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no).")
+				 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
+			LEFT JOIN (SELECT order_, sum(alloc) inv_allocs FROM ".TB_PREF."debtor_trans 
+				WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no).")
+				 inv ON sorder.trans_type=".ST_SALESORDER." AND inv.order_=sorder.order_no,"
 	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
 	  .TB_PREF."tax_groups tax_group, "
@@ -374,6 +392,12 @@ function read_sales_order($order_no, &$order, $trans_type)
 	$order->due_date = sql2date($myrow["delivery_date"]);
 	$order->document_date = sql2date($myrow["ord_date"]);
 
+	$order->prepaid = $myrow["prepaid"];
+	$order->alloc = $myrow['alloc'];
+	$order->sum_paid = $myrow["sum_paid"]; // sum of all prepayments to so (also invoiced)
+	$order->prep_amount = $myrow["prep_amount"];
+	$order->prepayments = get_payments_for($order_no, $myrow['trans_type']);
+
 	$result = get_sales_order_details($order_no, $order->trans_type);
 	if (db_num_rows($result) > 0)
 	{
@@ -437,8 +461,10 @@ function get_invoice_duedate($terms, $invdate)
 
 	if ($myrow['day_in_following_month'] > 0)
 		$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
-	else
+	elseif ($myrow['days_before_due'] > 0)
 		$duedate = add_days($invdate, $myrow['days_before_due']);
+	else
+		$duedate = $invdate;
 	return $duedate;
 }
 
@@ -493,6 +519,14 @@ function get_branch_to_order($customer_id, $branch_id) {
   	    return db_query($sql,"Customer Branch Record Retreive");
 }
 
+/*
+	Supported filters:
+
+	InvoiceTemplates
+	DeliveryTemplates
+	OutstandingOnly
+	PrepaidOrders
+*/
 function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_no, $filter, 
 	$stock_item=null, $from='', $to='', $ref='', $location='', $customer_id=ALL_TEXT)
 {
@@ -512,8 +546,18 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 			sorder.type,
 			debtor.curr_code,
 			Sum(line.qty_sent) AS TotDelivered,
-			Sum(line.quantity) AS TotQuantity
-		FROM ".TB_PREF."sales_orders as sorder, "
+			Sum(line.quantity) AS TotQuantity,
+			Sum(line.invoiced) AS TotInvoiced,
+			alloc,
+			prep_amount,
+			allocs.ord_payments,
+			inv.inv_payments,
+			sorder.total
+		FROM ".TB_PREF."sales_orders as sorder
+		LEFT JOIN (SELECT trans_no_to, sum(amt) ord_payments FROM ".TB_PREF."cust_allocations WHERE trans_type_to=".ST_SALESORDER." GROUP BY trans_no_to)
+			 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
+		LEFT JOIN (SELECT order_, sum(prep_amount) inv_payments	FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." GROUP BY order_)
+				 inv ON sorder.trans_type=".ST_SALESORDER." AND inv.order_=sorder.order_no,"
 			.TB_PREF."sales_order_details as line, "
 			.TB_PREF."debtors_master as debtor, "
 			.TB_PREF."cust_branch as branch
@@ -564,6 +608,9 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 		if ($filter=='OutstandingOnly')
 			$sql .= " AND line.qty_sent < line.quantity";
 
+		if ($filter=='PrepaidOrders')
+			$sql .= " AND prep_amount>0";
+
 		elseif ($filter=='InvoiceTemplates' || $filter=='DeliveryTemplates')
 			$sql .= " AND sorder.type=1";
 
@@ -578,5 +625,37 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 					sorder.ord_date,
 					sorder.deliver_to";
 	return $sql;
+}
+//--------------------------------------------------------------------------------------------------
+function update_prepaid_so_line($line_id, $qty_invoiced)
+{
+	$sql = "UPDATE ".TB_PREF."sales_order_details
+		SET invoiced = invoiced + ".(float)$qty_invoiced."
+		WHERE id=".db_escape($line_id);
+
+	db_query($sql, "The document detail record could not be updated with invoiced qty");
+	return true;
+}
+/*
+	Returns array of all issued invoices to sales order $order_no, optinally up to trans_no==$up_to
+*/
+function get_sales_order_invoices($order_no)
+{
+	$sql = "SELECT trans_no, dt.type as type, tran_date, reference, prep_amount
+	    FROM ".TB_PREF."debtor_trans dt
+		LEFT JOIN ".TB_PREF."voided v ON v.type=dt.type AND v.id=dt.trans_no
+		WHERE ISNULL(v.id) AND dt.type=".ST_SALESINVOICE." AND dt.order_=".db_escape($order_no)
+		." ORDER BY dt.tran_date, dt.reference, dt.trans_no";
+
+	return db_query($sql, "cannot retrieve sales invoices for sales order");
+}
+
+function is_sales_order_started($order_no)
+{
+	$sql = "SELECT count(*) FROM ".TB_PREF."sales_order_details WHERE order_no=".db_escape($order_no)." AND trans_type=".ST_SALESORDER
+		." AND (invoiced!=0 OR qty_sent!=0)";
+
+	$result = db_fetch(db_query($sql, "cannot retrieve sales invoices for sales order"));
+	return $result[0];
 }
 ?>

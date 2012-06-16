@@ -47,18 +47,6 @@ function get_remittance($type, $trans_no)
     return db_fetch($result);
 }
 
-function get_allocations_for_remittance($supplier_id, $type, $trans_no)
-{
-	$sql = get_alloc_supp_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=".db_escape($trans_no)."
-		AND alloc.trans_type_from=".db_escape($type)."
-		AND trans.supplier_id=".db_escape($supplier_id),
-		TB_PREF."supp_allocations as alloc");
-	$sql .= " ORDER BY trans_no";
-	return db_query($sql, "Cannot retreive alloc to transactions");
-}
-
 function print_remittances()
 {
 	global $path_to_root, $systypes_array;
@@ -128,7 +116,7 @@ function print_remittances()
 			$contacts = get_supplier_contacts($myrow['supplier_id'], 'invoice');
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
 			$rep->NewPage();
-			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
+			$result = get_allocatable_to_supp_transactions($myrow['supplier_id'], $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_SUPPAYMENT;
 

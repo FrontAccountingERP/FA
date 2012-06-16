@@ -32,6 +32,18 @@
 	// for links use 'text' => 'url'
 	$Footer[0] = _("All amounts stated in") . " - " . @$this->formData['curr_code'];
 
+	if (!in_array($this->formData['doctype'], array(ST_STATEMENT, ST_WORKORDER)))
+	{
+		$id = $this->formData['payment_terms'];
+		$sql = "SELECT terms, days_before_due FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
+		$result = db_query($sql,"could not get paymentterms");
+		$row = db_fetch($result);
+		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
+		if ($this->formData['doctype'] == ST_SALESINVOICE && $this->formData['prepaid'])
+			$this->formData['prepaid'] = ($row['days_before_due'] >= 0) ? 'final' : 'partial';
+	}
+
+
 	switch ($this->formData['doctype'])
 	{
 		case ST_SALESQUOTE:
@@ -50,7 +62,7 @@
 			break;
 
 		case ST_SALESORDER:
-			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
+			$this->title = ($print_as_quote==1 ? _("QUOTE") : ($this->formData['prepaid'] ? _("PREPAYMENT ORDER") : _("SALES ORDER")));
 			$this->formData['document_name'] =_("Order No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
 			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
@@ -102,7 +114,8 @@
 			break;
 
 		case ST_SALESINVOICE:
-			$this->title = _("INVOICE");
+			$this->title = $this->formData['prepaid']=='partial' ? _("PREPAYMENT INVOICE")
+				: ($this->formData['prepaid']=='final' ? _("FINAL INVOICE")  : _("INVOICE"));
 			$this->formData['document_name'] =_("Invoice No.");
 			$this->formData['domicile'] = $this->company['domicile'];
 			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). " - " . $this->formData['curr_code'];
@@ -118,9 +131,18 @@
 				_("Customers Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
-				_("Delivery Note No.") => implode(',', $deliveries),
-				_("Due Date") => sql2date($this->formData['due_date']),
 			);
+			if ($this->formData['prepaid']=='partial')
+			{
+				$aux_info[_("Date of Payment")] = sql2date(get_oldest_payment_date($this->formData['trans_no']));
+				$aux_info[_("Our Order No")]  = $this->formData['order_'];
+			} else {
+				if ($this->formData['prepaid'] =='final')
+					$aux_info[_("Invoice Date")] = sql2date($this->formData['tran_date']);
+				else
+					$aux_info[_("Date of Sale")] = sql2date(get_oldest_delivery_date($this->formData['trans_no']));
+				$aux_info[_("Due Date")]  = sql2date($this->formData['due_date']);
+			}
 			break;
 
 		case ST_SUPPAYMENT:
@@ -232,15 +254,6 @@
 	if (!isset($this->formData['document_number']))
 		$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
 			? $this->formData['reference'] : @$this->formData['trans_no'];
-
-	if (!isset($Payment_Terms))
-	{
-		$id = $this->formData['payment_terms'];
-		$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
-		$result = db_query($sql,"could not get paymentterms");
-		$row = db_fetch($result);
-		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
-	}
 
 	// footer generic content
 	if (@$this->formData['bank_name'])

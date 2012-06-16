@@ -39,6 +39,8 @@ class customers_app extends application
 		$this->add_rapp_function(0, "","");
 		$this->add_rapp_function(0, _("Customer &Payments"),
 			"sales/customer_payments.php?", 'SA_SALESPAYMNT', MENU_TRANSACTION);
+		$this->add_lapp_function(0, _("Invoice &Prepaid Orders"),
+			"sales/inquiry/sales_orders_view.php?PrepaidOrders=Yes", 'SA_SALESINVOICE', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("Customer &Credit Notes"),
 			"sales/credit_note_entry.php?NewCredit=Yes", 'SA_SALESCREDIT', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Allocate Customer Payments or Credit Notes"),
@@ -51,7 +53,6 @@ class customers_app extends application
 			"sales/inquiry/sales_orders_view.php?type=30", 'SA_SALESTRANSVIEW', MENU_INQUIRY);
 		$this->add_lapp_function(1, _("Customer Transaction &Inquiry"),
 			"sales/inquiry/customer_inquiry.php?", 'SA_SALESTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, "","");
 		$this->add_lapp_function(1, _("Customer Allocation &Inquiry"),
 			"sales/inquiry/customer_allocation_inquiry.php?", 'SA_SALESALLOC', MENU_INQUIRY);
 

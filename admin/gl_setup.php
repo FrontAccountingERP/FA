@@ -62,7 +62,7 @@ function can_process()
 if (isset($_POST['submit']) && can_process())
 {
 	update_company_prefs( get_post( array( 'retained_earnings_act', 'profit_loss_year_act',
-		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act',
+		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act', 'deferred_income_act',
 		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
 		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
@@ -99,6 +99,7 @@ $_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
 $_POST['debtors_act']  = $myrow["debtors_act"];
 $_POST['creditors_act']  = $myrow["creditors_act"];
 $_POST['freight_act'] = $myrow["freight_act"];
+$_POST['deferred_income_act'] = $myrow["deferred_income_act"];
 $_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
 $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
@@ -159,6 +160,9 @@ check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
 textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 4);
 
 gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
+
+gl_all_accounts_list_row(_("Deferred Income Account:"), 'deferred_income_act', $_POST['deferred_income_act'], true, false,
+	_("Not used"), false, false, false);
 
 //---------------
 

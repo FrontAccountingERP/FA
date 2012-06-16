@@ -48,18 +48,6 @@ function get_receipt($type, $trans_no)
     return db_fetch($result);
 }
 
-function get_allocations_for_receipt($debtor_id, $type, $trans_no)
-{
-	$sql = get_alloc_trans_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=$trans_no
-		AND alloc.trans_type_from=$type
-		AND trans.debtor_no=".db_escape($debtor_id),
-		TB_PREF."cust_allocations as alloc");
-	$sql .= " ORDER BY trans_no";
-	return db_query($sql, "Cannot retreive alloc to transactions");
-}
-
 function print_receipts()
 {
 	global $path_to_root, $systypes_array;
@@ -114,7 +102,7 @@ function print_receipts()
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
 			$rep->NewPage();
-			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
+			$result = get_allocatable_to_cust_transactions($myrow['debtor_no'], $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_CUSTPAYMENT;
 

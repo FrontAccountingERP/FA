@@ -61,6 +61,7 @@ function print_sales_orders()
 
 	if ($email == 0)
 	{
+
 		if ($print_as_quote == 0)
 			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
 		else

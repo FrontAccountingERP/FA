@@ -38,6 +38,10 @@ class purch_order
 	
 	var $reference;
 	
+	var $prep_amount = 0; // prepayment required
+	var $alloc; // sum of payments allocated
+	var $prepayments = array();
+
 	function purch_order()
 	{
 		/*Constructor function initialises a new purchase order object */

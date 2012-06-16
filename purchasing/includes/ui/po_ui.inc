@@ -27,6 +27,7 @@ function copy_from_cart()
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
     $_POST['tax_algorithm'] = $cart->tax_algorithm;
+	$_POST['prep_amount'] = price_format($cart->prep_amount);
 }
 
 function copy_to_cart()
@@ -44,6 +45,7 @@ function copy_to_cart()
 	$cart->delivery_address = $_POST['delivery_address'];
 	if (isset($_POST['tax_algorithm']))
 	    $cart->tax_algorithm = $_POST['tax_algorithm'];
+	$cart->prep_amount = input_num('prep_amount', 0);
 }
 // ------------------------------------------------------------------------------
 
@@ -353,6 +355,14 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
     	label_row(_("Delivery Address"), $po->delivery_address, "class='tableheader2'",
     		"colspan=9");
 
+	if (!$editable && ($po->prep_amount > 0))
+	{
+		start_row();
+		label_cells(_("Required Pre-Payment"), price_format($po->prep_amount), "class='tableheader2'");
+		label_cells(_("Pre-Payments Allocated"), price_format($po->alloc), "class='tableheader2'");
+		end_row();
+	}
+
     if ($po->Comments != "")
     	label_row(_("Order Comments"), $po->Comments, "class='tableheader2'",
     		"colspan=9");
@@ -460,6 +470,29 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	end_row();
 }
 
+//---------------------------------------------------------------------------------------------------
+
+function display_po_footer(&$trans)
+{
+	global $Ajax;
+
+start_table(TABLESTYLE2);
+
+if (list_updated('tax_algorithm')) {
+	$trans->tax_algorithm = $_POST['tax_algorithm'];
+    $Ajax->activate('items_table');
+}
+
+if ($trans->trans_type == ST_SUPPINVOICE) {
+	tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
+	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
+} elseif ($trans->trans_type == ST_PURCHORDER)
+	amount_row(_("Pre-Payment Required:"), 'prep_amount');
+
+textarea_row(_("Memo:"), 'Comments', null, 70, 4);
+
+end_table();
+}
 //---------------------------------------------------------------------------------------------------
 
 

@@ -1484,14 +1484,16 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 //-----------------------------------------------------------------------------------------------
 // Payment type selector for current user.
 //
-function sale_payment_list($name, $category, $selected_id=null, $submit_on_change=true)
+function sale_payment_list($name, $category, $selected_id=null, $submit_on_change=true, $prepayments=true)
 {
 	$sql = "SELECT terms_indicator, terms, inactive FROM ".TB_PREF."payment_terms";
-	
+
 	if ($category == PM_CASH) // only cash
 			$sql .= " WHERE days_before_due=0 AND day_in_following_month=0";
-	if ($category == PM_CREDIT) // only delayed payments
-			$sql .= " WHERE days_before_due!=0 OR day_in_following_month!=0";
+	elseif ($category == PM_CREDIT) // only delayed payments
+			$sql .= " WHERE days_before_due".($prepayments ? '!=': '>')."0 OR day_in_following_month!=0";
+	elseif (!$prepayments)
+			$sql .= " WHERE days_before_due>=0";
 
 	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms',
 	array(
@@ -1501,13 +1503,13 @@ function sale_payment_list($name, $category, $selected_id=null, $submit_on_chang
 
 }
 
-function sale_payment_list_cells($label, $name, $category, $selected_id=null, $submit_on_change=true)
+function sale_payment_list_cells($label, $name, $category, $selected_id=null, $submit_on_change=true, $prepayments=true)
 {
 	if ($label != null)
 		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 
-	echo sale_payment_list($name, $category, $selected_id, $submit_on_change);
+	echo sale_payment_list($name, $category, $selected_id, $submit_on_change, $prepayments);
 
 	echo "</td>\n";
 }

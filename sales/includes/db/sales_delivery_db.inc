@@ -46,7 +46,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$delivery->tax_included ? 0 : $freight_tax,
 		$delivery->sales_type, $delivery->order_no,
 		$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, 
-		$delivery->dimension2_id, $delivery->payment, $delivery->tax_included);
+		$delivery->dimension2_id, $delivery->payment, $delivery->tax_included, $delivery->prep_amount);
 
 	if ($trans_no == 0) {
 		$delivery->trans_no = array($delivery_no=>0);
@@ -57,6 +57,12 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		delete_comments(ST_CUSTDELIVERY, $delivery_no);
 	}
 
+	// for prepaid delivery repost income from deffered account
+	if ($delivery->is_prepaid())
+	{
+		$branch_data = get_branch_accounts($delivery->Branch);
+		$total = 0;
+	}
 	foreach ($delivery->line_items as $line_no => $delivery_line) {
 
 		$line_price = $delivery_line->line_price();
@@ -88,19 +94,26 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				-$delivery_line->qty_dispatched, $delivery_line->standard_cost,1,
 				$line_price, $delivery_line->discount_percent);
 
-
 			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);
 
+			// 2008-08-01. If there is a Customer Dimension, then override with this,
+			// else take the Item Dimension (if any)
+			$dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : 
+				($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+			$dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : 
+				($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
+			if ($delivery->is_prepaid())
+			{
+				$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
+
+				$total += add_gl_trans_customer(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $sales_account, $dim, $dim2,
+					-$line_taxfree_price*$delivery_line->qty_dispatched, // FIXME - calculation order should be exactly like in invoice to minimalize roundings
+					$delivery->customer_id, "The sales price GL posting could not be inserted");
+			}
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 			if (is_inventory_item($delivery_line->stock_id) && $delivery_line->standard_cost != 0) {
 
 				/*first the cost of sales entry*/
-				// 2008-08-01. If there is a Customer Dimension, then override with this,
-				// else take the Item Dimension (if any)
-				$dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : 
-					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
-				$dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : 
-					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 
 				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
 					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
@@ -120,6 +133,13 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 		} /*quantity dispatched is more than 0 */
 	} /*end of order_line loop */
+
+	if ($delivery->is_prepaid())
+	{
+		$deferred_act = get_company_pref('deferred_income_act');
+		add_gl_trans_customer(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $deferred_act, 0, 0,
+			-$total, $delivery->customer_id, "The deferred income GL posting could not be inserted");
+	}
 
 	if ($bo_policy == 0) {
 		// if cancelling any remaining quantities
@@ -141,7 +161,8 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if ($trans_no == 0) {
 			$Refs->save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 	}
-
+//_vd(get_gl(ST_CUSTDELIVERY, $delivery_no));
+//exit;
 	hook_db_postwrite($delivery, ST_CUSTDELIVERY);
 	commit_transaction();
 

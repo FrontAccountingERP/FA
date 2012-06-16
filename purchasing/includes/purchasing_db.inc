@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 
 include_once($path_to_root . "/includes/db/inventory_db.inc");
+include_once($path_to_root . "/includes/db/allocations_db.inc");
 
 include_once($path_to_root . "/purchasing/includes/db/supp_trans_db.inc");
 include_once($path_to_root . "/purchasing/includes/db/po_db.inc");
@@ -114,4 +115,29 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $descripti
 	return true;
 }
 
+function get_po_prepayments($supp_trans)
+{
+	// collect purchase order line ids
+	$allocations = array();
+	$line_ids = array();
+	foreach($supp_trans->grn_items as $item)
+		$line_ids[] = $item->po_detail_item;
+
+	if (!count($line_ids))
+		return $allocations;
+
+	$sql = "SELECT DISTINCT allocs.*
+		FROM ".TB_PREF."supp_allocations allocs 
+			LEFT JOIN ".TB_PREF."purch_order_details line ON line.order_no=allocs.trans_no_to AND trans_type_to=".ST_PURCHORDER."
+		WHERE line.po_detail_item IN(".implode(',', array_values($line_ids)).")";
+//_vd($sql);
+	$result = db_query($sql, "Cannot retrieve po prepayments");
+
+	while($dat = db_fetch($result))
+	{
+		$allocations[] = $dat;
+	}
+
+	return $allocations;
+}
 ?>

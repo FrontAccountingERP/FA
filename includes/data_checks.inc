@@ -498,3 +498,15 @@ function check_is_closed($type, $type_no, $msg=null)
     	exit;
     }
 }
+
+function check_deferred_income_act($msg)
+{
+	global $path_to_root;
+
+    if (!get_company_pref('deferred_income_act')) 
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}

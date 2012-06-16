@@ -541,6 +541,7 @@ CREATE TABLE IF NOT EXISTS `0_cust_allocations` (
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
   PRIMARY KEY  (`id`),
+  UNIQUE KEY(`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
   KEY `From` (`trans_type_from`,`trans_no_from`),
   KEY `To` (`trans_type_to`,`trans_no_to`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 ;
@@ -648,6 +649,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `ov_freight_tax` double NOT NULL default '0',
   `ov_discount` double NOT NULL default '0',
   `alloc` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
   `rate` double NOT NULL default '1',
   `ship_via` int(11) default NULL,
   `dimension_id` int(11) NOT NULL default '0',
@@ -1169,6 +1171,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   `total` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
+  `alloc` double NOT NULL DEFAULT '0',
   `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
@@ -1367,6 +1371,8 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
   `delivery_date` date NOT NULL default '0000-00-00',
   `payment_terms` int(11) default NULL,
   `total` double NOT NULL default '0',
+  `prep_amount` double NOT NULL DEFAULT '0',
+  `alloc` double NOT NULL DEFAULT '0',
   PRIMARY KEY  (`trans_type`,`order_no`)
 ) ENGINE=InnoDB;
 
@@ -1689,6 +1695,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_allocations` (
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
   PRIMARY KEY  (`id`),
+  UNIQUE KEY(`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
   KEY `From` (`trans_type_from`,`trans_no_from`),
   KEY `To` (`trans_type_to`,`trans_no_to`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 ;
@@ -1835,6 +1842,7 @@ INSERT INTO `0_sys_prefs` VALUES('default_workorder_required', 'glsetup.manuf', 
 INSERT INTO `0_sys_prefs` VALUES('version_id', 'system', 'varchar', 11, '2.3rc');
 INSERT INTO `0_sys_prefs` VALUES('auto_curr_reval', 'setup.company', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550');
+INSERT INTO `0_sys_prefs` VALUES('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
 
 -- --------------------------------------------------------
 

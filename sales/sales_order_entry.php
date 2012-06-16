@@ -253,6 +253,7 @@ function copy_to_cart()
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
 			$cart->ship_via = 1;
 			$cart->deliver_to = '';
+			$cart->prep_amount = 0;
 		}
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
@@ -261,6 +262,8 @@ function copy_to_cart()
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
 		$cart->ship_via = $_POST['ship_via'];
+		if (!$cart->trans_no || ($cart->trans_type == ST_SALESORDER && !$cart->is_started()))
+			$cart->prep_amount = input_num('prep_amount', 0);
 	}
 	$cart->Location = $_POST['Location'];
 	$cart->freight_cost = input_num('freight_cost');
@@ -301,6 +304,7 @@ function copy_from_cart()
 
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
+	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	// POS 
 	$_POST['payment'] = $cart->payment;
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
@@ -353,11 +357,17 @@ function can_process() {
 		return false;
 	}
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-	if (strlen($_POST['deliver_to']) <= 1) {
-		display_error(_("You must enter the person or company to whom delivery should be made to."));
-		set_focus('deliver_to');
-		return false;
-	}
+		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] < 0) && ((input_num('prep_amount')<=0) ||
+			input_num('prep_amount')>$_SESSION['Items']->get_trans_total())) {
+			display_error(_("Pre-payment required have to be positive and less than total amount."));
+			set_focus('prep_amount');
+			return false;
+		}
+		if (strlen($_POST['deliver_to']) <= 1) {
+			display_error(_("You must enter the person or company to whom delivery should be made to."));
+			set_focus('deliver_to');
+			return false;
+		}
 
 
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
@@ -691,8 +701,7 @@ if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 start_form();
 
 hidden('cart_id');
-$customer_error = display_order_header($_SESSION['Items'],
-	($_SESSION['Items']->any_already_delivered() == 0), $idate);
+$customer_error = display_order_header($_SESSION['Items'], !$_SESSION['Items']->is_started(), $idate);
 
 if ($customer_error == "") {
 	start_table(TABLESTYLE, "width=80%", 10);

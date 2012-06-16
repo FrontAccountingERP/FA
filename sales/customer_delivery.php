@@ -92,9 +92,16 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different sales order to delivery"), "OutstandingOnly=1");
-		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
+		echo "<br><center><b>" . _("This order has no items. There is nothing to delivery.") .
+			"</center></b>";
+		display_footer_exit();
+	} else if (!$ord->is_released()) {
+		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",_("Select a different sales order to delivery"),
+			"OutstandingOnly=1");
+		echo "<br><center><b>"._("This prepayment order is not yet ready for delivery due to insufficient amount received.")
+			."</center></b>";
+		display_footer_exit();
 	}
-
  	// Adjust Shipping Charge based upon previous deliveries TAM
 	adjust_shipping_charge($ord, $_GET['OrderNumber']);
  
@@ -106,7 +113,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	check_is_closed(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
 
-	if ($_SESSION['Items']->count_items() == 0) {
+	if (!$_SESSION['Items']->prepaid && $_SESSION['Items']->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different delivery"), "OutstandingOnly=1");
 		echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .

@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/db/inventory_db.inc");
+include_once($path_to_root . "/includes/db/allocations_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_order_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_credit_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_invoice_db.inc");
@@ -273,6 +274,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 			$myrow["tax_group_name"]);
 
 		$cart->reference = $myrow["reference"];
+		$cart->prepaid = $myrow["prepaid"];
 		$cart->order_no = $myrow["order_"];
 		$cart->due_date = sql2date($myrow["due_date"]);
 		$cart->document_date = sql2date($myrow["tran_date"]);
@@ -306,6 +308,8 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 					@$myrow["src_id"]);
 			}
 		}
+		$cart->prepayments = get_payments_for($trans_no, $doc_type);
+
 	} // !newdoc
 
 	return true;
@@ -404,6 +408,5 @@ function get_sales_child_documents($trans_type, $trans_no)
 
 	return db_query($sql,"The related credit notes could not be retreived");
 }
-
 
 ?>

@@ -75,12 +75,25 @@ label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='t
 label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
 end_row();
 
-label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
+
+if ($_SESSION['View']->payment_terms['days_before_due']<0)
+{
+start_row();
+label_cells(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'");
+label_cells(_("Required Pre-Payment"), price_format($_SESSION['View']->prep_amount), "class='tableheader2'");
+end_row();
+start_row();
+label_cells(_("Non-Invoiced Prepayments"), price_format($_SESSION['View']->alloc), "class='tableheader2'");
+label_cells(_("All Payments Allocated"), price_format($_SESSION['View']->sum_paid), "class='tableheader2'");
+end_row();
+} else
+	label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
+
 label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
 label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
 label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
-label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
+;label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
 	"class='tableheader2'", "colspan=3");
 label_row(_("Comments"), $_SESSION['View']->Comments, "class='tableheader2'", "colspan=3");
 end_table();
@@ -132,15 +145,20 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	$inv_numbers = array();
 	$invoices_total = 0;
 
-	if ($result = get_sales_child_documents(ST_CUSTDELIVERY, $dn_numbers)) {
+	if ($_SESSION['View']->prepaid)
+		$result = get_sales_order_invoices($_GET['trans_no']);
+	else
+		$result = get_sales_child_documents(ST_CUSTDELIVERY, $dn_numbers);
 
+	if ($result) {
 		$k = 0;
 
 		while ($inv_row = db_fetch($result))
 		{
 			alt_table_row_color($k);
 
-			$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
+			$this_total = $_SESSION['View']->prepaid ? $inv_row["prep_amount"] : 
+				$inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 			$invoices_total += $this_total;
 
 			$inv_numbers[] = $inv_row["trans_no"];
@@ -160,10 +178,10 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	start_table(TABLESTYLE);
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
-	
+
 	$credits_total = 0;
-	
-	if ($result = get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
+
+	if (get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
 		$k = 0;
 
 		while ($credits_row = db_fetch($result))
@@ -244,7 +262,9 @@ start_row();
 label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
 label_cell('', "colspan=2");
 end_row();
-end_table(2);
+end_table();
+
+display_allocations_to(PT_CUSTOMER, $_SESSION['View']->customer_id, $_GET['trans_type'], $_GET['trans_no'], $sub_tot + $tax_total);
 
 end_page(true, false, false, $_GET['trans_type'], $_GET['trans_no']);
 
