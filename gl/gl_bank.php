@@ -48,6 +48,9 @@ page($_SESSION['page_title'], false, false, '', $js);
 //-----------------------------------------------------------------------------------------------
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
+if (isset($_GET['ModifyDeposit']) || isset($_GET['ModifyPayment']))
+	check_is_editable($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
+
 //----------------------------------------------------------------------------------------
 if (list_updated('PersonDetailID')) {
 	$br = get_branch(get_post('PersonDetailID'));
@@ -143,8 +146,6 @@ function create_cart($type, $trans_no)
 	{
 		unset ($_SESSION['pay_items']);
 	}
-
-	check_is_closed($type, $trans_no);
 
 	$cart = new items_cart($type);
     $cart->order_id = $trans_no;

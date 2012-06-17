@@ -29,9 +29,6 @@ if ($use_date_picker)
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
-if (isset($_GET['ModifyInvoice']))
-	check_is_closed(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
-
 //--------------------------------------------------------------------------------------------------
 
 if (isset($_GET['New']))
@@ -53,6 +50,10 @@ if (isset($_GET['New']))
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
+
+if (isset($_GET['ModifyInvoice']))
+	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyInvoice']);
+
 //---------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 

@@ -488,15 +488,14 @@ function check_num($postname, $min=null, $max=null, $dflt=0) {
 function check_is_closed($type, $type_no, $msg=null)
 {
 	global $systypes_array;
-	
+
     if (($type_no > 0) && is_closed_trans($type, $type_no))
     {
     	if (!$msg)
     		$msg = sprintf(_("%s #%s is closed for further edition."), $systypes_array[$type], $type_no);
-    	display_error($msg, true);
-    	end_page();
-    	exit;
-    }
+	   	display_error($msg, true);
+		display_footer_exit();
+	}
 }
 
 function check_deferred_income_act($msg)
@@ -506,7 +505,25 @@ function check_deferred_income_act($msg)
     if (!get_company_pref('deferred_income_act')) 
     {
     	display_error($msg, true);
-    	end_page();
-    	exit;
+		display_footer_exit();
     }
 }
+
+function check_is_editable($trans_type, $trans_no, $msg=null)
+{
+	if (!$_SESSION['wa_current_user']->can_access('SA_EDITOTHERSTRANS'))
+	{
+		$audit = get_audit_trail_last($trans_type, $trans_no);
+
+		if ($_SESSION['wa_current_user']->user != $audit['user'])
+		{
+	    	if (!$msg)
+		    	$msg = '<b>'._("You have no edit access to transactions created by other users.").'</b>';
+			display_note($msg);
+			display_footer_exit();
+		}
+	}
+	if (!in_array($trans_type, array(ST_SALESORDER, ST_SALESQUOTE, ST_PURCHORDER, ST_WORKORDER)))
+		check_is_closed($trans_type, $trans_no, $msg);
+}
+

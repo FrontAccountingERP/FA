@@ -47,6 +47,7 @@ if (isset($_GET['ModifyInvoice'])) {
 page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
+
 check_edit_conflicts();
 
 if (isset($_GET['AddedID'])) {
@@ -129,7 +130,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
-	check_is_closed(ST_SALESINVOICE, $_GET['ModifyInvoice']);
+	check_is_editable(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 /*
 	if ( get_sales_parent_numbers(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
@@ -138,7 +139,6 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 		display_footer_exit();
 	}
 */
-	check_is_closed(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 	processing_start();
 	$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 

@@ -118,9 +118,9 @@ $security_areas =array(
 	'SA_BACKUP' => array(SS_SPEC|2, _("Database backup/restore")),
 	'SA_VIEWPRINTTRANSACTION' => array(SS_SPEC|3, _("Common view/print transactions interface")),
 	'SA_ATTACHDOCUMENT' => array(SS_SPEC|4, _("Attaching documents")),
-	'SA_SETUPDISPLAY' => array(SS_SPEC|5, _("Display preferences")), //???
-	'SA_CHGPASSWD' => array(SS_SPEC|6, _("Password changes")), //???
-
+	'SA_SETUPDISPLAY' => array(SS_SPEC|5, _("Display preferences")),
+	'SA_CHGPASSWD' => array(SS_SPEC|6, _("Password changes")),
+	'SA_EDITOTHERSTRANS' => array(SS_SPEC|7, _("Edit other users transactions")),
 //
 // Sales related functionality
 //

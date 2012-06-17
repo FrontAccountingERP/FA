@@ -58,7 +58,7 @@ if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber']))
 page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['ModifyOrderNumber']))
-	check_is_closed(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
+	check_is_editable(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
 
 //---------------------------------------------------------------------------------------------------
 

@@ -69,3 +69,10 @@ UPDATE `0_sales_order_details` so
 ALTER TABLE `0_debtor_trans` ADD COLUMN `prep_amount` double NOT NULL DEFAULT 0 AFTER `alloc`;
 
 INSERT INTO `0_sys_prefs` VALUES ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
+
+# set others transactions edition for all roles for backward  compatibility
+UPDATE `0_security_roles` SET `sections`=CONCAT_WS(';', `sections`, '768'), `areas`='775'
+	WHERE NOT `sections` REGEXP '[^0-9]?768[^0-9]?';
+
+UPDATE `0_security_roles` SET `areas`=CONCAT_WS(';', `areas`, '775')
+	WHERE NOT `areas` REGEXP '[^0-9]?775[^0-9]?';

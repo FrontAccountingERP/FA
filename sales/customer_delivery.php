@@ -110,7 +110,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-	check_is_closed(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
+	check_is_editable(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
 
 	if (!$_SESSION['Items']->prepaid && $_SESSION['Items']->count_items() == 0) {

@@ -88,6 +88,11 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 page($_SESSION['page_title'], false, false, "", $js);
 
+if (isset($_GET['ModifyOrderNumber']))
+	check_is_editable(ST_SALESORDER, $_GET['ModifyOrderNumber']);
+elseif (isset($_GET['ModifyQuotationNumber']))
+	check_is_editable(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
+
 //-----------------------------------------------------------------------------
 
 if (list_updated('branch_id')) {

@@ -137,7 +137,7 @@ class current_user
 			return !isset($security_groups) && is_array($this->role_set);
 	}
 
-	function can_access($page_level)
+	function can_access($sec_area)
 	{
 		global $security_groups, $security_areas;
 		if (isset($security_groups)) {
@@ -145,12 +145,12 @@ class current_user
 				in_array(20, $security_groups[$this->access]);
 		}
 
-		if ($page_level === 'SA_OPEN') 
+		if ($sec_area === 'SA_OPEN') 
 			return true;
-		if ($page_level === 'SA_DENIED' || $page_level === '') 
+		if ($sec_area === 'SA_DENIED' || $sec_area === '') 
 			return false;
 
-		$code = $security_areas[$page_level][0];
+		$code = $security_areas[$sec_area][0];
 
 		// only first registered company has site admin privileges
 		return $code && in_array($code, $this->role_set)

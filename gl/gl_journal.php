@@ -36,6 +36,7 @@ if (isset($_GET['ModifyGL'])) {
 	$_SESSION['page_title'] = _($help_context = "Journal Entry");
 
 page($_SESSION['page_title'], false, false,'', $js);
+
 //--------------------------------------------------------------------------------------------------
 
 function line_start_focus() {
@@ -80,14 +81,17 @@ if (isset($_GET['AddedID']))
 if (isset($_GET['NewJournal']))
 {
 	create_cart(0,0);
-} 
+}
 elseif (isset($_GET['ModifyGL']))
 {
+	check_is_editable($_GET['trans_type'], $_GET['trans_no']);
+
 	if (!isset($_GET['trans_type']) || $_GET['trans_type']!= 0) {
 		display_error(_("You can edit directly only journal entries created via Journal Entry page."));
 		hyperlink_params("$path_to_root/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 		display_footer_exit();
 	}
+
 	create_cart($_GET['trans_type'], $_GET['trans_no']);
 }
 
@@ -100,7 +104,6 @@ function create_cart($type=0, $trans_no=0)
 		unset ($_SESSION['journal_items']);
 	}
 
-	check_is_closed($type, $trans_no);
 	$cart = new items_cart($type);
     $cart->order_id = $trans_no;
 
