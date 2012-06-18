@@ -1580,6 +1580,7 @@ CREATE TABLE IF NOT EXISTS `0_sales_order_details` (
   `qty_sent` double NOT NULL default '0',
   `unit_price` double NOT NULL default '0',
   `quantity` double NOT NULL default '0',
+  `invoiced` double NOT NULL DEFAULT '0',
   `discount_percent` double NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `sorder` (`trans_type`,`order_no`),
@@ -1590,11 +1591,11 @@ CREATE TABLE IF NOT EXISTS `0_sales_order_details` (
 -- Dumping data for table `0_sales_order_details`
 --
 
-INSERT INTO `0_sales_order_details` VALUES(1, 1, 30, '102', '17inch VGA Monitor', 2, 30.4, 2, 0);
-INSERT INTO `0_sales_order_details` VALUES(2, 2, 30, '102', '17inch VGA Monitor', 1, 50, 1, 0);
-INSERT INTO `0_sales_order_details` VALUES(3, 3, 30, '102', '17inch VGA Monitor', 1, 35.89, 1, 0);
-INSERT INTO `0_sales_order_details` VALUES(4, 4, 30, '102', '17inch VGA Monitor', 0, 21.28, 2, 0);
-INSERT INTO `0_sales_order_details` VALUES(5, 5, 30, '102', '17inch VGA Monitor', 1, 50, 1, 0);
+INSERT INTO `0_sales_order_details` VALUES(1, 1, 30, '102', '17inch VGA Monitor', 2, 30.4, 2, 0, 0);
+INSERT INTO `0_sales_order_details` VALUES(2, 2, 30, '102', '17inch VGA Monitor', 1, 50, 1, 0, 0);
+INSERT INTO `0_sales_order_details` VALUES(3, 3, 30, '102', '17inch VGA Monitor', 1, 35.89, 1, 0, 0);
+INSERT INTO `0_sales_order_details` VALUES(4, 4, 30, '102', '17inch VGA Monitor', 0, 21.28, 2, 0, 0);
+INSERT INTO `0_sales_order_details` VALUES(5, 5, 30, '102', '17inch VGA Monitor', 1, 50, 1, 0, 0);
 
 -- --------------------------------------------------------
 

@@ -1397,6 +1397,7 @@ CREATE TABLE IF NOT EXISTS `0_sales_order_details` (
   `qty_sent` double NOT NULL default '0',
   `unit_price` double NOT NULL default '0',
   `quantity` double NOT NULL default '0',
+  `invoiced` double NOT NULL DEFAULT '0',
   `discount_percent` double NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `sorder` (`trans_type`,`order_no`),

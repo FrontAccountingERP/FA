@@ -304,10 +304,10 @@ function get_sales_order_header($order_no, $trans_type)
 	  ."sorder.prep_amount>0 as prepaid"
 	." FROM ".TB_PREF."sales_orders sorder
 			LEFT JOIN (SELECT trans_no_to, sum(amt) ord_allocs FROM ".TB_PREF."cust_allocations
-				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no).")
+				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no)." GROUP BY trans_no_to)
 				 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
 			LEFT JOIN (SELECT order_, sum(alloc) inv_allocs FROM ".TB_PREF."debtor_trans 
-				WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no).")
+				WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no)."  GROUP BY order_)
 				 inv ON sorder.trans_type=".ST_SALESORDER." AND inv.order_=sorder.order_no,"
 	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
