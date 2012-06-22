@@ -58,7 +58,8 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 
-	hyperlink_params("$path_to_root/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
+	if (!isset($_GET['prepaid']))
+		hyperlink_params("$path_to_root/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 
@@ -77,7 +78,8 @@ if (isset($_GET['AddedID'])) {
 	display_note(print_document_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
 	display_note(print_document_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
-	hyperlink_params($path_to_root . "/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
+	if (!isset($_GET['prepaid']))
+		hyperlink_params($path_to_root . "/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 
 	hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 
@@ -88,18 +90,20 @@ if (isset($_GET['AddedID'])) {
 if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	$ord = new Cart(ST_SALESORDER, $_GET['OrderNumber'], true);
+	if ($ord->is_prepaid())
+		check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
 
 	if ($ord->count_items() == 0) {
-		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-			_("Select a different sales order to delivery"), "OutstandingOnly=1");
 		echo "<br><center><b>" . _("This order has no items. There is nothing to delivery.") .
 			"</center></b>";
+		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
+			_("Select a different sales order to delivery"), "OutstandingOnly=1");
 		display_footer_exit();
-	} else if (!$ord->is_released()) {
-		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",_("Select a different sales order to delivery"),
-			"OutstandingOnly=1");
+	} else if (!$ord->prep_amount) {
 		echo "<br><center><b>"._("This prepayment order is not yet ready for delivery due to insufficient amount received.")
 			."</center></b>";
+		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",_("Select a different sales order to delivery"),
+			"OutstandingOnly=1");
 		display_footer_exit();
 	}
  	// Adjust Shipping Charge based upon previous deliveries TAM
@@ -322,12 +326,13 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	copy_to_cart();
 	if ($newdelivery) new_doc_date($dn->document_date);
 	$delivery_no = $dn->write($bo_policy);
+	$is_prepaid = $dn->is_prepaid() ? "&prepaid=Yes" : '';
 
 	processing_end();
 	if ($newdelivery) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no$is_prepaid");
 	} else {
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
+		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no$is_prepaid");
 	}
 }
 
