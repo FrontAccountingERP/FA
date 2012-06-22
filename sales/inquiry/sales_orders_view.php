@@ -198,7 +198,7 @@ function invoice_prep_link($row)
 	return 
 		$row['inv_payments'] < $row['total'] ?
 		pager_link($row['ord_payments']  ? _("Prepayment Invoice") : _("Final Invoice"),
-		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], $row['ord_payments']  ? ICON_MONEY : ICON_DOC) : '';
+		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], ICON_DOC) : '';
 }
 
 //---------------------------------------------------------------------------------------------
