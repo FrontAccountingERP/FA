@@ -58,12 +58,15 @@ class current_user
 
 	function login($company, $loginname, $password)
 	{
-		global $security_areas, $security_groups, $security_headings, $path_to_root;
-		
+		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang;
+
 		$this->set_company($company);
 	    $this->logged = false;
 
-		set_global_connection();
+		set_global_connection($company);
+		$lang = &$_SESSION['language'];
+		$lang->set_language($_SESSION['language']->code);
+		db_set_encoding($_SESSION['language']->encoding);
 
 		// Use external authentication source if any.
 		// Keep in mind you need to have user data set for $loginname
@@ -76,6 +79,12 @@ class current_user
 		if ($Auth_Result)
 		{
 			$myrow = get_user_by_login($loginname);
+			if ($myrow['language'] != $dflt_lang)
+			{	 // refresh language and user data
+ 				$lang->set_language($myrow['language']);
+				db_set_encoding($_SESSION['language']->encoding);
+				$myrow = get_user_by_login($loginname);
+			}
 
 			$this->old_db = isset($myrow["full_access"]);
 			if (! @$myrow["inactive"]) {
@@ -141,7 +150,7 @@ class current_user
 	{
 		global $security_groups, $security_areas;
 		if (isset($security_groups)) {
-			return $this->company == 0 &&
+			return is_admin_company() &&
 				in_array(20, $security_groups[$this->access]);
 		}
 
@@ -222,7 +231,7 @@ define('FLOAT_COMP_DELTA', 0.004);
 
 function floatcmp($a, $b)
 {
-    return $a - $b > FLOAT_COMP_DELTA ? 1 : $b - $a > FLOAT_COMP_DELTA ? -1 : 0;
+    return $a - $b > FLOAT_COMP_DELTA ? 1 : ($b - $a > FLOAT_COMP_DELTA ? -1 : 0);
 }
 
 //
@@ -580,6 +589,11 @@ function company_path($comp=null)
 	// if path is relative, set current path_to_root
 	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
 			. '/'.$comp;
+}
+
+function is_admin_company()
+{
+	return $this->company == 0;
 }
 
 ?>

@@ -5,7 +5,7 @@
 //
 
 // Internal database version compatibility check. Do not change.
-$db_version = "2.3rc";
+$db_version = "2.4.0";
 
 // application version - can be overriden in config.php
 if (!isset($version))

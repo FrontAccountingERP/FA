@@ -71,14 +71,16 @@ function upgrade_step($index, $company, $conn)
 
 			error_log(sprintf(_("Database upgrade for company '%s' (%s:%s*) started..."),
 				$conn['name'], $conn['dbname'], $conn['tbpref']));
-				
+
 			if ($sql != '')
-				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
+				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force, true);
 
  			$ret &= $inst->install($company, $force);
 
-			error_log(_("Database upgrade finished."));
+			if (!$ret && is_callable(array($inst, 'post_fail')))
+				$inst->post_fail($pref);
 
+			error_log(_("Database upgrade finished."));
 		} else
 			if ($state!==true) {
 				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
@@ -110,11 +112,13 @@ if (get_post('Upgrade'))
 		{
 			$ret = upgrade_step($i, $comp, $conn);
 			if (!$ret)
+			{
 				display_error(
 				sprintf(_("Database upgrade to version %s failed for company '%s'."),
 					$inst->version, $conn['name'])
 					.'<br>'
 					._('You should restore company database from latest backup file'));
+			}
 		}
 // 		db_close($conn); ?
 		if (!$ret) break;

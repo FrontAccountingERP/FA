@@ -74,7 +74,7 @@ class language
 		// version set globally in php.ini
 		ini_set('default_charset', $this->encoding);
 
-		if (isset($_SESSION['App']) && $changed)
+		if (isset($_SESSION['wa_current_user']) && $_SESSION['wa_current_user']->logged_in() && isset($_SESSION['App']) && $changed)
 			$_SESSION['App']->init(); // refresh menu
 	}
 }

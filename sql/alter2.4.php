@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 class fa2_4 {
-	var $version = '2.4';	// version installed
+	var $version = '2.4.0';	// version installed
 	var $description;
 	var $sql = 'alter2.4.sql';
 	var $preconf = true;
@@ -23,21 +23,23 @@ class fa2_4 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($company, $force) 
+	function install($company, $force=false) 
 	{
-		global $db_version;
-		
+		global $db_version, $db_connections;
+
+		$pref = $db_connections[$company]['tbpref'];
+
 		if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
 			set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
 		}
 		if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
 			set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, 10);
 		}
-		$result = $this->update_workorders();
+		$result = $this->update_workorders() && $this->switch_database_to_utf($pref);
 		if ($result)
 			$result = $this->do_cleanup();
-//		return  update_company_prefs(array('version_id'=>$db_version));
-		return true;
+
+		return  update_company_prefs(array('version_id'=>$db_version));
 	}
 	//
 	//	Checking before install
@@ -45,6 +47,14 @@ class fa2_4 {
 	function pre_check($pref, $force)
 	{
 		return true;
+	}
+
+	//
+	// optional procedure done after upgrade fail, before backup is restored
+	//
+	function post_fail($pref)
+	{
+		db_query("DROP TABLE IF EXISTS " . $pref . 'wo_costing');
 	}
 	//
 	//	Test if patch was applied before.
@@ -86,6 +96,85 @@ class fa2_4 {
 				VALUES ({$row['type_no']}, {$row['person_id']}, {$journal_id})";
 			if (!db_query($sql2)) return false;
 		}
+		return true;
+	}
+
+/*
+	In previous versions FA ignored encoding settings on database/tables, so it depended on server settings,
+	but data stored is encoded in user language encoding. Now we switch to utf8 internal database encoding, while
+	user encoding can be selected independently.
+
+	To perform safe FA database switch to utf-8 encoding we have to first ensure that all text/char columns 
+	have properly set encoding (the same as its content), so the algorithm performed on every table is as follows:
+ 	. set default table encoding for the table to currently used on client side;
+ 	. for all text/char column:
+	 - suppress autorecoding by change of the type to related binary/blob type
+	 - change column to utf8 encodding and selected collation.
+	. change default table encoding to utf8
+*/
+	function switch_database_to_utf($pref, $test = false) {
+
+		global $installed_languages, $dflt_lang;
+
+		$old_encoding = 'latin1'; // default client encoding
+
+		 // site default encoding is presumed as encoding for all databases!
+		$lang = array_search_value($dflt_lang, $installed_languages, 'code');
+		$new_encoding = get_mysql_encoding_name(strtoupper($lang['encoding']));
+	//	get_usec();
+		if ($test)
+ 	 		error_log('Switching database to utf8 encoding from '.$old_encoding);
+		$collation = get_mysql_collation();
+		$tsql = "SHOW TABLES LIKE '".($pref=='' ? '' : substr($pref, 0, -1).'\\_')."%'";
+		$tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
+		while($tbl = db_fetch($tresult)) {
+			$table = $tbl[0];
+		// if ($table != '1_chart_master') continue; _vd($table); get_usec(); // fast debug on single table
+
+			db_query("ALTER TABLE `$table` CONVERT TO CHARACTER SET $old_encoding"); // convert encoding on utf-8 tables
+
+			// set proper default table encoding for current user language (used on binary->text conversion)
+			db_query("ALTER TABLE `$table` CHARSET $new_encoding");
+			$csql = "SHOW COLUMNS FROM $table";
+			$cresult = db_query($csql, "Cannot select column names for table '$table'");
+			$convert = false;
+
+			$to_binary = $to_default = $to_utf = array();
+			while($col = db_fetch($cresult)) {
+
+				$bintype = strtr($col['Type'], array('varchar' => 'varbinary', 'char'=>'varbinary', 'text'=>'blob', 'tinytext'=>'tinyblob'));
+
+				if ($bintype != $col['Type'])
+				{ // this is char/text column, so change encoding to proper encoding
+			 	 	if ($test)
+ 	 					error_log($table.'.'.$col['Field']);
+
+					$null = $col['Null'] === 'YES' ? ' NULL ' : ' NOT NULL ';
+					$default = $col['Null'] !== 'YES' && isset($col['Default']) ? ' DEFAULT '.db_escape($col['Default']) : '';
+
+					// to avoid column width multiplication x3 we old->binary->ui->utf column type change instead of column CONVERT
+
+					$to_binary[] = "CHANGE `".$col['Field']."` `".$col['Field']."` ".$bintype;
+					$to_default[] = "CHANGE `".$col['Field']."` `".$col['Field']."` ".$col['Type'].$null.$default;
+					$to_utf[] = "MODIFY COLUMN `".$col['Field']."` ".$col['Type']." COLLATE ".$collation.$null.$default;
+					$convert = true;
+				}
+			}
+			if(count($to_binary))
+			{
+				$sql = "ALTER TABLE `$table` ".implode(',',$to_binary);
+				db_query($sql);
+				$sql = "ALTER TABLE `$table` ".implode(',',$to_default);
+				db_query($sql);
+				$sql = "ALTER TABLE `$table` ".implode(',',$to_utf);
+				db_query($sql);
+			}
+			db_query("ALTER TABLE `$table` COLLATE $collation");
+		}
+		db_query("ALTER DATABASE COLLATE $collation");
+ 	 	if ($test)
+ 	 		error_log('Convertion to utf8 done.');
+
 		return true;
 	}
 

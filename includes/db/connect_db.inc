@@ -10,15 +10,128 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
+/*
+	Converts encoding name to mysql standard.
+*/
+function get_mysql_encoding_name($encoding)
+{
+	$db_encoding = array(
+		'UTF-8' => 'utf8',
+		'ISO-8859-1' => 'latin1',
+		'ISO-8859-2' => 'latin2',
+		'ISO-8859-7' => 'greek',
+		'ISO-8859-8' => 'hebrew',
+		'ISO-8859-9' => 'latin5',
+		'ISO-8859-13' => 'latin7',
+		'KOI8-R' => 'koi8r',
+		'KOI8-U' => 'koi8u',
+		'CP850' => 'cp850',
+		'CP866' => 'cp866',
+		'CP932' => 'cp932',
+		'CP1250' => 'cp1250',
+		'CP1251' => 'cp1251',
+		'CP1252' => 'latin1',
+		'CP1256' => 'cp1256',
+		'CP1257' => 'cp1257',
+		'GB2312' => 'gb2312',
+		'EUC-JP' => 'ujis',
+		'EUC-KR' => 'euckr',
+		'BIG5' => 'big5',
+		'GBK' => 'gbk',
+		'SHIFT_JIS' => 'sjis',
+		'TIS-620' => 'tis620',
+		'ASCII' => 'ascii',
+	);
+	$encoding = strtoupper($encoding);
+
+	return isset($db_encoding[$encoding]) ? $db_encoding[$encoding] : null;
+}
+
+/*
+	Returns 'best' collation for various locale language codes
+*/
+function get_mysql_collation($lang=null)
+{
+	if (!$lang)
+		$lang = substr($_SESSION['language']->code, 0, 2);
+
+	$db_collation = array(
+		'is' => 'icelandic',
+		'lv' => 'latvian',
+		'ro' => 'romanian',
+		'sl' => 'slovenian',
+		'pl' => 'polish',
+		'et' => 'estonian',
+		'es' => 'spanish', // or 'spanish2',
+		'sw' => 'swedish',
+		'tr' => 'turkish',
+		'cs' => 'czech',
+		'da' => 'danish',
+		'lt' => 'lithuanian',
+		'sk' => 'slovak',
+		'sp' => 'spanish2',
+		'fa' => 'persian',
+		'hu' => 'hungarian',
+		'fr' => 'roman',
+		'it' => 'roman',
+	);
+
+	return 'utf8_'.(isset($db_collation[$lang]) ? $db_collation[$lang] : 'general').'_ci';
+}
+/*
+	Later we assume that database with version less than 2.4 is old database, 
+	which is subject to invalid encodings on text columns,
+	so no SET NAMES or equivalent should be used.
+*/
+function db_fixed()
+{
+	$result = db_query("SELECT value FROM ".TB_PREF."sys_prefs WHERE name='version_id'");
+	$data = db_fetch($result);
+	return !db_num_rows($result) // new database is fixed by default 
+		|| ($data[0] > "2.3rc");
+}
+/*
+	Check database default charset.
+*/
+function db_get_charset()
+{
+	$result = db_query("SELECT @@character_set_database");
+	$var = db_fetch($result);
+	return $var[0];
+}
+
+/*
+	Set mysql client encoding.
+	Default is is encoding used by default language.
+*/
+function db_set_encoding($ui_encoding=null)
+{
+	global $dflt_lang, $installed_languages;
+
+	if (!isset($ui_encoding))
+	{
+		$lang = array_search_value($dflt_lang, $installed_languages, 'code');
+		$ui_encoding = strtoupper($lang['encoding']);
+	}
+
+	if ($mysql_enc = get_mysql_encoding_name($ui_encoding))
+		mysql_set_charset($mysql_enc);
+}
+
+/*
+	Connects application to company database.
+*/
 function set_global_connection($company=-1)
 {
-	global $db, $transaction_level, $db_connections;
+	global $db, $transaction_level, $path_to_root;
+	global  $db_connections;
+
+	include ($path_to_root . "/config_db.php");
+	if ($company == -1) 
+		$company = $_SESSION["wa_current_user"]->company ? $_SESSION["wa_current_user"]->company : 0;
 
 	cancel_transaction(); // cancel all aborted transactions if any
 	$transaction_level = 0;
-
-	if ($company == -1) 
-		$company = $_SESSION["wa_current_user"]->company;
 
 	$_SESSION["wa_current_user"]->cur_con = $company;
 
@@ -26,20 +139,20 @@ function set_global_connection($company=-1)
 
 	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 		mysql_select_db($connection["dbname"], $db);
+
 	return $db;
 }
 
 $db_duplicate_error_code = 1062;
 
-//DB wrapper functions to change only once for whole application
-
 function db_query($sql, $err_msg=null)
 {
 	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
 		$db_connections, $db_last_inserted_id;
-
+	
 	// set current db prefix
-	$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
+	$comp = isset($_SESSION["wa_current_user"]->cur_con) ? $_SESSION["wa_current_user"]->cur_con : 0;
+	$cur_prefix = $db_connections[$comp]['tbpref'];
 	$sql = str_replace(TB_PREF, $cur_prefix, $sql);
 
 	if ($show_sql)
@@ -48,7 +161,15 @@ function db_query($sql, $err_msg=null)
 		$sql_queries .= "<pre>$sql</pre>\n<hr>";
 	}
 
-	$result = mysql_query($sql, $db);
+	// mysql profiling
+	global $profile_sql;
+	if (@$profile_sql) get_usec();
+		$result = mysql_query($sql, $db);
+	if (@$profile_sql)
+	{
+		$profile_sql= false;
+		_vd($sql.'<br>:'.db_num_rows($result).'rows, '.get_usec());
+	}
 
 	if($sql_trail) {
 		$db_last_inserted_id = mysql_insert_id($db);	// preserve in case trail insert is done
@@ -174,7 +295,8 @@ function db_create_db($connection)
 		$connection["dbuser"], $connection["dbpassword"]);
 	if (!mysql_select_db($connection["dbname"], $db))
 	{
-		$sql = "CREATE DATABASE " . $connection["dbname"] . "";
+		$sql = "CREATE DATABASE " . $connection["dbname"] . " COLLATE ".get_mysql_collation();
+
 		if (!mysql_query($sql) || !mysql_select_db($connection["dbname"], $db))
 			return 0;
 	}
@@ -214,5 +336,3 @@ function db_close($dbase = null)
 		$dbase = $db;
 	return mysql_close($dbase);
 }
-
-?>

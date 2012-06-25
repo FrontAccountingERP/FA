@@ -252,8 +252,16 @@ function write_lang()
 	}
 	return true;
 }
-
-function db_import($filename, $connection, $force=true)
+/*
+	Database import:
+		$filename - sql file name
+		$connection - database connection
+		$force - ignore duplicate errors
+		$init - presume $filename is initialization file with '0_' prefix
+		$protect - protect users/roles 
+		$return_errors - return errors instead of display them
+*/
+function db_import($filename, $connection, $force=true, $init=true, $protect=false, $return_errors=false)
 {
 	global $db, $go_debug, $sql_trail;
 
@@ -265,10 +273,17 @@ function db_import($filename, $connection, $force=true)
 		"alter table" => 'table_queries', 
 		"insert" => 'data_queries', 
 		"update" => 'data_queries', 
+		"set names" => 'set_names',
 		"drop table if exists" => 'drop_queries',
 		"drop function if exists" => 'drop_queries',
 		"drop trigger if exists" => 'drop_queries',
 		);
+
+	$protected = array(
+		'security_roles',
+		'users'
+	);
+
 	$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 		'1022',	// duplicate key
 		'1050', // Table %s already exists
@@ -277,10 +292,14 @@ function db_import($filename, $connection, $force=true)
 		'1062', // duplicate key entry
 		'1091'  // can't drop key/column check if exists
 	);
+
+	$set_names = array();
 	$data_queries = array();
 	$drop_queries = array();
 	$table_queries = array();
 	$sql_errors = array();
+
+	$old_encoding = mysql_client_encoding();
 
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
@@ -295,11 +314,13 @@ function db_import($filename, $connection, $force=true)
 	// parse input file
 	$query_table = '';
 	$delimiter = ';';
+
 	foreach($lines as $line_no => $line)
 	{
 		$line = trim($line);
 		
-		$line = str_replace("0_", $connection["tbpref"], $line);
+		if ($init)
+			$line = str_replace("0_", $connection["tbpref"], $line);
 
 		if ($query_table == '') 
 		{	// check if line begins with one of allowed queries
@@ -312,7 +333,17 @@ function db_import($filename, $connection, $force=true)
 						continue 2;
 					}
 					$query_table = $table;
-					${$query_table}[] = array('', $line_no+1);
+					$skip = false;
+					if ($protect)
+					{
+						foreach($protected as $protbl)
+							if (strpos($line, $connection["tbpref"].$protbl) !== false)
+							{
+								$skip = true; break;
+							}
+					}
+					if (!$skip)
+						${$query_table}[] = array('', $line_no+1);
 					break;
 				}
 		 	}
@@ -326,20 +357,63 @@ function db_import($filename, $connection, $force=true)
 				$line = substr($line, 0, strlen($line) - strlen($delimiter)); // strip delimiter
 				$query_table = '';
 			}
-			${$table}[count(${$table}) - 1][0] .= $line . "\n";
+			if (!$skip)
+				${$table}[count(${$table}) - 1][0] .= $line . "\n";
 		}
-		
+
 	}
-/*
-	{ 	// for debugging purposes
+
+	//
+	// 'set names' or equivalents should be used only on post 2.3 FA versions
+	// otherwise text encoding can be broken during import
+	//
+	$encoding = null; // UI encoding for default site language is the default
+	$new_db = $init || db_fixed();
+	$new_file = count($set_names);
+	if ($new_db)
+	{
+		if ($new_file)
+		{
+			if (count($set_names)) // standard db restore
+			{
+				if (preg_match('/set\s*names\s*[\']?(\w*)[\']?/i', $set_names[0][0], $match))
+					$encoding = $match[1];
+			}
+			// otherwise use default site ui encoding
+		}
+	}
+	else
+	{
+		if ($new_file) // import on old db is forbidden: this would destroy db content unless latin1 was used before in UI
+		{
+			$msg = _("This is new format backup file which cannot be restored on database not migrated to utf8.");
+			if ($return_errors)
+				return $msg;
+			else
+				display_error($msg);
+			return false;
+		}
+		 else	// backup restore during upgrade failure
+			$encoding = 'latin1'; // standard encoding on mysql client
+	}
+
+	mysql_set_charset($encoding);
+
+/*/	{ 	// for debugging purposes
 	global $path_to_root;
 	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w+');
+	fwrite($f, print_r($set_names,true) ."\n");
 	fwrite($f, print_r($drop_queries,true) ."\n");
 	fwrite($f, print_r($table_queries,true) ."\n");
 	fwrite($f, print_r($data_queries,true));
 	fclose($f);
 	}
-*/
+/*/
+	if ($return_errors)
+	{	// prevent errors display
+		$save_debug = $go_debug;
+		$go_debug = 0;
+	}
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
 	{
@@ -379,11 +453,19 @@ function db_import($filename, $connection, $force=true)
 			}
 		}
 	}
-	
+
+	if ($return_errors)
+		$go_debug = $save_debug;
+
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
 
+	mysql_set_charset($old_encoding); // restore connection encoding
+
 	if (count($sql_errors)) {
+		if ($return_errors)
+			return $sql_errors;
+
 		// display first failure message; the rest are probably derivative 
 		$err = $sql_errors[0];
 		display_error(sprintf(_("SQL script execution failed in line %d: %s"),
@@ -458,14 +540,13 @@ function db_backup($conn, $ext='no', $comm='', $path=null)
 
 	return db_export($conn, $path . clean_file_name($filename), $ext, $comm);
 }
-
-// generates a dump of $db database
-// $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
+//
+// Generates a dump of $db database
+//
+function db_export($conn, $filename, $zip='no', $comment='')
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
-
 
     $error = false;
     // set max string size before writing to file
@@ -483,6 +564,9 @@ function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
     	$backupfile = $filename;
     $company = $conn['name']; // get_company_pref('coy_name');
 
+	if (file_exists($backupfile))	// prevent appends
+		unlink($backupfile);
+
     //create comment
     $out="# MySQL dump of database '".$conn["dbname"]."' on host '".$conn["host"]."'\n";
     $out.="# Backup Date and Time: ".date("Y-m-d H:i")."\n";
@@ -490,6 +574,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
     $out.="# ".$power_url."\n";
     $out.="# Company: ". @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding)."\n";
     $out.="# User: ".$_SESSION["wa_current_user"]->name."\n\n";
+    $out.="# Compatibility: ".get_company_pref('version_id')."\n\n";
 
 	// write users comment
 	if ($comment)
@@ -504,6 +589,12 @@ function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
 
     //$out.="use ".$db.";\n"; we don't use this option.
 
+	if (db_fixed())
+	{
+		db_set_encoding();
+		if ($mysql_enc = get_mysql_encoding_name($_SESSION['language']->encoding))
+			$out .= "\nSET NAMES $mysql_enc;\n";
+	}
     // get auto_increment values and names of all tables
     $res = db_query("show table status");
     $all_tables = array();
@@ -553,8 +644,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
 			$out.="### Structure of table `".$tablename."` ###\n\n";
 
 			$out.="DROP TABLE IF EXISTS `".$tablename."`;\n\n";
-			if ($no_default && ($def_pos = strpos($table_sql[$tablename], "DEFAULT CHARSET")) > 0)
-				$table_sql[$tablename] = substr($table_sql[$tablename], 0, $def_pos);
 			$out.=$table_sql[$tablename];
 
 			// add auto_increment value
@@ -801,7 +890,7 @@ function save_to_file($path, $zip, $fileData)
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
 
-        if ($zp = @fopen($path, "a"))
+        if ($zp = @fopen($path, "w"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -880,5 +969,28 @@ function check_table($pref, $table, $field=null, $properties=null)
 	}
 	return 2; // field not found
 }
+
+/*
+	Update or create setting in simple php config file.
+*/
+function update_config_var($file, $variable, $value, $comment='')
+{
+	if (!is_file($file) || !is_writeable($file))
+		return false;
+	$content = file_get_contents($file);
+	$strvalue = '$'."$variable = ".var_export($value, true).';';
+	$pattern = '/'.preg_quote('$'.$variable).'\s*=\s*[^;]*;/m';
+	$content = preg_replace($pattern, $strvalue, $content, -1, $result);
+	if (!$result)
+	{
+		$strvalue = ($comment ? "// $comment" : '') ."\n$strvalue\n";
+		$content = preg_replace('/\?>\s*/m', $strvalue, $content, -1, $result);
+		if (!$result)
+			$content .= $strvalue;
+	}
+
+	return file_put_contents($file, $content)!=false;
+}
+
 
 ?>

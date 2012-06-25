@@ -306,7 +306,8 @@ include_once($path_to_root . "/config.php");
 get_text_init();
 
 // Page Initialisation
-if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) 
+if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
+	|| !isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language'))
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
@@ -382,11 +383,12 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			// Incorrect password
 				login_fail();
 			}
-			$lang = &$_SESSION['language'];
-			$lang->set_language($_SESSION['language']->code);
 		}
 	} else
-		set_global_connection();
+	{	set_global_connection();
+			if (db_fixed())
+				db_set_encoding($_SESSION['language']->encoding);
+	}
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();

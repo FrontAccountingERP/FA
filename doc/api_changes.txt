@@ -49,10 +49,10 @@ Description:
 Before 2.4:
 	db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, $no_default=false)
 Now:
-	db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
+	db_export($conn, $filename, $zip='no', $comment='')
 Description:
 	$tbpref parameter has been removed. Calls should be done after switch to selected company database with 
-	set_global_connection($company).
+	set_global_connection($company). Also removed obsolete $no_default parameter.
 	$filename now have to contain full path to target directory.
 
 Before 2.4:
