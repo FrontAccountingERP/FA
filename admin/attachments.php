@@ -77,11 +77,14 @@ if (isset($_GET['filterType'])) // catch up external links
 	$_POST['filterType'] = $_GET['filterType'];
 if (isset($_GET['trans_no']))
 	$_POST['trans_no'] = $_GET['trans_no'];
-	
+
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
-	if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0)
-	{
+	if (!$_POST['trans_no'])
+		display_error(_("No transaction has been selected."));
+	elseif ($Mode == 'ADD_ITEM' && (!isset($_FILES['filename']) || $_FILES['filename']['size'] == 0))
+		display_error(_("Select attachment file."));
+	else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
 
@@ -110,26 +113,22 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		$filename = basename($_FILES['filename']['name']);
 		$filesize = $_FILES['filename']['size'];
 		$filetype = $_FILES['filename']['type'];
-	}
-	else
-	{
-		$unique_name = $filename = $filetype = "";
-		$filesize = 0;
-	}
-	if ($Mode == 'ADD_ITEM')
-	{
-		add_attachment($_POST['filterType'], $_POST['trans_no'], $_POST['description'],
-			$filename, $unique_name, $filesize, $filetype);
-		display_notification(_("Attachment has been inserted.")); 
-	}
-	else
-	{
-		update_attachment($selected_id, $_POST['filterType'], $_POST['trans_no'], $_POST['description'],
-			$filename, $unique_name, $filesize, $filetype); 
-		display_notification(_("Attachment has been updated.")); 
+
+		if ($Mode == 'ADD_ITEM')
+		{
+			add_attachment($_POST['filterType'], $_POST['trans_no'], $_POST['description'],
+				$filename, $unique_name, $filesize, $filetype);
+			display_notification(_("Attachment has been inserted.")); 
+		}
+		else
+		{
+			update_attachment($selected_id, $_POST['filterType'], $_POST['trans_no'], $_POST['description'],
+				$filename, $unique_name, $filesize, $filetype); 
+			display_notification(_("Attachment has been updated.")); 
+		}
 	}
 	$Mode = 'RESET';
-}		
+}
 
 if ($Mode == 'Delete')
 {
@@ -223,7 +222,7 @@ file_row(_("Attached File") . ":", 'filename', 'filename');
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == -1, '', 'process');
 
 end_form();
 
