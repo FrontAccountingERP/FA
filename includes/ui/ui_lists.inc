@@ -1911,7 +1911,7 @@ function journal_types_list_cells($label, $name, $value=null, $submit_on_change=
 
 	// exclude quotes, orders and dimensions
 	foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, 
-				ST_SALESQUOTE) as $excl)
+				ST_SALESQUOTE, ST_LOCTRANSFER) as $excl)
 			unset($items[$excl]);
 	
 	echo array_selector($name, $value, $items, 
