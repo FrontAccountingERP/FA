@@ -50,6 +50,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
       	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 		set_focus('conversion_factor');
    	}
+	elseif(!db_has_currency_rates(get_supplier_currency($_POST['supplier_id']), Today(), true))
+		$input_error = 1;
 
 	if ($input_error == 0)
 	{

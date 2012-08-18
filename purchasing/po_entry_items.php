@@ -391,7 +391,8 @@ function can_commit()
 		set_focus('StkLocation');
 		return false;
 	} 
-	
+	if (!db_has_currency_rates($_SESSION['PO']->curr_code, $_POST['OrderDate']))
+		return false;
 	if ($_SESSION['PO']->order_has_items() == false)
 	{
      	display_error (_("The order cannot be placed because there are no lines entered on this order."));

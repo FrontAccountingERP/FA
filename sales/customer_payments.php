@@ -211,6 +211,8 @@ function can_process()
 		set_focus('discount');
 		return false;
 	}
+	if (!db_has_currency_rates(get_customer_currency($_POST['customer_id']), $_POST['DateBanked'], true))
+		return false;
 
 	$_SESSION['alloc']->amount = input_num('amount');
 

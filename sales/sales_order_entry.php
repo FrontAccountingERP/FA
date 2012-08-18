@@ -404,6 +404,8 @@ function can_process() {
 		set_focus('ref');
 		return false;
 	}
+	if (!db_has_currency_rates($_SESSION['Items']->customer_currency, $_POST['OrderDate']))
+		return false;
 	
    	if ($_SESSION['Items']->get_items_total() < 0) {
 		display_error("Invoice total amount cannot be less than zero.");

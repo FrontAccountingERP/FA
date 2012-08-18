@@ -184,6 +184,12 @@ function check_valid_entries()
 		set_focus('ToBankAccount');
 		return false;
 	}
+	
+	if (!db_has_currency_rates(get_bank_account_currency($_POST['FromBankAccount']), $_POST['DatePaid']))
+		return false;
+
+	if (!db_has_currency_rates(get_bank_account_currency($_POST['ToBankAccount']), $_POST['DatePaid']))
+		return false;
 
     return true;
 }

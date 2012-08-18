@@ -70,6 +70,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error( _("The price entered must be numeric."));
 		set_focus('price');
 	}
+	elseif(!db_has_currency_rates($_POST['curr_abrev'], Today(), true))
+		$input_error = 1;
 
 	if ($input_error != 1)
 	{

@@ -278,6 +278,8 @@ if (isset($_POST['Process']))
 		set_focus('person_id');
 		$input_error = 1;
 	}
+	if (!db_has_currency_rates(get_bank_account_currency($_POST['bank_account']), $_POST['date_'], true))
+		$input_error = 1;
 
 	if ($input_error == 1)
 		unset($_POST['Process']);

@@ -41,6 +41,19 @@ function check_db_has_currencies($msg)
     }	
 }
 
+function db_has_currency_rates($currency, $date_, $msg=false)
+{
+	$date = date2sql($date_);
+	
+	if (is_company_currency($currency))
+		return 1;
+	$ret = check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."exchange_rates WHERE curr_code = '$currency' && date_ <= '$date'");
+	if ($ret == 0 && $msg)
+		display_error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
+					 $currency, $date_), true);
+	return $ret;				 
+}
+
 function db_has_sales_types()
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."sales_types");

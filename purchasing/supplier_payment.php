@@ -210,6 +210,8 @@ function check_inputs()
 		return false;
 	}
 
+	if (!db_has_currency_rates(get_supplier_currency($_POST['supplier_id']), $_POST['DatePaid'], true))
+		return false;
 	$_SESSION['alloc']->amount = -input_num('amount');
 
 	if (isset($_POST["TotalNumberOfAllocs"]))
