@@ -34,11 +34,19 @@ set_page_security( @$_SESSION['Items']->trans_type,
 			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
 			ST_SALESINVOICE => 'SA_SALESINVOICE'),
 	array(	'NewOrder' => 'SA_SALESORDER',
-			'ModifySalesOrder' => 'SA_SALESORDER',
+			'ModifyOrderNumber' => 'SA_SALESORDER',
+			'AddedID' => 'SA_SALESORDER',
+			'UpdatedID' => 'SA_SALESORDER',
 			'NewQuotation' => 'SA_SALESQUOTE',
 			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewQuoteToSalesOrder' => 'SA_SALESQUOTE',
+			'AddedQU' => 'SA_SALESQUOTE',
+			'UpdatedQU' => 'SA_SALESQUOTE',
 			'NewDelivery' => 'SA_SALESDELIVERY',
-			'NewInvoice' => 'SA_SALESINVOICE')
+			'AddedDN' => 'SA_SALESDELIVERY', 
+			'NewInvoice' => 'SA_SALESINVOICE',
+			'AddedDI' => 'SA_SALESINVOICE'
+			)
 );
 
 $js = '';

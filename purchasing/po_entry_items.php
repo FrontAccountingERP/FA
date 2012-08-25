@@ -23,8 +23,11 @@ set_page_security( @$_SESSION['PO']->trans_type,
 			ST_SUPPINVOICE => 'SA_SUPPLIERINVOICE'),
 	array(	'NewOrder' => 'SA_PURCHASEORDER',
 			'ModifyOrderNumber' => 'SA_PURCHASEORDER',
+			'AddedID' => 'SA_PURCHASEORDER',
 			'NewGRN' => 'SA_GRN',
-			'NewInvoice' => 'SA_SUPPLIERINVOICE')
+			'AddedGRN' => 'SA_GRN',
+			'NewInvoice' => 'SA_SUPPLIERINVOICE',
+			'AddedPI' => 'SA_SUPPLIERINVOICE')
 );
 
 $js = '';
