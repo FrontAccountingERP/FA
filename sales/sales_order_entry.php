@@ -54,12 +54,12 @@ if ($use_date_picker) {
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
-	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
+	create_cart(ST_CUSTDELIVERY, 0);
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
-	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
+	create_cart(ST_SALESINVOICE, 0);
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
