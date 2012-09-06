@@ -288,19 +288,17 @@ function get_sales_order_header($order_no, $trans_type)
 	  ."tax_group.name AS tax_group_name , "
 	  ."tax_group.id AS tax_group_id, "
 	  ."cust.tax_id "
-	."FROM ".TB_PREF."sales_orders sorder, "
+	."FROM ".TB_PREF."sales_orders sorder LEFT JOIN ".TB_PREF."shippers ship ON  ship.shipper_id = sorder.ship_via,"
 	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
 	  .TB_PREF."tax_groups tax_group, "
 	  .TB_PREF."cust_branch branch,"
-	  .TB_PREF."locations loc, "
-	  .TB_PREF."shippers ship
+	  .TB_PREF."locations loc
 	WHERE sorder.order_type=stype.id
 		AND branch.branch_code = sorder.branch_code
 		AND branch.tax_group_id = tax_group.id
 		AND sorder.debtor_no = cust.debtor_no
 		AND loc.loc_code = sorder.from_stk_loc
-		AND ship.shipper_id = sorder.ship_via
 		AND sorder.trans_type = " . db_escape($trans_type) ."
 		AND sorder.order_no = " . db_escape($order_no );
 
