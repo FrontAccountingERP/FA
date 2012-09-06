@@ -34,9 +34,9 @@ class remote_printer {
 //		if($ret) return $ret;
 
         //Open a new connection to send the control file and data.
-		$stream = fsockopen("tcp://".$this->host, $this->port, $errNo, $errStr, $this->timeout);
+		$stream = @fsockopen("tcp://".$this->host, $this->port, $errNo, $errStr, $this->timeout);
         if(!$stream){
-            return _('Cannot open connection to printer');
+            return _('Cannot open connection to printer').":<br>$errStr";
         }
 		if (!isset($_SESSION['_print_job'])) {
 			$_SESSION['print_job'] = 0;
@@ -95,9 +95,9 @@ class remote_printer {
 	//	Print all waiting jobs on remote printer queue.
 	//
     function flush_queue($queue){
-		$stream = fsockopen("tcp://".$this->host, $this->port,$errNo, $errStr, $this->timeout);
+		$stream = @fsockopen("tcp://".$this->host, $this->port,$errNo, $errStr, $this->timeout);
         if (!$stream){
-            return _('Cannot flush printing queue');
+            return _('Cannot flush printing queue').":<br>$errStr";
 			// .':<br>' . $errNo." (".$errStr.")"; return 0 (success) even on failure
         } else {
             //Print any waiting jobs
