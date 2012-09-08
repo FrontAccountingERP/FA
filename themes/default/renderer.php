@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
 	class renderer
 	{
 		function get_icon($category)
@@ -34,7 +35,7 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $help_base_url, $db_connections;
+			global $path_to_root, $help_base_url, $db_connections, $show_inaccessible_menu_items;
 			echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<td colspan='2' rowspan='2'>\n";
@@ -56,10 +57,13 @@
 				echo "<div class=tabs>";
 				foreach($applications as $app)
 				{
-					$acc = access_string($app->name);
-					echo "<a class='".($sel_app == $app->id ? 'selected' : 'menu_tab')
-						."' href='$local_path_to_root/index.php?application=".$app->id
-						."'$acc[1]>" .$acc[0] . "</a>";
+                    if ($this->check_application_access($app))
+                    {
+                        $acc = access_string($app->name);
+                        echo "<a class='".($sel_app == $app->id ? 'selected' : 'menu_tab')
+                            ."' href='$local_path_to_root/index.php?application=".$app->id
+                            ."'$acc[1]>" .$acc[0] . "</a>";
+                    }
 				}
 				echo "</div>";
 				echo "</td></tr></table>";
@@ -140,9 +144,12 @@
 			global $path_to_root;
 
 			$selected_app = $waapp->get_selected_application();
-
+			if (!$this->check_application_access($selected_app))
+				return;
 			foreach ($selected_app->modules as $module)
 			{
+        		if (!$this->check_module_access($module))
+        			continue;
 				// image
 				echo "<tr>";
 				// values
@@ -162,7 +169,7 @@
 					{
 							echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 					}
-					else 
+					elseif (!$this->hide_inaccessible_menu_items())
 					{
 							echo $img.'<span class="inactive">'
 								.access_string($appfunction->label, true)
@@ -182,7 +189,7 @@
 						{
 								echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 						}
-						else 
+						elseif (!$this->hide_inaccessible_menu_items())
 						{
 								echo $img.'<span class="inactive">'
 									.access_string($appfunction->label, true)
@@ -193,10 +200,79 @@
 				}
 
 				echo "</tr></table></td></tr>";
-			}
-
+			}	
 			echo "</table>";
 		}
-	}
+        
+        function check_application_access($waapp)
+        {
+            if (!$this->hide_inaccessible_menu_items())
+            {
+                return true;
+            }
+            
+            foreach ($waapp->modules as $module)
+            {
+                if ($this->check_module_access($module))
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+                    
+        }
+        
+        function check_module_access($module)
+        {
+            
+            if (!$this->hide_inaccessible_menu_items())
+            {
+                return true;
+            }
+            
+            if (sizeof($module->lappfunctions) > 0)
+            {
+                foreach ($module->lappfunctions as $appfunction)
+                {
+                    if ($appfunction->label != "" && $_SESSION["wa_current_user"]->can_access_page($appfunction->access))
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            if (sizeof($module->rappfunctions) > 0)
+            {
+                foreach ($module->rappfunctions as $appfunction)
+                {
+                    if ($appfunction->label != "" && $_SESSION["wa_current_user"]->can_access_page($appfunction->access))
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+            
+        }
+        
+        function hide_inaccessible_menu_items()
+        {
+            global $hide_inaccessible_menu_items;
+            
+            if (!isset($hide_inaccessible_menu_items) || $hide_inaccessible_menu_items == 0)
+            {
+                return false;
+            }
+            
+            else
+            {
+                return true;
+            }
+        }
+    }
+		
+
 
 ?>
