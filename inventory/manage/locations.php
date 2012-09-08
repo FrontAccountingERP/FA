@@ -33,7 +33,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	//first off validate inputs sensible
 	$_POST['loc_code'] = strtoupper($_POST['loc_code']);
 
-	if (strlen(db_escape($_POST['loc_code'])) > 7) //check length after conversion
+	if ((strlen(db_escape($_POST['loc_code'])) > 7) || empty($_POST['loc_code'])) //check length after conversion
 	{
 		$input_error = 1;
 		display_error( _("The location code must be five characters or less long (including converted special chars)."));
