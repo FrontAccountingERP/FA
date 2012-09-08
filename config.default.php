@@ -247,4 +247,10 @@ if (!defined('ICON_EDIT'))
 */
 	$AllowCompanySelectionBox  = true;
 
+/*  Should FA hide menu items (Applications, Modules, and Actions) from the user if they don't have access to them? 
+    0 for no       1 for yes
+*/
+
+	$hide_inaccessible_menu_items = 0;
+
 ?>
