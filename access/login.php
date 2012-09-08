@@ -89,7 +89,7 @@ function defaultCompany()
 			$coy =  $_SESSION['wa_current_user']->company;
 		else
 			$coy = $def_coy;
-		if ($AllowCompanySelectionBox) {
+		if (!@$text_company_selection) {
 			echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";
 			for ($i = 0; $i < count($db_connections); $i++)
 				echo "<option value=$i ".($i==$coy ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";

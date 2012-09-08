@@ -241,11 +241,11 @@ if (!defined('ICON_EDIT'))
 }
 
 /* 
-	Display a dropdown select box for choosing Company to login if true.
-	Show a blank editbox only if false where the Company NickName
+	Display a dropdown select box for choosing Company to login if false.
+	Show a blank editbox only if true where the Company NickName
 	will have to be manually entered. This is when privacy is needed.
 */
-	$AllowCompanySelectionBox  = true;
+$text_company_selection  = false;
 
 /*  Should FA hide menu items (Applications, Modules, and Actions) from the user if they don't have access to them? 
     0 for no       1 for yes
