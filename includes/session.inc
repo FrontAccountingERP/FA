@@ -368,7 +368,15 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 				$Ajax->activate('_page_body');
 			exit;
 		} else {
-
+			if (isset($_POST["company_login_nickname"]) && !isset($_POST["company_login_name"])) {
+				for ($i = 0; $i < count($db_connections); $i++) {
+					if ($db_connections[$i]["name"] == $_POST["company_login_nickname"]) {
+						$_POST["company_login_name"] = $i;
+						unset($_POST["company_login_nickname"]);
+						break 1; // cannot pass variables to break from PHP v5.4 onwards
+					}
+				}
+			}
 			$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
 				$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 				$_POST["user_name_entry_field"], $_POST["password"]);

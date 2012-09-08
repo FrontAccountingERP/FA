@@ -240,4 +240,11 @@ if (!defined('ICON_EDIT'))
  	define("ICON_ESCAPE", "escape.png");	
 }
 
+/* 
+	Display a dropdown select box for choosing Company to login if true.
+	Show a blank editbox only if false where the Company NickName
+	will have to be manually entered. This is when privacy is needed.
+*/
+	$AllowCompanySelectionBox  = true;
+
 ?>
