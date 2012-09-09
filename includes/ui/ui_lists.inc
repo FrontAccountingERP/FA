@@ -708,7 +708,7 @@ $options = array(
 	if (!$showclosed)
 		$options['where'][] = "closed=0";
 	if($showtype)
-		$options['where'][] = "type_=$showtype";
+		$options['where'][] = "type_=".db_escape($showtype);
 
 	return combo_input($name, $selected_id, $sql, 'id', 'ref', $options);
 }
@@ -887,7 +887,7 @@ function stock_component_items_list($name, $parent_stock_id, $selected_id=null,
 	$all_option=false, $submit_on_change=false, $editkey = false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("stock_id != '$parent_stock_id'")), $editkey);
+		array('where'=>array("stock_id != ".db_escape($parent_stock_id))), $editkey);
 }
 
 function stock_component_items_list_cells($label, $name, $parent_stock_id, 
@@ -896,7 +896,7 @@ function stock_component_items_list_cells($label, $name, $parent_stock_id,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("stock_id != '$parent_stock_id'"), 'cells'=>true),
+		array('where'=>array("stock_id != ".db_escape($parent_stock_id)), 'cells'=>true),
 		$editkey);
 }
 //------------------------------------------------------------------------------------
