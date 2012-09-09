@@ -283,7 +283,9 @@ class db_pager {
 	    }
 				
 	    if (count($ord)) {
-			$sql .= " ORDER BY " . implode($ord, ',');
+			$ord = array_map(function_exists('mysql_real_escape_string') ? 
+				'mysql_real_escape_string': 'mysql_escape_string', $ord);
+			$sql .= " ORDER BY " . implode(',', $ord);
 		} else {
 			if($order)
 				$sql .= " ORDER BY $order"; // original base query order
