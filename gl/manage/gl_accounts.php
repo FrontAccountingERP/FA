@@ -65,7 +65,6 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	    display_error( _("The account code must be numeric."));
 		set_focus('account_code');
 	}
-
 	if ($input_error != 1)
 	{
 		if ($accounts_alpha == 2)
@@ -99,6 +98,8 @@ if (isset($_POST['add']) || isset($_POST['update']))
 					display_notification(_("New account has been added."));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
+			else
+                 display_error(_("Account not added, possible duplicate Account Code."));
 		}
 		$Ajax->activate('_page_body');
 	}
