@@ -57,11 +57,6 @@ if (isset($_POST['_DatePaid_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 
-if (list_updated('supplier_id') || list_updated('bank_account')) {
-  $_SESSION['alloc']->read();
-  $_POST['memo_'] = $_POST['amount'] = '';
-  $Ajax->activate('alloc_tbl');
-}
 //----------------------------------------------------------------------------------------
 
 if (!isset($_POST['bank_account'])) { // first page call
@@ -273,6 +268,12 @@ start_form();
 	table_section(1);
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
+
+	if (list_updated('supplier_id') || list_updated('bank_account')) {
+	  $_SESSION['alloc']->read();
+	  $_POST['memo_'] = $_POST['amount'] = '';
+	  $Ajax->activate('alloc_tbl');
+	}
 
 	set_global_supplier($_POST['supplier_id']);
 	

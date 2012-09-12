@@ -251,11 +251,6 @@ if (isset($_POST['ref']) && $_SESSION['alloc']->trans_no == 0) // added by Joe t
 }		
 $new = $_SESSION['alloc']->trans_no == 0;
 
-if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-  $_SESSION['alloc']->read();
-  $_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-  $Ajax->activate('alloc_tbl');
-}
 //----------------------------------------------------------------------------------------------
 
 if (isset($_POST['AddPaymentItem'])) {
@@ -344,6 +339,12 @@ start_form();
 	else {
 		label_cells(_("From Customer:"), $_POST['customer_name'], "class='label'");
 		hidden('customer_id', $_POST['customer_id']);
+	}
+
+	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+		$_SESSION['alloc']->read();
+		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+		$Ajax->activate('alloc_tbl');
 	}
 
 	if (!isset($_POST['charge'])) // first page call
