@@ -140,6 +140,66 @@ function login_fail()
 	kill_login();
 	die();
 }
+//----------------------------------------------------------------------------------------
+// set to reasonable values if not set in config file (pre-2.3.12 installations)
+
+if (!isset($login_delay))
+{
+	$login_delay = 10;
+	$login_max_attempts = 3;
+}
+
+function check_faillog()
+{
+	global $login_delay, $login_faillog, $login_max_attempts;
+
+	$user = $_SESSION["wa_current_user"]->user;
+
+	if (@$login_delay && ($login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$login_max_attempts) && (time() < $login_faillog[$user]['last'] + $login_delay))
+		return true;
+
+	return false;
+}
+/*
+	Simple brute force attack detection is performed before connection to company database is open. Therefore access counters have to be stored in file.
+	Login attempts counter is created for every new user IP, which partialy prevent DOS attacks.
+*/
+function write_login_filelog($login, $result)
+{
+	global $login_faillog, $login_max_attempts, $path_to_root;
+
+	$user = $_SESSION["wa_current_user"]->user;
+
+	$ip = $_SERVER['REMOTE_ADDR'];
+
+	if (!isset($login_faillog[$user][$ip]) || $result) // init or reset on successfull login
+		$login_faillog[$user] = array($ip => 0, 'last' => '');
+
+ 	if (!$result)
+	{
+		if ($login_faillog[$user][$ip] < @$login_max_attempts) {
+
+ 			$login_faillog[$user][$ip]++;
+ 		} else {
+ 			$login_faillog[$user][$ip] = 0; // comment out to restart counter only after successfull login.
+	 		error_log(sprintf(_("Brute force attack on account '%s' detected. Access for non-logged users temporarily blocked."	), $login));
+	 	}
+ 		$login_faillog[$user]['last'] = time();
+	}
+
+	$msg = "<?php\n";
+	$msg .= "/*\n";
+	$msg .= "Login attempts info.\n";
+	$msg .= "*/\n";
+	$msg .= "\$login_faillog = " .var_export($login_faillog, true). ";\n";
+
+	$filename = $path_to_root."/faillog.php";
+
+	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
+	{
+		file_put_contents($filename, $msg);
+	}
+}
 
 //----------------------------------------------------------------------------------------
 
@@ -271,6 +331,7 @@ include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
 include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
+@include_once($path_to_root . "/faillog.php");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");

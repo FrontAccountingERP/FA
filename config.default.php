@@ -253,4 +253,10 @@ $text_company_selection  = false;
 
 	$hide_inaccessible_menu_items = 0;
 
-?>
+/*
+	Brute force prevention.
+	$login_delay seconds delay is required between login attempts after $login_max_attemps failed logins.
+	Set $login_delay to 0 to disable the feature (not recommended)
+*/
+$login_delay = 30;
+$login_max_attempts = 10;

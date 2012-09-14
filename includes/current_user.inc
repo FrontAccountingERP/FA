@@ -18,7 +18,7 @@ if (!defined('TB_PREF')) {
 
 class current_user
 {
-	var $user;
+	var $user = 0;
 	var $loginname;
 	var $username;
 	var $name;
@@ -59,7 +59,7 @@ class current_user
 	function login($company, $loginname, $password)
 	{
 		global $security_areas, $security_groups, $security_headings, $path_to_root;
-		
+
 		$this->set_company($company);
 	    $this->logged = false;
 
@@ -72,6 +72,8 @@ class current_user
 
 		if (!isset($Auth_Result))	// if not used: standard method
 			$Auth_Result = get_user_auth($loginname, md5($password));
+
+		write_login_filelog($loginname, $Auth_Result);
 
 		if ($Auth_Result)
 		{

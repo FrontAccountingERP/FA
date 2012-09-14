@@ -30,6 +30,16 @@ function defaultCompany()
 	{
 		$demo_text = _("Please login here");
 	}
+
+	if (check_faillog())
+	{
+		$blocked_msg = '<span class=redfg>'._('Too many failed login attempts.<br>Please wait a while or try later.').'</span>';
+
+	    $js .= "<script>setTimeout(function() {
+	    	document.getElementsByName('SubmitUser')[0].disabled=0;
+	    	document.getElementById('log_msg').innerHTML='$demo_text'}, 1000*$login_delay);</script>";
+	    $demo_text = $blocked_msg;
+	}
 	if (!isset($def_coy))
 		$def_coy = 0;
 	$def_theme = "default";
@@ -100,12 +110,12 @@ function defaultCompany()
 			text_row(_("Company"), "company_login_nickname", "", 20, 30);
 		}
 		start_row();
-		label_cell($demo_text, "colspan=2 align='center'");
+		label_cell($demo_text, "colspan=2 align='center' id='log_msg'");
 		end_row();
 	}; 
 	end_table(1);
 	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
-		.($login_timeout ? '':" onclick='set_fullmode();'")." /></center>\n";
+		.($login_timeout ? '':" onclick='set_fullmode();'").(isset($blocked_msg) ? " disabled" : '')." /></center>\n";
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data
