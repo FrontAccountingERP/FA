@@ -10,6 +10,154 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-09-15 10:04 +0200 Joe Hunt
+(3057) Release 2.3.12
+ update.html
+ version.php
+
+2012-09-14 23:49 +0200 Janusz Dobrowolski
+(3056) Added prevention against brute force atacks on login page.
+ access/login.php
+ config.default.php
+ includes/current_user.inc
+ includes/session.inc
+
+2012-09-13 00:15 +0200 Janusz Dobrowolski
+(3055) Fixed incorect selection of invoices in Customer Payments/Payments To Supplier when search customer/supplier option is used.
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+
+2012-09-12 14:06 +0200 Joe Hunt
+(3054) 0001775: Hard coded theme path fixed
+ includes/ui/ui_input.inc
+ reporting/includes/reports_classes.inc
+
+2012-09-11 08:27 +0200 Joe Hunt
+(3053) Adding an already existing GL Account Code does not report as error
+ gl/manage/gl_accounts.php
+
+2012-09-09 09:42 +0200 Janusz Dobrowolski
+(3052) Security cleanups in access roles and db_pager.
+ admin/security_roles.php
+ includes/db_pager.inc
+
+2012-09-08 13:25 +0200 Janusz Dobrowolski
+(3051) Security cleanup on 'where' parameter in a couple of list helpers.
+ includes/ui/ui_lists.inc
+
+2012-09-08 13:06 +0200 Janusz Dobrowolski
+(3050) Login screen company box/input configuration option made backward compatible.
+ access/login.php
+ config.default.php
+
+2012-09-08 19:11 +0200 Joe Hunt
+(3049) Hide Menu options if not authorized, rerun
+ config.default.php
+
+2012-09-08 19:07 +0200 Joe Hunt
+(3048) Hide Menu options if not authorized
+ themes/aqua/renderer.php
+ themes/cool/renderer.php
+ themes/default/renderer.php
+
+2012-09-08 09:54 +0200 Janusz Dobrowolski
+(3047) Added check not empty location code in Inventory Locations.
+ inventory/manage/locations.php
+
+2012-09-06 19:43 +0200 Janusz Dobrowolski
+(3046) Fixed get_sales_order_header and get_debtor_trans queries to avoid errors on empty ship_via field.
+ sales/includes/db/cust_trans_db.inc
+ sales/includes/db/sales_order_db.inc
+ sales/sales_order_entry.php
+
+2012-09-06 19:27 +0200 Janusz Dobrowolski
+(3045) Improved error handling in printer class.
+ includes/remote_url.inc
+ reporting/includes/printer_class.inc
+
+2012-09-08 08:21 +0200 Joe Hunt
+(3044) 0001768: Login Company Select Box to EditBox Switch Flag + Fix
+ access/login.php
+ config.default.php
+ includes/session.inc
+
+2012-09-08 08:20 +0200 Joe Hunt
+(3043) 0001767: Company Creation assigning externally created database + Fix
+ includes/db/connect_db.inc
+
+2012-08-26 22:54 +0200 Joe Hunt
+(3042) Removed obsolete exchange rate check on Sales Pricing page.
+ inventory/prices.php
+
+2012-08-26 19:47 +0200 Janusz Dobrowolski
+(3041) Removed obsolete exchange rate check on Purchasing Pricing page.
+ inventory/purchasing_data.php
+
+2012-08-25 20:01 +0200 Janusz Dobrowolski
+(3040) Fixed access control issues on finish page of Direct Sales and Purchase Invoice
+ purchasing/po_entry_items.php
+ sales/sales_order_entry.php
+
+2012-08-25 18:28 +0200 Janusz Dobrowolski
+(3039) Fixed creation of invalid Direct Sales Invoice when operation is continued after previous entry cancelation.
+ sales/sales_order_entry.php
+
+2012-07-14 22:18 +0200 Janusz Dobrowolski
+(3038) Improved date input fields keyboard support (fast day/day+month edition)
+ includes/ui/ui_input.inc
+ js/inserts.js
+
+2012-07-14 22:12 +0200 Janusz Dobrowolski
+(3037) Small fixes in attachments upload.
+ admin/attachments.php
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2012-08-18 23:53 +0200 Joe Hunt
+(3036) Bug 0001669: get_exchange_rate not raising error
+ gl/bank_transfer.php
+ gl/gl_bank.php
+ includes/data_checks.inc
+ inventory/prices.php
+ inventory/purchasing_data.php
+ purchasing/po_entry_items.php
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+ sales/sales_order_entry.php
+
+2012-08-15 16:18 +0200 Joe Hunt
+(3035) Location Transfer should not be included in journal_type_list.
+ includes/ui/ui_lists.inc
+
+2012-07-16 23:29 +0200 Joe Hunt
+(3034) Purchases - Direct Invoice - Database Error in some mysql configurations
+ purchasing/po_entry_items.php
+
+2012-06-28 12:23 +0200 Joe Hunt
+(3033) Remember last document date also in Bank Transfer.
+ gl/bank_transfer.php
+
+2012-05-28 08:43 +0200 Joe Hunt
+(3021) Rerun of /admin/create_coy.php
+ admin/create_coy.php
+
+2012-05-28 08:25 +0200 Joe Hunt
+(3020) When creating new company and adm. password is blank the password is now password as default.
+ admin/create_coy.php
+
+2012-05-27 22:38 +0200 Joe Hunt
+(3019) 0001606: Statement are not sent to general contact
+ includes/db/crm_contacts_db.inc
+ sales/includes/db/customers_db.inc
+ sql/en_US-demo.sql
+
+2012-05-21 11:47 +0200 Janusz Dobrowolski
+(3018) Added tag version_2_3_11 for changeset 06e6f1abb26e
+ .hgtags
+
+2012-05-21 10:57 +0200 Joe Hunt
+(3017) New CHANGELOG.txt
+ CHANGELOG.txt
+
 2012-05-21 10:54 +0200 Joe Hunt
 (3016) Release 2.3.11
  version.php
