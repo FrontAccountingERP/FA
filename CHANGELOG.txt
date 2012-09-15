@@ -10,10 +10,18 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-09-15 10:07 +0200 Joe Hunt
+(3059) Changelog.txt
+ CHANGELOG.txt
+
 2012-09-15 10:04 +0200 Joe Hunt
-(3057) Release 2.3.12
+(3058) Release 2.3.12
  update.html
  version.php
+
+2012-09-15 09:39 +0200 Janusz Dobrowolski
+(3057) UPdate language template
+ lang/new_language_template/LC_MESSAGES/empty.po
 
 2012-09-14 23:49 +0200 Janusz Dobrowolski
 (3056) Added prevention against brute force atacks on login page.
