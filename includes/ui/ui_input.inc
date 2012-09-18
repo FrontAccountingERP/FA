@@ -37,6 +37,7 @@ function find_submit($prefix, $numeric=true)
     }
     return $numeric ? -1 : null;
 }
+
 //------------------------------------------------------------------------------
 //
 // Helper function for simple db table editor pages
@@ -624,8 +625,12 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 		}
 	}
 	if ($use_date_picker)
+	{
+		$calc_image = (file_exists("$path_to_root/themes/".user_theme()."/images/cal.gif")) ? 
+			"$path_to_root/themes/".user_theme()."/images/cal.gif" : "$path_to_root/themes/default/images/cal.gif";
 		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.getElementsByName('$name')[0]);\">"
-		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
+		. "	<img src='$calc_image' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
+	}	
 	else
 		$post_label = "";
 
@@ -634,15 +639,14 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 
 	echo "<td>";
 	
-	$class = $submit_on_change ? 'class="searchbox"' : '';
+	$class = $submit_on_change ? 'date active' : 'date';
 
 	$aspect = $check ? 'aspect="cdate"' : '';
 	if ($check && (get_post($name) != Today()))
 		$aspect .= ' style="color:#FF0000"';
 
 	default_focus($name);
-
-	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" 
+	echo "<input type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" 
 	 . $_POST[$name]. "\""
 	 .($title ? " title='$title'": '')." > $post_label";
 	echo "</td>\n";

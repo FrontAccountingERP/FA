@@ -429,7 +429,8 @@ class FrontReport extends Cpdf
 		$doctype = $this->formData['doctype'];
 		$header2type = true;
 
-		$this->SetLang(@$this->formData['rep_lang'] ? $this->formData['rep_lang'] : $dflt_lang);
+		$this->SetLang(@$this->formData['rep_lang'] ? $this->formData['rep_lang']
+ 			: ($_SESSION["wa_current_user"]->prefs->language ? $_SESSION["wa_current_user"]->prefs->language : $dflt_lang));
 
  		 // leave layout files names without path to enable including
  		 // modified versions from company/x/reporting directory

@@ -34,11 +34,19 @@ set_page_security( @$_SESSION['Items']->trans_type,
 			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
 			ST_SALESINVOICE => 'SA_SALESINVOICE'),
 	array(	'NewOrder' => 'SA_SALESORDER',
-			'ModifySalesOrder' => 'SA_SALESORDER',
+			'ModifyOrderNumber' => 'SA_SALESORDER',
+			'AddedID' => 'SA_SALESORDER',
+			'UpdatedID' => 'SA_SALESORDER',
 			'NewQuotation' => 'SA_SALESQUOTE',
 			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewQuoteToSalesOrder' => 'SA_SALESQUOTE',
+			'AddedQU' => 'SA_SALESQUOTE',
+			'UpdatedQU' => 'SA_SALESQUOTE',
 			'NewDelivery' => 'SA_SALESDELIVERY',
-			'NewInvoice' => 'SA_SALESINVOICE')
+			'AddedDN' => 'SA_SALESDELIVERY', 
+			'NewInvoice' => 'SA_SALESINVOICE',
+			'AddedDI' => 'SA_SALESINVOICE'
+			)
 );
 
 $js = '';
@@ -54,12 +62,12 @@ if ($use_date_picker) {
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
-	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
+	create_cart(ST_CUSTDELIVERY, 0);
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
-	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
+	create_cart(ST_SALESINVOICE, 0);
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
@@ -247,6 +255,7 @@ function copy_to_cart()
 	$cart->document_date = $_POST['OrderDate'];
 
 	$newpayment = false;
+
 	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
@@ -256,7 +265,7 @@ function copy_to_cart()
 		if ($newpayment) {
 			$cart->due_date = $cart->document_date;
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-			$cart->ship_via = 1;
+			$cart->ship_via = 0;
 			$cart->deliver_to = '';
 			$cart->prep_amount = 0;
 		}
@@ -420,12 +429,10 @@ function can_process() {
 		set_focus('ref');
 		return false;
 	}
-   	if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], 
-   		$_SESSION['Items']->trans_type)) {
-   		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
-   		return false;
-   	} elseif ($_SESSION['Items']->get_items_total() < 0) {
+	if (!db_has_currency_rates($_SESSION['Items']->customer_currency, $_POST['OrderDate']))
+		return false;
+	
+   	if ($_SESSION['Items']->get_items_total() < 0) {
 		display_error("Invoice total amount cannot be less than zero.");
 		return false;
 	}
@@ -443,30 +450,38 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	copy_to_cart();
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
-	
-	$_SESSION['Items']->write(1);
-	if (count($messages)) { // abort on failure or error messages are lost
-		$Ajax->activate('_page_body');
-		display_footer_exit();
+
+	$ret = $_SESSION['Items']->write(1);
+	if ($ret == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 	}
-	$trans_no = key($_SESSION['Items']->trans_no);
-	$trans_type = $_SESSION['Items']->trans_type;
-	new_doc_date($_SESSION['Items']->document_date);
-	processing_end();
-	if ($modified) {
-		if ($trans_type == ST_SALESQUOTE)
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
-		else	
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
-	} elseif ($trans_type == ST_SALESORDER) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-	} elseif ($trans_type == ST_SALESQUOTE) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
-	} elseif ($trans_type == ST_SALESINVOICE) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
-	} else {
-		meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
-	}
+	else
+	{
+		if (count($messages)) { // abort on failure or error messages are lost
+			$Ajax->activate('_page_body');
+			display_footer_exit();
+		}
+		$trans_no = key($_SESSION['Items']->trans_no);
+		$trans_type = $_SESSION['Items']->trans_type;
+		new_doc_date($_SESSION['Items']->document_date);
+		processing_end();
+		if ($modified) {
+			if ($trans_type == ST_SALESQUOTE)
+				meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+			else	
+				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+		} elseif ($trans_type == ST_SALESORDER) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+		} elseif ($trans_type == ST_SALESQUOTE) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
+		} elseif ($trans_type == ST_SALESINVOICE) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
+		} else {
+			meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
+		}
+	}	
 }
 
 //--------------------------------------------------------------------------------
@@ -733,6 +748,7 @@ if ($customer_error == "") {
 } else {
 	display_error($customer_error);
 }
+
 end_form();
 end_page();
 ?>

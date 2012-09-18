@@ -179,12 +179,6 @@ function check_data()
 			set_focus('ref');
 			return false;
 		}
-
-		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
-			return false;
-		}
 	}
 	if ($_POST['ChargeFreightCost'] == "") {
 		$_POST['ChargeFreightCost'] = price_format(0);
@@ -313,7 +307,6 @@ function check_qoh()
 //------------------------------------------------------------------------------
 
 if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
-
 	$dn = &$_SESSION['Items'];
 
 	if ($_POST['bo_policy']) {
@@ -326,13 +319,21 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	copy_to_cart();
 	if ($newdelivery) new_doc_date($dn->document_date);
 	$delivery_no = $dn->write($bo_policy);
-	$is_prepaid = $dn->is_prepaid() ? "&prepaid=Yes" : '';
+	if ($delivery_no == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
+	}
+	else
+	{
+		$is_prepaid = $dn->is_prepaid() ? "&prepaid=Yes" : '';
 
-	processing_end();
-	if ($newdelivery) {
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no$is_prepaid");
-	} else {
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no$is_prepaid");
+		processing_end();
+		if ($newdelivery) {
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no$is_prepaid");
+		} else {
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no$is_prepaid");
+		}
 	}
 }
 

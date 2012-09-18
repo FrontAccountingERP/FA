@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2012 FrontAccounting, LLC
+* @copyright (C) 2005 - 2009 FrontAccounting, LLC
 * @license http://www.gnu.org/copyleft/gpl-3.0.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -10,12 +10,179 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-09-09 08:07 +0200 Janusz Dobrowolski
+(3033) Security cleanup on 'where' parameter in a couple of list helpers
+ includes/ui/ui_lists.inc
+
+2012-06-25 12:56 +0200 Janusz Dobrowolski
+(3032) Switching database to UTF8 encoding on upgrade to FA 2.4.
+ admin/db/maintenance_db.inc
+ admin/inst_upgrade.php
+ doc/api_changes.txt
+ includes/current_user.inc
+ includes/db/connect_db.inc
+ includes/lang/language.php
+ includes/session.inc
+ sql/alter2.4.php
+ version.php
+
+2012-06-22 16:05 +0200 Janusz Dobrowolski
+(3031) Standard invoicing icon used in prepayment invoicing inquire.
+ sales/inquiry/sales_orders_view.php
+
+2012-06-22 16:03 +0200 Janusz Dobrowolski
+(3030) Small fixes to deliveries sent in prepayment cycle.
+ sales/customer_delivery.php
+
+2012-06-18 21:13 +0200 Janusz Dobrowolski
+(3029) Further fixes to prepayment mode (updated init scripts and sql query in get_sales_order_header)
+ sales/includes/db/sales_order_db.inc
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-06-17 22:18 +0200 Janusz Dobrowolski
+(3028) 0000696: Additional permission level for other user's transactions edition.
+ gl/gl_bank.php
+ gl/gl_journal.php
+ includes/access_levels.inc
+ includes/current_user.inc
+ includes/data_checks.inc
+ purchasing/po_entry_items.php
+ purchasing/supplier_credit.php
+ purchasing/supplier_invoice.php
+ sales/customer_delivery.php
+ sales/customer_invoice.php
+ sales/sales_order_entry.php
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-06-16 11:44 +0200 Janusz Dobrowolski
+(3010) 0000593,0001093: Prepayments made against orders implemented.
+ admin/gl_setup.php
+ applications/customers.php
+ applications/suppliers.php
+ gl/includes/db/gl_db_accounts.inc
+ gl/includes/db/gl_db_trans.inc
+ includes/data_checks.inc
+ includes/db/allocations_db.inc
+ includes/db_pager.inc
+ includes/ui/allocation_cart.inc
+ includes/ui/ui_lists.inc
+ includes/ui/ui_view.inc
+ lang/new_language_template/LC_MESSAGES/empty.po
+ purchasing/includes/db/invoice_db.inc
+ purchasing/includes/db/po_db.inc
+ purchasing/includes/db/suppalloc_db.inc
+ purchasing/includes/po_class.inc
+ purchasing/includes/purchasing_db.inc
+ purchasing/includes/ui/po_ui.inc
+ purchasing/po_entry_items.php
+ purchasing/view/view_po.php
+ reporting/includes/doctext.inc
+ reporting/includes/pdf_report.inc
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep112.php
+ reporting/rep210.php
+ sales/customer_delivery.php
+ sales/customer_invoice.php
+ sales/includes/cart_class.inc
+ sales/includes/db/cust_trans_db.inc
+ sales/includes/db/custalloc_db.inc
+ sales/includes/db/sales_delivery_db.inc
+ sales/includes/db/sales_invoice_db.inc
+ sales/includes/db/sales_order_db.inc
+ sales/includes/sales_db.inc
+ sales/includes/ui/sales_order_ui.inc
+ sales/inquiry/customer_allocation_inquiry.php
+ sales/inquiry/sales_orders_view.php
+ sales/sales_order_entry.php
+ sales/view/view_invoice.php
+ sales/view/view_sales_order.php
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-06-15 13:36 +0200 Janusz Dobrowolski
+(3009) Fixes in sales reports to use debtor_trans.tax_included field instead of trans_tax_details.included_in_price
+ reporting/rep107.php
+ reporting/rep110.php
+ reporting/rep113.php
+ sql/alter2.4.sql
+
+2012-04-15 14:17 +0200 Janusz Dobrowolski
+(3008) Deny access to error.log via http.
+ .htaccess
+
+2012-04-15 13:43 +0200 Janusz Dobrowolski
+(3007) Cleanups
+ gl/gl_bank.php
+ gl/includes/db/gl_db_accounts.inc
+
+2012-04-15 11:23 +0200 Janusz Dobrowolski
+(3006) Correction in accruals to avoid skipping shorter months.
+ gl/accruals.php
+
+2012-04-15 11:10 +0200 Janusz Dobrowolski
+(3005) Cleanup in bank_account_reconcile.
+ gl/bank_account_reconcile.php
+
+2012-04-09 11:32 +0200 Joe Hunt
+(3004) Changed hardcoded trans days in inquiries (30) to be a user preference.
+ admin/display_prefs.php
+ gl/inquiry/bank_inquiry.php
+ gl/inquiry/gl_account_inquiry.php
+ gl/inquiry/gl_trial_balance.php
+ gl/inquiry/profit_loss.php
+ gl/inquiry/tax_inquiry.php
+ gl/view/accrual_trans.php
+ includes/current_user.inc
+ includes/prefs/userprefs.inc
+ inventory/inquiry/stock_movements.php
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/inquiry/po_search.php
+ purchasing/inquiry/po_search_completed.php
+ purchasing/inquiry/supplier_allocation_inquiry.php
+ purchasing/inquiry/supplier_inquiry.php
+ sales/inquiry/customer_allocation_inquiry.php
+ sales/inquiry/customer_inquiry.php
+ sales/inquiry/sales_deliveries_view.php
+ sales/inquiry/sales_orders_view.php
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-04-09 10:13 +0200 Joe Hunt
+(3003) 0001503: Request - fee account included in bank account table
+ gl/bank_transfer.php
+ gl/includes/db/gl_db_bank_accounts.inc
+ gl/includes/db/gl_db_banking.inc
+ gl/manage/bank_accounts.php
+ purchasing/includes/db/supp_payment_db.inc
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+ sales/includes/db/payment_db.inc
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-03-29 22:58 +0200 Joe Hunt
+(2991) Default Receival Days implemented. Maintained in System and GL Setup.
+ CHANGELOG.txt
+ admin/gl_setup.php
+ includes/prefs/sysprefs.inc
+ purchasing/includes/ui/po_ui.inc
+ sql/alter2.4.php
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
 2012-03-04 16:52 +0100 Joe Hunt
 (2982) Fixed typo in location variable.
  purchasing/includes/db/grn_db.inc
 
 2012-03-03 22:35 +0100 Janusz Dobrowolski
-(2980) Stable merged into unstable again (due to failure on binary file during previous merge).
+(2981) Stable merged into unstable again (due to failure on binary file during previous merge).
  .hgtags
  .htaccess
  CHANGELOG.txt
@@ -406,7 +573,7 @@ This is a changelog for FrontAccounting All releases.
  version.php
 
 2012-02-16 23:04 +0100 Janusz Dobrowolski
-(2979) Merged stable branch up to 2.3.10
+(2980) Merged stable branch up to 2.3.10
  .hgtags
  access/logout.php
  admin/attachments.php
@@ -446,7 +613,7 @@ This is a changelog for FrontAccounting All releases.
  install/isession.inc
 
 2012-02-16 13:57 +0100 Janusz Dobrowolski
-(2978) [0000598] Added tax_included field to debtor_trans table.
+(2979) [0000598] Added tax_included field to debtor_trans table.
  sales/includes/db/cust_trans_db.inc
  sales/includes/db/sales_credit_db.inc
  sales/includes/db/sales_delivery_db.inc
@@ -456,18 +623,38 @@ This is a changelog for FrontAccounting All releases.
  sql/en_US-new.sql
 
 2012-02-16 12:25 +0100 Janusz Dobrowolski
-(2977) Fixed 2.4 upgrade routines (column drop moved to post-upgrade cleanup).
+(2978) Fixed 2.4 upgrade routines (column drop moved to post-upgrade cleanup).
  sql/alter2.4.php
  sql/alter2.4.sql
 
 2012-02-16 11:19 +0100 Janusz Dobrowolski
-(2976) [0001174] Added bank account in customer branch record.
+(2977) [0001174] Added bank account in customer branch record.
  sql/alter2.4.sql
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
+2012-02-16 08:46 +0100 Joe Hunt
+(2976) 0000684: Space for Legal Text is not enough. Extended to a text field.
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-02-14 10:36 +0100 Joe Hunt
+(2975) 0001161: Fix index on stk_code in sales_order_details and item_code in purch_order_details.
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2012-02-14 10:17 +0100 Joe Hunt
+(2974) 0000698: Spare 'rate' field in tax_group_items
+ sql/alter2.4.sql
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+ taxes/db/tax_groups_db.inc
+ taxes/tax_groups.php
+
 2012-02-16 10:40 +0100 Janusz Dobrowolski
-(2975) [0001174] Adding bank account tnumber to customer branch record.
+(2919) [0001174] Adding bank account tnumber to customer branch record.
  gl/includes/db/gl_db_bank_accounts.inc
  includes/sysnames.inc
  includes/types.inc
@@ -477,37 +664,17 @@ This is a changelog for FrontAccounting All releases.
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
-2012-02-16 08:46 +0100 Joe Hunt
-(2974) 0000684: Space for Legal Text is not enough. Extended to a text field.
- sql/alter2.4.sql
- sql/en_US-demo.sql
- sql/en_US-new.sql
-
-2012-02-14 10:36 +0100 Joe Hunt
-(2973) 0001161: Fix index on stk_code in sales_order_details and item_code in purch_order_details.
- sql/alter2.4.sql
- sql/en_US-demo.sql
- sql/en_US-new.sql
-
-2012-02-14 10:17 +0100 Joe Hunt
-(2972) 0000698: Spare 'rate' field in tax_group_items
- sql/alter2.4.sql
- sql/en_US-demo.sql
- sql/en_US-new.sql
- taxes/db/tax_groups_db.inc
- taxes/tax_groups.php
-
 2011-09-18 11:03 +0200 Janusz Dobrowolski
-(2879) Additional fixes to last merge.
+(2880) Additional fixes to last merge.
  admin/db/company_db.inc
  gl/includes/db/gl_db_accounts.inc
 
 2011-09-06 10:47 +0200 Janusz Dobrowolski
-(2878) Added tag unstable_2_3_7 for changeset 4a14cd5b8bc8
+(2879) Added tag unstable_2_3_7 for changeset 4a14cd5b8bc8
  .hgtags
 
 2011-09-06 10:47 +0200 Janusz Dobrowolski
-(2877) Changes up to 2.3.7 merged into unstable branch.
+(2878) Changes up to 2.3.7 merged into unstable branch.
  .hgtags
  CHANGELOG.txt
  admin/backups.php
@@ -555,43 +722,43 @@ This is a changelog for FrontAccounting All releases.
  includes/ui/ui_view.inc
 
 2011-08-31 23:39 +0200 Joe Hunt
-(2873) 0001013: Bank Statement w/Reconcile for print incorporated in core.
+(2874) 0001013: Bank Statement w/Reconcile for print incorporated in core.
  reporting/rep602.php
  reporting/reports_main.php
 
 2011-08-19 10:04 +0200 Janusz Dobrowolski
-(2867) Due date should be preserved on purchase invoice edition start.
+(2868) Due date should be preserved on purchase invoice edition start.
  purchasing/includes/db/invoice_db.inc
 
 2011-07-13 14:52 +0200 Joe Hunt
-(2840) Fixed print of taxes on documents
+(2841) Fixed print of taxes on documents
  reporting/rep107.php
  reporting/rep109.php
  reporting/rep110.php
  reporting/rep209.php
 
 2011-07-13 14:00 +0200 Joe Hunt
-(2839) Rerun of tax_groups.php
+(2840) Rerun of tax_groups.php
  taxes/tax_groups.php
 
 2011-07-13 10:57 +0200 Joe Hunt
-(2838) Rerun of tax_groups_db.inc
+(2839) Rerun of tax_groups_db.inc
  taxes/db/tax_groups_db.inc
 
 2011-07-13 10:52 +0200 Joe Hunt
-(2837) Rerun of new tax group and shipping files
+(2838) Rerun of new tax group and shipping files
  includes/ui/ui_view.inc
  taxes/db/tax_groups_db.inc
  taxes/tax_calc.inc
  taxes/tax_groups.php
 
 2011-07-12 17:16 +0200 Joe Hunt
-(2836) Update of default COAs
+(2837) Update of default COAs
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
 2011-07-12 16:50 +0200 Joe Hunt
-(2835) 0000710: Shipping tax on all tax groups. And marking with tax type(s) it shall have.
+(2836) 0000710: Shipping tax on all tax groups. And marking with tax type(s) it shall have.
  sales/includes/cart_class.inc
  sql/alter2.4.sql
  taxes/db/tax_groups_db.inc
@@ -599,7 +766,7 @@ This is a changelog for FrontAccounting All releases.
  taxes/tax_groups.php
 
 2011-07-10 23:01 +0200 Janusz Dobrowolski
-(2832) Implemented journal entries with multiply virtual AR/AP subaccounts.
+(2793) Implemented journal entries with multiply virtual AR/AP subaccounts.
  admin/db/fiscalyears_db.inc
  gl/bank_account_reconcile.php
  gl/gl_journal.php
@@ -620,11 +787,11 @@ This is a changelog for FrontAccounting All releases.
  sql/alter2.4.sql
 
 2011-05-06 14:07 +0200 Janusz Dobrowolski
-(2766) Added tag unstable_2_3_4 for changeset dd39e5e145c7
+(2767) Added tag unstable_2_3_4 for changeset dd39e5e145c7
  .hgtags
 
 2011-05-06 14:05 +0200 Janusz Dobrowolski
-(2765) Merged changes up to version 2.3.4 into unstable.
+(2758) Merged changes up to version 2.3.4 into unstable.
  CHANGELOG.txt
  access/login.php
  access/logout.php
@@ -668,7 +835,7 @@ This is a changelog for FrontAccounting All releases.
  js/login.js
 
 2011-04-27 22:03 +0200 Janusz Dobrowolski
-(2756) Added Purchase Invice edition.
+(2743) Added Purchase Invice edition.
  includes/app_entries.inc
  includes/db/inventory_db.inc
  includes/references.inc
@@ -682,11 +849,11 @@ This is a changelog for FrontAccounting All releases.
  purchasing/supplier_invoice.php
 
 2011-04-01 15:54 +0200 Janusz Dobrowolski
-(2711) Added file for FA framework changes documentation.
+(2708) Added file for FA framework changes documentation.
  doc/api_changes.txt
 
 2011-04-01 15:45 +0200 Janusz Dobrowolski
-(2710) Fixed upgrade routines, reorganized db_export and company preferences related functions.
+(2707) Fixed upgrade routines, reorganized db_export and company preferences related functions.
 This removes problems with databases spread over multiply hosts and make possible db_export to
 central backup directory.
  admin/db/company_db.inc
@@ -699,25 +866,25 @@ central backup directory.
  sql/alter2.4.php
 
 2011-03-23 18:42 +0100 Janusz Dobrowolski
-(2693) Blocked purchase invoice and delivery entry for closed date.
+(2694) Blocked purchase invoice and delivery entry for closed date.
  purchasing/po_entry_items.php
  purchasing/po_receive_items.php
  purchasing/supplier_invoice.php
 
 2011-01-26 15:01 +0000 Janusz Dobrowolski
-(2629) Transactions will remain closed after after fiscal year was reopened.
+(2630) Transactions will remain closed after after fiscal year was reopened.
  admin/db/fiscalyears_db.inc
 
 2011-01-26 14:58 +0000 Janusz Dobrowolski
-(2628) Added date check against closed fiscal year.
+(2629) Added date check against closed fiscal year.
  gl/manage/close_period.php
 
 2011-01-26 13:02 +0000 Janusz Dobrowolski
-(2627) Added closing transactions on selected date, reorganized WO costing.
+(2628) Added closing transactions on selected date, reorganized WO costing.
  CHANGELOG.txt
 
 2011-01-26 13:01 +0000 Janusz Dobrowolski
-(2626) Fixed transaction date check messages.
+(2627) Fixed transaction date check messages.
  gl/accruals.php
  gl/bank_transfer.php
  gl/gl_bank.php
@@ -737,7 +904,7 @@ central backup directory.
  sales/sales_order_entry.php
 
 2011-01-26 12:59 +0000 Janusz Dobrowolski
-(2625) Reorganized work order costing to make corect registration of costs in journal.
+(2626) Reorganized work order costing to make corect registration of costs in journal.
  includes/sysnames.inc
  includes/types.inc
  includes/ui/ui_view.inc
@@ -752,12 +919,12 @@ central backup directory.
  sql/alter2.4.sql
 
 2011-01-26 12:56 +0000 Janusz Dobrowolski
-(2624) Fixed transaction date check message.
+(2625) Fixed transaction date check message.
  manufacturing/work_order_add_finished.php
  manufacturing/work_order_entry.php
 
 2011-01-26 12:53 +0000 Janusz Dobrowolski
-(2623) Added closing transactions up to selected date.
+(2624) Added closing transactions up to selected date.
  applications/generalledger.php
  config.default.php
  gl/includes/db/gl_db_trans.inc
@@ -772,53 +939,53 @@ central backup directory.
  themes/default/images/closed.png
 
 2011-01-26 12:46 +0000 Janusz Dobrowolski
-(2622) Added system tale for transaction edition entry points.
+(2623) Added system tale for transaction edition entry points.
  includes/app_entries.inc
  includes/session.inc
 
 2011-01-26 12:46 +0000 Janusz Dobrowolski
-(2621) Added check_user_access helper.
+(2622) Added check_user_access helper.
  includes/current_user.inc
 
 2011-01-26 12:45 +0000 Janusz Dobrowolski
-(2620) Added check for closed transactions.
+(2621) Added check for closed transactions.
  includes/data_checks.inc
 
 2011-01-26 12:45 +0000 Janusz Dobrowolski
-(2619) Added check for closed date.
+(2620) Added check for closed date.
  includes/date_functions.inc
 
 2011-01-26 12:44 +0000 Janusz Dobrowolski
-(2618) Added missing tax_algorithm retrieval in read_po_header()
+(2619) Added missing tax_algorithm retrieval in read_po_header()
  purchasing/includes/db/po_db.inc
 
 2011-01-26 12:42 +0000 Janusz Dobrowolski
-(2617) Fixed bug in set_company_pref()
+(2618) Fixed bug in set_company_pref()
  admin/db/company_db.inc
 
 2011-01-26 12:32 +0000 Janusz Dobrowolski
-(2616) Fixed buggy qoh check message.
+(2617) Fixed buggy qoh check message.
  manufacturing/work_order_issue.php
 
 2011-01-06 22:48 +0000 Janusz Dobrowolski
-(2591) Upgrade procedures for 2.4
+(2592) Upgrade procedures for 2.4
  sql/alter2.4.php
  sql/alter2.4.sql
 
 2011-01-06 21:33 +0000 Janusz Dobrowolski
-(2590) 'grn_clearing_act' pref initialization moved to 2.4 upgrade routines.
+(2591) 'grn_clearing_act' pref initialization moved to 2.4 upgrade routines.
  admin/gl_setup.php
 
 2011-01-06 20:57 +0000 Janusz Dobrowolski
-(2589) Initialized upgrade procedures for FA 2.4
+(2590) Initialized upgrade procedures for FA 2.4
  CHANGELOG.txt
 
 2011-01-06 20:18 +0000 Janusz Dobrowolski
-(2588) Added cash payment in purchasing Direct Invoice, added tax calculation algorithm selection for company/supplier.
+(2589) Added cash payment in purchasing Direct Invoice, added tax calculation algorithm selection for company/supplier.
  CHANGELOG.txt
 
 2011-01-06 20:16 +0000 Janusz Dobrowolski
-(2587) Added tax calcualtion algorithm selection in sales and purchasing, driven by  company/supplier setting.
+(2588) Added tax calcualtion algorithm selection in sales and purchasing, driven by  company/supplier setting.
  admin/gl_setup.php
  includes/sysnames.inc
  includes/types.inc
@@ -838,16 +1005,16 @@ central backup directory.
  taxes/tax_calc.inc
 
 2011-01-06 20:14 +0000 Janusz Dobrowolski
-(2586) Added cash payment and tax calculation algorithm selection in pucrhase Direct Invoice.
+(2587) Added cash payment and tax calculation algorithm selection in pucrhase Direct Invoice.
  purchasing/includes/ui/po_ui.inc
  purchasing/po_entry_items.php
 
 2011-01-06 20:12 +0000 Janusz Dobrowolski
-(2585) Updated sources version.
+(2586) Updated sources version.
  version.php
 
 2011-01-04 17:32 +0000 Janusz Dobrowolski
-(2584) Merged changes from mai trunk up to 2.3.1
+(2585) Merged changes from mai trunk up to 2.3.1
  CHANGELOG.txt
  admin/create_coy.php
  admin/db/company_db.inc
@@ -927,20 +1094,20 @@ central backup directory.
  version.php
 
 2010-12-09 12:53 +0000 Janusz Dobrowolski
-(2535) Release date in changelog fixed
+(2536) Release date in changelog fixed
  CHANGELOG.txt
 
 2010-12-09 12:45 +0000 Joe Hunt
-(2534) Release 2.3.0
+(2535) Release 2.3.0
  CHANGELOG.txt
  version.php
 
 2010-12-09 11:12 +0000 Janusz Dobrowolski
-(2533) Fixed bugs 312-314, imporved debug error handling, updated gettext template.
+(2534) Fixed bugs 312-314, imporved debug error handling, updated gettext template.
  CHANGELOG.txt
 
 2010-12-09 11:09 +0000 Janusz Dobrowolski
-(2532) [0000313] Fixed multiply vulnerabilities.
+(2533) [0000313] Fixed multiply vulnerabilities.
  dimensions/includes/dimensions_db.inc
  includes/banking.inc
  includes/data_checks.inc
@@ -950,118 +1117,118 @@ central backup directory.
  sales/includes/sales_db.inc
 
 2010-12-09 11:07 +0000 Janusz Dobrowolski
-(2531) Debug backtrace on all errors when go_debug is set to 2
+(2532) Debug backtrace on all errors when go_debug is set to 2
  includes/errors.inc
  includes/ui/ui_msgs.inc
  includes/ui/ui_view.inc
 
 2010-12-09 11:06 +0000 Janusz Dobrowolski
-(2530) Added SetFontSize method for better compatibility with pdf version.
+(2531) Added SetFontSize method for better compatibility with pdf version.
  reporting/includes/excel_report.inc
 
 2010-12-09 11:06 +0000 Janusz Dobrowolski
-(2529) Fixed sql assembly in get_account_types.
+(2530) Fixed sql assembly in get_account_types.
  gl/includes/db/gl_db_account_types.inc
 
 2010-12-09 11:05 +0000 Janusz Dobrowolski
-(2528) [0000312] Prevented directory traversal
+(2529) [0000312] Prevented directory traversal
  admin/attachments.php
  admin/company_preferences.php
  admin/display_prefs.php
 
 2010-12-09 11:04 +0000 Janusz Dobrowolski
-(2527) [0000314] Fixed session fixation vulnerability
+(2528) [0000314] Fixed session fixation vulnerability
  includes/session.inc
 
 2010-12-09 11:03 +0000 Janusz Dobrowolski
-(2526) Updated to current sorces
+(2527) Updated to current sorces
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-12-08 13:27 +0000 Janusz Dobrowolski
-(2525) Added errors.inc inclusion in isession.inc
+(2526) Added errors.inc inclusion in isession.inc
  CHANGELOG.txt
  install/isession.inc
 
 2010-12-07 16:04 +0000 Janusz Dobrowolski
-(2524) Additional fix to error handling.
+(2525) Additional fix to error handling.
  CHANGELOG.txt
  includes/errors.inc
 
 2010-12-07 12:09 +0000 Janusz Dobrowolski
-(2523) Imporved eror handling, aded missing hooks class methods placeholders.
+(2524) Imporved eror handling, aded missing hooks class methods placeholders.
  CHANGELOG.txt
 
 2010-12-07 12:08 +0000 Janusz Dobrowolski
-(2522) Improved error handling.
+(2523) Improved error handling.
  admin/inst_module.php
  includes/main.inc
  includes/session.inc
 
 2010-12-07 12:07 +0000 Janusz Dobrowolski
-(2521) Added missing hook class methods placeholders.
+(2522) Added missing hook class methods placeholders.
  includes/hooks.inc
 
 2010-12-07 12:05 +0000 Janusz Dobrowolski
-(2520) Changes error_reporting parameter acording to tip in php manual.
+(2521) Changes error_reporting parameter acording to tip in php manual.
  config.default.php
 
 2010-12-07 10:12 +0000 Janusz Dobrowolski
-(2519) typo fixed
+(2520) typo fixed
  config.default.php
 
 2010-12-07 10:12 +0000 Janusz Dobrowolski
-(2518) Typo fixed.
+(2519) Typo fixed.
  reporting/includes/tcpdf.php
 
 2010-12-07 08:05 +0000 Janusz Dobrowolski
-(2517) Fixed multiply small issues mainly related to php5.3.
+(2518) Fixed multiply small issues mainly related to php5.3.
  CHANGELOG.txt
 
 2010-12-07 08:04 +0000 Janusz Dobrowolski
-(2516) Fixed multiply strict warnings, fixed error handling on php 5.3
+(2517) Fixed multiply strict warnings, fixed error handling on php 5.3
  config.default.php
  reporting/includes/class.pdf.inc
  reporting/includes/pdf_report.inc
  reporting/includes/tcpdf.php
 
 2010-12-07 08:02 +0000 Janusz Dobrowolski
-(2515) Fixed uploaded file name test
+(2516) Fixed uploaded file name test
  admin/backups.php
 
 2010-12-07 08:01 +0000 Janusz Dobrowolski
-(2514) Voided transactions should not be presented in GL inquiry.
+(2515) Voided transactions should not be presented in GL inquiry.
  gl/includes/db/gl_db_trans.inc
 
 2010-12-07 08:00 +0000 Janusz Dobrowolski
-(2513) Missing tags argument in display_type call
+(2514) Missing tags argument in display_type call
  reporting/rep705.php
 
 2010-12-03 12:34 +0000 Janusz Dobrowolski
-(2512) Fixed company prefs refresh after upgrade/restore, some smaller clenaups.
+(2513) Fixed company prefs refresh after upgrade/restore, some smaller clenaups.
  CHANGELOG.txt
 
 2010-12-03 12:32 +0000 Janusz Dobrowolski
-(2511) Clenaups.
+(2512) Clenaups.
  includes/ui/ui_lists.inc
  sales/includes/ui/sales_order_ui.inc
 
 2010-12-03 12:32 +0000 Janusz Dobrowolski
-(2510) Added core translation support for modules.
+(2511) Added core translation support for modules.
  includes/hooks.inc
  includes/lang/gettext.php
 
 2010-12-03 12:28 +0000 Janusz Dobrowolski
-(2509) Imporved readibility.
+(2510) Imporved readibility.
  reporting/rep701.php
 
 2010-12-03 12:27 +0000 Janusz Dobrowolski
-(2508) Fixed company prefs refresh after upgrade/restore.
+(2509) Fixed company prefs refresh after upgrade/restore.
  admin/backups.php
  admin/db/company_db.inc
  admin/inst_upgrade.php
 
 2010-12-03 11:59 +0000 Joe Hunt
-(2507) Fixing year closure for earlier fiscal years. en_US-demo.sql
+(2508) Fixing year closure for earlier fiscal years. en_US-demo.sql
 Rerun of trial balance.
  CHANGELOG.txt
  gl/inquiry/gl_trial_balance.php
@@ -1069,60 +1236,60 @@ Rerun of trial balance.
  sql/en_US-demo.sql
 
 2010-12-03 10:25 +0000 Joe Hunt
-(2506) Creating a warning when opening balance in trial balance is not in balance,
+(2507) Creating a warning when opening balance in trial balance is not in balance,
  CHANGELOG.txt
  gl/inquiry/gl_trial_balance.php
  reporting/rep708.php
 
 2010-12-03 00:27 +0000 Joe Hunt
-(2505) Changed so it is not possible to select a from date bigger than fiscal year end in trial balance.
+(2506) Changed so it is not possible to select a from date bigger than fiscal year end in trial balance.
  CHANGELOG.txt
  gl/inquiry/gl_trial_balance.php
 
 2010-12-02 14:24 +0000 Joe Hunt
-(2504) When deleting a fiscal year, the open balances should share the same trans no.
+(2505) When deleting a fiscal year, the open balances should share the same trans no.
  CHANGELOG.txt
  admin/db/fiscalyears_db.inc
 
 2010-12-01 10:14 +0000 Joe Hunt
-(2503) Better test for correct balance accounts when closing fiscal year.
+(2504) Better test for correct balance accounts when closing fiscal year.
  CHANGELOG.txt
  admin/db/fiscalyears_db.inc
 
 2010-11-29 09:04 +0000 Janusz Dobrowolski
-(2502) Fixed display bug in view/print/void transaction, and problem with uploading sql files.
+(2503) Fixed display bug in view/print/void transaction, and problem with uploading sql files.
  CHANGELOG.txt
 
 2010-11-29 09:03 +0000 Janusz Dobrowolski
-(2501) [0000290] Can't upload files
+(2502) [0000290] Can't upload files
  admin/backups.php
 
 2010-11-29 09:02 +0000 Janusz Dobrowolski
-(2500) [0000289] Duplicate records in view/print/void transaction pager
+(2501) [0000289] Duplicate records in view/print/void transaction pager
  admin/db/transactions_db.inc
 
 2010-11-28 20:17 +0000 Janusz Dobrowolski
-(2499) Added Italian install wizard translation by Paolo Ardoino.
+(2500) Added Italian install wizard translation by Paolo Ardoino.
  CHANGELOG.txt
  install/isession.inc
  install/lang/it_IT/LC_MESSAGES/it_IT.mo
  install/lang/it_IT/LC_MESSAGES/it_IT.po
 
 2010-11-28 19:12 +0000 Janusz Dobrowolski
-(2498) Transaction names shortcuts added.
+(2499) Transaction names shortcuts added.
  CHANGELOG.txt
  includes/sysnames.inc
  reporting/includes/reports_classes.inc
 
 2010-11-28 13:06 +0000 Joe Hunt
-(2497) Removed possibility to use bank account in Direct Invoice. This
+(2498) Removed possibility to use bank account in Direct Invoice. This
 was an old method for handling Cash Payment. We now have better options.
  CHANGELOG.txt
  sales/includes/db/sales_invoice_db.inc
  sales/manage/customer_branches.php
 
 2010-11-26 14:24 +0000 Janusz Dobrowolski
-(2496) Improved reports menu display.
+(2497) Improved reports menu display.
  CHANGELOG.txt
  js/inserts.js
  js/reports.js
@@ -1131,135 +1298,135 @@ was an old method for handling Cash Payment. We now have better options.
  reporting/reports_main.php
 
 2010-11-26 10:10 +0000 Janusz Dobrowolski
-(2495) Fixed ugreports 283,285 and two other small fixes.
+(2496) Fixed ugreports 283,285 and two other small fixes.
  CHANGELOG.txt
 
 2010-11-26 10:09 +0000 Janusz Dobrowolski
-(2494) Fixed vulnerability on id paramater
+(2495) Fixed vulnerability on id paramater
  admin/db/security_db.inc
 
 2010-11-26 10:08 +0000 Janusz Dobrowolski
-(2493) Fixed hotkeys support after validation changes
+(2494) Fixed hotkeys support after validation changes
  js/inserts.js
 
 2010-11-26 10:07 +0000 Janusz Dobrowolski
-(2492) Fixed errors/warning due to leaved obsolete code.
+(2493) Fixed errors/warning due to leaved obsolete code.
  reporting/rep109.php
 
 2010-11-26 10:07 +0000 Janusz Dobrowolski
-(2491) Fixed tabs switching
+(2492) Fixed tabs switching
  sales/manage/customer_branches.php
 
 2010-11-24 18:02 +0000 Janusz Dobrowolski
-(2490) A couple of additional smaller fixes.
+(2491) A couple of additional smaller fixes.
  CHANGELOG.txt
 
 2010-11-24 18:01 +0000 Janusz Dobrowolski
-(2489) [0000281] Filename saitization added
+(2490) [0000281] Filename saitization added
  admin/attachments.php
  admin/db/maintenance_db.inc
  includes/main.inc
 
 2010-11-24 18:00 +0000 Janusz Dobrowolski
-(2488) Fixed period type display.
+(2489) Fixed period type display.
  gl/manage/gl_quick_entries.php
 
 2010-11-24 17:59 +0000 Janusz Dobrowolski
-(2487) Fixed errors display in included files.
+(2488) Fixed errors display in included files.
  includes/hooks.inc
 
 2010-11-24 17:58 +0000 Janusz Dobrowolski
-(2486) Fixed backup view, sanitization.
+(2487) Fixed backup view, sanitization.
  admin/backups.php
 
 2010-11-22 21:14 +0000 Janusz Dobrowolski
-(2485) Extended and improved hooks system, multiply smaller fixes.
+(2486) Extended and improved hooks system, multiply smaller fixes.
  CHANGELOG.txt
 
 2010-11-22 21:13 +0000 Janusz Dobrowolski
-(2484) Rewritten third-party module installation according to extended hooks system.
+(2485) Rewritten third-party module installation according to extended hooks system.
  admin/inst_module.php
 
 2010-11-22 21:12 +0000 Janusz Dobrowolski
-(2483) Tabs/menu/roles extensions moved to module hooks file, added (un)install hooks.
+(2484) Tabs/menu/roles extensions moved to module hooks file, added (un)install hooks.
  includes/access_levels.inc
  includes/packages.inc
  sql/alter2.3.php
 
 2010-11-22 21:10 +0000 Janusz Dobrowolski
-(2482) check_table helper moved.
+(2483) check_table helper moved.
  admin/db/maintenance_db.inc
  admin/inst_upgrade.php
 
 2010-11-22 21:09 +0000 Janusz Dobrowolski
-(2481) Integration of hooks provided by extensions.
+(2482) Integration of hooks provided by extensions.
  includes/hooks.inc
  includes/session.inc
 
 2010-11-22 21:09 +0000 Janusz Dobrowolski
-(2480) Hooks for tabs/mneu added.
+(2481) Hooks for tabs/mneu added.
  applications/application.php
  frontaccounting.php
 
 2010-11-22 21:08 +0000 Janusz Dobrowolski
-(2479) Cleanup
+(2480) Cleanup
  includes/main.inc
 
 2010-11-22 21:08 +0000 Janusz Dobrowolski
-(2478) Fixed long timeouts on localhost repo.
+(2479) Fixed long timeouts on localhost repo.
  includes/remote_url.inc
 
 2010-11-22 21:07 +0000 Janusz Dobrowolski
-(2477) Fixed input sanitization.
+(2478) Fixed input sanitization.
  reporting/prn_redirect.php
 
 2010-11-22 21:06 +0000 Janusz Dobrowolski
-(2476) Additional security related fixes.
+(2477) Additional security related fixes.
  .htaccess
 
 2010-11-22 21:05 +0000 Janusz Dobrowolski
-(2475) Fixed parameter sanitization in get_compan_extensions().
+(2476) Fixed parameter sanitization in get_compan_extensions().
  admin/db/company_db.inc
 
 2010-11-22 21:04 +0000 Janusz Dobrowolski
-(2474) Fixed db_close() helper.
+(2475) Fixed db_close() helper.
  includes/db/connect_db.inc
 
 2010-11-22 21:04 +0000 Janusz Dobrowolski
-(2473) Fixed bug in update_person_contact().
+(2474) Fixed bug in update_person_contact().
  includes/db/crm_contacts_db.inc
 
 2010-11-22 21:03 +0000 Janusz Dobrowolski
-(2472) Fixed bug in exrate return.
+(2473) Fixed bug in exrate return.
  gl/includes/db/gl_db_rates.inc
 
 2010-11-22 21:02 +0000 Janusz Dobrowolski
-(2471) Item type dispaincorrectd after change saving.
+(2472) Item type dispaincorrectd after change saving.
  inventory/manage/items.php
 
 2010-11-18 22:08 +0000 Joe Hunt
-(2470) Could not enter a year before other years (removed readonly begin)
+(2471) Could not enter a year before other years (removed readonly begin)
 and better check for first end year.
  CHANGELOG.txt
  admin/db/fiscalyears_db.inc
  admin/fiscalyears.php
 
 2010-11-18 10:36 +0000 Janusz Dobrowolski
-(2469) Updated language template, added spanish install wizard translation.
+(2470) Updated language template, added spanish install wizard translation.
  CHANGELOG.txt
 
 2010-11-18 10:31 +0000 Janusz Dobrowolski
-(2468) Updated including exclusive theme messages.
+(2469) Updated including exclusive theme messages.
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-11-18 10:30 +0000 Janusz Dobrowolski
-(2467) Added Spanish (Mexico) translation.
+(2468) Added Spanish (Mexico) translation.
  install/isession.inc
  install/lang/es_MX/LC_MESSAGES/es_MX.mo
  install/lang/es_MX/LC_MESSAGES/es_MX.po
 
 2010-11-18 00:49 +0000 Joe Hunt
-(2466) Scrambled graphic images to avoid unwanted downloads.
+(2467) Scrambled graphic images to avoid unwanted downloads.
  CHANGELOG.txt
  reporting/rep102.php
  reporting/rep202.php
@@ -1267,17 +1434,17 @@ and better check for first end year.
  reporting/rep707.php
 
 2010-11-16 14:10 +0000 Joe Hunt
-(2465) Added Work Order Entry menu link after Sales Order issue.
+(2466) Added Work Order Entry menu link after Sales Order issue.
  CHANGELOG.txt
  sales/sales_order_entry.php
 
 2010-11-16 13:52 +0000 Joe Hunt
-(2464) Minor change in class.graphic.inc
+(2465) Minor change in class.graphic.inc
  CHANGELOG.txt
  reporting/includes/class.graphic.inc
 
 2010-11-15 15:25 +0000 Janusz Dobrowolski
-(2463) Default font for graphics changed from Vera to LiberationSans-Regular.
+(2464) Default font for graphics changed from Vera to LiberationSans-Regular.
  CHANGELOG.txt
  reporting/fonts/LiberationSans-Regular.ttf
  reporting/fonts/Vera.ttf
@@ -1288,30 +1455,30 @@ and better check for first end year.
  reporting/rep707.php
 
 2010-11-15 12:13 +0000 Janusz Dobrowolski
-(2462) Fixed date legend in supplier documents, fixed text encoding in graphics.
+(2463) Fixed date legend in supplier documents, fixed text encoding in graphics.
  CHANGELOG.txt
 
 2010-11-15 12:12 +0000 Janusz Dobrowolski
-(2461) Fixed transaction date legend.
+(2462) Fixed transaction date legend.
  purchasing/includes/ui/po_ui.inc
 
 2010-11-15 12:11 +0000 Janusz Dobrowolski
-(2460) Fixed text encoding.
+(2461) Fixed text encoding.
  reporting/includes/class.graphic.inc
 
 2010-11-13 10:14 +0000 Janusz Dobrowolski
-(2459) Removed sparse postread hook.
+(2460) Removed sparse postread hook.
  sales/includes/db/sales_order_db.inc
 
 2010-11-13 09:38 +0000 Janusz Dobrowolski
-(2458) Established new hooks class convention.
+(2459) Established new hooks class convention.
  CHANGELOG.txt
  includes/hooks.inc
  includes/session.inc
  lang/new_language_template/locale.inc
 
 2010-11-13 09:19 +0000 Janusz Dobrowolski
-(2457) Added db_write/db_void hooks.
+(2458) Added db_write/db_void hooks.
  gl/includes/db/gl_db_banking.inc
  inventory/includes/db/items_adjust_db.inc
  inventory/includes/db/items_transfer_db.inc
@@ -1331,28 +1498,28 @@ and better check for first end year.
  sales/includes/db/sales_order_db.inc
 
 2010-11-13 09:18 +0000 Janusz Dobrowolski
-(2456) Old hooks superseded by new hooks API.
+(2457) Old hooks superseded by new hooks API.
  gl/includes/db/gl_db_rates.inc
  includes/ui/ui_view.inc
  reporting/rep709.php
 
 2010-11-13 09:16 +0000 Janusz Dobrowolski
-(2455) New hooks system added.
+(2456) New hooks system added.
  includes/hooks.inc
  includes/session.inc
 
 2010-11-12 12:17 +0000 Janusz Dobrowolski
-(2454) Added db_close() for optional use.
+(2455) Added db_close() for optional use.
  CHANGELOG.txt
  includes/db/connect_db.inc
 
 2010-11-12 11:37 +0000 Janusz Dobrowolski
-(2453) Added missing due date on direct purchase invoice, fixed QE edition ui, fixed Items name
+(2454) Added missing due date on direct purchase invoice, fixed QE edition ui, fixed Items name
  entry field length.
  CHANGELOG.txt
 
 2010-11-12 11:36 +0000 Janusz Dobrowolski
-(2452) Added missing due date on direct invoice entry.
+(2453) Added missing due date on direct invoice entry.
  purchasing/includes/db/invoice_db.inc
  purchasing/includes/po_class.inc
  purchasing/includes/supp_trans_class.inc
@@ -1361,75 +1528,75 @@ and better check for first end year.
  purchasing/po_entry_items.php
 
 2010-11-12 11:26 +0000 Janusz Dobrowolski
-(2451) Fixed maximum nam length.
+(2452) Fixed maximum nam length.
  inventory/manage/items.php
 
 2010-11-12 11:25 +0000 Janusz Dobrowolski
-(2450) Fixed a couple of edition ui bugs.
+(2451) Fixed a couple of edition ui bugs.
  gl/manage/gl_quick_entries.php
 
 2010-11-11 10:00 +0000 Janusz Dobrowolski
-(2449) Fixed multiply where cluese in db_pager and two other implode vulnerabilities.
+(2450) Fixed multiply where cluese in db_pager and two other implode vulnerabilities.
  CHANGELOG.txt
 
 2010-11-11 09:58 +0000 Janusz Dobrowolski
-(2448) Fixed implode() injection vulnerabilities.
+(2449) Fixed implode() injection vulnerabilities.
  includes/db/crm_contacts_db.inc
  sales/includes/db/cust_trans_details_db.inc
 
 2010-11-11 09:58 +0000 Janusz Dobrowolski
-(2447) Fixed sql_gen method for multiply extra where clauses.
+(2448) Fixed sql_gen method for multiply extra where clauses.
  includes/db_pager.inc
 
 2010-11-10 13:27 +0000 Janusz Dobrowolski
-(2446) Removed related report class when company does not use dimensions.
+(2447) Removed related report class when company does not use dimensions.
  CHANGELOG.txt
  reporting/includes/reports_classes.inc
 
 2010-11-10 11:42 +0000 Janusz Dobrowolski
-(2445) Additional fix for setting local_path_to_root in find_custom_file()
+(2446) Additional fix for setting local_path_to_root in find_custom_file()
  CHANGELOG.txt
  includes/main.inc
 
 2010-11-09 16:47 +0000 Joe Hunt
-(2444) [0000277] Changed so FA suggest the next begin day in new Fiscal Year (read only).
+(2445) [0000277] Changed so FA suggest the next begin day in new Fiscal Year (read only).
 But only if there are any fiscal years before. Otherwise is is normal.
  CHANGELOG.txt
  admin/db/fiscalyears_db.inc
  admin/fiscalyears.php
 
 2010-11-09 14:21 +0000 Janusz Dobrowolski
-(2443) Fixed admin login/password update.
+(2444) Fixed admin login/password update.
  CHANGELOG.txt
  install/index.php
 
 2010-11-09 13:49 +0000 Janusz Dobrowolski
-(2442) Session destroy on install finish added.
+(2443) Session destroy on install finish added.
  CHANGELOG.txt
  install/index.php
 
 2010-11-08 10:50 +0000 Janusz Dobrowolski
-(2441) Fixed support for translations in extensions modules reports.
+(2442) Fixed support for translations in extensions modules reports.
  CHANGELOG.txt
  includes/main.inc
  reporting/includes/class.pdf.inc
 
 2010-11-07 21:31 +0000 Janusz Dobrowolski
-(2440) Added validation hook on buttons
+(2441) Added validation hook on buttons
  CHANGELOG.txt
  js/inserts.js
 
 2010-11-07 19:22 +0000 Janusz Dobrowolski
-(2439) Enabled javascript updats on ajax _page_body refresh.
+(2440) Enabled javascript updats on ajax _page_body refresh.
  CHANGELOG.txt
  includes/ajax.inc
 
 2010-11-07 16:30 +0000 Janusz Dobrowolski
-(2438) Small fixes to emailing documents and report cleanups.
+(2439) Small fixes to emailing documents and report cleanups.
  CHANGELOG.txt
 
 2010-11-07 16:28 +0000 Janusz Dobrowolski
-(2437) Cleanup.
+(2438) Cleanup.
  reporting/includes/pdf_report.inc
  reporting/rep107.php
  reporting/rep109.php
@@ -1440,20 +1607,20 @@ But only if there are any fiscal years before. Otherwise is is normal.
  reporting/rep409.php
 
 2010-11-07 16:28 +0000 Janusz Dobrowolski
-(2436) Fixed multipart email structure.
+(2437) Fixed multipart email structure.
  reporting/includes/class.mail.inc
 
 2010-11-07 16:26 +0000 Janusz Dobrowolski
-(2435) Separate class for view and print links.
+(2436) Separate class for view and print links.
  includes/ui/ui_controls.inc
 
 2010-11-06 19:29 +0000 Janusz Dobrowolski
-(2434) Confirmation dialog added before transaction edition is abandoned, fixed contact edtion
+(2435) Confirmation dialog added before transaction edition is abandoned, fixed contact edtion
 issues.
  CHANGELOG.txt
 
 2010-11-06 19:28 +0000 Janusz Dobrowolski
-(2433) Helpers for js confirmation dialog before data entry is abandoned.
+(2434) Helpers for js confirmation dialog before data entry is abandoned.
  includes/ui/ui_controls.inc
  js/inserts.js
  themes/aqua/renderer.php
@@ -1461,93 +1628,93 @@ issues.
  themes/default/renderer.php
 
 2010-11-06 19:27 +0000 Janusz Dobrowolski
-(2432) Confirmaton dialog added before transaction edition is abandoned.
+(2433) Confirmaton dialog added before transaction edition is abandoned.
  sales/includes/sales_ui.inc
  sales/sales_order_entry.php
 
 2010-11-06 19:25 +0000 Janusz Dobrowolski
-(2431) Rearanged contacts edition.
+(2432) Rearanged contacts edition.
  includes/db/crm_contacts_db.inc
  includes/ui/contacts_view.inc
  sales/includes/db/branches_db.inc
 
 2010-11-06 19:23 +0000 Janusz Dobrowolski
-(2430) [0000274] Contact edition failed after last security fixes.
+(2431) [0000274] Contact edition failed after last security fixes.
  includes/session.inc
 
 2010-11-05 14:55 +0000 Janusz Dobrowolski
-(2429) Two bugs in installer wizd fixed.
+(2430) Two bugs in installer wizd fixed.
  CHANGELOG.txt
  install/index.php
 
 2010-11-04 16:14 +0000 Janusz Dobrowolski
-(2428) Cleanup
+(2429) Cleanup
  reporting/includes/Workbook.php
 
 2010-11-04 15:21 +0000 Janusz Dobrowolski
-(2427) Fixed broken excel reportsfor non-latin1 encoding.
+(2428) Fixed broken excel reportsfor non-latin1 encoding.
  CHANGELOG.txt
  reporting/includes/Workbook.php
 
 2010-11-03 07:06 +0000 Janusz Dobrowolski
-(2426) Additional request input cleanup.
+(2427) Additional request input cleanup.
  CHANGELOG.txt
  includes/session.inc
 
 2010-11-02 11:12 +0000 Joe Hunt
-(2425) Rerun. Bug in amount selection
+(2426) Rerun. Bug in amount selection
  reporting/rep103.php
 
 2010-11-02 09:12 +0000 Joe Hunt
-(2424) Report Customer Details didn't show up correctly in Excel
+(2425) Report Customer Details didn't show up correctly in Excel
  CHANGELOG.txt
  reporting/rep103.php
 
 2010-10-30 13:35 +0000 Janusz Dobrowolski
-(2423) A couple of various small fixes.
+(2424) A couple of various small fixes.
  CHANGELOG.txt
 
 2010-10-30 13:34 +0000 Janusz Dobrowolski
-(2422) Added group code in account groups list selector.
+(2423) Added group code in account groups list selector.
  includes/ui/ui_lists.inc
 
 2010-10-30 13:34 +0000 Janusz Dobrowolski
-(2421) Normalized add_domain() params  in native phpgettext classes
+(2422) Normalized add_domain() params  in native phpgettext classes
  includes/lang/gettext.php
 
 2010-10-30 13:33 +0000 Janusz Dobrowolski
-(2420) submit_js_confirm() fixed to be used on button loadable via ajax.
+(2421) submit_js_confirm() fixed to be used on button loadable via ajax.
  includes/ui/ui_input.inc
 
 2010-10-30 13:32 +0000 Janusz Dobrowolski
-(2419) Validation code was skipped by esc/ctrlenter hotkeys.
+(2420) Validation code was skipped by esc/ctrlenter hotkeys.
  js/inserts.js
 
 2010-10-30 13:32 +0000 Janusz Dobrowolski
-(2418) Fixed reference display in  credit note edition.
+(2419) Fixed reference display in  credit note edition.
  sales/includes/ui/sales_credit_ui.inc
 
 2010-10-29 16:16 +0000 Janusz Dobrowolski
-(2417) Fixed input cleanup for arrays.
+(2418) Fixed input cleanup for arrays.
  CHANGELOG.txt
  includes/session.inc
 
 2010-10-28 16:26 +0000 Janusz Dobrowolski
-(2416) Fixed warning on CN edition due to not existing ref POST.
+(2417) Fixed warning on CN edition due to not existing ref POST.
  sales/credit_note_entry.php
 
 2010-10-28 16:13 +0000 Janusz Dobrowolski
-(2415) Fixed db error on free hand credit invoice reedition.
+(2416) Fixed db error on free hand credit invoice reedition.
  CHANGELOG.txt
  sales/includes/cart_class.inc
 
 2010-10-28 09:36 +0000 Janusz Dobrowolski
-(2414) MySQL related functions moved to connect_db.inc, fixed mailing under PHP with suhoshin
+(2415) MySQL related functions moved to connect_db.inc, fixed mailing under PHP with suhoshin
 patch.
  CHANGELOG.txt
 
 2010-10-28 09:30 +0000 Janusz Dobrowolski
-(2413) All mysql specific calls moved to connect_db.inc
+(2414) All mysql specific calls moved to connect_db.inc
  admin/db/maintenance_db.inc
  admin/inst_theme.php
  includes/current_user.inc
@@ -1556,25 +1723,25 @@ patch.
  install/index.php
 
 2010-10-28 09:29 +0000 Janusz Dobrowolski
-(2412) Fixed mailing problems under php with suhohin patch.
+(2413) Fixed mailing problems under php with suhohin patch.
  reporting/includes/class.mail.inc
 
 2010-10-27 00:02 +0000 Joe Hunt
-(2411) Rerun
+(2412) Rerun
  includes/ui/view_package.php
 
 2010-10-26 23:52 +0000 Joe Hunt
-(2410) Layout improvements
+(2411) Layout improvements
  CHANGELOG.txt
  includes/ui/view_package.php
 
 2010-10-26 16:29 +0000 Janusz Dobrowolski
-(2409) Fixed installer (sys_prefs update error).
+(2410) Fixed installer (sys_prefs update error).
  CHANGELOG.txt
  install/index.php
 
 2010-10-26 11:35 +0000 Joe Hunt
-(2408) 0000272: Manufacturing Bugs. Issue GL items moved to wo_work_order_issues.inc
+(2409) 0000272: Manufacturing Bugs. Issue GL items moved to wo_work_order_issues.inc
 Layout improvements in work order inquiry and various work order forms
  CHANGELOG.txt
  manufacturing/includes/db/work_order_issues_db.inc
@@ -1587,68 +1754,68 @@ Layout improvements in work order inquiry and various work order forms
  manufacturing/work_order_release.php
 
 2010-10-25 16:38 +0000 Janusz Dobrowolski
-(2407) Fixed tabbed_content behaviour.
+(2408) Fixed tabbed_content behaviour.
  CHANGELOG.txt
  includes/ui/ui_controls.inc
 
 2010-10-25 08:48 +0000 Janusz Dobrowolski
-(2406) Version 2.3RC3
+(2407) Version 2.3RC3
  CHANGELOG.txt
  version.php
 
 2010-10-22 13:48 +0000 Janusz Dobrowolski
-(2405) Fixed manuall package install and extension upgrade.
+(2406) Fixed manuall package install and extension upgrade.
  CHANGELOG.txt
 
 2010-10-22 13:47 +0000 Janusz Dobrowolski
-(2404) Old package version was not uninstalled on upgrade.
+(2405) Old package version was not uninstalled on upgrade.
  includes/packages.inc
 
 2010-10-22 13:46 +0000 Janusz Dobrowolski
-(2403) Fixed sql init for manually added modules.
+(2404) Fixed sql init for manually added modules.
  admin/inst_module.php
 
 2010-10-22 13:43 +0000 Janusz Dobrowolski
-(2402) New installer translation.
+(2403) New installer translation.
  install/lang/el_GR/LC_MESSAGES/el_GR.mo
  install/lang/el_GR/LC_MESSAGES/el_GR.po
 
 2010-10-22 13:42 +0000 Janusz Dobrowolski
-(2401) Added greek translation.
+(2402) Added greek translation.
  install/isession.inc
 
 2010-10-22 11:59 +0000 Janusz Dobrowolski
-(2400) Added greek installer translation.
+(2401) Added greek installer translation.
  CHANGELOG.txt
 
 2010-10-21 14:39 +0000 Janusz Dobrowolski
-(2399) Improper amount sign in bank payment view fixed.
+(2400) Improper amount sign in bank payment view fixed.
  CHANGELOG.txt
  gl/view/gl_payment_view.php
 
 2010-10-21 14:38 +0000 Janusz Dobrowolski
-(2398) Fixed cust_trans update on bank trans change.
+(2399) Fixed cust_trans update on bank trans change.
  gl/gl_bank.php
  gl/includes/db/gl_db_banking.inc
 
 2010-10-21 12:28 +0000 Janusz Dobrowolski
-(2397) Fixed foreign currency bank deposit/payment reedition.
+(2398) Fixed foreign currency bank deposit/payment reedition.
  gl/gl_bank.php
  gl/includes/ui/gl_bank_ui.inc
 
 2010-10-21 10:39 +0000 Joe Hunt
-(2396) Added credit info in supplier invoice and supplier credit note.
+(2397) Added credit info in supplier invoice and supplier credit note.
  CHANGELOG.txt
  purchasing/includes/db/invoice_db.inc
  purchasing/includes/supp_trans_class.inc
  purchasing/includes/ui/invoice_ui.inc
 
 2010-10-21 10:23 +0000 Janusz Dobrowolski
-(2395) [0000270] fixed invalid next refference update, lots of cleanups and optimizations
+(2396) [0000270] fixed invalid next refference update, lots of cleanups and optimizations
  CHANGELOG.txt
 
 2010-10-21 10:21 +0000 Janusz Dobrowolski
-(2394) Various code cleanups
+(2395) Various code cleanups
  gl/includes/db/gl_db_trans.inc
  gl/inquiry/journal_inquiry.php
  includes/date_functions.inc
@@ -1657,163 +1824,163 @@ Layout improvements in work order inquiry and various work order forms
  includes/references.inc
 
 2010-10-21 10:18 +0000 Janusz Dobrowolski
-(2393) Opitimized bank transaction edition code, [0000270] invalid next reference update.
+(2394) Opitimized bank transaction edition code, [0000270] invalid next reference update.
  gl/gl_bank.php
  gl/includes/db/gl_db_bank_trans.inc
  gl/includes/db/gl_db_banking.inc
 
 2010-10-21 10:11 +0000 Janusz Dobrowolski
-(2392) add_supp_trans and reinsert_supp_trans merged into write_supp_trans
+(2393) add_supp_trans and reinsert_supp_trans merged into write_supp_trans
  purchasing/includes/db/invoice_db.inc
  purchasing/includes/db/supp_payment_db.inc
  purchasing/includes/db/supp_trans_db.inc
 
 2010-10-21 10:09 +0000 Janusz Dobrowolski
-(2391) Additional sql parameters cleanup.
+(2392) Additional sql parameters cleanup.
  purchasing/includes/db/suppalloc_db.inc
 
 2010-10-21 10:07 +0000 Janusz Dobrowolski
-(2390) Additional sq parameters cleanup.
+(2391) Additional sq parameters cleanup.
  sales/includes/db/cust_trans_db.inc
  sales/includes/db/custalloc_db.inc
  sales/includes/db/sales_order_db.inc
  sales/includes/sales_db.inc
 
 2010-10-21 10:07 +0000 Janusz Dobrowolski
-(2389) Code cleanup
+(2390) Code cleanup
  sales/view/view_dispatch.php
  sales/view/view_invoice.php
 
 2010-10-21 10:04 +0000 Janusz Dobrowolski
-(2388) Added input cleanup
+(2389) Added input cleanup
  includes/session.inc
 
 2010-10-19 08:01 +0000 Janusz Dobrowolski
-(2387) New combo3 class searchable from start of the code (used in gl accounts list).
+(2388) New combo3 class searchable from start of the code (used in gl accounts list).
  CHANGELOG.txt
  includes/ui/ui_lists.inc
  js/inserts.js
 
 2010-10-17 09:12 +0000 Joe Hunt
-(2386) Changed Inventory Sales Report to use average cost by actual trans dates if non zero
+(2387) Changed Inventory Sales Report to use average cost by actual trans dates if non zero
  CHANGELOG.txt
  reporting/rep304.php
 
 2010-10-16 08:11 +0000 Joe Hunt
-(2385) [0000266] Added dimension selections in Profit Loss and Balance drilldown and Trial Balance
+(2386) [0000266] Added dimension selections in Profit Loss and Balance drilldown and Trial Balance
  CHANGELOG.txt
  gl/inquiry/balance_sheet.php
  gl/inquiry/gl_trial_balance.php
  gl/inquiry/profit_loss.php
 
 2010-10-15 21:45 +0000 Joe Hunt
-(2384) Rerun
+(2385) Rerun
  reporting/rep702.php
 
 2010-10-15 15:30 +0000 Joe Hunt
-(2383) [0000265] Changed Report List of Journal Entries to include balances.
+(2384) [0000265] Changed Report List of Journal Entries to include balances.
  CHANGELOG.txt
  reporting/rep702.php
 
 2010-10-15 07:38 +0000 Joe Hunt
-(2382) Customer Credit Note didn't update units when shifting items.
+(2383) Customer Credit Note didn't update units when shifting items.
  CHANGELOG.txt
  sales/includes/ui/sales_credit_ui.inc
 
 2010-10-14 22:06 +0000 Janusz Dobrowolski
-(2381) Fixed changelog
+(2382) Fixed changelog
  CHANGELOG.txt
 
 2010-10-14 09:54 +0000 Joe Hunt
-(2380) Check for empty class ID and better test for type/account id/name
+(2381) Check for empty class ID and better test for type/account id/name
  CHANGELOG.txt
  gl/manage/gl_account_classes.php
  gl/manage/gl_account_types.php
  gl/manage/gl_accounts.php
 
 2010-10-13 12:39 +0000 Janusz Dobrowolski
-(2379) Added inline company switching with set_global_connection()
+(2380) Added inline company switching with set_global_connection()
  admin/inst_upgrade.php
  includes/current_user.inc
  includes/db/connect_db.inc
  includes/errors.inc
 
 2010-10-13 12:38 +0000 Janusz Dobrowolski
-(2378) Warning instead of fatal error on invalid sales order document.
+(2379) Warning instead of fatal error on invalid sales order document.
  sales/includes/db/sales_order_db.inc
 
 2010-10-13 12:37 +0000 Janusz Dobrowolski
-(2377) Fixed document totals update.
+(2378) Fixed document totals update.
  sql/alter2.3.php
 
 2010-10-13 12:36 +0000 Janusz Dobrowolski
-(2376) Fixed cash only payment terms.
+(2377) Fixed cash only payment terms.
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
 2010-10-12 06:26 +0000 Janusz Dobrowolski
-(2375) Small strict mode script in upgrade sql file.
+(2376) Small strict mode script in upgrade sql file.
  CHANGELOG.txt
  sql/alter2.3.sql
 
 2010-10-11 07:49 +0000 Janusz Dobrowolski
-(2374) Updated gettext template.
+(2375) Updated gettext template.
  CHANGELOG.txt
 
 2010-10-11 07:47 +0000 Janusz Dobrowolski
-(2373) Updated po template
+(2374) Updated po template
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-10-11 07:01 +0000 Janusz Dobrowolski
-(2372) Allowed full edition of not used bank account.
+(2373) Allowed full edition of not used bank account.
  CHANGELOG.txt
  gl/manage/bank_accounts.php
 
 2010-10-11 06:42 +0000 Janusz Dobrowolski
-(2371) Fixed payment terms selection and POS handling in sales module
+(2372) Fixed payment terms selection and POS handling in sales module
  CHANGELOG.txt
 
 2010-10-11 06:41 +0000 Janusz Dobrowolski
-(2370) Fixed point of sale handling and terms selection
+(2371) Fixed point of sale handling and terms selection
  sales/includes/cart_class.inc
  sales/includes/db/sales_invoice_db.inc
  sales/includes/ui/sales_order_ui.inc
  sales/sales_order_entry.php
 
 2010-10-11 06:40 +0000 Janusz Dobrowolski
-(2369) Added payment terms in SO/SI view
+(2370) Added payment terms in SO/SI view
  sales/view/view_invoice.php
  sales/view/view_sales_order.php
 
 2010-10-11 06:40 +0000 Janusz Dobrowolski
-(2368) Added payment category parameter in sale_payment_list
+(2369) Added payment category parameter in sale_payment_list
  sales/customer_invoice.php
 
 2010-10-11 06:39 +0000 Janusz Dobrowolski
-(2367) Added temrs category parameter in cale_payment_list
+(2368) Added temrs category parameter in cale_payment_list
  includes/ui/ui_lists.inc
 
 2010-10-11 06:38 +0000 Janusz Dobrowolski
-(2366) Added payment terms categories
+(2367) Added payment terms categories
  includes/types.inc
 
 2010-10-10 16:14 +0000 Joe Hunt
-(2365) Rerun
+(2366) Rerun
  CHANGELOG.txt
 
 2010-10-10 16:05 +0000 Joe Hunt
-(2364) Release 2.3RC2
+(2365) Release 2.3RC2
  CHANGELOG.txt
  update.html
  version.php
 
 2010-10-10 15:39 +0000 Joe Hunt
-(2363) Layout improvements.
+(2364) Layout improvements.
  CHANGELOG.txt
  purchasing/view/view_supp_credit.php
 
 2010-10-10 13:29 +0000 Joe Hunt
-(2362) Fixing tax_included in gl_items.
+(2363) Fixing tax_included in gl_items.
  CHANGELOG.txt
  gl/includes/db/gl_db_trans.inc
  purchasing/includes/db/invoice_db.inc
@@ -1822,41 +1989,41 @@ Layout improvements in work order inquiry and various work order forms
  purchasing/includes/ui/invoice_ui.inc
 
 2010-10-10 09:32 +0000 Janusz Dobrowolski
-(2361) Added transaction ref display in cust/supp payments.
+(2362) Added transaction ref display in cust/supp payments.
  CHANGELOG.txt
  includes/ui/allocation_cart.inc
 
 2010-10-09 23:21 +0000 Joe Hunt
-(2360) Master bug in class supp_trans get_items_total. Minor bug in gl_db_trans.inc
+(2361) Master bug in class supp_trans get_items_total. Minor bug in gl_db_trans.inc
 Wrong tax report and wrong supp trans/gl records with gl item lines.
  CHANGELOG.txt
  gl/includes/db/gl_db_trans.inc
  purchasing/includes/supp_trans_class.inc
 
 2010-10-06 14:18 +0000 Janusz Dobrowolski
-(2359) Smaller fixes in gettext domain switching.
+(2360) Smaller fixes in gettext domain switching.
  CHANGELOG.txt
 
 2010-10-06 14:17 +0000 Janusz Dobrowolski
-(2358) Gettext switching clenaup.
+(2359) Gettext switching clenaup.
  applications/application.php
  frontaccounting.php
 
 2010-10-06 14:16 +0000 Janusz Dobrowolski
-(2357) Added helper for gettext domain switching.
+(2358) Added helper for gettext domain switching.
  includes/lang/gettext.php
 
 2010-10-06 14:15 +0000 Janusz Dobrowolski
-(2356) Fixed gettext for extension links.
+(2357) Fixed gettext for extension links.
  reporting/includes/reports_classes.inc
 
 2010-10-06 13:34 +0000 Joe Hunt
-(2355) [0000259] Item prices not transferring when using kit codes
+(2356) [0000259] Item prices not transferring when using kit codes
  CHANGELOG.txt
  sales/includes/sales_db.inc
 
 2010-10-06 10:44 +0000 Joe Hunt
-(2354) Option for saving report selections ($save_report_selection > 0 in config.php means days to save)
+(2355) Option for saving report selections ($save_report_selection > 0 in config.php means days to save)
 Excel reports were missing their headers (due to change in report system)
  CHANGELOG.txt
  config.default.php
@@ -1865,13 +2032,13 @@ Excel reports were missing their headers (due to change in report system)
  reporting/prn_redirect.php
 
 2010-10-05 19:09 +0000 Janusz Dobrowolski
-(2353) [0000258] Broken src_id fields after sales document edition.
+(2354) [0000258] Broken src_id fields after sales document edition.
  CHANGELOG.txt
  sales/includes/cart_class.inc
  sales/includes/sales_db.inc
 
 2010-10-05 13:18 +0000 Joe Hunt
-(2352) [00000257] Bad Layout in sales order inquiry etc. (long item descriptions)
+(2353) [00000257] Bad Layout in sales order inquiry etc. (long item descriptions)
 Other layout improvements.
  CHANGELOG.txt
  admin/fiscalyears.php
@@ -1885,152 +2052,152 @@ Other layout improvements.
  taxes/tax_types.php
 
 2010-10-05 09:42 +0000 Janusz Dobrowolski
-(2351) Fixed 2 small language selection issues in reports.
+(2352) Fixed 2 small language selection issues in reports.
  CHANGELOG.txt
 
 2010-10-05 09:41 +0000 Janusz Dobrowolski
-(2350) Fixed language file selection.
+(2351) Fixed language file selection.
  reporting/includes/class.pdf.inc
 
 2010-10-05 09:40 +0000 Janusz Dobrowolski
-(2349) Fixed contact type for language selection.
+(2350) Fixed contact type for language selection.
  reporting/rep107.php
 
 2010-10-04 10:28 +0000 Janusz Dobrowolski
-(2348) [0000252] Error during credit invoice processing for already allocated sales invoice.
+(2349) [0000252] Error during credit invoice processing for already allocated sales invoice.
  CHANGELOG.txt
  sales/includes/db/custalloc_db.inc
 
 2010-10-04 08:03 +0000 Joe Hunt
-(2347) Dimension Report doesn't show up with correct references
+(2348) Dimension Report doesn't show up with correct references
  CHANGELOG.txt
  reporting/rep501.php
 
 2010-10-01 13:16 +0000 Janusz Dobrowolski
-(2346) Added chinese installer translation and updated empty.po.
+(2347) Added chinese installer translation and updated empty.po.
  CHANGELOG.txt
 
 2010-10-01 13:14 +0000 Janusz Dobrowolski
-(2345) Added missing GL/sql messages
+(2346) Added missing GL/sql messages
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-10-01 13:10 +0000 Janusz Dobrowolski
-(2344) Added chinese simplified translation.
+(2345) Added chinese simplified translation.
  install/isession.inc
  install/lang/zh_CN/LC_MESSAGES/zh_CN.mo
  install/lang/zh_CN/LC_MESSAGES/zh_CN.po
 
 2010-09-28 20:54 +0000 Janusz Dobrowolski
-(2343) A couple of smaller fixes.
+(2344) A couple of smaller fixes.
  CHANGELOG.txt
 
 2010-09-28 20:53 +0000 Janusz Dobrowolski
-(2342) Missing gettext calls fixed.
+(2343) Missing gettext calls fixed.
  gl/inquiry/gl_account_inquiry.php
  purchasing/manage/suppliers.php
  sales/manage/customer_branches.php
  sales/manage/customers.php
 
 2010-09-28 20:52 +0000 Janusz Dobrowolski
-(2341) Fixed warning on multiply extesnsion access file inclusion.
+(2342) Fixed warning on multiply extesnsion access file inclusion.
  includes/access_levels.inc
 
 2010-09-28 20:51 +0000 Janusz Dobrowolski
-(2340) Updated template.
+(2341) Updated template.
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-09-28 19:44 +0000 Joe Hunt
-(2339) Division by zero error in graphics (Joe Hunt)
+(2340) Division by zero error in graphics (Joe Hunt)
  CHANGELOG.txt
  reporting/includes/class.graphic.inc
 
 2010-09-28 17:03 +0000 Janusz Dobrowolski
-(2338) Fixed reference update on SO edition.
+(2339) Fixed reference update on SO edition.
  CHANGELOG.txt
 
 2010-09-28 17:02 +0000 Janusz Dobrowolski
-(2337) Reference update should not change next reference.
+(2338) Reference update should not change next reference.
  includes/references.inc
 
 2010-09-28 17:02 +0000 Janusz Dobrowolski
-(2336) Reference update after SO edition.
+(2337) Reference update after SO edition.
  sales/includes/db/sales_order_db.inc
 
 2010-09-27 09:45 +0000 Janusz Dobrowolski
-(2335) Two small extension related fixes.
+(2336) Two small extension related fixes.
  CHANGELOG.txt
 
 2010-09-27 09:43 +0000 Janusz Dobrowolski
-(2334) Allowed optional path usage in set_icon  parameter
+(2335) Allowed optional path usage in set_icon  parameter
  includes/ui/ui_input.inc
 
 2010-09-27 09:41 +0000 Janusz Dobrowolski
-(2333) pageNumber property of TCPDF class made public.
+(2334) pageNumber property of TCPDF class made public.
  reporting/includes/fpdi/fpdi2tcpdf_bridge.php
 
 2010-09-23 16:22 +0000 Janusz Dobrowolski
-(2332) Three smaller fixes.
+(2333) Three smaller fixes.
  CHANGELOG.txt
 
 2010-09-23 16:22 +0000 Janusz Dobrowolski
-(2331) Additonal error logging helper.
+(2332) Additonal error logging helper.
  includes/ui/ui_view.inc
 
 2010-09-23 16:21 +0000 Janusz Dobrowolski
-(2330) Fixed translation for extensions menu options.
+(2331) Fixed translation for extensions menu options.
  applications/application.php
 
 2010-09-23 16:21 +0000 Janusz Dobrowolski
-(2329) Fixed focus behaviour.
+(2330) Fixed focus behaviour.
  includes/ajax.inc
 
 2010-09-23 08:08 +0000 Joe Hunt
-(2328) Rerun
+(2329) Rerun
  includes/lang/gettext.php
  reporting/includes/header2.inc
 
 2010-09-22 16:06 +0000 Janusz Dobrowolski
-(2327) Fixed delivery adress prinitng on sales documents.
+(2328) Fixed delivery adress prinitng on sales documents.
  CHANGELOG.txt
  reporting/includes/header2.inc
 
 2010-09-20 20:43 +0000 Janusz Dobrowolski
-(2326) Fixed third party module installation.
+(2327) Fixed third party module installation.
  CHANGELOG.txt
  admin/inst_module.php
 
 2010-09-17 12:10 +0000 Janusz Dobrowolski
-(2325) Fixed custom reports includes issue.
+(2326) Fixed custom reports includes issue.
  includes/main.inc
  reporting/prn_redirect.php
 
 2010-09-17 09:08 +0000 Janusz Dobrowolski
-(2324) Failproof repository reading and exchange rate retrieval.
+(2325) Failproof repository reading and exchange rate retrieval.
  CHANGELOG.txt
 
 2010-09-17 09:01 +0000 Janusz Dobrowolski
-(2323) External url reading made independent of php configuration.
+(2324) External url reading made independent of php configuration.
  gl/includes/db/gl_db_rates.inc
  includes/packages.inc
  includes/remote_url.inc
 
 2010-09-17 08:50 +0000 Janusz Dobrowolski
-(2322) Warning fixed
+(2323) Warning fixed
  includes/archive.inc
 
 2010-09-12 22:10 +0000 Joe Hunt
-(2321) Improved information in Bank Transfers
+(2322) Improved information in Bank Transfers
  CHANGELOG.txt
  gl/includes/db/gl_db_banking.inc
 
 2010-09-11 07:01 +0000 Janusz Dobrowolski
-(2320) Changed keys in debtors_master
+(2321) Changed keys in debtors_master
  CHANGELOG.txt
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
 2010-09-10 08:47 +0000 Joe Hunt
-(2319) Layout improvements
+(2320) Layout improvements
  CHANGELOG.txt
  gl/inquiry/gl_account_inquiry.php
  includes/ui/contacts_view.inc
@@ -2038,239 +2205,239 @@ Other layout improvements.
  manufacturing/manage/bom_edit.php
 
 2010-09-09 20:06 +0000 Janusz Dobrowolski
-(2318) Two smaller fixes.
+(2319) Two smaller fixes.
  CHANGELOG.txt
 
 2010-09-09 20:05 +0000 Janusz Dobrowolski
-(2317) Missing focus on first page display.
+(2318) Missing focus on first page display.
  sales/includes/ui/sales_order_ui.inc
 
 2010-09-09 20:04 +0000 Janusz Dobrowolski
-(2316) Invalid users table ne.
+(2317) Invalid users table ne.
  sql/alter2.3rc.sql
 
 2010-09-08 13:42 +0000 Joe Hunt
-(2315) Layout improvements in accruals.php
+(2316) Layout improvements in accruals.php
  CHANGELOG.txt
  gl/accruals.php
 
 2010-09-08 11:14 +0000 Joe Hunt
-(2314) Material cost updated when buying service items. Resulted in double COGS booking.
+(2315) Material cost updated when buying service items. Resulted in double COGS booking.
  CHANGELOG.txt
  purchasing/includes/db/grn_db.inc
  purchasing/includes/db/invoice_db.inc
  sales/includes/db/sales_delivery_db.inc
 
 2010-09-07 07:22 +0000 Joe Hunt
-(2313) Release 2.3 RC1
+(2314) Release 2.3 RC1
  CHANGELOG.txt
  version.php
 
 2010-09-07 06:33 +0000 Janusz Dobrowolski
-(2312) Ugly bug in javascript number entry formatting code.
+(2313) Ugly bug in javascript number entry formatting code.
  CHANGELOG.txt
  js/utils.js
 
 2010-09-06 22:23 +0000 Joe Hunt
-(2311) Removed all decimal roundings in cost price calculations
+(2312) Removed all decimal roundings in cost price calculations
  CHANGELOG.txt
  manufacturing/includes/db/work_orders_db.inc
  purchasing/includes/db/grn_db.inc
 
 2010-09-06 14:14 +0000 Janusz Dobrowolski
-(2310) Fixed new contact addition.
+(2311) Fixed new contact addition.
  CHANGELOG.txt
 
 2010-09-06 14:13 +0000 Janusz Dobrowolski
-(2309) Fixed error on new contact add.
+(2310) Fixed error on new contact add.
  includes/ui/contacts_view.inc
 
 2010-09-06 14:13 +0000 Janusz Dobrowolski
-(2308) Fixed crud editor mode passing.
+(2309) Fixed crud editor mode passing.
  includes/ui/simple_crud_class.inc
 
 2010-09-05 15:59 +0000 Joe Hunt
-(2307) Rerun
+(2308) Rerun
  CHANGELOG.txt
 
 2010-09-05 15:48 +0000 Joe Hunt
-(2306) Changed layout of Direct GRN/Invoice form and check for supp ref in invoice
+(2307) Changed layout of Direct GRN/Invoice form and check for supp ref in invoice
  CHANGELOG.txt
  purchasing/po_entry_items.php
 
 2010-09-05 09:14 +0000 Joe Hunt
-(2305) Wrong stock item code when processing supplier invoice
+(2306) Wrong stock item code when processing supplier invoice
  CHANGELOG.txt
  purchasing/includes/db/invoice_db.inc
 
 2010-09-05 07:15 +0000 Joe Hunt
-(2304) Release 2.3RC
+(2305) Release 2.3RC
  CHANGELOG.txt
  version.php
 
 2010-09-04 19:37 +0000 Janusz Dobrowolski
-(2303) Additonal fixes in install wizard.
+(2304) Additonal fixes in install wizard.
  CHANGELOG.txt
 
 2010-09-04 19:31 +0000 Janusz Dobrowolski
-(2302) Shorter line comments
+(2303) Shorter line comments
  install/lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-09-04 19:29 +0000 Janusz Dobrowolski
-(2301) Fixed installed_languages.php creation.
+(2302) Fixed installed_languages.php creation.
  install/index.php
 
 2010-09-04 19:28 +0000 Janusz Dobrowolski
-(2300) Page blocked during FA upgrade
+(2301) Page blocked during FA upgrade
  sales/sales_order_entry.php
 
 2010-09-04 19:25 +0000 Janusz Dobrowolski
-(2299) Fixed languages upgrade.
+(2300) Fixed languages upgrade.
  sql/alter2.3.php
 
 2010-09-03 13:57 +0000 Joe Hunt
-(2298) Rerun
+(2299) Rerun
  sales/customer_invoice.php
 
 2010-09-03 07:42 +0000 Joe Hunt
-(2297) Added possibility to put dimensions on Delivery from sales order
+(2298) Added possibility to put dimensions on Delivery from sales order
  CHANGELOG.txt
  sales/customer_invoice.php
 
 2010-09-02 23:58 +0000 Joe Hunt
-(2296) Added possibility to put dimensions on Delivery from sales order
+(2297) Added possibility to put dimensions on Delivery from sales order
 Changed update.html to be more readable
  CHANGELOG.txt
  sales/customer_delivery.php
  update.html
 
 2010-09-02 10:45 +0000 Janusz Dobrowolski
-(2295) Report form template dir moved to /reporting
+(2296) Report form template dir moved to /reporting
  CHANGELOG.txt
 
 2010-09-02 09:36 +0000 Janusz Dobrowolski
-(2294) Forms dir moved to /reporting
+(2295) Forms dir moved to /reporting
  reporting/forms/index.php
 
 2010-09-02 09:35 +0000 Janusz Dobrowolski
-(2293) Forms dir moved to /reporting.
+(2294) Forms dir moved to /reporting.
  reporting/includes/forms/index.php
 
 2010-08-30 16:13 +0000 Janusz Dobrowolski
-(2292) Missing parameter in display_type call in rep707
+(2293) Missing parameter in display_type call in rep707
  CHANGELOG.txt
  reporting/rep707.php
 
 2010-08-30 12:29 +0000 Janusz Dobrowolski
-(2291) Two small fixes.
+(2292) Two small fixes.
  CHANGELOG.txt
 
 2010-08-30 12:28 +0000 Janusz Dobrowolski
-(2290) Missing tags parameter in disply_type call
+(2291) Missing tags parameter in disply_type call
  reporting/rep706.php
 
 2010-08-30 12:27 +0000 Janusz Dobrowolski
-(2289) Fixed maxprec option in numer_format2
+(2290) Fixed maxprec option in numer_format2
  includes/current_user.inc
 
 2010-08-25 12:28 +0000 Janusz Dobrowolski
-(2288) Added taxes display for sales order/quotation.
+(2289) Added taxes display for sales order/quotation.
  CHANGELOG.txt
  reporting/rep109.php
  sales/includes/cart_class.inc
  sales/view/view_sales_order.php
 
 2010-08-24 13:39 +0000 Joe Hunt
-(2287) Removed old headerfunc in rep111.php (Sales Quotation)
+(2288) Removed old headerfunc in rep111.php (Sales Quotation)
  CHANGELOG.txt
  reporting/rep111.php
 
 2010-08-23 15:23 +0000 Janusz Dobrowolski
-(2286) Added german transaltion for install wizard.
+(2287) Added german transaltion for install wizard.
  install/isession.inc
  install/lang/de_DE/LC_MESSAGES/de_DE.mo
  install/lang/de_DE/LC_MESSAGES/de_DE.po
 
 2010-08-23 15:20 +0000 Janusz Dobrowolski
-(2285) Added german translation for install wizard.
+(2286) Added german translation for install wizard.
  CHANGELOG.txt
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-08-23 09:22 +0000 Janusz Dobrowolski
-(2284) A couple of bugfixes to last changes.
+(2285) A couple of bugfixes to last changes.
  CHANGELOG.txt
 
 2010-08-23 09:22 +0000 Janusz Dobrowolski
-(2283) Fixed maxprec formatting.
+(2284) Fixed maxprec formatting.
  includes/current_user.inc
  js/utils.js
 
 2010-08-23 09:21 +0000 Janusz Dobrowolski
-(2282) Fixed cogs account selection.
+(2283) Fixed cogs account selection.
  purchasing/includes/db/invoice_db.inc
 
 2010-08-23 09:21 +0000 Janusz Dobrowolski
-(2281) Fixed itax_included option update.
+(2282) Fixed itax_included option update.
  purchasing/manage/suppliers.php
 
 2010-08-23 09:20 +0000 Janusz Dobrowolski
-(2280) Small fix in layout
+(2281) Small fix in layout
  gl/manage/exchange_rates.php
 
 2010-08-23 08:54 +0000 Joe Hunt
-(2279) Period bug caused warning on no fiscal year. Had to be reduces by one.
+(2280) Period bug caused warning on no fiscal year. Had to be reduces by one.
  CHANGELOG.txt
  gl/accruals.php
 
 2010-08-22 19:27 +0000 Janusz Dobrowolski
-(2278) Compatibility bug in purchase posting and a couple of smaller fixes.
+(2279) Compatibility bug in purchase posting and a couple of smaller fixes.
  CHANGELOG.txt
 
 2010-08-22 19:26 +0000 Janusz Dobrowolski
-(2277) Extended number formatting to allow use maximum precision for 'max' specification.
+(2278) Extended number formatting to allow use maximum precision for 'max' specification.
  includes/current_user.inc
  js/utils.js
 
 2010-08-22 19:25 +0000 Janusz Dobrowolski
-(2276) Added purchase account special option for useing item's GL account.
+(2277) Added purchase account special option for useing item's GL account.
  purchasing/manage/suppliers.php
 
 2010-08-22 19:24 +0000 Janusz Dobrowolski
-(2275) Excluded default C locale frm listing
+(2276) Excluded default C locale frm listing
  admin/inst_lang.php
 
 2010-08-22 19:23 +0000 Janusz Dobrowolski
-(2274) Fixed mysql php extension test.
+(2275) Fixed mysql php extension test.
  includes/system_tests.inc
 
 2010-08-22 19:22 +0000 Janusz Dobrowolski
-(2273) Fixed exrate reedition.
+(2274) Fixed exrate reedition.
  gl/manage/exchange_rates.php
 
 2010-08-22 19:22 +0000 Janusz Dobrowolski
-(2272) Maximum precision for factor entry
+(2273) Maximum precision for factor entry
  inventory/purchasing_data.php
 
 2010-08-22 19:21 +0000 Janusz Dobrowolski
-(2271) Fixed backward compatibility for cogs GL account setup
+(2272) Fixed backward compatibility for cogs GL account setup
  purchasing/includes/db/invoice_db.inc
 
 2010-08-22 19:20 +0000 Janusz Dobrowolski
-(2270) Fixed  GL account selection on first display.
+(2271) Fixed  GL account selection on first display.
  purchasing/includes/ui/invoice_ui.inc
 
 2010-08-22 19:19 +0000 Janusz Dobrowolski
-(2269) Fixed bug in lang update, changed purchase account for suppliers to default
+(2270) Fixed bug in lang update, changed purchase account for suppliers to default
  sql/alter2.3rc.sql
  sql/en_US-demo.sql
 
 2010-08-20 08:08 +0000 Joe Hunt
-(2268) Improvements to bank inquiry credit/debit totals as well.
+(2269) Improvements to bank inquiry credit/debit totals as well.
  CHANGELOG.txt
  gl/inquiry/bank_inquiry.php
 
 2010-08-19 16:14 +0000 Joe Hunt
-(2267) View of backup scripts and attachments didn't work
+(2268) View of backup scripts and attachments didn't work
 Added more memo info in advanced manufacture / Chaitanya
 Added total debit/credit in gl_trans_view.inc / Chaitanya
  CHANGELOG.txt
@@ -2281,51 +2448,51 @@ Added total debit/credit in gl_trans_view.inc / Chaitanya
  manufacturing/includes/db/work_orders_quick_db.inc
 
 2010-08-13 16:24 +0000 Janusz Dobrowolski
-(2266) Fixed 'Continue' button direction
+(2267) Fixed 'Continue' button direction
  install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
  install/lang/ar_EG/LC_MESSAGES/ar_EG.po
 
 2010-08-13 07:27 +0000 Joe Hunt
-(2265) Added arabic translation for install wizard (thanks to Hameed, infotechaccountants)
+(2266) Added arabic translation for install wizard (thanks to Hameed, infotechaccountants)
  CHANGELOG.txt
  install/isession.inc
  install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
  install/lang/ar_EG/LC_MESSAGES/ar_EG.po
 
 2010-08-13 07:20 +0000 Janusz Dobrowolski
-(2264) Updated pt_BR installer translation.
+(2265) Updated pt_BR installer translation.
  CHANGELOG.txt
  install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
  install/lang/pt_BR/LC_MESSAGES/pt_BR.po
 
 2010-08-12 08:24 +0000 Janusz Dobrowolski
-(2263) [0000242] Databse error during credit note processing.
+(2264) [0000242] Databse error during credit note processing.
  sales/includes/db/sales_credit_db.inc
 
 2010-08-11 20:20 +0000 Janusz Dobrowolski
-(2262) Fixed portuguese language name.
+(2263) Fixed portuguese language name.
  install/isession.inc
 
 2010-08-11 20:05 +0000 Janusz Dobrowolski
-(2261) Added portuguese (Brasil) translation.
+(2262) Added portuguese (Brasil) translation.
  CHANGELOG.txt
 
 2010-08-11 19:59 +0000 Janusz Dobrowolski
-(2260) Added portuguese translation.
+(2261) Added portuguese translation.
  install/isession.inc
  install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
  install/lang/pt_BR/LC_MESSAGES/pt_BR.po
 
 2010-08-11 19:59 +0000 Janusz Dobrowolski
-(2259) Fixed encoding in header.
+(2260) Fixed encoding in header.
  install/lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-08-11 19:17 +0000 Janusz Dobrowolski
-(2258) Added dutch translation for install wizard, fixed two typos in gettextized messages.
+(2259) Added dutch translation for install wizard, fixed two typos in gettextized messages.
  CHANGELOG.txt
 
 2010-08-11 19:16 +0000 Janusz Dobrowolski
-(2257) Fixed two typos in translated messages.
+(2258) Fixed two typos in translated messages.
  includes/system_tests.inc
  install/lang/da_DK/LC_MESSAGES/da_DK.mo
  install/lang/da_DK/LC_MESSAGES/da_DK.po
@@ -2341,65 +2508,65 @@ Added total debit/credit in gl_trans_view.inc / Chaitanya
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-08-11 19:15 +0000 Janusz Dobrowolski
-(2256) Added dutch translation for install wizard.
+(2257) Added dutch translation for install wizard.
  install/isession.inc
  install/lang/nl_BE/LC_MESSAGES/nl_BE.mo
  install/lang/nl_BE/LC_MESSAGES/nl_BE.po
 
 2010-08-10 07:40 +0000 Janusz Dobrowolski
-(2255) Warning cleanup.
+(2256) Warning cleanup.
  includes/ajax.inc
  includes/lang/language.php
 
 2010-08-10 07:39 +0000 Janusz Dobrowolski
-(2254) Fixed tests for fresh new install.
+(2255) Fixed tests for fresh new install.
  includes/system_tests.inc
 
 2010-08-09 14:16 +0000 Janusz Dobrowolski
-(2253) Changed indonesian locale name to correct id_ID.
+(2254) Changed indonesian locale name to correct id_ID.
  CHANGELOG.txt
  install/isession.inc
  install/lang/id_ID/LC_MESSAGES/id_ID.mo
  install/lang/id_ID/LC_MESSAGES/id_ID.po
 
 2010-08-09 14:08 +0000 Janusz Dobrowolski
-(2252) Added indonesian translation for install wizard.
+(2253) Added indonesian translation for install wizard.
  CHANGELOG.txt
 
 2010-08-09 14:07 +0000 Janusz Dobrowolski
-(2251) Fixed Back button translation.
+(2252) Fixed Back button translation.
  install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
  install/lang/fr_FR/LC_MESSAGES/fr_FR.po
 
 2010-08-09 14:02 +0000 Janusz Dobrowolski
-(2250) Added Indonesian translation for install wizard.
+(2251) Added Indonesian translation for install wizard.
  install/lang/in_ID/LC_MESSAGES/in_ID.mo
  install/lang/in_ID/LC_MESSAGES/in_ID.po
 
 2010-08-08 22:47 +0000 Janusz Dobrowolski
-(2249) Added French translation and smaller fixes in installer.
+(2250) Added French translation and smaller fixes in installer.
  CHANGELOG.txt
 
 2010-08-08 22:46 +0000 Janusz Dobrowolski
-(2248) Added French transaltion from Gaston.
+(2249) Added French transaltion from Gaston.
  install/isession.inc
  install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
  install/lang/fr_FR/LC_MESSAGES/fr_FR.po
 
 2010-08-08 22:42 +0000 Janusz Dobrowolski
-(2247) Waring in installer cleanup.
+(2248) Waring in installer cleanup.
  install/index.php
 
 2010-08-08 21:03 +0000 Joe Hunt
-(2246) Rerun
+(2247) Rerun
  install/isession.inc
 
 2010-08-08 16:43 +0000 Janusz Dobrowolski
-(2245) Activated danish and swedish languages
+(2246) Activated danish and swedish languages
  install/isession.inc
 
 2010-08-08 15:22 +0000 Joe Hunt
-(2244) Added Danish/Svedish installer translation (Joe Hunt)
+(2245) Added Danish/Svedish installer translation (Joe Hunt)
  CHANGELOG.txt
  install/lang/da_DK/LC_MESSAGES/da_DK.mo
  install/lang/da_DK/LC_MESSAGES/da_DK.po
@@ -2407,33 +2574,33 @@ Added total debit/credit in gl_trans_view.inc / Chaitanya
  install/lang/sv_SE/LC_MESSAGES/sv_SE.po
 
 2010-08-08 11:23 +0000 Janusz Dobrowolski
-(2243) Added multilanguage installer support, polish installer translation added.
+(2244) Added multilanguage installer support, polish installer translation added.
  CHANGELOG.txt
 
 2010-08-08 11:22 +0000 Janusz Dobrowolski
-(2242) Updated gettext template.
+(2243) Updated gettext template.
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-08-08 11:21 +0000 Janusz Dobrowolski
-(2241) Added multilanguage support.
+(2242) Added multilanguage support.
  install/index.php
  install/isession.inc
 
 2010-08-08 11:15 +0000 Janusz Dobrowolski
-(2240) Installer polish translation - initial version.
+(2241) Installer polish translation - initial version.
  install/lang/pl_PL/LC_MESSAGES/pl_PL.mo
  install/lang/pl_PL/LC_MESSAGES/pl_PL.po
 
 2010-08-08 11:14 +0000 Janusz Dobrowolski
-(2239) Gettext installer template.
+(2240) Gettext installer template.
  install/lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-08-07 10:04 +0000 Janusz Dobrowolski
-(2238) Added languages selection in installer, changed default language to 'C', other fixes.
+(2239) Added languages selection in installer, changed default language to 'C', other fixes.
  CHANGELOG.txt
 
 2010-08-07 10:02 +0000 Janusz Dobrowolski
-(2237) Default language code changed from 'en_GB' to 'C'.
+(2238) Default language code changed from 'en_GB' to 'C'.
  admin/inst_lang.php
  includes/lang/gettext.php
  includes/lang/language.php
@@ -2443,173 +2610,173 @@ Added total debit/credit in gl_trans_view.inc / Chaitanya
  sql/en_US-demo.sql
 
 2010-08-07 10:00 +0000 Janusz Dobrowolski
-(2236) Side bug fixed.
+(2237) Side bug fixed.
  applications/setup.php
 
 2010-08-07 10:00 +0000 Janusz Dobrowolski
-(2235) Testing config_db.php on start.
+(2236) Testing config_db.php on start.
  index.php
 
 2010-08-07 10:00 +0000 Janusz Dobrowolski
-(2234) Added languages selection.
+(2235) Added languages selection.
  install/index.php
 
 2010-08-07 09:59 +0000 Janusz Dobrowolski
-(2233) Clanup.
+(2234) Clanup.
  includes/archive.inc
 
 2010-08-07 09:59 +0000 Janusz Dobrowolski
-(2232) Additional error messages.
+(2233) Additional error messages.
  includes/packages.inc
 
 2010-08-07 09:58 +0000 Janusz Dobrowolski
-(2231) Added descriptions for all existing hooks.
+(2232) Added descriptions for all existing hooks.
  lang/new_language_template/locale.inc
 
 2010-08-07 09:57 +0000 Janusz Dobrowolski
-(2230) Changed hook function name from TaxFunction to tax_report_done.
+(2231) Changed hook function name from TaxFunction to tax_report_done.
  reporting/rep709.php
 
 2010-08-07 09:44 +0000 Joe Hunt
-(2229) Bug in inst_lang.php
+(2230) Bug in inst_lang.php
  CHANGELOG.txt
  admin/inst_lang.php
 
 2010-08-07 09:27 +0000 Joe Hunt
-(2228) Stamping the installed_languags.inc file with 'rtl' = false, causes 'rtl'.
+(2229) Stamping the installed_languags.inc file with 'rtl' = false, causes 'rtl'.
 The value: 'rtl' = false will make the variable as isset.
  CHANGELOG.txt
  includes/lang/language.php
  includes/session.inc
 
 2010-08-06 16:16 +0000 Janusz Dobrowolski
-(2227) Fixed multiline package property value display.
+(2228) Fixed multiline package property value display.
  CHANGELOG.txt
  includes/ui/view_package.php
 
 2010-08-06 14:51 +0000 Janusz Dobrowolski
-(2226) Added COA packages installation.
+(2227) Added COA packages installation.
  CHANGELOG.txt
 
 2010-08-06 14:50 +0000 Janusz Dobrowolski
-(2225) Added chart packages installation.
+(2226) Added chart packages installation.
  admin/inst_chart.php
  applications/setup.php
 
 2010-08-06 14:49 +0000 Janusz Dobrowolski
-(2224) Fixed third-party extension installation.
+(2225) Fixed third-party extension installation.
  admin/inst_module.php
 
 2010-08-06 14:49 +0000 Janusz Dobrowolski
-(2223) Fixed description popup.
+(2224) Fixed description popup.
  admin/inst_theme.php
 
 2010-08-06 14:48 +0000 Janusz Dobrowolski
-(2222) Optional type parameter in get_extensions_list().
+(2223) Optional type parameter in get_extensions_list().
  includes/packages.inc
 
 2010-08-06 14:47 +0000 Janusz Dobrowolski
-(2221) Added COA encoding display.
+(2222) Added COA encoding display.
  install/index.php
 
 2010-08-06 12:29 +0000 Janusz Dobrowolski
-(2220) Other 2 small fixes
+(2221) Other 2 small fixes
  CHANGELOG.txt
 
 2010-08-06 12:28 +0000 Janusz Dobrowolski
-(2219) Improved chart list selection.
+(2220) Improved chart list selection.
  includes/ui/ui_lists.inc
 
 2010-08-06 12:27 +0000 Janusz Dobrowolski
-(2218) Cleanup.
+(2219) Cleanup.
  install/index.php
 
 2010-08-06 07:57 +0000 Janusz Dobrowolski
-(2217) Two small bugs fixed in bank payment edition.
+(2218) Two small bugs fixed in bank payment edition.
  CHANGELOG.txt
 
 2010-08-06 07:56 +0000 Janusz Dobrowolski
-(2216) Fixed memo duplication after bank payment edition.
+(2217) Fixed memo duplication after bank payment edition.
  gl/includes/db/gl_db_bank_trans.inc
 
 2010-08-06 07:55 +0000 Janusz Dobrowolski
-(2215) Fixed page title.
+(2216) Fixed page title.
  gl/gl_bank.php
 
 2010-08-06 07:22 +0000 Joe Hunt
-(2214) Bank Payment on customer statements shows in credit column, should be debit. Balance ok.
+(2215) Bank Payment on customer statements shows in credit column, should be debit. Balance ok.
  CHANGELOG.txt
  reporting/rep108.php
 
 2010-08-05 11:58 +0000 Janusz Dobrowolski
-(2213) Cleanup.
+(2214) Cleanup.
  install/index.php
 
 2010-08-05 10:11 +0000 Janusz Dobrowolski
-(2212) Rewriten installation wizard, chart packages support added, other smaller fixes.
+(2213) Rewriten installation wizard, chart packages support added, other smaller fixes.
  CHANGELOG.txt
 
 2010-08-05 10:09 +0000 Janusz Dobrowolski
-(2211) Install wizard rewritten, added uploading COAs during install.
+(2212) Install wizard rewritten, added uploading COAs during install.
  install/index.php
  install/isession.inc
  install/save.php
  install/stylesheet.css
 
 2010-08-05 10:05 +0000 Janusz Dobrowolski
-(2210) COA selected form preiously uploaded charts.
+(2211) COA selected form preiously uploaded charts.
  admin/create_coy.php
 
 2010-08-05 10:04 +0000 Janusz Dobrowolski
-(2209) Diagnostic tests movedto separate file to be reused in install wizard.
+(2210) Diagnostic tests movedto separate file to be reused in install wizard.
  admin/system_diagnostics.php
  includes/system_tests.inc
 
 2010-08-05 10:03 +0000 Janusz Dobrowolski
-(2208) user_theme() fixed to be used also before login, warning suppressed in array_search_value
+(2209) user_theme() fixed to be used also before login, warning suppressed in array_search_value
  includes/current_user.inc
 
 2010-08-05 10:01 +0000 Janusz Dobrowolski
-(2207) Fixed bug in check_write, css parameter in page()
+(2208) Fixed bug in check_write, css parameter in page()
  includes/main.inc
 
 2010-08-05 10:00 +0000 Janusz Dobrowolski
-(2206) Update to 2.3RC1
+(2207) Update to 2.3RC1
  sql/alter2.3rc.sql
 
 2010-08-05 09:59 +0000 Janusz Dobrowolski
-(2205) Changed core_version to db_version for better readibility.
+(2206) Changed core_version to db_version for better readibility.
  admin/db/company_db.inc
 
 2010-08-05 09:59 +0000 Janusz Dobrowolski
-(2204) Chart packages support added.
+(2205) Chart packages support added.
  includes/packages.inc
  includes/ui/ui_lists.inc
 
 2010-08-05 09:57 +0000 Janusz Dobrowolski
-(2203) Update from beta to RC1
+(2204) Update from beta to RC1
  sql/alter2.3.php
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
 2010-08-05 09:57 +0000 Janusz Dobrowolski
-(2202) Fixed exit on error in check_db_error
+(2203) Fixed exit on error in check_db_error
  includes/errors.inc
 
 2010-08-05 09:56 +0000 Janusz Dobrowolski
-(2201) Added css parameter in page()
+(2202) Added css parameter in page()
  includes/page/header.inc
 
 2010-08-05 09:56 +0000 Janusz Dobrowolski
-(2200) Changed repo_auth format.
+(2201) Changed repo_auth format.
  version.php
 
 2010-08-05 09:55 +0000 Janusz Dobrowolski
-(2199) Cleanup.
+(2200) Cleanup.
  admin/inst_lang.php
 
 2010-08-04 10:59 +0000 Joe Hunt
-(2198) Added an extra parameter to db_export in maintenance_db.inc for new COAs
+(2199) Added an extra parameter to db_export in maintenance_db.inc for new COAs
 Link error in items.php for Pictures
  CHANGELOG.txt
  admin/db/maintenance_db.inc
@@ -2617,119 +2784,119 @@ Link error in items.php for Pictures
  version.php
 
 2010-08-01 07:35 +0000 Joe Hunt
-(2197) Added Email link when updating documents.
+(2198) Added Email link when updating documents.
  CHANGELOG.txt
  sales/credit_note_entry.php
  sales/customer_credit_invoice.php
  sales/customer_invoice.php
 
 2010-07-30 08:43 +0000 Janusz Dobrowolski
-(2196) Fixed bug in parent lines retrieval during sales doc edition and a couple of smaller
+(2197) Fixed bug in parent lines retrieval during sales doc edition and a couple of smaller
 cleanups.
  CHANGELOG.txt
 
 2010-07-30 08:42 +0000 Janusz Dobrowolski
-(2195) Skipping hidden iles in sql directory during upgrade.
+(2196) Skipping hidden iles in sql directory during upgrade.
  admin/inst_upgrade.php
 
 2010-07-30 08:41 +0000 Janusz Dobrowolski
-(2194) Warning ceanup.
+(2195) Warning ceanup.
  includes/lang/language.php
 
 2010-07-30 08:40 +0000 Janusz Dobrowolski
-(2193) Fixed bug in parent lines retrieveal during document edition.
+(2194) Fixed bug in parent lines retrieveal during document edition.
  sales/includes/cart_class.inc
 
 2010-07-30 08:39 +0000 Janusz Dobrowolski
-(2192) Fixing extension configurion file moved to installed() method.
+(2193) Fixing extension configurion file moved to installed() method.
  sql/alter2.3.php
 
 2010-07-26 07:45 +0000 Janusz Dobrowolski
-(2191) Fixed language update function.
+(2192) Fixed language update function.
  sql/alter2.3.php
 
 2010-07-26 07:37 +0000 Janusz Dobrowolski
-(2190) Fatal typo in upgrade function fixed.
+(2191) Fatal typo in upgrade function fixed.
  CHANGELOG.txt
  sql/alter2.3.php
 
 2010-07-25 15:29 +0000 Janusz Dobrowolski
-(2189) Warning on non existing language version fixed.
+(2190) Warning on non existing language version fixed.
  includes/lang/language.php
 
 2010-07-25 12:24 +0000 Janusz Dobrowolski
-(2188) Fixed multilangauge tests and cleanups.
+(2189) Fixed multilangauge tests and cleanups.
  CHANGELOG.txt
 
 2010-07-25 12:24 +0000 Janusz Dobrowolski
-(2187) Fixed multilanguage tests.
+(2188) Fixed multilanguage tests.
  admin/system_diagnostics.php
  includes/lang/gettext.php
 
 2010-07-25 12:23 +0000 Janusz Dobrowolski
-(2186) Cleanup.
+(2187) Cleanup.
  includes/packages.inc
 
 2010-07-25 12:22 +0000 Janusz Dobrowolski
-(2185) Added language config upgrade.
+(2186) Added language config upgrade.
  sql/alter2.3.php
 
 2010-07-25 12:22 +0000 Janusz Dobrowolski
-(2184) Fixed config file comments.
+(2185) Fixed config file comments.
  admin/db/maintenance_db.inc
 
 2010-07-25 09:23 +0000 Janusz Dobrowolski
-(2183) Fixed langiage version swicting, added preprinted forms folder.
+(2184) Fixed langiage version swicting, added preprinted forms folder.
  CHANGELOG.txt
 
 2010-07-25 09:22 +0000 Janusz Dobrowolski
-(2182) Fixed language file switching on package version change.
+(2183) Fixed language file switching on package version change.
  admin/db/company_db.inc
  includes/current_user.inc
  includes/lang/language.php
  includes/session.inc
 
 2010-07-25 09:21 +0000 Janusz Dobrowolski
-(2181) flush_dir() and company_path() moved to current_uer.php file.
+(2182) flush_dir() and company_path() moved to current_uer.php file.
  includes/main.inc
 
 2010-07-25 09:21 +0000 Janusz Dobrowolski
-(2180) New.
+(2181) New.
  reporting/includes/forms/index.php
 
 2010-07-24 22:01 +0000 Janusz Dobrowolski
-(2179) Extension system upgrade routine and cleanups.
+(2180) Extension system upgrade routine and cleanups.
  CHANGELOG.txt
 
 2010-07-24 22:00 +0000 Janusz Dobrowolski
-(2178) Cleanups
+(2179) Cleanups
  admin/inst_module.php
  includes/current_user.inc
  includes/packages.inc
 
 2010-07-24 22:00 +0000 Janusz Dobrowolski
-(2177) Upgrade routines for extensions configuration.
+(2178) Upgrade routines for extensions configuration.
  sql/alter2.3.php
 
 2010-07-24 15:32 +0000 Joe Hunt
-(2176) Fixed Customer Details Report and Pricelist (UOM) and Supp.aged Report
+(2177) Fixed Customer Details Report and Pricelist (UOM) and Supp.aged Report
  CHANGELOG.txt
  reporting/rep103.php
  reporting/rep104.php
  reporting/rep202.php
 
 2010-07-24 10:07 +0000 Joe Hunt
-(2175) Changed so Purchase Order also print taxes.
+(2176) Changed so Purchase Order also print taxes.
  CHANGELOG.txt
  reporting/includes/doctext.inc
  reporting/rep209.php
 
 2010-07-23 13:13 +0000 Janusz Dobrowolski
-(2174) Added support for tax included prices in pucrhase module, a couple of other smaller fixes.
+(2175) Added support for tax included prices in pucrhase module, a couple of other smaller fixes.
  CHANGELOG.txt
 
 2010-07-23 13:12 +0000 Janusz Dobrowolski
-(2173) Added support for tax included prices in transactions.
+(2174) Added support for tax included prices in transactions.
  purchasing/includes/db/grn_db.inc
  purchasing/includes/db/invoice_db.inc
  purchasing/includes/db/po_db.inc
@@ -2742,76 +2909,76 @@ cleanups.
  purchasing/po_receive_items.php
 
 2010-07-23 13:11 +0000 Janusz Dobrowolski
-(2172) Fixed line items section button position.
+(2173) Fixed line items section button position.
  sales/includes/ui/sales_order_ui.inc
 
 2010-07-23 13:09 +0000 Janusz Dobrowolski
-(2171) Tax included option added.
+(2172) Tax included option added.
  purchasing/includes/db/suppliers_db.inc
 
 2010-07-23 13:09 +0000 Janusz Dobrowolski
-(2170) Tax included ption added.
+(2171) Tax included ption added.
  purchasing/manage/suppliers.php
 
 2010-07-23 13:08 +0000 Janusz Dobrowolski
-(2169) Added tax information
+(2170) Added tax information
  purchasing/view/view_grn.php
  purchasing/view/view_po.php
 
 2010-07-23 13:07 +0000 Janusz Dobrowolski
-(2168) Added GRNs to inquire result.
+(2169) Added GRNs to inquire result.
  purchasing/inquiry/supplier_inquiry.php
 
 2010-07-23 13:07 +0000 Janusz Dobrowolski
-(2167) Added upgrade from 2.3beta to 2.3RC.
+(2168) Added upgrade from 2.3beta to 2.3RC.
  sql/alter2.3.php
  sql/alter2.3.sql
  sql/en_US-demo.sql
  sql/en_US-new.sql
 
 2010-07-23 13:06 +0000 Janusz Dobrowolski
-(2166) Versions information moved to separate file.
+(2167) Versions information moved to separate file.
  config.default.php
  includes/session.inc
  version.php
 
 2010-07-23 13:04 +0000 Janusz Dobrowolski
-(2165) Fixed credit credit links color.
+(2166) Fixed credit credit links color.
  themes/aqua/default.css
  themes/cool/default.css
  themes/default/default.css
 
 2010-07-23 13:03 +0000 Janusz Dobrowolski
-(2164) SysPrefs restoration after upgrade.
+(2165) SysPrefs restoration after upgrade.
  admin/inst_upgrade.php
 
 2010-07-23 13:03 +0000 Janusz Dobrowolski
-(2163) Warning cleanup.
+(2164) Warning cleanup.
  includes/packages.inc
 
 2010-07-23 13:02 +0000 Janusz Dobrowolski
-(2162) Supplier transactions list added.
+(2163) Supplier transactions list added.
  includes/ui/ui_lists.inc
 
 2010-07-23 13:02 +0000 Janusz Dobrowolski
-(2161) Fixed tax footer descriptions.
+(2162) Fixed tax footer descriptions.
  includes/ui/ui_view.inc
 
 2010-07-21 14:24 +0000 Joe Hunt
-(2160) Changed Report Statements to accept selector Outstanding Only
+(2161) Changed Report Statements to accept selector Outstanding Only
  CHANGELOG.txt
  reporting/rep108.php
  reporting/reports_main.php
 
 2010-07-19 22:43 +0000 Joe Hunt
-(2159) Changed Std. Cost to show all decimals, and added UOM
+(2160) Changed Std. Cost to show all decimals, and added UOM
  CHANGELOG.txt
  applications/inventory.php
  reporting/rep301.php
  reporting/rep303.php
 
 2010-07-19 00:16 +0000 Joe Hunt
-(2158) Added Revenue / Cost Accruals to be included in core FA
+(2159) Added Revenue / Cost Accruals to be included in core FA
  CHANGELOG.txt
  applications/generalledger.php
  gl/accruals.php
@@ -2819,34 +2986,34 @@ cleanups.
  includes/access_levels.inc
 
 2010-07-18 16:39 +0000 Janusz Dobrowolski
-(2157) Released constraint on currency edition for new customer/supplier.
+(2158) Released constraint on currency edition for new customer/supplier.
  CHANGELOG.txt
 
 2010-07-18 16:39 +0000 Janusz Dobrowolski
-(2156) New customer/supplier currency can be changed as long as no transaction is entered.
+(2157) New customer/supplier currency can be changed as long as no transaction is entered.
  purchasing/includes/db/suppliers_db.inc
  purchasing/manage/suppliers.php
  sales/includes/db/customers_db.inc
  sales/manage/customers.php
 
 2010-07-18 16:38 +0000 Janusz Dobrowolski
-(2155) Improved key_in_foreign table function to check in multiply tables.
+(2156) Improved key_in_foreign table function to check in multiply tables.
  admin/db/company_db.inc
 
 2010-07-17 17:01 +0000 Janusz Dobrowolski
-(2154) New file.
+(2155) New file.
  admin/inst_theme.php
 
 2010-07-17 16:35 +0000 Janusz Dobrowolski
-(2153) New extensions system, a couple of other smaller fixes.
+(2154) New extensions system, a couple of other smaller fixes.
  CHANGELOG.txt
 
 2010-07-17 16:33 +0000 Janusz Dobrowolski
-(2152) Added repo address.
+(2153) Added repo address.
  config.default.php
 
 2010-07-17 16:31 +0000 Janusz Dobrowolski
-(2151) Support for new packaged extensions system.
+(2152) Support for new packaged extensions system.
  FA.pem
  admin/db/maintenance_db.inc
  admin/inst_lang.php
@@ -2862,50 +3029,50 @@ cleanups.
  modules/_cache/index.php
 
 2010-07-17 16:19 +0000 Janusz Dobrowolski
-(2150) Changedlang file convention to avoid need for server restart after *.po file change.
+(2151) Changedlang file convention to avoid need for server restart after *.po file change.
  includes/lang/gettext.php
  includes/lang/language.php
 
 2010-07-17 16:18 +0000 Janusz Dobrowolski
-(2149) Small cleanup
+(2150) Small cleanup
  includes/page/header.inc
 
 2010-07-17 16:18 +0000 Janusz Dobrowolski
-(2148) Fixed memo string in adjust_deliveries.
+(2149) Fixed memo string in adjust_deliveries.
  includes/db/inventory_db.inc
 
 2010-07-17 16:17 +0000 Janusz Dobrowolski
-(2147) Fixed callparams check message display
+(2148) Fixed callparams check message display
  gl/view/gl_trans_view.php
 
 2010-07-17 16:16 +0000 Janusz Dobrowolski
-(2146) Updated mysql,php,debugging and extension system checks.
+(2147) Updated mysql,php,debugging and extension system checks.
  admin/system_diagnostics.php
 
 2010-07-17 16:15 +0000 Janusz Dobrowolski
-(2145) Fixed gettext msg typo
+(2146) Fixed gettext msg typo
  purchasing/supplier_invoice.php
 
 2010-07-17 16:14 +0000 Janusz Dobrowolski
-(2144) Fixed curr_defualt check
+(2145) Fixed curr_defualt check
  gl/manage/currencies.php
 
 2010-07-17 16:13 +0000 Janusz Dobrowolski
-(2143) Message typos
+(2144) Message typos
  admin/create_coy.php
  admin/inst_upgrade.php
 
 2010-07-17 16:13 +0000 Janusz Dobrowolski
-(2142) Fixed a couple of typos.
+(2143) Fixed a couple of typos.
  lang/new_language_template/LC_MESSAGES/empty.po
 
 2010-07-16 09:38 +0000 Joe Hunt
-(2141) Changed calculating of cost update (average material price) for better sync.
+(2142) Changed calculating of cost update (average material price) for better sync.
  CHANGELOG.txt
  includes/db/inventory_db.inc
 
 2010-07-15 14:16 +0000 Joe Hunt
-(2140) Changed calculating of cost update (average material price) for better sync.
+(2141) Changed calculating of cost update (average material price) for better sync.
  CHANGELOG.txt
  manufacturing/includes/db/work_orders_db.inc
  purchasing/includes/db/grn_db.inc

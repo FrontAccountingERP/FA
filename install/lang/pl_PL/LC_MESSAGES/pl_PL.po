@@ -7,65 +7,72 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-08 12:50+0200\n"
+"POT-Creation-Date: 2012-09-18 14:11+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Janusz Dobrowolski <janusz@iron.from.pl>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /var/www/fa2.3/devel/../install/index.php:20
-#: /var/www/fa2.3/devel/../install/index.php:40
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:20
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:41
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr "Instalator FrontAccounting ERP"
 
-#: /var/www/fa2.3/devel/../install/index.php:41
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:42
 #, php-format
 msgid "Step %d: %s"
 msgstr "Krok %d: %s"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
 msgid "Chart of accounts"
 msgstr "Plan kont"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
 msgid "Encoding"
 msgstr "Kodowanie"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
 msgid "Description"
 msgstr "Opis"
 
-#: /var/www/fa2.3/devel/../install/index.php:48
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
 msgid "Install"
 msgstr "Zainstaluj"
 
-#: /var/www/fa2.3/devel/../install/index.php:65
-#: /var/www/fa2.3/devel/../install/index.php:93
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:66
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:94
 msgid "Installed"
 msgstr "Zainstalowany"
 
-#: /var/www/fa2.3/devel/../install/index.php:75
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
 msgid "Language"
 msgstr "Jêzyk"
 
-#: /var/www/fa2.3/devel/../install/index.php:156
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:124
+msgid ""
+"Cannot connect to database. User or password is invalid or you have no "
+"permittions to create database."
+msgstr ""
+
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:160
 msgid "Cannot save system configuration file 'config.php'."
 msgstr "Nie mo¿na zapisaæ pliku konfiguracyjnego 'config.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:173
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:167
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr "Nie mo¿na utworzyæ pliku konfiguracji 'config_db.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:176
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:170
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "Nie mo¿na zapisaæ pliku konfiguracji  'config_db.php'."
 
-#: /var/www/fa2.3/devel/../install/index.php:179
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:173
 msgid ""
 "Configuration file 'config_db.php' is not writable. Change its permissions "
 "so it is, then re-run installation step."
@@ -73,43 +80,43 @@ msgstr ""
 "Plik konfiguracji 'config_db.php' jest zabezpieczony przed zapisem. Zmieñ "
 "prawa dostêpu i powtórz krok instalacji."
 
-#: /var/www/fa2.3/devel/../install/index.php:217
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:211
 msgid "Host name cannot be empty."
 msgstr "Adres serwera nie mo¿e byæ pusty."
 
-#: /var/www/fa2.3/devel/../install/index.php:221
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:215
 msgid "Database user name cannot be empty."
 msgstr "Nazwa u¿ytkownika nie mo¿e by pusta."
 
-#: /var/www/fa2.3/devel/../install/index.php:225
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:219
 msgid "Database name cannot be empty."
 msgstr "Nazwa bazy danych nie mo¿e byæ pusta."
 
-#: /var/www/fa2.3/devel/../install/index.php:277
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:272
 msgid "Company name cannot be empty."
 msgstr "Nazwa firmy nie mo¿e by pusta."
 
-#: /var/www/fa2.3/devel/../install/index.php:281
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:276
 msgid "Company admin name cannot be empty."
 msgstr "Nazwa administratora nie mo¿e byæ pusta."
 
-#: /var/www/fa2.3/devel/../install/index.php:285
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:280
 msgid "Company admin password cannot be empty."
 msgstr "Has³o administratora nie mo¿e by puste."
 
-#: /var/www/fa2.3/devel/../install/index.php:289
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:284
 msgid "Company admin passwords differ."
 msgstr "Wprowadzone has³a ró¿ni± siê."
 
-#: /var/www/fa2.3/devel/../install/index.php:320
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:316
 msgid "System Diagnostics"
 msgstr "Diagnostyka Systemu"
 
-#: /var/www/fa2.3/devel/../install/index.php:323
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:318
 msgid "Select install wizard language:"
 msgstr "Wybierz jêzyk u¿ywany przy instalacji:"
 
-#: /var/www/fa2.3/devel/../install/index.php:329
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:324
 msgid ""
 "All application preliminary requirements seems to be correct. Please press "
 "Continue button below."
@@ -117,15 +124,15 @@ msgstr ""
 "Wszystkie wymagania systemu wydaj± siê byæ spe³nione. Kliknij klawisz "
 "poni¿ej aby rozpocz±æ instalacjê."
 
-#: /var/www/fa2.3/devel/../install/index.php:330
-#: /var/www/fa2.3/devel/../install/index.php:356
-#: /var/www/fa2.3/devel/../install/index.php:363
-#: /var/www/fa2.3/devel/../install/index.php:370
-#: /var/www/fa2.3/devel/../install/index.php:389
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:325
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:351
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:358
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:365
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:389
 msgid "Continue >>"
 msgstr "Kontynuuj >>"
 
-#: /var/www/fa2.3/devel/../install/index.php:332
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:327
 msgid ""
 "Application cannot be installed. Please fix problems listed below in red, "
 "and press Refresh button."
@@ -133,62 +140,62 @@ msgstr ""
 "Aplikacja nie mo¿e byæ zainstalowana. Usuñ wskazane problemy i kliknij "
 "klawisz 'Od¶wie¿'."
 
-#: /var/www/fa2.3/devel/../install/index.php:333
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:328
 msgid "Refresh"
 msgstr "Od¶wierz"
 
-#: /var/www/fa2.3/devel/../install/index.php:343
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:338
 msgid "Database Server Settings"
 msgstr "Ustawienia Serwera Bazy Danych"
 
-#: /var/www/fa2.3/devel/../install/index.php:345
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:340
 msgid "Server Host:"
 msgstr "Adres Serwera:"
 
-#: /var/www/fa2.3/devel/../install/index.php:346
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:341
 msgid "Database User:"
 msgstr "Nazwa U¿ytkownika:"
 
-#: /var/www/fa2.3/devel/../install/index.php:347
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:342
 msgid "Database Password:"
 msgstr "Has³o:"
 
-#: /var/www/fa2.3/devel/../install/index.php:348
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:343
 msgid "Database Name:"
 msgstr "Nazwa Bazy Danych:"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
 msgid "Use '0_' Table Prefix:"
 msgstr "Prefiks '0_' dla Nazw Tablic:"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:38
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:113
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Tak"
 
-#: /var/www/fa2.3/devel/../install/index.php:349
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:38
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:113
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:126
 msgid "No"
 msgstr "Nie"
 
-#: /var/www/fa2.3/devel/../install/index.php:350
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:345
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Instalacja Dodatkowych Jêzyków z Repozytorium FA:"
 
-#: /var/www/fa2.3/devel/../install/index.php:351
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:346
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Instalacja Dodatkowych Planów Kont z Repozytorium FA:"
 
-#: /var/www/fa2.3/devel/../install/index.php:353
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:348
 msgid ""
 "Use table prefix if you share selected database for more than one FA company."
 msgstr "U¿yj prefiksu je¶li ta sama baza danych bêdzie u¿ywana dla kilku firm."
 
-#: /var/www/fa2.3/devel/../install/index.php:354
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:349
 msgid ""
 "Do not select additional langs nor COAs if you have no working internet "
 "connection right now. You can install them later."
@@ -196,243 +203,246 @@ msgstr ""
 "Nie zaznaczaj wyboru dodatkowych jêzyków ani planów kont je¶li w tej chwili "
 "nie masz dostêpu do internetu. Bêdziesz je móg³ zainstalowaæ równie¿ pó¼niej."
 
-#: /var/www/fa2.3/devel/../install/index.php:355
-#: /var/www/fa2.3/devel/../install/index.php:362
-#: /var/www/fa2.3/devel/../install/index.php:369
-#: /var/www/fa2.3/devel/../install/index.php:388
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:350
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:357
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:364
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:388
 msgid "<< Back"
 msgstr "<< Wróæ"
 
-#: /var/www/fa2.3/devel/../install/index.php:360
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:355
 msgid "User Interface Languages Selection"
 msgstr "Wybór Jêzyków Interfejsu U¿ytkownika"
 
-#: /var/www/fa2.3/devel/../install/index.php:367
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:362
 msgid "Charts of Accounts Selection"
 msgstr "Wybór Planów Kont"
 
-#: /var/www/fa2.3/devel/../install/index.php:379
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:379
 msgid "Company Settings"
 msgstr "Ustawienia Firmy"
 
-#: /var/www/fa2.3/devel/../install/index.php:381
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:381
 msgid "Company Name:"
 msgstr "Nazwa Firmy:"
 
-#: /var/www/fa2.3/devel/../install/index.php:382
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:382
 msgid "Admin Login:"
 msgstr "Login Administratora:"
 
-#: /var/www/fa2.3/devel/../install/index.php:383
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:383
 msgid "Admin Password:"
 msgstr "Has³o Administratora:"
 
-#: /var/www/fa2.3/devel/../install/index.php:384
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:384
 msgid "Reenter Password:"
 msgstr "Powtórz Has³o:"
 
-#: /var/www/fa2.3/devel/../install/index.php:385
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:385
 msgid "Select Chart of Accounts:"
 msgstr "Wybierz Planów Kont:"
 
-#: /var/www/fa2.3/devel/../install/index.php:386
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:386
 msgid "Select Default Language:"
 msgstr "Wybierz Jêzyk Domy¶lny:"
 
-#: /var/www/fa2.3/devel/../install/index.php:393
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:393
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "Aplikacja FrontAccounting ERP zosta³a zainstalowana pomy¶lnie."
 
-#: /var/www/fa2.3/devel/../install/index.php:394
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:394
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Nie zapomnij usun±æ folderu instalatora."
 
-#: /var/www/fa2.3/devel/../install/index.php:396
+#: /tmp/fa_unstable.sav3/devel/../install/index.php:397
 msgid "Click here to start."
 msgstr "Kliknij tutaj, aby rozpocz±æ pracê."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:15
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:15
 msgid "Info"
 msgstr "Informacja"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:16
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:16
 msgid "Optional"
 msgstr "Opcjonalne"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:17
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:17
 msgid "Recommended"
 msgstr "Zalecane"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:18
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:18
 msgid "Required "
 msgstr "Wymagane"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:24
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:24
 msgid "MySQL version"
 msgstr "Wersja MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:28
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
 msgstr "U¿yj wersji serwera MySQL minimum 4.1"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:35
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:35
 msgid "PHP MySQL extension"
 msgstr "Rozszerzenie PHP MySQL"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:40
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:40
 msgid "Your PHP has to have MySQL extension enabled."
 msgstr "PHP musi mieæ w³±czone rozszerzenie MySQL."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:46
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:46
 msgid "PHP version"
 msgstr "Wersja PHP"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:50
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 4.3.3"
 msgstr "Zainstaluj PHP w wersji co najmniej 4.3.3"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:57
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:57
 msgid "Server system"
 msgstr "System serwera"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:67
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:67
 msgid "Session save path"
 msgstr "Katalog zapisu pliku sesji"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:79
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:79
 msgid "Removed install wizard folder"
 msgstr "Folder instalatora usuniêty"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:82
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:82
 msgid "Not removed"
 msgstr "Nie usuniêty"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:83
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:83
 msgid "Remove or rename install wizard folder for security reasons."
 msgstr "Ze wzglêdów bezpieczeñstwa usuñ lub zmieñ nazwê folderu instalatora."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:90
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:90
 msgid "Browser type"
 msgstr "Typ przegl±darki"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:94
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:94
 msgid "Any browser is supported"
 msgstr "Mo¿e byæ u¿yty dowolny typ przegl±darki"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:101
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:101
 msgid "Http server type"
 msgstr "Serwer http"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:105
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:105
 msgid "Any server is supported"
 msgstr "Dowolny"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:112
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:112
 msgid "Native gettext"
 msgstr "Biblioteka Gettext "
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:116
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:116
 msgid "In case of no gettext support, php emulation is used"
 msgstr "W przypadku braku wsparcia systemu,  gettext jest emulowany."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:124
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:124
 msgid "Debugging mode"
 msgstr "Tryb debug"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:128
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:128
 msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr "Aby w³±czyæ tryb debug ustaw $go_debug>0 in config.php file"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:137
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:137
 msgid "Error logging"
 msgstr "Logowanie b³êdów"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:145
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:145
 msgid "Disabled"
 msgstr "Wy³±czony"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:148
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:148
 msgid "To switch error logging set $error_logging in config.php file"
 msgstr ""
 "Aby w³±czyæ logowanie b³êdów ustaw zmienn± $error_logging w pliku config.php"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:151
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:151
 msgid "Log file is not writeable"
 msgstr "Logfile jest niezapisywalny"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:161
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:161
 msgid "Current database version"
 msgstr "Aktualna wersja bazy danych"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:165
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:165
 msgid "Database structure seems to be not upgraded to current version"
 msgstr "Struktura bazy danych nie jest zaktualizowana do bie¿±cej wersji"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:180
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:180
 msgid "Company subdirectories consistency"
 msgstr "Prawid³owa struktura folderów firmowych"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:193
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:200
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:208
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:225
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:345
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:193
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:200
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:208
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:225
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:340
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:349
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:358
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:366
 #, php-format
 msgid "'%s' is not writeable"
 msgstr "'%s' jest niezapisywalny"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:221
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:221
 msgid "Temporary directory"
 msgstr "Katalog plików tymczasowych"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:233
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:233
 msgid "Language configuration consistency"
 msgstr "Konfiguracja jêzykowa"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:242
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:242
 msgid "Languages folder should be writeable."
 msgstr "Folder jêzyków musi byæ zapisywalny"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:250
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:251
 msgid "Languages configuration file should be writeable."
 msgstr "Pliki konfiguracyjny jêzyków musi byæ zapisywalny."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:268
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:270
 #, php-format
 msgid "Missing %s translation file."
 msgstr "Brak pliku t³umaczeñ %s"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:273
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:275
 #, php-format
 msgid "Missing system locale: %s"
 msgstr "Lokalizacja '%s' nie jest zainstalowana w systemie"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:286
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:288
 msgid "Main config file"
 msgstr "G³ówny plik konfiguracyjny "
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:293
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:315
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:295
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr "Nie mo¿na zapisaæ pliku '%s'. Sprawd¼ prawa zapisu do foderu FA."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:294
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:316
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:296
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr "Plik '%s' istnieje."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:298
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:300
 #, php-format
 msgid "'%s' file should be read-only"
 msgstr "Plik '%s powinien byæ zabezpieczony przed zapisem"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:307
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:309
 msgid "Database auth file"
 msgstr "Pik configuracyjny bazy danych"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:320
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:322
 #, php-format
 msgid ""
 "'%s' file should be read-only if you do not plan to add or change companies"
@@ -440,25 +450,25 @@ msgstr ""
 "Plik '%s' powinien byæ zabezpieczony przed zapisem je¶li nie planujesz "
 "dodawania ani zmiany firm"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:331
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:333
 msgid "Extensions system"
 msgstr "System rozszerzeñ"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:366
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:371
 msgid "Extensions configuration files and directories should be writeable"
 msgstr "Pliki konfiguracyjne i foldery rozszerzeñ powinny byæ zapisywalne"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:378
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:384
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
 msgstr "Niestandardowy folder tematu '%s' jest zazpieczony przed zapisem"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:388
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:394
 msgid ""
 "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr "System pakietów wymaga zaisnatlowanego rozszerzenia PHP OpenSSL."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:391
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:397
 msgid ""
 "OpenSSL have to be available on your server to use extension repository "
 "system."
@@ -466,22 +476,66 @@ msgstr ""
 "Serwer musi mieæ zainstalowane OpenSSL ¿eby mo¿na by³o korzystaæ z "
 "repozytorium pakietów rozszerzeñ FA."
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
 msgid "Test"
 msgstr "Test"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
 msgid "Test type"
 msgstr "Typ testu"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
 msgid "Value"
 msgstr "Warto¶æ"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
 msgid "Comments"
 msgstr "Komentarz"
 
-#: /var/www/fa2.3/devel/../includes/system_tests.inc:438
+#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:444
 msgid "Ok"
 msgstr "Ok"
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:190
+#, php-format
+msgid "No key field '%s' in file '%s'"
+msgstr ""
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:295
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:329
+#, fuzzy, php-format
+msgid "Cannot delete outdated '%s' file."
+msgstr "Nie mo¿na usun±æ pliku."
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:299
+msgid "Release file in repository is invalid, or public key is outdated."
+msgstr ""
+"Plik kontrolny wydania jest uszkodzony, lub klucz publiczny jest nieaktualny."
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:316
+msgid "Repository version does not match application version."
+msgstr "Wersja repozytorium nie zgadza siê z wersj± aplikacji."
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:333
+#, php-format
+msgid ""
+"Security alert: broken index file in repository '%s'. Please inform "
+"repository administrator about this issue."
+msgstr ""
+"Alarm bezpieczeñstwa: uszkodzony plik indeksu repozytorium '%s'. Poinformuj "
+"administratora repozytorium o tym problemie."
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:366
+#, php-format
+msgid ""
+"Security alert: broken package '%s' in repository. Please inform repository "
+"administrator about this issue."
+msgstr ""
+"Alarm bezpieczeñstwa: uszkodzony plik '%s' w repozytorium. Poinformuj "
+"administratora repozytorium o tym problemie."
+
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:621
+#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:672
+#, php-format
+msgid "Package '%s' not found."
+msgstr "Pakiet '%s' nie zosta³ znaleziony."

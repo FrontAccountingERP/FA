@@ -295,7 +295,7 @@ function db_create_db($connection)
 		$connection["dbuser"], $connection["dbpassword"]);
 	if (!mysql_select_db($connection["dbname"], $db))
 	{
-		$sql = "CREATE DATABASE " . $connection["dbname"] . " COLLATE ".get_mysql_collation();
+		$sql = "CREATE DATABASE IF NOT EXISTS " . $connection["dbname"] . " COLLATE ".get_mysql_collation();
 
 		if (!mysql_query($sql) || !mysql_select_db($connection["dbname"], $db))
 			return 0;
@@ -308,7 +308,7 @@ function db_drop_db($connection)
 
 	if ($connection["tbpref"] == "")
 	{
-		$sql = "DROP DATABASE " . $connection["dbname"] . "";
+		$sql = "DROP DATABASE IF EXISTS " . $connection["dbname"] . "";
 		return mysql_query($sql);
 	}
 	else

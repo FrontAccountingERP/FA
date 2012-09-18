@@ -244,4 +244,23 @@ if (!defined('ICON_EDIT'))
  	define("ICON_CLOSED", "closed.png");
 }
 
-?>
+/* 
+	Display a dropdown select box for choosing Company to login if false.
+	Show a blank editbox only if true where the Company NickName
+	will have to be manually entered. This is when privacy is needed.
+*/
+$text_company_selection  = false;
+
+/*  Should FA hide menu items (Applications, Modules, and Actions) from the user if they don't have access to them? 
+    0 for no       1 for yes
+*/
+
+	$hide_inaccessible_menu_items = 0;
+
+/*
+	Brute force prevention.
+	$login_delay seconds delay is required between login attempts after $login_max_attemps failed logins.
+	Set $login_delay to 0 to disable the feature (not recommended)
+*/
+$login_delay = 30;
+$login_max_attempts = 10;

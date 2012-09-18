@@ -359,9 +359,18 @@ function tst_extconfig($install)
 		$test['result'] &= $t;
 	}
 
+	foreach(array('Release', 'Themes', 'Languages', 'Extensions', 'Charts') as $file) {
+		$fname = $path_to_root."/modules/_cache/".$file.".gz";
+		$t = !file_exists($fname) || is_writable($fname);
+		if (!$t)
+			$test['comments'][] = sprintf(_("'%s' is not writeable"), $fname);
+		$test['result'] &= $t;
+	}
+
 	if(!$test['result'])
 		$test['comments'][] = _("Extensions configuration files and directories should be writeable");
 
+	$fname = $path_to_root."/themes";
 	$themedir = opendir($fname);
 	while (false !== ($fname = readdir($themedir)))
 	{

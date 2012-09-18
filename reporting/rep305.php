@@ -63,11 +63,14 @@ function getSuppInvDetails($grn_item_id)
 	$sql = "SELECT
 			".TB_PREF."supp_invoice_items.supp_trans_no inv_no,
 			".TB_PREF."supp_invoice_items.quantity inv_qty,
-			".TB_PREF."supp_invoice_items.unit_price inv_price
-			FROM ".TB_PREF."grn_items, ".TB_PREF."supp_invoice_items
+			IF (".TB_PREF."supp_trans.tax_included = 1, ".TB_PREF."supp_invoice_items.unit_price - ".TB_PREF."supp_invoice_items.unit_tax, ".TB_PREF."supp_invoice_items.unit_price) inv_price
+			FROM ".TB_PREF."grn_items, ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items
 			WHERE ".TB_PREF."grn_items.id = ".TB_PREF."supp_invoice_items.grn_item_id
 			AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."supp_invoice_items.po_detail_item_id
 			AND ".TB_PREF."grn_items.item_code = ".TB_PREF."supp_invoice_items.stock_id
+			AND ".TB_PREF."supp_trans.type = ".TB_PREF."supp_invoice_items.supp_trans_type
+			AND ".TB_PREF."supp_trans.trans_no = ".TB_PREF."supp_invoice_items.supp_trans_no
+			AND ".TB_PREF."supp_invoice_items.supp_trans_type = 20
 			AND ".TB_PREF."supp_invoice_items.grn_item_id = ".$grn_item_id."
 			ORDER BY ".TB_PREF."supp_invoice_items.id asc";
 
@@ -126,8 +129,7 @@ function print_grn_valuation()
 		}
 		$curr = get_supplier_currency($trans['supplier_id']);
 		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
-		$trans['unit_price'] *= $rate;
-		$trans['act_price'] *= $rate;
+		$trans['std_cost_unit'] *= $rate;
 
 		$rep->NewLine();
 		$rep->TextCol(0, 1, $trans['item_code']);
@@ -145,7 +147,7 @@ function print_grn_valuation()
 				$rep->TextCol(4, 5, $inv['inv_no']);
 				$rep->AmountCol(5, 6, $inv['inv_qty'], $qdec);
 				$rep->AmountCol(6, 7, $inv['inv_price'], $dec);
-				$rep->AmountCol(7, 8, $trans['unit_price'], $dec);
+				$rep->AmountCol(7, 8, $trans['std_cost_unit'], $dec);
 				$amt = round2($inv['inv_qty'] * $inv['inv_price'], $dec);
 				$rep->AmountCol(8, 9, $amt, $dec);
 				$rep->NewLine();

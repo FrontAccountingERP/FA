@@ -104,8 +104,8 @@ function print_list_of_journal_entries()
             	else
             		$coms .= " / ".$memo;
             }		
-            $rep->TextCol(3, 6, $coms);
-            $rep->NewLine(2);
+            $rep->TextColLines(3, 6, $coms);
+            $rep->NewLine();
         }
         $rep->TextCol(0, 1, $myrow['account']);
         $rep->TextCol(1, 2, $myrow['account_name']);

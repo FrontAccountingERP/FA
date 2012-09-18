@@ -104,11 +104,6 @@ function can_process()
 			return false;
 		}
 
-		if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
-			display_error(_("The entered reference is already in use."));;
-			set_focus('ref');
-			return false;
-		}
     }
 	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping cost is invalid or less than zero."));;
@@ -196,22 +191,25 @@ function copy_from_cart()
 //-----------------------------------------------------------------------------
 
 if (isset($_POST['ProcessCredit']) && can_process()) {
+	$new_credit = ($_SESSION['Items']->trans_no == 0);
 
-    $new_credit = ($_SESSION['Items']->trans_no == 0);
-
-    if (!isset($_POST['WriteOffGLCode']))
+	if (!isset($_POST['WriteOffGLCode']))
 		$_POST['WriteOffGLCode'] = 0;
 
 	copy_to_cart();
-	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
-    $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
-
-	if($credit_no) {
+	if ($new_credit) 
+		new_doc_date($_SESSION['Items']->document_date);
+	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
+	if ($credit_no == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
+	} elseif($credit_no) {
 		processing_end();
 		if ($new_credit) {
-		   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 		} else {
-		   	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
 		}
 	}
 }

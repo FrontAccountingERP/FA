@@ -208,6 +208,57 @@ function passBack(value) {
 }
 
 /*
+	Normalize date format using previous input value to guess missing date elements.
+	Helps fast date input field change with only single or double numbers (for day or day-and-month fragments)
+*/
+function fix_date(date, last)
+{
+	var regex = /(\d+)[^\d]*(\d+)*[^\d]*(\d+)*/;
+	var dat = regex.exec(last);
+	var cur = regex.exec(date);
+	var day, month, year;
+
+// TODO: user.date as default?
+// TODO: user.datesys
+	if (!dat || !cur) return date;
+
+	if (cur[3] != undefined) // full date entered
+		dat = cur;
+
+	if (user.datefmt == 0) // set defaults
+	{
+		day = dat[2]; month = dat[1]; year = dat[3];
+	} else if (user.datefmt == 1)
+	{
+		day = dat[1]; month = dat[2]; year = dat[3];
+	} else {
+		day = dat[3]; month = dat[2]; year = dat[1];
+	}
+
+	if (cur[2] == undefined) // only day entred
+		day = cur[1];
+	else // day + month
+		if (cur[2] != undefined)
+		{
+			if (user.datefmt==1)
+				{ day = cur[1]; month = cur[2] }
+			else
+				{ day = cur[2]; month = cur[1] }
+		}
+
+	if (day<10) day = '0'+parseInt(day, 10);
+	if (month<10) month = '0'+parseInt(month, 10);
+	if (year<100) year = year<60 ? (2000+parseInt(year,10)) : (1900+parseInt(year,10));
+
+//	console.info(day,month,year)
+	if (user.datefmt == 0)
+		return month+user.datesep+day+user.datesep+year;
+	if (user.datefmt == 1)
+		return day+user.datesep+month+user.datesep+year;
+	return year+user.datesep+month+user.datesep+day;
+}
+
+/*
  Behaviour definitions
 */
 var inserts = {
@@ -296,6 +347,20 @@ var inserts = {
 				if (val != this.value) {
 					this.setAttribute('_last_val', this.value);
 					JsHttpRequest.request('_'+this.name+'_changed', this.form);
+				}
+			}
+	},
+	'.date':
+		function(e) {
+			e.setAttribute('_last_val', e.value);
+			e.setAttribute('autocomplete', 'off');
+  		  	e.onblur = function() {
+				var val = this.getAttribute('_last_val');
+				if (val != this.value) {
+					this.value = fix_date(this.value, val);
+					this.setAttribute('_last_val', this.value);
+					if (e.className.match(/\bactive\b/))
+						JsHttpRequest.request('_'+this.name+'_changed', this.form);
 				}
 			}
 	},

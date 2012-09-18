@@ -144,14 +144,10 @@ function can_process()
 		return false;
 	if($_SESSION['Items']->trans_no == 0) {
 	    if (!$Refs->is_valid($_POST['ref'])) {
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	    } elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT))	{
-		display_error( _("The entered reference is already in use."));
-		set_focus('ref');
-		$input_error = 1;
-	    }
+			display_error( _("You must enter a reference."));
+			set_focus('ref');
+			$input_error = 1;
+		}
 	}
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
@@ -174,17 +170,23 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 		display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 		exit;
-		
 	}
 	if (!isset($_POST['WriteOffGLCode'])) {
 		$_POST['WriteOffGLCode'] = 0;
 	}
 	copy_to_cn();
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
-	new_doc_date($_SESSION['Items']->document_date);
-	processing_end();
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
-
+	if ($credit_no == -1)
+	{
+		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
+	}
+	else
+	{
+		new_doc_date($_SESSION['Items']->document_date);
+		processing_end();
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
+	}
 } /*end of process credit note */
 
   //-----------------------------------------------------------------------------

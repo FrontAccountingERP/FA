@@ -279,9 +279,9 @@ function hook_invoke_first($method, &$data, $opts=null)
 		if (method_exists($hook, $method)) {
 			set_ext_domain('modules/'.$ext);
 			$result = $hook->$method($data, $opts);
+			set_ext_domain();
 			if (isset($result))
 				break;
-			set_ext_domain();
 		}
 	}
 	return $result;
@@ -301,9 +301,9 @@ function hook_invoke_last($method, &$data, $opts=null)
 		if (method_exists($hook, $method)) {
 			set_ext_domain('modules/'.$ext);
 			$result = $hook->$method($data, $opts);
+			set_ext_domain();
 			if (isset($result))
 				break;
-			set_ext_domain();
 		}
 	}
 	return $result;

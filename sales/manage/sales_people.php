@@ -73,7 +73,7 @@ if ($Mode == 'Delete')
 
 	if (key_in_foreign_table($selected_id, 'cust_branch', 'salesman'))
 	{
-		display_error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
+		display_error(_("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned."));
 	}
 	else
 	{

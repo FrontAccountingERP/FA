@@ -90,10 +90,10 @@ if (get_post('addupdate'))
 				if (($a&~0xffff) && (($a&0xff00)<(99<<8))) {
 					$sections[] = $a&~0xff;	// add extended section for plugins
 				}
-				$areas[] = $a;
+				$areas[] = (int)$a;
 			}
 			if (substr($p,0,7) == 'Section')
-				$sections[] = substr($p, 7);
+				$sections[] = (int)substr($p, 7);
 		}
 //		$areas = sort_areas($areas);
 

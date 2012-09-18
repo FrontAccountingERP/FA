@@ -158,21 +158,28 @@ function void_bank_trans($type, $type_no, $nested=false)
 *	Returns null or transaction in conflict. Running balance is checked on daily basis only, to enable ID change after edition.
 *	$delta_amount - tested change in bank balance at $date.
 **/
-function check_bank_account_history($delta_amount, $bank_account, $date, $user=null)
+function check_bank_account_history($delta_amount, $bank_account, $date=null, $user=null)
 {
-	if ($delta_amount >= 0)
+	if ($delta_amount >= 0 && isset($date))
 		 return null;	// amount increese is always safe
 
-	$balance = get_bank_account_limit($bank_account, $date, $user);
+	$balance = $date ? get_bank_account_limit($bank_account, $date, $user) : 0;
 
-	if (!isset($balance))
+	if (!isset($balance) && isset($date))
 		return null;	// unlimited account
 
-	$date = date2sql($date);
-	$balance+= $delta_amount;
+	if ($balance < $delta_amount)
+		return array('amount' => $balance, 'trans_date'=> $date);
 
-	$sql = "SELECT sum(amount) as amount FROM ".TB_PREF."bank_trans WHERE bank_act=".db_escape($bank_account)
-		." AND trans_date >= '$date' GROUP BY trans_date ORDER BY trans_date ASC";
+	$balance += $delta_amount;
+
+	$sql = "SELECT sum(amount) as amount, trans_date FROM ".TB_PREF."bank_trans WHERE bank_act=".db_escape($bank_account);
+	if ($date)
+	{
+		$date = date2sql($date);
+		$sql .= " AND trans_date > '$date'";
+	}
+	$sql .= " GROUP BY trans_date ORDER BY trans_date ASC";
 
 	$history = db_query($sql, "cannot retrieve cash account history");
 

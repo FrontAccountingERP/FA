@@ -69,7 +69,16 @@ function gl_payment_controls()
 
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 
-    date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
+	if (!isset($_POST['DatePaid'])) { // init page
+		$_POST['DatePaid'] = new_doc_date();
+		if (!is_date_in_fiscalyear($_POST['DatePaid']))
+			$_POST['DatePaid'] = end_fiscalyear();
+	}
+    date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
+
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+
+	table_section(2);
 
 	$from_currency = get_bank_account_currency($_POST['FromBankAccount']);
 	$to_currency = get_bank_account_currency($_POST['ToBankAccount']);
@@ -85,10 +94,6 @@ function gl_payment_controls()
 		amount_row(_("Amount:"), 'amount');
 		amount_row(_("Bank Charge:"), 'charge');
 	}
-
-	table_section(2);
-
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
@@ -179,6 +184,12 @@ function check_valid_entries()
 		set_focus('ToBankAccount');
 		return false;
 	}
+	
+	if (!db_has_currency_rates(get_bank_account_currency($_POST['FromBankAccount']), $_POST['DatePaid']))
+		return false;
+
+	if (!db_has_currency_rates(get_bank_account_currency($_POST['ToBankAccount']), $_POST['DatePaid']))
+		return false;
 
     return true;
 }
@@ -187,6 +198,7 @@ function check_valid_entries()
 
 function handle_add_deposit()
 {
+	new_doc_date($_POST['DatePaid']);
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
 		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
 

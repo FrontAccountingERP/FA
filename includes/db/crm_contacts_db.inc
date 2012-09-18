@@ -110,7 +110,12 @@ function get_crm_persons($type=null, $action=null, $entity=null, $person=null, $
 	else
 	 	$sql .= " ORDER BY contact_id";
 
-	return db_query($sql, "Can't get crm persons");
+	$result = db_query($sql, "Can't get crm persons");
+	// fallback to general contacts
+	if (!db_num_rows($result) && $action && $action != 'general')
+		return get_crm_persons($type, 'general', $entity, $person, $unique);
+	else
+		return $result;
 }
 
 function get_crm_person($id)
