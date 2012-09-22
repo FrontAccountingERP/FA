@@ -260,3 +260,12 @@ $text_company_selection  = false;
 */
 $login_delay = 30;
 $login_max_attempts = 10;
+
+/*
+	Choose Exchange Rate Provider
+	Default is ECB for backwards compatibility
+*/
+$xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
+$dflt_xr_provider = 0;
+
+?>

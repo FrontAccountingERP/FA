@@ -4518,7 +4518,7 @@ msgid "Exchange Rate:"
 msgstr ""
 
 #: gl/manage/exchange_rates.php:142
-msgid "Get current ECB rate"
+msgid "Get current rate from"
 msgstr ""
 
 #: gl/manage/exchange_rates.php:148
