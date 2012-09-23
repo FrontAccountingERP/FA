@@ -194,7 +194,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$val = trim(strstr($contents, $stmask));
 		$stmask = chr(10);
 		$val = trim(strstr($val, $stmask));
-		//$val = trim(strstr($val, $stmask, TRUE)); // Only works from PHP 5.3. Seems to work without it.
+		$val = trim(strtok($val, $stmask)); 
     }    
 	return $val;
 }  /* end function get_extern_rate */
