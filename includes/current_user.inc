@@ -163,6 +163,74 @@ class current_user
 		return $this->can_access($page_level);
 	}
 
+	function check_application_access($waapp)
+	{
+		if (!$this->hide_inaccessible_menu_items())
+		{
+			return true;
+		}
+
+		foreach ($waapp->modules as $module)
+		{
+			if ($this->check_module_access($module))
+			{
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
+	function check_module_access($module)
+	{
+
+		if (!$this->hide_inaccessible_menu_items())
+		{
+			return true;
+		}
+
+		if (sizeof($module->lappfunctions) > 0)
+		{
+			foreach ($module->lappfunctions as $appfunction)
+			{
+				if ($appfunction->label != "" && $this->can_access_page($appfunction->access))
+				{
+					return true;
+				}
+			}
+		}
+
+		if (sizeof($module->rappfunctions) > 0)
+		{
+			foreach ($module->rappfunctions as $appfunction)
+			{
+				if ($appfunction->label != "" && $this->can_access_page($appfunction->access))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+
+	}
+
+	function hide_inaccessible_menu_items()
+	{
+		global $hide_inaccessible_menu_items;
+
+		if (!isset($hide_inaccessible_menu_items) || $hide_inaccessible_menu_items == 0)
+		{
+			return false;
+		}
+
+		else
+		{
+			return true;
+		}
+	}
+
 	function set_db_connection($id = -1)
 	{
 		return set_global_connection($id);
@@ -570,5 +638,6 @@ function company_path($comp=null)
 	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
 			. '/'.$comp;
 }
+
 
 ?>
