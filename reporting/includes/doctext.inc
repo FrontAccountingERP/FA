@@ -41,7 +41,7 @@
 			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
 				? $this->formData['reference'] : $this->formData['order_no'];
 			$aux_info = array(
-				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Customer's Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Quotation No") => $this->formData['order_no'],
@@ -58,7 +58,7 @@
 			$this->formData['document_amount'] = $this->formData['order_no'];
 
 			$aux_info = array(
-				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Customer's Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Order No") => $this->formData['order_no'],
@@ -79,7 +79,7 @@
 					$ref = $this->formData['order_'];
 			}
 			$aux_info = array(
-				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Customer's Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Order No") => $ref,
@@ -93,7 +93,7 @@
 			$Footer[0] = _("Please quote Credit no. when paying. All amounts stated in") . " - " . $this->formData['curr_code'];
 
 			$aux_info = array(
-				_("Customers Reference") => @$this->formData["customer_ref"],
+				_("Customer's Reference") => @$this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Order No") => $this->formData['order_'],
@@ -115,7 +115,7 @@
 				}
 			}
 			$aux_info = array(
-				_("Customers Reference") => $this->formData["customer_ref"],
+				_("Customer's Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Delivery Note No.") => implode(',', $deliveries),
@@ -136,10 +136,10 @@
 			$Addr2['address'] = '';
 
 			$aux_info = array(
-				_("Customers Reference") => $this->formData['supp_account_no'],
+				_("Customer's Reference") => $this->formData['supp_account_no'],
 				_("Type") =>$systypes_array[$this->formData["type"]],
 				_("Your VAT no.") => $this->formData['tax_id'],
-				_("Our Order No") => '',
+				_("Supplier's Reference") => '',
 				_("Due Date") => sql2date($this->formData['tran_date']),
 			);
 			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
@@ -159,11 +159,11 @@
 				? $this->formData['reference'] : $this->formData['order_no'];
 
 			$aux_info = array(
-				_("Customers Reference") => $this->formData['supp_account_no'],
-				_("Sales Person") => '',
-				_("Your VAT no.") => '',
-				_("Our Order No") => '',
-				_("Due Date") => '',
+				_("Customer's Reference") => $this->formData['supp_account_no'],
+				_("Sales Person") => $this->formData['contact'],
+				_("Your VAT no.") => $this->formData['tax_id'],
+				_("Supplier's Reference") => $this->formData['requisition_no'],
+				_("Order Date") => sql2date($this->formData['document_date']),
 			);
 
 			$this->headers = array(_("Item Code"), _("Item Description"),
@@ -177,7 +177,7 @@
 			$this->formData['document_name'] =_("Receipt No.");
 			$Addr1['title'] = _("With thanks from");
 			$aux_info = array(
-				_("Customers Reference") => $this->formData["debtor_ref"],
+				_("Customer's Reference") => $this->formData["debtor_ref"],
 				_("Type") =>$systypes_array[$this->formData["type"]],
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Order No") => $this->formData['order_'],
@@ -215,7 +215,7 @@
 			$Payment_Terms = '';
 			$this->title = _("STATEMENT");
 			$aux_info = array(
-				_("Customers Reference") => '',
+				_("Customer's Reference") => '',
 				_("Sales Person") => '',
 				_("Your VAT no.") => $this->formData['tax_id'],
 				_("Our Order No") => '',
