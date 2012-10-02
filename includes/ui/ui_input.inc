@@ -645,7 +645,8 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 		$aspect .= ' style="color:#FF0000"';
 
 	default_focus($name);
-	echo "<input type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"10\" maxlength=\"12\" value=\"" 
+	$size = (user_date_format()>3)?11:10; 
+	echo "<input type=\"text\" name=\"$name\" class=\"$class\" $aspect size=\"$size\" maxlength=\"12\" value=\"" 
 	 . $_POST[$name]. "\""
 	 .($title ? " title='$title'": '')." > $post_label";
 	echo "</td>\n";

@@ -21,22 +21,31 @@ this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
 
 function __date($year, $month, $day)
 {
-	global $dateseps;
+	global $dateseps, $tmonths;
 	
 	$how = user_date_format();
 	$sep = $dateseps[user_date_sep()];
 	$day = (int)$day;
 	$month = (int)$month;
-	if ($day < 10)
-		$day = "0".$day;
-	if ($month < 10)
-		$month = "0".$month;
+	if ($how < 3)
+	{
+		if ($day < 10)
+			$day = "0".$day;
+		if ($month < 10)
+			$month = "0".$month;
+	}		
 	if ($how == 0)
 		return $month.$sep.$day.$sep.$year;
 	elseif ($how == 1)
 		return $day.$sep.$month.$sep.$year;
-	else
+	elseif ($how == 2)
 		return $year.$sep.$month.$sep.$day;
+	elseif ($how == 3)
+		return $tmonths[$month].$sep.$day.$sep.$year;
+	elseif ($how == 4)
+		return $day.$sep.$tmonths[$month].$sep.$year;
+	else
+		return $year.$sep.$tmonths[$month].$sep.$day;
 }
 
 function is_date($date_) 
@@ -49,54 +58,78 @@ function is_date($date_)
 	$sep = $dateseps[user_date_sep()];
 
 	$date_ = trim($date_);
-	$date_ = str_replace($sep, "", $date_);
+	$date = str_replace($sep, "", $date_);
 	if (strlen($date_) == 6)
 	{
 		if ($how == 0)
 		{
-			$day = substr($date_,2,2);
-			$month = substr($date_,0,2);
-			$year = substr($date_,4,2);
+			$day = substr($date,2,2);
+			$month = substr($date,0,2);
+			$year = substr($date,4,2);
 		} 
 		elseif ($how == 1)
 		{
-			$day = substr($date_,0,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,4,2);
+			$day = substr($date,0,2);
+			$month = substr($date,2,2);
+			$year = substr($date,4,2);
 		} 
 		else
 		{
-			$day = substr($date_,4,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,0,2);
+			$day = substr($date,4,2);
+			$month = substr($date,2,2);
+			$year = substr($date,0,2);
 		}
 	}
 	elseif (strlen($date_) == 8)
 	{
 		if ($how == 0)
 		{
-			$day = substr($date_,2,2);
-			$month = substr($date_,0,2);
-			$year = substr($date_,4,4);
+			$day = substr($date,2,2);
+			$month = substr($date,0,2);
+			$year = substr($date,4,4);
 		} 
 		elseif ($how == 1)
 		{
-			$day = substr($date_,0,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,4,4);
+			$day = substr($date,0,2);
+			$month = substr($date,2,2);
+			$year = substr($date,4,4);
 		} 
 		else
 		{
-			$day = substr($date_,6,2);
-			$month = substr($date_,4,2);
-			$year = substr($date_,0,4);
+			$day = substr($date,6,2);
+			$month = substr($date,4,2);
+			$year = substr($date,0,4);
 		}
+	}
+	elseif ($how > 2)
+	{
+		global $tmonths;
+		$dd = explode($sep, $date_);
+		if ($how == 3)
+		{
+			$day = $dd[1];
+			$month = array_search($dd[0], $tmonths);
+			$year = $dd[2];
+		} 
+		elseif ($how == 4)
+		{
+			$day = $dd[0];
+			$month = array_search($dd[1], $tmonths);
+			$year = $dd[2];
+		} 
+		else
+		{
+			$day = $dd[2];
+			$month = array_search($dd[1], $tmonths);
+			$year = $dd[0];
+		}
+		if ($year < 1000)
+			return 0;
 	}
 	if (!isset($year)|| (int)$year > 9999) 
 	{
 		return 0;
 	}
-
 
 	if (is_long((int)$day) && is_long((int)$month) && is_long((int)$year))
 	{
@@ -333,7 +366,7 @@ function sql2date($date_)
 
 function date2sql($date_)
 {
-	global $dateseps, $date_system;
+	global $dateseps, $date_system, $tmonths;
 /* takes a date in a the format specified in $DefaultDateFormat
 and converts to a yyyy/mm/dd format */
 
@@ -345,15 +378,18 @@ and converts to a yyyy/mm/dd format */
 
 	$date_ = trim($date_);
     $year = $month = $day = 0;
-
     // Split up the date by the separator based on "how" to split it
-    if ($how == 0) // MMDDYYYY
+    if ($how == 0 || $how == 3) // MMDDYYYY or MmmDDYYYY
         list($month, $day, $year) = explode($sep, $date_);
-    elseif ($how == 1) // DDMMYYYY
+    elseif ($how == 1 || $how == 4) // DDMMYYYY or DDMmYYYY
         list($day, $month, $year) = explode($sep, $date_);
-    else // $how == 2, YYYYMMDD
+    else // $how == 2 || $how == 5, YYYYMMDD or YYYYMmmDD
         list($year, $month, $day) = explode($sep, $date_);
-
+	if ($how > 2)
+	{
+		global $tmonths;
+		$month = array_search($month, $tmonths);
+	}	
 //to modify assumption in 2030
 	if ($date_system == 0 || $date_system == 3)
 	{

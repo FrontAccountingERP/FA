@@ -136,13 +136,16 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* suppress tax rates on documents. 0 = no, 1 = yes. */
 	$suppress_tax_rates = 0;
 	
-	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
+	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD","MmmDDYYYY", "DDMmmYYYY", "YYYYMmmDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
 	$decseps 		= array(".", ",");
 	// defalt dateformats and dateseps indexes used before user login
 	$dflt_date_fmt = 0;
 	$dflt_date_sep = 0;
+
+	/* This month array is for use with the last 3 dateformats. */
+	$tmonths = array("", _("Jan"),_("Feb"),_("Mar"),_("Apr"),_("May"),_("Jun"),_("Jul"),_("Aug"),_("Sep"),_("Oct"),_("Nov"),_("Dec"));
 
 	$pagesizes 		= array("Letter", "A4"); // default PDF pagesize
 

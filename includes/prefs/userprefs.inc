@@ -163,8 +163,14 @@ class user_prefs
 			return "m".$sep."d".$sep."Y";
 		elseif ($this->date_format == 1)
 			return "d".$sep."m".$sep."Y";
-		else
+		elseif ($this->date_format == 2)
 			return "Y".$sep."m".$sep."d";
+		elseif ($this->date_format == 3)
+			return "M".$sep."j".$sep."Y";
+		elseif ($this->date_format == 4)
+			return "j".$sep."M".$sep."Y";
+		else
+			return "Y".$sep."M".$sep."j";
 	}
 
 	function tho_sep() 

@@ -833,11 +833,11 @@ function get_js_date_picker()
 
     if (!file_exists($fpath) || $go_debug) {
 
-	global $dateseps, $date_system;
+	global $dateseps, $date_system, $tmonths;
 
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
-	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0 : 1));	// weekstart (sun = 0, mon = 1)
+	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 || $how == 3 ? 0 : 1));	// weekstart (sun = 0, mon = 1)
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
 	$wno = _("W"); // week no
@@ -920,6 +920,7 @@ function CC() {
   var selectedDay = 0;
   var months = ['$months[0]','$months[1]','$months[2]','$months[3]','$months[4]','$months[5]','$months[6]','$months[7]','$months[8]','$months[9]','$months[10]','$months[11]'];
   var wdays = ['$wdays[0]', '$wdays[1]', '$wdays[2]', '$wdays[3]', '$wdays[4]', '$wdays[5]', '$wdays[6]'];
+  var tmonths = ['$tmonths[0]','$tmonths[1]','$tmonths[2]','$tmonths[3]','$tmonths[4]','$tmonths[5]','$tmonths[6]','$tmonths[7]','$tmonths[8]','$tmonths[9]','$tmonths[10]','$tmonths[11]','$tmonths[12]'];
   var dateField = null;
   function getProperty(p_property){
     var p_elm = calendarId;
@@ -1022,7 +1023,7 @@ function CC() {
   this.getWeek = getWeek;
   function getWeek(year, month, day) {
 ";
-	if ($how == 0)
+	if ($how == 0 || $how == 3)
 		$js .= "  day++;";
 	$js .= "
     var date = new Date(year,month-1,day);
@@ -1036,19 +1037,26 @@ function CC() {
   }
   this.setDate = setDate;
   function setDate(year, month, day) {
-    if (dateField) {
+    if (dateField){
+";
+	if ($how < 3)
+		$js .= "
       if (month < 10) {month = '0' + month;}
       if (day < 10) {day = '0' + day;}
 ";
-	if ($how == 0)
+	else
+		$js .= "
+      month = tmonths[month];
+";
+	if ($how == 0 || $how == 3)
 		$js .= "
       var dateString = month+'$sep'+day+'$sep'+year;
 ";
-	else if ($how == 1)
+	else if ($how == 1 || $how == 4)
 		$js .= "
       var dateString = day+'$sep'+month+'$sep'+year;
 ";
-	else
+	else if ($how == 2 || $how == 5)
 		$js .= "
       var dateString = year+'$sep'+month+'$sep'+day;
 ";
@@ -1184,10 +1192,28 @@ function CC() {
         selectedMonth = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else
+	else if ($how == 2)
 		$js .= "
         selectedYear = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
+        selectedDay = parseInt(dateParts[2],10);
+";
+	else if ($how == 3)
+		$js .= "
+        selectedDay = parseInt(dateParts[1],10);
+        selectedMonth = parseInt(tmonths.indexOf(dateParts[0]),10);
+        selectedYear = parseInt(dateParts[2],10);
+";
+	else if ($how == 4)
+		$js .= "
+        selectedDay = parseInt(dateParts[0],10);
+        selectedMonth = parseInt(tmonths.indexOf(dateParts[1]),10);
+        selectedYear = parseInt(dateParts[2],10);
+";
+	else
+		$js .= "
+        selectedYear = parseInt(dateParts[0],10);
+        selectedMonth = parseInt(tmonths.indexOf(dateParts[1]),10);
         selectedDay = parseInt(dateParts[2],10);
 ";
 	$js .= "

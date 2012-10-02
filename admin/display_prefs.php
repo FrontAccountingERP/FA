@@ -33,6 +33,8 @@ if (isset($_POST['setprefs']))
 		$_POST['theme'] = clean_file_name($_POST['theme']);
 		$chg_theme = user_theme() != $_POST['theme'];
 		$chg_lang = $_SESSION['language']->code != $_POST['language'];
+		$chg_date_format = user_date_format() != $_POST['date_format'];
+		$chg_date_sep = user_date_sep() != $_POST['date_sep'];
 
 		set_user_prefs(get_post( 
 			array('prices_dec', 'qty_dec', 'rates_dec', 'percent_dec',
@@ -50,8 +52,7 @@ if (isset($_POST['setprefs']))
 
 		if ($chg_theme && $allow_demo_mode)
 			$_SESSION["wa_current_user"]->prefs->theme = $_POST['theme'];
-
-		if ($chg_theme || $chg_lang)
+		if ($chg_theme || $chg_lang || $chg_date_format || $chg_date_sep)
 			meta_forward($_SERVER['PHP_SELF']);
 
 		
