@@ -274,7 +274,7 @@ function get_stock_gl_code($stock_id)
 
 function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 {
-	//If negative adjustment result in negative or zero inventory 
+	//If negative adjustment result in negative or zero inventory
 	//then difference should be adjusted
 	$qoh = get_qoh_on_date($stock_id);
 
@@ -381,18 +381,13 @@ function get_stock_moves($type, $type_no, $visible=false)
 
 function void_stock_move($type, $type_no)
 {
-   
-    $sql = "SELECT stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price, 
-    	sum(qty) qty FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no)." 
-    	GROUP BY stock_id, standard_cost, loc_code, tran_date, reference, person_id, visible, discount_percent, price HAVING sum(qty) <> 0";
-
-
+    $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
     {
 		//Skip cost averaging of service items
 		if (is_inventory_item($row["stock_id"]))
-		{        
+		{
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
 			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
@@ -404,13 +399,11 @@ function void_stock_move($type, $type_no)
 			update_average_material_cost(0, $row["stock_id"],
 				$trans_rate, -$row["qty"], sql2date($row["tran_date"]));
 		}
-		
-		//Post stock move for service items also
-        add_stock_move($type, $row["stock_id"], $type_no, $row["loc_code"],
-    		sql2date($row["tran_date"]), $row["reference"], -$row["qty"]
-			, $row["standard_cost"], $row["person_id"], $row["visible"],
-    		$row["price"], $row["discount_percent"]);
+
     }
+	$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)
+		."	AND trans_no=".db_escape($type_no);
+	db_query($sql, "The stock movement cannot be delated");
 }
 
 //--------------------------------------------------------------------------------------------------
