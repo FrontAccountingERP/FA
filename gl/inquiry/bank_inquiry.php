@@ -68,7 +68,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 start_table(TABLESTYLE);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"),
-	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");
+	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), _("Memo"), "");
 table_header($th);
 
 $bfw = get_balance_before_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate']);
@@ -103,6 +103,7 @@ while ($myrow = db_fetch($result))
 	display_debit_or_credit_cells($myrow["amount"]);
 	amount_cell($running_total);
 	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
+	label_cell(get_comments_string($myrow["type"], $myrow["trans_no"]));
 	label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 	end_row();
  	if ($myrow["amount"] > 0 ) 
