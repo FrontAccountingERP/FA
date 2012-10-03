@@ -292,7 +292,8 @@ function add_days($date, $days) // accepts negative values as well
     		list($year, $month, $day) = gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
     	return __date($year, $month, $day);
     }
-    return date(user_date_display(), $timet);
+    list($year, $month, $day) = explode("-", date("Y-m-d", $timet));
+   	return __date($year, $month, $day);
 }
 
 function add_months($date, $months) // accepts negative values as well
@@ -314,7 +315,8 @@ function add_months($date, $months) // accepts negative values as well
     		list($year, $month, $day) = gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
     	return __date($year, $month, $day);
     }
-    return date(user_date_display(), $timet);
+    list($year, $month, $day) = explode("-", date("Y-m-d", $timet));
+   	return __date($year, $month, $day);
 }
 
 function add_years($date, $years) // accepts negative values as well
@@ -330,7 +332,8 @@ function add_years($date, $years) // accepts negative values as well
     		list($year, $month, $day) = gregorian_to_islamic(date("Y", $timet), date("n", $timet), date("j", $timet));
     	return __date($year, $month, $day);
     }
-    return date(user_date_display(), $timet);
+    list($year, $month, $day) = explode("-", date("Y-m-d", $timet));
+   	return __date($year, $month, $day);
 }
 
 //_______________________________________________________________
