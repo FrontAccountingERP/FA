@@ -36,7 +36,7 @@ ALTER TABLE `0_tax_groups` DROP COLUMN `tax_shipping`;
 
 ALTER TABLE `0_sales_order_details` ADD KEY `stkcode` (`stk_code`);
 ALTER TABLE `0_purch_order_details` ADD KEY `itemcode` (`item_code`);
-ALTER TABLE `0_sys_prefs` CHANGE `value` `value` TEXT NOT NULL DEFAULT '';
+ALTER TABLE `0_sys_prefs` CHANGE `value` `value` TEXT NOT NULL;
 ALTER TABLE `0_cust_branch` ADD COLUMN `bank_account` varchar(60) DEFAULT NULL AFTER `notes`;
 
 ALTER TABLE `0_debtor_trans` ADD COLUMN `tax_included` tinyint(1) unsigned NOT NULL default '0' AFTER `payment_terms`;

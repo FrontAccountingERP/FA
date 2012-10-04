@@ -1927,8 +1927,8 @@ CREATE TABLE IF NOT EXISTS `0_supp_allocations` (
   `trans_type_from` int(11) default NULL,
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY(`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`trans_type_from`,`trans_no_from`,`trans_type_to`,`trans_no_to`),
   KEY `From` (`trans_type_from`,`trans_no_from`),
   KEY `To` (`trans_type_to`,`trans_no_to`)
 ) ENGINE=InnoDB  AUTO_INCREMENT=2 ;
@@ -1994,7 +1994,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
   `tax_included` tinyint(1) NOT NULL default '0',
-  `tax_algorihm` tinyint(1) NOT NULL default '1',
+  `tax_algorithm` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
@@ -2022,7 +2022,7 @@ CREATE TABLE IF NOT EXISTS `0_sys_prefs` (
   `category` varchar(30) default NULL,
   `type` varchar(20) NOT NULL default '',
   `length` smallint(6) default NULL,
-  `value` text,
+  `value` text NOT NULL,
   PRIMARY KEY  (`name`),
   KEY `category` (`category`)
 ) ENGINE=MyISAM;
@@ -2058,7 +2058,7 @@ INSERT INTO `0_sys_prefs` VALUES('profit_loss_year_act', 'glsetup.general', 'var
 INSERT INTO `0_sys_prefs` VALUES('retained_earnings_act', 'glsetup.general', 'varchar', 15, '3590');
 INSERT INTO `0_sys_prefs` VALUES('bank_charge_act', 'glsetup.general', 'varchar', 15, '5690');
 INSERT INTO `0_sys_prefs` VALUES('exchange_diff_act', 'glsetup.general', 'varchar', 15, '4450');
-INSERT INTO `0_sys_prefs` VALUES('tax_algorithm', 'glsetup.general', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES('tax_algorithm', 'glsetup.customer', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES('default_credit_limit', 'glsetup.customer', 'int', 11, '1000');
 INSERT INTO `0_sys_prefs` VALUES('accumulate_shipping', 'glsetup.customer', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('legal_text', 'glsetup.customer', 'tinytext', 0, '');
@@ -2084,7 +2084,8 @@ INSERT INTO `0_sys_prefs` VALUES('default_workorder_required', 'glsetup.manuf', 
 INSERT INTO `0_sys_prefs` VALUES('version_id', 'system', 'varchar', 11, '2.3rc');
 INSERT INTO `0_sys_prefs` VALUES('auto_curr_reval', 'setup.company', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550');
-INSERT INTO `0_sys_prefs` VALUES ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
+INSERT INTO `0_sys_prefs` VALUES('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
+INSERT INTO `0_sys_prefs` VALUES('gl_closing_date','setup.closing_date', 'date', 8, '');
 
 -- --------------------------------------------------------
 
@@ -2331,7 +2332,7 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
   `startup_tab` varchar(20) NOT NULL default '',
-  `transaction_days` smallint(6) NOT NULL default '0',
+  `transaction_days` smallint(6) NOT NULL default '30',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`)
@@ -2422,6 +2423,28 @@ INSERT INTO `0_workorders` VALUES(4, '4', 'DEF', 4, '3400', '2009-06-21', 0, '20
 INSERT INTO `0_workorders` VALUES(5, '5', 'DEF', 5, '3400', '2009-06-21', 0, '2009-06-21', '2009-06-21', 5, 1, 1, 10);
 INSERT INTO `0_workorders` VALUES(6, '6', 'DEF', -5, '3400', '2009-06-21', 1, '2009-06-21', '2009-06-21', -5, 1, 1, 0);
 INSERT INTO `0_workorders` VALUES(7, '7', 'DEF', -2, '3400', '2009-06-21', 1, '2009-06-21', '2009-06-21', -2, 1, 1, 10);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `0_wo_costing`
+--
+
+DROP TABLE IF EXISTS `0_wo_costing`;
+CREATE TABLE `0_wo_costing` (
+  `id` int(11) NOT NULL auto_increment,
+  `workorder_id` int(11) NOT NULL default '0',
+  `cost_type` 	tinyint(1) NOT NULL default '0',
+  `trans_type` int(11) NOT NULL default '0',
+  `trans_no` int(11) NOT NULL default '0',
+  `factor` double NOT NULL default '1',
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Dumping data for table `0_wo_costing`
+--
+
 
 -- --------------------------------------------------------
 
