@@ -144,9 +144,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$dflt_date_fmt = 0;
 	$dflt_date_sep = 0;
 
-	/* This month array is for use with the last 3 dateformats. */
-	$tmonths = array("", _("Jan"),_("Feb"),_("Mar"),_("Apr"),_("May"),_("Jun"),_("Jul"),_("Aug"),_("Sep"),_("Oct"),_("Nov"),_("Dec"));
-
 	$pagesizes 		= array("Letter", "A4"); // default PDF pagesize
 
 	/* Accounts Payable */
