@@ -59,49 +59,8 @@ function is_date($date_)
 
 	$date_ = trim($date_);
 	$date = str_replace($sep, "", $date_);
-	if (strlen($date_) == 6)
-	{
-		if ($how == 0)
-		{
-			$day = substr($date,2,2);
-			$month = substr($date,0,2);
-			$year = substr($date,4,2);
-		} 
-		elseif ($how == 1)
-		{
-			$day = substr($date,0,2);
-			$month = substr($date,2,2);
-			$year = substr($date,4,2);
-		} 
-		else
-		{
-			$day = substr($date,4,2);
-			$month = substr($date,2,2);
-			$year = substr($date,0,2);
-		}
-	}
-	elseif (strlen($date_) == 8)
-	{
-		if ($how == 0)
-		{
-			$day = substr($date,2,2);
-			$month = substr($date,0,2);
-			$year = substr($date,4,4);
-		} 
-		elseif ($how == 1)
-		{
-			$day = substr($date,0,2);
-			$month = substr($date,2,2);
-			$year = substr($date,4,4);
-		} 
-		else
-		{
-			$day = substr($date,6,2);
-			$month = substr($date,4,2);
-			$year = substr($date,0,4);
-		}
-	}
-	elseif ($how > 2)
+	
+	if ($how > 2)
 	{
 		global $tmonths;
 		$dd = explode($sep, $date_);
@@ -125,6 +84,48 @@ function is_date($date_)
 		}
 		if ($year < 1000)
 			return 0;
+	}
+	elseif (strlen($date) == 6)
+	{
+		if ($how == 0)
+		{
+			$day = substr($date,2,2);
+			$month = substr($date,0,2);
+			$year = substr($date,4,2);
+		} 
+		elseif ($how == 1)
+		{
+			$day = substr($date,0,2);
+			$month = substr($date,2,2);
+			$year = substr($date,4,2);
+		} 
+		else
+		{
+			$day = substr($date,4,2);
+			$month = substr($date,2,2);
+			$year = substr($date,0,2);
+		}
+	}
+	elseif (strlen($date) == 8)
+	{
+		if ($how == 0)
+		{
+			$day = substr($date,2,2);
+			$month = substr($date,0,2);
+			$year = substr($date,4,4);
+		} 
+		elseif ($how == 1)
+		{
+			$day = substr($date,0,2);
+			$month = substr($date,2,2);
+			$year = substr($date,4,4);
+		} 
+		else
+		{
+			$day = substr($date,6,2);
+			$month = substr($date,4,2);
+			$year = substr($date,0,4);
+		}
 	}
 	if (!isset($year)|| (int)$year > 9999) 
 	{
