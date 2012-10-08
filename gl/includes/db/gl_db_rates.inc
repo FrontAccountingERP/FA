@@ -76,10 +76,13 @@ function delete_exchange_rate($rate_id)
 //
 function retrieve_exrate($curr_b, $date)
 {
+	global $xr_providers, $dflt_xr_provider;
+	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
+	
 	$rate = hook_retrieve_exrate($curr_b, $date);
 	if (is_numeric($rate))
 		return $rate;
-	return get_extern_rate($curr_b, 'ECB', $date);
+	return get_extern_rate($curr_b, $xchg_rate_provider, $date);
 }
 //-----------------------------------------------------------------------------
 
@@ -93,16 +96,22 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'YAHOO')
 	{
-		$filename = "/q?s={$curr_a}{$curr_b}=X";
-		$site = "finance.yahoo.com";
+		$filename = "/d/quotes.csv?s={$curr_a}{$curr_b}=X&f=sl1d1t1ba&e=.csv"; // new URL's for YAHOO
+		$site = "download.finance.yahoo.com";
+        //$filename = "/q?s={$curr_a}{$curr_b}=X"; // Let old code be here for a while, Joe.
+ 		//$site = "finance.yahoo.com";
 	}
 	elseif ($provider == 'GOOGLE')
 	{
 		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
-		$site = "finance.google.com";
+		$site = "www.google.com";
+	}
+	elseif ($provider == 'BLOOMBERG')
+	{
+		$filename = "/quote/{$curr_b}{$curr_a}:CUR";
+		$site = "www.bloomberg.com";
 	}
 	$contents = '';
-
 	if (function_exists('curl_init'))
 	{	// first check with curl as we can set short timeout;
 		$retry = 1;
@@ -151,17 +160,24 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'YAHOO')
 	{
-		$val = '';
-		if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
+		$val = ''; 
+		$array = explode(',',$contents); // New operations for YAHOO. Safer.
+		$val = $array[1];
+		if ($val != 0)
+			$val = 1 / $val;
+		/* Let old code be here for a while, Joe.
+		//if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
 			$val = strip_tags($matches[1]);
 			$val = str_replace(',', '', $val);
 			if ($val != 0)
 				$val = 1 / $val;
 		}
+		*/
 	}
 	elseif ($provider == 'GOOGLE')
 	{
 		$val = '';
+		
 		$regexp = "%([\d|.]+)\s+{$curr_a}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_b}\s*</span>%s";
 		if (preg_match($regexp, $contents, $matches)) 
 		{
@@ -170,6 +186,15 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 			if ($val != 0)
 				$val = 1 / $val;
 		}
+    }    
+	elseif ($provider == 'BLOOMBERG')
+	{
+		$val = '';
+		$stmask = '<span class=" price">';
+		$val = trim(strstr($contents, $stmask));
+		$stmask = chr(10);
+		$val = trim(strstr($val, $stmask));
+		$val = trim(strtok($val, $stmask)); 
     }    
 	return $val;
 }  /* end function get_extern_rate */

@@ -108,8 +108,8 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $Ajax;
-
+	global $selected_id, $Ajax, $xr_providers, $dflt_xr_provider;
+	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
 	start_table(TABLESTYLE2);
 
 	if ($selected_id != "")
@@ -139,7 +139,7 @@ function display_rate_edit()
 		$Ajax->activate('BuyRate');
 	}
 	amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true), 'max');
+	  	submit('get_rate',_("Get"), false, _('Get current rate from') . ' ' . $xchg_rate_provider , true), 'max');
 
 	end_table(1);
 

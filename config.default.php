@@ -139,7 +139,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* allow reopening closed transactions */
 	$allow_gl_reopen = 0;
 
-	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
+	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD","MmmDDYYYY", "DDMmmYYYY", "YYYYMmmDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
 	$decseps 		= array(".", ",");
@@ -264,3 +264,12 @@ $text_company_selection  = false;
 */
 $login_delay = 30;
 $login_max_attempts = 10;
+
+/*
+	Choose Exchange Rate Provider
+	Default is ECB for backwards compatibility
+*/
+$xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
+$dflt_xr_provider = 0;
+
+?>

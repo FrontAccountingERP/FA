@@ -155,7 +155,7 @@ function check_faillog()
 
 	$user = $_SESSION["wa_current_user"]->user;
 
-	if (@$login_delay && ($login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$login_max_attempts) && (time() < $login_faillog[$user]['last'] + $login_delay))
+	if (@$login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$login_max_attempts) && (time() < $login_faillog[$user]['last'] + $login_delay))
 		return true;
 
 	return false;

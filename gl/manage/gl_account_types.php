@@ -125,7 +125,7 @@ $result = get_account_types(check_value('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Group ID"), _("Group Name"), _("Subgroup Of"), _("Class Type"), "", "");
+$th = array(_("Group ID"), _("Group Name"), _("Subgroup Of"), _("Class"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -189,7 +189,7 @@ text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 
-class_list_row(_("Class Type:"), 'class_id', null);
+class_list_row(_("Class:"), 'class_id', null);
 
 end_table(1);
 
