@@ -228,11 +228,14 @@ function fix_date(date, last)
 		day = dat[0]; month = dat[1]; year = dat[2];
 	} else {
 		day = dat[2]; month = dat[1]; year = dat[0];
-	}	
-	if (cur[0] != undefined && cur[0] != "") // day entered
-		day = cur[0];
-	if (cur[1] != undefined && cur[1] != "") // month entered
-		month = cur[1];
+	}
+	if (cur[2] == undefined || cur[2] == "") // day or day-month
+	{
+		if (cur[0] != undefined && cur[0] != "" && cur[0].length < 3) // day entered
+			day = cur[0];
+		if (cur[1] != undefined && cur[1] != "" && cur[1].length < 3) // month entered
+			month = cur[1];
+	}		
 	if (user.datefmt<3) {
 		if (day<10) day = '0'+parseInt(day, 10);
 		if (month<10) month = '0'+parseInt(month, 10);
