@@ -229,12 +229,30 @@ function fix_date(date, last)
 	} else {
 		day = dat[2]; month = dat[1]; year = dat[0];
 	}
-	if (cur[2] == undefined || cur[2] == "") // day or day-month
-	{
-		if (cur[0] != undefined && cur[0] != "" && cur[0].length < 3) // day entered
-			day = cur[0];
-		if (cur[1] != undefined && cur[1] != "" && cur[1].length < 3) // month entered
+	if (cur[1] != undefined && cur[1] != "") // day or month entered, could be string 3
+	{ 
+		if (user.datefmt == 0 || user.datefmt == 3 || ((user.datefmt == 2 || user.datefmt == 5) && (cur[2] == undefined || cur[2] == "")))
+			day = cur[1];
+		else	
 			month = cur[1];
+	}		
+	if (cur[0] != undefined && cur[0] != "") // day or month entered. could be string 3
+	{
+		if (cur[1] == undefined || cur[1] == "")
+			day = cur[0];
+		else if (user.datefmt == 0 || user.datefmt == 3 || ((user.datefmt == 2 || user.datefmt == 5) && (cur[2] == undefined || cur[2] == "")))
+			month = cur[0];
+		else if (user.datefmt == 2 || user.datefmt == 5)
+			year = cur[0];
+		else	
+			day = cur[0];
+	}
+	if (cur[2] != undefined && cur[2] != "") // year,
+	{
+		if (user.datefmt == 2 || user.datefmt == 5)
+			day = cur[2];
+		else
+			year = cur[2];
 	}		
 	if (user.datefmt<3) {
 		if (day<10) day = '0'+parseInt(day, 10);
