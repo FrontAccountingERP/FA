@@ -126,6 +126,7 @@ function clear_data()
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
 	unset($_POST['no_sale']);
+	unset($_POST['no_purchase']);
 }
 
 //------------------------------------------------------------------------------------
@@ -182,7 +183,7 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'));
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -200,12 +201,12 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
-			$_POST['no_sale'] = $_POST['editable'] = 0;
+			$_POST['no_sale'] = $_POST['editable'] = $_POST['no_purchase'] =0;
 			set_focus('NewStockID');
 		}
 		$Ajax->activate('_page_body');
@@ -294,7 +295,8 @@ function item_settings(&$stock_id)
 			$_POST['dimension_id']	= $myrow['dimension_id'];
 			$_POST['dimension2_id']	= $myrow['dimension2_id'];
 			$_POST['no_sale']	= $myrow['no_sale'];
-			$_POST['del_image'] = 0;	
+			$_POST['no_purchase']	= $myrow['no_purchase'];
+			$_POST['del_image'] = 0;
 			$_POST['inactive'] = $myrow["inactive"];
 			$_POST['editable'] = $myrow["editable"];
 		}
@@ -324,6 +326,7 @@ function item_settings(&$stock_id)
 		$_POST['dimension_id'] = $category_record["dflt_dim1"];
 		$_POST['dimension2_id'] = $category_record["dflt_dim2"];
 		$_POST['no_sale'] = $category_record["dflt_no_sale"];
+		$_POST['no_purchase'] = $category_record["dflt_no_purchase"];
 		$_POST['editable'] = 0;
 
 	}
@@ -339,6 +342,8 @@ function item_settings(&$stock_id)
 	check_row(_("Editable description:"), 'editable');
 
 	check_row(_("Exclude from sales:"), 'no_sale');
+
+	check_row(_("Exclude from purchases:"), 'no_purchase');
 
 	table_section(2);
 

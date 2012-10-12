@@ -922,7 +922,7 @@ function stock_purchasable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false, $all=false, $editkey=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!= 'M'"), 
+		array('where'=>array("NOT no_purchase"), 
 			'show_inactive'=>$all), $editkey);
 }
 //
@@ -934,7 +934,7 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!= 'M'"), 
+		array('where'=>array("NOT no_purchase"), 
 			 'editable' => 30,
 			 'cells'=>true), $editkey);
 }

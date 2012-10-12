@@ -76,3 +76,6 @@ UPDATE `0_security_roles` SET `sections`=CONCAT_WS(';', `sections`, '768'), `are
 
 UPDATE `0_security_roles` SET `areas`=CONCAT_WS(';', `areas`, '775')
 	WHERE NOT `areas` REGEXP '[^0-9]?775[^0-9]?';
+
+ALTER TABLE `0_stock_master` ADD COLUMN `no_purchase` tinyint(1) NOT NULL default '0' AFTER `no_sale`;
+ALTER TABLE `0_stock_category` ADD COLUMN `dflt_no_purchase` tinyint(1) NOT NULL default '0' AFTER `dflt_no_sale`;

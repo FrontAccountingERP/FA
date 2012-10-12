@@ -44,7 +44,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['assembly_account'],
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
-				check_value('no_sale'));
+				check_value('no_sale'), check_value('no_purchase'));
 			display_notification(_('Selected item category has been updated'));
     	} 
     	else 
@@ -54,7 +54,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	
-				$_POST['dim2'],	check_value('no_sale'));
+				$_POST['dim2'],	check_value('no_sale'), check_value('no_purchase'));
 			display_notification(_('New item category has been added'));
     	}
 		$Mode = 'RESET';
@@ -150,6 +150,7 @@ if ($selected_id != -1)
 		$_POST['dim1']  = $myrow["dflt_dim1"];
 		$_POST['dim2']  = $myrow["dflt_dim2"];
 		$_POST['no_sale']  = $myrow["dflt_no_sale"];
+		$_POST['no_purchase']  = $myrow["dflt_no_purchase"];
 	} 
 	hidden('selected_id', $selected_id);
 	hidden('category_id');
@@ -157,6 +158,7 @@ if ($selected_id != -1)
 		$_POST['long_description'] = '';
 		$_POST['description'] = '';
 		$_POST['no_sale']  = 0;
+		$_POST['no_purchase']  = 0;
 
 		$company_record = get_company_prefs();
 
@@ -188,6 +190,8 @@ stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 stock_units_list_row(_("Units of Measure:"), 'units', null);
 
 check_row(_("Exclude from sales:"), 'no_sale');
+
+check_row(_("Exclude from purchases:"), 'no_purchase');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 

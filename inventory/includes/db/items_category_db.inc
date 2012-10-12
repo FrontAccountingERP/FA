@@ -11,12 +11,12 @@
 ***********************************************************************/
 function add_item_category($description, $tax_type_id, $sales_account, 
 	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
-	$units, $mb_flag, $dim1, $dim2, $no_sale)
+	$units, $mb_flag, $dim1, $dim2, $no_sale, $no_purchase)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act, 
 			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act, 
-			dflt_dim1, dflt_dim2, dflt_no_sale)
+			dflt_dim1, dflt_dim2, dflt_no_sale, dflt_no_purchase)
 		VALUES ("
 		.db_escape($description).","
 		.db_escape($tax_type_id).","
@@ -29,14 +29,15 @@ function add_item_category($description, $tax_type_id, $sales_account,
 		.db_escape($assembly_account).","
 		.db_escape($dim1).","
 		.db_escape($dim2).","
-		.db_escape($no_sale).")";
+		.db_escape($no_sale).","
+		.db_escape($no_purchase).")";
 
 	db_query($sql,"an item category could not be added");
 }
 
 function update_item_category($id, $description, $tax_type_id, 
 	$sales_account, $cogs_account, $inventory_account, $adjustment_account, 
-	$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale)
+	$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale, $no_purchase)
 
 {
 	$sql = "UPDATE ".TB_PREF."stock_category SET "
@@ -51,7 +52,8 @@ function update_item_category($id, $description, $tax_type_id,
 		."dflt_assembly_act = ".db_escape($assembly_account).","
 		."dflt_dim1 = ".db_escape($dim1).","
 		."dflt_dim2 = ".db_escape($dim2).","
-		."dflt_no_sale = ".db_escape($no_sale)
+		."dflt_no_sale = ".db_escape($no_sale).","
+		."dflt_no_purchase = ".db_escape($no_purchase)
         ."WHERE category_id = ".db_escape($id);
 
 	db_query($sql,"an item category could not be updated");

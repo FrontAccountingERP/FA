@@ -1746,6 +1746,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_category` (
   `dflt_dim2` int(11) default NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   `dflt_no_sale` tinyint(1) NOT NULL default '0',
+  `dflt_no_purchase` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `description` (`description`)
 ) ENGINE=MyISAM  AUTO_INCREMENT=5 ;
@@ -1754,10 +1755,10 @@ CREATE TABLE IF NOT EXISTS `0_stock_category` (
 -- Dumping data for table `0_stock_category`
 --
 
-INSERT INTO `0_stock_category` VALUES(1, 'Components', 1, 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
-INSERT INTO `0_stock_category` VALUES(2, 'Charges', 1, 'each', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
-INSERT INTO `0_stock_category` VALUES(3, 'Systems', 1, 'each', 'M', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
-INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hrs', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
+INSERT INTO `0_stock_category` VALUES(1, 'Components', 1, 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_category` VALUES(2, 'Charges', 1, 'each', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_category` VALUES(3, 'Systems', 1, 'each', 'M', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hrs', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1788,6 +1789,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
   `overhead_cost` double NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   `no_sale` tinyint(1) NOT NULL default '0',
+  `no_purchase` tinyint(1) NOT NULL default '0',
   `editable` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`stock_id`)
 ) ENGINE=InnoDB;
@@ -1796,11 +1798,11 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
 -- Dumping data for table `0_stock_master`
 --
 
-INSERT INTO `0_stock_master` VALUES('102', 1, 1, '17inch VGA Monitor', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 10, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('103', 1, 1, '32MB VGA Card', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 11, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('104', 1, 1, '52x CD Drive', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 12, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('201', 4, 1, 'Assembly Labour', '', 'hrs', 'D', '4010', '5010', '5010', '5040', '1530', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('3400', 3, 1, 'P4 Business System', '', 'ea.', 'M', '4010', '5010', '1540', '5040', '1530', 0, 0, 0, 0, 33, 3.9999999999999, 2, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('102', 1, 1, '17inch VGA Monitor', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('103', 1, 1, '32MB VGA Card', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('104', 1, 1, '52x CD Drive', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('201', 4, 1, 'Assembly Labour', '', 'hrs', 'D', '4010', '5010', '5010', '5040', '1530', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('3400', 3, 1, 'P4 Business System', '', 'ea.', 'M', '4010', '5010', '1540', '5040', '1530', 0, 0, 0, 0, 33, 3.9999999999999, 2, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
