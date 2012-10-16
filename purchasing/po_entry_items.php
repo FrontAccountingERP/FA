@@ -457,7 +457,8 @@ function handle_commit_order()
 			$inv->tax_included = $cart->tax_included;
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
-//			$inv->ov_discount 'this isn't used at all'
+			$inv->ov_discount = 0; // ov-discount set to zero to avoid DB error on insert
+
 			$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
 			
 			foreach($cart->line_items as $key => $line) {
