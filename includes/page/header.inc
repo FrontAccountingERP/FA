@@ -99,8 +99,6 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	{
 		$no_menu = false;
 	}
-	//if (!isset($_SESSION["sel_app"]))
-	//	session_register("sel_app");
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) &&
 		$_SESSION["App"]->selected_application != "")
 		$sel_app = $_SESSION["App"]->selected_application;

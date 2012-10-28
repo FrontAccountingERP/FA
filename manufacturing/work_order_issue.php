@@ -62,8 +62,6 @@ function handle_new_order()
 		unset ($_SESSION['issue_items']);
 	}
 
-     Session_register("issue_items");
-
      $_SESSION['issue_items'] = new items_cart(ST_MANUISSUE);
      $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
