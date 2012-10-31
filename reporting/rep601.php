@@ -59,8 +59,9 @@ function print_bank_transactions()
 	$acc = $_POST['PARAM_0'];
 	$from = $_POST['PARAM_1'];
 	$to = $_POST['PARAM_2'];
-	$comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$zero = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -112,6 +113,8 @@ function print_bank_transactions()
 			
 			while ($myrow=db_fetch($trans))
 			{
+				if ($zero == 0 && $myrow['amount'] == 0.0)
+					continue;
 				$total += $myrow['amount'];
 
 				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);

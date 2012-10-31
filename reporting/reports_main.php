@@ -238,6 +238,7 @@ $reports->addReportClass(_('Banking'), RC_BANKING);
 	array(	_('Bank Accounts') => 'BANK_ACCOUNTS',
 			_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
+			_('Zero values') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
 
