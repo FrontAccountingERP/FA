@@ -33,7 +33,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The area description cannot be empty."));
+		display_error(_("The invoice description cannot be empty."));
 		set_focus('description');
 	}
 	if (!is_date($_POST['begin'])) {
