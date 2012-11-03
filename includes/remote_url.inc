@@ -19,6 +19,9 @@ function url_get_contents($url, $timeout=10)
 	// get the host name and url path
 	$parsedUrl = parse_url($url);
 
+	if (@$parsedUrl['scheme'] == 'file')
+		return file_get_contents($parsedUrl['path']);
+
 	$host = $parsedUrl['host'];
 
 	if (isset($parsedUrl['path'])) {
@@ -85,6 +88,8 @@ function url_get_contents($url, $timeout=10)
 function url_copy($from, $to, $timeout=10)
 {
 	$f = fopen($to, 'wb');
-	fwrite($f, url_get_contents($from, $timeout));
+	if (!$f || !fwrite($f, url_get_contents($from, $timeout)))
+		return false;
 	fclose($f);
+	return true;
 }
