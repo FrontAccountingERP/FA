@@ -1,5 +1,5 @@
 # Protect sensitive files.
-<FilesMatch "\.(inc|po|sh|.*sql)$">
+<FilesMatch "\.(inc|po|sh|.*sql|log)$">
 	Order allow,deny
 </FilesMatch>
 
