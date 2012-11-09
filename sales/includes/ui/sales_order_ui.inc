@@ -168,7 +168,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
+			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id) && 
+				$order->trans_type != ST_SALESORDER && $order->trans_type!=ST_SALESQUOTE) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
 					$_POST['Location'], $_POST['delivery_date']);
 				if (($stock_item->qty_dispatched -$stock_item->qty_done) > $qoh)
