@@ -253,6 +253,8 @@ class cart
 			$ref = $this->reference;
 			$date = $this->document_date;
 			$due_date = $this->due_date;
+			$dimension_id = $this->dimension_id;
+			$dimension2_id = $this->dimension2_id;
 			$this->trans_type = get_parent_type($this->trans_type);
 
 			$this->reference = 'auto'; 
@@ -263,6 +265,8 @@ class cart
 			$this->document_date = $date;
 			$this->reference = $ref;
 			$this->due_date = $due_date;
+			$this->dimension_id = $dimension_id;
+			$this->dimension2_id = $dimension2_id;
 		}
 		$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
 		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
