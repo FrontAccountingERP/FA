@@ -19,7 +19,7 @@ CREATE TABLE `0_wo_costing` (
   `trans_no` int(11) NOT NULL default '0',
   `factor` double NOT NULL default '1',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB;
+) ENGINE=InnoDB;
 
 UPDATE `0_gl_trans` gl
 		LEFT JOIN `0_cust_branch` br ON br.receivables_account=gl.account AND br.debtor_no=gl.person_id AND gl.person_type_id=2
