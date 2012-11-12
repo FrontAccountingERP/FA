@@ -355,6 +355,7 @@ foreach ($installed_extensions as $ext)
 // ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
+ini_set('session.cache_limiter', 'private'); // prevent 'page expired' errors
 
 $Session_manager = new SessionManager();
 $Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
