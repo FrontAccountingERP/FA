@@ -610,7 +610,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
 					if (substr($row['action'],0,1) != 'T') 
-						$totrate += get_tax_type_default_rate($row['dest_id']);
+						$totrate += get_tax_type_rate($row['dest_id']);
 			}
 		}
 		$first = true;

@@ -64,7 +64,7 @@ function get_tax_type($type_id)
 	return db_fetch($result);
 }
 
-function get_tax_type_default_rate($type_id)
+function get_tax_type_rate($type_id)
 {
 	$sql = "SELECT rate FROM ".TB_PREF."tax_types WHERE id=".db_escape($type_id);
 

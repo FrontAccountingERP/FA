@@ -11,7 +11,15 @@ Changed functions:
 	db_backup($conn, $ext='no', $comm='', $path=null)
 	db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
 	save_to_file($path, $zip, $fileData)
+ tax_types_db.inc:
+	get_tax_type_default_rate($type_id) => get_tax_type_rate($type_id)
 
+Before 2.4:
+	get_tax_type_default_rate($type_id)
+Now:
+	get_tax_type_rate($type_id)
+Description:
+	Misleading function name changed.
 
 Before 2.4:
 	update_company_prefs( $params, $pref = TB_PREF )
