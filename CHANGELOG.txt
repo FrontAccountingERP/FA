@@ -10,6 +10,20 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-11-15 16:45 +0100 Joe Hunt
+(3104) Updated update.html
+ update.html
+
+2012-11-15 16:38 +0100 Joe Hunt
+(3103) Rollback of Session Abondoned Error and new variable, $no_check_edit_conflicts in config.php.
+ config.default.php
+ includes/session.inc
+ sales/includes/sales_ui.inc
+
+2012-11-15 15:23 +0100 Joe Hunt
+(3102) New Changelog.txt
+ CHANGELOG.txt
+
 2012-11-15 15:18 +0100 Joe Hunt
 (3101) Release 2.3.13
  version.php
