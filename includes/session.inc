@@ -76,7 +76,7 @@ class SessionManager
 		$_SESSION['EXPIRES'] = time() + 10;
 
 		// Create new session without destroying the old one
-		session_regenerate_id();
+		session_regenerate_id(version_compare(PHP_VERSION, '5.1.0') >= 0 && (substr(strtoupper(PHP_OS),0,3) == "WIN"));
  
 		// Grab current session ID and close both sessions to allow other scripts to use them
 		$newSession = session_id();
