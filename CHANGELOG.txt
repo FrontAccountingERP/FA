@@ -10,6 +10,177 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2012-11-15 15:18 +0100 Joe Hunt
+(3101) Release 2.3.13
+ version.php
+
+2012-11-15 15:18 +0100 Joe Hunt
+(3100) Fixed session abandoned error in Windows Servers
+ includes/session.inc
+
+2012-11-12 13:09 +0100 Janusz Dobrowolski
+(3099) Prevent 'Page expired' messages when 'Back' link is used after login.
+ includes/session.inc
+
+2012-11-12 09:52 +0100 Janusz Dobrowolski
+(3098) Cleanup in curent_user.inc/session.inc
+ includes/current_user.inc
+ includes/session.inc
+
+2012-11-12 09:39 +0100 Janusz Dobrowolski
+(3097) Fixed small bug in mail class, added text/hmtl mime type.
+ includes/ui/view_package.php
+ reporting/includes/class.mail.inc
+
+2012-11-10 00:29 +0100 Joe Hunt
+(3096) Dimensions not utilized in Direct Invoice/Delivery
+ sales/includes/cart_class.inc
+
+2012-11-09 09:58 +0100 Joe Hunt
+(3095) Sales quotation and Sales order should not require sufficient stock.
+ sales/includes/ui/sales_order_ui.inc
+
+2012-11-05 23:33 +0100 Janusz Dobrowolski
+(3094) Fixed confirmation on ajax reloaded buttons (small fix for Gecko like browsers).
+ js/utils.js
+
+2012-11-05 17:49 +0100 Janusz Dobrowolski
+(3093) 0001879,0001880: Fixes in htaccess constraints, restricting System Diagnostic view to admin (ApMuthu)
+ .htaccess
+ applications/setup.php
+
+2012-11-05 08:30 +0100 Janusz Dobrowolski
+(3092) Fixed error messages on Sales Groups, updated gettext template.
+ lang/new_language_template/LC_MESSAGES/empty.po
+ sales/manage/sales_groups.php
+
+2012-11-03 22:46 +0100 Janusz Dobrowolski
+(3091) Improved error checking during extension packages installation.
+ includes/packages.inc
+ includes/remote_url.inc
+
+2012-11-03 22:34 +0100 Janusz Dobrowolski
+(3090) Fixed error message in recurrent invoices.
+ sales/manage/recurrent_invoices.php
+
+2012-11-01 01:02 +0100 Joe Hunt
+(3089) Replaced the transaction list in attachments with a pager and made the sorting descent.
+ admin/attachments.php
+ admin/db/attachments_db.inc
+
+2012-10-31 08:56 +0100 Joe Hunt
+(3088) Filter for non-zero values in Bank Statement Report
+ reporting/rep601.php
+ reporting/reports_main.php
+
+2012-10-28 07:30 +0100 Joe Hunt
+(3087) Removed commented deprecated Session_register().
+ includes/page/header.inc
+ inventory/adjustments.php
+ inventory/transfers.php
+ manufacturing/work_order_issue.php
+ purchasing/allocations/supplier_allocate.php
+ sales/allocations/customer_allocate.php
+
+2012-10-17 09:17 +0200 Joe Hunt
+(3086) Db error in invoice.ui.inc for certain MySql setup/releases.
+ purchasing/includes/ui/invoice_ui.inc
+
+2012-10-17 09:00 +0200 Joe Hunt
+(3085) Db error in po_entry_items.php was already fixed. Look at the line below.
+ purchasing/po_entry_items.php
+
+2012-10-16 17:00 +0200 Joe Hunt
+(3083) Cannot insert a supplier transaction record in Direct Supplier Invoice (certain MySql versions and setup).
+ purchasing/po_entry_items.php
+
+2012-10-11 15:18 +0200 Joe Hunt
+(3082) Date format helper complete.
+ js/inserts.js
+
+2012-10-11 15:09 +0200 Joe Hunt
+(3081) Purchase order/Direct GRN/Direct Invoice showed inactive items in item list.
+ purchasing/includes/ui/po_ui.inc
+
+2012-10-11 08:35 +0200 Joe Hunt
+(3080) Small fix and rerun of inserts.js.
+ js/inserts.js
+
+2012-10-11 08:18 +0200 Joe Hunt
+(3078) Fixed date_fix to act like before. day and day-month entrance only.
+ js/inserts.js
+
+2012-10-05 11:17 +0200 Joe Hunt
+(3076) Bug in function is_date when implementing new date formats.
+ includes/date_functions.inc
+
+2012-10-04 10:18 +0200 Joe Hunt
+(3075) Moved declaration of short monthnames from config.default.php. Too early for translations.
+ config.default.php
+ includes/sysnames.inc
+
+2012-10-04 00:58 +0200 Joe Hunt
+(3074) Minor improvement to add_days/months/years for the new dateformats.
+ includes/date_functions.inc
+
+2012-10-02 22:50 +0200 Joe Hunt
+(3073) 0001806: Date problems fixed and new date formats MmmDDYYYY, DDMmmYYYY and YYYYMmmDD implemented.
+ admin/display_prefs.php
+ config.default.php
+ includes/date_functions.inc
+ includes/prefs/userprefs.inc
+ includes/ui/ui_input.inc
+ includes/ui/ui_view.inc
+ js/inserts.js
+
+2012-10-02 13:22 +0200 Janusz Dobrowolski
+(3071) Fixed void_stock_move() to avoid sparse lines in Inventory Items Movements register after DN edition.
+ includes/db/inventory_db.inc
+
+2012-10-02 09:42 +0200 Joe Hunt
+(3070) Having memo or comment displayed on bank_inquiry.php.
+ gl/inquiry/bank_inquiry.php
+
+2012-10-01 01:12 +0200 Joe Hunt
+(3069) Improved headers in printing Purchase Orders.
+ reporting/includes/doctext.inc
+ reporting/includes/pdf_report.inc
+ reporting/rep209.php
+
+2012-09-25 18:06 +0200 Joe Hunt
+(3068) Moved access functions from renderer to current_user. They were cluttered into all themes.
+ includes/current_user.inc
+ themes/aqua/renderer.php
+ themes/cool/renderer.php
+ themes/default/renderer.php
+
+2012-09-23 17:56 +0200 Janusz Dobrowolski
+(3067) Invalid input description in account groups for account class parameter.
+ gl/manage/gl_account_types.php
+
+2012-09-17 13:25 +0200 Janusz Dobrowolski
+(3066) Cleanup in check_faillog().
+ includes/session.inc
+
+2012-09-23 09:23 +0200 Joe Hunt
+(3065) 0001792: BLOOMBERG added to Exchange Rate Providers and config fix, improvement
+ gl/includes/db/gl_db_rates.inc
+
+2012-09-22 10:31 +0200 Joe Hunt
+(3064) 0001792: BLOOMBERG added to Exchange Rate Providers and config fix.
+ config.default.php
+ gl/includes/db/gl_db_rates.inc
+ gl/manage/exchange_rates.php
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2012-09-15 10:34 +0200 Janusz Dobrowolski
+(3061) Added tag version_2_3_12 for changeset 05b037ff3c0b
+ .hgtags
+
+2012-09-15 10:09 +0200 Joe Hunt
+(3060) Changelog.txt
+ CHANGELOG.txt
+
 2012-09-15 10:07 +0200 Joe Hunt
 (3059) Changelog.txt
  CHANGELOG.txt
