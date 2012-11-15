@@ -68,6 +68,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$power_by 		= "FrontAccounting";
 	$power_url 		= "http://frontaccounting.com";
 
+	/* No check on edit conflicts. Maybe needed to be set to 1 in certains Windows Servers */
+	$no_check_edit_conflicts = 0;
+	
 	/* Do not print zero lines amount of 0.00 in Sales Documents if service item. 1 = do not */
 	$no_zero_lines_amount = 1;
 
