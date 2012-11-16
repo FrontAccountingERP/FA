@@ -3118,7 +3118,7 @@ class Spreadsheet_Excel_Writer_Parser
     function _expression()
     {
         // If it's a string return a string node
-        if (ereg("^\"[^\"]{0,255}\"$", $this->_current_token)) {
+        if (preg_match("/^\"[^\"]{0,255}\"$/", $this->_current_token)) {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
             return $result;
