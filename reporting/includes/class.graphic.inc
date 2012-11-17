@@ -497,6 +497,7 @@ class graph
             foreach ($this->x as $i => $parameter)
             {
                 $size    = $this->y[$i] * 360 / $this->sum_total;
+				$size = round2($size, 0);
                 $sizes[] = $size;
                 $start  += $size;
             }
@@ -518,7 +519,8 @@ class graph
                     for ($i = $this->h3d; $i >= 0; $i--)
                     {
                         //imagearc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color]);
-                        imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_NOFILL);
+                        if ($size >= 1)
+                        	imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_NOFILL);
                     }
                     $start += $size;
                 }
@@ -534,8 +536,8 @@ class graph
                         $num_color -= 5;
                     }
                     $color = 'arc_' . $num_color;
-
-                    imagefilledarc($this->img, $center_x, $center_y, ($width+2), ($height+2), $start, ($start+$size), $this->color[$color], IMG_ARC_EDGED);
+                    if ($size >= 1)
+                    	imagefilledarc($this->img, $center_x, $center_y, ($width+2), ($height+2), $start, ($start+$size), $this->color[$color], IMG_ARC_EDGED);
                     $start += $size;
                 }
             }
@@ -552,7 +554,8 @@ class graph
                     }
                     $color        = 'arc_' . $num_color;
                     $color_shadow = 'arc_' . $num_color . '_shadow';
-                    imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
+                    if ($size >= 1)
+                    	imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
                     $start += $size;
                 }
                 imagefilledarc($this->img, $center_x, $center_y, 100, 100, 0, 360, $this->color['background'], IMG_ARC_PIE);
