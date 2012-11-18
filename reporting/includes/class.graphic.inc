@@ -734,7 +734,8 @@ class graph
         {
             if (!empty($this->axis_x))
             {
-                $this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x, $this->color['title']);
+                $this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, 
+                	$this->axis_x." (".$this->graphic_1.")", $this->color['title']);
                 $y += 25;
             }
 
