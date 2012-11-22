@@ -180,8 +180,18 @@ class fa2_4 {
 
 	function do_cleanup()
 	{
-		$sql = "ALTER TABLE `".TB_PREF."tax_group_items` DROP COLUMN `rate`";
-		return db_query($sql);
+		$dropcol = array(
+				'tax_group_items' => array('rate'),
+				'budget_trans' => array('type', 'type_no', 'person_id', 'person_type_id', 'memo_'),
+		);
+
+		foreach($dropcol as $table => $columns)
+			foreach($columns as $col) {
+				if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`") == false) {
+					display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
+					return false;
+				}
+			}
 	}
 }
 

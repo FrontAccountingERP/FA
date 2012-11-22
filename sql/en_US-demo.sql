@@ -200,19 +200,14 @@ INSERT INTO `0_bom` VALUES(3, '3400', '104', 1, 'DEF', 1);
 
 DROP TABLE IF EXISTS `0_budget_trans`;
 CREATE TABLE IF NOT EXISTS `0_budget_trans` (
-  `counter` int(11) NOT NULL auto_increment,
-  `type` smallint(6) NOT NULL default '0',
-  `type_no` bigint(16) NOT NULL default '1',
+  `id` int(11) NOT NULL auto_increment,
   `tran_date` date NOT NULL default '0000-00-00',
   `account` varchar(15) NOT NULL default '',
   `memo_` tinytext NOT NULL,
   `amount` double NOT NULL default '0',
   `dimension_id` int(11) default '0',
   `dimension2_id` int(11) default '0',
-  `person_type_id` int(11) default NULL,
-  `person_id` tinyblob,
-  PRIMARY KEY  (`counter`),
-  KEY `Type_and_Number` (`type`,`type_no`),
+  PRIMARY KEY  (`id`),
   KEY `Account` (`account`,`tran_date`,`dimension_id`,`dimension2_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 ;
 
