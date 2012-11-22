@@ -59,7 +59,7 @@ class setup_app extends application
 		$this->add_lapp_function(2, _("&Attach Documents"),
 			"admin/attachments.php?filterType=20", 'SA_ATTACHDOCUMENT', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("System &Diagnostics"),
-			"admin/system_diagnostics.php?", 'SA_OPEN', MENU_SYSTEM);
+			"admin/system_diagnostics.php?", 'SA_SOFTWAREUPGRADE', MENU_SYSTEM);
 
 		$this->add_rapp_function(2, _("&Backup and Restore"),
 			"admin/backups.php?", 'SA_BACKUP', MENU_SYSTEM);

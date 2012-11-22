@@ -44,9 +44,9 @@ function processing_active()
 */
 function check_edit_conflicts($cartname='Items')
 {
-	global $Ajax;
+	global $Ajax, $no_check_edit_conflicts;
 
-	if (get_post('cart_id') && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
+	if ((!isset($no_check_edit_conflicts) || $no_check_edit_conflicts==0) && get_post('cart_id') && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
 		display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 		$Ajax->activate('_page_body');
 		display_footer_exit();

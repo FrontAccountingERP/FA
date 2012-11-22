@@ -119,7 +119,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			  } else if(cmd=='fc') { // set focus
 				  _focus = data;
 			  } else if(cmd=='js') {	// evaluate js code
-					setTimeout(function(){eval(data)}, 200); // timeout required by IE7/8
+				__isGecko ? eval(data) : setTimeout(function(){eval(data)}, 200); // timeout required by IE7/8
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
 			  } else if(cmd=='pu') {	// pop-up
@@ -317,7 +317,7 @@ function move_focus(dir, e0, neighbours)
 	return t;
 }
 
-var __isFireFox = navigator.userAgent.match(/gecko/i);
+var __isGecko = navigator.userAgent.match(/gecko/i); // i.e. Gecko or KHTML, like Gecko ;)
 //returns the absolute position of some element within document
 function element_pos(e) {
 	var res = new Object();
@@ -337,7 +337,7 @@ function element_pos(e) {
 				res.y -= offsetParent.scrollTop;
 			}
 			      //next lines are necessary to support FireFox problem with offsetParent
-			if (__isFireFox) {
+			if (__isGecko) {
 				while (offsetParent != parentNode && parentNode !== null) {
 					res.x -= parentNode.scrollLeft;
 					res.y -= parentNode.scrollTop;

@@ -75,7 +75,7 @@ class email
     {
         $this->body = "--$this->boundary\n";
 	    $this->body .= "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
-	    $this->body .= "Content-Transfer-Encoding: 8bit\n";
+	    $this->body .= "Content-Transfer-Encoding: 8bit\n\n";
 	    $this->body .= $text."\n";
     }
 
@@ -83,7 +83,7 @@ class email
     {
         $this->body = "--$this->boundary\n";
 	    $this->body .= "Content-Type: text/html; charset=\"{$this->charset}\"\n";
-	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n";
+	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n\n";
 	    $this->body .= "<html><body>\n".$html."\n</body></html>\n";
     }
 
@@ -103,6 +103,8 @@ class email
 		if ($filename == $file . '.tgz') return 'application/x-tar-gz';
 		$file = basename($filename, '.gz');
 		if ($filename == $file . '.gz') return 'application/x-gzip';
+		$file = basename($filename, '.html');
+		if ($filename == $file . '.html') return 'text/html';
 		return 'application/unknown';
 	}
 

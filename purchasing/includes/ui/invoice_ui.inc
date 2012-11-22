@@ -34,7 +34,7 @@ function copy_to_trans(&$supp_trans)
  	if (isset($_POST['tax_algorithm']))
  	    $supp_trans->tax_algorithm = $_POST['tax_algorithm'];
 
-	$supp_trans->ov_amount = 0; /* for starters */
+	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
 	if (count($supp_trans->grn_items) > 0)
 	{
 		foreach ( $supp_trans->grn_items as $grn)

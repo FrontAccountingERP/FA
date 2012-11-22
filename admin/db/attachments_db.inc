@@ -78,5 +78,11 @@ function has_attachment($type, $id)
 		return $myrow['id'];
 }
 
+function get_sql_for_attached_documents($type)
+{
+	return "SELECT trans_no, description, filename, filesize, filetype, tran_date, id, type_no FROM ".TB_PREF."attachments WHERE type_no=".db_escape($type)
+	." ORDER BY trans_no DESC";
+}
+
 
 ?>

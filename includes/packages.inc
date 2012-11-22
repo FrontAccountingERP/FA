@@ -15,7 +15,6 @@ include_once($path_to_root. "/includes/hooks.inc");
 
 define('PKG_CACHE_PATH', $path_to_root.'/modules/_cache');
 define('PUBKEY_PATH', $path_to_root);
-define('REPO_URL', 'http://'.$repo_auth['login'].':'.$repo_auth['pass'].'@'.$repo_auth['host'].'/'.$repo_auth['branch']);
 //
 // FrontAccounting package class
 //
@@ -271,21 +270,33 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 
 	global $path_to_root, $repo_auth;
 
+	$repo =  (isset($repo_auth['scheme']) ? $repo_auth['scheme'] : 'http://')
+			.(isset($repo_auth['login'])  ? $repo_auth['login'].':' : '')
+			.(isset($repo_auth['pass'])   ? $repo_auth['pass'].'@' : '')
+			.(isset($repo_auth['host'])   ? $repo_auth['host'].'/' : '')
+			.(isset($repo_auth['path'])   ? $repo_auth['path'].'/' : '')
+			.$repo_auth['branch'];
+
 	// first download local copy of repo release file
 	// and check remote signature with local copy of public key
 	//
 	$loclist = PKG_CACHE_PATH.'/Release.gz';
-	
+	$target_dir = $download==true ? "$path_to_root/tmp/" : $download;
+
 	if (isset($type) && !is_array($type)) {
 		$type = array($type);
 	}
 	$refresh = true;
 	do{
 		if (!file_exists($loclist)) {
-			url_copy(REPO_URL.'/Release.gz', $loclist);
+			if (!url_copy($repo.'/Release.gz', $loclist))
+			{
+				display_error(_("Cannot download repo index file." ));
+				return null;
+			}
 			$refresh = false;
 		}
-		$sig = url_get_contents(REPO_URL.'/Release.sig');
+		$sig = url_get_contents($repo.'/Release.sig');
 		$data = file_get_contents($loclist);
 		$cert = file_get_contents(PUBKEY_PATH.'/FA.pem');
 		if (openssl_verify($data, $sig, $cert) <= 0) {
@@ -315,12 +326,15 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		if ($Release[$fname]['Version'] != $repo_auth['branch']) {
 			display_warning(_('Repository version does not match application version.')); // ?
 		}
-		$remoteindex = REPO_URL.'/'.$fname;
+		$remoteindex = $repo.'/'.$fname;
 		$locindex = PKG_CACHE_PATH.'/'.$fname;
 		$refresh = true;
 		do{
 			if (!file_exists($locindex)) { 
-				url_copy($remoteindex, $locindex);
+				if (!url_copy($remoteindex, $locindex)) {
+					display_error(sprintf(_("Cannot download '%s' file." ), $fname));
+					return null;
+				}
 				$refresh = false;
 			}
 			if ($parms['SHA1sum'] != sha1_file($locindex)) {	// check subdir index consistency
@@ -341,7 +355,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		 // scan subdir list and select packages of given type
 		$pkglist = get_control_file($locindex, 'Package');
 		foreach($pkglist as $name => $pkg) {
-			$pkgfullname = REPO_URL.'/'.$parms['Path']."/".$pkg['Filename'].'.pkg';
+			$pkgfullname = $repo.'/'.$parms['Path']."/".$pkg['Filename'].'.pkg';
 			if (!isset($type) || in_array($pkg['Type'], $type)) {
 				if (empty($filter))
 					$p = $pkg;
@@ -358,8 +372,11 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 				} elseif ($pkgname == $pkg['Package']) {
 					//download package to temp directory
 					if ($download) {
-						$locname = "$path_to_root/tmp/".$pkg['Filename'].'.pkg';
-						url_copy($pkgfullname, $locname);
+						$locname = $target_dir.$pkg['Filename'].'.pkg';
+						if (!url_copy($pkgfullname, $locname)) {
+							display_error(sprintf(_("Cannot download '%s' file." ), $pkgfullname));
+							return null;
+						}
 						 // checking sha1 hash is expensive proces, so chekc the package
 						 // consistency just before downloading
 						if ($pkg['SHA1sum'] != sha1_file($locname)) {

@@ -27,7 +27,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
-		display_error(_("The area description cannot be empty."));
+		display_error(_("The sales group description cannot be empty."));
 		set_focus('description');
 	}
 
@@ -65,7 +65,7 @@ if ($Mode == 'Delete')
 	{
 		delete_sales_group($selected_id);
 		display_notification(_('Selected sales group has been deleted'));
-	} //end if Delete area
+	} //end if Delete group
 	$Mode = 'RESET';
 } 
 
@@ -111,7 +111,7 @@ start_table(TABLESTYLE2);
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
-		//editing an existing area
+		//editing an existing group
 		$myrow = get_sales_group($selected_id);
 
 		$_POST['description']  = $myrow["description"];

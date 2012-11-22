@@ -58,7 +58,7 @@ class current_user
 
 	function login($company, $loginname, $password)
 	{
-		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang;
+		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $login_delay;
 
 		$this->set_company($company);
 	    $this->logged = false;
@@ -76,7 +76,8 @@ class current_user
 		if (!isset($Auth_Result))	// if not used: standard method
 			$Auth_Result = get_user_auth($loginname, md5($password));
 
-		write_login_filelog($loginname, $Auth_Result);
+		if ($login_delay > 0)
+			write_login_filelog($loginname, $Auth_Result);
 
 		if ($Auth_Result)
 		{

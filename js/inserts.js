@@ -216,7 +216,6 @@ function fix_date(date, last)
 	var dat = last.split(user.datesep);
 	var cur = date.split(user.datesep);
 	var day, month, year;
-	var day1, month1, year1;
 
 // TODO: user.date as default?
 // TODO: user.datesys
@@ -225,22 +224,40 @@ function fix_date(date, last)
 	if (user.datefmt == 0 || user.datefmt == 3) // set defaults
 	{
 		day = dat[1]; month = dat[0]; year = dat[2];
-		day1 = cur[1]; month1 = cur[0]; year1 = cur[2];
 	} else if (user.datefmt == 1 || user.datefmt == 4){
 		day = dat[0]; month = dat[1]; year = dat[2];
-		day1 = cur[0]; month1 = cur[1]; year1 = cur[2];
 	} else {
 		day = dat[2]; month = dat[1]; year = dat[0];
-		day1 = cur[2]; month1 = cur[1]; year1 = cur[0];
+	}
+	if (cur[1] != undefined && cur[1] != "") // day or month entered, could be string 3
+	{ 
+		if (user.datefmt == 0 || user.datefmt == 3 || ((user.datefmt == 2 || user.datefmt == 5) && (cur[2] == undefined || cur[2] == "")))
+			day = cur[1];
+		else	
+			month = cur[1];
+	}		
+	if (cur[0] != undefined && cur[0] != "") // day or month entered. could be string 3
+	{
+		if (cur[1] == undefined || cur[1] == "")
+			day = cur[0];
+		else if (user.datefmt == 0 || user.datefmt == 3 || ((user.datefmt == 2 || user.datefmt == 5) && (cur[2] == undefined || cur[2] == "")))
+			month = cur[0];
+		else if (user.datefmt == 2 || user.datefmt == 5)
+			year = cur[0];
+		else	
+			day = cur[0];
+	}
+	if (cur[2] != undefined && cur[2] != "") // year,
+	{
+		if (user.datefmt == 2 || user.datefmt == 5)
+			day = cur[2];
+		else
+			year = cur[2];
+	}		
+	if (user.datefmt<3) {
+		if (day<10) day = '0'+parseInt(day, 10);
+		if (month<10) month = '0'+parseInt(month, 10);
 	}	
-	if (day1 != undefined && day1 != "") // day entered
-		day = day1;
-	if (month1 != undefined && month1 != "") // month entered
-		month = month1;
-	if (year1 != undefined && year1 != "") // year entered
-		year = year1;
-	if (user.datefmt<3 && day<10) day = '0'+parseInt(day, 10);
-	if (user.datefmt<3 && month<10) month = '0'+parseInt(month, 10);
 	if (year<100) year = year<60 ? (2000+parseInt(year,10)) : (1900+parseInt(year,10));
 
 //	console.info(day,month,year)
