@@ -228,13 +228,6 @@ function can_process()
 
 //----------------------------------------------------------------------------------------------
 
-// validate inputs
-if (isset($_POST['AddPaymentItem'])) {
-
-	if (!can_process()) {
-		unset($_POST['AddPaymentItem']);
-	}
-}
 if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
@@ -243,21 +236,9 @@ if (isset($_POST['_DateBanked_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 
-//Chaitanya : 13-OCT-2011 - To support Edit feature
-if (isset($_POST['ref']) && $_SESSION['alloc']->trans_no == 0) // added by Joe to fix the browser back button
-{
-	$tno = get_customer_trans_from_ref(ST_CUSTPAYMENT, $_POST['ref']);
-	if ($tno != false)
-	{
-		display_error( _("The entered reference is already in use."));
-		display_footer_exit();
-	}
-}		
-$new = $_SESSION['alloc']->trans_no == 0;
-
 //----------------------------------------------------------------------------------------------
 
-if (isset($_POST['AddPaymentItem'])) {
+if (get_post('AddPaymentItem') && can_process()) {
 	
 	$cust_currency = get_customer_currency($_POST['customer_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
@@ -282,14 +263,14 @@ if (isset($_POST['AddPaymentItem'])) {
 
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	//meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
-	meta_forward($_SERVER['PHP_SELF'], $new ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
+	meta_forward($_SERVER['PHP_SELF'], !$_SESSION['alloc']->trans_no ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
 }
 
 //----------------------------------------------------------------------------------------------
 
 function read_customer_data()
 {
-	global $Refs, $new;
+	global $Refs;
 
 	$myrow = get_customer_habit($_POST['customer_id']);
 
@@ -297,7 +278,7 @@ function read_customer_data()
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	//If page is called first time and New entry fetch the nex reference number
-	if ($new && !isset($_POST['charge'])) 
+	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
 		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
 }
 
@@ -307,10 +288,9 @@ $old_ref = 0;
 
 //Chaitanya : 13-OCT-2011 - To support Edit feature
 if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
+{
 	$_POST['trans_no'] = $_GET['trans_no'];
-//Read data
-if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-{	
+
 	$new = 0;
 	$myrow = get_customer_trans($_POST['trans_no'], ST_CUSTPAYMENT);
 	$_POST['customer_id'] = $myrow["debtor_no"];
@@ -324,15 +304,26 @@ if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
 	$_POST["discount"] = price_format($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
+
+	if (!isset($_POST['charge'])) // first page call
+	{
+		//Prepare allocation cart 
+		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
+		else
+		{
+			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+			$Ajax->activate('alloc_tbl');
+		}
+	}
+
 }
-else
-	$_POST['trans_no'] = 0;
 
 //----------------------------------------------------------------------------------------------
-
+$new = !$_SESSION['alloc']->trans_no;
 start_form();
 
-	hidden('trans_no', $_POST['trans_no']);
+	hidden('trans_no');
 	hidden('old_ref', $old_ref);
 
 	start_outer_table(TABLESTYLE2, "width=60%", 5);
@@ -351,18 +342,6 @@ start_form();
 		$Ajax->activate('alloc_tbl');
 	}
 
-	if (!isset($_POST['charge'])) // first page call
-	{
-		//Prepare allocation cart 
-		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
-		else
-		{
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
-			$Ajax->activate('alloc_tbl');
-		}
-	}
-	
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
@@ -423,7 +402,7 @@ start_form();
 
 	br();
 
-	if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+	if ($new)
 		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
 	else
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');

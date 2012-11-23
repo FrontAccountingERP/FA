@@ -206,19 +206,6 @@ function exists_customer_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
-function get_customer_trans_from_ref($type, $ref)
-{
-	$sql = "SELECT trans_no FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($type)."
-		AND reference=".db_escape($ref);
-
-	$result = db_query($sql, "Cannot retreive a debtor transaction");
-
-	$row = db_fetch_row($result);
-	return $row[0];
-}
-
-//----------------------------------------------------------------------------------------
-
 // retreives the related sales order for a given trans
 
 function get_customer_trans_order($type, $type_no)
