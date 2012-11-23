@@ -97,8 +97,10 @@ if (isset($_GET['AddedID'])) {
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=", _("Select Another &Customer Transaction for Payment"));
+
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	
+
 	display_footer_exit();
 }
 elseif (isset($_GET['UpdatedID'])) {
@@ -112,8 +114,10 @@ elseif (isset($_GET['UpdatedID'])) {
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php?", _("Select Another Customer Payment for &Edition"));
+
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	
+
 	display_footer_exit();
 }
 

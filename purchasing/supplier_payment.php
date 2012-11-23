@@ -95,9 +95,10 @@ if (isset($_GET['AddedID'])) {
 
     display_note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
+	hyperlink_no_params($path_to_root . "/purchasing/inquiry/supplier_allocation_inquiry.php?supplier_id=", _("Select Another &Supplier Transaction for Payment"));
 //    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Supplier &Payment"), "supplier_id=" . $_POST['supplier_id']);
 
 	display_footer_exit();
 }
