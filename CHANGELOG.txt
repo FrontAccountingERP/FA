@@ -10,23 +10,10 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
-<<<<<<< local
-2012-09-09 08:07 +0200 Janusz Dobrowolski
-(3033) Security cleanup on 'where' parameter in a couple of list helpers
- includes/ui/ui_lists.inc
-=======
 2012-11-15 16:45 +0100 Joe Hunt
 (3104) Updated update.html
  update.html
->>>>>>> other
 
-<<<<<<< local
-2012-06-25 12:56 +0200 Janusz Dobrowolski
-(3032) Switching database to UTF8 encoding on upgrade to FA 2.4.
- admin/db/maintenance_db.inc
- admin/inst_upgrade.php
- doc/api_changes.txt
-=======
 2012-11-15 16:38 +0100 Joe Hunt
 (3103) Rollback of Session Abondoned Error and new variable, $no_check_edit_conflicts in config.php.
  config.default.php
@@ -51,17 +38,12 @@ This is a changelog for FrontAccounting All releases.
 
 2012-11-12 09:52 +0100 Janusz Dobrowolski
 (3098) Cleanup in curent_user.inc/session.inc
->>>>>>> other
+
  includes/current_user.inc
-<<<<<<< local
  includes/db/connect_db.inc
  includes/lang/language.php
-=======
->>>>>>> other
  includes/session.inc
-<<<<<<< local
  sql/alter2.4.php
-=======
 
 2012-11-12 09:39 +0100 Janusz Dobrowolski
 (3097) Fixed small bug in mail class, added text/hmtl mime type.
@@ -224,8 +206,17 @@ This is a changelog for FrontAccounting All releases.
 2012-09-15 10:04 +0200 Joe Hunt
 (3058) Release 2.3.12
  update.html
->>>>>>> other
  version.php
+
+2012-09-09 08:07 +0200 Janusz Dobrowolski
+(3033) Security cleanup on 'where' parameter in a couple of list helpers
+ includes/ui/ui_lists.inc
+
+2012-06-25 12:56 +0200 Janusz Dobrowolski
+(3032) Switching database to UTF8 encoding on upgrade to FA 2.4.
+ admin/db/maintenance_db.inc
+ admin/inst_upgrade.php
+ doc/api_changes.txt
 
 2012-06-22 16:05 +0200 Janusz Dobrowolski
 (3031) Standard invoicing icon used in prepayment invoicing inquire.
