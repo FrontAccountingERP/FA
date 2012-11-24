@@ -139,15 +139,14 @@ function fmt_credit($row)
 $sql = get_sql_for_customer_allocation_inquiry();
 
 //------------------------------------------------------------------------------------------------
-
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
 	_("#") => array('fun'=>'view_link'),
 	_("Reference"), 
-	_("Order") => array('fun'=>'order_link'), 
+	_("Order") => array('fun'=>'order_link', 'ord'=>''), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
-	_("Customer"), 
+	_("Customer") => array('name' =>'name',  'ord'=>'asc'), 
 	_("Currency") => array('align'=>'center'),
 	_("Debit") => array('align'=>'right','fun'=>'fmt_debit'), 
 	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
