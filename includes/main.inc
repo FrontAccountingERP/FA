@@ -256,9 +256,9 @@ function check_write($path)
 {
 	if ($path == ''//|| $path == '.' || $path == '..'
 	) return 0;
-	
+
 	return is_writable($path) ? (is_dir($path) ? 1 : -1) 
-		: (is_file($path) ? 0 : ($path == '.' ? 0 : check_write(dirname($path))));
+		: (is_file($path) ? 0 : ($path == '.' || $path == '..' ? 0 : check_write(dirname($path))));
 }
 
 /*
