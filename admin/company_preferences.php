@@ -108,7 +108,8 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'use_dimension', 'curr_default', 'f_year', 
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
-				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval'))
+				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
+				'bcc_email'))
 		);
 
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
@@ -119,7 +120,10 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 } /* end of if submit */
 
 //---------------------------------------------------------------------------------------------
-
+if (get_company_pref('bcc_email') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+	set_company_pref('bcc_email', 'setup.company', 'varchar', 100, '');
+	refresh_sys_prefs();
+}
 
 start_form(true);
 $myrow = get_company_prefs();
@@ -151,6 +155,7 @@ if ($_POST['add_pct'] == -1)
 $_POST['round_to'] = $myrow['round_to'];	
 $_POST['auto_curr_reval'] = $myrow['auto_curr_reval'];	
 $_POST['del_coy_logo']  = 0;
+$_POST['bcc_email']  = $myrow["bcc_email"];
 
 start_outer_table(TABLESTYLE2);
 
@@ -163,6 +168,8 @@ text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 text_row_ex(_("Phone Number:"), 'phone', 25, 55);
 text_row_ex(_("Fax Number:"), 'fax', 25);
 email_row_ex(_("Email Address:"), 'email', 25, 55);
+
+email_row_ex(_("BCC Address for all outgoing mails:"), 'bcc_email', 25, 55);
 
 text_row_ex(_("Official Company Number:"), 'coy_no', 25);
 text_row_ex(_("GSTNo:"), 'gst_no', 25);
