@@ -258,19 +258,11 @@ function fix_extensions() {
 		$ext['tab'] = $ext['name'];
 		$ext['name'] = access_string($ext['title'], true); 
 		$ext['path'] = $ext['folder']; unset($ext['folder']);
-		$ext['type'] = 'module';
+		$ext['type'] = 'extension';
 		$ext['active'] = '1';
 		$exts[] = $ext;
 	}
 
-	include($path_to_root.'/modules/installed_modules.php');
-	foreach($installed_modules as $mod) {
-		$mod['title'] = $mod['name'];
-		$mod['name'] = access_string($mod['name'], true);
-		$mod['type'] = 'plugin';
-		$ext['active'] = '1';
-		$exts[] = $mod;
-	}
 	if (!write_extensions($exts))
 		return false;
 	

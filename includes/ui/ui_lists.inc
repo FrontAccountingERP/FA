@@ -2200,19 +2200,13 @@ function security_roles_list_row($label, $name, $selected_id=null, $new_item=fal
 	echo "</tr>\n";
 }
 
-function tab_list_row($label, $name, $selected_id=null, $all = false)
+function tab_list_row($label, $name, $selected_id=null)
 {
 	global $installed_extensions;
 	
 	$tabs = array();
 	foreach ($_SESSION['App']->applications as $app) {
 		$tabs[$app->id] = access_string($app->name, true);
-	}
-	if ($all) {	// add also not active ext. modules
-		foreach ($installed_extensions as $ext) {
-			if ($ext['type'] == 'module' && !$ext['active'])
-				$tabs[$ext['tab']] = access_string($ext['title'], true);
-		}
 	}
 	echo "<tr>\n";
 	echo "<td class='label'>$label</td><td>\n";
