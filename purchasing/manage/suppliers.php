@@ -214,7 +214,7 @@ if (isset($_POST['submit']))
 				$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-				$_POST['notes'], $_POST['tax_group_id'], @$_POST['tax_included']);
+				$_POST['notes'], $_POST['tax_group_id'], get_post('tax_included', 0));
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
