@@ -46,7 +46,12 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 
-    date_cells(_("From:"), 'TransFromDate', '', null, -30);
+	$date = today();
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = begin_month($date);
+	if (!isset($_POST['TransToDate']))
+		$_POST['TransToDate'] = end_month($date);
+    date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);

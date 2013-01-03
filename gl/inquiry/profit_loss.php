@@ -160,7 +160,12 @@ function inquiry_controls()
 	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
-    date_cells(_("From:"), 'TransFromDate', '', null, -30);
+	$date = today();
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = begin_month($date);
+	if (!isset($_POST['TransToDate']))
+		$_POST['TransToDate'] = end_month($date);
+    date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	
 	//Compare Combo
