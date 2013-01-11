@@ -373,6 +373,9 @@ class BoxReports
 				case 'ITEMS':
 					return stock_manufactured_items_list($name);
 
+				case 'ITEMS_P':
+					return stock_purchasable_items_list($name, null, true);
+				
 				case 'WORKORDER':
 					$sql = "SELECT ".TB_PREF."workorders.id, concat(".TB_PREF."workorders.id, '-',
 						".TB_PREF."stock_master.description) as IName

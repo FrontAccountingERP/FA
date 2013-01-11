@@ -208,6 +208,15 @@ $reports->addReport(RC_INVENTORY, 305, _('&GRN Valuation Report'),
 			_('End Date') => 'DATEENDM',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
+$reports->addReport(RC_INVENTORY, 306, _('Inventory &Purchasing Report'),
+	array(	_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Inventory Category') => 'CATEGORIES',
+			_('Location') => 'LOCATIONS',
+			_('Supplier') => 'SUPPLIERS_NO_FILTER',
+			_('Items') => 'ITEMS_P',
+			_('Comments') => 'TEXTBOX',
+			_('Destination') => 'DESTINATION'));
 
 $reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
 $reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
