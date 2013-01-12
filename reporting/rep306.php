@@ -42,7 +42,7 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 			".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."suppliers.supp_name AS supplier_name,
 			".TB_PREF."stock_moves.tran_date,
-			-".TB_PREF."stock_moves.qty AS qty,
+			".TB_PREF."stock_moves.qty AS qty,
 			".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent) AS price
 		FROM ".TB_PREF."stock_master,
 			".TB_PREF."stock_category,
@@ -52,7 +52,7 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."stock_moves.type=".TB_PREF."supp_trans.type
+		AND (".TB_PREF."stock_moves.type=".TB_PREF."supp_trans.type OR ".TB_PREF."stock_moves.type=".ST_SUPPRECEIVE.")
 		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."supp_trans.trans_no
 		AND ".TB_PREF."stock_moves.tran_date>='$from'
 		AND ".TB_PREF."stock_moves.tran_date<='$to'
@@ -137,29 +137,11 @@ function print_inventory_purchase()
     $rep->NewPage();
 
 	$res = getTransactions($category, $location, $fromsupp, $item, $from, $to);
-	$total = $total2 = $total3 = $grandtotal = 0.0;
-	$total_qty2 = $total_qty3 = 0.0;
+	$total = $total_supp = $grandtotal = 0.0;
+	$total_qty = 0.0;
 	$catt = $stock_description = $supplier_name = '';
 	while ($trans=db_fetch($res))
 	{
-		if ($catt != $trans['cat_description'])
-		{
-			if ($catt != '')
-			{
-				$rep->NewLine(2, 3);
-				$rep->TextCol(0, 7, _('Total'));
-				$rep->AmountCol(7, 8, $total, $dec);
-				$rep->Line($rep->row - 2);
-				$rep->NewLine();
-				$rep->NewLine();
-				$total = 0.0;
-			}
-			$rep->TextCol(0, 1, $trans['category_id']);
-			$rep->TextCol(1, 6, $trans['cat_description']);
-			$catt = $trans['cat_description'];
-			$rep->NewLine();
-		}
-	
 		if ($stock_description != $trans['description'])
 		{
 			if ($stock_description != '')
@@ -170,23 +152,13 @@ function print_inventory_purchase()
 					$rep->TextCol(0, 1, _('Total'));
 					$rep->TextCol(1, 4, $stock_description);
 					$rep->TextCol(4, 5, $supplier_name);
-					$rep->TextCol(5, 7, $total_qty3);
-					$rep->AmountCol(7, 8, $total3, $dec);
+					$rep->TextCol(5, 7, $total_qty);
+					$rep->AmountCol(7, 8, $total_supp, $dec);
 					$rep->Line($rep->row - 2);
 					$rep->NewLine();
-					$rep->NewLine();
-					$total3 = $total_qty3 = 0.0;
+					$total_supp = $total_qty = 0.0;
 					$supplier_name = $trans['supplier_name'];
 				}	
-				//$rep->NewLine(2, 3);
-				$rep->TextCol(0, 1, _('Total'));
-				$rep->TextCol(1, 5, $stock_description);
-				$rep->TextCol(5, 7, $total_qty2);
-				$rep->AmountCol(7, 8, $total2, $dec);
-				$rep->Line($rep->row - 2);
-				$rep->NewLine();
-				//$rep->NewLine();
-				$total2 = $total_qty2 = 0.0;
 			}
 			$stock_description = $trans['description'];
 		}
@@ -199,16 +171,32 @@ function print_inventory_purchase()
 				$rep->TextCol(0, 1, _('Total'));
 				$rep->TextCol(1, 4, $stock_description);
 				$rep->TextCol(4, 5, $supplier_name);
-				$rep->TextCol(5, 7, $total_qty3);
-				$rep->AmountCol(7, 8, $total3, $dec);
+				$rep->TextCol(5, 7, $total_qty);
+				$rep->AmountCol(7, 8, $total_supp, $dec);
 				$rep->Line($rep->row - 2);
 				$rep->NewLine();
-				$rep->NewLine();
-				$total3 = $total_qty3 = 0.0;
+				$total_supp = $total_qty = 0.0;
 			}
 			$supplier_name = $trans['supplier_name'];
 		}
-	
+		if ($catt != $trans['cat_description'])
+		{
+			if ($catt != '')
+			{
+				$rep->NewLine(2, 3);
+				$rep->TextCol(0, 1, _('Total'));
+				$rep->TextCol(1, 7, $catt);
+				$rep->AmountCol(7, 8, $total, $dec);
+				$rep->Line($rep->row - 2);
+				$rep->NewLine();
+				$rep->NewLine();
+				$total = 0.0;
+			}
+			$rep->TextCol(0, 1, $trans['category_id']);
+			$rep->TextCol(1, 6, $trans['cat_description']);
+			$catt = $trans['cat_description'];
+			$rep->NewLine();
+		}
 		
 		$curr = get_supplier_currency($trans['supplier_id']);
 		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
@@ -235,11 +223,9 @@ function print_inventory_purchase()
 		$rep->AmountCol(7, 8, $amt, $dec);
 		$rep->fontSize += 2;
 		$total += $amt;
-		$total2 += $amt;
-		$total3 += $amt;
-		$total_qty2 += $trans['qty'];
-		$total_qty3 += $trans['qty'];
+		$total_supp += $amt;
 		$grandtotal += $amt;
+		$total_qty += $trans['qty'];
 	}
 	if ($stock_description != '')
 	{
@@ -249,23 +235,14 @@ function print_inventory_purchase()
 			$rep->TextCol(0, 1, _('Total'));
 			$rep->TextCol(1, 4, $stock_description);
 			$rep->TextCol(4, 5, $supplier_name);
-			$rep->TextCol(5, 7, $total_qty3);
-			$rep->AmountCol(7, 8, $total3, $dec);
+			$rep->TextCol(5, 7, $total_qty);
+			$rep->AmountCol(7, 8, $total_supp, $dec);
 			$rep->Line($rep->row - 2);
 			$rep->NewLine();
 			$rep->NewLine();
-			$total3 = $total_qty3 = 0.0;
+			$total_supp = $total_qty = 0.0;
 			$supplier_name = $trans['supplier_name'];
 		}	
-		//$rep->NewLine(2, 3);
-		$rep->TextCol(0, 1, _('Total'));
-		$rep->TextCol(1, 5, $stock_description);
-		$rep->TextCol(5, 7, $total_qty2);
-		$rep->AmountCol(7, 8, $total2, $dec);
-		$rep->Line($rep->row - 2);
-		$rep->NewLine();
-		//$rep->NewLine();
-		$total2 = 0.0;
 	}
 	if ($supplier_name != '')
 	{
@@ -273,22 +250,21 @@ function print_inventory_purchase()
 		$rep->TextCol(0, 1, _('Total'));
 		$rep->TextCol(1, 4, $stock_description);
 		$rep->TextCol(4, 5, $supplier_name);
-		$rep->TextCol(5, 7, $total_qty3);
-		$rep->AmountCol(7, 8, $total3, $dec);
+		$rep->TextCol(5, 7, $total_qty);
+		$rep->AmountCol(7, 8, $total_supp, $dec);
 		$rep->Line($rep->row - 2);
 		$rep->NewLine();
 		$rep->NewLine();
-		$total3 = 0.0;
 	}
 
 	$rep->NewLine(2, 3);
 	$rep->TextCol(0, 1, _('Total'));
-	$rep->TextCol(1, 3, $catt);
+	$rep->TextCol(1, 7, $catt);
 	$rep->AmountCol(7, 8, $total, $dec);
 	$rep->Line($rep->row - 2);
 	$rep->NewLine();
 	$rep->NewLine(2, 1);
-	$rep->TextCol(0, 6, _('Grand Total'));
+	$rep->TextCol(0, 7, _('Grand Total'));
 	$rep->AmountCol(7, 8, $grandtotal, $dec);
 
 	$rep->Line($rep->row  - 4);
