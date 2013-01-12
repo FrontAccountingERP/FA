@@ -115,7 +115,7 @@ function print_inventory_purchase()
 	else
 		$itm = $item;
 
-	$cols = array(0, 75, 175, 220, 270, 370, 390, 470,	535);
+	$cols = array(0, 60, 180, 225, 275, 400, 420, 465,	520);
 
 	$headers = array(_('Category'), _('Description'), _('Date'), _('#'), _('Supplier'), _('Qty'), _('Unit Price'), _('Total'));
 	if ($fromsupp != '')

@@ -208,7 +208,7 @@ $reports->addReport(RC_INVENTORY, 305, _('&GRN Valuation Report'),
 			_('End Date') => 'DATEENDM',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_INVENTORY, 306, _('Inventory &Purchasing Report'),
+$reports->addReport(RC_INVENTORY, 306, _('Inventory P&urchasing Report'),
 	array(	_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
 			_('Inventory Category') => 'CATEGORIES',
