@@ -38,25 +38,21 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			".TB_PREF."stock_moves.loc_code,
-			".TB_PREF."supp_trans.supplier_id,
-			".TB_PREF."supp_trans.supp_reference,
+			".TB_PREF."suppliers.supplier_id,
 			".TB_PREF."suppliers.supp_name AS supplier_name,
 			".TB_PREF."stock_moves.tran_date,
 			".TB_PREF."stock_moves.qty AS qty,
 			".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent) AS price
 		FROM ".TB_PREF."stock_master,
 			".TB_PREF."stock_category,
-			".TB_PREF."supp_trans,
 			".TB_PREF."suppliers,
 			".TB_PREF."stock_moves
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id
-		AND (".TB_PREF."stock_moves.type=".TB_PREF."supp_trans.type OR ".TB_PREF."stock_moves.type=".ST_SUPPRECEIVE.")
-		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."supp_trans.trans_no
+		AND ".TB_PREF."stock_moves.person_id=".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."stock_moves.tran_date>='$from'
 		AND ".TB_PREF."stock_moves.tran_date<='$to'
-		AND (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."stock_moves.type=".ST_SUPPCREDIT.")
+		AND (".TB_PREF."stock_moves.type=".ST_SUPPRECEIVE." OR ".TB_PREF."stock_moves.type=".ST_SUPPCREDIT.")
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 		if ($category != 0)
 			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
@@ -72,6 +68,29 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 
 }
 
+function get_supp_inv_reference($supplier_id, $stock_id, $date)
+{
+	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference
+		FROM ".TB_PREF."supp_trans,
+			".TB_PREF."supp_invoice_items,
+			".TB_PREF."grn_batch,
+			".TB_PREF."grn_items
+		WHERE ".TB_PREF."supp_trans.type=".TB_PREF."supp_invoice_items.supp_trans_type
+		AND ".TB_PREF."supp_trans.trans_no=".TB_PREF."supp_invoice_items.supp_trans_no
+		AND ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
+		AND ".TB_PREF."grn_items.item_code=".TB_PREF."supp_invoice_items.stock_id
+		AND ".TB_PREF."supp_trans.supplier_id=".db_escape($supplier_id)."
+		AND ".TB_PREF."supp_invoice_items.stock_id=".db_escape($stock_id)."
+		AND ".TB_PREF."supp_trans.tran_date=".db_escape($date);
+    $result = db_query($sql,"No transactions were returned");
+    $row = db_fetch_row($result);
+    if (isset($row[0]))
+    	return $row[0];
+    else
+    	return '';
+}    
+    
+	
 //----------------------------------------------------------------------------------------------------
 
 function print_inventory_purchase()
@@ -137,6 +156,7 @@ function print_inventory_purchase()
     $rep->NewPage();
 
 	$res = getTransactions($category, $location, $fromsupp, $item, $from, $to);
+
 	$total = $total_supp = $grandtotal = 0.0;
 	$total_qty = 0.0;
 	$catt = $stock_description = $supplier_name = '';
@@ -202,6 +222,7 @@ function print_inventory_purchase()
 		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
 		$trans['price'] *= $rate;
 		$rep->NewLine();
+		$trans['supp_reference'] = get_supp_inv_reference($trans['supplier_id'], $trans['stock_id'], $trans['tran_date']);
 		$rep->fontSize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		if ($fromsupp == ALL_TEXT)
