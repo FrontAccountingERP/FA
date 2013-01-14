@@ -107,7 +107,7 @@ function defaultCompany()
 			echo "</td></tr>";
 		} else {
 //			$coy = $def_coy;
-			text_row(_("Company"), "company_login_nickname", "", 20, 30);
+			text_row(_("Company"), "company_login_nickname", "", 20, 50);
 		}
 		start_row();
 		label_cell($demo_text, "colspan=2 align='center' id='log_msg'");
