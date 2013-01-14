@@ -693,8 +693,16 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
   		return ($px / $unit_offset_length);
   	}	
 
+	function recalculate_cols(&$cols)
+	{
+		$factor = (user_pagesize() == "A4" ? 1.4 : 1.3);
+		foreach($cols as $key => $col)
+			$cols[$key] = intval($col * $factor); 
+	}
+
 	function End($email=0, $subject='')
 	{
+		global $path_to_root;
 		++$this->y;
 		for ($i = 0; $i < $this->numcols; $i++)
 			$this->sheet->writeBlank($this->y, $i, $this->formatFooter);

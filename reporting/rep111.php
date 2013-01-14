@@ -40,7 +40,9 @@ function print_sales_quotations()
 	$currency = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($from == null)
 		$from = 0;
 	if ($to == null)
@@ -57,13 +59,9 @@ function print_sales_quotations()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -72,17 +70,15 @@ function print_sales_quotations()
 		$params['bankaccount'] = $baccount['id'];
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
-		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
-			if ($print_invoice_no == 1)
-				$rep->filename = "SalesQuotation" . $i . ".pdf";
-			else	
-				$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
-			$rep->Info($params, $cols, null, $aligns);
-		}
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		if ($print_invoice_no == 1)
+			$rep->filename = "SalesQuotation" . $i . ".pdf";
+		else	
+			$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
+		$rep->Info($params, $cols, null, $aligns);
 		$rep->title = _("SALES QUOTATION");
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
@@ -132,6 +128,7 @@ function print_sales_quotations()
 		$DisplaySubTot = number_format2($SubTotal,$dec);
 		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 
+		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$doctype = ST_SALESQUOTE;
 
 		$rep->TextCol(3, 6, _("Sub-total"), -2);

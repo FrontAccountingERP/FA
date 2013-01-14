@@ -58,7 +58,9 @@ function print_remittances()
 	$currency = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
 	$dec = user_price_dec();
@@ -78,13 +80,9 @@ function print_remittances()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_('REMITTANCE'), "RemittanceBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_('REMITTANCE'), "RemittanceBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -102,17 +100,14 @@ function print_remittances()
 			$params['bankaccount'] = $baccount['bank_act'];
 
 			if ($email == 1)
-			{
-				$rep = new FrontReport("", "", user_pagesize());
-				$rep->SetHeaderType('Header2');
-				$rep->currency = $cur;
-				$rep->Font();
-				$rep->title = _('REMITTANCE');
-				$rep->filename = "Remittance" . $i . ".pdf";
-				$rep->Info($params, $cols, null, $aligns);
-			}
-			else
-				$rep->title = _('REMITTANCE');
+				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			$rep->SetHeaderType('Header2');
+			$rep->currency = $cur;
+			$rep->Font();
+			$rep->title = _('REMITTANCE');
+			$rep->filename = "Remittance" . $i . ".pdf";
+			$rep->Info($params, $cols, null, $aligns);
+
 			$contacts = get_supplier_contacts($myrow['supplier_id'], 'invoice');
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
 			$rep->NewPage();

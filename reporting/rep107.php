@@ -61,7 +61,9 @@ function print_invoices()
 	$email = $_POST['PARAM_3'];
 	$pay_service = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_6'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
 	$dec = user_price_dec();
@@ -82,7 +84,9 @@ function print_invoices()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
+		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	$range = get_invoice_range($from, $to);
 	while($row = db_fetch($range))
@@ -98,7 +102,7 @@ function print_invoices()
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 			if ($email == 1)
-				$rep = new FrontReport("", "", user_pagesize());
+				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 		    $rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
@@ -111,7 +115,7 @@ function print_invoices()
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
 			$rep->NewPage();
 			// calculate summary start row for later use
-			$summary_start_row = $rep->bottomMargin + (20 * $rep->lineHeight);
+			$summary_start_row = $rep->bottomMargin + (12 * $rep->lineHeight);
 
 			if ($rep->formData['prepaid'])
 			{
@@ -182,7 +186,7 @@ function print_invoices()
 			if (isset($prepayments))
 			{
 				// Partial invoices table
-				$rep->NewLine();
+				//$rep->NewLine();
 				$rep->TextCol(1, 4,_("Prepayments invoiced to this order up to day:"));
 				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
 				$rep->cols[3] -= 20;
@@ -213,6 +217,7 @@ function print_invoices()
 
 
 			$doctype = ST_SALESINVOICE;
+    		$rep->row = $summary_start_row;
 
 			$rep->TextCol(3, 6, _("Sub-total"), -2);
 			$rep->TextCol(6, 7,	$DisplaySubTot, -2);

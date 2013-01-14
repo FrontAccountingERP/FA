@@ -42,7 +42,9 @@ function print_credits()
 	$email = $_POST['PARAM_3'];
 	$paylink = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_6'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
 	$dec = user_price_dec();
@@ -62,13 +64,9 @@ function print_credits()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_('CREDIT NOTE'), "InvoiceBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_('CREDIT NOTE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -83,17 +81,14 @@ function print_credits()
 			$branch['disable_branch'] = $paylink; // helper
 			$sales_order = null;
 			if ($email == 1)
-			{
-				$rep = new FrontReport("", "", user_pagesize());
-			    $rep->SetHeaderType('Header2');
-				$rep->currency = $cur;
-				$rep->Font();
-				$rep->title = _('CREDIT NOTE');
-				$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
-				$rep->Info($params, $cols, null, $aligns);
-			}
-			else
-				$rep->title = _('CREDIT NOTE');
+				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			$rep->SetHeaderType('Header2');
+			$rep->currency = $cur;
+			$rep->Font();
+			$rep->title = _('CREDIT NOTE');
+			$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
+			$rep->Info($params, $cols, null, $aligns);
+
 			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
 			$rep->NewPage();

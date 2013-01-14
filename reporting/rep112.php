@@ -58,7 +58,9 @@ function print_receipts()
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_4'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
 	$dec = user_price_dec();
@@ -77,7 +79,9 @@ function print_receipts()
 
 	$cur = get_company_Pref('curr_default');
 
-	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
+	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();

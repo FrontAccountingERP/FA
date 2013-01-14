@@ -67,7 +67,9 @@ function print_po()
 	$currency = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($from == null)
 		$from = 0;
 	if ($to == null)
@@ -84,13 +86,9 @@ function print_po()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -99,17 +97,14 @@ function print_po()
 		$params['bankaccount'] = $baccount['id'];
 
 		if ($email == 1)
-		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
-			$rep->title = _('PURCHASE ORDER');
-			$rep->filename = "PurchaseOrder" . $i . ".pdf";
-			$rep->Info($params, $cols, null, $aligns);
-		}
-		else
-			$rep->title = _('PURCHASE ORDER');
+			$rep = new FrontReport("", "", user_pagesize(), $orientation);
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->title = _('PURCHASE ORDER');
+		$rep->filename = "PurchaseOrder" . $i . ".pdf";
+		$rep->Info($params, $cols, null, $aligns);
+
 		$contacts = get_supplier_contacts($myrow['supplier_id'], 'order');
 		$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_PURCHORDER, $contacts);
 		$rep->NewPage();

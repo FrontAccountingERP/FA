@@ -43,7 +43,9 @@ function print_sales_orders()
 	$email = $_POST['PARAM_3'];
 	$print_as_quote = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_6'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($from == null)
 		$from = 0;
 	if ($to == null)
@@ -63,14 +65,12 @@ function print_sales_orders()
 	{
 
 		if ($print_as_quote == 0)
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
+			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
 		else
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize(), 9, $orientation);
 	}
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -79,25 +79,21 @@ function print_sales_orders()
 		$params['bankaccount'] = $baccount['id'];
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		if ($print_as_quote == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
-			if ($print_as_quote == 1)
-			{
-				$rep->title = _('QUOTE');
-				$rep->filename = "Quote" . $i . ".pdf";
-			}
-			else
-			{
-				$rep->title = _("SALES ORDER");
-				$rep->filename = "SalesOrder" . $i . ".pdf";
-			}
-			$rep->Info($params, $cols, null, $aligns);
+			$rep->title = _('QUOTE');
+			$rep->filename = "Quote" . $i . ".pdf";
 		}
 		else
-			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
+		{
+			$rep->title = _("SALES ORDER");
+			$rep->filename = "SalesOrder" . $i . ".pdf";
+		}
+		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);

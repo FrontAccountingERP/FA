@@ -43,7 +43,9 @@ function print_deliveries()
 	$email = $_POST['PARAM_2'];
 	$packing_slip = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
 	$dec = user_price_dec();
@@ -65,15 +67,12 @@ function print_deliveries()
 	if ($email == 0)
 	{
 		if ($packing_slip == 0)
-			$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk", user_pagesize());
+			$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk", user_pagesize(), 9, $orientation);
 		else
-			$rep = new FrontReport(_('PACKING SLIP'), "PackingSlipBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
+			$rep = new FrontReport(_('PACKING SLIP'), "PackingSlipBulk", user_pagesize(), 9, $orientation);
 	}
-
+    if ($orientation == 'L')
+    	$rep->recalculate_cols($cols);
 	for ($i = $from; $i <= $to; $i++)
 	{
 			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
@@ -82,25 +81,21 @@ function print_deliveries()
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1)
+				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			$rep->SetHeaderType('Header2');
+			$rep->currency = $cur;
+			$rep->Font();
+			if ($packing_slip == 0)
 			{
-				$rep = new FrontReport("", "", user_pagesize());
-				$rep->SetHeaderType('Header2');
-				$rep->currency = $cur;
-				$rep->Font();
-				if ($packing_slip == 0)
-				{
-					$rep->title = _('DELIVERY NOTE');
-					$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
-				}
-				else
-				{
-					$rep->title = _('PACKING SLIP');
-					$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
-				}
-				$rep->Info($params, $cols, null, $aligns);
+				$rep->title = _('DELIVERY NOTE');
+				$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
 			}
 			else
-				$rep->title = _('DELIVERY NOTE');
+			{
+				$rep->title = _('PACKING SLIP');
+				$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
+			}
+			$rep->Info($params, $cols, null, $aligns);
 			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();
