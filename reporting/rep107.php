@@ -115,7 +115,7 @@ function print_invoices()
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
 			$rep->NewPage();
 			// calculate summary start row for later use
-			$summary_start_row = $rep->bottomMargin + (12 * $rep->lineHeight);
+			$summary_start_row = $rep->bottomMargin + (15 * $rep->lineHeight);
 
 			if ($rep->formData['prepaid'])
 			{
@@ -129,7 +129,7 @@ function print_invoices()
 				}
 
 				if (count($prepayments) > ($show_this_payment ? 0 : 1))
-					$summary_start_row += (count($prepayments)+3) * $rep->lineHeight;
+					$summary_start_row += (count($prepayments)) * $rep->lineHeight;
 				else
 					unset($prepayments);
 			}
@@ -187,12 +187,12 @@ function print_invoices()
 			{
 				// Partial invoices table
 				//$rep->NewLine();
-				$rep->TextCol(1, 4,_("Prepayments invoiced to this order up to day:"));
-				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
-				$rep->cols[3] -= 20;
-				$rep->aligns[3] = 'right';
-				$rep->NewLine(); $c = 1; $tot_pym=0;
-				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
+				$rep->TextCol(0, 3,_("Prepayments invoiced to this order up to day:"));
+				$rep->TextCol(0, 3,	str_pad('', 150, '_'));
+				$rep->cols[2] -= 20;
+				$rep->aligns[2] = 'right';
+				$rep->NewLine(); $c = 0; $tot_pym=0;
+				$rep->TextCol(0, 3,	str_pad('', 150, '_'));
 				$rep->TextCol($c++, $c, _("Date"));
 				$rep->TextCol($c++, $c,	_("Invoice reference"));
 				$rep->TextCol($c++, $c,	_("Amount"));
@@ -202,22 +202,25 @@ function print_invoices()
 					if ($show_this_payment || ($invoice['reference'] != $myrow['reference']))
 					{
 						$rep->NewLine();
-						$c = 1; $tot_pym += $invoice['prep_amount'];
+						$c = 0; $tot_pym += $invoice['prep_amount'];
 						$rep->TextCol($c++, $c,	sql2date($invoice['tran_date']));
 						$rep->TextCol($c++, $c,	$invoice['reference']);
 						$rep->TextCol($c++, $c, number_format2($invoice['prep_amount'], $dec));
 					}
 					if ($invoice['reference']==$myrow['reference']) break;
 				}
-				$rep->TextCol(1, 4,	str_pad('', 150, '_'));
+				$rep->TextCol(0, 3,	str_pad('', 150, '_'));
 				$rep->NewLine();
-				$rep->TextCol(2, 3,	_("Total payments:"));
-				$rep->TextCol(3, 4,	number_format2($tot_pym, $dec));
+				$rep->TextCol(1, 2,	_("Total payments:"));
+				$rep->TextCol(2, 3,	number_format2($tot_pym, $dec));
 			}
 
 
 			$doctype = ST_SALESINVOICE;
     		$rep->row = $summary_start_row;
+			$rep->cols[2] += 20;
+			$rep->cols[3] += 20;
+			$rep->aligns[3] = 'left';
 
 			$rep->TextCol(3, 6, _("Sub-total"), -2);
 			$rep->TextCol(6, 7,	$DisplaySubTot, -2);
