@@ -60,4 +60,8 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 	return $sql;
 }
 
+function transaction_exists($trans_type, $trans_no)
+{
+	return db_num_rows(db_query(get_sql_for_view_transactions($trans_type, $trans_no, $trans_no, $dummy)));
+}
 ?>
