@@ -95,7 +95,7 @@ function print_sales_summary_report()
 	$headers = array(_('Customer'), _('Tax Id'), _('Total ex. Tax'), _('Tax'));
 	$aligns = array('left', 'left', 'right', 'right');
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

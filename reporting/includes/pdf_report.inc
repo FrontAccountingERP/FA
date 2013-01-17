@@ -946,13 +946,6 @@ class FrontReport extends Cpdf
 			$this->{$this->headerTmpl}();
 	}
 
-	function recalculate_cols(&$cols)
-	{
-		$factor = (user_pagesize() == "A4" ? 1.4 : 1.3);
-		foreach($cols as $key => $col)
-			$cols[$key] = intval($col * $factor); 
-	}
-
 	function End($email=0, $subject='')
 	{
 		global $pdf_debug, $path_to_root;

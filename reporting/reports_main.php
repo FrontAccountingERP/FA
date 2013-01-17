@@ -280,6 +280,12 @@ $reports->addReportClass(_('Banking'), RC_BANKING);
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_BANKING,  602, _('Bank Statement w/ &Reconcile'),
+	array(	_('Bank Accounts') => 'BANK_ACCOUNTS',
+			_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Comments') => 'TEXTBOX',
+			_('Destination') => 'DESTINATION'));
 
 $reports->addReportClass(_('General Ledger'), RC_GL);
 $reports->addReport(RC_GL, 701, _('Chart of &Accounts'),

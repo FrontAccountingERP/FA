@@ -125,7 +125,7 @@ function print_inventory_sales()
 
     $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
  
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

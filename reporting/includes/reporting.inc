@@ -26,7 +26,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 	{
 		case ST_SALESQUOTE :
 			$rep = 111;
-			// from, to, currency, bank acc, email, quote, comments
+			// from, to, currency, email, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -37,7 +37,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_SALESORDER :
 			$rep = 109;
-			// from, to, currency, bank acc, email, quote, comments
+			// from, to, currency, email, quote, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -49,7 +49,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_CUSTDELIVERY :
 			$rep = 110;
-			// from, to, email, comments
+			// from, to, email, packing slip, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -61,7 +61,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 		case ST_SALESINVOICE : // Sales Invoice
 		case ST_CUSTCREDIT : // Customer Credit Note
 			$rep = $type_no==ST_CUSTCREDIT ? 113 : 107;
-			// from, to, currency, bank acc, email, paylink, comments, type
+			// from, to, currency, email, paylink, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -73,7 +73,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_PURCHORDER :
 			$rep = 209;
-			// from, to, currency, bank acc, email, comments
+			// from, to, currency, email, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -84,7 +84,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_CUSTPAYMENT :
 			$rep = 112;
-			// from, to, currency, bank acc, email, comments
+			// from, to, currency, email, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -94,7 +94,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_SUPPAYMENT :
 			$rep = 210;
-			// from, to, currency, bank acc, email, comments
+			// from, to, currency, email, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
@@ -105,7 +105,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_WORKORDER :
 			$rep = 409;
-			// from, to, currency, bank acc, email, comments, orientation
+			// from, to, email, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 

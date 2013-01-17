@@ -106,7 +106,7 @@ function print_grn_valuation()
 
     $rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

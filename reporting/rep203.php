@@ -103,7 +103,7 @@ function print_payment_report()
 
     $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

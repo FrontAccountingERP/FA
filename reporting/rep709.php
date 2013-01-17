@@ -112,7 +112,7 @@ function print_tax_report()
 		_('Net'), _('Rate'), _('Tax'), '', _('Name'));
 	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right','left');
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
@@ -178,7 +178,7 @@ function print_tax_report()
 	// Summary
 	$cols2 = array(0, 100, 180,	260, 340, 420, 500);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols2);
+    	recalculate_cols($cols2);
 
 	$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'),	_('Inputs'), _('Input Tax'), _('Net Tax'));
 

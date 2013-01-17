@@ -133,7 +133,7 @@ function print_inventory_planning()
 
     $rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

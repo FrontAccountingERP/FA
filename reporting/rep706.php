@@ -214,7 +214,7 @@ function print_balance_sheet()
 
 	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

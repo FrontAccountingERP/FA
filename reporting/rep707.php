@@ -257,7 +257,7 @@ function print_profit_and_loss_statement()
 
 	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

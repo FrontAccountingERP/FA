@@ -116,7 +116,7 @@ function print_Chart_of_Accounts()
 
 	$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

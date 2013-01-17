@@ -45,11 +45,9 @@ function print_sales_orders()
 	$comments = $_POST['PARAM_5'];
 	$orientation = $_POST['PARAM_6'];
 
+	if (!$from || !$to) return;
+
 	$orientation = ($orientation ? 'L' : 'P');
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
 	$dec = user_price_dec();
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
@@ -70,7 +68,7 @@ function print_sales_orders()
 			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize(), 9, $orientation);
 	}
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{

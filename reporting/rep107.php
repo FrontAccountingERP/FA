@@ -63,9 +63,9 @@ function print_invoices()
 	$comments = $_POST['PARAM_5'];
 	$orientation = $_POST['PARAM_6'];
 
-	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
@@ -86,7 +86,7 @@ function print_invoices()
 	if ($email == 0)
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
 	$range = get_invoice_range($from, $to);
 	while($row = db_fetch($range))
@@ -102,12 +102,14 @@ function print_invoices()
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 			if ($email == 1)
+			{
 				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+				$rep->title = _('INVOICE');
+				$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
+			}	
 		    $rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->title = _('INVOICE');
-			$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);

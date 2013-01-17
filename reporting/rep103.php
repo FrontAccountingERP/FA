@@ -104,8 +104,8 @@ function print_customer_details_listing()
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	
 	$orientation = ($orientation ? 'L' : 'P');
-
     $dec = 0;
 
 	if ($area == ALL_NUMERIC)
@@ -148,7 +148,7 @@ function print_customer_details_listing()
 
     $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

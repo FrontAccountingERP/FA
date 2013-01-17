@@ -84,7 +84,7 @@ function print_statements()
 	if ($email == 0)
 		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_TEXT)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
@@ -104,12 +104,14 @@ function print_statements()
 		if (db_num_rows($TransResult) == 0)
 			continue;
 		if ($email == 1)
+		{
 			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			$rep->title = _('STATEMENT');
+			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
+		}	
 		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
-		$rep->title = _('STATEMENT');
-		$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');

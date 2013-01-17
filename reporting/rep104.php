@@ -80,8 +80,8 @@ function print_price_listing()
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-	$orientation = ($orientation ? 'L' : 'P');
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
 	$home_curr = get_company_pref('curr_default');
@@ -125,7 +125,7 @@ function print_price_listing()
 
     $rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

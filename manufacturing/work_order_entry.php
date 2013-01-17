@@ -62,7 +62,8 @@ if (isset($_GET['AddedID']))
  		submenu_print(_("&Print This Work Order"), ST_WORKORDER, $id, 'prtopt');
 		submenu_print(_("&Email This Work Order"), ST_WORKORDER, $id, null, 1);
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")));
-    	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
+    	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype, 'PARAM_3' => '',
+    		'PARAM_4' => (isset($def_print_orientation) && $def_print_orientation == 1 ? 1 : 0)); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$stype&trans_no=$id");
 	}

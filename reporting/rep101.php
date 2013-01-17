@@ -110,7 +110,6 @@ function print_customer_balances()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-
 	if ($fromcust == ALL_TEXT)
 		$cust = _('All');
 	else
@@ -143,7 +142,7 @@ function print_customer_balances()
 
     $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();

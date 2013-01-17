@@ -210,8 +210,8 @@ function print_trial_balance()
 	$rep = new FrontReport(_('Trial Balance'), "TrialBalance", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
     {
-    	$rep->recalculate_cols($cols);
-    	$rep->recalculate_cols($cols2);
+    	recalculate_cols($cols);
+    	recalculate_cols($cols2);
 	}
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

@@ -45,9 +45,9 @@ function print_deliveries()
 	$comments = $_POST['PARAM_4'];
 	$orientation = $_POST['PARAM_5'];
 
-	$orientation = ($orientation ? 'L' : 'P');
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
 	$fno = explode("-", $from);
@@ -72,7 +72,7 @@ function print_deliveries()
 			$rep = new FrontReport(_('PACKING SLIP'), "PackingSlipBulk", user_pagesize(), 9, $orientation);
 	}
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	for ($i = $from; $i <= $to; $i++)
 	{
 			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
@@ -81,21 +81,24 @@ function print_deliveries()
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1)
+			{
 				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+				if ($packing_slip == 0)
+				{
+					$rep->title = _('DELIVERY NOTE');
+					$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
+				}
+				else
+				{
+					$rep->title = _('PACKING SLIP');
+					$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
+				}
+			}
 			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
-			if ($packing_slip == 0)
-			{
-				$rep->title = _('DELIVERY NOTE');
-				$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
-			}
-			else
-			{
-				$rep->title = _('PACKING SLIP');
-				$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
-			}
 			$rep->Info($params, $cols, null, $aligns);
+
 			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], false);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();

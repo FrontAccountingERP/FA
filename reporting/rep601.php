@@ -86,7 +86,7 @@ function print_bank_transactions()
 	    2 => array('text' => _('Bank Account'),'from' => $act,'to' => ''));
 
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

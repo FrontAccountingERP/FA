@@ -96,7 +96,7 @@ function print_salesman_list()
 
 	$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 	$cols2 = $cols;
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

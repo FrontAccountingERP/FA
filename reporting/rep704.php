@@ -114,7 +114,7 @@ function print_GL_transactions()
     				    2 => array('text' => _('Accounts'),'from' => $fromacc,'to' => $toacc));
     }
     if ($orientation == 'L')
-    	$rep->recalculate_cols($cols);
+    	recalculate_cols($cols);
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
