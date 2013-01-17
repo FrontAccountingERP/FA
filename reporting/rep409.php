@@ -36,9 +36,12 @@ function print_workorders()
 	$to = $_POST['PARAM_1'];
 	$email = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_4'];
+
 
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 	$from = min($fno[0], $tno[0]);
@@ -54,13 +57,9 @@ function print_workorders()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize(), 9, $orientation);
+   	if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -70,16 +69,14 @@ function print_workorders()
 		$date_ = sql2date($myrow["date_"]);
 		if ($email == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
-				$rep->title = _('WORK ORDER');
-				$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
-			$rep->Info($params, $cols, null, $aligns);
-		}
-		else
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			$rep->title = _('WORK ORDER');
+			$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
+		}
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->Info($params, $cols, null, $aligns);
 
 		$contact = array('email' =>$myrow['email'],'lang' => $dflt_lang, // ???
 			'name' => $myrow['contact'], 'name2' => '', 'contact');

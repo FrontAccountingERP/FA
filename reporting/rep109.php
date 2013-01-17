@@ -43,11 +43,11 @@ function print_sales_orders()
 	$email = $_POST['PARAM_3'];
 	$print_as_quote = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_6'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
@@ -62,14 +62,12 @@ function print_sales_orders()
 	if ($email == 0)
 	{
 		if ($print_as_quote == 0)
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
+			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
 		else
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize(), 9, $orientation);
 	}
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -79,10 +77,7 @@ function print_sales_orders()
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			if ($print_as_quote == 1)
 			{
 				$rep->title = _('QUOTE');
@@ -93,10 +88,13 @@ function print_sales_orders()
 				$rep->title = _("SALES ORDER");
 				$rep->filename = "SalesOrder" . $i . ".pdf";
 			}
-			$rep->Info($params, $cols, null, $aligns);
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);

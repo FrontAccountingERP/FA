@@ -102,12 +102,14 @@ function print_customer_balances()
     	$currency = $_POST['PARAM_3'];
     	$no_zeros = $_POST['PARAM_4'];
     	$comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($fromcust == ALL_TEXT)
 		$cust = _('All');
 	else
@@ -138,7 +140,9 @@ function print_customer_balances()
     				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
 						4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
+    $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();

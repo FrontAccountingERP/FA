@@ -104,12 +104,14 @@ function print_inventory_purchase()
     $fromsupp = $_POST['PARAM_4'];
     $item = $_POST['PARAM_5'];
 	$comments = $_POST['PARAM_6'];
-	$destination = $_POST['PARAM_7'];
+	$orientation = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
 	if ($category == ALL_NUMERIC)
@@ -149,7 +151,9 @@ function print_inventory_purchase()
     				    4 => array('text' => _('Supplier'), 'from' => $froms, 'to' => ''),
     				    5 => array('text' => _('Item'), 'from' => $itm, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Purchasing Report'), "InventoryPurchasingReport", user_pagesize());
+    $rep = new FrontReport(_('Inventory Purchasing Report'), "InventoryPurchasingReport", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

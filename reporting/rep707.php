@@ -166,7 +166,8 @@ function print_profit_and_loss_statement()
 		$decimals = $_POST['PARAM_6'];
 		$graphics = $_POST['PARAM_7'];
 		$comments = $_POST['PARAM_8'];
-		$destination = $_POST['PARAM_9'];
+		$orientation = $_POST['PARAM_9'];
+		$destination = $_POST['PARAM_10'];
 	}
 	else if ($dim == 1)
 	{
@@ -175,7 +176,8 @@ function print_profit_and_loss_statement()
 		$decimals = $_POST['PARAM_5'];
 		$graphics = $_POST['PARAM_6'];
 		$comments = $_POST['PARAM_7'];
-		$destination = $_POST['PARAM_8'];
+		$orientation = $_POST['PARAM_8'];
+		$destination = $_POST['PARAM_9'];
 	}
 	else
 	{
@@ -183,12 +185,14 @@ function print_profit_and_loss_statement()
 		$decimals = $_POST['PARAM_4'];
 		$graphics = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$orientation = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -251,7 +255,9 @@ function print_profit_and_loss_statement()
 		$headers[3] = _('Period Y-1');
 	}
 
-	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize());
+	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

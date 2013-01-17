@@ -64,7 +64,9 @@ function print_statements()
 	$show_also_allocated = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
 	$cols = array(4, 100, 130, 190,	250, 320, 385, 450, 515);
@@ -80,14 +82,10 @@ function print_statements()
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
-
+		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize(), 9, $orientation);
+   if ($orientation == 'L')
+    	recalculate_cols($cols);
+ 
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_TEXT)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
@@ -108,14 +106,15 @@ function print_statements()
 			continue;
 		if ($email == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			$rep->title = _('STATEMENT');
 			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
-			$rep->Info($params, $cols, null, $aligns);
-		}
+		}	
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->Info($params, $cols, null, $aligns);
+
 		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');
 		//= get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
 		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT, $contacts);

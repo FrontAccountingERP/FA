@@ -175,7 +175,8 @@ function print_annual_expense_breakdown()
 		$dimension2 = $_POST['PARAM_2'];
 		$tags = (isset($_POST['PARAM_3']) ? $_POST['PARAM_3'] : -1);
 		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$orientation = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else if ($dim == 1)
 	{
@@ -183,20 +184,23 @@ function print_annual_expense_breakdown()
 		$dimension = $_POST['PARAM_1'];
 		$tags = (isset($_POST['PARAM_2']) ? $_POST['PARAM_2'] : -1);
 		$comments = $_POST['PARAM_3'];
-		$destination = $_POST['PARAM_4'];
+		$orientation = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
 	else
 	{
 		$year = $_POST['PARAM_0'];
 		$tags = (isset($_POST['PARAM_1']) ? $_POST['PARAM_1'] : -1);
 		$comments = $_POST['PARAM_2'];
-		$destination = $_POST['PARAM_3'];
+		$orientation = $_POST['PARAM_3'];
+		$destination = $_POST['PARAM_4'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = 1;
 	//$pdec = user_percent_dec();
 
@@ -271,7 +275,9 @@ function print_annual_expense_breakdown()
                     		'to' => ''));
     }
 
-	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", user_pagesize());
+	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

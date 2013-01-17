@@ -610,6 +610,14 @@ function array_search_key($needle, $haystack, $valuekey=null)
 	return @$keys[0];
 }
 
+// Recalculate report columns if orientation is landscape.
+function recalculate_cols(&$cols)
+{
+	$factor = (user_pagesize() == "A4" ? 1.4 : 1.3);
+	foreach($cols as $key => $col)
+		$cols[$key] = intval($col * $factor); 
+}
+
 function flush_dir($path, $wipe = false) 
 {
 	$dir = opendir($path);

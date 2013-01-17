@@ -98,12 +98,14 @@ function print_customer_details_listing()
     $more = $_POST['PARAM_3'];
     $less = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = 0;
 
 	if ($area == ALL_NUMERIC)
@@ -144,7 +146,9 @@ function print_customer_details_listing()
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
     				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr));
 
-    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize());
+    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

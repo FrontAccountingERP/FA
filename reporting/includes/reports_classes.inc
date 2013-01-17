@@ -165,7 +165,7 @@ class BoxReports
 	function get_ctrl($name, $type)
 	{
 		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no,
-			$def_print_destination, $type_shortcuts;
+			$def_print_destination, $def_print_orientation, $type_shortcuts;
 
 		$st = '';
 			switch ($type)
@@ -231,6 +231,13 @@ class BoxReports
 					$sel = array(_("PDF/Printer"), "Excel");
 					$def = 0;
 					if (isset($def_print_destination) && $def_print_destination == 1)
+						$def = 1;
+					return array_selector($name, $def, $sel);
+
+				case 'ORIENTATION':
+					$sel = array(_("Portrait"), _("Landscape"));
+					$def = 0;
+					if (isset($def_print_orientation) && $def_print_orientation == 1)
 						$def = 1;
 					return array_selector($name, $def, $sel);
 

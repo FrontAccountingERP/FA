@@ -79,11 +79,13 @@ function print_order_status_list()
 	$location = $_POST['PARAM_3'];
 	$backorder = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 
 	if ($category == ALL_NUMERIC)
 		$category = 0;
@@ -118,10 +120,12 @@ function print_order_status_list()
 	    				3 => array(  'text' => _('Location'), 'from' => $loc, 'to' => ''),
 	    				4 => array(  'text' => _('Selection'),'from' => $back,'to' => ''));
 
-	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", user_pagesize());
+	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
+	$cols2 = $cols;
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 

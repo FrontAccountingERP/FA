@@ -109,6 +109,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* default print destination. 0 = PDF/Printer, 1 = Excel */
 	$def_print_destination = 0;
 
+	/* default print orientation. 0 = Portrait, 1 = Landscape */
+	$def_print_orientation = 0;
+
  	// Wiki context help configuration
  	// If your help wiki use translated page titles uncomment next line
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions

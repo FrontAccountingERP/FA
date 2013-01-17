@@ -74,12 +74,14 @@ function print_price_listing()
     $pictures = $_POST['PARAM_3'];
     $showGP = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
 	$home_curr = get_company_pref('curr_default');
@@ -121,7 +123,9 @@ function print_price_listing()
 	else
 		$user_comp = "";
 
-    $rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
+    $rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

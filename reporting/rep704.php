@@ -46,25 +46,29 @@ function print_GL_transactions()
 		$dimension = $_POST['PARAM_4'];
 		$dimension2 = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$orientation = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$orientation = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else
 	{
 		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$orientation = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 
-	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
+	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
   //$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
@@ -109,6 +113,8 @@ function print_GL_transactions()
     				    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
     				    2 => array('text' => _('Accounts'),'from' => $fromacc,'to' => $toacc));
     }
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

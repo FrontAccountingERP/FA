@@ -82,12 +82,14 @@ function print_inventory_sales()
     $location = $_POST['PARAM_3'];
     $fromcust = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
 	if ($category == ALL_NUMERIC)
@@ -121,7 +123,9 @@ function print_inventory_sales()
     				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
     				    4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize());
+    $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize(), 9, $orientation);
+   	if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -70,9 +70,11 @@ function print_receipts()
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_4'];
 
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
@@ -89,8 +91,10 @@ function print_receipts()
 
 	$cur = get_company_Pref('curr_default');
 
-	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
-	$rep->SetHeaderType('Header2');
+	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
+   	if ($orientation == 'L')
+    	recalculate_cols($cols);
+ 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
@@ -110,7 +114,6 @@ function print_receipts()
 			$baccount = db_fetch($res);
 			$params['bankaccount'] = $baccount['bank_act'];
 
-			$rep->title = _('RECEIPT');
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
 			$rep->NewPage();

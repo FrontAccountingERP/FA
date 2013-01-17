@@ -86,13 +86,15 @@ function print_grn_valuation()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$comments = $_POST['PARAM_2'];
-	$destination = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-    $dec = user_price_dec();
+ 	$orientation = ($orientation ? 'L' : 'P');
+   	$dec = user_price_dec();
 
 	$cols = array(0, 75, 225, 260, 295, 330, 370, 410, 455, 515);
 	$headers = array(_('Stock ID'), _('Description'), _('PO No'), _('GRN')."#", _('Inv')."#", _('Qty'), _('Inv Price'), _('PO Price'), _('Total'));
@@ -102,7 +104,9 @@ function print_grn_valuation()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
 
-    $rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", user_pagesize());
+    $rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

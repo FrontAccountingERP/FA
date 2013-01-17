@@ -91,12 +91,14 @@ function print_inventory_planning()
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $comments = $_POST['PARAM_2'];
-	$destination = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
@@ -129,7 +131,9 @@ function print_inventory_planning()
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", user_pagesize());
+    $rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
