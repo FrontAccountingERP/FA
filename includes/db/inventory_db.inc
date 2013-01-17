@@ -248,8 +248,9 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 		$dec = user_price_dec();
 		$old_cost = -round2($old_sales_cost-$old_purchase_cost,$dec);
 		$new_cost = -round2($new_sales_cost-$new_purchase_cost,$dec);
-		
-		$memo_ = _("Cost was ") . $old_cost. _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+
+		$memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand for item '%s'"),
+			number_format2($old_cost, 2), number_format2($new_cost, 2), $stock_id);
 		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
 			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
 
