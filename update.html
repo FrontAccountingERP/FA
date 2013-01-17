@@ -1,49 +1,117 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head>
-	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-2">
-	
-	<title>FrontAccounting Update</title><meta name="GENERATOR" content="OpenOffice.org 2.4  (Linux)">
-	<meta name="CREATED" content="0;0">
-	<meta name="CHANGED" content="20100902;19041400"></head>
-<body dir="ltr" lang="en-US">
+<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1"><title>FrontAccounting Update</title>
+
+<meta name="GENERATOR" content="OpenOffice.org 2.4 (Linux)">
+<meta name="CREATED" content="0;0">
+<meta name="CHANGED" content="20100902;19041400">
+</head>
+<body style="direction: ltr;" lang="en-US">
 <h4><strong><font color="#cc6600"><font style="font-size: 20pt;" size="5"><i>Front</i></font></font></strong><strong><font style="font-size: 20pt;" size="5">Accounting
-Update</font></strong></h4><h2>Important Notes for release 2.3.14.</h2><h4>New global flags in config.php (config-default.php):</h4>/* default print orientation. 0 = Portrait, 1 = Landscape */<br>&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$def_print_orientation = 0;</span><br><h2>Important Notes for release 2.3.13.</h2><h4>New global flags in config.php (config-default.php):</h4>/* No check on edit conflicts. Maybe needed to be set to 1 in certains Windows Servers */<br>&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$no_check_edit_conflicts = 0;</span><br><h2>Important Notes for release 2.3.12.</h2><h4>New global flags in config.php (config-default.php):</h4>/* <br>&nbsp;&nbsp;&nbsp; Display a dropdown select box for choosing Company to login if false.<br>&nbsp;&nbsp;&nbsp; Show a blank editbox only if true where the Company NickName<br>&nbsp;&nbsp;&nbsp; will have to be manually entered. This is when privacy is needed.<br>*/<br>&nbsp; &nbsp; <span style="font-weight: bold;">$text_company_selection</span>&nbsp; = false;<br><br>/*&nbsp; Should FA hide menu items (Applications, Modules, and Actions) from the user if they don't have access to them? <br>&nbsp;&nbsp;&nbsp; 0 for no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 for yes<br>*/<br><br>&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$hide_inaccessible_menu_items</span> = 0;<br><br>/*<br>&nbsp;&nbsp;&nbsp; Brute force prevention.<br>&nbsp;&nbsp;&nbsp; $login_delay seconds delay is required between login attempts after $login_max_attemps failed logins.<br>&nbsp;&nbsp;&nbsp; Set $login_delay to 0 to disable the feature (not recommended)<br>*/<br>&nbsp; &nbsp; <span style="font-weight: bold;">$login_delay</span> = 30;<br>&nbsp; &nbsp; <span style="font-weight: bold;">$login_max_attempts</span> = 10;<h2><strong></strong>Important Notes for release 2.3.5.</h2>
-Change in the behaviour of <span style="font-weight: bold; font-style: italic;">Recurrent Invoices</span>.<br><ul><li>Now
+Update</font></strong></h4>
+<h2>Important Notes for release 2.3.14.</h2>
+<h4>New global flags in config.php (config-default.php):</h4>
+/* default print orientation. 0 = Portrait, 1 = Landscape */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$def_print_orientation
+= 0;</span><br>
+<h2>Important Notes for release 2.3.13.</h2>
+<h4>New global flags in config.php (config-default.php):</h4>
+/* No check on edit conflicts. Maybe needed to be set to 1 in certains
+Windows Servers */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$no_check_edit_conflicts
+= 0;</span><br>
+<h2>Important Notes for release 2.3.12.</h2>
+<h4>New global flags in config.php (config-default.php):</h4>
+/* <br>
+&nbsp;&nbsp;&nbsp; Display a dropdown select box for
+choosing Company to login if false.<br>
+&nbsp;&nbsp;&nbsp; Show a blank editbox only if true where
+the Company NickName<br>
+&nbsp;&nbsp;&nbsp; will have to be manually entered. This
+is when privacy is needed.<br>
+*/<br>
+&nbsp; &nbsp; <span style="font-weight: bold;">$text_company_selection</span>&nbsp;
+= false;<br>
+<br>
+/*&nbsp; Should FA hide menu items (Applications, Modules, and
+Actions) from the user if they don't have access to them? <br>
+&nbsp;&nbsp;&nbsp; 0 for
+no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 for yes<br>
+*/<br>
+<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">$hide_inaccessible_menu_items</span>
+= 0;<br>
+<br>
+/*<br>
+&nbsp;&nbsp;&nbsp; Brute force prevention.<br>
+&nbsp;&nbsp;&nbsp; $login_delay seconds delay is required
+between login attempts after $login_max_attemps failed logins.<br>
+&nbsp;&nbsp;&nbsp; Set $login_delay to 0 to disable the
+feature (not recommended)<br>
+*/<br>
+&nbsp; &nbsp; <span style="font-weight: bold;">$login_delay</span>
+= 30;<br>
+&nbsp; &nbsp; <span style="font-weight: bold;">$login_max_attempts</span>
+= 10;
+<h2><strong></strong>Important Notes for release
+2.3.5.</h2>
+Change in the behaviour of <span style="font-weight: bold; font-style: italic;">Recurrent
+Invoices</span>.<br>
+<ul>
+<li>Now
 the Last Sent day is stamped with the former Last Sent (or Begin date
 the first time) + months + days. Before the Last Sent day was stamped
 with tthe creation date (today). The Invoice date is still todays date.
-</li><li>If you for some reason want to make a pause in the recurrent
+</li>
+<li>If you for some reason want to make a pause in the
+recurrent
 invoices, you can now edit the Last Sent day in the Management section
-of Sales tab.</li><li>Before the days value, together with a month
-value, decided which day in the month the invoice was due.. &nbsp;This
-does not&nbsp;work now. You can&nbsp;change the day in the month you
+of Sales tab.</li>
+<li>Before the days value, together with a month
+value, decided which day in the month the invoice was due..
+&nbsp;This
+does not&nbsp;work now. You can&nbsp;change the day in the
+month you
 want the recurrency to happen by setting the Last Sent day with the new
-day in the Management section.&nbsp;</li><li>If you create a new Recurrent Invoice the Beginning date can be set to the day in the month you want the recurrencies to be due.</li></ul>
+day in the Management section.&nbsp;</li>
+<li>If you create a new Recurrent Invoice the Beginning date
+can be set to the day in the month you want the recurrencies to be due.</li>
+</ul>
 <h2>Important Notes</h2>
 <p>Upgrade process can be done only by administrator of the first
 company created during FrontAccounting installation. This person is
 considered as a site admin who have granted access to potentially
 dangerous setup options, like Setup/Software Upgrade.</p>
-<p>In the following description sections related to older FA versions are
-prefixed with <span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[color tags]</span><span style="background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">
+<p>In the following description sections related to older FA
+versions are
+prefixed with <span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[color
+tags]</span><span style="background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">
 . Y</span>ou can skip tagged fragment safely if currently FA
 application is newer than the version in tag.</p>
-<p>Upgrade process consists of up to four stages, some of them are
+<p>Upgrade process consists of up to four stages, some of them
+are
 optional:</p>
 <ol>
-	<li><p>Application source files update 
-	</p>
-	</li><li><p>Database upgrade &#8211; this step is needed only during
-	upgrade which involves change in major application version number
-	(e.g. from 2.2.x to 2.3.x), and sometimes during upgrade from beta
-	release to stable version. Otherwise this step can be skipped.</p>
-	</li><li><p>Final cleanup &#8211; is needed when some old source files,
-	obsoleted by new release should be removed.</p>
-	</li><li><p>New features configuration &#8211; this is optional step
-	needed for most major releases and some minor ones. 
-	</p>
-</li></ol>
-<p style="margin-bottom: 0cm;">Before starting upgrade ensure nobody
+<li>
+<p>Application source files update </p>
+</li>
+<li>
+<p>Database upgrade &#8211; this step is needed only during upgrade
+which involves change in major application version number (e.g. from
+2.2.x to 2.3.x), and sometimes during upgrade from beta release to
+stable version. Otherwise this step can be skipped.</p>
+</li>
+<li>
+<p>Final cleanup &#8211; is needed when some old source files,
+obsoleted by new release should be removed.</p>
+</li>
+<li>
+<p>New features configuration &#8211; this is optional step needed
+for most major releases and some minor ones. </p>
+</li>
+</ol>
+<p style="margin-bottom: 0cm;">Before starting upgrade
+ensure nobody
 is using the application and make database backup for all companies.
 To be on safe side backup also old source files, especially those
 locally customized (if any).</p>
@@ -61,14 +129,16 @@ release upgrade you can skip next step and go directly to cleanup.</span></stron
 files update</span></font></font></strong></p>
 <p><strong><span style="">Compare new
 </span></strong><strong><i><b>config.default.php</b></i></strong><strong>
-</strong><strong><span style="">file with the old
+</strong><strong><span style="">file with the
+old
 </span></strong><strong><i><b>config.php </b></i></strong><strong><span style="font-style: normal;"><span style="">and
 add all n</span></span></strong><strong><span style="">ew
 settings (if any). </span></strong>
 </p>
 <p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.2beta]</span></span></strong></p>
-<p><strong> <span style="">$show_users_online = 0;</span></strong></p>
+<p><strong> <span style="">$show_users_online
+= 0;</span></strong></p>
 <p><strong> <span style="">$def_print_destination
 = 0;</span></strong></p>
 <p><strong><span style="">$dflt_date_fmt=0;</span></strong></p>
@@ -78,7 +148,8 @@ changed</span></strong></p>
 <p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3beta]</span></span></strong></p>
 <p><strong> <span style="">$alternative_tax_include_on_doc=0;</span></strong></p>
-<p><strong><span style="">$suppress_tax_rates = 0;</span></strong></p>
+<p><strong><span style="">$suppress_tax_rates
+= 0;</span></strong></p>
 <p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3RC1]</span></span></strong><strong> </strong>
 </p>
@@ -92,11 +163,25 @@ release version to be displayed on every FA update just remove or
 comment out $version variable in </span></strong><strong><span style="font-style: normal;"><span style="">config.php</span></span></strong><strong><span style="">.</span></strong></p>
 <p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3RC2]</span></span></strong></p>
-<p><strong> <span style="">$save_report_selections &nbsp;= 0; &nbsp;// A value &gt; 0 means days to save the report selections.</span></strong></p><p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
-2.3]</span></span></strong></p><p><strong> <span style="">$save_po_item_codes &nbsp;= 0; &nbsp;//&nbsp; show item codes on purchase order&nbsp;</span></strong></p><p><strong><span style="">$def_print_destination = 0; // &nbsp;default print destination. 0 = PDF/Printer, 1 = Excel</span></strong></p><p><strong><span style="">$alternative_tax_include_on_docs = 0; // &nbsp;1 = print Subtotal tax excluded, tax and Total tax included</span></strong></p><p><strong><span style="">$suppress_tax_rates = 0; // &nbsp;suppress tax rates on documents. 0 = no, 1 = yes.</span></strong></p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong>
-
-<strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong><h2><strong><b>2. Database upgrade</b></strong></h2>
-<p><strong><span style="">This step can be skipped
+<p><strong> <span style="">$save_report_selections
+&nbsp;= 0; &nbsp;// A value &gt; 0 means days to save the
+report selections.</span></strong></p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.3]</span></span></strong></p>
+<p><strong> <span style="">$save_po_item_codes
+&nbsp;= 0; &nbsp;//&nbsp; show item codes on purchase
+order&nbsp;</span></strong></p>
+<p><strong><span style="">$def_print_destination
+= 0; // &nbsp;default print destination. 0 = PDF/Printer, 1 = Excel</span></strong></p>
+<p><strong><span style="">$alternative_tax_include_on_docs
+= 0; // &nbsp;1 = print Subtotal tax excluded, tax and Total tax
+included</span></strong></p>
+<p><strong><span style="">$suppress_tax_rates
+= 0; // &nbsp;suppress tax rates on documents. 0 = no, 1 = yes.</span></strong></p>
+<strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong>
+<h2><strong><b>2. Database upgrade</b></strong></h2>
+<p><strong><span style="">This step can be
+skipped
 for small version updates i.e. when you have already installed
 FrontAccounting version 2.3.1 or later. Before database upgrade is
 done on all company databases backup file is created automatically to
@@ -117,11 +202,13 @@ restore databases from backup and retry normal installation. To run
 upgrade in forced mode check box 'Force Upgrade', and press 'Upgrade
 System' again.</p>
 <h2>3. Final cleanup</h2>
-<p>Remove or rename install folder in main FrontAccounting directory.
+<p>Remove or rename install folder in main FrontAccounting
+directory.
 </p>
-<p>After upgrade is installed you can remove files obsoleted by new
+<p>After upgrade is installed you can remove files obsoleted by
+new
 FrontAccounting version. Also old, unused settings <span style="font-style: normal;"><span style="">can
-be removed from  </span></span><i><b>config.php</b></i><span style="font-style: normal;"><span style="">
+be removed from </span></span><i><b>config.php</b></i><span style="font-style: normal;"><span style="">
 file.</span></span></p>
 <p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4">a.
 Source files cleanup</font></font></p>
@@ -141,8 +228,7 @@ Config.php cleanup </span></span></font></font>
 2.2RC1]</span></span></strong><strong> </strong>
 </p>
 <p><strong><span style="">$security_headings,
-$security_groups arrays &#8211; moved to database (see Access Setup) 
-</span></strong>
+$security_groups arrays &#8211; moved to database (see Access Setup) </span></strong>
 </p>
 <p><strong><span style="">$def_app &#8211; moved
 to user configuration in database.</span></strong></p>
@@ -157,8 +243,10 @@ neutral for end users as possible, however sometimes site or company
 admin intervention can be necessary to set thing after changes to
 their best state. Below you will find description of new settings
 available after upgrade.</p>
-<p><br><br>
+<p><br>
+<br>
 </p>
 <p>----------------------</p>
-<ul></ul>
+<ul>
+</ul>
 </body></html>

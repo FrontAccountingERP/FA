@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-07 20:46+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2013-01-17 11:34+0100\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: install/index.php:20 install/index.php:41
+#: install/index.php:20
+#: install/index.php:41
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr ""
 
@@ -30,19 +30,23 @@ msgstr ""
 msgid "Chart of accounts"
 msgstr ""
 
-#: install/index.php:49 install/index.php:76
+#: install/index.php:49
+#: install/index.php:76
 msgid "Encoding"
 msgstr ""
 
-#: install/index.php:49 install/index.php:76
+#: install/index.php:49
+#: install/index.php:76
 msgid "Description"
 msgstr ""
 
-#: install/index.php:49 install/index.php:76
+#: install/index.php:49
+#: install/index.php:76
 msgid "Install"
 msgstr ""
 
-#: install/index.php:66 install/index.php:94
+#: install/index.php:66
+#: install/index.php:94
 msgid "Installed"
 msgstr ""
 
@@ -51,9 +55,7 @@ msgid "Language"
 msgstr ""
 
 #: install/index.php:124
-msgid ""
-"Cannot connect to database. User or password is invalid or you have no "
-"permittions to create database."
+msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
 msgstr ""
 
 #: install/index.php:160
@@ -69,9 +71,7 @@ msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr ""
 
 #: install/index.php:173
-msgid ""
-"Configuration file 'config_db.php' is not writable. Change its permissions "
-"so it is, then re-run installation step."
+msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
 msgstr ""
 
 #: install/index.php:211
@@ -111,20 +111,19 @@ msgid "Select install wizard language:"
 msgstr ""
 
 #: install/index.php:324
-msgid ""
-"All application preliminary requirements seems to be correct. Please press "
-"Continue button below."
+msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr ""
 
-#: install/index.php:325 install/index.php:351 install/index.php:358
-#: install/index.php:365 install/index.php:389
+#: install/index.php:325
+#: install/index.php:351
+#: install/index.php:358
+#: install/index.php:365
+#: install/index.php:389
 msgid "Continue >>"
 msgstr ""
 
 #: install/index.php:327
-msgid ""
-"Application cannot be installed. Please fix problems listed below in red, "
-"and press Refresh button."
+msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr ""
 
 #: install/index.php:328
@@ -155,13 +154,17 @@ msgstr ""
 msgid "Use '0_' Table Prefix:"
 msgstr ""
 
-#: install/index.php:344 includes/system_tests.inc:38
-#: includes/system_tests.inc:113 includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "Yes"
 msgstr ""
 
-#: install/index.php:344 includes/system_tests.inc:38
-#: includes/system_tests.inc:113 includes/system_tests.inc:126
+#: install/index.php:344
+#: includes/system_tests.inc:38
+#: includes/system_tests.inc:113
+#: includes/system_tests.inc:126
 msgid "No"
 msgstr ""
 
@@ -174,17 +177,16 @@ msgid "Install Additional COAs from FA Repository:"
 msgstr ""
 
 #: install/index.php:348
-msgid ""
-"Use table prefix if you share selected database for more than one FA company."
+msgid "Use table prefix if you share selected database for more than one FA company."
 msgstr ""
 
 #: install/index.php:349
-msgid ""
-"Do not select additional langs nor COAs if you have no working internet "
-"connection right now. You can install them later."
+msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr ""
 
-#: install/index.php:350 install/index.php:357 install/index.php:364
+#: install/index.php:350
+#: install/index.php:357
+#: install/index.php:364
 #: install/index.php:388
 msgid "<< Back"
 msgstr ""
@@ -357,9 +359,12 @@ msgstr ""
 msgid "Company subdirectories consistency"
 msgstr ""
 
-#: includes/system_tests.inc:193 includes/system_tests.inc:200
-#: includes/system_tests.inc:208 includes/system_tests.inc:225
-#: includes/system_tests.inc:340 includes/system_tests.inc:349
+#: includes/system_tests.inc:193
+#: includes/system_tests.inc:200
+#: includes/system_tests.inc:208
+#: includes/system_tests.inc:225
+#: includes/system_tests.inc:340
+#: includes/system_tests.inc:349
 #: includes/system_tests.inc:358
 #, php-format
 msgid "'%s' is not writeable"
@@ -395,12 +400,14 @@ msgstr ""
 msgid "Main config file"
 msgstr ""
 
-#: includes/system_tests.inc:295 includes/system_tests.inc:317
+#: includes/system_tests.inc:295
+#: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr ""
 
-#: includes/system_tests.inc:296 includes/system_tests.inc:318
+#: includes/system_tests.inc:296
+#: includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr ""
@@ -416,8 +423,7 @@ msgstr ""
 
 #: includes/system_tests.inc:322
 #, php-format
-msgid ""
-"'%s' file should be read-only if you do not plan to add or change companies"
+msgid "'%s' file should be read-only if you do not plan to add or change companies"
 msgstr ""
 
 #: includes/system_tests.inc:333
@@ -434,14 +440,11 @@ msgid "Non-standard theme directory '%s' is not writable"
 msgstr ""
 
 #: includes/system_tests.inc:385
-msgid ""
-"OpenSSL PHP extension have to be enabled to use extension repository system."
+msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr ""
 
 #: includes/system_tests.inc:388
-msgid ""
-"OpenSSL have to be available on your server to use extension repository "
-"system."
+msgid "OpenSSL have to be available on your server to use extension repository system."
 msgstr ""
 
 #: includes/system_tests.inc:411
@@ -469,7 +472,8 @@ msgstr ""
 msgid "No key field '%s' in file '%s'"
 msgstr ""
 
-#: includes/packages.inc:295 includes/packages.inc:329
+#: includes/packages.inc:295
+#: includes/packages.inc:329
 #, php-format
 msgid "Cannot delete outdated '%s' file."
 msgstr ""
@@ -484,19 +488,17 @@ msgstr ""
 
 #: includes/packages.inc:333
 #, php-format
-msgid ""
-"Security alert: broken index file in repository '%s'. Please inform "
-"repository administrator about this issue."
+msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
 msgstr ""
 
 #: includes/packages.inc:366
 #, php-format
-msgid ""
-"Security alert: broken package '%s' in repository. Please inform repository "
-"administrator about this issue."
+msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr ""
 
-#: includes/packages.inc:621 includes/packages.inc:672
+#: includes/packages.inc:621
+#: includes/packages.inc:672
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""
+
