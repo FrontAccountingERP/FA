@@ -196,19 +196,18 @@ function void_sales_invoice($type, $type_no)
 
 	// reverse all the changes in parent document(s)
 
-	$deliveries = get_sales_parent_numbers($type, $type_no);
+	$parents = get_sales_parent_numbers($type, $type_no);
 
-	if ($deliveries !== 0) {
-		if (count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
+	if ($parents !== 0) {
+		if ($type == ST_SALESINVOICE && count($parents) == 1 && get_reference(ST_CUSTDELIVERY, $parents[0]) == "auto")
 		{
-			void_sales_delivery(ST_CUSTDELIVERY, $deliveries[0], false);
+			void_sales_delivery(ST_CUSTDELIVERY, $parents[0], false);
 			$date_ = Today();
-			add_audit_trail(ST_CUSTDELIVERY, $deliveries[0], $date_, _("Voided."));
-			add_voided_entry(ST_CUSTDELIVERY, $deliveries[0], $date_, "");
+			add_audit_trail(ST_CUSTDELIVERY, $parents[0], $date_, _("Voided."));
+			add_voided_entry(ST_CUSTDELIVERY, $parents[0], $date_, "");
 		}
 		else
 		{
-			
 			$srcdetails = get_sales_parent_lines($type, $type_no);
 			while ($row = db_fetch($srcdetails)) {
 				update_parent_line($type, $row['id'], -$row['quantity']);
@@ -217,6 +216,8 @@ function void_sales_invoice($type, $type_no)
 	}
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
+
+	void_stock_move($type, $type_no); // in case of credit note with return
 
 	void_trans_tax_details($type, $type_no);
 
