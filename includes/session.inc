@@ -451,7 +451,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			// Incorrect password
 				login_fail();
 			}
-			elseif(!$_SESSION['timeout']['post'])
+			elseif(isset($_SESSION['timeout']) && !$_SESSION['timeout']['post'])
 			{
 				// in case of GET request redirect to avoid confirmation dialog 
 				// after return from menu option
