@@ -455,7 +455,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			{
 				// in case of GET request redirect to avoid confirmation dialog 
 				// after return from menu option
-				header("HTTP 1.1 303 See Other");
+				header("HTTP/1.1 303 See Other");
 				header("Location: ".$_SESSION['timeout']['uri']);
 				exit();
 			}
