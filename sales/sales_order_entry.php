@@ -439,6 +439,13 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	if ($ret == -1)
 	{
 		display_error(_("The entered reference is already in use."));
+		$ref = get_next_reference($_SESSION['Items']->trans_type);
+		if ($ref != $_SESSION['Items']->reference)
+		{
+			display_error(_("The reference number field has been increased. Please save the document again."));
+			$_POST['ref'] = $_SESSION['Items']->reference = $ref;
+			$Ajax->activate('ref');
+		}	
 		set_focus('ref');
 	}
 	else
