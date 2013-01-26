@@ -163,20 +163,21 @@ function print_inventory_purchase()
 
 	$total = $total_supp = $grandtotal = 0.0;
 	$total_qty = 0.0;
-	$catt = $stock_description = $supplier_name = '';
+	$catt = $stock_description = $stock_id = $supplier_name = '';
 	while ($trans=db_fetch($res))
 	{
 		if ($stock_description != $trans['description'])
 		{
 			if ($stock_description != '')
 			{
+				$stock_dec = get_qty_dec($stock_id);	
 				if ($supplier_name != '')
 				{
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 1, _('Total'));
 					$rep->TextCol(1, 4, $stock_description);
 					$rep->TextCol(4, 5, $supplier_name);
-					$rep->TextCol(5, 7, $total_qty);
+					$rep->AmountCol(5, 7, $total_qty, $stock_dec);
 					$rep->AmountCol(7, 8, $total_supp, $dec);
 					$rep->Line($rep->row - 2);
 					$rep->NewLine();
@@ -184,6 +185,7 @@ function print_inventory_purchase()
 					$supplier_name = $trans['supplier_name'];
 				}	
 			}
+			$stock_id = $trans['stock_id'];
 			$stock_description = $trans['description'];
 		}
 
@@ -195,7 +197,7 @@ function print_inventory_purchase()
 				$rep->TextCol(0, 1, _('Total'));
 				$rep->TextCol(1, 4, $stock_description);
 				$rep->TextCol(4, 5, $supplier_name);
-				$rep->TextCol(5, 7, $total_qty);
+				$rep->AmountCol(5, 7, $total_qty, $stock_dec);
 				$rep->AmountCol(7, 8, $total_supp, $dec);
 				$rep->Line($rep->row - 2);
 				$rep->NewLine();
@@ -232,14 +234,14 @@ function print_inventory_purchase()
 		if ($fromsupp == ALL_TEXT)
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, $trans['tran_date']);
+			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 			$rep->TextCol(4, 5, $trans['supplier_name']);
 		}
 		else
 		{
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->TextCol(2, 3, $trans['tran_date']);
+			$rep->TextCol(2, 3, sql2date($trans['tran_date']));
 			$rep->TextCol(3, 4, $trans['supp_reference']);
 		}	
 		$rep->AmountCol(5, 6, $trans['qty'], get_qty_dec($trans['stock_id']));
@@ -260,7 +262,7 @@ function print_inventory_purchase()
 			$rep->TextCol(0, 1, _('Total'));
 			$rep->TextCol(1, 4, $stock_description);
 			$rep->TextCol(4, 5, $supplier_name);
-			$rep->TextCol(5, 7, $total_qty);
+			$rep->AmountCol(5, 7, $total_qty, $stock_dec);
 			$rep->AmountCol(7, 8, $total_supp, $dec);
 			$rep->Line($rep->row - 2);
 			$rep->NewLine();
@@ -275,7 +277,7 @@ function print_inventory_purchase()
 		$rep->TextCol(0, 1, _('Total'));
 		$rep->TextCol(1, 4, $stock_description);
 		$rep->TextCol(4, 5, $supplier_name);
-		$rep->TextCol(5, 7, $total_qty);
+		$rep->AmountCol(5, 7, $total_qty, $stock_dec);
 		$rep->AmountCol(7, 8, $total_supp, $dec);
 		$rep->Line($rep->row - 2);
 		$rep->NewLine();
