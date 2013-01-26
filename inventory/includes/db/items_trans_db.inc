@@ -58,7 +58,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 			$stock_gl_code = get_stock_gl_code($stock_id);
 	   		$update_no = get_next_trans_no(ST_COSTUPDATE);
 			$memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand for item '%s'"),
-				number_format2($last_cost, 2), number_format2($new_cost, 2), $$stock_id);
+				number_format2($last_cost, 2), number_format2($new_cost, 2), $stock_id);
 			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], 
 				$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
 

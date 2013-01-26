@@ -10,21 +10,29 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_PURCHASEPRICING';
-$path_to_root = "..";
+if (!@$_GET['popup'])
+	$path_to_root = "..";
+else	
+	$path_to_root = "../..";
+
 include_once($path_to_root . "/includes/session.inc");
-
-page(_($help_context = "Supplier Purchasing Data"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+
+if (!@$_GET['popup'])
+	page(_($help_context = "Supplier Purchasing Data"));
 
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //----------------------------------------------------------------------------------------
 simple_page_mode(true);
+if (isset($_GET['stock_id']))
+{
+	$_POST['stock_id'] = $_GET['stock_id'];
+}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -36,7 +44,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	{
       	$input_error = 1;
       	display_error( _("There is no item selected."));
-	set_focus('stock_id');
+		set_focus('stock_id');
    	}
    	elseif (!check_num('price', 0))
    	{
@@ -50,7 +58,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
       	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 		set_focus('conversion_factor');
    	}
-
+   	elseif ($Mode == 'ADD_ITEM' && get_item_purchasing_data($_POST['supplier_id'], $_POST['stock_id']))
+   	{
+      	$input_error = 1;
+      	display_error( _("The purchasing data for this supplier has already been added."));
+		set_focus('supplier_id');
+	}
 	if ($input_error == 0)
 	{
      	if ($Mode == 'ADD_ITEM') 
@@ -93,17 +106,24 @@ if (list_updated('stock_id'))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
-start_form();
+$action = $_SERVER['PHP_SELF'];
+if (@$_GET['popup'])
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center>" . _("Item:"). "&nbsp;";
-//Chaitanya : All items can be purchased
-echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
-
-echo "<hr></center>";
+if (!@$_GET['popup'])
+{
+	echo "<center>" . _("Item:"). "&nbsp;";
+	//Chaitanya : All items can be purchased
+	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+	//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+	echo "<hr></center>";
+}
+else
+	br(2);
 
 set_global_stock_item($_POST['stock_id']);
 
@@ -176,6 +196,9 @@ if ($Mode =='Edit')
 
 br();
 hidden('selected_id', $selected_id);
+if (@$_GET['popup'])
+	hidden('_tabs_sel', get_post('_tabs_sel'));
+
 start_table(TABLESTYLE2);
 
 if ($Mode == 'Edit')
@@ -204,6 +227,7 @@ end_table(1);
 submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
-end_page();
+if (!@$_GET['popup'])
+	end_page(@$_GET['popup'], false, false);
 
 ?>

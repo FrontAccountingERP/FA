@@ -10,20 +10,26 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_STANDARDCOST';
-$path_to_root = "..";
-include_once($path_to_root . "/includes/session.inc");
+if (!@$_GET['popup'])
+	$path_to_root = "..";
+else	
+	$path_to_root = "../..";
 
+include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
-$js = "";
-if ($use_popup_windows)
-	$js .= get_js_open_window(900, 500);
-page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
+
+if (!@$_GET['popup'])
+{
+	$js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 500);
+	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
+}
 
 //--------------------------------------------------------------------------------------
 
@@ -68,8 +74,9 @@ if (isset($_POST['UpdateData']))
 
         if ($update_no > 0)
         {
-    		display_note(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+    		display_notification(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
         }
+
    	}
 }
 
@@ -77,16 +84,25 @@ if (list_updated('stock_id'))
 	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 
-start_form();
+$action = $_SERVER['PHP_SELF'];
+if (@$_GET['popup'])
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center>" . _("Item:"). "&nbsp;";
-//echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+if (!@$_GET['popup'])
+{
+	echo "<center>" . _("Item:"). "&nbsp;";
+	//echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 
-echo "</center><hr>";
+	echo "</center><hr>";
+}
+else
+	br(2);
+
 set_global_stock_item($_POST['stock_id']);
 
 $myrow = get_item($_POST['stock_id']);
@@ -100,6 +116,9 @@ $_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
 $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
 amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
+
+if (@$_GET['popup'])
+	hidden('_tabs_sel', get_post('_tabs_sel'));
 if ($myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
@@ -116,6 +135,7 @@ div_end();
 submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
-end_page();
+if (!@$_GET['popup'])
+	end_page(@$_GET['popup'], false, false);
 
 ?>
