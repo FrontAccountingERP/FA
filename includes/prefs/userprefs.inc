@@ -51,6 +51,7 @@ class user_prefs
 			$this->theme = 'default';
 			
 		} else {
+			global $path_to_root;
 			$this->language = $user["language"];
 			$_SESSION['language']->set_language($this->language);
 
@@ -82,6 +83,8 @@ class user_prefs
 				$this->sticky_date = 0;
 				$this->startup_tab = "orders";
 			}
+			if (!file_exists("$path_to_root/themes/$this->theme"))
+				$this->theme = "default";
 		}
 	}
 	
