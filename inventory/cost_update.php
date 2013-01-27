@@ -74,7 +74,7 @@ if (isset($_POST['UpdateData']))
 
         if ($update_no > 0)
         {
-    		display_notification(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+    		display_notification(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")));
         }
 
    	}
