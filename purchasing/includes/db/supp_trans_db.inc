@@ -163,10 +163,10 @@ function post_void_supp_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
-function get_sql_for_supplier_inquiry()
+function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_id=ALL_TEXT)
 {
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
+    $date_after = date2sql($after_date);
+    $date_to = date2sql($to_date);
 
     $sql = "SELECT trans.type, 
 		trans.trans_no,
@@ -203,38 +203,38 @@ function get_sql_for_supplier_inquiry()
      	AND trans.delivery_date >= '$date_after'
     	AND trans.delivery_date <= '$date_to'";
 
-   	if ($_POST['supplier_id'] != ALL_TEXT) {
-   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   		$sql2 .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+   	if ($supplier_id != ALL_TEXT) {
+   		$sql .= " AND trans.supplier_id = ".db_escape($supplier_id);
+   		$sql2 .= " AND trans.supplier_id = ".db_escape($supplier_id);
 	}
-	if (($_POST['filterType'] == '6')) 
+	if (($filter == '6')) 
 	{
 			$sql = $sql2;
 	} 
-	elseif (!isset($_POST['filterType']) || $_POST['filterType'] == ALL_TEXT || $_POST['filterType'] == '6') {
+	elseif (!isset($filter) || $filter == ALL_TEXT || $filter == '6') {
 		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr";
    	}
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	if (isset($filter) && $filter != ALL_TEXT)
    	{
-   		if (($_POST['filterType'] == '1')) 
+   		if (($filter == '1')) 
    		{
    			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
    		} 
-   		elseif (($_POST['filterType'] == '2')) 
+   		elseif (($filter == '2')) 
    		{
    			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		elseif ($filter == '3') 
    		{
 			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		} 
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
+   		elseif (($filter == '4') || ($filter == '5')) 
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
    		}
 
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
+   		if (($filter == '2') || ($filter == '5')) 
    		{
    			$today =  date2sql(Today());
 			$sql .= " AND trans.due_date < '$today' ";
