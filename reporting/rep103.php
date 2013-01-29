@@ -39,6 +39,7 @@ function get_customer_details_for_report($area=0, $salesid=0)
 			".TB_PREF."cust_branch.branch_code,
 			".TB_PREF."cust_branch.br_name,
 			".TB_PREF."cust_branch.br_address,
+			".TB_PREF."cust_branch.br_post_address,
 			".TB_PREF."cust_branch.contact_name,
 			".TB_PREF."cust_branch.area,
 			".TB_PREF."cust_branch.salesman,
@@ -215,10 +216,14 @@ function print_customer_details_listing()
 			$rep->TextCol(2, 3,	$myrow['br_name']);
 			$rep->NewLine();
 			$adr = Explode("\n", $myrow['address']);
-			$adr2 = Explode("\n", $myrow['br_address']);
+			if ($myrow['br_post_address'] == '')
+				$adr2 = Explode("\n", $myrow['br_address']);
+			else
+				$adr2 = Explode("\n", $myrow['br_post_address']);
 			$count1 = count($adr);
 			$count2 = count($adr2);
 			$count1 = max($count1, $count2);
+			$count1 = max($count1, 4); 
 			if (isset($adr[0]))
 				$rep->TextCol(0, 1, $adr[0]);
 			$rep->TextCol(1, 2,	_('Currency') . ": " . $myrow['curr_code']);
@@ -257,14 +262,11 @@ function print_customer_details_listing()
 				$rep->NewLine();
 				if (isset($adr[$i]))
 					$rep->TextCol(0, 1, $adr[$i]);
+				if ($i == 3 && isset($contacts[0]) && isset($contacts[0]['email']))	
+					$rep->TextCol(2, 3, _('Email') . ": " . $contacts[0]['email']);
 				if (isset($adr2[$i]))
-					$rep->TextCol(0, 1, $adr2[$i]);
+					$rep->TextCol(3, 4, $adr2[$i]);
 			}	
-			if (isset($contacts[0]) && isset($contacts[0]['email']))
-			{
-				$rep->NewLine();
-				$rep->TextCol(2, 4, _('Email') . ": " . $contacts[0]['email']);
-			}		
 			$rep->NewLine();
 			/*
 			$rep->TextCol(0, 1,	$myrow['name']);

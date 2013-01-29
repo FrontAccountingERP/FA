@@ -141,6 +141,7 @@ function print_supplier_details_listing()
 			$count1 = count($adr);
 			$count2 = count($adr2);
 			$count1 = max($count1, $count2);
+			$count1 = max($count1, 4); 
 			if (isset($adr[0]))
 				$rep->TextCol(0, 1, $adr[0]);
 			$rep->TextCol(1, 2,	_('Currency') . ": " . $myrow['curr_code']);
@@ -179,14 +180,11 @@ function print_supplier_details_listing()
 				$rep->NewLine();
 				if (isset($adr[$i]))
 					$rep->TextCol(0, 1, $adr[$i]);
+				if ($i == 3 && isset($contacts[0]) && isset($contacts[0]['email']))	
+					$rep->TextCol(2, 3, _('Email') . ": " . $contacts[0]['email']);
 				if (isset($adr2[$i]))
-					$rep->TextCol(0, 1, $adr2[$i]);
+					$rep->TextCol(3, 4, $adr2[$i]);
 			}	
-			if (isset($contacts[0]) && isset($contacts[0]['email']))
-			{
-				$rep->NewLine();
-				$rep->TextCol(2, 4, _('Email') . ": " . $contacts[0]['email']);
-			}		
 			$rep->NewLine();
 			$rep->Line($rep->row + 8);
 			$rep->NewLine(0, 3);
