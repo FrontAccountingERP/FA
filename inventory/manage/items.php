@@ -18,7 +18,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 	
-page(_($help_context = "Items"), false, false, "", $js);
+page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
