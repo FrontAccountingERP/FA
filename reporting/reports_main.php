@@ -177,6 +177,13 @@ $reports->addReport(RC_SUPPLIER, 204, _('Outstanding &GRNs Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
+$reports->addReport(RC_SUPPLIER, 205, _('Supplier &Detail Listing'),
+	array(	_('Activity Since') => 'DATEBEGIN',
+			_('Activity Greater Than') => 'TEXT',
+			_('Activity Less Than') => 'TEXT',
+			_('Comments') => 'TEXTBOX',
+			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));
 $reports->addReport(RC_SUPPLIER, 209, _('Print Purchase &Orders'),
 	array(	_('From') => 'PO',
 			_('To') => 'PO',
