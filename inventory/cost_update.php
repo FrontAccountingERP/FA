@@ -118,7 +118,10 @@ $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
 
 if (@$_GET['popup'])
+{
 	hidden('_tabs_sel', get_post('_tabs_sel'));
+	hidden('popup', @$_GET['popup']);
+}
 if ($myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);

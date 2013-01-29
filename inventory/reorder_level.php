@@ -74,7 +74,10 @@ $k=0; //row colour counter
 $result = get_loc_details($_POST['stock_id']);
 
 if (@$_GET['popup'])
+{
 	hidden('_tabs_sel', get_post('_tabs_sel'));
+	hidden('popup', @$_GET['popup']);
+}
 
 while ($myrow = db_fetch($result))
 {

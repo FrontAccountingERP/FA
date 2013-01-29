@@ -197,7 +197,10 @@ if ($Mode =='Edit')
 br();
 hidden('selected_id', $selected_id);
 if (@$_GET['popup'])
+{
 	hidden('_tabs_sel', get_post('_tabs_sel'));
+	hidden('popup', @$_GET['popup']);
+}
 
 start_table(TABLESTYLE2);
 

@@ -185,8 +185,10 @@ if ($Mode == 'Edit')
 
 hidden('selected_id', $selected_id);
 if (@$_GET['popup'])
+{
 	hidden('_tabs_sel', get_post('_tabs_sel'));
-
+	hidden('popup', @$_GET['popup']);
+}
 div_start('price_details');
 start_table(TABLESTYLE2);
 
