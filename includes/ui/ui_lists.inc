@@ -1409,7 +1409,7 @@ function workcenter_list_row($label, $name, $selected_id=null, $all_option=false
 
 //-----------------------------------------------------------------------------------------------
 
-function bank_accounts_list($name, $selected_id=null, $submit_on_change=false, $spec_option=false, $submit_on_change=false)
+function bank_accounts_list($name, $selected_id=null, $submit_on_change=false, $spec_option=false)
 {
 	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code, inactive
 		FROM ".TB_PREF."bank_accounts";
