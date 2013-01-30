@@ -56,6 +56,7 @@ function defaultCompany()
 	echo "<head><title>$title</title>\n";
    	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
 	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+ 	echo "<link href='$path_to_root/themes/default/images/favicon.png' rel='icon' type='image/png'> \n";
 	send_scripts();
 	if (!$login_timeout)
 	{

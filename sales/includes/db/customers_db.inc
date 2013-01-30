@@ -177,4 +177,14 @@ function is_new_customer($id)
 
 	return !key_in_foreign_table($id, $tables, 'debtor_no');
 }
+
+function get_customer_by_ref($reference)
+{
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_ref=".db_escape($reference);
+
+	$result = db_query($sql, "could not get customer");
+
+	return db_fetch($result);
+}
+
 ?>
