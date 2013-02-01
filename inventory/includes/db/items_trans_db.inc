@@ -67,7 +67,8 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 		}		
    	}
 
-	add_audit_trail(ST_COSTUPDATE, $update_no, $date_);
+	if ($update_no != -1)
+		add_audit_trail(ST_COSTUPDATE, $update_no, $date_);
 	commit_transaction();
 
 	return $update_no;
