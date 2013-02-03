@@ -465,9 +465,10 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 
 //--------------------------------------------------------------------------------------
 
-function display_footer_exit()
+function display_footer_exit($space=2)
 {
-	br(2);
+	if ($space)
+		br($space);
 	end_page(false, false, true);
 	exit;
 }
