@@ -22,6 +22,7 @@ class current_user
 	var $loginname;
 	var $username;
 	var $name;
+	var $email;
 	var $company; // user's company
 	var $pos;
 	var $access;
@@ -120,6 +121,7 @@ class current_user
         	    $this->username = $this->loginname;
         	    $this->prefs = new user_prefs($myrow);
         	    $this->user = @$myrow["id"];
+                $this->email = @$myrow["email"];
 		    	update_user_visitdate($this->username);
 		    	$this->logged = true;
 				$this->last_act = time();
