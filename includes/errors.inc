@@ -76,7 +76,9 @@ function error_handler($errno, $errstr, $file, $line) {
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting()) {
-		$messages[] = array($errno, $errstr, $file, $line, @$bt);
+		// suppress duplicated errors
+		if (!in_array(array($errno, $errstr, $file, $line, @$bt), $messages))
+			$messages[] = array($errno, $errstr, $file, $line, @$bt);
 	}
 	else if($errno&~E_NOTICE) { // log all not displayed messages 
 		$user = @$_SESSION["wa_current_user"]->loginname;

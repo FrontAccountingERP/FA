@@ -976,15 +976,21 @@ class FrontReport extends Cpdf
 
 			if ($email == 1)
 			{
-				if(!count($this->contactData)) {
+				$contactData = array();
+				if ($this->contactData)
+					foreach($this->contactData as $contact)
+						if (!empty($contact['email']))
+							$contactData[] = $contact['email'];
+
+				if(!count($contactData)) {
 					$this->SetLang(user_language());
-					display_error(_("You have no email contact defined for this type of document"));
+					display_warning(sprintf(_("You have no email contact defined for this type of document for '%s'."), $this->formData['recipient_name']));
 				} else {
 					$sent = $try = 0;
 					$emails = "";
 					if(!$subject)
 						$subject = $this->formData['document_name'] . ' '. $this->formData['document_number'];
-					foreach($this->contactData as $contact) {
+					foreach($contactData as $contact) {
 						if (!isset($contact['email'])) 
 							continue;
 						$emailtype = true;
@@ -1026,9 +1032,9 @@ class FrontReport extends Cpdf
 					unlink($fname);
 					$this->SetLang(user_language());
 					if (!$try) {
-						display_error(_("There is no contact email set for this document type."));
+						display_warning(sprintf(_("You have no email contact defined for this type of document for '%s'."), $this->formData['recipient_name']));
 					} elseif (!$sent)
-						display_error($this->title . " " . $this->formData['document_number'] . ". "
+						display_warning($this->title . " " . $this->formData['document_number'] . ". "
 							. _("Sending document by email failed") . ". " . _("Email:") . $emails);
 					else
 						display_notification($this->title . " " . $this->formData['document_number'] . " " 

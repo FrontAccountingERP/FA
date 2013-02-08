@@ -271,4 +271,5 @@
 			$Footer[] = $line;
 	}
 
+	$this->formData['recipient_name'] = $Addr1['name'];
 ?>
