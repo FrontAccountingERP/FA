@@ -528,7 +528,7 @@ class FrontReport extends Cpdf
 			// Width being zero means that the image will be scaled to the specified height
 			// keeping its aspect ratio intact.
 			if ($this->scaleLogoWidth)
-				$this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0);
+				$this->AddImage($logo, $companyCol, $this->row + 15, COMPANY_WIDTH, 0);
 			else	
 				$this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
 		}
