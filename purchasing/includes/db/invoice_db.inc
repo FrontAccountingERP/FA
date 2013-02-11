@@ -18,8 +18,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due,
 		terms.day_in_following_month, supp.tax_included,
 		supp.tax_group_id, tax_group.name AS tax_group_name,
-		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
-			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
+		supp.credit_limit - Sum(IFNULL(ov_amount + ov_gst + ov_discount,0)) as cur_credit
 		FROM ".TB_PREF."suppliers supp 
 			LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, "
 			.TB_PREF."payment_terms terms, ".TB_PREF."tax_groups tax_group
@@ -38,7 +37,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		'description' => $myrow['terms'],
 		'days_before_due' => $myrow['days_before_due'], 
 		'day_in_following_month' => $myrow['day_in_following_month'] );
-		
+
 	$supp_trans->credit = $myrow['cur_credit'];
 
 	$supp_trans->tax_description = $myrow['tax_group_name'];
