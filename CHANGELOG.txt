@@ -10,6 +10,169 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-02-14 09:20 +0100 Janusz Dobrowolski
+(3183) Version 2.3.15
+ version.php
+
+2013-02-14 09:20 +0100 Janusz Dobrowolski
+(3182) Updated main gettext template.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2013-02-11 08:30 +0100 Janusz Dobrowolski
+(3181) Fixed current purchasing credit display.
+ purchasing/includes/db/invoice_db.inc
+ purchasing/includes/ui/po_ui.inc
+
+2013-02-11 01:05 +0100 Joe Hunt
+(3180) Changed Header_3 function to increase the y-value in the logo.
+ reporting/includes/pdf_report.inc
+
+2013-02-08 11:24 +0100 Janusz Dobrowolski
+(3179) Fixed handling of undefined mailboxes when reports are sent via email; supressed duplicate errors display.
+ includes/errors.inc
+ reporting/includes/doctext.inc
+ reporting/includes/pdf_report.inc
+
+2013-02-04 08:46 +0100 Joe Hunt
+(3178) Added email in current user class.
+ includes/current_user.inc
+
+2013-02-03 19:57 +0100 Janusz Dobrowolski
+(3177) Added $space parameter to display_footer_exit() helper.
+ includes/ui/ui_view.inc
+
+2013-02-01 17:12 +0100 Joe Hunt
+(3176) When updating costs and no quantity on hand we got a db error (in newer mysql releases).
+ inventory/includes/db/items_trans_db.inc
+
+2013-01-31 11:02 +0100 Janusz Dobrowolski
+(3175) Favicon improvements (ApMuthu).
+ access/login.php
+ includes/page/header.inc
+ themes/default/images/favicon.ico
+ themes/default/images/favicon.png
+
+2013-01-30 20:23 +0100 Janusz Dobrowolski
+(3174) Cleanup (removed redundant argument mistakenly introduced in bank_accounts_list() helper).
+ includes/ui/ui_lists.inc
+
+2013-01-30 13:01 +0100 Janusz Dobrowolski
+(3173) Added favicon to default theme, get_customer_by_ref() helper and a couple of cleanups.
+ access/login.php
+ gl/includes/db/gl_db_bank_accounts.inc
+ includes/date_functions.inc
+ includes/ui/ui_lists.inc
+ sales/includes/db/customers_db.inc
+ themes/default/images/favicon.png
+
+2013-01-27 17:55 +0100 Janusz Dobrowolski
+(3172) Cleanup in get_sql_for_supplier_inquiry().
+ purchasing/includes/db/supp_trans_db.inc
+ purchasing/inquiry/supplier_inquiry.php
+
+2013-01-29 11:48 +0100 Joe Hunt
+(3171) Small bugs in Customer Detail Report and Supplier Detail Report.
+ reporting/rep103.php
+ reporting/rep205.php
+
+2013-01-29 10:15 +0100 Joe Hunt
+(3170) Small bug when editing inside the tabs in Items. The Select button disappeared.
+ inventory/cost_update.php
+ inventory/prices.php
+ inventory/purchasing_data.php
+ inventory/reorder_level.php
+
+2013-01-29 08:43 +0100 Joe Hunt
+(3169) Fixed a bug so calling the popup items (f4) works when making PO, Direct GRN, Direct Supp Invoice
+ inventory/manage/items.php
+ purchasing/includes/ui/po_ui.inc
+
+2013-01-29 01:01 +0100 Joe Hunt
+(3168) New report, Supplier Details Report, and fix of a bug in Customer Details Report.
+ reporting/rep103.php
+ reporting/rep205.php
+ reporting/reports_main.php
+
+2013-01-28 15:36 +0100 Joe Hunt
+(3167) Rerun (parse error)
+ gl/gl_bank.php
+
+2013-01-28 15:32 +0100 Joe Hunt
+(3166) Slightly change in dispaly_notification look (using sprintf).
+ gl/gl_bank.php
+
+2013-01-27 15:38 +0100 Joe Hunt
+(3165) Fixed a small bug in cost update.
+ inventory/cost_update.php
+
+2013-01-27 01:35 +0100 Joe Hunt
+(3164) 0002032: user_theme() should return default if theme does not exist
+ includes/prefs/userprefs.inc
+
+2013-01-26 17:57 +0100 Joe Hunt
+(3163) Fixed a couple of small bugs in Inventory Purchasing Report.
+ reporting/rep306.php
+
+2013-01-26 15:29 +0100 Joe Hunt
+(3162) Included Sales Pricing, Purchasing Prising, Cost update and Reorder Levels in tabs in Items form.
+ inventory/cost_update.php
+ inventory/includes/db/items_prices_db.inc
+ inventory/includes/db/items_trans_db.inc
+ inventory/manage/items.php
+ inventory/prices.php
+ inventory/purchasing_data.php
+ inventory/reorder_level.php
+
+2013-01-24 16:11 +0100 Janusz Dobrowolski
+(3161) Partially delivered Sales Order can now be closed using 'Cancel Order' button on edition.
+ sales/sales_order_entry.php
+
+2013-01-24 13:53 +0100 Joe Hunt
+(3160) In case of document reference already in use, FA suggest the next number (if possible) ready to save again.
+ sales/sales_order_entry.php
+
+2013-01-24 11:11 +0100 Joe Hunt
+(3159) New report, Inventory Movements, added to FrontAccounting core.
+ reporting/rep307.php
+ reporting/reports_main.php
+
+2013-01-22 23:34 +0100 Joe Hunt
+(3158) Text not gettextized in /admin/backups.php.
+ admin/backups.php
+
+2013-01-21 08:51 +0100 Janusz Dobrowolski
+(3157) Fixed 'Moved Temporarily' error after login (on some server configurations).
+ includes/session.inc
+
+2013-01-20 17:22 +0100 Joe Hunt
+(3156) Email of Sales Documents now use the General Contact type (fall back if no 'orders', 'invoices' contact types)
+ reporting/rep107.php
+ reporting/rep109.php
+ reporting/rep110.php
+ reporting/rep111.php
+ reporting/rep113.php
+
+2013-01-19 12:10 +0100 Janusz Dobrowolski
+(3155) Fixed 'page expired' prevention (white screen/warnings after session timout).
+ includes/session.inc
+
+2013-01-18 11:49 +0100 Janusz Dobrowolski
+(3154) Fixes in sales credit note voiding procedures (invalid changes in delivery notes).
+ sales/includes/db/custalloc_db.inc
+ sales/includes/db/sales_invoice_db.inc
+
+2013-01-17 12:59 +0100 Joe Hunt
+(3153) Release 2.3.14 and CHANGELOG.txt
+ CHANGELOG.txt
+
+2013-01-17 11:51 +0100 Janusz Dobrowolski
+(3152) Added tag version_2_3_14 for changeset 2515a2808a2d
+ .hgtags
+
+2013-01-17 11:50 +0100 Janusz Dobrowolski
+(3151) .hgtags cleanup
+ .hgtags
+
 2013-01-17 11:39 +0100 Joe Hunt
 (3150) Changed update.html, empty.po for application and install from iso-8859-2 to iso-8859-1.
  install/lang/new_language_template/LC_MESSAGES/empty.po
