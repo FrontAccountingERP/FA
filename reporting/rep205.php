@@ -39,8 +39,10 @@ function get_supplier_details_for_report()
 			".TB_PREF."suppliers.curr_code,
 			".TB_PREF."suppliers.dimension_id,
 			".TB_PREF."suppliers.dimension2_id,
+			".TB_PREF."suppliers.notes,
 			".TB_PREF."suppliers.gst_no
 		FROM ".TB_PREF."suppliers
+		WHERE inactive = 0
 	 	ORDER BY supp_name";
 
     return db_query($sql,"No transactions were returned");
@@ -129,6 +131,7 @@ function print_supplier_details_listing()
 		}
 		if ($printsupplier)
 		{
+			$newrow = 0;
 			$rep->NewLine();
 			// Here starts the new report lines 2013-01-28 Joe Hunt
 			$contacts = get_supplier_contacts($myrow['supplier_id']);
@@ -168,6 +171,14 @@ function print_supplier_details_listing()
 			{
 				$dim = get_dimension($myrow['dimension2_id']);
 				$rep->TextCol(1, 2,	_('Dimension') . " 2: " . $dim['name']);
+			}
+			if ($myrow['notes'] != '')
+			{
+				$oldrow = $rep->row;
+				$rep->NewLine();
+				$rep->TextColLines(1, 2, _("Gereral Notes:")." ".$myrow['notes'], -2);
+				$newrow = $rep->row;
+				$rep->row = $oldrow;
 			}	
 			if (isset($contacts[0]))
 				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax']);
@@ -185,6 +196,8 @@ function print_supplier_details_listing()
 				if (isset($adr2[$i]))
 					$rep->TextCol(3, 4, $adr2[$i]);
 			}	
+			if ($newrow != 0 && $newrow < $rep->row)
+				$rep->row = $newrow;
 			$rep->NewLine();
 			$rep->Line($rep->row + 8);
 			$rep->NewLine(0, 3);

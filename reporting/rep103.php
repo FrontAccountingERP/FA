@@ -35,6 +35,7 @@ function get_customer_details_for_report($area=0, $salesid=0)
 			".TB_PREF."debtors_master.curr_code,
 			".TB_PREF."debtors_master.dimension_id,
 			".TB_PREF."debtors_master.dimension2_id,
+			".TB_PREF."debtors_master.notes,
 			".TB_PREF."sales_types.sales_type,
 			".TB_PREF."cust_branch.branch_code,
 			".TB_PREF."cust_branch.br_name,
@@ -53,17 +54,18 @@ function get_customer_details_for_report($area=0, $salesid=0)
 		INNER JOIN ".TB_PREF."areas
 			ON ".TB_PREF."cust_branch.area = ".TB_PREF."areas.area_code
 		INNER JOIN ".TB_PREF."salesman
-			ON ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code";
+			ON ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
+		WHERE ".TB_PREF."debtors_master.inactive = 0";
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
+			$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
 				AND ".TB_PREF."areas.area_code=".db_escape($area);
 		else
-			$sql .= " WHERE ".TB_PREF."areas.area_code=".db_escape($area);
+			$sql .= " AND ".TB_PREF."areas.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
+		$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
 	$sql .= " ORDER BY description,
 			".TB_PREF."salesman.salesman_name,
 			".TB_PREF."debtors_master.debtor_no,
@@ -186,6 +188,7 @@ function print_customer_details_listing()
 		}
 		if ($printcustomer)
 		{
+			$newrow = 0;
 			if ($carea != $myrow['description'])
 			{
 				$rep->fontSize += 2;
@@ -251,6 +254,14 @@ function print_customer_details_listing()
 				$dim = get_dimension($myrow['dimension2_id']);
 				$rep->TextCol(1, 2,	_('Dimension') . " 2: " . $dim['name']);
 			}	
+			if ($myrow['notes'] != '')
+			{
+				$oldrow = $rep->row;
+				$rep->NewLine();
+				$rep->TextColLines(1, 2, _("Gereral Notes:")." ".$myrow['notes'], -2);
+				$newrow = $rep->row;
+				$rep->row = $oldrow;
+			}	
 			if (isset($contacts[0]))
 				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax']);
 			if (isset($adr2[2]))
@@ -267,6 +278,8 @@ function print_customer_details_listing()
 				if (isset($adr2[$i]))
 					$rep->TextCol(3, 4, $adr2[$i]);
 			}	
+			if ($newrow != 0 && $newrow < $rep->row)
+				$rep->row = $newrow;
 			$rep->NewLine();
 			/*
 			$rep->TextCol(0, 1,	$myrow['name']);
