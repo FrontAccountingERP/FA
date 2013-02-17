@@ -980,7 +980,7 @@ class FrontReport extends Cpdf
 				if ($this->contactData)
 					foreach($this->contactData as $contact)
 						if (!empty($contact['email']))
-							$contactData[] = $contact['email'];
+							$contactData[] = $contact;
 
 				if(!count($contactData)) {
 					$this->SetLang(user_language());
