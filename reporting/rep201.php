@@ -70,7 +70,7 @@ function getTransactions($supplier_id, $from, $to)
 					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
     			FROM ".TB_PREF."supp_trans
     			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
-    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id'
+    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' AND ".TB_PREF."supp_trans.ov_amount!=0
     				ORDER BY ".TB_PREF."supp_trans.tran_date";
 
     $TransResult = db_query($sql,"No transactions were returned");
