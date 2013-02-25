@@ -845,7 +845,7 @@ function get_js_date_picker()
 	$back = _("Back");
 	if ($date_system == 1)
 		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
 
 
@@ -966,7 +966,7 @@ function CC() {
 		$js .= "
     return [31,31,31,31,31,31,30,30,30,30,30,(((((((year - ((year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)][month-1];
 ";
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		$js .= "
     return [30,29,30,29,30,29,30,29,30,29,30,(((((11 * year) + 14) % 30) < 11) ? 30 : 29)][month-1];
 ";
@@ -999,7 +999,7 @@ function CC() {
       Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 +
       Math.floor(epbase / 2820) * 1029983 + (1948320.5 - 1);
 ";
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		$js .= "
 	var t;
 	t = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month -
@@ -1053,11 +1053,11 @@ function CC() {
 		$js .= "
       var dateString = month+'$sep'+day+'$sep'+year;
 ";
-	else if ($how == 1 || $how == 4)
+	elseif ($how == 1 || $how == 4)
 		$js .= "
       var dateString = day+'$sep'+month+'$sep'+year;
 ";
-	else if ($how == 2 || $how == 5)
+	elseif ($how == 2 || $how == 5)
 		$js .= "
       var dateString = year+'$sep'+month+'$sep'+day;
 ";
@@ -1187,25 +1187,25 @@ function CC() {
         selectedDay = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 1)
+	elseif ($how == 1)
 		$js .= "
         selectedDay = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 2)
+	elseif ($how == 2)
 		$js .= "
         selectedYear = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
         selectedDay = parseInt(dateParts[2],10);
 ";
-	else if ($how == 3)
+	elseif ($how == 3)
 		$js .= "
         selectedDay = parseInt(dateParts[1],10);
         selectedMonth = parseInt(tmonths.indexOf(dateParts[0]),10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 4)
+	elseif ($how == 4)
 		$js .= "
         selectedDay = parseInt(dateParts[0],10);
         selectedMonth = parseInt(tmonths.indexOf(dateParts[1]),10);
