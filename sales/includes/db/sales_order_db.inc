@@ -278,6 +278,7 @@ function get_sales_order_header($order_no, $trans_type)
 	$sql = "SELECT sorder.*, "
 	  ."cust.name, "
 	  ."cust.curr_code, "
+	  ."cust.address, "
 	  ."loc.location_name, "
 	  ."cust.discount, "
 	  ."stype.sales_type, "
