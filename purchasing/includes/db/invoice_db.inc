@@ -124,6 +124,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 	$tax_total = 0;
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 
+	$supplier = get_supplier($supp_trans->supplier_id);
+
     foreach ($taxes as $n => $taxitem)
     {
 		$taxes[$n]['Value'] =  round2($taxitem['Value'], user_price_dec());
@@ -152,7 +154,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 	}
 
     $date_ = $supp_trans->tran_date;
-	$ex_rate = get_exchange_rate_from_home_currency(get_supplier_currency($supp_trans->supplier_id), $date_);
+	$ex_rate = get_exchange_rate_from_home_currency($supplier['curr_code'], $date_);
 
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -161,8 +163,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 	$total = 0;
     /* Now the control account */
-    $supplier_accounts = get_supplier_accounts($supp_trans->supplier_id);
-    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier["payable_account"], 0, 0,
 		-($invoice_items_total +  $item_added_tax + $supp_trans->ov_discount),
 		$supp_trans->supplier_id,
 		"The general ledger transaction for the control total could not be added");
@@ -204,19 +205,20 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
 		
+		$dim = $supplier['dimension_id'] ? $supplier['dimension_id'] : $stock_gl_code['dimension_id'];
+		$dim2 = $supplier['dimension2_id'] ? $supplier['dimension2_id'] : $stock_gl_code['dimension2_id'];
     	if ($trans_type == ST_SUPPCREDIT)
 		{
 			$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
-				($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]));
+				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]));
 			$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-				$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
+				$dim, $dim2, $entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
 		}
     	else
     	{
     		// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
 			$iv_act = is_inventory_item($entered_grn->item_code) ? ($clearing_act ? $clearing_act : $stock_gl_code["inventory_account"]) : 
-				($supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] : $stock_gl_code["cogs_account"]);
+				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]);
     		$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
     			$entered_grn->this_quantity_inv, $entered_grn->chg_price);
 			// Since the standard cost is always calculated on basis of the po unit_price,
@@ -239,15 +241,13 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$old_date = sql2date($old[1]);
 			if (!is_inventory_item($entered_grn->item_code))
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-					$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
+					$dim, $dim2, $entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
 			else
 			{
 				$currency = get_supplier_currency($supp_trans->supplier_id);
 				$ex_rate = get_exchange_rate_from_home_currency($currency, $old_date);
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-					$entered_grn->this_quantity_inv * $old_price, $supp_trans->supplier_id, "", $ex_rate);
+					$dim, $dim2, $entered_grn->this_quantity_inv * $old_price, $supp_trans->supplier_id, "", $ex_rate);
 				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
 					$line_taxfree);	
 			
@@ -262,8 +262,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 				{
 					$diff_amt = $diff * $entered_grn->this_quantity_inv;
 					$total += add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], 'GRN Provision',
-						$diff_amt, null, null, null,
+						$dim, $dim2, 'GRN Provision', $diff_amt, null, null, null,
 						"The general ledger transaction could not be added for the GRN of the inventory item");
 
 					//Chaitanya
@@ -284,13 +283,11 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						//Reverse the inventory effect if $qoh <=0
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 							$stock_gl_code["inventory_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-							$memo, -$entered_grn->this_quantity_inv * $diff);
+							$dim, $dim2, $memo, -$entered_grn->this_quantity_inv * $diff);
 						//GL Posting to inventory adjustment account
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 							$stock_gl_code["adjustment_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-							$memo, $entered_grn->this_quantity_inv * $diff);
+							$dim, $dim2, $memo, $entered_grn->this_quantity_inv * $diff);
 						
 						add_audit_trail(ST_JOURNAL, $id, $date_);
 						add_comments(ST_JOURNAL, $id, $date_, $memo);
@@ -304,13 +301,11 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						//Reverse the inventory effect if $qoh <=0
 						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
 						$stock_gl_code["inventory_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-						-$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);
+						$dim, $dim2, -$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);
 						//GL Posting to inventory adjustment account
 						add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
 						$stock_gl_code["adjustment_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-						$entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);						
+						$dim, $dim2, $entered_grn->this_quantity_inv * $diff, $supp_trans->supplier_id, "", null, $memo);						
 					}*/				
 					
 					//add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
@@ -333,8 +328,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 					$_cd = $mat_cost - $deliveries[1];
 					$memo = _("Cost difference adjustment for $_s. $_d items delivered since $_od. The cost difference is $_cd");
 					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
-						$amt, null, null, null,
+						$dim, $dim2, $memo,	$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 					add_gl_trans($trans_type, $invoice_id, $date_,	$iv_act,
 						0, 0, $memo, -$amt, null, null, null,
@@ -596,13 +590,11 @@ function void_supp_invoice($type, $type_no)
 						//Reverse the inventory effect if $qoh <=0
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
 							$stock_gl_code["inventory_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-							$memo, $details_row["quantity"] * $diff);
+							$dim, $dim2, $memo, $details_row["quantity"] * $diff);
 						//GL Posting to inventory adjustment account
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $old_date, 
 							$stock_gl_code["adjustment_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-							$memo, -$details_row["quantity"] * $diff);
+							$dim, $dim2, $memo, -$details_row["quantity"] * $diff);
 						
 						add_audit_trail(ST_JOURNAL, $id, $old_date);
 						add_comments(ST_JOURNAL, $id, $old_date, $memo);
