@@ -76,8 +76,10 @@ if (list_updated('BranchID')) {
 	$Ajax->activate('customer_id');
 }
 
-if (!isset($_POST['customer_id']))
-	$_POST['customer_id'] = get_global_customer(false);
+if (!isset($_POST['customer_id'])) {
+	$_SESSION['alloc']->person_id = $_POST['customer_id'] = get_global_customer(false);
+	$_SESSION['alloc']->read();
+}
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
