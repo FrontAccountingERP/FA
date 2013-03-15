@@ -437,7 +437,8 @@ function handle_commit_order()
 			//Direct GRN
 			if ($cart->trans_type == ST_SUPPRECEIVE)
 				$cart->reference = $ref;
-			$cart->Comments = $cart->reference; //grn does not hold supp_ref
+			if ($cart->trans_type != ST_SUPPINVOICE)	
+				$cart->Comments = $cart->reference; //grn does not hold supp_ref
 			foreach($cart->line_items as $key => $line)
 				$cart->line_items[$key]->receive_qty = $line->quantity;
 			$grn_no = add_grn($cart);

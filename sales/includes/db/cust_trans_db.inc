@@ -103,7 +103,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
 		ship_via=".db_escape($ship_via).", alloc=$AllocAmt,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
-		payment_terms=".db_escape($payment_terms)."
+		payment_terms=".db_escape($payment_terms, true)."
 		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");

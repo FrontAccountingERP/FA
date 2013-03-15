@@ -55,7 +55,7 @@ class purch_order
 	
 	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd)
 	{
-		if ($qty != 0 && isset($qty))
+		if (isset($qty) && $qty != 0)
 		{
 			$this->line_items[$line_no] = new po_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
 				$req_del_date, $qty_inv, $qty_recd);
