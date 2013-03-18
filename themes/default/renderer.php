@@ -45,13 +45,11 @@
 			echo "<td>\n";
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
-			echo "<td class='quick_menu'>\n";
+			echo "<td class='quick_menu'>\n"; // tabs
 			if (!$no_menu)
 			{
 				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
-				$img = "<img src='$local_path_to_root/themes/default/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
-				$himg = "<img src='$local_path_to_root/themes/default/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 				echo "<div class=tabs>";
@@ -68,6 +66,9 @@
 				echo "</div>";
 				echo "</td></tr></table>";
 
+				// top status bar
+				$img = "<img src='$local_path_to_root/themes/default/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$local_path_to_root/themes/default/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 				echo "<table class=logoutBar>";
 				echo "<tr><td class=headingtext3>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
@@ -103,7 +104,8 @@
 				$power_by, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
-			if ($no_menu == false)
+			echo "</td></tr></table>\n"; // 'main_page'
+			if ($no_menu == false) // bottom status line
 			{
 				if ($is_index)
 					echo "<table class=bottomBar>\n";
@@ -116,9 +118,9 @@
 					$Ajax->addUpdate(true, 'hotkeyshelp', $phelp);
 					echo "<td id='hotkeyshelp'>".$phelp."</td>";
 				}
-				echo "</tr></table>\n";
+				echo "</td></tr></table>\n";
 			}
-			echo "</td></tr></table></td>\n";
+			echo "</td></tr> </table>\n"; // 'callout_main'
 			echo "</table>\n";
 			if ($no_menu == false)
 			{
@@ -146,6 +148,14 @@
 			$selected_app = $waapp->get_selected_application();
 			if (!$_SESSION["wa_current_user"]->check_application_access($selected_app))
 				return;
+
+			if (method_exists($selected_app, 'render_index'))
+			{
+				$selected_app->render_index();
+				return;
+			}
+
+			echo "<table width=100% cellpadding='0' cellspacing='0'>";
 			foreach ($selected_app->modules as $module)
 			{
         		if (!$_SESSION["wa_current_user"]->check_module_access($module))
@@ -200,11 +210,8 @@
 				}
 
 				echo "</tr></table></td></tr>";
-			}	
+			}
 			echo "</table>";
-		}
-    }
-		
-
-
+  	}
+}
 ?>
