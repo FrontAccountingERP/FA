@@ -413,7 +413,7 @@ class db_pager {
 					update_record_status($id, !$value, $table, $key);
 					$value = !$value;
 				}
-				echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
+				echo '<td align="center">'. checkbox(null, $name, $value, true, '')
  				. hidden("LInact[$id]", $value, false) . '</td>';	
 			}
 		} else

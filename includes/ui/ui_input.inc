@@ -890,7 +890,7 @@ function inactive_control_cell($id, $value, $table, $key)
 			get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
 			update_record_status($id, !$value, $table, $key);
 		}
-		echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
+		echo '<td align="center">'. checkbox(null, $name, $value, true, '')
  			. hidden("LInact[$id]", $value, false) . '</td>';	
 	}
 }
