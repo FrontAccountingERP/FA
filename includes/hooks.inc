@@ -265,7 +265,7 @@ function hook_invoke_all($method, &$data, $opts=null)
 	global $Hooks;
 	
 	$return = array();
-	if (isset($Hooks[$ext])
+	if (isset($Hooks))
 	{
 		foreach($Hooks as $ext => $hook)
 			if (method_exists($hook, $method)) {
@@ -278,7 +278,7 @@ function hook_invoke_all($method, &$data, $opts=null)
 					}
 				set_ext_domain();
 			}
-	{
+	}
 	return $return;
 }
 /*
