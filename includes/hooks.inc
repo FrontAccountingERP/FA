@@ -265,17 +265,20 @@ function hook_invoke_all($method, &$data, $opts=null)
 	global $Hooks;
 	
 	$return = array();
-	foreach($Hooks as $ext => $hook)
-		if (method_exists($hook, $method)) {
-			set_ext_domain('modules/'.$ext);
-			$result = $hook->$method($data, $opts);
-			if (isset($result) && is_array($result)) {
-				$return = array_merge_recursive($return, $result);
-			} else if (isset($result)) {
-				$return[] = $result;
-				}
-			set_ext_domain();
-		}
+	if (isset($Hooks[$ext])
+	{
+		foreach($Hooks as $ext => $hook)
+			if (method_exists($hook, $method)) {
+				set_ext_domain('modules/'.$ext);
+				$result = $hook->$method($data, $opts);
+				if (isset($result) && is_array($result)) {
+					$return = array_merge_recursive($return, $result);
+				} else if (isset($result)) {
+					$return[] = $result;
+					}
+				set_ext_domain();
+			}
+	{
 	return $return;
 }
 /*

@@ -147,6 +147,7 @@
 			global $path_to_root;
 
 			$selected_app = $waapp->get_selected_application();
+
 			if (!$_SESSION["wa_current_user"]->check_application_access($selected_app))
 				return;
 
