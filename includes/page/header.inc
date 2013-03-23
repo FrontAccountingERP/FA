@@ -113,7 +113,10 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
 		$_SESSION["App"]->selected_application = 
 			isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
-			
+
+	$page_header_args = func_get_args();
+	hook_invoke_all('pre_header', $page_header_args);
+
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){

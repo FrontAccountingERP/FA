@@ -94,6 +94,19 @@ class hooks {
 	}
 
 	//
+	//	Invoked for all modules before page header is displayed
+	//
+	function pre_header($fun_args)
+	{
+	}
+	//
+	//	Invoked for all modules before page footer is displayed
+	//
+	function pre_footer($fun_args)
+	{
+	}
+
+	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.
 	// Used instead of built in simple english price_in_words() function.
