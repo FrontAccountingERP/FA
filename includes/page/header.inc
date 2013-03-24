@@ -139,7 +139,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	else
 		echo "<body onload=\"$onload\">";
 
-	include_once($path_to_root . "/themes/".user_theme()."/renderer.php");
+	include_once($path_to_root . "/themes/$theme/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
 	error_box();
