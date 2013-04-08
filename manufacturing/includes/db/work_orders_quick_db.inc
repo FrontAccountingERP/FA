@@ -78,7 +78,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	$cost_adjust = false;
 	if ($qoh < 0)
 	{
-		if ($qoh + $units_reqd > 0)
+		if ($qoh + $units_reqd >= 0)
 			$cost_adjust = true;
 	}
 
