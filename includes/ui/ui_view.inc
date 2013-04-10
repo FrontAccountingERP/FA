@@ -1351,7 +1351,7 @@ function display_backtrace($cond=true, $msg='') {
 if (!isset($payment_services))
 {
 	$payment_services = array(
-		'PayPal' => "https://www.paypal.com?xclick/business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
+		'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
 	);
 }
 /*
