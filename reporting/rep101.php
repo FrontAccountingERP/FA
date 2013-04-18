@@ -35,12 +35,12 @@ function get_open_balance($debtorno, $to, $convert)
 	if($to)
 		$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE.",
+    $sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE." OR t.type = ".ST_BANKPAYMENT.",
     	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(t.type <> ".ST_SALESINVOICE.",
+    	SUM(IF(t.type <> ".ST_SALESINVOICE." AND t.type <> ".ST_BANKPAYMENT.",
     	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
@@ -49,7 +49,7 @@ function get_open_balance($debtorno, $to, $convert)
 	if ($convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
-		SUM(IF(t.type = ".ST_SALESINVOICE.",
+		SUM(IF(t.type = ".ST_SALESINVOICE." OR t.type = ".ST_BANKPAYMENT.",
 			(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount - t.alloc)";
     if ($convert)
     	$sql .= " * rate";
@@ -219,12 +219,6 @@ function print_customer_balances()
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->AmountCol(6, 7, $item[2], $dec);
-			/*
-			if ($trans['type'] == 10)
-				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
-			else
-				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
-			*/
 			if ($trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT)
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	

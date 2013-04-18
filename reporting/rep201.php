@@ -31,13 +31,13 @@ function get_open_balance($supplier_id, $to, $convert)
 {
 	$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount)";
+    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.", 
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount)";
+    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE." AND ".TB_PREF."supp_trans.type <> ".ST_BANKDEPOSIT.", 
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
     if ($convert)
     	$sql .= "* rate";
     $sql .= ", 0)) AS credits,
@@ -45,8 +45,9 @@ function get_open_balance($supplier_id, $to, $convert)
 	if ($convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
-		SUM((".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc)";
+		SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.",
+		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc),
+		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ") AS OutStanding
@@ -203,16 +204,10 @@ function print_supplier_balances()
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->AmountCol(6, 7, $item[2], $dec);
-			/*
-			if ($trans['type'] == 20)
-				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
-			else
-				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
-			*/	
-			if ($trans['type'] == ST_SUPPINVOICE || $trans['type'] == ST_BANKDEPOSIT)
-				$item[3] = $item[0] + $item[1] - $item[2];
+			if ($trans['TotalAmount'] > 0.0)
+				$item[3] = $item[0] - $item[2];
 			else	
-				$item[3] = $item[0] - $item[1] + $item[2];
+				$item[3] = ($item[1] - $item[2]) * -1;
 			$rep->AmountCol(7, 8, $item[3], $dec);
 			for ($i = 0; $i < 4; $i++)
 			{
