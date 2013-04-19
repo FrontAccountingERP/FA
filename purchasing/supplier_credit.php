@@ -203,7 +203,6 @@ function check_data()
 						_("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock['stock_id'])));
 					return false;
 				}
-				return true;
 			}
 		}
 	}
