@@ -58,6 +58,8 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 		var url = form ? form.action : 
 		  window.location.toString();
 
+		if (!form) form = document.forms[0]; // when trigger element is on already superseded page fragment, form is null
+
 		var content = this.formInputs(trigger, form, upload);
 
 		if (!form) url = url.substring(0, url.indexOf('?'));

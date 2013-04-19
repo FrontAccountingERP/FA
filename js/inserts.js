@@ -454,7 +454,8 @@ var inserts = {
 					ev.returnValue = false;
 					return false;
 				}
-				window.location = e.href;
+				if (!_hotkeys.alt)	// ommit chrome Chrome accesskeys 
+	 				window.location = e.href;
 			}
 	},
 	'ul.ajaxtabs':	function(ul) {
@@ -465,7 +466,8 @@ var inserts = {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
 		    var url = tab.form.action
 		    tab.onclick=function(){
-			_expand(this);
+		    if (!_hotkeys.alt)
+				_expand(this);
 			return false;
 		    }
 		}
@@ -538,7 +540,7 @@ function setHotKeys() {
 			for (var i=0; i<cnt; i++) { 
 				n = (n+1)%cnt;
 				// check also if the link is visible
-				if (l[n].accessKey==key && l[n].scrollWidth) {
+				if (l[n].accessKey==key && (l[n].offsetWidth || l[n].offsetHeight)) {
 					_hotkeys.focus = n;
 	    // The timeout is needed to prevent unpredictable behaviour on IE.
 					var tmp = function() {l[_hotkeys.focus].focus();};
