@@ -99,11 +99,12 @@ function print_customer_balances()
     	$from = $_POST['PARAM_0'];
     	$to = $_POST['PARAM_1'];
     	$fromcust = $_POST['PARAM_2'];
-    	$currency = $_POST['PARAM_3'];
-    	$no_zeros = $_POST['PARAM_4'];
-    	$comments = $_POST['PARAM_5'];
-	$orientation = $_POST['PARAM_6'];
-	$destination = $_POST['PARAM_7'];
+    	$show_balance = $_POST['PARAM_3'];
+    	$currency = $_POST['PARAM_4'];
+    	$no_zeros = $_POST['PARAM_5'];
+    	$comments = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -132,6 +133,8 @@ function print_customer_balances()
 	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'),
 		_('Allocated'), 	_('Outstanding'));
 
+	if ($show_balance)
+		$headers[7] = _('Balance');
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
@@ -159,13 +162,20 @@ function print_customer_balances()
 	while ($myrow = db_fetch($result))
 	{
 		if (!$convert && $currency != $myrow['curr_code']) continue;
-
+		
+		$accumulate = 0;
 		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']), $dec);
 		$init[1] = round2(Abs($bal['credits']), $dec);
 		$init[2] = round2($bal['Allocated'], $dec);
-		$init[3] = round2($bal['OutStanding'], $dec);;
+		if ($show_balance)
+		{
+			$init[3] = $init[0] - $init[1];
+			$accumulate += $init[3];
+		}	
+		else	
+			$init[3] = round2($bal['OutStanding'], $dec);
 
 		$res = get_transactions($myrow['debtor_no'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
@@ -211,11 +221,13 @@ function print_customer_balances()
 			{
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(4, 5, $item[0], $dec);
+				$accumulate += $item[0];
 			}
 			else
 			{
 				$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(5, 6, $item[1], $dec);
+				$accumulate -= $item[1];
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->AmountCol(6, 7, $item[2], $dec);
@@ -223,24 +235,31 @@ function print_customer_balances()
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	
 				$item[3] = $item[0] - $item[1] + $item[2];
-			$rep->AmountCol(7, 8, $item[3], $dec);
+			if ($show_balance)	
+				$rep->AmountCol(7, 8, $accumulate, $dec);
+			else	
+				$rep->AmountCol(7, 8, $item[3], $dec);
 			for ($i = 0; $i < 4; $i++)
 			{
 				$total[$i] += $item[$i];
 				$grandtotal[$i] += $item[$i];
 			}
+			if ($show_balance)
+				$total[3] = $total[0] - $total[1];
 		}
 		$rep->Line($rep->row - 8);
 		$rep->NewLine(2);
 		$rep->TextCol(0, 3, _('Total'));
 		for ($i = 0; $i < 4; $i++)
 			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
-    		$rep->Line($rep->row  - 4);
-    		$rep->NewLine(2);
+   		$rep->Line($rep->row  - 4);
+   		$rep->NewLine(2);
 	}
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
 	$rep->fontSize -= 2;
+	if ($show_balance)
+		$grandtotal[3] = $grandtotal[0] - $grandtotal[1];
 	for ($i = 0; $i < 4; $i++)
 		$rep->AmountCol($i + 4, $i + 5, $grandtotal[$i], $dec);
 	$rep->Line($rep->row  - 4);
