@@ -202,7 +202,6 @@ $reports->addReport(RC_SUPPLIER, 210, _('Print Remittances'),
 			_('Orientation') => 'ORIENTATION'));
 
 $reports->addReportClass(_('Inventory'), RC_INVENTORY);
-
 $reports->addReport(RC_INVENTORY,  301, _('Inventory &Valuation Report'),
 	array(	_('End Date') => 'DATE',	
 			_('Inventory Category') => 'CATEGORIES',
@@ -227,14 +226,6 @@ $reports->addReport(RC_INVENTORY, 303, _('Stock &Check Sheets'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_INVENTORY, 307, _('Inventory &Movement Report'),
-	array(	_('Start Date') => 'DATEBEGINM',
-			_('End Date') => 'DATEENDM',
-			_('Inventory Category') => 'CATEGORIES',
-			_('Location') => 'LOCATIONS',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));				
 $reports->addReport(RC_INVENTORY, 304, _('Inventory &Sales Report'),
 	array(	_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
@@ -260,6 +251,22 @@ $reports->addReport(RC_INVENTORY, 306, _('Inventory P&urchasing Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
+$reports->addReport(RC_INVENTORY, 307, _('Inventory &Movement Report'),
+	array(	_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Inventory Category') => 'CATEGORIES',
+			_('Location') => 'LOCATIONS',
+			_('Comments') => 'TEXTBOX',
+			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));				
+$reports->addReport(RC_INVENTORY, 308, _('C&osted Inventory Movement Report'),
+	array(	_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Inventory Category') => 'CATEGORIES',
+			_('Location') => 'LOCATIONS',
+			_('Comments') => 'TEXTBOX',
+			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));				
 
 $reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
 $reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
