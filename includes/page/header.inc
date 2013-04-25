@@ -72,7 +72,7 @@ function send_scripts()
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="", $css='')
 {
 	// titles and screen header
-	global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
+	global $path_to_root, $def_app, $use_popup_windows, $help_base_url, $db_connections;
 
 	if (in_ajax())
 		return; // just for speed up
@@ -115,7 +115,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 			isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
 
 	$page_header_args = func_get_args();
-	hook_invoke_all('pre_header', $page_header_args);
+	if(isset($db_connections))	// skip before installation
+		hook_invoke_all('pre_header', $page_header_args);
 
 	$encoding = $_SESSION['language']->encoding;
 
