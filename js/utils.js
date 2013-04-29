@@ -12,12 +12,12 @@ function set_mark(img) {
 	var box = document.getElementById('ajaxmark');
 	if(box) {
 		if(img) box.src = user.theme+'images/'+ img;
-		box.style.visibility = img ? 'visible' : 'hidden'
+		box.style.visibility = img ? 'visible' : 'hidden';
 	}
 }
 
 function disp_msg(msg, cl) {
-	var box = document.getElementById('msgbox')
+	var box = document.getElementById('msgbox');
 	box.innerHTML= "<div class='"+(cl || 'err_msg')+"'>"+ msg+'</div>';
 //	box.style.display = msg=='' ? 'none':'block';
     if (msg!='') window.scrollTo(0,element_pos(box).y-10);
@@ -39,7 +39,7 @@ JsHttpRequest.request= function(trigger, form, tout) {
 	document.getElementById('msgbox').innerHTML='';
 	set_mark(tout>10000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 0);
-}
+};
 
 JsHttpRequest._request = function(trigger, form, tout, retry) {
 		if (trigger.tagName=='A') {
@@ -57,8 +57,6 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 		
 		var url = form ? form.action : 
 		  window.location.toString();
-
-		if (!form) form = document.forms[0]; // when trigger element is on already superseded page fragment, form is null
 
 		var content = this.formInputs(trigger, form, upload);
 
@@ -121,7 +119,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			  } else if(cmd=='fc') { // set focus
 				  _focus = data;
 			  } else if(cmd=='js') {	// evaluate js code
-				__isGecko ? eval(data) : setTimeout(function(){eval(data)}, 200); // timeout required by IE7/8
+				__isGecko ? eval(data) : setTimeout(function(){eval(data);}, 200); // timeout required by IE7/8
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
 			  } else if(cmd=='pu') {	// pop-up
@@ -150,7 +148,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
             },
 	        false  // do not disable caching
         );
-	}
+	};
 	// collect all form input values plus inp trigger value
 	JsHttpRequest.formInputs = function(inp, objForm, upload)
 	{
@@ -175,7 +173,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 					// (internally form is submitted via form.submit() not button click())
 					if (submitObj.type=='submit' && el==submitObj)
 					{
-						q[name] =  el.value
+						q[name] =  el.value;
 						continue;
 					}
 				}
@@ -201,7 +199,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 					}
 					else
 					if (el.type=='file')
-						q[name] = el
+						q[name] = el;
 					else
 					{
 						q[name] = el.value;
@@ -210,7 +208,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			}
 		}
 		return q;
-	}
+	};
 //
 //	User price formatting
 //
@@ -267,7 +265,7 @@ function goBack(deep) {
 }
 
 function setFocus(name, byId) {
-
+ var el = null;
  if(typeof(name)=='object')
  	el = name;
  else {
@@ -280,10 +278,11 @@ function setFocus(name, byId) {
 			  if(cur) name = cur.value;
 			}
 	  }
-	  if(byId || !(el = document.getElementsByName(name)[0]))
-		el = document.getElementById(name);
+      if (name) 
+	    if(byId || !(el = document.getElementsByName(name)[0]))
+		  el = document.getElementById(name);
   }
-  if(el && el.focus) {
+  if (el != null && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
 	
