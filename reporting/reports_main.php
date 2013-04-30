@@ -267,7 +267,7 @@ $reports->addReport(RC_INVENTORY, 308, _('C&osted Inventory Movement Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));				
-$reports->addReport(RC_INVENTORY, 309,_('&Sales Summary Report, Detailed'),
+$reports->addReport(RC_INVENTORY, 309,_('Item &Sales Summary Report'),
 	array(	_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
 			_('Inventory Category') => 'CATEGORIES',

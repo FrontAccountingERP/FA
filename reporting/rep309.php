@@ -103,7 +103,7 @@ function print_inventory_sales()
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
     				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''));
 
-    $rep = new FrontReport(_('Sales Summary Report, Detailed'), "SalesSummaryDetailedReport", user_pagesize(), 9, $orientation);
+    $rep = new FrontReport(_('Item Sales Summary Report'), "ItemSalesSummaryReport", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
     	recalculate_cols($cols);
 
