@@ -69,7 +69,7 @@ function gl_inquiry_controls()
 
 function display_trial_balance($type, $typename)
 {
-	global $path_to_root;
+	global $path_to_root, $clear_trial_balance_opening;
 	
 	global $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
 	$printtitle = 0; //Flag for printing type name		
@@ -85,7 +85,7 @@ function display_trial_balance($type, $typename)
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
 	$begin = add_days($begin, -1);
-	
+
 	while ($account = db_fetch($accounts))
 	{
 		//Print Type Title if it has atleast one non-zero account	
@@ -97,6 +97,15 @@ function display_trial_balance($type, $typename)
 			$printtitle = 1;		
 		}	
 	
+		// FA doesn't really clear the closed year, therefore the brought forward balance includes all the transactions from the past, even though the balance is null.
+		// If we want to remove the balanced part for the past years, this option removes the common part from from the prev and tot figures.
+		if (@$clear_trial_balance_opening)
+		{
+			$open = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin,  $begin, false, true);
+			$offset = min($open['debit'], $open['credit']);
+		} else
+			$offset = 0;
+
 		$prev = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransFromDate'], false, false);
 		$curr = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
@@ -117,12 +126,12 @@ function display_trial_balance($type, $typename)
 		}
 		else
 		{
-			amount_cell($prev['debit']);
-			amount_cell($prev['credit']);
+			amount_cell($prev['debit']-$offset);
+			amount_cell($prev['credit']-$offset);
 			amount_cell($curr['debit']);
 			amount_cell($curr['credit']);
-			amount_cell($tot['debit']);
-			amount_cell($tot['credit']);
+			amount_cell($tot['debit']-$offset);
+			amount_cell($tot['credit']-$offset);
 			$pdeb += $prev['debit'];
 			$pcre += $prev['credit'];
 			$cdeb += $curr['debit'];

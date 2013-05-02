@@ -285,4 +285,11 @@ $dflt_xr_provider = 0;
 	Optional sorting new sales documents lines according to item code
 */
 $sort_sales_items = false;
+
+/*
+	Trial Balance opening balance presentation option.
+	When set to true past years part of opening balance is cleared.
+*/
+$clear_trial_balance_opening = false;
+
 ?>
