@@ -57,7 +57,7 @@ end_table();
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-locations_list_cells(_("From Location:"), 'StockLocation', null);
+locations_list_cells(_("From Location:"), 'StockLocation', null, true);
 
 date_cells(_("From:"), 'AfterDate', '', null, -30);
 date_cells(_("To:"), 'BeforeDate');
@@ -72,14 +72,17 @@ set_global_stock_item($_POST['stock_id']);
 
 $before_date = date2sql($_POST['BeforeDate']);
 $after_date = date2sql($_POST['AfterDate']);
+$display_location = !$_POST['StockLocation'];
 
 $result = get_stock_movements($_POST['stock_id'], $_POST['StockLocation'],
 	$_POST['BeforeDate'], $_POST['AfterDate']);
 
 div_start('doc_tbl');
 start_table(TABLESTYLE);
-$th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
-	_("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
+$th = array(_("Type"), _("#"), _("Reference"));
+if($display_location) array_push($th, _("Location"));
+array_push($th, _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
+
 
 table_header($th);
 
@@ -94,7 +97,8 @@ if (!isset($before_qty_row[0]))
 }
 */
 start_row("class='inquirybg'");
-label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=5");
+$header_span = $display_location ? 6 : 5;
+label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=$header_span");
 label_cell("&nbsp;", "colspan=2");
 $dec = get_qty_dec($_POST['stock_id']);
 qty_cell($before_qty, false, $dec);
@@ -132,6 +136,9 @@ while ($myrow = db_fetch($result))
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+	if($display_location) {
+		label_cell($myrow['loc_code']);
+	}
 	label_cell($trandate);
 
 	$person = $myrow["person_id"];
@@ -182,7 +189,7 @@ while ($myrow = db_fetch($result))
 //end of while loop
 
 start_row("class='inquirybg'");
-label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=5");
+label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=$header_span");
 qty_cell($total_in, false, $dec);
 qty_cell($total_out, false, $dec);
 qty_cell($after_qty, false, $dec);
