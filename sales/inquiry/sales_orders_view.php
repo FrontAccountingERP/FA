@@ -229,7 +229,7 @@ if ($show_dates)
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
-locations_list_cells(_("Location:"), 'StockLocation', null, true);
+locations_list_cells(_("Location:"), 'StockLocation', null, true, true);
 
 if($show_dates) {
 	end_row();
@@ -238,9 +238,9 @@ if($show_dates) {
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 }
-stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, true);
 if (!@$_GET['popup'])
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
 
