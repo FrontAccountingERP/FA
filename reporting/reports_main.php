@@ -225,6 +225,7 @@ $reports->addReport(RC_INVENTORY, 303, _('Stock &Check Sheets'),
 			_('Inventory Column') => 'YES_NO',
 			_('Show Shortage') => 'YES_NO',
 			_('Suppress Zeros') => 'YES_NO',
+			_('Item Like') => 'TEXT',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
