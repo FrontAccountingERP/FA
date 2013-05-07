@@ -92,7 +92,22 @@ class cart
 		$this->read($type, $trans_no, $prep_child);
 		$this->cart_id = uniqid('');
 	}
-	
+
+	/*
+		Optional sorting items by stock_id.
+	*/
+	function _cmp_lines($a, $b)
+	{
+		return strcmp($a->stock_id, $b->stock_id);
+	}
+
+	function sort_items()
+	{
+		global $sort_sales_items;
+
+		if (@$sort_sales_items && !$this->trans_no) // sort items optionally for new transaction
+			usort($this->line_items, array($this, '_cmp_lines'));
+	}
 	//
 	//	Prepare cart to new child document entry, just after initial parent doc read.
 	//
@@ -351,6 +366,7 @@ class cart
 
 		if ($line->valid) {
 			$this->line_items[$line_no] = $line;
+			$this->sort_items();
 			return 1;
 		} else
 			display_error(_("You have to enter valid stock code or nonempty description"));
@@ -365,6 +381,7 @@ class cart
 		$this->line_items[$line_no]->qty_dispatched = $qty;
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->discount_percent = $disc;
+		$this->sort_items();
 	}
 
 	function update_add_cart_item_qty($line_no, $qty)
