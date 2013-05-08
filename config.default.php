@@ -282,7 +282,7 @@ $xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
 $dflt_xr_provider = 0;
 
 /*
-	Optional sorting new sales documents lines according to item code
+	Optional sorting sales documents lines during edition according to item code
 */
 $sort_sales_items = false;
 

@@ -159,7 +159,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 	$id = find_submit('Edit');
 	$has_marked = false;
-	foreach ($order->line_items as $line_no=>$stock_item)
+
+	foreach ($order->get_items() as $line_no=>$stock_item)
 	{
 
 		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
