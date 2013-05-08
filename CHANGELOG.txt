@@ -10,6 +10,296 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-05-08 13:49 +0200 Joe Hunt
+(3248) Release 2.3.16
+ update.html
+ version.php
+
+2013-05-08 12:51 +0200 Janusz Dobrowolski
+(3247) Fixed optional sorting lines during sales document ediiton (sort made in display layer, active also for old transactions).
+ config.default.php
+ sales/includes/cart_class.inc
+ sales/includes/ui/sales_credit_ui.inc
+ sales/includes/ui/sales_order_ui.inc
+
+2013-05-08 10:21 +0200 Joe Hunt
+(3246) Fixed a reference error in rep303.php for certain PHP versions.
+ reporting/rep303.php
+
+2013-05-08 08:31 +0200 Janusz Dobrowolski
+(3245) Inventory Transfer: fixed error
+message when invalid date is entered.
+ inventory/transfers.php
+
+2013-05-08 08:29 +0200 Janusz Dobrowolski
+(3244) Customers: tabs were not refreshed on customer list change.
+ sales/manage/customers.php
+
+2013-05-02 21:04 +0100 Maxime Bourget
+(3243) Option in config file to exclude balanced transactions for past years from Brought forward column in Trial Balance.
+ config.default.php
+ gl/inquiry/gl_trial_balance.php
+ reporting/rep708.php
+
+2013-05-07 15:11 +0200 Janusz Dobrowolski
+(3242) Optional switch in config file for sorting document lines by item code during new Sales Order/Direct Delivery/Direct Invoice entry.
+ config.default.php
+ sales/includes/cart_class.inc
+
+2013-05-03 21:59 +0100 Maxime Bourget
+(3241) Add Clear/Reset quantity button to sales order delivery (handy when doing partial delivery of a big order).
+ sales/customer_delivery.php
+
+2013-05-03 20:27 +0100 Maxime Bourget
+(3240) Fix statement rounding error not filtering some 0.00 transaction
+ reporting/rep108.php
+
+2013-05-02 22:24 +0100 Maxime Bourget
+(3239) Changed supplier payment to accept amount in foreign currency instead of exchange rate.
+ js/payalloc.js
+ purchasing/supplier_payment.php
+
+2013-05-02 22:35 +0100 Maxime Bourget
+(3238) Fixed problem with MIME headers in emailed documents on gmail (pdf files encoded in email body instead of attachment).
+ reporting/includes/class.mail.inc
+
+2013-05-03 23:09 +0100 Maxime Bourget
+(3237) Auto search after location, user or item change in outstanding orders inquiry.
+ sales/inquiry/sales_orders_view.php
+
+2013-05-03 23:04 +0100 Maxime Bourget
+(3236) Oustanding orders can be sorted by Customer, Ref and Order date.
+ sales/inquiry/sales_orders_view.php
+
+2013-05-02 21:26 +0100 Maxime Bourget
+(3235) Added 'All locations' option in Stock Movements inquiry.
+ inventory/includes/db/movement_types_db.inc
+ inventory/inquiry/stock_movements.php
+
+2013-05-03 21:33 +0100 Maxime Bourget
+(3234) Added 'Item Like' parameter to Stock Sheet Report allowing SQL LIKE or regexp filtering by item code.
+ reporting/rep303.php
+ reporting/reports_main.php
+
+2013-05-02 22:44 +0100 Maxime Bourget
+(3233) Add customer filter in Invoice report
+ reporting/rep107.php
+ reporting/reports_main.php
+
+2013-05-02 20:52 +0100 Maxime Bourget
+(3232) Reverse order of transaction in admin/view void transaction (last transaction appears o the first page)
+ admin/db/transactions_db.inc
+
+2013-04-30 16:10 +0200 Joe Hunt
+(3231) Renamed the new Sales Summary Report, Detailed to Item Sales Summary Report.
+ reporting/rep309.php
+ reporting/reports_main.php
+
+2013-04-30 08:41 +0200 Joe Hunt
+(3230) Included custome report (Items) Sales Summary Report into FA core. Called Sales Summary Report, Detailed.
+ reporting/rep309.php
+ reporting/reports_main.php
+
+2013-04-29 12:38 +0200 Janusz Dobrowolski
+(3229) Cleanup in operation order during transaction voiding.
+ admin/db/voiding_db.inc
+
+2013-04-29 12:36 +0200 Janusz Dobrowolski
+(3228) Fixed javascript problem with some IE versions in themes installation, js cleanups.
+ js/utils.js
+
+2013-04-25 22:39 +0200 Janusz Dobrowolski
+(3227) Ignore hook system in installer.
+ includes/page/header.inc
+
+2013-04-19 20:05 +0200 Janusz Dobrowolski
+(3226) Additional Chrome related fix in hotkeys support.
+ js/inserts.js
+
+2013-04-19 20:04 +0200 Janusz Dobrowolski
+(3225) Supplier credit note was not properly checked against sufficient quantity on hand.
+ purchasing/supplier_credit.php
+
+2013-04-20 19:07 +0200 Joe Hunt
+(3224) New report included in core, Costed Inventory Movement Report (rep308.php).
+ reporting/rep308.php
+ reporting/reports_main.php
+
+2013-04-19 15:36 +0200 Janusz Dobrowolski
+(3223) Fixed hotkey menu option selection issues on Chrome.
+ js/inserts.js
+ js/utils.js
+
+2013-04-19 08:16 +0200 Joe Hunt
+(3222) Improved Customer and Supplier Balances Report. Option to choose last column as balance.
+ reporting/rep101.php
+ reporting/rep201.php
+ reporting/reports_main.php
+
+2013-04-18 12:38 +0200 Janusz Dobrowolski
+(3221) Fiscal years: fixed typo in error message message. Cleanup in rep308 (improper gettext usage on empty string).
+ admin/fiscalyears.php
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2013-04-18 12:33 +0200 Janusz Dobrowolski
+(3220) Added years 2012, 2013 in standard init sql files.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2013-04-18 10:10 +0200 Joe Hunt
+(3219) A couple of small bugs in customer and supplier balances report fixed.
+ reporting/rep101.php
+ reporting/rep201.php
+
+2013-04-10 11:01 +0200 Janusz Dobrowolski
+(3218) Paypal link url fixed again.
+ includes/ui/ui_view.inc
+
+2013-04-09 20:39 +0200 Janusz Dobrowolski
+(3217) Dimension view balances were not updated after change in date range selection.
+ dimensions/view/view_dimension.php
+
+2013-04-08 14:06 +0200 Janusz Dobrowolski
+(3216) Fixed PayPal link url on sales invoice.
+ includes/ui/ui_view.inc
+
+2013-04-08 10:23 +0200 Joe Hunt
+(3215) 0002183: Advanced assembly should work with empty BOM. Fixed.
+ manufacturing/work_order_release.php
+
+2013-04-08 10:12 +0200 Joe Hunt
+(3214) 0002172: Work entry not adjusting cost, fixed
+ manufacturing/includes/db/work_orders_quick_db.inc
+
+2013-03-29 08:58 +0100 Janusz Dobrowolski
+(3213) Missing Journal Inquiry: Work Order selection in list selector.
+ includes/ui/ui_lists.inc
+
+2013-03-24 11:15 +0100 Janusz Dobrowolski
+(3212) Cleanup.
+ includes/page/header.inc
+
+2013-03-24 11:10 +0100 Janusz Dobrowolski
+(3211) Line end cleanups.
+ manufacturing/includes/db/work_orders_db.inc
+ purchasing/includes/db/grn_db.inc
+ sales/inquiry/sales_orders_view.php
+
+2013-03-23 11:12 +0100 Janusz Dobrowolski
+(3210) Cleanup again.
+ includes/hooks.inc
+
+2013-03-23 11:09 +0100 Janusz Dobrowolski
+(3209) Cleanup.
+ includes/hooks.inc
+ themes/aqua/renderer.php
+
+2013-03-23 09:43 +0100 Janusz Dobrowolski
+(3208) Added pre_header and pre_footer hooks.
+ includes/hooks.inc
+ includes/page/footer.inc
+ includes/page/header.inc
+
+2013-03-20 11:14 +0100 Janusz Dobrowolski
+(3207) Cleanups.
+ includes/db_pager.inc
+ includes/ui/ui_input.inc
+ sales/inquiry/sales_orders_view.php
+
+2013-03-19 23:03 +0100 Janusz Dobrowolski
+(3206) Cleanup in Customer Payments (fixed blinking error msg during processing payment)
+ sales/customer_payments.php
+
+2013-03-18 11:13 +0100 Janusz Dobrowolski
+(3205) Changes in standard themes: fixed html, menu index can be rendered by extension module
+ themes/aqua/renderer.php
+ themes/cool/renderer.php
+ themes/default/renderer.php
+
+2013-03-15 19:55 +0100 Janusz Dobrowolski
+(3204) Merge branch 'branches/default' of hg::ssh://itronics@frontaccounting.hg.sourceforge.net/hgroot/frontaccounting/frontaccounting into sf.default
+
+2013-03-15 19:50 +0100 Janusz Dobrowolski
+(3203) Customer Payments: fixed allocatable transactions display on start of new customer payment.
+ sales/customer_payments.php
+
+2013-03-11 15:06 +0100 Joe Hunt
+(3202) Fixed error on edit of a customer payment (certain MySql releases).
+ sales/includes/db/cust_trans_db.inc
+
+2013-03-07 22:51 +0100 Joe Hunt
+(3201) Crediting an invoice in transactions shows wrong invoice date.
+ sales/includes/cart_class.inc
+
+2013-03-07 12:06 +0100 Joe Hunt
+(3200) Direct Invoice has wrong Comment (auto).
+ purchasing/po_entry_items.php
+
+2013-03-07 09:50 +0100 Joe Hunt
+(3199) Wrong column for array_substitute in delivery and invoice templates.
+ sales/inquiry/sales_orders_view.php
+
+2013-03-05 23:25 +0100 Joe Hunt
+(3198) When using templates for delivery and invoice, the lines and comments were missing.
+ sales/sales_order_entry.php
+
+2013-03-05 23:24 +0100 Joe Hunt
+(3197) Fixed bug in PARAM6 when printing and included comments also if any.
+ sales/create_recurrent_invoices.php
+
+2013-03-05 22:13 +0100 Joe Hunt
+(3196) Force status to integer value before writing database.
+ includes/db/sql_functions.inc
+
+2013-03-04 16:04 +0100 Joe Hunt
+(3195) Wrong test order
+ purchasing/includes/po_class.inc
+
+2013-03-02 22:35 +0100 Janusz Dobrowolski
+(3194) Fixed dimensions support in supplier invoice: supplier dimension (if any) overrides stock item defined dimension.
+ purchasing/includes/db/invoice_db.inc
+
+2013-02-25 16:32 +0100 Joe Hunt
+(3193) Prettier code in get_date_picker. Worked anyhow.
+ includes/ui/ui_view.inc
+
+2013-02-25 10:50 +0100 Janusz Dobrowolski
+(3192) Fixed charge customer address in Sales Order report.
+ sales/includes/db/sales_order_db.inc
+
+2013-02-22 09:40 +0100 Joe Hunt
+(3191) Improved favicon.ico and smaller size (fewer colors)
+ themes/default/images/favicon.ico
+
+2013-02-21 14:02 +0100 Joe Hunt
+(3190) New and better favicon.ico file
+ themes/default/images/favicon.ico
+
+2013-02-18 10:07 +0100 Janusz Dobrowolski
+(3189) Removed voided transactions from Supplier Balances report.
+ reporting/rep201.php
+
+2013-02-17 09:51 +0100 Janusz Dobrowolski
+(3188) Fixed email sending bug introduced recently.
+ reporting/includes/pdf_report.inc
+
+2013-02-16 23:23 +0100 Joe Hunt
+(3187) Improvement of Customer Detail Listing and Supplier Detail Listing (General notes added)
+ reporting/rep103.php
+ reporting/rep205.php
+
+2013-02-16 23:22 +0100 Joe Hunt
+(3186) Roll back of increasing the reference by more than one.
+ includes/references.inc
+
+2013-02-16 13:45 +0100 Joe Hunt
+(3185) If reference was increased by more than one when entering documents, the next reference was not updated.
+ includes/references.inc
+
+2013-02-14 09:36 +0100 Joe Hunt
+(3184) Release 2.3.15 - Changelog
+ CHANGELOG.txt
+
 2013-02-14 09:20 +0100 Janusz Dobrowolski
 (3183) Version 2.3.15
  version.php
