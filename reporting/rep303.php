@@ -52,7 +52,7 @@ function getTransactions($category, $location, $item_like)
   {
     $regexp = null;
 
-    if(sscanf($item_like, "/%s", &$regexp)==1)
+    if(sscanf($item_like, "/%s", $regexp)==1)
       $sql .= " AND ".TB_PREF."stock_master.stock_id RLIKE ".db_escape($regexp);
     else
       $sql .= " AND ".TB_PREF."stock_master.stock_id LIKE ".db_escape($item_like);
