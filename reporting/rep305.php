@@ -63,6 +63,7 @@ function getSuppInvDetails($grn_item_id)
 	$sql = "SELECT
 			".TB_PREF."supp_invoice_items.supp_trans_no inv_no,
 			".TB_PREF."supp_invoice_items.quantity inv_qty,
+			".TB_PREF."supp_trans.rate,
 			IF (".TB_PREF."supp_trans.tax_included = 1, ".TB_PREF."supp_invoice_items.unit_price - ".TB_PREF."supp_invoice_items.unit_tax, ".TB_PREF."supp_invoice_items.unit_price) inv_price
 			FROM ".TB_PREF."grn_items, ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items
 			WHERE ".TB_PREF."grn_items.id = ".TB_PREF."supp_invoice_items.grn_item_id
@@ -131,9 +132,6 @@ function print_grn_valuation()
 			}
 			$stock_id = $trans['item_code'];
 		}
-		$curr = get_supplier_currency($trans['supplier_id']);
-		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
-		$trans['std_cost_unit'] *= $rate;
 
 		$rep->NewLine();
 		$rep->TextCol(0, 1, $trans['item_code']);
@@ -147,7 +145,7 @@ function print_grn_valuation()
 			$suppinv = getSuppInvDetails($trans['grn_item_id']);
 			while ($inv=db_fetch($suppinv))
 			{	
-				$inv['inv_price'] *= $rate;
+				$inv['inv_price'] *= $inv['rate'];
 				$rep->TextCol(4, 5, $inv['inv_no']);
 				$rep->AmountCol(5, 6, $inv['inv_qty'], $qdec);
 				$rep->AmountCol(6, 7, $inv['inv_price'], $dec);
@@ -160,9 +158,12 @@ function print_grn_valuation()
 				$grandtotal += $amt;
 			}
 		}
-	
+		
 		if ($trans['qty_recd'] - $trans['quantity_inv'] !=0 )
 		{
+			$curr = get_supplier_currency($trans['supplier_id']);
+			$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
+			$trans['unit_price'] *= $rate;
 			$rep->TextCol(4, 5, "--");
 			$rep->AmountCol(5, 6, $trans['qty_recd'] - $trans['quantity_inv'], $qdec);
 			$rep->AmountCol(7, 8, $trans['unit_price'], $dec);
