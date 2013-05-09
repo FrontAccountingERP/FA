@@ -26,6 +26,8 @@ function copy_from_cart()
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
+    foreach($cart->tax_overrides as $id => $value)
+	    $_POST['mantax'][$id] = price_format($value);
 }
 
 function copy_to_cart()
@@ -41,6 +43,10 @@ function copy_to_cart()
 	$cart->Comments = $_POST['Comments'];	
 	$cart->Location = $_POST['StkLocation'];
 	$cart->delivery_address = $_POST['delivery_address'];
+    if (isset($_POST['mantax'])) {
+		foreach($_POST['mantax'] as $id => $tax) {
+			$cart->tax_overrides[$id] = user_numeric($_POST['mantax'][$id]); }
+	}
 }
 // ------------------------------------------------------------------------------
 
@@ -88,7 +94,6 @@ function create_new_po($trans_type, $trans_no)
 		$_POST['OrderDate'] = end_fiscalyear();
 	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
 
-	
 	$cart->trans_type = $trans_type;
 	$cart->order_no = $trans_no;
 	/*read in all the selected order into the Items cart  */
@@ -289,7 +294,7 @@ function display_po_items(&$order, $editable=true)
 
 	$taxes = $order->get_taxes(input_num('freight_cost'));
 	
-	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2, $order->trans_type==ST_SUPPINVOICE);
 
 	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
 

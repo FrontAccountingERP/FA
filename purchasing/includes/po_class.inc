@@ -35,6 +35,7 @@ class purch_order
 	var $terms;
 	
 	var $reference;
+	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry (direct invoice)
 	
 	function purch_order()
 	{
@@ -148,7 +149,11 @@ class purch_order
 			$val = $taxes['1']['Value'];
 			$val1 = (floatval((intval(round(($val*20),0)))/20));
 			$taxes['1']['Value'] = $val1;
-		} 
+		}
+		foreach($this->tax_overrides as $id => $value) // add values entered manually
+		{
+			$taxes[$id]['Override'] = $value;
+		}
 		return $taxes;
 	}
 

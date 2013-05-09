@@ -439,28 +439,50 @@ function display_supp_trans_tax_details($tax_items, $columns)
 
 //--------------------------------------------------------------------------------------
 
-function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
+function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $editable=false)
 {
 	$total = 0;
 
     foreach ($taxes as $taxitem)
-    {
-    	if ($taxitem['Value'] != 0) {
-	    	if ($tax_included)
-    		{
-        		label_row(_("Included") . " " . $taxitem['tax_type_name']
-        			. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
-	    	}
-    		else
-    		{
-        		label_row($taxitem['tax_type_name'],
-        			number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
-	        	$total +=  round2($taxitem['Value'], user_price_dec());
-    		}
-    	}
-    }
-
-    return $total;
+	{
+		$amount = isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
+		if ($taxitem['Value'] != 0){
+			if ($editable) {
+				if (!isset($_POST['mantax['.$taxitem['tax_type_id'].']']))
+					$_POST['mantax['.$taxitem['tax_type_id'].']'] = price_format($amount);
+				start_row();
+				if ($tax_included) {
+					$colspan = $columns-1;
+					label_cell(_("Included") . " " . $taxitem['tax_type_name'].":",
+						"colspan={$colspan} align='right'");
+					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
+						null, "colspan=$columns align=right", '<td></td>', user_price_dec());
+				} else {
+					label_cell($taxitem['tax_type_name'], "colspan=$columns align='right'");
+					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
+						null, "colspan=$columns align=right", null, user_price_dec());
+					$total +=  round2($amount, user_price_dec());
+				}
+				if ($rightspan)
+					label_cell('', "colspan ='$rightspan'");
+				end_row();
+			} else {
+				$value = number_format2($taxitem['Value'],user_price_dec());
+				if ($tax_included)
+				{
+					label_row(_("Included") . " " . $taxitem['tax_type_name']
+						. " " . $value , "", "colspan=$columns align=right", "align=right", $rightspan);
+				}
+				else
+				{
+					label_row($taxitem['tax_type_name'],
+						$value, "colspan=$columns align=right", "align=right", $rightspan);
+					$total +=  round2($taxitem['Value'], user_price_dec());
+				}
+			}
+		}
+	}
+	return $total;
 }
 
 //--------------------------------------------------------------------------------------

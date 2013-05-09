@@ -19,6 +19,9 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
+	if (isset($supp_trans->tax_overrides))
+	    foreach($supp_trans->tax_overrides as $id => $value)
+		    $_POST['mantax'][$id] = price_format($value);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -32,6 +35,14 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->reference = $_POST['reference'];
 
 	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
+    if (isset($_POST['mantax'])) {
+		foreach($_POST['mantax'] as $id => $tax) {
+	    	$supp_trans->tax_overrides[$id] = user_numeric($_POST['mantax'][$id]);
+	    	}
+	}
+	else
+		unset($supp_trans->tax_overrides);
+
 	if (count($supp_trans->grn_items) > 0)
 	{
 		foreach ( $supp_trans->grn_items as $grn)
@@ -145,7 +156,7 @@ function invoice_totals(&$supp_trans)
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-    $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included, 0, true);
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
 

@@ -40,6 +40,7 @@ class supp_trans
 	var $ov_gst;
 	var $gl_codes_counter=0;
 	var $credit = 0;
+	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry
 
 	function supp_trans($trans_type)
 	{
@@ -56,6 +57,7 @@ class supp_trans
 		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, 
 			$item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, 
 			$order_price, $chg_price, $std_cost_unit, $gl_code, $this->tax_included);
+		unset($this->tax_overrides); // cancel tax overrides after cart change
 		return 1;
 	}
 
@@ -64,59 +66,59 @@ class supp_trans
 		$this->gl_codes[$this->gl_codes_counter] = new gl_codes($this->gl_codes_counter, 
 			$gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_);
 		$this->gl_codes_counter++;
+		unset($this->tax_overrides); // cancel tax overrides after cart change
 		return 1;
 	}
 
 	function remove_grn_from_trans($grn_item_id)
 	{
+		unset($this->tax_overrides); // cancel tax overrides after cart change
 	    unset($this->grn_items[$grn_item_id]);
 	}
 	function remove_gl_codes_from_trans($gl_code_counter)
 	{
-	     unset($this->gl_codes[$gl_code_counter]);
+		unset($this->tax_overrides); // cancel tax overrides after cart change
+		unset($this->gl_codes[$gl_code_counter]);
 	}
-	
+
 	function is_valid_trans_to_post()
 	{
 		return (count($this->grn_items) > 0 || count($this->gl_codes) > 0 || 
 			($this->ov_amount != 0) || ($this->ov_discount > 0));
 	}
-	
+
 	function clear_items()
 	{
 		unset($this->grn_items);
 		unset($this->gl_codes);
 		$this->ov_amount = $this->ov_discount = $this->supplier_id = 0;
-		
+
 		$this->grn_items = array();
 		$this->gl_codes = array();
 	}
-	
+
     function get_taxes($tax_group_id=null, $shipping_cost=0, $gl_codes=true)
     {
     	$items = array();
     	$prices = array();
-    	
+
         if ($tax_group_id == null)
         	$tax_group_id = $this->tax_group_id;
-        	
-		// preload the taxgroup !
-		$tax_group = get_tax_group_items_as_array($tax_group_id);    	
-        
+
+		// preload the taxgroup
+		$tax_group = get_tax_group_items_as_array($tax_group_id);
+
         foreach ($this->grn_items as $ln_itm) 
         {
         	$items[] = $ln_itm->item_code;
-//        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
         	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->chg_price),
-			 user_price_dec());
+				user_price_dec());
         }
 
         if ($tax_group_id == null)
         	$tax_group_id = $this->tax_group_id;
         $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id, 
         	$this->tax_included);
-
-///////////////// Joe Hunt 2009.08.18
 
 		if ($gl_codes)
 		{
@@ -126,34 +128,39 @@ class supp_trans
 				if ($index !== false)
 				{
 					$taxes[$index]['Value'] += $gl_code->amount;
-				}	
+				}
 			}
-		}	
-////////////////		
+		}
+
+		if(isset($this->tax_overrides))
+			foreach($this->tax_overrides as $id => $value) // add values entered manually
+			{
+				$taxes[$id]['Override'] = $value;
+			}
         return $taxes;
-    }		
+    }
 	//
 	//	Returns total invoice amount without taxes.
 	//
     function get_total_taxfree($tax_group_id=null)
     {
     	$total = 0;
-    	
+
 		// preload the taxgroup !
 		if ($tax_group_id != null)
 			$tax_group = get_tax_group_items_as_array($tax_group_id);
-		else 		
-			$tax_group = null;    	
-    	
+		else
+			$tax_group = null;
+
 		foreach ($this->grn_items as $ln_itm)
     		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
 			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
-   		{	//////// 2009-08-18 Joe Hunt
+   		{
    			if (!is_tax_account($gl_line->gl_code))
    				$total += $gl_line->amount;
-   		}	
+   		}
    		return $total;
     }
 
@@ -165,7 +172,7 @@ class supp_trans
 			$total += round($ln_itm->this_quantity_inv * $ln_itm->chg_price, user_price_dec());
 
 		foreach ($this->gl_codes as $gl_line)
-		{   //////// 2010-10-10 Joe Hunt
+		{
    			if (!is_tax_account($gl_line->gl_code) || $this->tax_included)
 				$total += $gl_line->amount;
 		}
@@ -210,17 +217,15 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->gl_code = $gl_code;
 		$this->tax_included = $tax_included;
 	}
-	
+
 	function full_charge_price($tax_group_id, $tax_group=null)
 	{
 		return get_full_price_for_item($this->item_code, 
 		  $this->chg_price, $tax_group_id, $this->tax_included, $tax_group);
 	}
-	
+
 	function taxfree_charge_price($tax_group_id, $tax_group=null)
 	{
-//		if ($tax_group_id==null)
-//			return $this->chg_price;
 		return get_tax_free_price_for_item($this->item_code, $this->chg_price, 
 		  $tax_group_id, $this->tax_included, $tax_group);
 	}

@@ -460,17 +460,22 @@ function handle_commit_order()
 			$inv->tax_group_id = $supp['tax_group_id'];
 
 			$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
-			
+
+			$total = 0;
 			foreach($cart->line_items as $key => $line) {
 				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
 					$line->item_description, $line->receive_qty, 0, $line->receive_qty,
 					$line->price, $line->price, true, get_standard_cost($line->stock_id), '');
 				$inv->ov_amount += round2(($line->receive_qty * $line->price), user_price_dec());
 			}
-			$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
-			foreach( $taxes as $taxitem) {
-				$inv->ov_gst += round2($taxitem['Value'], user_price_dec());
+			$inv->tax_overrides = $cart->tax_overrides;
+			if (!$inv->tax_included) {
+				$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
+				foreach( $taxes as $taxitem) {
+					$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
+				}
 			}
+
 			$inv_no = add_supp_invoice($inv);
 			commit_transaction(); // save PO+GRN+PI
 			// FIXME payment for cash terms. (Needs cash account selection)
@@ -478,7 +483,7 @@ function handle_commit_order()
        		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
 		}
 		else { // order modification
-		
+
 			$order_no = update_po($cart);
 			unset($_SESSION['PO']);
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");	
