@@ -56,12 +56,20 @@ function allocate_none(doc) {
 
 var allocations = {
 	'.amount': function(e) {
-		e.onblur = function() {
-			blur_alloc(this);
+ 		if(e.name == 'allocated_amount')
+ 		{
+  		  e.onblur = function() {
+			var dec = this.getAttribute("dec");
+			price_format(this.name, get_amount(this.name), dec);
 		  };
-		e.onfocus = function() {
-			focus_alloc(this);
-		};
+ 		} else {
+			e.onblur = function() {
+				blur_alloc(this);
+			};
+			e.onfocus = function() {
+				focus_alloc(this);
+			};
+		}
 	}
 }
 

@@ -96,7 +96,7 @@ function print_sales_summary_report()
 	$aligns = array('left', 'left', 'right', 'right');
     if ($orientation == 'L')
     	recalculate_cols($cols);
-	
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

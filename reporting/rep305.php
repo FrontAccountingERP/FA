@@ -93,8 +93,8 @@ function print_grn_valuation()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	$orientation = ($orientation ? 'L' : 'P');
-    $dec = user_price_dec();
+ 	$orientation = ($orientation ? 'L' : 'P');
+   	$dec = user_price_dec();
 
 	$cols = array(0, 75, 225, 260, 295, 330, 370, 410, 455, 515);
 	$headers = array(_('Stock ID'), _('Description'), _('PO No'), _('GRN')."#", _('Inv')."#", _('Qty'), _('Inv Price'), _('PO Price'), _('Total'));

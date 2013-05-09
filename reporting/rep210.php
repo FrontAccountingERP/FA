@@ -104,7 +104,7 @@ function print_remittances()
 				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 				$rep->title = _('REMITTANCE');
 				$rep->filename = "Remittance" . $i . ".pdf";
-			}	
+			}
 			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();

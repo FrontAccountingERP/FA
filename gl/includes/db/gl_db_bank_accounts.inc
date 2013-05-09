@@ -76,7 +76,7 @@ function get_bank_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function get_bank_accounts($show_inactive)
+function get_bank_accounts($show_inactive=false)
 {
 	$sql = "SELECT account.*, gl_account.account_name 
 		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 

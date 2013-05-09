@@ -10,17 +10,20 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_SALESPRICE';
-$path_to_root = "..";
+if (!@$_GET['popup'])
+	$path_to_root = "..";
+else	
+	$path_to_root = "../..";
+
 include_once($path_to_root . "/includes/session.inc");
-
-page(_($help_context = "Inventory Item Sales prices"));
-
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+
+if (!@$_GET['popup'])
+	page(_($help_context = "Inventory Item Sales prices"));
 
 //---------------------------------------------------------------------------------------------------
 
@@ -48,15 +51,22 @@ if (!isset($_POST['curr_abrev']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form();
+$action = $_SERVER['PHP_SELF'];
+if (@$_GET['popup'])
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center>" . _("Item:"). "&nbsp;";
-echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
-echo "<hr></center>";
-
+if (!@$_GET['popup'])
+{
+	echo "<center>" . _("Item:"). "&nbsp;";
+	echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
+	echo "<hr></center>";
+}
+else
+	br(2);
 set_global_stock_item($_POST['stock_id']);
 
 //----------------------------------------------------------------------------------------------------
@@ -69,6 +79,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		$input_error = 1;
 		display_error( _("The price entered must be numeric."));
 		set_focus('price');
+	}
+   	elseif ($Mode == 'ADD_ITEM' && get_stock_price_type_currency($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev']))
+   	{
+      	$input_error = 1;
+      	display_error( _("The sales pricing for this item, sales type and currency has already been added."));
+		set_focus('supplier_id');
 	}
 
 	if ($input_error != 1)
@@ -168,6 +184,11 @@ if ($Mode == 'Edit')
 }
 
 hidden('selected_id', $selected_id);
+if (@$_GET['popup'])
+{
+	hidden('_tabs_sel', get_post('_tabs_sel'));
+	hidden('popup', @$_GET['popup']);
+}
 div_start('price_details');
 start_table(TABLESTYLE2);
 
@@ -191,5 +212,6 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();
-end_page();
+if (!@$_GET['popup'])
+	end_page(@$_GET['popup'], false, false);
 ?>

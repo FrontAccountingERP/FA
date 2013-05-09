@@ -8,517 +8,504 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-18 14:11+0200\n"
+"POT-Creation-Date: 2013-05-09 21:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:20
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:41
+#: install/index.php:20 install/index.php:41
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:42
+#: install/index.php:42
 #, php-format
 msgid "Step %d: %s"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
+#: install/index.php:49
 msgid "Chart of accounts"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
+#: install/index.php:49 install/index.php:76
 msgid "Encoding"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
+#: install/index.php:49 install/index.php:76
 msgid "Description"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:49
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
+#: install/index.php:49 install/index.php:76
 msgid "Install"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:66
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:94
+#: install/index.php:66 install/index.php:94
 msgid "Installed"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:76
+#: install/index.php:76
 msgid "Language"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:124
+#: install/index.php:124
 msgid ""
 "Cannot connect to database. User or password is invalid or you have no "
 "permittions to create database."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:160
+#: install/index.php:160
 msgid "Cannot save system configuration file 'config.php'."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:167
+#: install/index.php:167
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:170
+#: install/index.php:170
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:173
+#: install/index.php:173
 msgid ""
 "Configuration file 'config_db.php' is not writable. Change its permissions "
 "so it is, then re-run installation step."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:211
+#: install/index.php:211
 msgid "Host name cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:215
+#: install/index.php:215
 msgid "Database user name cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:219
+#: install/index.php:219
 msgid "Database name cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:272
+#: install/index.php:272
 msgid "Company name cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:276
+#: install/index.php:276
 msgid "Company admin name cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:280
+#: install/index.php:280
 msgid "Company admin password cannot be empty."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:284
+#: install/index.php:284
 msgid "Company admin passwords differ."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:316
+#: install/index.php:316
 msgid "System Diagnostics"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:318
+#: install/index.php:318
 msgid "Select install wizard language:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:324
+#: install/index.php:324
 msgid ""
 "All application preliminary requirements seems to be correct. Please press "
 "Continue button below."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:325
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:351
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:358
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:365
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:389
+#: install/index.php:325 install/index.php:351 install/index.php:358
+#: install/index.php:365 install/index.php:389
 msgid "Continue >>"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:327
+#: install/index.php:327
 msgid ""
 "Application cannot be installed. Please fix problems listed below in red, "
 "and press Refresh button."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:328
+#: install/index.php:328
 msgid "Refresh"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:338
+#: install/index.php:338
 msgid "Database Server Settings"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:340
+#: install/index.php:340
 msgid "Server Host:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:341
+#: install/index.php:341
 msgid "Database User:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:342
+#: install/index.php:342
 msgid "Database Password:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:343
+#: install/index.php:343
 msgid "Database Name:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
+#: install/index.php:344
 msgid "Use '0_' Table Prefix:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:38
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:113
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:126
+#: install/index.php:344 includes/system_tests.inc:38
+#: includes/system_tests.inc:113 includes/system_tests.inc:126
 msgid "Yes"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:344
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:38
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:113
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:126
+#: install/index.php:344 includes/system_tests.inc:38
+#: includes/system_tests.inc:113 includes/system_tests.inc:126
 msgid "No"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:345
+#: install/index.php:345
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:346
+#: install/index.php:346
 msgid "Install Additional COAs from FA Repository:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:348
+#: install/index.php:348
 msgid ""
 "Use table prefix if you share selected database for more than one FA company."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:349
+#: install/index.php:349
 msgid ""
 "Do not select additional langs nor COAs if you have no working internet "
 "connection right now. You can install them later."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:350
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:357
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:364
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:388
+#: install/index.php:350 install/index.php:357 install/index.php:364
+#: install/index.php:388
 msgid "<< Back"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:355
+#: install/index.php:355
 msgid "User Interface Languages Selection"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:362
+#: install/index.php:362
 msgid "Charts of Accounts Selection"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:379
+#: install/index.php:379
 msgid "Company Settings"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:381
+#: install/index.php:381
 msgid "Company Name:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:382
+#: install/index.php:382
 msgid "Admin Login:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:383
+#: install/index.php:383
 msgid "Admin Password:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:384
+#: install/index.php:384
 msgid "Reenter Password:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:385
+#: install/index.php:385
 msgid "Select Chart of Accounts:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:386
+#: install/index.php:386
 msgid "Select Default Language:"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:393
+#: install/index.php:393
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:394
+#: install/index.php:394
 msgid "Please do not forget to remove install wizard folder."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../install/index.php:397
+#: install/index.php:397
 msgid "Click here to start."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:15
+#: includes/system_tests.inc:15
 msgid "Info"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:16
+#: includes/system_tests.inc:16
 msgid "Optional"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:17
+#: includes/system_tests.inc:17
 msgid "Recommended"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:18
+#: includes/system_tests.inc:18
 msgid "Required "
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:24
+#: includes/system_tests.inc:24
 msgid "MySQL version"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:28
+#: includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:35
+#: includes/system_tests.inc:35
 msgid "PHP MySQL extension"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:40
+#: includes/system_tests.inc:40
 msgid "Your PHP has to have MySQL extension enabled."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:46
+#: includes/system_tests.inc:46
 msgid "PHP version"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:50
+#: includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 4.3.3"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:57
+#: includes/system_tests.inc:57
 msgid "Server system"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:67
+#: includes/system_tests.inc:67
 msgid "Session save path"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:79
+#: includes/system_tests.inc:79
 msgid "Removed install wizard folder"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:82
+#: includes/system_tests.inc:82
 msgid "Not removed"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:83
+#: includes/system_tests.inc:83
 msgid "Remove or rename install wizard folder for security reasons."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:90
+#: includes/system_tests.inc:90
 msgid "Browser type"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:94
+#: includes/system_tests.inc:94
 msgid "Any browser is supported"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:101
+#: includes/system_tests.inc:101
 msgid "Http server type"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:105
+#: includes/system_tests.inc:105
 msgid "Any server is supported"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:112
+#: includes/system_tests.inc:112
 msgid "Native gettext"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:116
+#: includes/system_tests.inc:116
 msgid "In case of no gettext support, php emulation is used"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:124
+#: includes/system_tests.inc:124
 msgid "Debugging mode"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:128
+#: includes/system_tests.inc:128
 msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:137
+#: includes/system_tests.inc:137
 msgid "Error logging"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:145
+#: includes/system_tests.inc:145
 msgid "Disabled"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:148
+#: includes/system_tests.inc:148
 msgid "To switch error logging set $error_logging in config.php file"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:151
+#: includes/system_tests.inc:151
 msgid "Log file is not writeable"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:161
+#: includes/system_tests.inc:161
 msgid "Current database version"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:165
+#: includes/system_tests.inc:165
 msgid "Database structure seems to be not upgraded to current version"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:180
+#: includes/system_tests.inc:180
 msgid "Company subdirectories consistency"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:193
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:200
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:208
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:225
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:340
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:349
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:358
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:366
+#: includes/system_tests.inc:193 includes/system_tests.inc:200
+#: includes/system_tests.inc:208 includes/system_tests.inc:225
+#: includes/system_tests.inc:340 includes/system_tests.inc:349
+#: includes/system_tests.inc:358 includes/system_tests.inc:366
 #, php-format
 msgid "'%s' is not writeable"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:221
+#: includes/system_tests.inc:221
 msgid "Temporary directory"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:233
+#: includes/system_tests.inc:233
 msgid "Language configuration consistency"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:242
+#: includes/system_tests.inc:242
 msgid "Languages folder should be writeable."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:251
+#: includes/system_tests.inc:251
 msgid "Languages configuration file should be writeable."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:270
+#: includes/system_tests.inc:270
 #, php-format
 msgid "Missing %s translation file."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:275
+#: includes/system_tests.inc:275
 #, php-format
 msgid "Missing system locale: %s"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:288
+#: includes/system_tests.inc:288
 msgid "Main config file"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:295
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:317
+#: includes/system_tests.inc:295 includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:296
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:318
+#: includes/system_tests.inc:296 includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:300
+#: includes/system_tests.inc:300
 #, php-format
 msgid "'%s' file should be read-only"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:309
+#: includes/system_tests.inc:309
 msgid "Database auth file"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:322
+#: includes/system_tests.inc:322
 #, php-format
 msgid ""
 "'%s' file should be read-only if you do not plan to add or change companies"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:333
+#: includes/system_tests.inc:333
 msgid "Extensions system"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:371
+#: includes/system_tests.inc:371
 msgid "Extensions configuration files and directories should be writeable"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:384
+#: includes/system_tests.inc:384
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:394
+#: includes/system_tests.inc:394
 msgid ""
 "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:397
+#: includes/system_tests.inc:397
 msgid ""
 "OpenSSL have to be available on your server to use extension repository "
 "system."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
+#: includes/system_tests.inc:420
 msgid "Test"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
+#: includes/system_tests.inc:420
 msgid "Test type"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
+#: includes/system_tests.inc:420
 msgid "Value"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:420
+#: includes/system_tests.inc:420
 msgid "Comments"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/system_tests.inc:444
+#: includes/system_tests.inc:444
 msgid "Ok"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:190
+#: includes/packages.inc:189
 #, php-format
 msgid "No key field '%s' in file '%s'"
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:295
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:329
+#: includes/packages.inc:294
+msgid "Cannot download repo index file."
+msgstr ""
+
+#: includes/packages.inc:306 includes/packages.inc:343
 #, php-format
 msgid "Cannot delete outdated '%s' file."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:299
+#: includes/packages.inc:310
 msgid "Release file in repository is invalid, or public key is outdated."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:316
+#: includes/packages.inc:327
 msgid "Repository version does not match application version."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:333
+#: includes/packages.inc:335 includes/packages.inc:377
+#, php-format
+msgid "Cannot download '%s' file."
+msgstr ""
+
+#: includes/packages.inc:347
 #, php-format
 msgid ""
 "Security alert: broken index file in repository '%s'. Please inform "
 "repository administrator about this issue."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:366
+#: includes/packages.inc:383
 #, php-format
 msgid ""
 "Security alert: broken package '%s' in repository. Please inform repository "
 "administrator about this issue."
 msgstr ""
 
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:621
-#: /tmp/fa_unstable.sav3/devel/../includes/packages.inc:672
+#: includes/packages.inc:638 includes/packages.inc:699
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""

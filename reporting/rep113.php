@@ -85,13 +85,13 @@ function print_credits()
 				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 				$rep->title = _('CREDIT NOTE');
 				$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
-			}	
-			$rep->SetHeaderType('Header2');
+			}
+		    $rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
+			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], true);
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
 			$rep->NewPage();
 

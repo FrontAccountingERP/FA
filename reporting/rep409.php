@@ -59,7 +59,7 @@ function print_workorders()
 		$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
     	recalculate_cols($cols);
- 
+
 	for ($i = $from; $i <= $to; $i++)
 	{
 		$myrow = get_work_order($i);
@@ -71,7 +71,7 @@ function print_workorders()
 			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			$rep->title = _('WORK ORDER');
 			$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
-		}	
+		}
 		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();

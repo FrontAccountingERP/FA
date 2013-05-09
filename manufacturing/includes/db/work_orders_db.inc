@@ -253,9 +253,16 @@ function void_work_order($woid)
 			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$$row['id'];
 			db_query($sql, "Cannot void a wo production");
 			
-			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
+			//Post voided entry if not prevoided explicitly
+			$void_entry = get_voided_entry(ST_MANURECEIVE, $row['id']);
+			if ($void_entry)
+				continue;
+			$memo_ = _("Voiding Work Order Trans # ").$woid;
+			add_audit_trail(ST_MANURECEIVE, $row['id'], today(), _("Voided.")."\n".$memo_);
+			add_voided_entry(ST_MANURECEIVE, $row['id'], today(), $memo_);
 		}
-		$result = get_additional_issues($woid); // check the issued quantities
+
+		$result = get_work_order_issues($woid);
 		$cost = 0;
 		$issue_no = 0;
 		while ($row = db_fetch($result))
@@ -275,10 +282,13 @@ function void_work_order($woid)
 		if ($cost != 0)
 			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
 
-		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
+		//Adust avg labour cost
+		$cost = get_gl_wo_cost($woid, WO_LABOUR); 
 		if ($cost != 0)
-			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
-		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
+			add_labour_cost($work_order['stock_id'], 1, $date, -$cost, true);
+			
+		//Adust avg overhead cost
+		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); 
 		if ($cost != 0)
 			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 		

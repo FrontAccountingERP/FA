@@ -354,7 +354,6 @@ foreach ($installed_extensions as $ext)
 // ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
-ini_set('session.cache_limiter', 'private'); // prevent 'page expired' errors
 
 hook_session_start(@$_POST["company_login_name"]);
 
@@ -456,6 +455,16 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			// Incorrect password
 				login_fail();
 			}
+			elseif(isset($_SESSION['timeout']) && !$_SESSION['timeout']['post'])
+			{
+				// in case of GET request redirect to avoid confirmation dialog 
+				// after return from menu option
+				header("HTTP/1.1 303 See Other");
+				header("Location: ".$_SESSION['timeout']['uri']);
+				exit();
+			}
+			$lang = &$_SESSION['language'];
+			$lang->set_language($_SESSION['language']->code);
 		}
 	} else
 	{	set_global_connection();

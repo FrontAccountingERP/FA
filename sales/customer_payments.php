@@ -76,8 +76,10 @@ if (list_updated('BranchID')) {
 	$Ajax->activate('customer_id');
 }
 
-if (!isset($_POST['customer_id']))
-	$_POST['customer_id'] = get_global_customer(false);
+if (!isset($_POST['customer_id'])) {
+	$_SESSION['alloc']->person_id = $_POST['customer_id'] = get_global_customer(false);
+	$_SESSION['alloc']->read();
+}
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
@@ -97,8 +99,10 @@ if (isset($_GET['AddedID'])) {
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=", _("Select Another &Customer Transaction for Payment"));
+
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	
+
 	display_footer_exit();
 }
 elseif (isset($_GET['UpdatedID'])) {
@@ -112,8 +116,10 @@ elseif (isset($_GET['UpdatedID'])) {
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php?", _("Select Another Customer Payment for &Edition"));
+
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	
+
 	display_footer_exit();
 }
 
@@ -224,13 +230,6 @@ function can_process()
 
 //----------------------------------------------------------------------------------------------
 
-// validate inputs
-if (isset($_POST['AddPaymentItem'])) {
-
-	if (!can_process()) {
-		unset($_POST['AddPaymentItem']);
-	}
-}
 if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
@@ -253,7 +252,7 @@ $new = $_SESSION['alloc']->trans_no == 0;
 
 //----------------------------------------------------------------------------------------------
 
-if (isset($_POST['AddPaymentItem'])) {
+if (get_post('AddPaymentItem') && can_process()) {
 	
 	$cust_currency = get_customer_currency($_POST['customer_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
@@ -265,6 +264,7 @@ if (isset($_POST['AddPaymentItem'])) {
 
 	new_doc_date($_POST['DateBanked']);
 
+	$new_pmt = !$_SESSION['alloc']->trans_no;
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
@@ -272,20 +272,18 @@ if (isset($_POST['AddPaymentItem'])) {
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->write();
-	
-	unset($_POST);
-	unset($_SESSION);
 
+	unset($_SESSION['alloc']);
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	//meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
-	meta_forward($_SERVER['PHP_SELF'], $new ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
+	meta_forward($_SERVER['PHP_SELF'], $new_pmt ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
 }
 
 //----------------------------------------------------------------------------------------------
 
 function read_customer_data()
 {
-	global $Refs, $new;
+	global $Refs;
 
 	$myrow = get_customer_habit($_POST['customer_id']);
 
@@ -293,7 +291,7 @@ function read_customer_data()
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	//If page is called first time and New entry fetch the nex reference number
-	if ($new && !isset($_POST['charge'])) 
+	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
 		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
 }
 
@@ -303,10 +301,9 @@ $old_ref = 0;
 
 //Chaitanya : 13-OCT-2011 - To support Edit feature
 if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
+{
 	$_POST['trans_no'] = $_GET['trans_no'];
-//Read data
-if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-{	
+
 	$new = 0;
 	$myrow = get_customer_trans($_POST['trans_no'], ST_CUSTPAYMENT);
 	$_POST['customer_id'] = $myrow["debtor_no"];
@@ -320,15 +317,26 @@ if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
 	$_POST["discount"] = price_format($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
+
+	if (!isset($_POST['charge'])) // first page call
+	{
+		//Prepare allocation cart 
+		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
+		else
+		{
+			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+			$Ajax->activate('alloc_tbl');
+		}
+	}
+
 }
-else
-	$_POST['trans_no'] = 0;
 
 //----------------------------------------------------------------------------------------------
-
+$new = !$_SESSION['alloc']->trans_no;
 start_form();
 
-	hidden('trans_no', $_POST['trans_no']);
+	hidden('trans_no');
 	hidden('old_ref', $old_ref);
 
 	start_outer_table(TABLESTYLE2, "width=60%", 5);
@@ -347,18 +355,6 @@ start_form();
 		$Ajax->activate('alloc_tbl');
 	}
 
-	if (!isset($_POST['charge'])) // first page call
-	{
-		//Prepare allocation cart 
-		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
-		else
-		{
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
-			$Ajax->activate('alloc_tbl');
-		}
-	}
-	
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
@@ -418,7 +414,7 @@ start_form();
 
 	br();
 
-	if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+	if ($new)
 		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
 	else
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');

@@ -165,7 +165,7 @@ if (get_post('upload'))
 			display_error(_("You can only upload *.sql backup files"));
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, BACKUP_PATH . $fname);
-			display_notification( "File uploaded to backup directory");
+			display_notification(_("File uploaded to backup directory"));
 			$Ajax->activate('backups');
 		} else
 			display_error(_("File was not uploaded into the system."));

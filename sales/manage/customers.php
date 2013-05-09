@@ -337,7 +337,7 @@ else
 	hidden('customer_id');
 }
 
-if (!$selected_id)
+if (!$selected_id || list_updated('customer_id'))
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
 tabbed_content_start('tabs', array(

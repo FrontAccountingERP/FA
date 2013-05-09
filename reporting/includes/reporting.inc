@@ -22,6 +22,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 
 	$url = $path_to_root.'/reporting/prn_redirect.php?';
 	$def_orientation = (isset($def_print_orientation) && $def_print_orientation == 1 ? 1 : 0);
+
 	switch ($type_no)
 	{
 		case ST_SALESQUOTE :
@@ -84,12 +85,12 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		case ST_CUSTPAYMENT :
 			$rep = 112;
-			// from, to, currency, email, comments, orientation
+			// from, to, currency, comments, orientation
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => '', 
-				'PARAM_3' => '', 
+				'PARAM_3' => '',
 				'PARAM_4' => $def_orientation);
 			break;
 		case ST_SUPPAYMENT :

@@ -261,6 +261,8 @@ function void_sales_invoice($type, $type_no)
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 
+	void_stock_move($type, $type_no); // in case of credit note with return
+
 	void_trans_tax_details($type, $type_no);
 
 	void_cust_allocations($type, $type_no);

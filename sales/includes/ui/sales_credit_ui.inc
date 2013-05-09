@@ -176,7 +176,7 @@ function display_credit_items($title, &$order)
 
     $id = find_submit('Edit');
 
-    foreach ($order->line_items as $line_no=>$line)
+    foreach ($order->get_items() as $line_no=>$line)
     {
 	$line_total =	round($line->qty_dispatched * $line->price * (1 - $line->discount_percent),
 	   user_price_dec());

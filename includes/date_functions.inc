@@ -347,8 +347,6 @@ function sql2date($date_)
 	global $date_system;
 
 	//for MySQL dates are in the format YYYY-mm-dd
-	if ($date_ == null || strlen($date_) == 0)
-		return "";
 
 	if (strpos($date_, "/")) 
 	{ // In MySQL it could be either / or -
@@ -358,6 +356,8 @@ function sql2date($date_)
 	{
 		list($year, $month, $day) = explode("-", $date_);
 	}
+	if (!isset($day)) // data format error
+		return "";
 
 	if (strlen($day) > 4) 
 	{  /*chop off the time stuff */

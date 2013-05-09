@@ -39,7 +39,9 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 
 	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
 	$doc->reference = $Refs->get_next($doc->trans_type);
-	$doc->Comments = sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1));
+	if ($doc->Comments != "")
+		$doc->Comments .= "\n";
+	$doc->Comments .= sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1));
 
 	foreach ($doc->line_items as $line_no=>$item) {
 		$line = &$doc->line_items[$line_no];
@@ -109,7 +111,7 @@ if ($id != -1)
 		if (count($invs) > 0)
 		{
 			$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
-				'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
+				'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => $def_print_orientation);
 			display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 			$ar['PARAM_3'] = 1; // email
 			display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);

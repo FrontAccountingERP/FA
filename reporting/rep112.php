@@ -80,9 +80,9 @@ function print_receipts()
 	$cur = get_company_Pref('curr_default');
 
 	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
-    if ($orientation == 'L')
+   	if ($orientation == 'L')
     	recalculate_cols($cols);
-	$rep->SetHeaderType('Header2');
+ 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);

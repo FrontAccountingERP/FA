@@ -67,7 +67,17 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 		// insert a -ve stock move for each item
 		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
-			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, 0);
+			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, 0, 1, $UnitCost);
+	}
+	
+	// -------------------------------------------------------------------------
+	//Negative Stock Handling
+	$qoh = get_qoh_on_date($stock_id);
+	$cost_adjust = false;
+	if ($qoh < 0)
+	{
+		if ($qoh + $units_reqd >= 0)
+			$cost_adjust = true;
 	}
 
 

@@ -278,6 +278,7 @@ function print_annual_expense_breakdown()
 	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
     	recalculate_cols($cols);
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

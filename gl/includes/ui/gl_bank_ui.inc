@@ -114,7 +114,8 @@ function display_bank_header(&$order)
 		else
 			unset($_POST['bank_account']);
 	}		
-    bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
+    
+    bank_accounts_list_row( $payment ? _("From:") : _("Into:"), 'bank_account', null, true);
     if ($payment)
 		bank_balance_row($_POST['bank_account']);
     	

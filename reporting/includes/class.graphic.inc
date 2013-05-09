@@ -497,6 +497,7 @@ class graph
             foreach ($this->x as $i => $parameter)
             {
                 $size    = $this->y[$i] * 360 / $this->sum_total;
+				$size = round2($size, 0);
                 $sizes[] = $size;
                 $start  += $size;
             }
@@ -518,7 +519,8 @@ class graph
                     for ($i = $this->h3d; $i >= 0; $i--)
                     {
                         //imagearc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color]);
-                        imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_NOFILL);
+                        if ($size >= 1)
+                        	imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_NOFILL);
                     }
                     $start += $size;
                 }
@@ -534,8 +536,8 @@ class graph
                         $num_color -= 5;
                     }
                     $color = 'arc_' . $num_color;
-
-                    imagefilledarc($this->img, $center_x, $center_y, ($width+2), ($height+2), $start, ($start+$size), $this->color[$color], IMG_ARC_EDGED);
+                    if ($size >= 1)
+                    	imagefilledarc($this->img, $center_x, $center_y, ($width+2), ($height+2), $start, ($start+$size), $this->color[$color], IMG_ARC_EDGED);
                     $start += $size;
                 }
             }
@@ -552,7 +554,8 @@ class graph
                     }
                     $color        = 'arc_' . $num_color;
                     $color_shadow = 'arc_' . $num_color . '_shadow';
-                    imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
+                    if ($size >= 1)
+                    	imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_PIE);
                     $start += $size;
                 }
                 imagefilledarc($this->img, $center_x, $center_y, 100, 100, 0, 360, $this->color['background'], IMG_ARC_PIE);
@@ -604,7 +607,7 @@ class graph
                 $this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
                 $this->graphic_area_x1   += $this->string_width(($this->higher_value_str), $this->size);
                 $this->width += $this->graphic_area_x1 + 20;
-                $this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
+                $this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 30);
                 break;
 
             // Lines
@@ -613,7 +616,7 @@ class graph
                 $this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
                 $this->graphic_area_x1   += $this->string_width(($this->higher_value_str), $this->size);
                 $this->width += $this->graphic_area_x1 + 20;
-                $this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
+                $this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 30);
                 break;
 
             // Pie
@@ -631,6 +634,7 @@ class graph
                 break;
         }
 
+        $this->graphic_area_width = max($this->graphic_area_width, $this->string_width($this->title, $this->size));
         $this->width += $this->graphic_area_width;
         $this->width += $this->legend_box_width;
 
@@ -731,7 +735,8 @@ class graph
         {
             if (!empty($this->axis_x))
             {
-                $this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x, $this->color['title']);
+                $this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, 
+                	$this->axis_x." (".$this->graphic_1.")", $this->color['title']);
                 $y += 25;
             }
 

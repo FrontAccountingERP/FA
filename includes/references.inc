@@ -57,7 +57,7 @@ class references
 	function save($type, $id, $reference) 
 	{
 		update_reference($type, $id, $reference); // store in refs table
-		if ($reference == $this->get_next($type)) { // if reference was not changed from default
+		if ($reference == $this->get_next($type)) { // if reference was bigger or not changed from default
 			$next = $this->_increment($reference);	// increment default
 			save_next_reference($type, $next);
 		}

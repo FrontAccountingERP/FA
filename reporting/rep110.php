@@ -99,7 +99,7 @@ function print_deliveries()
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
-			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], false);
+			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], true);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
 			$rep->NewPage();
 

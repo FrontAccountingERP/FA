@@ -113,7 +113,7 @@ function print_tax_report()
 	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right','left');
     if ($orientation == 'L')
     	recalculate_cols($cols);
-	
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)

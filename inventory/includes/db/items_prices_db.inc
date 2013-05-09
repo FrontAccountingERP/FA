@@ -53,4 +53,14 @@ function get_stock_price($price_id)
 	return db_fetch($result);
 }
 
+function get_stock_price_type_currency($stock_id, $type, $currency)
+{
+	$sql = "SELECT * FROM ".TB_PREF."prices WHERE stock_id=".db_escape($stock_id)."
+		AND sales_type_id=".db_escape($type)."
+		AND curr_abrev=".db_escape($currency);
+	
+	$result = db_query($sql,"price could not be retreived");
+	
+	return db_fetch($result);
+}
 ?>

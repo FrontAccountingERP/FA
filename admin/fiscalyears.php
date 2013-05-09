@@ -99,7 +99,7 @@ function check_can_delete($selected_id)
 	// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 	if (check_years_before(sql2date($myrow['begin']), true))
 	{
-		display_error(_("Cannot delete this fiscal year because thera are fiscal years before."));
+		display_error(_("Cannot delete this fiscal year because there are fiscal years before."));
 		return false;
 	}
 	if ($myrow['closed'] == 0)

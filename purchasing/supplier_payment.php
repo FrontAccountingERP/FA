@@ -95,9 +95,10 @@ if (isset($_GET['AddedID'])) {
 
     display_note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
+	hyperlink_no_params($path_to_root . "/purchasing/inquiry/supplier_allocation_inquiry.php?supplier_id=", _("Select Another &Supplier Transaction for Payment"));
 //    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Supplier &Payment"), "supplier_id=" . $_POST['supplier_id']);
 
 	display_footer_exit();
 }
@@ -225,7 +226,11 @@ function handle_add_payment()
 	if ($comp_currency != $bank_currency && $bank_currency != $supp_currency)
 		$rate = 0;
 	else
+	{
 		$rate = input_num('_ex_rate');
+		$supplier_amount = input_num('allocated_amount'); 
+			if($supplier_amount) $rate = input_num('amount')/$supplier_amount;
+	}
 
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
@@ -296,7 +301,7 @@ start_form();
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) 
 	{
-		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+		amount_row("Supplier Amount:", 'allocated_amount', null, '', $supplier_currency, 2);
 	}
 
 	amount_row(_("Bank Charge:"), 'charge');

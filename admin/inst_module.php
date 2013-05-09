@@ -113,13 +113,12 @@ function display_extensions()
 		$available = @$ext['available'];
 		$installed = @$ext['version'];
 		$id = @$ext['local_id'];
-		$is_mod = $ext['type'] == 'module';
 
 		$entries = fmt_titles(@$ext['entries']);
 		$tabs = fmt_titles(@$ext['tabs']);
 
 		alt_table_row_color($k);
-//		label_cell(is_array($ext['Descr']) ? $ext['Descr'][0] : $ext['Descr']);
+
 		label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 		label_cell($tabs);
 		label_cell($entries);

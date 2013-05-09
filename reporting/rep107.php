@@ -61,7 +61,8 @@ function print_invoices()
 	$email = $_POST['PARAM_3'];
 	$pay_service = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
-	$orientation = $_POST['PARAM_6'];
+	$customer = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_7'];
 
 	if (!$from || !$to) return;
 
@@ -85,17 +86,18 @@ function print_invoices()
 
 	if ($email == 0)
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
-    if ($orientation == 'L')
-    	recalculate_cols($cols);
-
-	$range = get_invoice_range($from, $to);
-	while($row = db_fetch($range))
+	if ($orientation == 'L')
+		recalculate_cols($cols);
+	for ($i = $from; $i <= $to; $i++)
 	{
-			$i = $row['trans_no'];
 			if (!exists_customer_trans(ST_SALESINVOICE, $i))
 				continue;
 			$sign = 1;
 			$myrow = get_customer_trans($i, ST_SALESINVOICE);
+
+			if($customer && $myrow['debtor_no'] != $customer) {
+				continue;
+			}
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 
@@ -107,12 +109,12 @@ function print_invoices()
 				$rep->title = _('INVOICE');
 				$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
 			}	
-		    $rep->SetHeaderType('Header2');
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], false);
+			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], true);
 			$baccount['payment_service'] = $pay_service;
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
 			$rep->NewPage();

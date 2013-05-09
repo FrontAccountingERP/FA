@@ -83,17 +83,26 @@ function print_sales_orders()
 		$rep->Font();
 		if ($print_as_quote == 1)
 		{
-			$rep->title = _('QUOTE');
-			$rep->filename = "Quote" . $i . ".pdf";
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			if ($print_as_quote == 1)
+			{
+				$rep->title = _('QUOTE');
+				$rep->filename = "Quote" . $i . ".pdf";
+			}
+			else
+			{
+				$rep->title = _("SALES ORDER");
+				$rep->filename = "SalesOrder" . $i . ".pdf";
+			}
 		}
 		else
-		{
-			$rep->title = _("SALES ORDER");
-			$rep->filename = "SalesOrder" . $i . ".pdf";
-		}
+			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
 		$rep->NewPage();
 

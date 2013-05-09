@@ -62,12 +62,12 @@ if ($use_date_picker) {
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
-	create_cart(ST_CUSTDELIVERY, 0);
+	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
-	create_cart(ST_SALESINVOICE, 0);
+	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
@@ -455,6 +455,13 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	if ($ret == -1)
 	{
 		display_error(_("The entered reference is already in use."));
+		$ref = get_next_reference($_SESSION['Items']->trans_type);
+		if ($ref != $_SESSION['Items']->reference)
+		{
+			display_error(_("The reference number field has been increased. Please save the document again."));
+			$_POST['ref'] = $_SESSION['Items']->reference = $ref;
+			$Ajax->activate('ref');
+		}	
 		set_focus('ref');
 	}
 	else
@@ -595,28 +602,28 @@ function  handle_cancel_order()
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 		display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
-
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 		display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
-	} else {
+	} elseif ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
+	{
+		delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
+		display_notification(_("This sales quotation has been cancelled as requested."), 1);
+		submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+	} else { // sales order
 		if ($_SESSION['Items']->trans_no != 0) {
-			if ($_SESSION['Items']->trans_type == ST_SALESORDER && 
-				sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
-				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-			else {
+			$order_no = key($_SESSION['Items']->trans_no);
+			if (sales_order_has_deliveries($order_no))
+			{
+				close_sales_order($order_no);
+				display_notification(_("Undelivered part of order has been cancelled as requested."), 1);
+				submenu_option(_("Select Another Sales Order for Edition"), "/sales/inquiry/sales_orders_view.php?type=".ST_SALESORDER);
+			} else {
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
-				if ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
-				{
-					display_notification(_("This sales quotation has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
-				}
-				else
-				{
-					display_notification(_("This sales order has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
-				}
-			}	
+
+				display_notification(_("This sales order has been cancelled as requested."), 1);
+				submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+			}
 		} else {
 			processing_end();
 			meta_forward($path_to_root.'/index.php','application=orders');
@@ -739,6 +746,8 @@ if ($customer_error == "") {
 		    _('Check entered data and save document'), 'default');
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	} else {
+		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
+			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');
 	}

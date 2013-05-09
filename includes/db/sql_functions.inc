@@ -55,7 +55,7 @@ function cancel_transaction()
 //
 function update_record_status($id, $status, $table, $key) {
 	$sql = "UPDATE ".TB_PREF.$table." SET inactive = "
-		. db_escape($status)." WHERE $key=".db_escape($id);
+		. ((int)$status)." WHERE $key=".db_escape($id);
 		
   	db_query($sql, "Can't update record status");
 }

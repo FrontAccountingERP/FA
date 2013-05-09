@@ -94,6 +94,19 @@ class hooks {
 	}
 
 	//
+	//	Invoked for all modules before page header is displayed
+	//
+	function pre_header($fun_args)
+	{
+	}
+	//
+	//	Invoked for all modules before page footer is displayed
+	//
+	function pre_footer($fun_args)
+	{
+	}
+
+	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.
 	// Used instead of built in simple english price_in_words() function.
@@ -253,17 +266,20 @@ function hook_invoke_all($method, &$data, $opts=null)
 	global $Hooks;
 	
 	$return = array();
-	foreach($Hooks as $ext => $hook)
-		if (method_exists($hook, $method)) {
-			set_ext_domain('modules/'.$ext);
-			$result = $hook->$method($data, $opts);
-			if (isset($result) && is_array($result)) {
-				$return = array_merge_recursive($return, $result);
-			} else if (isset($result)) {
-				$return[] = $result;
-				}
-			set_ext_domain();
-		}
+	if (isset($Hooks))
+	{
+		foreach($Hooks as $ext => $hook)
+			if (method_exists($hook, $method)) {
+				set_ext_domain('modules/'.$ext);
+				$result = $hook->$method($data, $opts);
+				if (isset($result) && is_array($result)) {
+					$return = array_merge_recursive($return, $result);
+				} else if (isset($result)) {
+					$return[] = $result;
+					}
+				set_ext_domain();
+			}
+	}
 	return $return;
 }
 /*
