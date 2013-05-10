@@ -68,7 +68,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		// insert a -ve stock move for each item
 		$UnitCost = get_standard_cost($bom_item["component"]);
 		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
-			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, 0, 1, $UnitCost);
+			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, 0, $UnitCost);
 	}
 	
 	// -------------------------------------------------------------------------

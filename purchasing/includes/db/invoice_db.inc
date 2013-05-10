@@ -675,7 +675,7 @@ function remove_not_invoice_item($id)
         $price = get_tax_free_price_for_item($myrow['item_code'], $myrow['unit_price'], $supp['tax_group_id'], $supp['tax_included']);        
 
     add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
-        -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $price);
+        -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], $price);
         
     $clearing_act = get_company_pref('grn_clearing_act');
     if ($clearing_act) {    // otherwise GRN clearing account is not used

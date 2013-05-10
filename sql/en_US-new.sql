@@ -1633,26 +1633,23 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
 -- Table structure for table `0_stock_moves`
 --
 
-DROP TABLE IF EXISTS `0_stock_moves`;
-CREATE TABLE IF NOT EXISTS `0_stock_moves` (
-  `trans_id` int(11) NOT NULL auto_increment,
-  `trans_no` int(11) NOT NULL default '0',
-  `stock_id` char(20) NOT NULL default '',
-  `type` smallint(6) NOT NULL default '0',
-  `loc_code` char(5) NOT NULL default '',
-  `tran_date` date NOT NULL default '0000-00-00',
-  `person_id` int(11) default NULL,
-  `price` double NOT NULL default '0',
-  `reference` char(40) NOT NULL default '',
-  `qty` double NOT NULL default '1',
-  `discount_percent` double NOT NULL default '0',
-  `standard_cost` double NOT NULL default '0',
-  `visible` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`trans_id`),
+CREATE TABLE `0_stock_moves` (
+  `trans_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trans_no` int(11) NOT NULL DEFAULT '0',
+  `stock_id` char(20) NOT NULL DEFAULT '',
+  `type` smallint(6) NOT NULL DEFAULT '0',
+  `loc_code` char(5) NOT NULL DEFAULT '',
+  `tran_date` date NOT NULL DEFAULT '0000-00-00',
+  `person_id` int(11) DEFAULT NULL,
+  `price` double NOT NULL DEFAULT '0',
+  `reference` char(40) NOT NULL DEFAULT '',
+  `qty` double NOT NULL DEFAULT '1',
+  `discount_percent` double NOT NULL DEFAULT '0',
+  `standard_cost` double NOT NULL DEFAULT '0',
+  PRIMARY KEY (`trans_id`),
   KEY `type` (`type`,`trans_no`),
   KEY `Move` (`stock_id`,`loc_code`,`tran_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 --
 -- Dumping data for table `0_stock_moves`
 --

@@ -222,3 +222,12 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('bcc_email', 'setup.company', 'varchar', 100, ''),
 	('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0'),
 	('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
+
+# stock_moves.visible field is obsolete
+# removing obsolete moves for writeoffs
+DELETE moves
+	FROM `0_stock_moves` moves 
+	INNER JOIN (SELECT * FROM `0_stock_moves` WHERE `type`=11 AND `qty`<0) writeoffs ON writeoffs.`trans_no`=moves.`trans_no` AND writeoffs.`type`=11
+	WHERE moves.`type`=11;
+
+ALTER TABLE `0_stock_moves` DROP COLUMN `visible`;

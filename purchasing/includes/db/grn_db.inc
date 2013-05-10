@@ -153,7 +153,7 @@ function add_grn(&$po)
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
 				$order_line->receive_qty, $order_line->standard_cost,
-            		$po->supplier_id, 1, $order_line->taxfree_charge_price($po));
+            		$po->supplier_id, $order_line->taxfree_charge_price($po));
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
@@ -259,7 +259,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	db_query($sql);
 
     add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
-       	$entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
+       	$entered_grn->this_quantity_inv, $mcost, $supplier, $entered_grn->chg_price);
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,

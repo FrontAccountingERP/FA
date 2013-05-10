@@ -75,8 +75,7 @@ function getPeriods($stockid, $location)
 			FROM ".TB_PREF."stock_moves
 			WHERE stock_id='$stockid'
 			AND loc_code ='$location'
-			AND (type=13 OR type=11)
-			AND visible=1";
+			AND (type=13 OR type=11)";
 
     $TransResult = db_query($sql,"No transactions were returned");
 	return db_fetch($TransResult);

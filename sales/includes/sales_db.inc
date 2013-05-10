@@ -35,10 +35,10 @@ include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 // $type is 10 (invoice) or 11 (credit)
 
 function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_, $reference,
-	$quantity, $std_cost, $show_or_hide=1, $price=0, $discount_percent=0)
+	$quantity, $std_cost, $price=0, $discount_percent=0)
 {
 	return add_stock_move($type, $stock_id, $trans_id, $location, $date_, $reference,
-		$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
+		$quantity, $std_cost, 0, $price, $discount_percent,
 		"The customer stock movement record cannot be inserted");
 }
 

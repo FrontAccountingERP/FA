@@ -1826,65 +1826,67 @@ INSERT INTO `0_stock_master` VALUES('3400', 3, 1, 'P4 Business System', '', 'eac
 --
 
 DROP TABLE IF EXISTS `0_stock_moves`;
-CREATE TABLE IF NOT EXISTS `0_stock_moves` (
-  `trans_id` int(11) NOT NULL auto_increment,
-  `trans_no` int(11) NOT NULL default '0',
-  `stock_id` char(20) NOT NULL default '',
-  `type` smallint(6) NOT NULL default '0',
-  `loc_code` char(5) NOT NULL default '',
-  `tran_date` date NOT NULL default '0000-00-00',
-  `person_id` int(11) default NULL,
-  `price` double NOT NULL default '0',
-  `reference` char(40) NOT NULL default '',
-  `qty` double NOT NULL default '1',
-  `discount_percent` double NOT NULL default '0',
-  `standard_cost` double NOT NULL default '0',
-  `visible` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`trans_id`),
+CREATE TABLE `0_stock_moves` (
+  `trans_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trans_no` int(11) NOT NULL DEFAULT '0',
+  `stock_id` char(20) NOT NULL DEFAULT '',
+  `type` smallint(6) NOT NULL DEFAULT '0',
+  `loc_code` char(5) NOT NULL DEFAULT '',
+  `tran_date` date NOT NULL DEFAULT '0000-00-00',
+  `person_id` int(11) DEFAULT NULL,
+  `price` double NOT NULL DEFAULT '0',
+  `reference` char(40) NOT NULL DEFAULT '',
+  `qty` double NOT NULL DEFAULT '1',
+  `discount_percent` double NOT NULL DEFAULT '0',
+  `standard_cost` double NOT NULL DEFAULT '0',
+  PRIMARY KEY (`trans_id`),
   KEY `type` (`type`,`trans_no`),
   KEY `Move` (`stock_id`,`loc_code`,`tran_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `0_stock_moves`
 --
 
-INSERT INTO `0_stock_moves` VALUES(1, 1, '102', 25, 'DEF', '2014-06-21', 2, 10, '', 100, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(2, 1, '103', 25, 'DEF', '2014-06-21', 2, 11, '', 100, 0, 11, 1);
-INSERT INTO `0_stock_moves` VALUES(3, 1, '104', 25, 'DEF', '2014-06-21', 2, 12, '', 100, 0, 12, 1);
-INSERT INTO `0_stock_moves` VALUES(4, 1, '102', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(5, 1, '103', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(6, 1, '104', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(7, 1, '3400', 26, 'DEF', '2014-06-21', 0, 0, '1', 10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(8, 2, '102', 13, 'DEF', '2014-06-21', 0, 30.4, '1', -2, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(9, 3, '102', 13, 'DEF', '2014-06-21', 0, 50, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(10, 4, '102', 13, 'DEF', '2014-06-21', 0, 35.89, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(11, 3, '102', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(12, 3, '103', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(13, 3, '104', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(14, 3, '3400', 26, 'DEF', '2014-06-21', 0, 0, '3', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(15, 4, '102', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(16, 4, '103', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(17, 4, '104', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(18, 4, '3400', 26, 'DEF', '2014-06-21', 0, 0, '4', 4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(19, 2, '102', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(20, 2, '103', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(21, 2, '104', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(22, 1, '3400', 29, 'DEF', '2014-06-21', 0, 0, '', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(23, 5, '102', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(24, 5, '103', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(25, 5, '104', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(26, 5, '3400', 26, 'DEF', '2014-06-21', 0, 0, '5', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(27, 6, '102', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(28, 6, '103', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(29, 6, '104', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(30, 6, '3400', 26, 'DEF', '2014-06-21', 0, 0, '6', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(31, 7, '102', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(32, 7, '103', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(33, 7, '104', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(34, 7, '3400', 26, 'DEF', '2014-06-21', 0, 0, '7', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(35, 5, '102', 13, 'DEF', '2014-06-21', 0, 50, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(36, 3, '102', 11, 'DEF', '2014-06-21', 0, 37.68, 'Return Ex Inv: 18', 1, 0, 10, 0);
+INSERT INTO `0_stock_moves` VALUES
+('1', '1', '102', '25', 'DEF', '2009-06-21', '2', '10', '', '100', '0', '10'),
+('2', '1', '103', '25', 'DEF', '2009-06-21', '2', '11', '', '100', '0', '11'),
+('3', '1', '104', '25', 'DEF', '2009-06-21', '2', '12', '', '100', '0', '12'),
+('4', '1', '102', '26', 'DEF', '2009-06-21', '0', '0', '1', '-10', '0', '0'),
+('5', '1', '103', '26', 'DEF', '2009-06-21', '0', '0', '1', '-10', '0', '0'),
+('6', '1', '104', '26', 'DEF', '2009-06-21', '0', '0', '1', '-10', '0', '0'),
+('7', '1', '3400', '26', 'DEF', '2009-06-21', '0', '0', '1', '10', '0', '0'),
+('8', '2', '102', '13', 'DEF', '2009-06-21', '0', '30.4', '1', '-2', '0', '10'),
+('9', '3', '102', '13', 'DEF', '2009-06-21', '0', '50', 'auto', '-1', '0', '10'),
+('10', '4', '102', '13', 'DEF', '2009-06-21', '0', '35.89', 'auto', '-1', '0', '10'),
+('11', '3', '102', '26', 'DEF', '2009-06-21', '0', '0', '3', '-2', '0', '0'),
+('12', '3', '103', '26', 'DEF', '2009-06-21', '0', '0', '3', '-2', '0', '0'),
+('13', '3', '104', '26', 'DEF', '2009-06-21', '0', '0', '3', '-2', '0', '0'),
+('14', '3', '3400', '26', 'DEF', '2009-06-21', '0', '0', '3', '2', '0', '0'),
+('15', '4', '102', '26', 'DEF', '2009-06-21', '0', '0', '4', '-4', '0', '0'),
+('16', '4', '103', '26', 'DEF', '2009-06-21', '0', '0', '4', '-4', '0', '0'),
+('17', '4', '104', '26', 'DEF', '2009-06-21', '0', '0', '4', '-4', '0', '0'),
+('18', '4', '3400', '26', 'DEF', '2009-06-21', '0', '0', '4', '4', '0', '0'),
+('19', '2', '102', '26', 'DEF', '2009-06-21', '0', '0', '', '-2', '0', '0'),
+('20', '2', '103', '26', 'DEF', '2009-06-21', '0', '0', '', '-2', '0', '0'),
+('21', '2', '104', '26', 'DEF', '2009-06-21', '0', '0', '', '-2', '0', '0'),
+('22', '1', '3400', '29', 'DEF', '2009-06-21', '0', '0', '', '2', '0', '0'),
+('23', '5', '102', '26', 'DEF', '2009-06-21', '0', '0', '5', '-5', '0', '0'),
+('24', '5', '103', '26', 'DEF', '2009-06-21', '0', '0', '5', '-5', '0', '0'),
+('25', '5', '104', '26', 'DEF', '2009-06-21', '0', '0', '5', '-5', '0', '0'),
+('26', '5', '3400', '26', 'DEF', '2009-06-21', '0', '0', '5', '5', '0', '0'),
+('27', '6', '102', '26', 'DEF', '2009-06-21', '0', '0', '6', '5', '0', '0'),
+('28', '6', '103', '26', 'DEF', '2009-06-21', '0', '0', '6', '5', '0', '0'),
+('29', '6', '104', '26', 'DEF', '2009-06-21', '0', '0', '6', '5', '0', '0'),
+('30', '6', '3400', '26', 'DEF', '2009-06-21', '0', '0', '6', '-5', '0', '0'),
+('31', '7', '102', '26', 'DEF', '2009-06-21', '0', '0', '7', '2', '0', '0'),
+('32', '7', '103', '26', 'DEF', '2009-06-21', '0', '0', '7', '2', '0', '0'),
+('33', '7', '104', '26', 'DEF', '2009-06-21', '0', '0', '7', '2', '0', '0'),
+('34', '7', '3400', '26', 'DEF', '2009-06-21', '0', '0', '7', '-2', '0', '0'),
+('35', '5', '102', '13', 'DEF', '2009-06-21', '0', '50', 'auto', '-1', '0', '10'),
+('36', '3', '102', '11', 'DEF', '2009-06-21', '0', '37.68', 'Return Ex Inv: 18', '1', '0', '10');
+
+### Structure of table `0_supp_allocations` ###
 
 -- --------------------------------------------------------
 

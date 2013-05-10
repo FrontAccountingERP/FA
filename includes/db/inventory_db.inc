@@ -354,23 +354,21 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 // $date_ - display / non-sql date
 // $std_cost - in HOME currency
-// $show_or_hide - wil this move be visible in reports, etc
 // $price - in $person_id's currency
 
 function add_stock_move($type, $stock_id, $trans_no, $location,
-    $date_, $reference, $quantity, $std_cost, $person_id=0, $show_or_hide=1,
+    $date_, $reference, $quantity, $std_cost, $person_id=0,
     $price=0, $discount_percent=0, $error_msg="")
 {
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
-		tran_date, person_id, reference, qty, standard_cost, visible, price,
+		tran_date, person_id, reference, qty, standard_cost, price,
 		discount_percent) VALUES (".db_escape($stock_id)
 		.", ".db_escape($trans_no).", ".db_escape($type)
 		.",	".db_escape($location).", '$date', "
 		.db_escape($person_id).", ".db_escape($reference).", "
 		.db_escape($quantity).", ".db_escape($std_cost).","
-		.db_escape($show_or_hide).", "
 		.db_escape($price).", ".db_escape($discount_percent).")";
 
 	if ($error_msg == "")
@@ -392,7 +390,7 @@ function update_stock_move($type, $trans_no, $stock_id, $cost)
 
 //--------------------------------------------------------------------------------------------------
 
-function get_stock_moves($type, $type_no, $visible=false)
+function get_stock_moves($type, $type_no)
 {
 	$sql = "SELECT ".TB_PREF."stock_moves.*, ".TB_PREF."stock_master.description, "
 		.TB_PREF."stock_master.units,".TB_PREF."locations.location_name,"
@@ -403,8 +401,6 @@ function get_stock_moves($type, $type_no, $visible=false)
 		WHERE ".TB_PREF."stock_moves.stock_id = ".TB_PREF."stock_master.stock_id
 		AND ".TB_PREF."locations.loc_code=".TB_PREF."stock_moves.loc_code
 		AND type=".db_escape($type)." AND trans_no=".db_escape($type_no)." ORDER BY trans_id";
-	if ($visible)
-		$sql .= " AND ".TB_PREF."stock_moves.visible=1";
 
 	return db_query($sql, "Could not get stock moves");
 }

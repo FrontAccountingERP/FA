@@ -13,6 +13,10 @@ Changed functions:
 	save_to_file($path, $zip, $fileData)
  tax_types_db.inc:
 	get_tax_type_default_rate($type_id) => get_tax_type_rate($type_id)
+ inventory_db.inc:
+	get_stock_moves($type, $type_no)
+	add_stock_move($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, 
+		$person_id=0, $price=0, $discount_percent=0, $error_msg="")
 
 Before 2.4:
 	get_tax_type_default_rate($type_id)
@@ -69,3 +73,19 @@ Now:
 	save_to_file($path, $zip, $fileData)
 Description:
 	$path parameter have to contain full path to file, no assumptions to target folder is done inside function.
+
+Before 2.4:
+	add_stock_move($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, 
+		$person_id=0, $show_or_hide=1, $price=0, $discount_percent=0, $error_msg="")
+Now:
+	add_stock_move($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, 
+		$person_id=0, $price=0, $discount_percent=0, $error_msg="")
+Description:
+	Removed parameter $show_or_hide (obsolete after `visible` field removal).
+
+Before 2.4:
+	get_stock_moves($type, $type_no, $visible=false)
+Now:
+	get_stock_moves($type, $type_no)
+Description:
+	Removed parameter $visible (obsolete after `visible` field removal).
