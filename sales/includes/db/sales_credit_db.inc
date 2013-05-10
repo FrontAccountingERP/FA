@@ -17,8 +17,13 @@ function write_credit_note(&$credit_note, $write_off_acc)
 {
 	global $Refs;
 
-	$credit_invoice = 	is_array($credit_note->src_docs) ?
-		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
+	if (is_array($credit_note->src_docs))
+	{
+		$docs = array_keys($credit_note->src_docs);
+		$credit_invoice = reset($docs);
+	}
+	else
+		$credit_invoice = $credit_note->src_docs;
 
 	$credit_date = $credit_note->document_date;
 	$tax_group_id = $credit_note->tax_group_id;
