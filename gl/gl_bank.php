@@ -231,7 +231,7 @@ if (isset($_POST['Process']))
 
 	$amnt_chg = -$_SESSION['pay_items']->gl_items_total()-$_SESSION['pay_items']->original_amount;
 
-	if ($limit != null && ($limit + $amnt_chg < 0))
+	if ($limit != null && floatcmp($limit, -$amnt_chg) < 0)
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
