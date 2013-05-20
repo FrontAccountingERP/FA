@@ -190,14 +190,14 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 //	
 
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $ref, $memo_, $charge=0)
+	$amount, $ref, $memo_, $charge=0, $target_amount=0)
 {
 	global $Refs, $SysPrefs;
 	
 	begin_transaction();
 	$args = func_get_args(); if (count($args) < 7) $args[] = 0;
 	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
-		'ref', 'memo_', 'charge'), $args);
+		'ref', 'memo_', 'charge', 'target_amount'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_BANKTRANSFER);
 
@@ -238,16 +238,21 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$total += add_gl_trans($trans_type, $trans_no, $date_,
 			$charge_act, 0, 0, $person_id, $charge, $currency);
 	}
+
+	// provide backward compatibility for extension modules (target amount can be not passed)
+	$to_currency = $target_amount ? $toact['bank_curr_code'] : $currency;
+	$to_amount = $target_amount ? $target_amount : $amount;
+
 	// do the destination account postings
 	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, $person_id,
-		$amount, $currency);
+		$to_amount, $to_currency);
 		
 	/*Post a balance post if $total != 0 */
 	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $amount, PT_MISC, $person_id,
-		$currency, "Cannot insert a destination bank transaction");
+		$date_, $to_amount, PT_MISC, $person_id,
+		$to_currency, "Cannot insert a destination bank transaction");
 
 	if ($SysPrefs->auto_currency_revaluation())
 	{

@@ -87,7 +87,7 @@ function gl_payment_controls()
 		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
-		exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
+		amount_row("Incomming Amount:", 'target_amount', null, '', $to_currency, 2);
 	} 
 	else 
 	{
@@ -184,7 +184,19 @@ function check_valid_entries()
 		set_focus('ToBankAccount');
 		return false;
 	}
-	
+
+	if (!check_num('target_amount', 0)) 
+	{
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('target_amount');
+		return false;
+	}
+	if (input_num('target_amount') == 0) {
+		display_error(_("The incomming bank amount cannot be 0."));
+		set_focus('target_amount');
+		return false;
+	}
+
 	if (!db_has_currency_rates(get_bank_account_currency($_POST['FromBankAccount']), $_POST['DatePaid']))
 		return false;
 
@@ -200,7 +212,7 @@ function handle_add_deposit()
 {
 	new_doc_date($_POST['DatePaid']);
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'), input_num('target_amount'));
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }
