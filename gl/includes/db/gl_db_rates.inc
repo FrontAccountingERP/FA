@@ -88,6 +88,8 @@ function retrieve_exrate($curr_b, $date)
 
 function get_extern_rate($curr_b, $provider = 'ECB', $date) 
 {
+	global	$path_to_root;
+
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
 	{
@@ -118,7 +120,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	 	do {
 	       $ch = curl_init();
     	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
-	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
+	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
     	   curl_setopt ($ch, CURLOPT_HEADER, 0);
 	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 	       // prevent warning while save_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
