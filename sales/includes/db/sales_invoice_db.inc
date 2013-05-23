@@ -32,6 +32,8 @@ function write_sales_invoice(&$invoice)
 
 	$customer = get_customer($invoice->customer_id);
 
+	add_new_exchange_rate($customer['curr_code'], $date_, $invoice->ex_rate);
+
 	// offer price values without freight costs
 	$items_total = $invoice->get_items_total_dispatch();
 	$freight_tax = $invoice->get_shipping_tax();

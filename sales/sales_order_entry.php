@@ -284,6 +284,7 @@ function copy_to_cart()
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}
+	$cart->ex_rate = input_num('_ex_rate', null);
 }
 
 //-----------------------------------------------------------------------------
@@ -314,9 +315,9 @@ function copy_from_cart()
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
-	}	
+	}
 	$_POST['cart_id'] = $cart->cart_id;
-		
+	$_POST['_ex_rate'] = $cart->ex_rate;
 }
 //--------------------------------------------------------------------------------
 

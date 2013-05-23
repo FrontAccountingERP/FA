@@ -24,6 +24,9 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	hook_db_prewrite($delivery, ST_CUSTDELIVERY);
 
 	$customer = get_customer($delivery->customer_id);
+
+	add_new_exchange_rate($customer['curr_code'], $delivery->document_date, $delivery->ex_rate);
+
 	$delivery_items_total = $delivery->get_items_total_dispatch();
 	$freight_tax = $delivery->get_shipping_tax();
 

@@ -41,6 +41,8 @@ function write_credit_note(&$credit_note, $write_off_acc)
 	$company_data = get_company_prefs();
 	$branch_data = get_branch_accounts($credit_note->Branch);
 
+	add_new_exchange_rate(get_customer_currency($credit_note->customer_id), $credit_date, $credit_note->ex_rate);
+
 	$credit_note_total = $credit_note->get_items_total_dispatch();
 	$freight_tax = $credit_note->get_shipping_tax();
 

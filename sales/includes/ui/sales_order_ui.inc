@@ -372,7 +372,6 @@ function display_order_header(&$order, $editable, $date_text)
 			$row = get_customer_to_order($_POST['customer_id']);
 			if ($row['dissallow_invoices'] == 1)
 				$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
-		
 		}
 	}
 
@@ -380,7 +379,7 @@ function display_order_header(&$order, $editable, $date_text)
 
 	table_section(2);
 
-	if (!is_company_currency($order->customer_currency))
+	if (!is_company_currency($order->customer_currency) && in_array($order->trans_type, array(ST_SALESINVOICE, ST_CUSTDELIVERY)))
 	{
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),

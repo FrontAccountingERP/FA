@@ -71,7 +71,8 @@ class cart
 	var $payment;
 	var $payment_terms; // cached payment terms
 	var $credit;
-	
+	var $ex_rate;
+
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
