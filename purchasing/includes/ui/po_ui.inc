@@ -26,6 +26,7 @@ function copy_from_cart()
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
+	$_POST['_ex_rate'] = $cart->ex_rate;
     foreach($cart->tax_overrides as $id => $value)
 	    $_POST['mantax'][$id] = price_format($value);
 }
@@ -43,6 +44,8 @@ function copy_to_cart()
 	$cart->Comments = $_POST['Comments'];	
 	$cart->Location = $_POST['StkLocation'];
 	$cart->delivery_address = $_POST['delivery_address'];
+	$cart->ex_rate = input_num('_ex_rate', null);
+
     if (isset($_POST['mantax'])) {
 		foreach($_POST['mantax'] as $id => $tax) {
 			$cart->tax_overrides[$id] = user_numeric($_POST['mantax'][$id]); }
@@ -113,7 +116,7 @@ function display_po_header(&$order)
 
 	$editable = ($order->order_no == 0);
 
-	start_outer_table(TABLESTYLE2, "width=80%");
+	start_outer_table(TABLESTYLE2, 'width=80%');
 
 	table_section(1);
     if ($editable)
@@ -148,14 +151,24 @@ function display_po_header(&$order)
 	}
 	set_global_supplier($_POST['supplier_id']);
 
+	date_row($order->trans_type==ST_PURCHORDER ? _("Order Date:") :
+		($order->trans_type==ST_SUPPRECEIVE ? _("Delivery Date:") : _("Invoice Date:")),
+		'OrderDate', '', true, 0, 0, 0, null, true);
+
+	if (isset($_POST['_OrderDate_changed'])) {
+		$order->orig_order_date = $_POST['OrderDate'];
+	    get_duedate_from_terms($order);
+	    $_POST['due_date'] = $order->due_date;
+		$Ajax->activate('due_date');
+	}
+	supplier_credit_row($order->supplier_id, $order->credit);
+
 	if (!is_company_currency($order->curr_code))
 	{
 		label_row(_("Supplier Currency:"), $order->curr_code);
 		exchange_rate_display($order->curr_code, get_company_currency(),
 			$_POST['OrderDate']);
 	}
-
-	supplier_credit_row($order->supplier_id, $order->credit);
 
 
     if ($editable)
@@ -170,26 +183,6 @@ function display_po_header(&$order)
 
 	table_section(2);
 
-	// check this out?????????
-	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
-	//	$_POST['OrderDate'] = $order->orig_order_date;
-	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
-	//{
-	//	$_POST['OrderDate'] = Today();
-	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
-	//		$_POST['OrderDate'] = end_fiscalyear();
-	//}
-	date_row($order->trans_type==ST_PURCHORDER ? _("Order Date:") :
-		($order->trans_type==ST_SUPPRECEIVE ? _("Delivery Date:") : _("Invoice Date:")),
-		'OrderDate', '', true, 0, 0, 0, null, true);
-
-	if (isset($_POST['_OrderDate_changed'])) {
-		$order->orig_order_date = $_POST['OrderDate'];
-	    get_duedate_from_terms($order);
-	    $_POST['due_date'] = $order->due_date;
-		$Ajax->activate('_ex_rate');
-		$Ajax->activate('due_date');
-	}
 	if ($order->trans_type==ST_SUPPINVOICE)
 		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 

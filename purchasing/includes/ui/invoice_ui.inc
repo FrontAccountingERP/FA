@@ -19,6 +19,7 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
+	$_POST['_ex_rate'] = $supp_trans->ex_rate;
 	if (isset($supp_trans->tax_overrides))
 	    foreach($supp_trans->tax_overrides as $id => $value)
 		    $_POST['mantax'][$id] = price_format($value);
@@ -33,6 +34,7 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
+	$supp_trans->ex_rate = input_num('_ex_rate', null);
 
 	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
     if (isset($_POST['mantax'])) {

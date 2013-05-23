@@ -475,6 +475,7 @@ function handle_commit_order()
 					$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
 				}
 			}
+			$inv->ex_rate = $cart->ex_rate;
 
 			$inv_no = add_supp_invoice($inv);
 			commit_transaction(); // save PO+GRN+PI

@@ -266,6 +266,7 @@ function process_receive_po()
 	$grn->orig_order_date = $_POST['DefaultReceivedDate'];
 	$grn->reference = $_POST['ref'];
 	$grn->Location = $_POST['Location'];
+	$grn->ex_rate = input_num('_ex_rate', null);
 
 	$grn_no = add_grn($grn);
 
@@ -325,7 +326,7 @@ if (isset($_POST['ProcessGoodsReceived']))
 
 start_form();
 
-display_grn_summary($_SESSION['PO'], true);
+edit_grn_summary($_SESSION['PO'], true);
 display_heading(_("Items to Receive"));
 display_po_receive_items();
 

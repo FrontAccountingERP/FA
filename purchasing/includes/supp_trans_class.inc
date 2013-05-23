@@ -22,6 +22,7 @@ class supp_trans
 	var $supplier_id;
 	var $supplier_name;
 	var $terms;
+	var $ex_rate;
 	
 	var $tax_description;
 	var $tax_group_id;

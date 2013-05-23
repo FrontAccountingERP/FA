@@ -33,7 +33,8 @@ class purch_order
 	var $tax_group_array = null; // saves db queries
 	var $tax_included; // type of prices
 	var $terms;
-	
+	var $ex_rate;
+
 	var $reference;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry (direct invoice)
 	

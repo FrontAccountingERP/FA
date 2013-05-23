@@ -124,6 +124,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 	$supplier = get_supplier($supp_trans->supplier_id);
 
+	add_new_exchange_rate($supplier['curr_code'], $supp_trans->tran_date, $supp_trans->ex_rate);
+
     foreach ($taxes as $n => $taxitem)
     {
 		$taxes[$n]['Value'] =  round2($taxitem['Value'], user_price_dec());

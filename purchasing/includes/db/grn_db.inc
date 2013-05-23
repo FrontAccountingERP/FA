@@ -98,6 +98,8 @@ function add_grn(&$po)
 	begin_transaction();
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
+	add_new_exchange_rate(get_supplier_currency($po->supplier_id), $date_, $po->ex_rate);
+
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
     $clearing_act = get_company_pref('grn_clearing_act');
