@@ -250,45 +250,77 @@ function get_trans_view_str($type, $trans_no, $label="", $icon=false,
 	return null;
 }
 
+/*
+	Helper for ui drawing functions.
+	Checks whether any of input function parameters has changed or page is called with GET method (first page display).
+	$name - context
+*/
+function check_ui_refresh($name=null)
+{
+	$bt = debug_backtrace();
+	if (!$name)
+		$name = $bt[1]['function'];
+	$old = @$_SESSION['ui_context'][$name];
+	$new = $_SESSION['ui_context'][$name] = $bt[1]['args'];
+	return ($new != $old) || ($_SERVER['REQUEST_METHOD'] == 'GET');
+}
+
 //--------------------------------------------------------------------------------------
 // Displays currency exchange rate for given date.
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=false)
+function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
     global $Ajax;
 
+	$readonly = false;
+
 	if ($from_currency != $to_currency)
 	{
-		$comp_currency = get_company_currency();
-		if ($from_currency == $comp_currency)
-			$currency = $to_currency;
-		else
-			$currency = $from_currency;
-		$rate = 0;
-		if ($date_ == Today()) {
-			$rate = get_date_exchange_rate($currency, $date_);
-			if (!$rate) {
+	 	$rate = get_post('_ex_rate');
+	 	if (!$rate || check_ui_refresh()) { // readonly or ui context changed
+			$comp_currency = get_company_currency();
+			if ($from_currency == $comp_currency)
+				$currency = $to_currency;
+			else
+				$currency = $from_currency;
+
+			$rate = get_date_exchange_rate($currency, $date_); // try local
+			if ($rate)
+				$readonly = true;
+			if (!$rate) {	// retry from remote service
 				$row = get_currency($currency);
-				if ($row['auto_update']) {
+				if ($row['auto_update'])
 					$rate = retrieve_exrate($currency, $date_);
-					if ($rate) 
-						add_exchange_rate($currency, $date_, $rate, $rate);
+				if ($rate)
+					add_new_exchange_rate($currency, $date_, $rate);
+				else
+				{
+					display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
+					$readonly = false;
 				}
 			}
+			if (!$rate)	{	// get and edit latest available
+				$readonly = false;
+				$rate = get_exchange_rate_from_home_currency($currency, $date_);
+			}
+			if ($from_currency != $comp_currency)
+				$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
+
+			$Ajax->activate('_ex_rate_span');
 		}
-		if (!$rate)
-			$rate = get_exchange_rate_from_home_currency($currency, $date_);
-		if ($from_currency != $comp_currency)
-			$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
 
 		$rate = number_format2($rate, user_exrate_dec());
-		if ($edit_rate)
-			text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency"); 
-		else
-    		label_row(_("Exchange Rate:"),"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency" );
-	  	$Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
+
+		if ($force_edit || !$readonly)
+			$ctrl = "<input type=\"text\" name=\"_ex_rate\" size=\"8\" maxlength=\"8\" value=\"$rate\">";
+	    else
+	    	$ctrl = "<span id=\"_ex_rate\">$rate</span>";
+
+		label_row(_("Exchange Rate:"), $span = "<span style='vertical-align:top;' id='_ex_rate_span'>$ctrl $from_currency = 1 $to_currency</span>" );
+
+	  	$Ajax->addUpdate('_ex_rate_span', '_ex_rate_span', $span);
 	}
 }
 

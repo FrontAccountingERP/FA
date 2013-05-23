@@ -47,6 +47,7 @@ function display_bank_header(&$order)
 		$Ajax->activate('code_id');
 		$Ajax->activate('pagehelp');
 		$Ajax->activate('editors');
+		$Ajax->activate('footer');
 	}
     payment_person_types_list_row( $payment ? _("Pay To:"):_("From:"),
 		 'PayType', $_POST['PayType'], true);
@@ -93,6 +94,7 @@ function display_bank_header(&$order)
 			$qid = get_quick_entry(get_post('person_id'));
 			if (list_updated('person_id')) {
 				unset($_POST['totamount']); // enable default
+				$Ajax->activate('footer');
 				$Ajax->activate('totamount');
 			}
 			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
@@ -105,7 +107,7 @@ function display_bank_header(&$order)
 
 	table_section(3, "33%");
 
-	if (!$order->order_id && !list_updated('bank_account'))
+	if (!$order->order_id && !get_post('bank_account'))
 	{
 		if ($_POST['PayType'] == PT_CUSTOMER)
 			$_POST['bank_account'] = get_default_customer_bank_account($_POST['person_id']);
@@ -118,11 +120,10 @@ function display_bank_header(&$order)
     bank_accounts_list_row( $payment ? _("From:") : _("Into:"), 'bank_account', null, true);
     if ($payment)
 		bank_balance_row($_POST['bank_account']);
-    	
-	$person_currency = payment_person_currency($_POST['PayType'], $_POST['person_id']);
+
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
+	exchange_rate_display($bank_currency, get_company_currency(), $_POST['date_']);
 
 	end_outer_table(1); // outer table
 
@@ -291,13 +292,27 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 //---------------------------------------------------------------------------------
 
-function gl_options_controls()
+function gl_options_controls($order)
 {
+	div_start('footer');
 	echo "<br><table align='center'>";
 
+	$type = get_post('PayType');
+	$bank_curr = get_bank_account_currency(get_post('bank_account'));
+	$person_curr = $type == PT_CUSTOMER ? get_customer_currency(get_post('person_id')) 
+		: ($type == PT_SUPPLIER ? get_supplier_currency(get_post('person_id')) : $bank_curr);
+
+	if ($person_curr != $bank_curr)
+	{
+		$_POST['settled_amount'] =
+			price_format($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, get_post('date_')));
+		amount_row($type == PT_CUSTOMER ? _("Settled AR Amount:") :  _("Settled AP Amount:"),
+			 'settled_amount', null, null, $person_curr, user_price_dec());
+	}
 	textarea_row(_("Memo"), 'memo_', null, 50, 3);
 
   	echo "</table>";
+  	div_end();
 }
 
 

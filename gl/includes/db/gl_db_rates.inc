@@ -65,6 +65,17 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 //---------------------------------------------------------------------------------------------
 
+function add_new_exchange_rate($curr_code, $date_, $ex_rate)
+{
+	if (is_company_currency($curr_code) || !$ex_rate)
+		return;
+
+	if (!get_date_exchange_rate($curr_code, $date_))
+		add_exchange_rate($curr_code, $date_, 1.0/$ex_rate, 1.0/$ex_rate);
+}
+
+//---------------------------------------------------------------------------------------------
+
 function delete_exchange_rate($rate_id)
 {
 	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
@@ -89,6 +100,9 @@ function retrieve_exrate($curr_b, $date)
 function get_extern_rate($curr_b, $provider = 'ECB', $date) 
 {
 	global	$path_to_root;
+
+	if ($date != Today())	// no historical rates available
+		return 0;
 
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
@@ -136,9 +150,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	   
 	} else {
 		$contents = url_get_contents("http://".$site.$filename);
-	}
-	if (!$contents) {
-		display_warning(sprintf(_("Cannot retrieve currency rate from %s page. Please set the rate manually."), $provider));
 	}
 	if ($provider == 'ECB')
 	{

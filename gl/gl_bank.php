@@ -60,6 +60,7 @@ function line_start_focus() {
   global 	$Ajax;
 
   $Ajax->activate('items_table');
+  $Ajax->activate('footer');
   set_focus('_code_id_edit');
 }
 
@@ -130,9 +131,6 @@ if (isset($_GET['UpdatedDep']))
 	display_footer_exit();
 }
 
-if (isset($_POST['_date__changed'])) {
-	$Ajax->activate('_ex_rate');
-}
 //--------------------------------------------------------------------------------------------------
 
 function create_cart($type, $trans_no)
@@ -288,7 +286,7 @@ if (isset($_POST['Process']))
 if (isset($_POST['Process']))
 {
 	begin_transaction();
-	
+
 	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
 	$new = $_SESSION['pay_items']->order_id == 0;
 
@@ -296,17 +294,18 @@ if (isset($_POST['Process']))
 		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_'], true);
+		$_POST['ref'], $_POST['memo_'], true, input_num('settled_amount', null));
 
+	add_new_exchange_rate(get_bank_account_currency(get_post('bank_account')), get_post('date_'), input_num('_ex_rate'));
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
 	new_doc_date($_POST['date_']);
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
-	
+
 	commit_transaction();
-	
+
 	if ($new)
 		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
 			"AddedID=$trans_no" : "AddedDep=$trans_no");
@@ -324,6 +323,12 @@ function check_item_data()
 	{
 		display_error( _("The amount entered is not a valid number or is less than zero."));
 		set_focus('amount');
+		return false;
+	}
+	if (isset($_POST['_ex_rate']) && input_num('_ex_rate') <= 0)
+	{
+		display_error( _("The exchange rate cannot be zero or a negative number."));
+		set_focus('_ex_rate');
 		return false;
 	}
 
@@ -395,7 +400,7 @@ start_row();
 echo "<td>";
 display_gl_items($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
 	_("Payment Items"):_("Deposit Items"), $_SESSION['pay_items']);
-gl_options_controls();
+gl_options_controls($_SESSION['pay_items']);
 echo "</td>";
 end_row();
 end_table(1);
