@@ -137,7 +137,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     {
 	    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 	    foreach ($taxes as $n => $taxitem)
-			$item_added_tax += isset($taxitem['Override']) ? $taxitem['Override'] : round2($taxitem['Value'], $dec);
+			$item_added_tax += isset($taxitem['Override']) ? $taxitem['Override'] : round2($taxitem['Value'], user_price_dec());
 	}
 
 	$trans_type = $supp_trans->trans_type;
