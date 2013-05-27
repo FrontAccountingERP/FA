@@ -143,12 +143,12 @@ function check_inputs()
 		}	
 	}
 
-	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-	{
-		display_error(_("The exchange rate must be numeric and greater than zero."));
-		set_focus('_ex_rate');
-		return false;
-	}
+//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
+//	{
+//		display_error(_("The exchange rate must be numeric and greater than zero."));
+//		set_focus('_ex_rate');
+//		return false;
+//	}
 
 	if ($_POST['discount'] == "") 
 	{
@@ -169,6 +169,14 @@ function check_inputs()
 		set_focus('amount');
 		return false;
 	}
+
+	if (isset($_POST['bank_amount']) && input_num('bank_amount')<=0)
+	{
+		display_error(_("The entered bank amount is zero or negative."));
+		set_focus('bank_amount');
+		return false;
+	}
+
 
    	if (!is_date($_POST['DatePaid']))
    	{
@@ -223,23 +231,24 @@ function handle_add_payment()
 	$supp_currency = get_supplier_currency($_POST['supplier_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 	$comp_currency = get_company_currency();
+
 	if ($comp_currency != $bank_currency && $bank_currency != $supp_currency)
 		$rate = 0;
 	else
 	{
 		$rate = input_num('_ex_rate');
-		$supplier_amount = input_num('allocated_amount'); 
+		$supplier_amount = input_num('bank_amount'); 
 			if($supplier_amount) $rate = input_num('amount')/$supplier_amount;
 	}
 
-	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
-		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
-		$_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
+	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
+		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
+		input_num('charge'), input_num('bank_amount', get_post('amount')));
 	new_doc_date($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;
 	$_SESSION['alloc']->write();
-	//unset($_POST['supplier_id']);
+
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
    	unset($_POST['currency']);
@@ -281,12 +290,9 @@ start_form();
 	}
 
 	set_global_supplier($_POST['supplier_id']);
-	
-	if (!list_updated('bank_account'))
-		$_POST['bank_account'] = get_default_supplier_bank_account($_POST['supplier_id']);		
-	
+
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
-	
+
 	bank_balance_row($_POST['bank_account']);
 
 	table_section(2);
@@ -301,30 +307,24 @@ start_form();
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) 
 	{
-		amount_row("Supplier Amount:", 'allocated_amount', null, '', $supplier_currency, 2);
+		amount_row("Bank Amount:", 'bank_amount', null, '', $bank_currency, 2);
 	}
 
-	amount_row(_("Bank Charge:"), 'charge');
+	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
 
-	end_outer_table(1); // outer table
+	end_outer_table(1);
 
-	if ($bank_currency == $supplier_currency) {
-  		div_start('alloc_tbl');
-		show_allocatable(false);
-		div_end();
-	}
+	div_start('alloc_tbl');
+	display_heading(sprintf(_("Accounts Payable settled in %s:"), $supplier_currency));
+	show_allocatable(false);
+	div_end();
 
 	start_table(TABLESTYLE, "width=60%");
-	amount_row(_("Amount of Discount:"), 'discount');
-	amount_row(_("Amount of Payment:"), 'amount');
+	amount_row(_("Amount of Discount:"), 'discount', null, '', $supplier_currency);
+	amount_row(_("Amount of Payment:"), 'amount', null, '', $supplier_currency);
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
-	
-	if ($bank_currency != $supplier_currency) 
-	{
-		display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
-	}
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
 

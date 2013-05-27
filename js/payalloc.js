@@ -56,7 +56,7 @@ function allocate_none(doc) {
 
 var allocations = {
 	'.amount': function(e) {
- 		if(e.name == 'allocated_amount')
+ 		if(e.name == 'allocated_amount' || e.name == 'bank_amount')
  		{
   		  e.onblur = function() {
 			var dec = this.getAttribute("dec");

@@ -193,12 +193,12 @@ function can_process()
 		}	
 	}
 
-	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-	{
-		display_error(_("The exchange rate must be numeric and greater than zero."));
-		set_focus('_ex_rate');
-		return false;
-	}
+//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
+//	{
+//		display_error(_("The exchange rate must be numeric and greater than zero."));
+//		set_focus('_ex_rate');
+//		return false;
+//	}
 
 	if ($_POST['discount'] == "") 
 	{
@@ -213,10 +213,18 @@ function can_process()
 
 	//if ((input_num('amount') - input_num('discount') <= 0)) {
 	if (input_num('amount') <= 0) {
-		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
+		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;
 	}
+
+	if (isset($_POST['bank_amount']) && input_num('bank_amount')<=0)
+	{
+		display_error(_("The entered payment amount is zero or negative."));
+		set_focus('bank_amount');
+		return false;
+	}
+
 	if (!db_has_currency_rates(get_customer_currency($_POST['customer_id']), $_POST['DateBanked'], true))
 		return false;
 
@@ -234,9 +242,9 @@ if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
 }
-if (isset($_POST['_DateBanked_changed'])) {
-  $Ajax->activate('_ex_rate');
-}
+//if (isset($_POST['_DateBanked_changed'])) {
+//  $Ajax->activate('_ex_rate');
+//}
 
 //----------------------------------------------------------------------------------------------
 
@@ -245,10 +253,10 @@ if (get_post('AddPaymentItem') && can_process()) {
 	$cust_currency = get_customer_currency($_POST['customer_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 	$comp_currency = get_company_currency();
-	if ($comp_currency != $bank_currency && $bank_currency != $cust_currency)
-		$rate = 0;
-	else
-		$rate = input_num('_ex_rate');
+//	if ($comp_currency != $bank_currency && $bank_currency != $cust_currency)
+//		$rate = 0;
+//	else
+//		$rate = input_num('_ex_rate');
 
 	new_doc_date($_POST['DateBanked']);
 
@@ -256,14 +264,12 @@ if (get_post('AddPaymentItem') && can_process()) {
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', get_post('amount')));
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->write();
 
 	unset($_SESSION['alloc']);
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	//meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 	meta_forward($_SERVER['PHP_SELF'], $new_pmt ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
 }
 
@@ -328,7 +334,10 @@ start_form();
 	hidden('old_ref', $old_ref);
 
 	start_outer_table(TABLESTYLE2, "width=60%", 5);
+
 	table_section(1);
+
+	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 	if ($new)
 		customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
@@ -337,16 +346,16 @@ start_form();
 		hidden('customer_id', $_POST['customer_id']);
 	}
 
-	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-		$_SESSION['alloc']->read();
-		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-		$Ajax->activate('alloc_tbl');
-	}
-
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
 		hidden('BranchID', ANY_NUMERIC);
+	}
+
+	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+		$_SESSION['alloc']->read();
+		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+		$Ajax->activate('alloc_tbl');
 	}
 
 	read_customer_data();
@@ -357,51 +366,47 @@ start_form();
 	$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
 	table_section(2);
-	if (!list_updated('bank_account'))
-		$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);	
 
-	//Chaitanya : 13-OCT-2011 - Is AJAX call really needed ???
-	//bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, false);
+	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
 	text_row(_("Reference:"), 'ref', null, 20, 40);
 
 	table_section(3);
 
-	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
-
 	$comp_currency = get_company_currency();
 	$cust_currency = get_customer_currency($_POST['customer_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	if ($cust_currency != $bank_currency) {
-		exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
+//	if ($cust_currency != $bank_currency) {
+//		exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
+//	}
+
+	if ($cust_currency != $bank_currency)
+	{
+		amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
+		// aproximate value in customer currency:
+//		label_row(_("Current value:"), price_format(input_num('bank_amount')*$rate).' '.$cust_currency);
 	}
 
-	amount_row(_("Bank Charge:"), 'charge');
+	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
 	end_outer_table(1);
 
-	if ($cust_currency == $bank_currency) {
-		div_start('alloc_tbl');
-		show_allocatable(false);
-		div_end();
-	}
+	display_heading(sprintf(_("Accounts Receivable settled in %s:"), $cust_currency));
+	div_start('alloc_tbl');
+	show_allocatable(false);
+	div_end();
 
 	start_table(TABLESTYLE, "width=60%");
 
 	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
-	amount_row(_("Amount of Discount:"), 'discount');
 
-	amount_row(_("Amount:"), 'amount');
+	amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+
+	amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
 
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
-
-	if ($cust_currency != $bank_currency)
-		display_note(_("Amount and discount are in customer's currency."));
-
-	br();
 
 	if ($new)
 		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');

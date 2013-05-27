@@ -11,22 +11,28 @@
 ***********************************************************************/
 /*
   Write/update customer payment.
+
+  Warning: $rate is leaved here for extensions compatibility reasons, will be removed in 2.4
+	since 2.3.17 is not used: use $bank_amount instead.
+
+	$amount - in customer currency (ex. discount)
+	$discount - in customer currency
+	$bank_amount - in bank currency (before charge)
+	$charge - in bank currency
 */
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
-	$date_, $ref, $amount, $discount, $memo_, $rate=0, $charge=0)
+	$date_, $ref, $amount, $discount, $memo_, $rate=0, $charge=0, $bank_amount=0)
 {
 	global $Refs;
 
 	begin_transaction();
-	$args = func_get_args(); while (count($args) < 11) $args[] = 0;
+	$args = func_get_args(); while (count($args) < 12) $args[] = 0;
 	$args = (object)array_combine(array('trans_no', 'customer_id', 'branch_id', 'bank_account', 
-		'date_', 'ref', 'amount', 'discount', 'memo_','rate','charge'), $args);
+		'date_', 'ref', 'amount', 'discount', 'memo_','rate','charge', 'bank_amount'), $args);
 	hook_db_prewrite($args, ST_CUSTPAYMENT);
 
 	$company_record = get_company_prefs();
-	
-	//Chaitanya : 13_OCT_2011 : Voiding Tasks first
-	//Reason : After modifying the customer trans, it was getting voided later
+
 	if ($trans_no != 0) {
 	  delete_comments(ST_CUSTPAYMENT, $trans_no);
 	  void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
@@ -34,16 +40,26 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	  void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 	}
 
+	$bank = get_bank_account($bank_account);
+	if (!$rate)
+		$rate = get_exchange_rate_from_to(get_customer_currency($customer_id),
+			$bank['bank_curr_code'], $date_ );
+	if (!$bank_amount) 	// backward compatibility workaround
+	{
+
+		$bank_amount = $amount/$rate;
+	}
+
 	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, 
 		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, "", 0, $rate);
-   
+
 	$bank_gl_account = get_bank_gl_account($bank_account);
 
 	$total = 0;
+
 	/* Bank account entry first */
-	$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
-		$bank_gl_account, 0, 0, $amount - $charge,  $customer_id,
-		"Cannot insert a GL transaction for the bank account debit", $rate);
+	$total += add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,
+		$bank_gl_account, 0, 0, '', ($bank_amount - $charge),  $bank['bank_curr_code'], PT_CUSTOMER, $customer_id);
 
 	if ($branch_id != ANY_NUMERIC) {
 
@@ -61,29 +77,34 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	/* Now Credit Debtors account with receipts + discounts */
 	$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 		$debtors_account, 0, 0, -($discount + $amount), $customer_id,
-		"Cannot insert a GL transaction for the debtors account credit", $rate);
+		"Cannot insert a GL transaction for the debtors account credit");
 	}
 	if ($discount != 0)	{
 		/* Now Debit discount account with discounts allowed*/
 		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 			$discount_account, 0, 0, $discount, $customer_id,
-			"Cannot insert a GL transaction for the payment discount debit", $rate);
+			"Cannot insert a GL transaction for the payment discount debit");
 	}
 
 	if ($charge != 0)	{
 		/* Now Debit bank charge account with charges */
 		$charge_act = get_company_pref('bank_charge_act');
-		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
-			$charge_act, 0, 0, $charge, $customer_id,
-			"Cannot insert a GL transaction for the payment bank charge debit", $rate);
+		$total += add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,	$charge_act, 0, 0, '', 
+			$charge, $bank['bank_curr_code'], PT_CUSTOMER,  $customer_id);
 	}
-	/*Post a balance post if $total != 0 */
-	add_gl_balance(ST_CUSTPAYMENT, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);	
+
+
+	/*Post a balance post if $total != 0 due to variance in AR and bank posted values*/
+	if ($total != 0)
+	{
+		$variance_act = get_company_pref('exchange_diff_act');
+		add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,	$variance_act, 0, 0, '',
+			-$total, null, PT_CUSTOMER,  $customer_id);
+	}
 
 	/*now enter the bank_trans entry */
 	add_bank_trans(ST_CUSTPAYMENT, $payment_no, $bank_account, $ref,
-		$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
-		get_customer_currency($customer_id), "", $rate);
+		$date_, $bank_amount - $charge, PT_CUSTOMER, $customer_id);
 
 	add_comments(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
 
