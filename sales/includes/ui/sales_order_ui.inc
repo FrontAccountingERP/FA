@@ -382,7 +382,7 @@ function display_order_header(&$order, $editable, $date_text)
 	if (!is_company_currency($order->customer_currency) && in_array($order->trans_type, array(ST_SALESINVOICE, ST_CUSTDELIVERY)))
 	{
 		label_row(_("Customer Currency:"), $order->customer_currency);
-		exchange_rate_display($order->customer_currency, get_company_currency(),
+		exchange_rate_display(get_company_currency(), $order->customer_currency,
 			($editable ? $_POST['OrderDate'] : $order->document_date));
 	}
 

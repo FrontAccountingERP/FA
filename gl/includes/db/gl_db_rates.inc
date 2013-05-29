@@ -45,7 +45,7 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	$sql = "UPDATE ".TB_PREF."exchange_rates SET rate_buy=$buy_rate, rate_sell=".db_escape($sell_rate)
 	." WHERE curr_code=".db_escape($curr_code)." AND date_='$date'";
 				
-	db_query($sql, "could not add exchange rate for $curr_code");				
+	db_query($sql, "could not add exchange rate for $curr_code");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	$sql = "INSERT INTO ".TB_PREF."exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (".db_escape($curr_code).", '$date', ".db_escape($buy_rate)
 		.", ".db_escape($sell_rate).")";
-	db_query($sql, "could not add exchange rate for $curr_code");				
+	db_query($sql, "could not add exchange rate for $curr_code");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ function add_new_exchange_rate($curr_code, $date_, $ex_rate)
 		return;
 
 	if (!get_date_exchange_rate($curr_code, $date_))
-		add_exchange_rate($curr_code, $date_, 1.0/$ex_rate, 1.0/$ex_rate);
+		add_exchange_rate($curr_code, $date_, $ex_rate, $ex_rate);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -79,11 +79,15 @@ function add_new_exchange_rate($curr_code, $date_, $ex_rate)
 function delete_exchange_rate($rate_id)
 {
 	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
-	db_query($sql, "could not delete exchange rate $rate_id");		
+	db_query($sql, "could not delete exchange rate $rate_id");
 }
 
 //-----------------------------------------------------------------------------
 //	Retrieve exchange rate as of date $date from external source (usually inet)
+//
+//	Exchange rate for currency revaluation purposes is defined in FA as home_currency/curr_b ratio i.e.
+//
+//	amount [home] = amount [curr] * ex_rate
 //
 function retrieve_exrate($curr_b, $date)
 {

@@ -84,7 +84,7 @@ function edit_grn_summary(&$po)
     		label_row(_("Order Comments"), $po->Comments, "class='tableheader2'", "colspan=9");
 
 	    if (!is_company_currency($po->curr_code))
-			exchange_rate_display($po->curr_code, get_company_currency(), get_post('DefaultReceivedDate'));
+			exchange_rate_display(get_company_currency(), $po->curr_code, get_post('DefaultReceivedDate'));
 	end_outer_table(1);
 }
 

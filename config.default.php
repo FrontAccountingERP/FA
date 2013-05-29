@@ -282,6 +282,12 @@ $xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
 $dflt_xr_provider = 0;
 
 /*
+	Set to true when remote service is authoritative source of exchange rates, and can be stored automatically without
+	manual edition. Otherwise exrate is stored on first new currency transaction of the day.
+*/
+$xr_provider_authoritative = false;
+
+/*
 	Optional sorting sales documents lines during edition according to item code
 */
 $sort_sales_items = false;

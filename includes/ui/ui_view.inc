@@ -272,14 +272,14 @@ function check_ui_refresh($name=null)
 //
 function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
-    global $Ajax;
+    global $Ajax, $xr_provider_authoritative;
 
 	$readonly = false;
 
 	if ($from_currency != $to_currency)
 	{
 	 	$rate = get_post('_ex_rate');
-	 	if (!$rate || check_ui_refresh()) { // readonly or ui context changed
+	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
 			$comp_currency = get_company_currency();
 			if ($from_currency == $comp_currency)
 				$currency = $to_currency;
@@ -287,27 +287,31 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 				$currency = $from_currency;
 
 			$rate = get_date_exchange_rate($currency, $date_); // try local
+
 			if ($rate)
-				$readonly = true;
+				$readonly = true; // if we have already local exrate keep it unchanged 
+
 			if (!$rate) {	// retry from remote service
 				$row = get_currency($currency);
-				if ($row['auto_update'])
-					$rate = retrieve_exrate($currency, $date_);
-				if ($rate)
-					add_new_exchange_rate($currency, $date_, $rate);
-				else
-				{
-					display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
-					$readonly = false;
+
+ 				if ($row['auto_update']) // autoupdate means use remote service & store exrate on first transaction.
+ 				{
+ 					$rate = retrieve_exrate($currency, $date_);
+					if (!$rate)
+						display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
+					elseif ($xr_provider_authoritative) {
+						// if the remote exrate is considered authoritative we can store the rate here,
+						// otherwise exrate will be stored during transaction write
+						$readonly = true;
+						add_new_exchange_rate($currency, $date_, $rate);
+					}
 				}
 			}
 			if (!$rate)	{	// get and edit latest available
-				$readonly = false;
 				$rate = get_exchange_rate_from_home_currency($currency, $date_);
 			}
 			if ($from_currency != $comp_currency)
 				$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
-
 			$Ajax->activate('_ex_rate_span');
 		}
 

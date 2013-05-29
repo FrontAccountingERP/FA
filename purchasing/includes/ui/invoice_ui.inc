@@ -137,7 +137,7 @@ function invoice_header(&$supp_trans)
 	if ($supplier_currency != $company_currency)
 	{
         label_row(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
-		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
+		exchange_rate_display($company_currency, $supplier_currency, $_POST['tran_date']);
 	}
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);

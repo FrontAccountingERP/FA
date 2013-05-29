@@ -92,7 +92,7 @@ function display_credit_header(&$order)
 		table_section(2);
 		
 		label_row(_("Customer Currency:"), $order->customer_currency);
-		exchange_rate_display($order->customer_currency, get_company_currency(),
+		exchange_rate_display(get_company_currency(), $order->customer_currency,
 			$_POST['OrderDate']);
 	}
 	table_section(3);
