@@ -184,7 +184,7 @@ function write_login_filelog($login, $result)
 	$msg .= "*/\n";
 	$msg .= "\$login_faillog = " .var_export($login_faillog, true). ";\n";
 
-	$filename = $path_to_root."/faillog.php";
+	$filename = $path_to_root."/tmp/faillog.php";
 
 	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
 	{
@@ -365,7 +365,7 @@ include_once($path_to_root . "/config.php");
 get_text_init();
 
 if ($login_delay > 0)
-	@include_once($path_to_root . "/faillog.php");
+	@include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) 
