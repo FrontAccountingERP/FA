@@ -392,13 +392,13 @@ function void_stock_move($type, $type_no)
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
 			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
-			if (in_array($type,$types))
-				$trans_rate = $row["price"];
+			if (in_array($type, $types))
+				$unit_cost = $row["price"];
 			else
-				$trans_rate = $row["standard_cost"];
+				$unit_cost = $row["standard_cost"];
 
-			update_average_material_cost(0, $row["stock_id"],
-				$trans_rate, -$row["qty"], sql2date($row["tran_date"]));
+			update_average_material_cost($row["person_id"], $row["stock_id"],
+				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));
 		}
 
     }

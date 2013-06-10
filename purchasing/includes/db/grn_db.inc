@@ -75,14 +75,14 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			$qoh = 0;
 		}
 		if ($qoh + $qty > 0)
-			$material_cost 
-= ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
-	}	
-	
+			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+	}
+
 	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
+
 	db_query($sql,"The cost details for the inventory item could not be updated");
 	return $material_cost;
 }
