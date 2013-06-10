@@ -55,7 +55,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 
 		var upload = form && form.enctype=='multipart/form-data';
 		
-		var url = form ? form.action : 
+		var url = form ? form.getAttribute('action') : 
 		  window.location.toString();
 
 		var content = this.formInputs(trigger, form, upload);
