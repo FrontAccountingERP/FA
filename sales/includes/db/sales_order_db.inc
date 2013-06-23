@@ -165,6 +165,7 @@ function update_sales_order($order)
 	$total = $order->get_trans_total();
 
 	begin_transaction();
+	hook_db_prewrite($order, $order->trans_type);
 
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
@@ -248,6 +249,8 @@ function update_sales_order($order)
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
 	$Refs->save($order->trans_type, $order_no, $order->reference);
+
+	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{
