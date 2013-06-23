@@ -445,23 +445,25 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		$ln_itm->qty_dispatched = $ln_itm->quantity-$ln_itm->qty_done;
 	}
 	// if it's a non-stock item (eg. service) don't show qoh
-	$show_qoh = true;
-	if ($SysPrefs->allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
-		$ln_itm->qty_dispatched == 0) {
-		$show_qoh = false;
-	}
+	$row_classes = null;
+	if (has_stock_holding($ln_itm->mb_flag) && $ln_itm->qty_dispatched) {
+		// It's a stock : call get_dispatchable_quantity hook  to get which quantity to preset in the
+		// quantity input box. This allows for example a hook to modify the default quantity to what's dispatchable
+		// (if there is not enough in hand), check at other location or other order people etc ...
+		// This hook also returns a 'reason' (css classes) which can be used to theme the row.
 
-	if ($show_qoh) {
 		$qoh = get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+		$q_class =  hook_get_dispatchable_quantity($ln_itm, $_POST['Location'], $_POST['DispatchDate'], $qoh);
+		// Skip line if needed
+		if($q_class === 'skip')  continue;
+		if(is_array($q_class)) {
+		  list($ln_itm->qty_dispatched, $row_classes) = $q_class;
+			$has_marked = true;
+		}
+
 	}
 
-	if ($show_qoh && ($ln_itm->qty_dispatched > $qoh)) {
-		// oops, we don't have enough of one of the component items
-		start_row("class='stockmankobg'");
-		$has_marked = true;
-	} else {
-		alt_table_row_color($k);
-	}
+	alt_table_row_color($k, $row_classes);
 	view_stock_status_cell($ln_itm->stock_id);
 
 	if ($ln_itm->descr_editable)
