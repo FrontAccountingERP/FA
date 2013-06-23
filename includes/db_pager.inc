@@ -69,33 +69,47 @@ class db_pager {
 	}
 	//
 	//	Parse base sql select query.
-	//
+	//	or use an associative array.
+	//  Usefull is the query can't be split correctly (using subquery for example).
+	//  The associative array shouldn't contain the keyword itself.
+	//  ex :
+	//  array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
 	function set_sql($sql)
 	{
 		if ($sql != $this->sql) {
 		    $this->sql = $sql;
 		    $this->ready = false;
-    		$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
-			if(count($parts) == 2) {
-				$sql = $parts[0];
-				$this->order = $parts[1];
+
+				if(is_array($sql)) {
+					foreach(explode(' ', 'select from where group order') as $section) {
+						$this->$section = @$sql[$section];
+					}
+					$this->select = "SELECT ".$this->select;
+				}
+				else {
+					// parse the query
+						$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->order = $parts[1];
+					}
+						$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->group = $parts[1];
+					}
+						$parts = preg_split('/\sWHERE\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->where = $parts[1];
+					}
+						$parts = preg_split('/\sFROM\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->from = $parts[1];
+					}
+					$this->select = $sql;
 			}
-    		$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
-			if(count($parts) == 2) {
-				$sql = $parts[0];
-				$this->group = $parts[1];
-			}
-	    	$parts = preg_split('/\sWHERE\s/si', $sql, 2);
-			if(count($parts) == 2) {
-				$sql = $parts[0];
-				$this->where = $parts[1];
-			}
-	    	$parts = preg_split('/\sFROM\s/si', $sql, 2);
-			if(count($parts) == 2) {
-				$sql = $parts[0];
-				$this->from = $parts[1];
-			}
-			$this->select = $sql;
 		}
 	}
 	//
