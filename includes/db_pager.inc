@@ -143,7 +143,16 @@ class db_pager {
 	//
 	function sort_table($col) 
 	{
+
+			$max_priority = 0;
+			foreach($this->columns as $id => $_col) {
+			if(!isset($_col['ord_priority'])) continue;
+				$max_priority = max($max_priority, $_col['ord_priority']);
+			};
+
+
 	    $ord = $this->columns[$col]['ord'];
+  		$this->columns[$col]['ord_priority']  = $max_priority+1; // set priority , higher than anything else
 	    $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
 	    $this->columns[$col]['ord'] = $ord;
 	    $this->set_page(1);
@@ -288,7 +297,16 @@ class db_pager {
 		if ($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
+			// sort order column by priority instead of table order.
+			$columns = array();
 	    foreach ($this->columns as $col) {
+					if(isset($col['ord_priority'])) {
+						$columns[$col['ord_priority']] = $col;
+					}
+			}
+			krsort($columns);
+
+	    foreach ($columns as $col) {
 	       	if (isset($col['ord'])) {
 	        	if ( $col['ord'] != '' && isset($col['name'])) {
 		    	    $ord[] = $col['name'] .' '. $col['ord'];
