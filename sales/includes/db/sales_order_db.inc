@@ -189,7 +189,14 @@ function update_sales_order($order)
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 
+	$id_tokeep = array();
+	foreach ($order->line_items as $line) {
+		array_push($id_tokeep , $line->id);
+	}
+	$id_list = implode(', ', $id_tokeep);
+	
 	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+	$sql .= " AND id NOT IN ($id_list)";
 
 	db_query($sql, "Old order Cannot be Deleted");
 
@@ -230,6 +237,15 @@ function update_sales_order($order)
 				}
 			}
 		}
+		if($line->id) {
+			$sql = "UPDATE ".TB_PREF."sales_order_details
+						SET description = ".db_escape($line->item_description) . ", 
+								unit_price = ".db_escape($line->price) . ",
+								quantity = ".db_escape($line->quantity) . ",
+								discount_percent = ".db_escape($line->discount_percent) . "
+						WHERE id = {$line->id}";
+		}
+		else {
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details
 		 (id, order_no, trans_type, stk_code,  description, unit_price, quantity,
 		  discount_percent, qty_sent)
@@ -242,6 +258,7 @@ function update_sales_order($order)
 		  .db_escape($line->quantity) . ", "
 		  .db_escape($line->discount_percent) . ", "
 		  .db_escape($line->qty_done) ." )";
+		}
 
 		db_query($sql, "Old order Cannot be Inserted");
 
