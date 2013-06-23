@@ -45,7 +45,8 @@ function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
             $myrow[0] -= $myrow2[0];
     }
 
-    return $myrow[0];
+    $qoh =  $myrow[0];
+		return $qoh ? $qoh : 0;
 }
 
 //--------------------------------------------------------------------------------------
