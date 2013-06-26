@@ -68,7 +68,9 @@ function get_item_categories($show_inactive)
 {
 	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
 		.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
-	if (!$show_inactive) $sql .= " AND !c.inactive";
+	if (!$show_inactive)
+		$sql .= " AND !c.inactive";
+	$sql .= " ORDER by description";
 
 	return db_query($sql, "could not get stock categories");
 }
