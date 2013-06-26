@@ -21,7 +21,11 @@ class SessionManager
 		$https = isset($secure) ? $secure : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 
 		// Set session cookie options
-		session_set_cookie_params($limit, $path, $domain, $https, true);
+		if (version_compare(PHP_VERSION, '5.2', '<')) // avoid failure on older php versions
+			session_set_cookie_params($limit, $path, $domain, $https);
+		else
+			session_set_cookie_params($limit, $path, $domain, $https, true);
+
 		session_start();
 
 		// Make sure the session hasn't expired, and destroy it if it has
