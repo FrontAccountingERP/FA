@@ -106,10 +106,8 @@ if (list_updated('stock_id'))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
-$action = $_SERVER['PHP_SELF'];
-if (@$_GET['popup'])
-	$action .= "?stock_id=".get_post('stock_id');
-start_form(false, false, $action);
+if (!@$_GET['popup'])
+	start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
@@ -229,8 +227,9 @@ end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 
-end_form();
 if (!@$_GET['popup'])
+{
+	end_form();
 	end_page(@$_GET['popup'], false, false);
-
+}
 ?>
