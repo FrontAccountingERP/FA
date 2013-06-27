@@ -23,7 +23,6 @@ DirectoryIndex index.php
 	php_flag register_globals Off
 	php_flag session.use_trans_sid Off
 </IfModule>
-
 #Sometimes neccessary to add those
 #
 #AddType application/x-javascript .js
