@@ -62,7 +62,7 @@ function end_form($breaks=0)
 	hidden('_modified', get_post('_modified', 0));
 	hidden('_token', $_SESSION['csrf_token']);
 	echo "</form>\n";
-	$Ajax->activate('token');
+	$Ajax->activate('_token');
 }
 
 function check_csrf_token()
