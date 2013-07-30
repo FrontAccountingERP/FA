@@ -23,6 +23,18 @@ include_once($path_to_root . "/admin/db/users_db.inc");
 function can_process()
 {
 
+	$Auth_Result = hook_authenticate($_SESSION["wa_current_user"]->username, $_POST['cur_password']);
+
+	if (!isset($Auth_Result))	// if not used external login: standard method
+		$Auth_Result = get_user_auth($_SESSION["wa_current_user"]->username, md5($_POST['cur_password']));
+
+	if (!$Auth_Result)
+   	{
+  		display_error( _("Invalid password entered."));
+		set_focus('cur_password');
+   		return false;
+   	}
+	
    	if (strlen($_POST['password']) < 4)
    	{
   		display_error( _("The password entered must be at least 4 characters long."));
@@ -72,11 +84,13 @@ $myrow = get_user($_SESSION["wa_current_user"]->user);
 
 label_row(_("User login:"), $myrow['user_id']);
 
+$_POST['cur_password'] = "";
 $_POST['password'] = "";
 $_POST['passwordConfirm'] = "";
 
-password_row(_("Password:"), 'password', $_POST['password']);
-password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
+password_row(_("Current Password:"), 'cur_password', $_POST['cur_password']);
+password_row(_("New Password:"), 'password', $_POST['password']);
+password_row(_("Repeat New Password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 
 table_section_title(_("Enter your new password in the fields."));
 
