@@ -10,6 +10,189 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-08-01 12:23 +0200 Joe
+(3284) Release 2.3.17
+ version.php
+
+2013-07-30 13:05 +0200 Janusz Dobrowolski
+(3283) Change password: added current password verification.
+ admin/change_current_user_password.php
+
+2013-07-30 12:57 +0200 Janusz Dobrowolski
+(3282) Fixed CSRF warning after retrying password change.
+ includes/ui/ui_controls.inc
+
+2013-06-23 21:22 +0100 Maxime Bourget
+(3281) Added get_dispatchable_quantity hook.
+ includes/hooks.inc
+ includes/ui/ui_controls.inc
+ sales/customer_delivery.php
+
+2013-06-23 21:14 +0100 Maxime Bourget
+(3280) Updating sales order use UPDATE instead of DELETE/INSERT to preserve extra data added by extensions (if any)
+ sales/includes/db/sales_order_db.inc
+
+2013-06-23 21:13 +0100 Maxime Bourget
+(3279) Added missing db_write_hook in update sales order.
+ sales/includes/db/sales_order_db.inc
+
+2013-06-23 21:02 +0100 Maxime Bourget
+(3278) Improved db_pager widget sorting (now user column selection order is used).
+ includes/db_pager.inc
+
+2013-06-23 20:58 +0100 Maxime Bourget
+(3277) Improved db_pager::set_sql to use array as well as query string.
+ includes/db_pager.inc
+
+2013-06-23 20:54 +0100 Maxime Bourget
+(3276) Fixed qoh to return 0 instead of null when moves history is empty.
+ includes/db/inventory_db.inc
+
+2013-06-27 23:22 +0200 Joe
+(3275) Touch by mistake
+ .htaccess
+
+2013-06-27 22:59 +0200 Joe
+(3274) Fixed nested forms in Items tab.
+ inventory/cost_update.php
+ inventory/prices.php
+ inventory/purchasing_data.php
+ inventory/reorder_level.php
+
+2013-06-27 21:06 +0200 Janusz Dobrowolski
+(3273) Fixed bug in get_next_trans_no() resulting in invisibility of new stock movements entered after some transaction is voided (applies to location transfer and inventory adjustment).
+ includes/systypes.inc
+
+2013-06-26 22:11 +0200 Janusz Dobrowolski
+(3272) Fixed session handling bug resulting in blank page on some pre-5.2 php versions.
+ includes/session.inc
+
+2013-06-26 21:31 +0200 Janusz Dobrowolski
+(3271) Item Categories: categories table is now sorted by category description.
+ inventory/includes/db/items_category_db.inc
+
+2013-06-26 21:24 +0200 Janusz Dobrowolski
+(3270) Fixed mysql 5.0 issue in Print Statements report
+ reporting/rep108.php
+
+2013-06-10 20:47 +0200 Janusz Dobrowolski
+(3269) Fixed bug in voiding GRN/Purchase resulting in invalid average unit cost.
+ includes/db/inventory_db.inc
+ purchasing/includes/db/grn_db.inc
+
+2013-05-29 15:58 +0200 Janusz Dobrowolski
+(3268) Uniform display of exchange rate across aplication, added xr_provider_authoritative option, fixed bug in stored rate value.
+ config.default.php
+ gl/includes/db/gl_db_rates.inc
+ gl/includes/ui/gl_bank_ui.inc
+ includes/ui/ui_view.inc
+ purchasing/includes/ui/grn_ui.inc
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/includes/ui/po_ui.inc
+ sales/includes/ui/sales_credit_ui.inc
+ sales/includes/ui/sales_order_ui.inc
+
+2013-05-27 19:36 +0200 Janusz Dobrowolski
+(3267) Customer Payment, Supplier Payment: payments can be done in any currency and properly allocated to invoices; exchange rate field removes (bank arte calculated automatically)
+ js/payalloc.js
+ purchasing/includes/db/supp_payment_db.inc
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+ sales/includes/db/payment_db.inc
+
+2013-05-20 14:36 +0200 Janusz Dobrowolski
+(3266) Bank Transfer: additional field for target currency amount instead of exchange rate display.
+ gl/bank_transfer.php
+ gl/includes/db/gl_db_banking.inc
+
+2013-05-23 22:41 +0200 Janusz Dobrowolski
+(3265) Sales Delivery, Direct Invoice and Sales Credit: added exchange rate edition/storage on new transaction date.
+ sales/includes/cart_class.inc
+ sales/includes/db/sales_credit_db.inc
+ sales/includes/db/sales_delivery_db.inc
+ sales/includes/db/sales_invoice_db.inc
+ sales/includes/ui/sales_order_ui.inc
+ sales/sales_order_entry.php
+
+2013-05-23 15:18 +0200 Janusz Dobrowolski
+(3264) Direct GRN, GRN to PO, Direct Purchase Invoice: added exchange rate edition/storage on new transaction date.
+ purchasing/includes/db/grn_db.inc
+ purchasing/includes/db/invoice_db.inc
+ purchasing/includes/po_class.inc
+ purchasing/includes/supp_trans_class.inc
+ purchasing/includes/ui/grn_ui.inc
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/includes/ui/po_ui.inc
+ purchasing/po_entry_items.php
+ purchasing/po_receive_items.php
+
+2013-05-23 13:07 +0200 Janusz Dobrowolski
+(3263) Fixed exchange rate ui to be editable for new rates only, bank payment/deposit use amount in supplier/customer currency instead of rate.
+ gl/gl_bank.php
+ gl/includes/db/gl_db_banking.inc
+ gl/includes/db/gl_db_rates.inc
+ gl/includes/ui/gl_bank_ui.inc
+ includes/ui/ui_view.inc
+
+2013-05-20 14:41 +0200 Janusz Dobrowolski
+(3262) Fixing cookie.txt location during access to remote exchange rate server.
+ gl/includes/db/gl_db_rates.inc
+
+2013-06-10 17:40 +0200 Janusz Dobrowolski
+(3261) Small fix in javascript routines to avoid naming conflicts for form.action object.
+ js/utils.js
+
+2013-06-10 17:38 +0200 Janusz Dobrowolski
+(3260) faillog.php file moved to tmp subdir.
+ includes/session.inc
+
+2013-05-24 10:41 +0200 Janusz Dobrowolski
+(3259) Fix to tax overrides (warning in add_supp_invoice()).
+ purchasing/includes/db/invoice_db.inc
+
+2013-05-16 12:39 +0200 Janusz Dobrowolski
+(3258) Payments, Bank Transfer: Fixed payment limit checking bug.
+ gl/bank_transfer.php
+ gl/gl_bank.php
+
+2013-05-10 10:24 +0200 Janusz Dobrowolski
+(3257) Customer Credit Note: warning cleanup in write_credit_note().
+ sales/includes/db/sales_credit_db.inc
+
+2013-05-09 10:52 +0200 Janusz Dobrowolski
+(3256) Supplier Invoices, Direct Invoice, Supplier Credit Notes: added editable tax totals fields to fix variations in tax calculations on supplier side.
+ includes/ui/ui_view.inc
+ purchasing/includes/db/invoice_db.inc
+ purchasing/includes/po_class.inc
+ purchasing/includes/supp_trans_class.inc
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/includes/ui/po_ui.inc
+ purchasing/po_entry_items.php
+
+2013-05-09 10:43 +0200 Janusz Dobrowolski
+(3255) Fixed bug in cool theme renderer.php
+ themes/cool/renderer.php
+
+2013-05-09 21:51 +0200 Joe Hunt
+(3253) Inventory Purchasing Report. Variable, $stock_dec, not in scope. Fixed.
+ reporting/rep306.php
+
+2013-05-09 21:42 +0200 Joe Hunt
+(3252) Fixed a forgotton currency bug in GRN Valuation Report (rep305.php)
+ reporting/rep305.php
+
+2013-05-08 15:51 +0200 Janusz Dobrowolski
+(3251) Updated empty.po template.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2013-05-08 14:42 +0200 Joe Hunt
+(3250) New language file, empty.po
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2013-05-08 13:51 +0200 Joe Hunt
+(3249) CHANGELOG updated.
+ CHANGELOG.txt
+
 2013-05-08 13:49 +0200 Joe Hunt
 (3248) Release 2.3.16
  update.html
