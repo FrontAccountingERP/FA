@@ -833,8 +833,11 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 	  ), $opts) );
 }
 
-function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false, $editkey=false)
 {
+	if ($editkey)
+		set_editor('item', $name, $editkey);
+
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo sales_items_list($name, $selected_id, $all_option, $submit_on_change,
