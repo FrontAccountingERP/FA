@@ -185,13 +185,13 @@ function check_valid_entries()
 		return false;
 	}
 
-	if (!check_num('target_amount', 0)) 
+	if (isset($_POST['target_amount']) && !check_num('target_amount', 0)) 
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
 		set_focus('target_amount');
 		return false;
 	}
-	if (input_num('target_amount') == 0) {
+	if (isset($_POST['target_amount']) && input_num('target_amount') == 0) {
 		display_error(_("The incomming bank amount cannot be 0."));
 		set_focus('target_amount');
 		return false;
