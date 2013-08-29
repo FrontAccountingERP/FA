@@ -30,34 +30,19 @@ include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 // trial_inquiry_controls();
 print_customer_balances();
 
-function get_open_balance($debtorno, $to, $convert)
+function get_open_balance($debtorno, $to)
 {
 	if($to)
 		$to = date2sql($to);
 
     $sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE." OR t.type = ".ST_BANKPAYMENT.",
-    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ", 0)) AS charges,
+    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 0)) AS charges,
     	SUM(IF(t.type <> ".ST_SALESINVOICE." AND t.type <> ".ST_BANKPAYMENT.",
-    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= " * -1, 0)) AS credits,
-		SUM(t.alloc";
-	if ($convert)
-		$sql .= " * rate";
-	$sql .= ") AS Allocated,
+	    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1, 0)) AS credits,
+		SUM(t.alloc) AS Allocated,
 		SUM(IF(t.type = ".ST_SALESINVOICE." OR t.type = ".ST_BANKPAYMENT.",
-			(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount - t.alloc)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ", 
-    	((t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1 + t.alloc)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ")) AS OutStanding
+			(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount - t.alloc),
+	    	((t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1 + t.alloc))) AS OutStanding
 		FROM ".TB_PREF."debtor_trans t
     	WHERE t.debtor_no = ".db_escape($debtorno)
 		." AND t.type <> ".ST_CUSTDELIVERY;
@@ -164,18 +149,19 @@ function print_customer_balances()
 		if (!$convert && $currency != $myrow['curr_code']) continue;
 		
 		$accumulate = 0;
+		$rate = $convert ? get_exchange_rate_to_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
-		$init[0] = round2(abs($bal['charges']), $dec);
-		$init[1] = round2(Abs($bal['credits']), $dec);
-		$init[2] = round2($bal['Allocated'], $dec);
+		$init[0] = round2(abs($bal['charges']*$rate), $dec);
+		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
+		$init[2] = round2($bal['Allocated']*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding'], $dec);
+			$init[3] = round2($bal['OutStanding']*$rate, $dec);
 
 		$res = get_transactions($myrow['debtor_no'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
@@ -211,10 +197,6 @@ function print_customer_balances()
 			if ($trans['type'] == ST_SALESINVOICE)
 				$rep->DateCol(3, 4,	$trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
-			if ($convert)
-				$rate = $trans['rate'];
-			else
-				$rate = 1.0;
 			if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
 				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0)

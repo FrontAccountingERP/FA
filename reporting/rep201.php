@@ -27,30 +27,18 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_supplier_balances();
 
-function get_open_balance($supplier_id, $to, $convert)
+function get_open_balance($supplier_id, $to)
 {
 	$to = date2sql($to);
 
     $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.", 
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ", 0)) AS charges,
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS charges,
     	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE." AND ".TB_PREF."supp_trans.type <> ".ST_BANKDEPOSIT.", 
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-    if ($convert)
-    	$sql .= "* rate";
-    $sql .= ", 0)) AS credits,
-		SUM(".TB_PREF."supp_trans.alloc";
-	if ($convert)
-		$sql .= " * rate";
-	$sql .= ") AS Allocated,
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS credits,
+		SUM(".TB_PREF."supp_trans.alloc) AS Allocated,
 		SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.",
 		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc),
-		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ") AS OutStanding
+		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))) AS OutStanding
 		FROM ".TB_PREF."supp_trans
     	WHERE ".TB_PREF."supp_trans.tran_date < '$to'
 		AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
@@ -154,7 +142,7 @@ function print_supplier_balances()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$accumulate = 0;
-		$bal = get_open_balance($myrow['supplier_id'], $from, $convert);
+		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']), $dec);
 		$init[1] = round2(Abs($bal['credits']), $dec);
@@ -191,6 +179,8 @@ function print_supplier_balances()
 		while ($trans=db_fetch($res))
 		{
 			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
+			$rate = $convert ? get_exchange_rate_to_home_currency($myrow['curr_code'], Today()) : 1;
+
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
@@ -198,10 +188,6 @@ function print_supplier_balances()
 			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(3, 4,	$trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
-			if ($convert)
-				$rate = $trans['rate'];
-			else
-				$rate = 1.0;
 			if ($trans['TotalAmount'] > 0.0)
 			{
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
