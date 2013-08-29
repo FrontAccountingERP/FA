@@ -103,7 +103,7 @@ function check_overdue($row)
 		return (date1_greater_date2(Today(), sql2date($row['delivery_date'])));
 	else
 		return ($row['type'] == 0
-			&& date1_greater_date2(Today(), sql2date($row['ord_date']))
+			&& date1_greater_date2(Today(), sql2date($row['delivery_date']))
 			&& ($row['TotDelivered'] < $row['TotQuantity']));
 }
 
