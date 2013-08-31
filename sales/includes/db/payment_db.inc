@@ -41,16 +41,19 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	}
 
 	$bank = get_bank_account($bank_account);
-	if (!$rate)
-		$rate = get_exchange_rate_from_home_currency($bank['bank_curr_code'], $date_ );
 
 	if (!$bank_amount) 	// backward compatibility workaround
 	{
+		if(!$rate)
+			$rate = get_exchange_rate_from_to(get_customer_currency($customer_id),
+				$bank['bank_curr_code'], $date_ );
+
 		$bank_amount = $amount/$rate;
 	}
 
+	// do not use $rate here: global rate stored in exrate table is always used
 	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, 
-		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, "", 0, $rate);
+		$date_, $ref, $amount, $discount);
 
 	$bank_gl_account = get_bank_gl_account($bank_account);
 
