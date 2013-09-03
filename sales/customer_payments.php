@@ -306,24 +306,22 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
 	$old_ref = $myrow["reference"];
-	//$_POST['charge'] =  $myrow[""];
+	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
+	$_POST['charge'] =  price_format($charge);
 	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
+	$_POST["bank_amount"] = price_format($myrow['bank_amount']+$charge);
 	$_POST["discount"] = price_format($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
 
-	if (!isset($_POST['charge'])) // first page call
+	//Prepare allocation cart 
+	if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
+	else
 	{
-		//Prepare allocation cart 
-		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
-		else
-		{
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
-			$Ajax->activate('alloc_tbl');
-		}
+		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+		$Ajax->activate('alloc_tbl');
 	}
-
 }
 
 //----------------------------------------------------------------------------------------------
@@ -342,7 +340,7 @@ start_form();
 	if ($new)
 		customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	else {
-		label_cells(_("From Customer:"), $_POST['customer_name'], "class='label'");
+		label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
 		hidden('customer_id', $_POST['customer_id']);
 	}
 
@@ -409,9 +407,9 @@ start_form();
 	end_table(1);
 
 	if ($new)
-		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
-	else
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+	else
+		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
 
 	br();
 

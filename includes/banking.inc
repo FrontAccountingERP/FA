@@ -163,7 +163,8 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	{
 		$trans = get_customer_trans($trans_no, $type);
 		$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
-		$ar_ap_act = $trans['receivables_account'];
+		$cust_accs = get_branch_accounts($trans['branch_code']);
+		$ar_ap_act = $cust_accs['receivables_account'];
 		$person_id = $trans['debtor_no'];
 		$curr = $trans['curr_code'];
 		$date = sql2date($trans['tran_date']);

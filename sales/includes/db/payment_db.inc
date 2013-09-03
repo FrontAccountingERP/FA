@@ -134,5 +134,36 @@ function void_customer_payment($type, $type_no)
 	commit_transaction();
 }
 
+/*
+	Retrieve bank charge amount from GL postings for customer payment.
+	. Bank charge is not stored explicitly in database as of 2.3.xx
+	. Due to roundings the retrieved charge can differ from the original amount when bank_curr!=home_curr && bank_curr!=cust_curr
+*/
+function get_cust_bank_charge($type, $trans_no)
+{
+
+	// restore charge amount from amounts in bank currency if possible, otherwise calculate from GL posting with exchange rate used for amount posting
+	$sql = "SELECT	IF(act.bank_curr_code=home_curr.value, charge.amount,
+					IF(act.bank_curr_code=debtor.curr_code, -(trans.amount-ar.ov_amount+ar.ov_discount),
+					IFNULL(charge.amount*trans.amount/pmt.amount, 0)))
+			FROM ".TB_PREF."bank_trans trans
+				LEFT JOIN ".TB_PREF."bank_accounts act ON trans.bank_act=act.id
+				LEFT JOIN ".TB_PREF."sys_prefs charge_act ON charge_act.name='bank_charge_act'
+				LEFT JOIN ".TB_PREF."sys_prefs home_curr ON home_curr.name='curr_default'
+				LEFT JOIN ".TB_PREF."gl_trans charge ON charge.type=trans.type AND charge.type_no=trans.trans_no AND charge.account=charge_act.value
+				LEFT JOIN ".TB_PREF."gl_trans pmt ON pmt.type=trans.type AND pmt.type_no=trans.trans_no AND pmt.account=act.account_code
+				LEFT JOIN ".TB_PREF."debtors_master debtor ON trans.person_id=debtor.debtor_no AND trans.person_type_id=".PT_CUSTOMER."
+				LEFT JOIN ".TB_PREF."debtor_trans ar ON trans.type=ar.type AND trans.trans_no=ar.trans_no
+			WHERE pmt.amount!=0 AND charge.amount!=0 AND trans.amount!=0
+				AND trans.type=".db_escape($type)." AND trans.trans_no=".db_escape($trans_no);
+
+	$result = db_query($sql, "cannot retrieve bank charge");
+
+	if (!db_num_rows($result))
+		return 0;
+
+	$myrow = db_fetch($result);
+	return $myrow['0'];
+}
 
 ?>

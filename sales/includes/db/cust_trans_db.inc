@@ -120,13 +120,16 @@ function get_customer_trans($trans_id, $trans_type)
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
 		."cust.name AS DebtorName, cust.address, "
 		."cust.curr_code, "
-		."cust.tax_id ";
+		."cust.tax_id, "
+		."com.memo_";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		// Chaitanya : Added bank_act to support Customer Payment Edit
 		$sql .= ",bank_act,".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
-			".TB_PREF."bank_accounts.account_type AS BankTransType ";
+			".TB_PREF."bank_accounts.account_type AS BankTransType,
+			".TB_PREF."bank_accounts.bank_curr_code,
+			".TB_PREF."bank_trans.amount as bank_amount";
 	}
 
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
