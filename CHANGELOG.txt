@@ -10,6 +10,65 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-09-05 14:36 +0200 Joe
+(3297) Release 2.3.18.
+ version.php
+
+2013-09-03 08:51 +0200 Janusz Dobrowolski
+(3296) Customer Payment: fixed missing charge amount during edition, fixed submit button name.
+ includes/banking.inc
+ sales/customer_payments.php
+ sales/includes/db/cust_trans_db.inc
+ sales/includes/db/payment_db.inc
+ sales/view/view_receipt.php
+
+2013-09-02 13:28 +0200 Joe
+(3295) Bug no 2409 and 2410. Fixed headers and sql error when deleting a category.
+ admin/crm_categories.php
+
+2013-08-31 09:32 +0200 Janusz Dobrowolski
+(3294) Customer Payment: fixed bug with exchange rates resulting in invalid postings ts AR and foreign Exchange Gain Accounts.
+ sales/includes/db/payment_db.inc
+
+2013-08-29 22:18 +0200 Janusz Dobrowolski
+(3293) Delivery Against Sales Orders: sales orders displayed as overdue after delivery date.
+ sales/inquiry/sales_orders_view.php
+
+2013-08-29 21:13 +0200 Janusz Dobrowolski
+(3292) Customer Balances Report, Supplier Balances Report: balances in home currency were calculated using wrong exchange rates.
+ reporting/rep101.php
+ reporting/rep201.php
+
+2013-08-25 20:39 +0200 Janusz Dobrowolski
+(3291) Fixed problem with customer payment allocations (invalid exrate stored in debtor_trans record).
+ sales/includes/db/payment_db.inc
+
+2013-08-17 14:50 +0200 Janusz Dobrowolski
+(3290) Bank Transfer: fixed problem with entering transfer between accounts of the same currency.
+ gl/bank_transfer.php
+
+2013-08-14 23:56 +0200 Janusz Dobrowolski
+(3289) Added F4 hotkey for item popup editor in sales documents.
+ includes/ui/ui_lists.inc
+ sales/includes/ui/sales_order_ui.inc
+
+2013-08-14 09:34 +0200 Joe
+(3288) Customer/Supplier payments with amounts bigger than 1,000 was truncated. Fixed.
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+
+2013-08-01 23:50 +0200 Joe
+(3287) New global flags in config.default.php
+ update.html
+
+2013-08-01 12:35 +0200 Janusz Dobrowolski
+(3286) Langauage template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2013-08-01 12:25 +0200 Joe
+(3285) CHANGELOG.txt
+ CHANGELOG.txt
+
 2013-08-01 12:23 +0200 Joe
 (3284) Release 2.3.17
  version.php
