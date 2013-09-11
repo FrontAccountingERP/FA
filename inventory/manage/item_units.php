@@ -48,7 +48,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	}
 
 	if ($input_error !=1) {
-    	write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
+    	write_item_unit($selected_id, $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
 		if($selected_id != '')
 			display_notification(_('Selected unit has been updated'));
 		else
@@ -105,10 +105,10 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["abbr"]);
 	label_cell($myrow["name"]);
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
-
-	inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
- 	edit_button_cell("Edit".$myrow["abbr"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["abbr"], _("Delete"));
+	$id = htmlentities($myrow["abbr"]);
+	inactive_control_cell($id, $myrow["inactive"], 'item_units', 'abbr');
+ 	edit_button_cell("Edit".$id, _("Edit"));
+ 	delete_button_cell("Delete".$id, _("Delete"));
 	end_row();
 }
 
@@ -130,7 +130,7 @@ if ($selected_id != '')
 		$_POST['description']  = $myrow["name"];
 		$_POST['decimals']  = $myrow["decimals"];
 	}
-	hidden('selected_id', $selected_id);
+	hidden('selected_id', $myrow["abbr"]);
 }
 if ($selected_id != '' && item_unit_used($selected_id)) {
     label_row(_("Unit Abbreviation:"), $_POST['abbr']);
