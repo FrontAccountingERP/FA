@@ -167,36 +167,29 @@ function credit_link($row)
 
 function edit_link($row)
 {
-	$str = '';
-
-	if (@$_GET['popup'])
+	if (@$_GET['popup'] || get_voided_entry($row['type'], $row["trans_no"]) || is_closed_trans($row['type'], $row["trans_no"]))
 		return '';
+
+	$str = '';
 	switch($row['type']) {
-	case ST_SALESINVOICE:
-		if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false && $row['Allocated'] == 0)
+		case ST_SALESINVOICE:
 			$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
 		break;
-	case ST_CUSTCREDIT:
-  		if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) // 2008-11-19 Joe Hunt
-		{	 
+		case ST_CUSTCREDIT:
 			if ($row['order_']==0) // free-hand credit note
 			    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
 			else	// credit invoice
 			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
-		}	    
 		break;
-	case ST_CUSTDELIVERY:
-  		if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false)
+		case ST_CUSTDELIVERY:
    			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
-	case ST_CUSTPAYMENT:
-  		if (get_voided_entry(ST_CUSTPAYMENT, $row["trans_no"]) === false)
+		case ST_CUSTPAYMENT:
    			$str = "/sales/customer_payments.php?trans_no=".$row['trans_no'];
 		break;
-	}		
-	if ($str != "" && !is_closed_trans($row['type'], $row["trans_no"]))
-		return pager_link(_('Edit'), $str, ICON_EDIT);
-	return '';	
+	}
+
+	return $str ? pager_link(_('Edit'), $str, ICON_EDIT) : '';
 }
 
 function prt_link($row)

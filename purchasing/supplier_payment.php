@@ -143,13 +143,6 @@ function check_inputs()
 		}	
 	}
 
-//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-//	{
-//		display_error(_("The exchange rate must be numeric and greater than zero."));
-//		set_focus('_ex_rate');
-//		return false;
-//	}
-
 	if ($_POST['discount'] == "") 
 	{
 		$_POST['discount'] = 0;
@@ -162,7 +155,6 @@ function check_inputs()
 		return false;
 	}
 
-	//if (input_num('amount') - input_num('discount') <= 0) 
 	if (input_num('amount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
@@ -228,19 +220,6 @@ function check_inputs()
 
 function handle_add_payment()
 {
-	$supp_currency = get_supplier_currency($_POST['supplier_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
-	$comp_currency = get_company_currency();
-
-	if ($comp_currency != $bank_currency && $bank_currency != $supp_currency)
-		$rate = 0;
-	else
-	{
-		$rate = input_num('_ex_rate');
-		$supplier_amount = input_num('bank_amount'); 
-			if($supplier_amount) $rate = input_num('amount')/$supplier_amount;
-	}
-
 	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
 		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
 		input_num('charge'), input_num('bank_amount', input_num('amount')));

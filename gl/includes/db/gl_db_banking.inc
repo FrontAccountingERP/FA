@@ -35,7 +35,7 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	}	
 	$amount = get_gl_trans_from_to("", $date_, $account);
 	$diff = $amount - $for_amount;
-	if ($diff != 0)
+	if (floatcmp($diff,0))
 	{
 		if ($trans_no == null)
 			$trans_no = get_next_trans_no(ST_JOURNAL);
@@ -45,8 +45,9 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
     		-$diff, null, $person_type_id, $person_id);
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
     		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
+		return true;
 	}
-	return ($diff != 0);
+	return false;
 }
 
 //------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.

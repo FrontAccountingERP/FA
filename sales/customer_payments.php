@@ -249,14 +249,6 @@ if (isset($_POST['_customer_id_button'])) {
 //----------------------------------------------------------------------------------------------
 
 if (get_post('AddPaymentItem') && can_process()) {
-	
-	$cust_currency = get_customer_currency($_POST['customer_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
-	$comp_currency = get_company_currency();
-//	if ($comp_currency != $bank_currency && $bank_currency != $cust_currency)
-//		$rate = 0;
-//	else
-//		$rate = input_num('_ex_rate');
 
 	new_doc_date($_POST['DateBanked']);
 
