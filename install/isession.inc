@@ -39,6 +39,19 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_cleanup(&$parms)
+{
+	foreach($parms as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		if (is_array($value))
+			html_cleanup($parms[$name]);
+		else
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	}
+	reset($parms); // needed for direct key() usage later throughout the sources
+}
+
+
 function check_page_security($page_security)
 {
 }
@@ -127,6 +140,11 @@ ob_start('output_html',0);
 
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
+
+html_cleanup($_GET);
+html_cleanup($_POST);
+html_cleanup($_REQUEST);
+html_cleanup($_SERVER);
 
 $SysPrefs = &$_SESSION['SysPrefs'];
 
