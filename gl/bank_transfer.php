@@ -87,7 +87,7 @@ function gl_payment_controls()
 		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
-		amount_row(_("Incomming Amount:"), 'target_amount', null, '', $to_currency, 2);
+		amount_row(_("Incoming Amount:"), 'target_amount', null, '', $to_currency, 2);
 	} 
 	else 
 	{
