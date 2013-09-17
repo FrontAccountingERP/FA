@@ -33,7 +33,8 @@ print_remittances();
 function get_remittance($type, $trans_no)
 {
    	$sql = "SELECT ".TB_PREF."supp_trans.*, 
-   		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total, 
+   		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst) AS Total,
+   		".TB_PREF."supp_trans.ov_discount,
    		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, 
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."suppliers.gst_no AS tax_id, 
    		".TB_PREF."suppliers.address
@@ -155,18 +156,27 @@ function print_remittances()
 				$rep->NewLine();
 				$rep->TextColLines(1, 5, $memo, -2);
 			}
-			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+			$rep->row = $rep->bottomMargin + (16 * $rep->lineHeight);
 
 			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
 			$myrow['Total'] *= -1;
-			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
+			$myrow['ov_discount'] *= -1;
+			$rep->AmountCol(6, 7, $myrow['Total'] + $myrow['ov_discount'] - $total_allocated, $dec, -2);
+			if (floatcmp($myrow['ov_discount'], 0))
+			{
+				$rep->NewLine();
+				$rep->TextCol(3, 6, _("Discount"), - 2);
+				$rep->AmountCol(6, 7, -$myrow['ov_discount'], $dec, -2);
+			}	
+
 			$rep->NewLine();
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, _("TOTAL REMITTANCE"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
+
 			$words = price_in_words($myrow['Total'], ST_SUPPAYMENT);
 			if ($words != "")
 			{
