@@ -185,7 +185,7 @@ function check_inputs()
 
 	$limit = get_bank_account_limit($_POST['bank_account'], $_POST['DatePaid']);
 
-	if ($limit != null && ($limit < input_num('amount')))
+	if ($limit !== null && floatcmp($limit, input_num('amount') < 0))
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit)));
 		set_focus('amount');

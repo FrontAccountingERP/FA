@@ -139,7 +139,7 @@ function check_valid_entries()
 
 	$amnt_tr = input_num('charge') + input_num('amount');
 
-	if ($limit != null && floatcmp($limit, $amnt_tr) < 0)
+	if ($limit !== null && floatcmp($limit, $amnt_tr) < 0)
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s) for source account."), price_format($limit)));
 		set_focus('amount');
