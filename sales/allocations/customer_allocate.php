@@ -36,6 +36,7 @@ function clear_allocations()
 		unset($_SESSION['alloc']->allocs);
 		unset($_SESSION['alloc']);
 	}
+	//session_register('alloc');
 }
 
 //--------------------------------------------------------------------------------
@@ -44,19 +45,27 @@ function edit_allocations_for_transaction($type, $trans_no)
 {
 	global $systypes_array;
 
-    display_heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type],
-    	$_SESSION['alloc']->trans_no));
+	$cart = $_SESSION['alloc'];
 
-    display_heading($_SESSION['alloc']->person_name);
+    display_heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$cart->type], $cart->trans_no));
 
-    display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-    display_heading2(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
+    display_heading($cart->person_name);
+
+    display_heading2(_("Date:") . " <b>" . $cart->date_ . "</b>");
+   	display_heading2(_("Total:"). " <b>" . price_format($cart->bank_amount).' '.$cart->currency."</b>");
+
+	if ($cart->currency != $cart->person_curr)
+	{
+	    $total = _("Total in clearing currency:") . " <b>" . price_format($cart->amount)."</b>"
+	    	. sprintf(" %s (%s %s/%s)", $cart->person_curr, exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
+    	display_heading2($total);
+	}
 
     echo "<br>";
 
 	start_form();
 	div_start('alloc_tbl');
-    if (count($_SESSION['alloc']->allocs) > 0)
+    if (count($cart->allocs) > 0)
     {
 		show_allocatable(true);
        	submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
@@ -98,7 +107,7 @@ if (isset($_POST['Cancel']))
 if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 {
 	clear_allocations();
-	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no']);
+	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no'], @$_GET['debtor_no'], PT_CUSTOMER);
 }
 
 if(get_post('UpdateDisplay'))

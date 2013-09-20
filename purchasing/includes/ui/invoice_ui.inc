@@ -82,7 +82,7 @@ function invoice_header(&$supp_trans)
 	{
 		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
 		$_POST['supplier_id'] = $trans['supplier_id'];
-		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+		$supp = $trans['supplier_name'] . " - " . $trans['curr_code'];
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
 	}	
 	else

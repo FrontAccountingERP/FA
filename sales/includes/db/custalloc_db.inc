@@ -33,11 +33,18 @@ function delete_cust_allocation($trans_id)
 }
 
 //----------------------------------------------------------------------------------------
-
-function update_debtor_trans_allocation($trans_type, $trans_no, $alloc)
+//	Update debtor trans alloc field according to current status of cust_allocations
+//
+function update_debtor_trans_allocation($trans_type, $trans_no)
 {
-	$sql = "UPDATE ".TB_PREF."debtor_trans SET alloc = alloc + $alloc
-		WHERE type=".db_escape($trans_type)." AND trans_no = ".db_escape($trans_no);
+	$sql = "UPDATE `".TB_PREF."debtor_trans` trans,
+			(SELECT sum(amt) amt from ".TB_PREF."cust_allocations
+				WHERE (trans_type_to=".db_escape($trans_type)." AND trans_no_to=".db_escape($trans_no).")
+				OR (trans_type_from=".db_escape($trans_type)." AND trans_no_from=".db_escape($trans_no).")) allocated
+		SET 
+			trans.alloc=IFNULL(allocated.amt,0)
+		WHERE trans.type=".db_escape($trans_type)." AND trans_no=".db_escape($trans_no);
+
 	db_query($sql, "The debtor transaction record could not be modified for the allocation against it");
 }
 
@@ -94,7 +101,8 @@ function get_alloc_trans_sql($extra_fields=null, $extra_conditions=null, $extra_
 		trans.alloc,
 		trans.due_date,
 		debtor.address,
-		trans.version ";
+		trans.version,
+		trans.debtor_no ";
 
 	if ($extra_fields)
 		$sql .= ", $extra_fields ";
@@ -184,10 +192,10 @@ function get_allocatable_from_cust_transactions($customer_id, $trans_no=null, $t
 	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
-function get_sql_for_customer_allocation_inquiry()
+function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterType, $settled)
 {
-  	$data_after = date2sql($_POST['TransAfterDate']);
-  	$date_to = date2sql($_POST['TransToDate']);
+  	$data_after = date2sql($from);
+  	$date_to = date2sql($to);
 
   	$sql = "SELECT 
   		trans.type,
@@ -213,25 +221,25 @@ function get_sql_for_customer_allocation_inquiry()
     		AND trans.tran_date >= '$data_after'
     		AND trans.tran_date <= '$date_to'";
 
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+   	if ($customer != ALL_TEXT)
+   		$sql .= " AND trans.debtor_no = ".db_escape($customer);
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	if (isset($filterType) && $filterType != ALL_TEXT)
    	{
-   		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
+   		if ($filterType == '1' || $filterType == '2')
    		{
    			$sql .= " AND trans.type = ".ST_SALESINVOICE." ";
    		}
-   		elseif ($_POST['filterType'] == '3')
+   		elseif ($filterType == '3')
    		{
 			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
    		}
-   		elseif ($_POST['filterType'] == '4')
+   		elseif ($filterType == '4')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
 
-    	if ($_POST['filterType'] == '2')
+    	if ($filterType == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
@@ -246,12 +254,13 @@ function get_sql_for_customer_allocation_inquiry()
    	}
 
 
-   	if (!check_value('showSettled'))
+   	if (!$settled)
    	{
    		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + "
 		."trans.ov_freight + trans.ov_freight_tax + "
 		."trans.ov_discount) - trans.alloc,6) != 0) ";
    	}
+
    	return $sql;
 }
 

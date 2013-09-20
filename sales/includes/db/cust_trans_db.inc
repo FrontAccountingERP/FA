@@ -116,6 +116,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 function get_customer_trans($trans_id, $trans_type)
 {
+	global $go_debug;
+
 	$sql = "SELECT trans.*,"
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
 		."cust.name AS DebtorName, cust.address, "
@@ -143,7 +145,8 @@ function get_customer_trans($trans_id, $trans_type)
 		.TB_PREF."tax_groups.id AS tax_group_id ";
 	}
 
-	$sql .= " FROM ".TB_PREF."debtor_trans trans LEFT JOIN ".TB_PREF."comments com ON trans.type=com.type AND trans.trans_no=com.id
+	$sql .= " FROM ".TB_PREF."debtor_trans trans
+					LEFT JOIN ".TB_PREF."comments com ON trans.type=com.type AND trans.trans_no=com.id
 					LEFT JOIN ".TB_PREF."shippers ON ".TB_PREF."shippers.shipper_id=trans.ship_via, 
 					".TB_PREF."debtors_master cust";
 
@@ -181,12 +184,15 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if (db_num_rows($result) == 0) {
 		// can't return nothing
+		if($go_debug)
+			display_backtrace();
 		display_db_error("no debtor trans found for given params", $sql, true);
 		exit;
 	}
-
 	if (db_num_rows($result) > 1) {
 		// can't return multiple
+		if($go_debug)
+			display_backtrace();
 		display_db_error("duplicate debtor transactions found for given params", $sql, true);
 		exit;
 	}

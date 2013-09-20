@@ -176,7 +176,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 		$supp_accs = get_supplier_accounts($trans['supplier_id']);
 		$ar_ap_act = $supp_accs['payable_account'];
 		$person_id = $trans['supplier_id'];
-		$curr = $trans['SupplierCurrCode'];
+		$curr = $trans['curr_code'];
 		$date = sql2date($trans['tran_date']);
 	}
 	if (is_company_currency($curr))

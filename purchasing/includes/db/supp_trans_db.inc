@@ -53,13 +53,13 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 function get_supp_trans($trans_no, $trans_type=-1)
 {
 	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
-		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS SupplierCurrCode ";
+		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS curr_code ";
 
 	if ($trans_type == ST_SUPPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name, ".TB_PREF."bank_accounts.bank_curr_code,
-			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS BankAmount,
+			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS bank_amount,
 			".TB_PREF."bank_trans.ref ";
 	}
 
