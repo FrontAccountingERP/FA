@@ -168,7 +168,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 	if (!isset($balance) && isset($date))
 		return null;	// unlimited account
 
-	if ($balance < $delta_amount)
+	if ($balance < -$delta_amount)
 		return array('amount' => $balance, 'trans_date'=> $date);
 
 	$balance += $delta_amount;
