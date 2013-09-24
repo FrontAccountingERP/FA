@@ -305,7 +305,7 @@ function gl_options_controls($order)
 	if ($person_curr != $bank_curr)
 	{
 		$_POST['settled_amount'] =
-			price_format($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, get_post('date_')));
+			price_format(abs($order->gl_items_total() / get_exchange_rate_from_to($bank_curr, $person_curr, get_post('date_'))));
 		amount_row($type == PT_CUSTOMER ? _("Settled AR Amount:") :  _("Settled AP Amount:"),
 			 'settled_amount', null, null, $person_curr, user_price_dec());
 	}
