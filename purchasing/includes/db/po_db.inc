@@ -147,7 +147,7 @@ function read_po_header($order_no, &$order)
 		$order->credit = get_current_supp_credit($order->supplier_id);
 
       	$order->orig_order_date = sql2date($myrow["ord_date"]);
-      	$order->Comments = $myrow["comments"];
+      	$order->Comments = nl2br($myrow["comments"]);
       	$order->Location = $myrow["into_stock_location"];
       	$order->supp_ref = $myrow["requisition_no"];
       	$order->reference = $myrow["reference"];

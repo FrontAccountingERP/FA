@@ -358,7 +358,7 @@ function comments_display_row($type, $id)
 		echo "<tr><td colspan=15>";
     	while ($comment = db_fetch($comments))
     	{
-    		echo $comment["memo_"] . "<br>";
+    		echo nl2br($comment["memo_"]) . "<br>";
     	}
 		echo "</td></tr>";
 	}
