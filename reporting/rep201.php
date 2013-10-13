@@ -179,7 +179,7 @@ function print_supplier_balances()
 		while ($trans=db_fetch($res))
 		{
 			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
-			$rate = $convert ? get_exchange_rate_to_home_currency($myrow['curr_code'], Today()) : 1;
+			$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);

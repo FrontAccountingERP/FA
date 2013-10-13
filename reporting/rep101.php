@@ -149,7 +149,7 @@ function print_customer_balances()
 		if (!$convert && $currency != $myrow['curr_code']) continue;
 		
 		$accumulate = 0;
-		$rate = $convert ? get_exchange_rate_to_home_currency($myrow['curr_code'], Today()) : 1;
+		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']*$rate), $dec);
