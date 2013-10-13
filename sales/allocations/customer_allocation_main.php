@@ -73,7 +73,7 @@ function alloc_link($row)
 {
 	return pager_link(_("Allocate"),
 		"/sales/allocations/customer_allocate.php?trans_no="
-			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&debtor_no=" . $row["debtor_no"], ICON_MONEY);
+			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 }
 
 function amount_left($row)

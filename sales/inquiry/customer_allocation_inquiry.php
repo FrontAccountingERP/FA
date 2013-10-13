@@ -95,7 +95,7 @@ function alloc_link($row)
 	$link = 
 	pager_link(_("Allocation"),
 		"/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] 
-		."&trans_type=" . $row["type"]."&debtor_no=" . $row["debtor_no"], ICON_MONEY);
+		."&trans_type=" . $row["type"]."&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 
 	if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0)
 	{

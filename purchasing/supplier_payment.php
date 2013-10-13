@@ -72,15 +72,18 @@ if (!isset($_POST['bank_account'])) { // first page call
 	if (isset($_GET['PInvoice'])) {
 		//  get date and supplier
 		$inv = get_supp_trans($_GET['PInvoice'], ST_SUPPINVOICE);
+		$dflt_act = get_default_bank_account($inv['curr_code']);
+		$_POST['bank_account'] = $dflt_act['id'];
 		if($inv) {
-			$_POST['supplier_id'] = $inv['supplier_id'];
+			$_SESSION['alloc']->person_id = $_POST['supplier_id'] = $inv['supplier_id'];
+			$_SESSION['alloc']->read();
 			$_POST['DatePaid'] = sql2date($inv['tran_date']);
 			$_POST['memo_'] = $inv['supp_reference'];
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SUPPINVOICE && $trans->type_no == $_GET['PInvoice']) {
 					$un_allocated = abs($trans->amount) - $trans->amount_allocated;
-					$_POST['amount'] = $_SESSION['alloc']->amount =
-						$_SESSION['alloc']->allocs[$line]->current_allocated = price_format($un_allocated);
+					$_SESSION['alloc']->amount = $_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
+					$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
 					break;
 				}
 			}

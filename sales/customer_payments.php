@@ -49,18 +49,19 @@ if (!isset($_POST['bank_account'])) { // first page call
 	if (isset($_GET['SInvoice'])) {
 		//  get date and supplier
 		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
+		$dflt_act = get_default_bank_account($inv['curr_code']);
+		$_POST['bank_account'] = $dflt_act['id'];
 		if($inv) {
-			$_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->read();
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
 					$un_allocated = $trans->amount - $trans->amount_allocated;
-					if($un_allocated){
-					$_POST['amount'] = $_SESSION['alloc']->amount = 
-//						price_format($trans->amount);
-					$_SESSION['alloc']->allocs[$line]->current_allocated =
-//						$trans->amount;
-						price_format($un_allocated);}
+					if ($un_allocated){
+						$_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
+						$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
+					}
 					break;
 				}
 			}

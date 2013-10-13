@@ -230,29 +230,6 @@ if(isset($_SESSION["wa_current_user"])) {
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
 
-if (!defined('ICON_EDIT'))
-{
-	define("ICON_EDIT", "edit.gif");	
-	define("ICON_DELETE", "delete.gif");	
-	define("ICON_ADD", "ok.gif");	
-	define("ICON_UPDATE", "ok.gif");	
-	define("ICON_OK", "ok.gif");	
-	define("ICON_CANCEL", "cancel.png");	
-	define("ICON_GL", "gl.png");	
-	define("ICON_PRINT", "print.png");	
-	define("ICON_PDF", "pdf.gif");	
-	define("ICON_DOC", "invoice.gif");	
-	define("ICON_CREDIT", "credit.gif");	
-	define("ICON_RECEIVE", "receive.gif");	
-	define("ICON_DOWN", "download.gif");	
-	define("ICON_MONEY", "money.png");	
-	define("ICON_REMOVE", "remove.png");	
-	define("ICON_REPORT", "report.png");	
-	define("ICON_VIEW", "view.gif");	
- 	define("ICON_SUBMIT", "ok.gif");
- 	define("ICON_ESCAPE", "escape.png");	
-}
-
 /* 
 	Display a dropdown select box for choosing Company to login if false.
 	Show a blank editbox only if true where the Company NickName

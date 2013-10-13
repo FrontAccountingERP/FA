@@ -98,7 +98,7 @@ function alloc_link($row)
 	if (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) 
 		&& (-$row["TotalAmount"] - $row["Allocated"]) >= 0)
 			return 	pager_link(_("Allocations"), "/purchasing/allocations/supplier_allocate.php?trans_no=" .
-				$row["trans_no"]. "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_MONEY );
+				$row["trans_no"]. "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_ALLOC);
 	elseif ($row["type"] == ST_SUPPINVOICE && ($row["TotalAmount"] - $row["Allocated"]) > 0)
 			return 	pager_link(_("Pay"), "/purchasing/supplier_payment.php?supplier_id=".$row["supplier_id"]
 				."&PInvoice=".$row["trans_no"], ICON_MONEY );
