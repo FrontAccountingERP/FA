@@ -121,6 +121,8 @@ function handle_submit(&$selected_id)
 				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], '', '');
 
 			add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
+
+			add_crm_contact('customer', 'general', $selected_id, db_insert_id());
 		}
 		commit_transaction();
 
