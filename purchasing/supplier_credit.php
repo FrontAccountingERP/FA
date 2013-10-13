@@ -57,11 +57,10 @@ if (isset($_GET['New']))
 		$help_context = "Supplier Credit Note";
 		$_SESSION['page_title'] = _("Supplier Credit Note");
 
+	} else {
+		$help_context = "Supplier Credit Note";
+		$_SESSION['page_title'] = _("Supplier Credit Note");
 		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
-	} elseif (isset($_GET['ModifyInvoice'])) {
-		$help_context = 'Modifying Purchase Invoice';
-		$_SESSION['page_title'] = sprintf( _("Modifying Supplier Credit # %d"), $_GET['ModifyCredit']);
-		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT, $_GET['ModifyCredit']);
 	}
 }
 page($_SESSION['page_title'], false, false, "", $js);
