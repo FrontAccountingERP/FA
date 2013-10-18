@@ -190,7 +190,7 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 		trans.id as trans_no,
 		trans.reference, 
 		supplier.supp_name, 
-		'' as supp_reference,
+		po.requisition_no AS supp_reference,
     	delivery_date as tran_date, 
 		'' as due_date,
 		supplier.curr_code, 
@@ -198,8 +198,9 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 		'' AS Allocated,
 		0 as OverDue,
     	1 as Settled
-    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier
+    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier, ".TB_PREF."purch_orders as po
     	WHERE supplier.supplier_id = trans.supplier_id
+    	AND trans.purch_order_no = po.order_no
      	AND trans.delivery_date >= '$date_after'
     	AND trans.delivery_date <= '$date_to'";
 
