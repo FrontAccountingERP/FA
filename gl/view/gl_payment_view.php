@@ -38,7 +38,7 @@ $company_currency = get_company_currency();
 
 $show_currencies = false;
 
-if ($from_trans['bank_curr_code'] != $company_currency)
+if ($from_trans['bank_curr_code'] != $from_trans['settle_curr'])
 {
 	$show_currencies = true;
 }
@@ -50,13 +50,13 @@ start_table(TABLESTYLE, "width=80%");
 
 if ($show_currencies)
 {
-	$colspan1 = 5;
-	$colspan2 = 8;
+	$colspan1 = 1;
+	$colspan2 = 7;
 }
 else
 {
 	$colspan1 = 3;
-	$colspan2 = 6;
+	$colspan2 = 5;
 }
 start_row();
 label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
@@ -67,6 +67,11 @@ label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2
 end_row();
 start_row();
 label_cells(_("Pay To"), payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+if ($show_currencies)
+{
+	label_cells(_("Settle currency"), $from_trans['settle_curr'], "class='tableheader2'");
+	label_cells(_("Settled amount"), number_format2($from_trans['settled_amount'], user_price_dec()), "class='tableheader2'");
+}
 label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 end_row();
 start_row();
@@ -89,7 +94,7 @@ else
 
 	display_heading2(_("Items for this Payment"));
 	if ($show_currencies)
-		display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+		display_heading2(_("Item Amounts are Shown in:") . " " . $company_currency);
 
     echo "<br>";
     start_table(TABLESTYLE, "width=80%");
@@ -133,7 +138,7 @@ else
 	end_table(1);
 
 	if (!$voided)
-		display_allocations_from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
+		display_allocations_from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, $from_trans['settled_amount']);
 }
 
 end_page(true, false, false, ST_BANKPAYMENT, $trans_no);
