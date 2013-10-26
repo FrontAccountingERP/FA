@@ -159,6 +159,7 @@ function get_allocatable_from_supp_sql($supplier_id, $settled)
 	return $sql;
 }
 
+
 //-------------------------------------------------------------------------------------------------------------
 
 function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $type=null)
@@ -175,7 +176,7 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 	else
 	{
 		$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
-			AND trans.type != ".ST_SUPPAYMENT."
+			AND trans.type NOT IN (".implode(',',array(ST_SUPPAYMENT, ST_BANKPAYMENT)).")
 			AND trans.supplier_id=".db_escape($supplier_id));
 	}
 
