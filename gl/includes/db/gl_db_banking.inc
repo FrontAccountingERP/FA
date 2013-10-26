@@ -196,7 +196,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	global $Refs, $SysPrefs;
 	
 	begin_transaction();
-	$args = func_get_args(); if (count($args) < 7) $args[] = 0;
+	$args = func_get_args(); if (count($args) < 8) $args[] = 0;
 	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
 		'ref', 'memo_', 'charge', 'target_amount'), $args);
 	$args->trans_no = 0;
@@ -249,7 +249,11 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$to_amount, $to_currency);
 		
 	/*Post a balance post if $total != 0 */
-	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
+	if ($currency == $to_currency)
+		add_gl_balance($trans_type, $trans_no, $date_, -$total);
+	else	// in this case those are exchange variances between bank and home rates
+	   	add_gl_trans($trans_type, $trans_no, $date_, get_company_pref('exchange_diff_act'),
+	   		0, 0, _("Exchange Variance"), -$total);
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
 		$date_, $to_amount, PT_MISC, $person_id,
