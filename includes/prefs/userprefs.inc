@@ -53,6 +53,7 @@ class user_prefs
 			$this->transaction_days = -30;
 
 		} else {
+			global $path_to_root;
 			$this->language = $user["language"];
 			$_SESSION['language']->set_language($this->language);
 
@@ -85,6 +86,9 @@ class user_prefs
 				$this->startup_tab = "orders";
 			}
 			$this->transaction_days = $user['transaction_days'];
+
+			if (!file_exists("$path_to_root/themes/$this->theme"))
+				$this->theme = "default";
 		}
 	}
 	

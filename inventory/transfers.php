@@ -100,7 +100,7 @@ if (isset($_POST['Process']))
 	} 
 	elseif (!is_date($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered date for the adjustment is invalid."));
+		display_error(_("The entered transfer date is invalid."));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 

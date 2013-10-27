@@ -250,45 +250,81 @@ function get_trans_view_str($type, $trans_no, $label="", $icon=false,
 	return null;
 }
 
+/*
+	Helper for ui drawing functions.
+	Checks whether any of input function parameters has changed or page is called with GET method (first page display).
+	$name - context
+*/
+function check_ui_refresh($name=null)
+{
+	$bt = debug_backtrace();
+	if (!$name)
+		$name = $bt[1]['function'];
+	$old = @$_SESSION['ui_context'][$name];
+	$new = $_SESSION['ui_context'][$name] = $bt[1]['args'];
+	return ($new != $old) || ($_SERVER['REQUEST_METHOD'] == 'GET');
+}
+
 //--------------------------------------------------------------------------------------
 // Displays currency exchange rate for given date.
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=false)
+function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
-    global $Ajax;
+    global $Ajax, $xr_provider_authoritative;
+
+	$readonly = false;
 
 	if ($from_currency != $to_currency)
 	{
-		$comp_currency = get_company_currency();
-		if ($from_currency == $comp_currency)
-			$currency = $to_currency;
-		else
-			$currency = $from_currency;
-		$rate = 0;
-		if ($date_ == Today()) {
-			$rate = get_date_exchange_rate($currency, $date_);
-			if (!$rate) {
+	 	$rate = get_post('_ex_rate');
+	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
+			$comp_currency = get_company_currency();
+			if ($from_currency == $comp_currency)
+				$currency = $to_currency;
+			else
+				$currency = $from_currency;
+
+			$rate = get_date_exchange_rate($currency, $date_); // try local
+
+			if ($rate)
+				$readonly = true; // if we have already local exrate keep it unchanged 
+
+			if (!$rate) {	// retry from remote service
 				$row = get_currency($currency);
-				if ($row['auto_update']) {
-					$rate = retrieve_exrate($currency, $date_);
-					if ($rate) 
-						add_exchange_rate($currency, $date_, $rate, $rate);
+
+ 				if ($row['auto_update']) // autoupdate means use remote service & store exrate on first transaction.
+ 				{
+ 					$rate = retrieve_exrate($currency, $date_);
+					if (!$rate)
+						display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
+					elseif ($xr_provider_authoritative) {
+						// if the remote exrate is considered authoritative we can store the rate here,
+						// otherwise exrate will be stored during transaction write
+						$readonly = true;
+						add_new_exchange_rate($currency, $date_, $rate);
+					}
 				}
 			}
+			if (!$rate)	{	// get and edit latest available
+				$rate = get_exchange_rate_from_home_currency($currency, $date_);
+			}
+			if ($from_currency != $comp_currency)
+				$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
+			$Ajax->activate('_ex_rate_span');
 		}
-		if (!$rate)
-			$rate = get_exchange_rate_from_home_currency($currency, $date_);
-		if ($from_currency != $comp_currency)
-			$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
 
 		$rate = number_format2($rate, user_exrate_dec());
-		if ($edit_rate)
-			text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency"); 
-		else
-    		label_row(_("Exchange Rate:"),"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency" );
-	  	$Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
+
+		if ($force_edit || !$readonly)
+			$ctrl = "<input type=\"text\" name=\"_ex_rate\" size=\"8\" maxlength=\"8\" value=\"$rate\">";
+	    else
+	    	$ctrl = "<span id=\"_ex_rate\">$rate</span>";
+
+		label_row(_("Exchange Rate:"), $span = "<span style='vertical-align:top;' id='_ex_rate_span'>$ctrl $from_currency = 1 $to_currency</span>" );
+
+	  	$Ajax->addUpdate('_ex_rate_span', '_ex_rate_span', $span);
 	}
 }
 
@@ -322,7 +358,7 @@ function comments_display_row($type, $id)
 		echo "<tr><td colspan=15>";
     	while ($comment = db_fetch($comments))
     	{
-    		echo $comment["memo_"] . "<br>";
+    		echo nl2br($comment["memo_"]) . "<br>";
     	}
 		echo "</td></tr>";
 	}
@@ -439,36 +475,59 @@ function display_supp_trans_tax_details($tax_items, $columns)
 
 //--------------------------------------------------------------------------------------
 
-function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
+function display_edit_tax_items($taxes, $columns, $tax_included, $rightspan=0, $editable=false)
 {
 	$total = 0;
 
     foreach ($taxes as $taxitem)
-    {
-    	if ($taxitem['Value'] != 0) {
-	    	if ($tax_included)
-    		{
-        		label_row(_("Included") . " " . $taxitem['tax_type_name']
-        			. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
-	    	}
-    		else
-    		{
-        		label_row($taxitem['tax_type_name'],
-        			number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
-	        	$total +=  round2($taxitem['Value'], user_price_dec());
-    		}
-    	}
-    }
-
-    return $total;
+	{
+		$amount = isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
+		if ($taxitem['Value'] != 0){
+			if ($editable) {
+				if (!isset($_POST['mantax['.$taxitem['tax_type_id'].']']))
+					$_POST['mantax['.$taxitem['tax_type_id'].']'] = price_format($amount);
+				start_row();
+				if ($tax_included) {
+					$colspan = $columns-1;
+					label_cell(_("Included") . " " . $taxitem['tax_type_name'].":",
+						"colspan={$colspan} align='right'");
+					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
+						null, "colspan=$columns align=right", '<td></td>', user_price_dec());
+				} else {
+					label_cell($taxitem['tax_type_name'], "colspan=$columns align='right'");
+					amount_cells(null, 'mantax['.$taxitem['tax_type_id'].']',
+						null, "colspan=$columns align=right", null, user_price_dec());
+					$total +=  round2($amount, user_price_dec());
+				}
+				if ($rightspan)
+					label_cell('', "colspan ='$rightspan'");
+				end_row();
+			} else {
+				$value = number_format2($taxitem['Value'],user_price_dec());
+				if ($tax_included)
+				{
+					label_row(_("Included") . " " . $taxitem['tax_type_name']
+						. " " . $value , "", "colspan=$columns align=right", "align=right", $rightspan);
+				}
+				else
+				{
+					label_row($taxitem['tax_type_name'],
+						$value, "colspan=$columns align=right", "align=right", $rightspan);
+					$total +=  round2($taxitem['Value'], user_price_dec());
+				}
+			}
+		}
+	}
+	return $total;
 }
 
 //--------------------------------------------------------------------------------------
 
-function display_footer_exit()
+function display_footer_exit($space=2)
 {
-	br(2);
-	end_page(false, true);
+	if ($space)
+		br($space);
+	end_page(false, false, true);
 	exit;
 }
 
@@ -499,7 +558,7 @@ function display_allocations($alloc_result, $total, $title, $show_summary=true)
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
     	$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
-    	if ($payments && ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT))
+    	if ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT)
     		$alloc_row['Total'] = -$alloc_row['Total'];
     	amount_cell($alloc_row['Total']);
    		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -845,7 +904,7 @@ function get_js_date_picker()
 	$back = _("Back");
 	if ($date_system == 1)
 		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
 
 
@@ -966,7 +1025,7 @@ function CC() {
 		$js .= "
     return [31,31,31,31,31,31,30,30,30,30,30,(((((((year - ((year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)][month-1];
 ";
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		$js .= "
     return [30,29,30,29,30,29,30,29,30,29,30,(((((11 * year) + 14) % 30) < 11) ? 30 : 29)][month-1];
 ";
@@ -999,7 +1058,7 @@ function CC() {
       Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 +
       Math.floor(epbase / 2820) * 1029983 + (1948320.5 - 1);
 ";
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		$js .= "
 	var t;
 	t = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month -
@@ -1053,11 +1112,11 @@ function CC() {
 		$js .= "
       var dateString = month+'$sep'+day+'$sep'+year;
 ";
-	else if ($how == 1 || $how == 4)
+	elseif ($how == 1 || $how == 4)
 		$js .= "
       var dateString = day+'$sep'+month+'$sep'+year;
 ";
-	else if ($how == 2 || $how == 5)
+	elseif ($how == 2 || $how == 5)
 		$js .= "
       var dateString = year+'$sep'+month+'$sep'+day;
 ";
@@ -1187,25 +1246,25 @@ function CC() {
         selectedDay = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 1)
+	elseif ($how == 1)
 		$js .= "
         selectedDay = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 2)
+	elseif ($how == 2)
 		$js .= "
         selectedYear = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
         selectedDay = parseInt(dateParts[2],10);
 ";
-	else if ($how == 3)
+	elseif ($how == 3)
 		$js .= "
         selectedDay = parseInt(dateParts[1],10);
         selectedMonth = parseInt(tmonths.indexOf(dateParts[0]),10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-	else if ($how == 4)
+	elseif ($how == 4)
 		$js .= "
         selectedDay = parseInt(dateParts[0],10);
         selectedMonth = parseInt(tmonths.indexOf(dateParts[1]),10);
@@ -1351,7 +1410,7 @@ function display_backtrace($cond=true, $msg='') {
 if (!isset($payment_services))
 {
 	$payment_services = array(
-		'PayPal' => "https://www.paypal.com/xclick/business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
+		'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
 	);
 }
 /*

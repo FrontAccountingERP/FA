@@ -58,12 +58,14 @@ function print_bill_of_material()
     $frompart = $_POST['PARAM_0'];
     $topart = $_POST['PARAM_1'];
     $comments = $_POST['PARAM_2'];
-	$destination = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$cols = array(0, 50, 305, 375, 445,	515);
 
 	$headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
@@ -73,7 +75,9 @@ function print_bill_of_material()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart));
 
-    $rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize());
+    $rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

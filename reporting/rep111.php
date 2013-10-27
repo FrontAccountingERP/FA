@@ -40,11 +40,11 @@ function print_sales_quotations()
 	$currency = $_POST['PARAM_2'];
 	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
-	if ($from == null)
-		$from = 0;
-	if ($to == null)
-		$to = 0;
+	if (!$from || !$to) return;
+
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
@@ -57,13 +57,9 @@ function print_sales_quotations()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-	{
-		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize());
-		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -73,18 +69,18 @@ function print_sales_quotations()
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
-			$rep->SetHeaderType('Header2');
-			$rep->currency = $cur;
-			$rep->Font();
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			if ($print_invoice_no == 1)
 				$rep->filename = "SalesQuotation" . $i . ".pdf";
 			else	
 				$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
-			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->title = _("SALES QUOTATION");
-		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], false);
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->Info($params, $cols, null, $aligns);
+
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
 		//$rep->headerFunc = 'Header2';
 		$rep->NewPage();

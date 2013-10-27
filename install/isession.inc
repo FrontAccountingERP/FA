@@ -39,6 +39,19 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_cleanup(&$parms)
+{
+	foreach($parms as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		if (is_array($value))
+			html_cleanup($parms[$name]);
+		else
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	}
+	reset($parms); // needed for direct key() usage later throughout the sources
+}
+
+
 function check_page_security($page_security)
 {
 }
@@ -83,7 +96,8 @@ $inst_langs = array(
   'ka_GE' => array ( 'name' => 'Georgian','code' => 'ka_GE',	'encoding' => 'utf-8'),
   'nl_BE' => array ( 'name' => 'Nederlands','code' => 'nl_BE',	'encoding' => 'iso-8859-1'),
   'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
-  'pt_BR' => array ( 'name' => 'Português','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
+  'pt_BR' => array ( 'name' => 'Português (Brasilia)','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
+  'pt_PT' => array ( 'name' => 'Português','code' => 'pt_PT',	'encoding' => 'iso-8859-1'),
   'sv_SE' => array ( 'name' => 'Svenska',	'code' => 'sv_SE',	'encoding' => 'iso-8859-1'),
   'zh_CN' => array ( 'name' => 'Chinese Simplifed',	'code' => 'zh_CN',	'encoding' => 'utf-8'),
 );
@@ -127,6 +141,11 @@ ob_start('output_html',0);
 
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
+
+html_cleanup($_GET);
+html_cleanup($_POST);
+html_cleanup($_REQUEST);
+html_cleanup($_SERVER);
 
 $SysPrefs = &$_SESSION['SysPrefs'];
 

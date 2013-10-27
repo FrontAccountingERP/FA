@@ -72,7 +72,7 @@ function send_scripts()
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="", $css='')
 {
 	// titles and screen header
-	global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
+	global $path_to_root, $def_app, $use_popup_windows, $help_base_url, $db_connections;
 
 	if (in_ajax())
 		return; // just for speed up
@@ -113,7 +113,11 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
 		$_SESSION["App"]->selected_application = 
 			isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
-			
+
+	$page_header_args = func_get_args();
+	if(isset($db_connections))	// skip before installation
+		hook_invoke_all('pre_header', $page_header_args);
+
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){
@@ -121,9 +125,10 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	}
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
-	echo "<head><title>$title</title>";
+	echo "<head profile=\"http://www.w3.org/2005/10/profile\"><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
+ 	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
 	if ($css)
 		echo '<link href="'.$css.'" rel="stylesheet" type="text/css">';
 
@@ -135,7 +140,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	else
 		echo "<body onload=\"$onload\">";
 
-	include_once($path_to_root . "/themes/".user_theme()."/renderer.php");
+	include_once($path_to_root . "/themes/$theme/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
 	error_box();

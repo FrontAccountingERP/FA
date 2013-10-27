@@ -56,8 +56,12 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 		$sql .= " AND t.`amount` <> 0";
 
 	$sql .= " GROUP BY ".($type_name ? "t.$type_name," : '')." t.$trans_no_name";
-	$sql .= " ORDER BY t.$trans_no_name";
+	$sql .= " ORDER BY t.$trans_no_name DESC";
 	return $sql;
 }
 
+function transaction_exists($trans_type, $trans_no)
+{
+	return db_num_rows(db_query(get_sql_for_view_transactions($trans_type, $trans_no, $trans_no, $dummy)));
+}
 ?>

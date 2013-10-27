@@ -61,13 +61,15 @@ function print_bank_transactions()
 	$to = $_POST['PARAM_2'];
 	$zero = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize());
+	$orientation = ($orientation ? 'L' : 'P');
+	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
 	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
@@ -83,6 +85,8 @@ function print_bank_transactions()
 	    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 	    2 => array('text' => _('Bank Account'),'from' => $act,'to' => ''));
 
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

@@ -447,7 +447,8 @@ function handle_commit_order()
 			//Direct GRN
 			if ($cart->trans_type == ST_SUPPRECEIVE)
 				$cart->reference = $ref;
-			$cart->Comments = $cart->reference; //grn does not hold supp_ref
+			if ($cart->trans_type != ST_SUPPINVOICE)	
+				$cart->Comments = $cart->reference; //grn does not hold supp_ref
 			foreach($cart->line_items as $key => $line)
 				$cart->line_items[$key]->receive_qty = $line->quantity;
 			$grn_no = add_grn($cart);
@@ -469,20 +470,23 @@ function handle_commit_order()
 			$inv->stored_algorithm = $cart->stored_algorithm;
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
-			$total = 0;
+			$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
 
+			$total = 0;
 			foreach($cart->line_items as $key => $line) {
 				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
 					$line->item_description, $line->receive_qty, 0, $line->receive_qty,
 					$line->price, $line->price, true, get_standard_cost($line->stock_id), '');
 				$total += round2(($line->receive_qty * $line->price), user_price_dec());
 			}
+			$inv->tax_overrides = $cart->tax_overrides;
 			if (!$inv->tax_included) {
 				$taxes = $inv->get_taxes($inv->tax_group_id, 0, false, $inv->tax_algorithm);
 				foreach( $taxes as $taxitem) {
-					$total += $taxitem['Value'];
+					$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
 				}
 			}
+			$inv->ex_rate = $cart->ex_rate;
 
 			$inv_no = add_supp_invoice($inv);
 			// presume supplier data need correction
@@ -495,8 +499,8 @@ function handle_commit_order()
 					$total, 0,	$Refs->get_next(ST_SUPPAYMENT), 
 					_('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
 				add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->tran_date);
-				update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no, $total);
-				update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no, $total);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no);
+				update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no);
 
 			}
 
@@ -506,7 +510,7 @@ function handle_commit_order()
        		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
 		}
 		else { // order modification
-		
+
 			$order_no = update_po($cart);
 			unset($_SESSION['PO']);
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");	

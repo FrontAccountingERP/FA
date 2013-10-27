@@ -61,9 +61,12 @@ function print_invoices()
 	$email = $_POST['PARAM_3'];
 	$pay_service = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$customer = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_7'];
 
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
@@ -82,7 +85,7 @@ function print_invoices()
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
-		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
+		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
 
 	$range = get_invoice_range($from, $to);
 	while($row = db_fetch($range))
@@ -92,6 +95,10 @@ function print_invoices()
 				continue;
 			$sign = 1;
 			$myrow = get_customer_trans($i, ST_SALESINVOICE);
+
+			if($customer && $myrow['debtor_no'] != $customer) {
+				continue;
+			}
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 

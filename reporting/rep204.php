@@ -65,12 +65,14 @@ function print_outstanding_GRN()
 
     $fromsupp = $_POST['PARAM_0'];
     $comments = $_POST['PARAM_1'];
-	$destination = $_POST['PARAM_2'];
+	$orientation = $_POST['PARAM_2'];
+	$destination = $_POST['PARAM_3'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($fromsupp == ALL_TEXT)
 		$from = _('All');
 	else
@@ -87,7 +89,9 @@ function print_outstanding_GRN()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''));
 
-    $rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", user_pagesize());
+    $rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -45,7 +45,8 @@ function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
             $myrow[0] -= $myrow2[0];
     }
 
-    return $myrow[0];
+    $qoh =  $myrow[0];
+		return $qoh ? $qoh : 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -248,8 +249,9 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 		$dec = user_price_dec();
 		$old_cost = -round2($old_sales_cost-$old_purchase_cost,$dec);
 		$new_cost = -round2($new_sales_cost-$new_purchase_cost,$dec);
-		
-		$memo_ = _("Cost was ") . $old_cost. _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+
+		$memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand for item '%s'"),
+			number_format2($old_cost, 2), number_format2($new_cost, 2), $stock_id);
 		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
 			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
 
@@ -392,13 +394,13 @@ function void_stock_move($type, $type_no)
 			// The cost has to be adjusted.
 			// Transaction rates are stored either as price or standard_cost depending on types
 			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
-			if (in_array($type,$types))
-				$trans_rate = $row["price"];
+			if (in_array($type, $types))
+				$unit_cost = $row["price"];
 			else
-				$trans_rate = $row["standard_cost"];
+				$unit_cost = $row["standard_cost"];
 
-			update_average_material_cost(0, $row["stock_id"],
-				$trans_rate, -$row["qty"], sql2date($row["tran_date"]));
+			update_average_material_cost($row["person_id"], $row["stock_id"],
+				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));
 		}
 
     }

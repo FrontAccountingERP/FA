@@ -333,7 +333,7 @@ function display_company_edit($selected_id)
 		$_POST['dbname']  = $conn['dbname'];
 	}
 
-	text_row_ex(_("Company"), 'name', 30);
+	text_row_ex(_("Company"), 'name', 50);
 
 	if ($selected_id == -1)
 	{

@@ -35,6 +35,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 if (isset($_POST['Show']))
 {
 	$id = $_POST['trans_no'];
+	$Ajax->activate('_page_body');
 }
 
 

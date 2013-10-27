@@ -46,7 +46,12 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 
-    date_cells(_("From:"), 'TransFromDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+	$date = today();
+	if (!isset($_POST['TransToDate']))
+		$_POST['TransToDate'] = end_month($date);
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = add_days(end_month($date), -$_SESSION["wa_current_user"]->prefs->transaction_days());
+    date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
@@ -64,10 +69,10 @@ function gl_inquiry_controls()
 
 function display_trial_balance($type, $typename)
 {
-	global $path_to_root;
+	global $path_to_root, $clear_trial_balance_opening,
+		 $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
 
-	global $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
-	$printtitle = 0; //Flag for printing type name		
+	$printtitle = 0; //Flag for printing type name
 
 	$k = 0;
 
@@ -90,6 +95,15 @@ function display_trial_balance($type, $typename)
 			$printtitle = 1;
 		}
 
+		// FA doesn't really clear the closed year, therefore the brought forward balance includes all the transactions from the past, even though the balance is null.
+		// If we want to remove the balanced part for the past years, this option removes the common part from from the prev and tot figures.
+		if (@$clear_trial_balance_opening)
+		{
+			$open = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin,  $begin, false, true);
+			$offset = min($open['debit'], $open['credit']);
+		} else
+			$offset = 0;
+
 		$prev = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransFromDate'], false, false);
 		$curr = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
@@ -110,12 +124,12 @@ function display_trial_balance($type, $typename)
 		}
 		else
 		{
-			amount_cell($prev['debit']);
-			amount_cell($prev['credit']);
+			amount_cell($prev['debit']-$offset);
+			amount_cell($prev['credit']-$offset);
 			amount_cell($curr['debit']);
 			amount_cell($curr['credit']);
-			amount_cell($tot['debit']);
-			amount_cell($tot['credit']);
+			amount_cell($tot['debit']-$offset);
+			amount_cell($tot['credit']-$offset);
 			$pdeb += $prev['debit'];
 			$pcre += $prev['credit'];
 			$cdeb += $curr['debit'];

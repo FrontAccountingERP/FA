@@ -27,29 +27,18 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_supplier_balances();
 
-function get_open_balance($supplier_id, $to, $convert)
+function get_open_balance($supplier_id, $to)
 {
 	$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ", 0)) AS charges,
-    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount)";
-    if ($convert)
-    	$sql .= "* rate";
-    $sql .= ", 0)) AS credits,
-		SUM(".TB_PREF."supp_trans.alloc";
-	if ($convert)
-		$sql .= " * rate";
-	$sql .= ") AS Allocated,
-		SUM((".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc)";
-    if ($convert)
-    	$sql .= " * rate";
-    $sql .= ") AS OutStanding
+    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.", 
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS charges,
+    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE." AND ".TB_PREF."supp_trans.type <> ".ST_BANKDEPOSIT.", 
+    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS credits,
+		SUM(".TB_PREF."supp_trans.alloc) AS Allocated,
+		SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.",
+		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc),
+		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))) AS OutStanding
 		FROM ".TB_PREF."supp_trans
     	WHERE ".TB_PREF."supp_trans.tran_date < '$to'
 		AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
@@ -70,7 +59,7 @@ function getTransactions($supplier_id, $from, $to)
 					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
     			FROM ".TB_PREF."supp_trans
     			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
-    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id'
+    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' AND ".TB_PREF."supp_trans.ov_amount!=0
     				ORDER BY ".TB_PREF."supp_trans.tran_date";
 
     $TransResult = db_query($sql,"No transactions were returned");
@@ -87,15 +76,18 @@ function print_supplier_balances()
     	$from = $_POST['PARAM_0'];
     	$to = $_POST['PARAM_1'];
     	$fromsupp = $_POST['PARAM_2'];
-    	$currency = $_POST['PARAM_3'];
-    	$no_zeros = $_POST['PARAM_4'];
-    	$comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+    	$show_balance = $_POST['PARAM_3'];
+    	$currency = $_POST['PARAM_4'];
+    	$no_zeros = $_POST['PARAM_5'];
+    	$comments = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($fromsupp == ALL_TEXT)
 		$supp = _('All');
 	else
@@ -118,6 +110,8 @@ function print_supplier_balances()
 	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'),
 		_('Credits'), _('Allocated'), _('Outstanding'));
 
+	if ($show_balance)
+		$headers[7] = _('Balance');
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
@@ -126,7 +120,9 @@ function print_supplier_balances()
     			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
 			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize());
+    $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -145,12 +141,19 @@ function print_supplier_balances()
 	{
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
-		$bal = get_open_balance($myrow['supplier_id'], $from, $convert);
+		$accumulate = 0;
+		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']), $dec);
 		$init[1] = round2(Abs($bal['credits']), $dec);
 		$init[2] = round2($bal['Allocated'], $dec);
-		$init[3] = round2($bal['OutStanding'], $dec);;
+		if ($show_balance)
+		{
+			$init[3] = $init[0] - $init[1];
+			$accumulate += $init[3];
+		}	
+		else	
+			$init[3] = round2($bal['OutStanding'], $dec);
 		$total = array(0,0,0,0);
 		for ($i = 0; $i < 4; $i++)
 		{
@@ -176,6 +179,8 @@ function print_supplier_balances()
 		while ($trans=db_fetch($res))
 		{
 			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
+			$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
+
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
@@ -183,38 +188,35 @@ function print_supplier_balances()
 			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(3, 4,	$trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
-			if ($convert)
-				$rate = $trans['rate'];
-			else
-				$rate = 1.0;
 			if ($trans['TotalAmount'] > 0.0)
 			{
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(4, 5, $item[0], $dec);
+				$accumulate += $item[0];
 			}
 			else
 			{
 				$item[1] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(5, 6, $item[1], $dec);
+				$accumulate -= $item[1];
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->AmountCol(6, 7, $item[2], $dec);
-			/*
-			if ($trans['type'] == 20)
-				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
-			else
-				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
-			*/	
-			if ($trans['type'] == ST_SUPPINVOICE || $trans['type'] == ST_BANKDEPOSIT)
-				$item[3] = $item[0] + $item[1] - $item[2];
+			if ($trans['TotalAmount'] > 0.0)
+				$item[3] = $item[0] - $item[2];
 			else	
-				$item[3] = $item[0] - $item[1] + $item[2];
-			$rep->AmountCol(7, 8, $item[3], $dec);
+				$item[3] = ($item[1] - $item[2]) * -1;
+			if ($show_balance)	
+				$rep->AmountCol(7, 8, $accumulate, $dec);
+			else	
+				$rep->AmountCol(7, 8, $item[3], $dec);
 			for ($i = 0; $i < 4; $i++)
 			{
 				$total[$i] += $item[$i];
 				$grandtotal[$i] += $item[$i];
 			}
+			if ($show_balance)
+				$total[3] = $total[0] - $total[1];
 		}
 		$rep->Line($rep->row - 8);
 		$rep->NewLine(2);
@@ -230,6 +232,8 @@ function print_supplier_balances()
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3,	_('Grand Total'));
 	$rep->fontSize -= 2;
+	if ($show_balance)
+		$grandtotal[3] = $grandtotal[0] - $grandtotal[1];
 	for ($i = 0; $i < 4; $i++)
 		$rep->AmountCol($i + 4, $i + 5,$grandtotal[$i], $dec);
 	$rep->Line($rep->row  - 4);

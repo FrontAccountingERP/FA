@@ -74,12 +74,14 @@ function print_dimension_summary()
     $todim = $_POST['PARAM_1'];
     $showbal = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$cols = array(0, 50, 210, 250, 320, 395, 465,	515);
 
 	$headers = array(_('Reference'), _('Name'), _('Type'), _('Date'), _('Due Date'), _('Closed'), _('YTD'));
@@ -89,7 +91,9 @@ function print_dimension_summary()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Dimension'), 'from' => get_dimension_string($fromdim), 'to' => get_dimension_string($todim)));
 
-    $rep = new FrontReport(_('Dimension Summary'), "DimensionSummary", user_pagesize());
+    $rep = new FrontReport(_('Dimension Summary'), "DimensionSummary", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

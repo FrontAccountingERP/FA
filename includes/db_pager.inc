@@ -39,12 +39,15 @@ class db_pager {
 	    $prev_page, 
 	    $next_page,
 	    $first_page;
-
+	    
 	var $page_len,
 	    $rec_count;
-
-	var $order = array();
-
+	
+	var $select,
+		$where,
+	    $from,
+		$group,
+		$order;
 	var	$extra_where;
 	
 	var $ready = false; // this var is false after change in sql before first
@@ -66,12 +69,47 @@ class db_pager {
 	}
 	//
 	//	Parse base sql select query.
-	//
+	//	or use an associative array.
+	//  Usefull is the query can't be split correctly (using subquery for example).
+	//  The associative array shouldn't contain the keyword itself.
+	//  ex :
+	//  array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
 	function set_sql($sql)
 	{
 		if ($sql != $this->sql) {
 		    $this->sql = $sql;
 		    $this->ready = false;
+
+				if(is_array($sql)) {
+					foreach(explode(' ', 'select from where group order') as $section) {
+						$this->$section = @$sql[$section];
+					}
+					$this->select = "SELECT ".$this->select;
+				}
+				else {
+					// parse the query
+						$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->order = $parts[1];
+					}
+						$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->group = $parts[1];
+					}
+						$parts = preg_split('/\sWHERE\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->where = $parts[1];
+					}
+						$parts = preg_split('/\sFROM\s/si', $sql, 2);
+					if(count($parts) == 2) {
+						$sql = $parts[0];
+						$this->from = $parts[1];
+					}
+					$this->select = $sql;
+			}
 		}
 	}
 	//
@@ -105,17 +143,20 @@ class db_pager {
 	//
 	function sort_table($col) 
 	{
+
+			$max_priority = 0;
+			foreach($this->columns as $id => $_col) {
+			if(!isset($_col['ord_priority'])) continue;
+				$max_priority = max($max_priority, $_col['ord_priority']);
+			};
+
+
 	    $ord = $this->columns[$col]['ord'];
+  		$this->columns[$col]['ord_priority']  = $max_priority+1; // set priority , higher than anything else
 	    $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
 	    $this->columns[$col]['ord'] = $ord;
-	    $n = array_search($col, $this->order);
-	    if ($n !== false)
-			unset($this->order[$n]);
-		if ($ord != '')
-			array_unshift($this->order, $col); // store column number as first
 	    $this->set_page(1);
 	    $this->query();
-
 	    return true;
 	}
 	//
@@ -156,7 +197,7 @@ class db_pager {
 		} else 
 		  return false;
 		return true;
-	}
+	}	    
 	//
 	//	Calculates page numbers for html controls.
 	//
@@ -192,7 +233,7 @@ class db_pager {
 	//  $flds: array( fldname1, fldname2=>type,...)
 	function set_columns($flds)
 	{
-		$this->columns = $this->order = array();
+		$this->columns = array();
 		if (!is_array($flds)) {
 			$flds = array($flds);
 		}
@@ -224,9 +265,7 @@ class db_pager {
 				case 'skip':		// skip the column (no header)
 					unset($c['head']); break;
 	  		}
-			if (@$c['ord'])
-				array_push($this->order, count($this->columns));
-			$this->columns[] = $c;
+			$this->columns[] = $c;	
 		}
 	}
 	//
@@ -236,28 +275,45 @@ class db_pager {
 	//
 	function _sql_gen($count=false) 
 	{
+		$select = $this->select;
+		$from = $this->from;
+		$where = $this->where;
+		$group = $this->group;
+		$order = $this->order;
 
-		if (count($this->extra_where)) {
-		    $where = ' WHERE ('.implode(' AND ', $this->extra_where).')';
-		} else
-			$where = '';
+		if(count($this->extra_where)) {
+		    $where .= ($where=='' ? '' : ' AND ')
+				.implode(' AND ', $this->extra_where);
+		}
+		if ($where) $where = " WHERE ($where)";
 
-		if ($count)
-			return "SELECT COUNT(*) FROM ($this->sql) $where AS _dummyname";
+		if ($count) {
+			$group = $group == '' ? "*" : "DISTINCT $group";
 
+			return "SELECT COUNT($group) FROM $from $where";
+		}
 
+		$sql = "$select FROM $from $where";
+		if ($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
-		$sql = "SELECT * FROM ($this->sql) $where AS _dummyname";
+			// sort order column by priority instead of table order.
+			$columns = array();
+	    foreach ($this->columns as $col) {
+					if(isset($col['ord_priority'])) {
+						$columns[$col['ord_priority']] = $col;
+					}
+			}
+			krsort($columns);
 
-	    foreach ($this->order as $n) {
-	    	$col = $this->columns[$n];
+	    foreach ($columns as $col) {
 	       	if (isset($col['ord'])) {
 	        	if ( $col['ord'] != '' && isset($col['name'])) {
 		    	    $ord[] = $col['name'] .' '. $col['ord'];
 			    }
 			}
 	    }
+				
 	    if (count($ord)) {
 			$ord = array_map(function_exists('mysql_real_escape_string') ? 
 				'mysql_real_escape_string': 'mysql_escape_string', $ord);
@@ -270,11 +326,10 @@ class db_pager {
 	    $page_len = $this->page_len;
 	    $offset = ($this->curr_page - 1) * $page_len;
 
-
 	    $sql .= " LIMIT $offset, $page_len";
 
 		return $sql;
-
+		
 	}
 	//
 	//	Initialization after changing record set
@@ -282,7 +337,7 @@ class db_pager {
 	function _init() 
 	{
 		global $go_debug;
-
+		
 	    if ($this->ready == false ) {
 			$sql = $this->_sql_gen(true);
 			$result = db_query($sql, 'Error reading record set');
@@ -292,7 +347,7 @@ class db_pager {
 			$this->rec_count = $row[0];
 	  		$this->max_page = $this->page_len ?
 				ceil($this->rec_count/$this->page_len) : 0;
-
+		
 			if ($go_debug) { // FIX - need column name parsing, but for now:
 				// check if field names are set explicite in col def
 				// for all initially ordered columns
@@ -374,7 +429,7 @@ class db_pager {
 //			return inactive_control_cell($row[$this->inactive_ctrl['key']],
 //				 $row['inactive'], $this->inactive_ctrl['table'], 
 //				 $this->inactive_ctrl['key']);
-
+				 
 			global	$Ajax;
 
 			$key = $this->key ?
@@ -390,7 +445,7 @@ class db_pager {
 					update_record_status($id, !$value, $table, $key);
 					$value = !$value;
 				}
-				echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
+				echo '<td align="center">'. checkbox(null, $name, $value, true, '')
  				. hidden("LInact[$id]", $value, false) . '</td>';	
 			}
 		} else

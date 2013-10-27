@@ -14,6 +14,7 @@
 //	Returns next transaction number.
 //	Used only for transactions stored in tables without autoincremented key.
 //
+
 function get_next_trans_no ($trans_type){
 
 	$st = get_systype_db_info($trans_type);
@@ -23,11 +24,14 @@ function get_next_trans_no ($trans_type){
 		display_error('Internal error: invalid type passed to get_next_trans_no()');
 		return 0;
 	}
-	$sql = "SELECT MAX(`$st[2]`) FROM $st[0]";
-
+	$sql1 = "SELECT MAX(`$st[2]`) as last_no FROM $st[0]";
 	if ($st[1] != null)
-		 $sql .= " WHERE `$st[1]`=".db_escape($trans_type);
+		 $sql1 .= " WHERE `$st[1]`=".db_escape($trans_type);
 
+	// check also in voided transactions (some transactions like location transfer are removed completely)
+	$sql2 = "SELECT MAX(`id`) as last_no FROM ".TB_PREF."voided WHERE `type`=".db_escape($trans_type);
+
+	$sql = "SELECT max(last_no) last_no FROM ($sql1 UNION $sql2) a";
     $result = db_query($sql,"The next transaction number for $trans_type could not be retrieved");
     $myrow = db_fetch_row($result);
 

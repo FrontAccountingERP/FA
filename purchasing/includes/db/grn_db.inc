@@ -83,6 +83,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
+
 	db_query($sql,"The cost details for the inventory item could not be updated");
 	return $material_cost;
 }
@@ -97,6 +98,8 @@ function add_grn(&$po)
 
 	begin_transaction();
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
+
+	add_new_exchange_rate(get_supplier_currency($po->supplier_id), $date_, $po->ex_rate);
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 

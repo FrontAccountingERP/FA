@@ -283,3 +283,5 @@
 		foreach(explode("\n", $this->company['legal_text']) as $line)
 			$Footer[] = $line;
 	}
+
+	$this->formData['recipient_name'] = $Addr1['name'];

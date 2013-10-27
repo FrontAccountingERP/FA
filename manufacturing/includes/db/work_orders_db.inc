@@ -252,7 +252,7 @@ function void_work_order($woid)
 			// clear the production record
 			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$$row['id'];
 			db_query($sql, "Cannot void a wo production");
-			
+
 			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
 		}
 		$result = get_additional_issues($woid); // check the issued quantities

@@ -167,7 +167,7 @@ function edit_link($row)
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_supplier_inquiry();
+$sql = get_sql_for_supplier_inquiry($_POST['filterType'], $_POST['TransAfterDate'], $_POST['TransToDate'], $_POST['supplier_id']);
 
 $cols = array(
 			_("Type") => array('fun'=>'systype_name', 'ord'=>''), 

@@ -54,19 +54,19 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 function get_supp_trans($trans_no, $trans_type=-1)
 {
 	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
-		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS SupplierCurrCode ";
+		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS curr_code ";
 
-	if ($trans_type == ST_SUPPAYMENT)
+	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name, ".TB_PREF."bank_accounts.bank_curr_code,
-			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS BankAmount,
+			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS bank_amount,
 			".TB_PREF."bank_trans.ref ";
 	}
 
 	$sql .= " FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers ";
 
-	if ($trans_type == ST_SUPPAYMENT)
+	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
@@ -78,7 +78,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	if ($trans_type > 0)
 		$sql .= " AND ".TB_PREF."supp_trans.type=".db_escape($trans_type);
 
-	if ($trans_type == ST_SUPPAYMENT)
+	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_no)."
@@ -164,10 +164,10 @@ function post_void_supp_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
-function get_sql_for_supplier_inquiry()
+function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_id=ALL_TEXT)
 {
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
+    $date_after = date2sql($after_date);
+    $date_to = date2sql($to_date);
 
     $sql = "SELECT trans.type, 
 		trans.trans_no,
@@ -191,7 +191,7 @@ function get_sql_for_supplier_inquiry()
 		trans.id as trans_no,
 		trans.reference, 
 		supplier.supp_name, 
-		'' as supp_reference,
+		po.requisition_no AS supp_reference,
     	delivery_date as tran_date, 
 		'' as due_date,
 		supplier.curr_code, 
@@ -199,43 +199,44 @@ function get_sql_for_supplier_inquiry()
 		'' AS Allocated,
 		0 as OverDue,
     	1 as Settled
-    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier
+    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier, ".TB_PREF."purch_orders as po
     	WHERE supplier.supplier_id = trans.supplier_id
+    	AND trans.purch_order_no = po.order_no
      	AND trans.delivery_date >= '$date_after'
     	AND trans.delivery_date <= '$date_to'";
 
-   	if ($_POST['supplier_id'] != ALL_TEXT) {
-   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   		$sql2 .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+   	if ($supplier_id != ALL_TEXT) {
+   		$sql .= " AND trans.supplier_id = ".db_escape($supplier_id);
+   		$sql2 .= " AND trans.supplier_id = ".db_escape($supplier_id);
 	}
-	if (($_POST['filterType'] == '6')) 
+	if (($filter == '6')) 
 	{
 			$sql = $sql2;
 	} 
-	elseif (!isset($_POST['filterType']) || $_POST['filterType'] == ALL_TEXT || $_POST['filterType'] == '6') {
+	elseif (!isset($filter) || $filter == ALL_TEXT || $filter == '6') {
 		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr";
    	}
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	if (isset($filter) && $filter != ALL_TEXT)
    	{
-   		if (($_POST['filterType'] == '1')) 
+   		if (($filter == '1')) 
    		{
    			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
    		} 
-   		elseif (($_POST['filterType'] == '2')) 
+   		elseif (($filter == '2')) 
    		{
    			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		elseif ($filter == '3') 
    		{
 			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		} 
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
+   		elseif (($filter == '4') || ($filter == '5')) 
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
    		}
 
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
+   		if (($filter == '2') || ($filter == '5')) 
    		{
    			$today =  date2sql(Today());
 			$sql .= " AND trans.due_date < '$today' ";

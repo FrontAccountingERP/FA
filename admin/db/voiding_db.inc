@@ -112,8 +112,8 @@ function void_transaction($type, $type_no, $date_, $memo_)
 
 	// only add an entry if it's actually been voided
 	add_audit_trail($type, $type_no, $date_, _("Voided.")."\n".$memo_);
-	add_voided_entry($type, $type_no, $date_, $memo_);
 	$Refs->restore_last($type, $type_no);
+	add_voided_entry($type, $type_no, $date_, $memo_);
 	return true;
 }
 

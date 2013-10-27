@@ -33,24 +33,25 @@ function delete_cust_allocation($trans_id)
 }
 
 //----------------------------------------------------------------------------------------
+//	Update debtor trans alloc field according to current status of cust_allocations
+//
+function update_debtor_trans_allocation($trans_type, $trans_no)
+{
+	$sql = "UPDATE `".TB_PREF."debtor_trans` trans,
+			(SELECT sum(amt) amt from ".TB_PREF."cust_allocations
+				WHERE (trans_type_to=".db_escape($trans_type)." AND trans_no_to=".db_escape($trans_no).")
+				OR (trans_type_from=".db_escape($trans_type)." AND trans_no_from=".db_escape($trans_no).")) allocated
+		SET 
+			trans.alloc=IFNULL(allocated.amt,0)
+		WHERE trans.type=".db_escape($trans_type)." AND trans_no=".db_escape($trans_no);
+
+	db_query($sql, "The debtor transaction record could not be modified for the allocation against it");
+}
 
 function get_cust_allocation($trans_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."cust_allocations WHERE id = ".db_escape($trans_id);
 	return db_fetch(db_query($sql), "Cannot retrieve customer allocation $trans_id");
-}
-
-//----------------------------------------------------------------------------------------
-
-function update_debtor_trans_allocation($trans_type, $trans_no, $alloc)
-{
-	if ($trans_type == ST_SALESORDER)
-		$sql = "UPDATE ".TB_PREF."sales_orders SET alloc = alloc + $alloc
-			WHERE trans_type=".db_escape($trans_type)." AND order_no = ".db_escape($trans_no);
-	else
-		$sql = "UPDATE ".TB_PREF."debtor_trans SET alloc = alloc + $alloc
-			WHERE type=".db_escape($trans_type)." AND trans_no = ".db_escape($trans_no);
-	db_query($sql, "The debtor transaction record could not be modified for the allocation against it");
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -102,8 +103,8 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 		trans.due_date,
 		debtor.address,
 		trans.version,
-		round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) <= 0 AS settled
-
+		round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) <= 0 AS settled,
+		trans.debtor_no
 	 FROM "
 	 	.TB_PREF."debtor_trans as trans, "
 		.TB_PREF."debtors_master as debtor"
@@ -243,10 +244,10 @@ function get_allocatable_from_cust_transactions($customer_id, $trans_no=null, $t
 	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
-function get_sql_for_customer_allocation_inquiry()
+function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterType, $settled)
 {
-  	$data_after = date2sql($_POST['TransAfterDate']);
-  	$date_to = date2sql($_POST['TransToDate']);
+  	$data_after = date2sql($from);
+  	$date_to = date2sql($to);
 
   	$sql = "SELECT 
   		trans.type,
@@ -272,25 +273,25 @@ function get_sql_for_customer_allocation_inquiry()
     		AND trans.tran_date >= '$data_after'
     		AND trans.tran_date <= '$date_to'";
 
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+   	if ($customer != ALL_TEXT)
+   		$sql .= " AND trans.debtor_no = ".db_escape($customer);
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	if (isset($filterType) && $filterType != ALL_TEXT)
    	{
-   		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
+   		if ($filterType == '1' || $filterType == '2')
    		{
    			$sql .= " AND trans.type = ".ST_SALESINVOICE." ";
    		}
-   		elseif ($_POST['filterType'] == '3')
+   		elseif ($filterType == '3')
    		{
 			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
    		}
-   		elseif ($_POST['filterType'] == '4')
+   		elseif ($filterType == '4')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
 
-    	if ($_POST['filterType'] == '2')
+    	if ($filterType == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
@@ -305,12 +306,13 @@ function get_sql_for_customer_allocation_inquiry()
    	}
 
 
-   	if (!check_value('showSettled'))
+   	if (!$settled)
    	{
    		$sql .= " AND (round(IF(trans.prep_amount,trans.prep_amount, abs(trans.ov_amount + trans.ov_gst + "
 		."trans.ov_freight + trans.ov_freight_tax + "
 		."trans.ov_discount)) - trans.alloc,6) != 0) ";
    	}
+
    	return $sql;
 }
 
@@ -332,28 +334,26 @@ function credit_sales_invoice_allocate($invoice_no, $credit_no, $amount, $date)
 
 		while(($free < $amount) && ($alloc = db_fetch($result))) {
 			$unalloc = min($alloc['amt'], $amount-$free);
-			update_debtor_trans_allocation($alloc['trans_type_to'], $alloc['trans_no_to'], 
-				-$unalloc);
-			update_debtor_trans_allocation($alloc['trans_type_from'], $alloc['trans_no_from'], 
-				-$unalloc);
 
 			delete_cust_allocation($alloc['id']);
 			if ($unalloc < $alloc['amt'])
 				add_cust_allocation($alloc['amt']-$unalloc, $alloc['trans_type_from'],
 					$alloc['trans_no_from'], ST_SALESINVOICE, $invoice_no);
 
+			update_debtor_trans_allocation($alloc['trans_type_to'], $alloc['trans_no_to']);
+			update_debtor_trans_allocation($alloc['trans_type_from'], $alloc['trans_no_from']);
 			$free += $unalloc;
 		}
 	}
-	if ($free < $amount) {
+	if (floatcmp($free, $amount)<0) {
 		// this should never happen unless sparse credit notices were allocated to 
 		// the invoice, or summarized freight costs on credit notes is more than those on invoice.
 		display_error(_("Unsuspected overallocation happened due to sparse credit notes exists for this invoice.
  Check all credit notes allocated to this invoice for summarized freight charges."));
 		return false;
 	}
-	update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $amount);
-	update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no, $amount);
+	update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no);
+	update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no);
 	add_cust_allocation($amount, ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $invoice_no);
 
 	exchange_variation(ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $invoice_no, $date,

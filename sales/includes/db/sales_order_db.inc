@@ -167,8 +167,11 @@ function update_sales_order($order)
 	$total = $order->get_trans_total();
 
 	begin_transaction();
+	hook_db_prewrite($order, $order->trans_type);
+
 	if ($order->trans_type == ST_SALESORDER)
 		$allocs = get_payments_for($order_no, ST_SALESORDER);
+
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
 		branch_code = " . db_escape($order->Branch) . ",
@@ -191,6 +194,17 @@ function update_sales_order($order)
 	 WHERE order_no=" . db_escape($order_no) ."
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
+
+	$id_tokeep = array();
+	foreach ($order->line_items as $line) {
+		array_push($id_tokeep , $line->id);
+	}
+	$id_list = implode(', ', $id_tokeep);
+	
+	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
+	$sql .= " AND id NOT IN ($id_list)";
+
+	db_query($sql, "Old order Cannot be Deleted");
 
 	if ($loc_notification == 1)
 	{
@@ -260,6 +274,8 @@ function update_sales_order($order)
 		reallocate_payments($order_no, ST_SALESORDER, $ord_date, $total, $allocs);
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
 	$Refs->save($order->trans_type, $order_no, $order->reference);
+
+	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{
@@ -290,6 +306,7 @@ function get_sales_order_header($order_no, $trans_type)
 	$sql = "SELECT sorder.*, "
 	  ."cust.name, "
 	  ."cust.curr_code, "
+	  ."cust.address, "
 	  ."loc.location_name, "
 	  ."cust.discount, "
 	  ."stype.sales_type, "
@@ -626,6 +643,7 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 					sorder.deliver_to";
 	return $sql;
 }
+
 //--------------------------------------------------------------------------------------------------
 function update_prepaid_so_line($line_id, $qty_invoiced)
 {
@@ -658,4 +676,3 @@ function is_sales_order_started($order_no)
 	$result = db_fetch(db_query($sql, "cannot retrieve sales invoices for sales order"));
 	return $result[0];
 }
-?>

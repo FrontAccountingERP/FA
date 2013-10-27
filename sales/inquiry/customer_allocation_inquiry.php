@@ -95,7 +95,7 @@ function alloc_link($row)
 	$link = 
 	pager_link(_("Allocation"),
 		"/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] 
-		."&trans_type=" . $row["type"], ICON_MONEY);
+		."&trans_type=" . $row["type"]."&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 
 	if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0)
 	{
@@ -103,12 +103,12 @@ function alloc_link($row)
 		return $link;
 	}
 	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
-		(floatcmp($row['TotalAmount'], $row['Allocated']) > 0))
+		(floatcmp($row['TotalAmount'], $row['Allocated']) >= 0))
 	{
 		/*its a receipt  which could have an allocation*/
 		return $link;
 	}
-	elseif ($row["type"] == ST_CUSTPAYMENT && $row['TotalAmount'] < 0)
+	elseif ($row["type"] == ST_CUSTPAYMENT && $row['TotalAmount'] <= 0)
 	{
 		/*its a negative receipt */
 		return '';
@@ -136,18 +136,18 @@ function fmt_credit($row)
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_customer_allocation_inquiry();
+$sql = get_sql_for_customer_allocation_inquiry(get_post('TransAfterDate'), get_post('TransToDate'),
+		get_post('customer_id'), get_post('filterType'), check_value('showSettled'));
 
 //------------------------------------------------------------------------------------------------
-
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
 	_("#") => array('fun'=>'view_link'),
 	_("Reference"), 
-	_("Order") => array('fun'=>'order_link'), 
+	_("Order") => array('fun'=>'order_link', 'ord'=>''), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
-	_("Customer"), 
+	_("Customer") => array('name' =>'name',  'ord'=>'asc'), 
 	_("Currency") => array('align'=>'center'),
 	_("Debit") => array('align'=>'right','fun'=>'fmt_debit'), 
 	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 

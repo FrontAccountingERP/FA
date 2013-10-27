@@ -39,11 +39,15 @@ class email
     var $subject = "";
     var $body = "";
 	var $charset = 'ISO-8859-1';
+	var $add_params;
 	
     function email($name, $mail)
     {
         $this->boundary = md5(uniqid(time()));
 		$this->header = "From: $name <$mail>\n";
+		$bcc = get_company_pref('bcc_email');
+		if ($bcc)
+			$this->bcc[] = $bcc;
     }
 
     function to($mail)
@@ -132,9 +136,7 @@ class email
             }
             $this->header .= "\n";
         }
-		$this->header .= "MIME-Version: 1.0\n";
 		$this->header .= "Content-Type: multipart/mixed;\n boundary=\"$this->boundary\"\n";
-		$this->header .= "This is a multi-part message in MIME format.\n";
 
         // Attachment hinzufügen
         $max = count($this->attachment);
@@ -156,7 +158,7 @@ class email
 		$ret = 0;
         foreach($this->to as $mail)
         {
-			if (mail($mail, $this->subject, $this->body, $this->header))
+			if (mail($mail, $this->subject, $this->body, $this->header, $this->add_params))
 				$ret++;
         }
         return $ret;

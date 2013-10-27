@@ -62,12 +62,14 @@ function print_payment_report()
     	$currency = $_POST['PARAM_2'];
     	$no_zeros = $_POST['PARAM_3'];
     	$comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($fromsupp == ALL_TEXT)
 		$from = _('All');
 	else
@@ -99,7 +101,9 @@ function print_payment_report()
     			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
 			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize());
+    $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

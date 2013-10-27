@@ -36,18 +36,18 @@ echo "<br>";
 start_table(TABLESTYLE, "width=80%");
 start_row();
 label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
-label_cells(_("Into Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
+label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'");
 label_cells(_("Date of Deposit"), sql2date($receipt['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
+label_cells(_("Customer Currency"), $receipt['curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), price_format($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
 label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Payment Type"), 
-	$bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
-label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
+label_cells(_("Into Bank Account"), $receipt['bank_account_name'].' ['.$receipt['bank_curr_code'].']', "class='tableheader2'");
+label_cells(_("Bank Amount"), price_format($receipt['bank_amount']), "class='tableheader2'");
+label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 comments_display_row(ST_CUSTPAYMENT, $trans_id);
 

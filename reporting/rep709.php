@@ -79,16 +79,18 @@ function print_tax_report()
 	$to = $_POST['PARAM_1'];
 	$summaryOnly = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
-	$rep = new FrontReport(_('Tax Report'), "TaxReport", user_pagesize());
+	$rep = new FrontReport(_('Tax Report'), "TaxReport", user_pagesize(), 9, $orientation);
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
 	else
@@ -109,6 +111,9 @@ function print_tax_report()
 	$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
 		_('Net'), _('Rate'), _('Tax'), '', _('Name'));
 	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right','left');
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)
@@ -172,6 +177,8 @@ function print_tax_report()
 	
 	// Summary
 	$cols2 = array(0, 100, 180,	260, 340, 420, 500);
+    if ($orientation == 'L')
+    	recalculate_cols($cols2);
 
 	$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'),	_('Inputs'), _('Input Tax'), _('Net Tax'));
 

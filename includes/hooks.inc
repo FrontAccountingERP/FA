@@ -94,6 +94,19 @@ class hooks {
 	}
 
 	//
+	//	Invoked for all modules before page header is displayed
+	//
+	function pre_header($fun_args)
+	{
+	}
+	//
+	//	Invoked for all modules before page footer is displayed
+	//
+	function pre_footer($fun_args)
+	{
+	}
+
+	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.
 	// Used instead of built in simple english price_in_words() function.
@@ -178,6 +191,29 @@ class hooks {
 	{
 		return true;
 	}
+
+	/*
+	 * Returns the quantity allowed to be dispatched for a particular item 
+	 * and a status (which can be used to style the row).
+	 * This quantity would be the default value on the delivery note.
+	 * The usual use case for this is when a item is in stock,
+	 * but has been reserved by someone else.
+	 * This allows extensions to implements its own priority algorithm.
+	 * This function is by detail_id and not item in case the item is present
+	 * more than one in  the cart.
+	 */
+	/* Default behavior check if there is enough quantity on hand and change the css
+ * class if needed */
+	static function  default_get_dispatchable_quantity($line_item, $location, $date, $qoh) {
+    global $SysPrefs;
+
+		if ($SysPrefs->allow_negative_stock() || ($line_item->qty_dispatched <= $qoh)) {
+			return true;
+		}
+		return array($qoh, 'stockmankobg');
+		return array($line_item->qty_dispatched, 'stockmankobg');
+	}
+
 }
 
 /*
@@ -253,17 +289,20 @@ function hook_invoke_all($method, &$data, $opts=null)
 	global $Hooks;
 	
 	$return = array();
-	foreach($Hooks as $ext => $hook)
-		if (method_exists($hook, $method)) {
-			set_ext_domain('modules/'.$ext);
-			$result = $hook->$method($data, $opts);
-			if (isset($result) && is_array($result)) {
-				$return = array_merge_recursive($return, $result);
-			} else if (isset($result)) {
-				$return[] = $result;
-				}
-			set_ext_domain();
-		}
+	if (isset($Hooks))
+	{
+		foreach($Hooks as $ext => $hook)
+			if (method_exists($hook, $method)) {
+				set_ext_domain('modules/'.$ext);
+				$result = $hook->$method($data, $opts);
+				if (isset($result) && is_array($result)) {
+					$return = array_merge_recursive($return, $result);
+				} else if (isset($result)) {
+					$return[] = $result;
+					}
+				set_ext_domain();
+			}
+	}
 	return $return;
 }
 /*
@@ -399,4 +438,20 @@ function hook_session_start($company)
 function hook_authenticate($login, $password)
 {
 	return hook_invoke_last('authenticate', $login, $password);
+}
+
+	/*
+	 * Returns the quantity allowed to be dispatched for a particular item 
+	 * and a "reason" (css classes).
+	 * This quantity would be the default value on the delivery note.
+	 * The usual use case for this is when a item is in stock,
+	 * but has been reserved by someone else.
+	 * This allows extensions to implements its own priority algorithm.
+	 * This function is by detail_id and not item in case the item is present
+	 * more than one in  the cart.
+	 * If 'skip' is returned, the line will be skipped and not displayed
+	 */
+function hook_get_dispatchable_quantity($line_item, $location, $date, $qoh) {
+		$result =  hook_invoke_first('get_dispatchable_quantity', $line_item, array($location, $date, $qoh));
+		return $result !== null ? $result : hooks::default_get_dispatchable_quantity($line_item, $location, $date, $qoh);
 }

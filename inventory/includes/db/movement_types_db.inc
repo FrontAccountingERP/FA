@@ -53,13 +53,23 @@ function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
 {
 	$before_date = date2sql($BeforeDate);
 	$after_date = date2sql($AfterDate);
-	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
-		FROM ".TB_PREF."stock_moves
-		WHERE loc_code=".db_escape($StockLocation)."
-		AND tran_date >= '". $after_date . "'
-		AND tran_date <= '" . $before_date . "'
-		AND stock_id = ".db_escape($stock_id) . " ORDER BY tran_date,trans_id";
-	return db_query($sql, "could not query stock moves");
+  $sql = "SELECT type, trans_no, tran_date, person_id, qty, reference";
+
+	if(!$StockLocation) {
+		 $sql .= ", loc_code";
+	}
+  $sql.=    " FROM ".TB_PREF."stock_moves
+		WHERE";
+
+  if ($StockLocation) {
+    $sql.= " loc_code=".db_escape($StockLocation)." AND";
+	}
+
+	$sql.= " tran_date >= '". $after_date . "'
+	AND tran_date <= '" . $before_date . "'
+	AND stock_id = ".db_escape($stock_id) . " ORDER BY tran_date,trans_id";
+
+  return db_query($sql, "could not query stock moves");
 }
 
 function get_stock_movements_before($stock_id, $StockLocation, $AfterDate)

@@ -76,7 +76,8 @@ function print_inventory_valuation_report()
     $location = $_POST['PARAM_2'];
     $detail = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -84,6 +85,7 @@ function print_inventory_valuation_report()
 	$detail = !$detail;
     $dec = user_price_dec();
 
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
@@ -109,8 +111,9 @@ function print_inventory_valuation_report()
     				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize());
-
+    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();

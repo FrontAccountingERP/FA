@@ -62,12 +62,14 @@ function print_audit_trail()
     $systype = $_POST['PARAM_2'];
     $user = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
     $cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
@@ -84,7 +86,9 @@ function print_audit_trail()
                     	2 => array('text' => _('Type'), 'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')), 'to' => ''),
                     	3 => array('text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''));
 
-    $rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize());
+    $rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

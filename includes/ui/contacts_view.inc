@@ -123,8 +123,7 @@ class contacts extends simple_crud {
 	function db_update() {
 			return update_crm_person($this->selected_id, $_POST['ref'], $_POST['name'], $_POST['name2'], 
 				$_POST['address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
-				$_POST['lang'], $_POST['notes'], $_POST['assgn'], $this->entity);
-		
+				$_POST['lang'], $_POST['notes'], $_POST['assgn'], $this->entity, $this->class);
 	}
 
 	function insert_check() {

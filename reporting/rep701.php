@@ -96,12 +96,14 @@ function print_Chart_of_Accounts()
 
 	$showbalance = $_POST['PARAM_0'];
 	$comments = $_POST['PARAM_1'];
-	$destination = $_POST['PARAM_2'];
+	$orientation = $_POST['PARAM_2'];
+	$destination = $_POST['PARAM_3'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = 0;
 
 	$cols = array(0, 50, 300, 425, 500);
@@ -112,7 +114,9 @@ function print_Chart_of_Accounts()
 	
 	$params = array(0 => $comments);
 
-	$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", user_pagesize());
+	$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

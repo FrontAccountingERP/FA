@@ -142,7 +142,8 @@ function print_balance_sheet()
 		$decimals = $_POST['PARAM_5'];
 		$graphics = $_POST['PARAM_6'];
 		$comments = $_POST['PARAM_7'];
-		$destination = $_POST['PARAM_8'];
+		$orientation = $_POST['PARAM_8'];
+		$destination = $_POST['PARAM_9'];
 	}
 	else if ($dim == 1)
 	{
@@ -151,7 +152,8 @@ function print_balance_sheet()
 		$decimals = $_POST['PARAM_4'];
 		$graphics = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$orientation = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	else
 	{
@@ -159,12 +161,14 @@ function print_balance_sheet()
 		$decimals = $_POST['PARAM_3'];
 		$graphics = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$orientation = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -208,7 +212,9 @@ function print_balance_sheet()
     				    2 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
 
-	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
+	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

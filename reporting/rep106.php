@@ -63,11 +63,13 @@ function print_salesman_list()
 	$to = $_POST['PARAM_1'];
 	$summary = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 
 	if ($summary == 0)
 		$sum = _("No");
@@ -90,10 +92,12 @@ function print_salesman_list()
 	    				1 => array(  'text' => _('Period'), 'from' => $from, 'to' => $to),
 	    				2 => array(  'text' => _('Summary Only'),'from' => $sum,'to' => ''));
 
-	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", user_pagesize());
+	$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
+	$cols2 = $cols;
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 

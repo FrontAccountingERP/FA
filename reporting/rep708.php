@@ -31,7 +31,7 @@ $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 
 function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balances, $dimension, $dimension2)
 {
-	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
+	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal, $clear_trial_balance_opening;
 	
 	$printtitle = 0; //Flag for printing type name	
 	
@@ -55,6 +55,15 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 			$rep->NewLine();			
 		}
 		
+		// FA doesn't really clear the closed year, therefore the brought forward balance includes all the transactions from the past, even though the balance is null.
+		// If we want to remove the balanced part for the past years, this option removes the common part from from the prev and tot figures.
+		if (@$clear_trial_balance_opening)
+		{
+			$open = get_balance($account["account_code"], $dimension, $dimension2, $begin,  $begin, false, true);
+			$offset = min($open['debit'], $open['credit']);
+		} else
+			$offset = 0;
+
 		$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
 		$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
 		$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
@@ -80,18 +89,18 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 		}
 		else
 		{
-			$rep->AmountCol(2, 3, $prev['debit'], $dec);
-			$rep->AmountCol(3, 4, $prev['credit'], $dec);
+			$rep->AmountCol(2, 3, $prev['debit']-$offset, $dec);
+			$rep->AmountCol(3, 4, $prev['credit']-$offset, $dec);
 			$rep->AmountCol(4, 5, $curr['debit'], $dec);
 			$rep->AmountCol(5, 6, $curr['credit'], $dec);
-			$rep->AmountCol(6, 7, $tot['debit'], $dec);
-			$rep->AmountCol(7, 8, $tot['credit'], $dec);
-			$pdeb += $prev['debit'];
-			$pcre += $prev['credit'];
+			$rep->AmountCol(6, 7, $tot['debit']-$offset, $dec);
+			$rep->AmountCol(7, 8, $tot['credit']-$offset, $dec);
+			$pdeb += $prev['debit']-$offset;
+			$pcre += $prev['credit']-$offset;
 			$cdeb += $curr['debit'];
 			$ccre += $curr['credit'];
-			$tdeb += $tot['debit'];
-			$tcre += $tot['credit'];
+			$tdeb += $tot['debit']-$offset;
+			$tcre += $tot['credit']-$offset;
 		}	
 
 		$pbal += $prev['balance'];
@@ -147,23 +156,27 @@ function print_trial_balance()
 		$dimension = $_POST['PARAM_4'];
 		$dimension2 = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$orientation = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$orientation = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else
 	{
 		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$orientation = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
 	$cols2 = array(0, 50, 190, 310, 430, 530);
@@ -203,7 +216,12 @@ function print_trial_balance()
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
     }
 
-	$rep = new FrontReport(_('Trial Balance'), "TrialBalance", user_pagesize());
+	$rep = new FrontReport(_('Trial Balance'), "TrialBalance", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    {
+    	recalculate_cols($cols);
+    	recalculate_cols($cols2);
+	}
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

@@ -139,7 +139,7 @@
 		$this->Text($mcol + 100, $this->formData['document_name']);
 		$this->Text($mcol + 180, $this->formData['document_number']);
 
-		if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
+		if ($this->pageNumber > 1)
 			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
 		$this->row = $iline1 - $this->lineHeight;
 		$this->fontSize -= 4;

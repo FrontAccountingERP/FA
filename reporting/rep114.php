@@ -68,7 +68,8 @@ function print_sales_summary_report()
 	$to = $_POST['PARAM_1'];
 	$tax_id = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($tax_id == 0)
 		$tid = _('No');
 	else
@@ -79,10 +80,11 @@ function print_sales_summary_report()
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$orientation = ($orientation ? 'L' : 'P');
 
 	$dec = user_price_dec();
 
-	$rep = new FrontReport(_('Sales Summary Report'), "SalesSummaryReport", user_pagesize());
+	$rep = new FrontReport(_('Sales Summary Report'), "SalesSummaryReport", user_pagesize(), 9, $orientation);
 
 	$params =   array( 	0 => $comments,
 						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
@@ -92,6 +94,9 @@ function print_sales_summary_report()
 
 	$headers = array(_('Customer'), _('Tax Id'), _('Total ex. Tax'), _('Tax'));
 	$aligns = array('left', 'left', 'right', 'right');
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->NewPage();

@@ -74,7 +74,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* Do not print zero lines amount of 0.00 in Sales Documents if service item. 1 = do not */
 	$no_zero_lines_amount = 1;
 
-	/* Use icon for editkey (=true) righ of combobox. 1 = use, 0 = do not use */
+	/* Use icon for editkey (=true) right of combobox. 1 = use, 0 = do not use */
 	$use_icon_for_editkey = 0;
 
 	/* Creates automatic a default branch with contact. Value 0 do not create auto branch */
@@ -90,6 +90,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$use_date_picker = 1;
 
 	/* use Audit Trails in GL */
+	/* This variable is deprecated. Setting this to 1, will stamp the user name in the memo fields in GL */
+	/* This has been superseded with built in Audit Trail */
 	$use_audit_trail = 0;
 
 	/* $show_voiced_gl_trans = 0, setting this to 1 will show the voided gl trans */
@@ -107,9 +109,13 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* default print destination. 0 = PDF/Printer, 1 = Excel */
 	$def_print_destination = 0;
 
+	/* default print orientation. 0 = Portrait, 1 = Landscape */
+	$def_print_orientation = 0;
+
  	// Wiki context help configuration
  	// If your help wiki use translated page titles uncomment next line
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
+	$old_style_help = 0;
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	// 	context help feed from frontaccounting.com
@@ -128,6 +134,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$date_system = 0;
 
 	/* email stock location if order below reorder-level */
+	/* Remember to set an email on the Location(s). */
 	$loc_notification = 0;
 
 	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
@@ -146,22 +153,24 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
 	$decseps 		= array(".", ",");
-	// defalt dateformats and dateseps indexes used before user login
+
+	/* default dateformats and dateseps indexes used before user login */
 	$dflt_date_fmt = 0;
 	$dflt_date_sep = 0;
 
-	$pagesizes 		= array("Letter", "A4"); // default PDF pagesize
+	/* default PDF pagesize taken from /reporting/includes/tcpdf.php */
+	$pagesizes 		= array("Letter", "A4");
 
 	/* Accounts Payable */
 	/* System check to see if quantity charged on purchase invoices exceeds the quantity received.
-	If this parameter is checked the proportion by which the purchase invoice is an overcharge
-	referred to before reporting an error */
+	   If this parameter is checked the proportion by which the purchase invoice is an overcharge
+	   referred to before reporting an error */
 
 	$check_qty_charged_vs_del_qty = true;
 
 	/* System check to see if price charged on purchase invoices exceeds the purchase order price.
-	If this parameter is checked the proportion by which the purchase invoice is an overcharge
-	referred to before reporting an error */
+	   If this parameter is checked the proportion by which the purchase invoice is an overcharge
+	   referred to before reporting an error */
 
 	$check_price_charged_vs_order_price = True;
 
@@ -185,7 +194,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$pic_height 	= 50;
 	$max_image_size = 500;
 
-	/* skin for Business Graphics, 1, 2 or 3 */
+	/* skin for Business Graphics. 1 = Office, 2 = Matrix, or 3 = Spring. 
+	   Pallete skin attributes set in reporting/includes/class.graphic.inc */
 	$graph_skin 	= 1;
 
 /*	
@@ -223,30 +233,6 @@ if(isset($_SESSION["wa_current_user"])) {
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
 
-if (!defined('ICON_EDIT'))
-{
-	define("ICON_EDIT", "edit.gif");
-	define("ICON_DELETE", "delete.gif");
-	define("ICON_ADD", "ok.gif");
-	define("ICON_UPDATE", "ok.gif");
-	define("ICON_OK", "ok.gif");
-	define("ICON_CANCEL", "cancel.png");
-	define("ICON_GL", "gl.png");
-	define("ICON_PRINT", "print.png");
-	define("ICON_PDF", "pdf.gif");
-	define("ICON_DOC", "invoice.gif");
-	define("ICON_CREDIT", "credit.gif");
-	define("ICON_RECEIVE", "receive.gif");
-	define("ICON_DOWN", "download.gif");
-	define("ICON_MONEY", "money.png");
-	define("ICON_REMOVE", "remove.png");
-	define("ICON_REPORT", "report.png");
-	define("ICON_VIEW", "view.gif");
- 	define("ICON_SUBMIT", "ok.gif");
- 	define("ICON_ESCAPE", "escape.png");
- 	define("ICON_CLOSED", "closed.png");
-}
-
 /* 
 	Display a dropdown select box for choosing Company to login if false.
 	Show a blank editbox only if true where the Company NickName
@@ -274,5 +260,22 @@ $login_max_attempts = 10;
 */
 $xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
 $dflt_xr_provider = 0;
+
+/*
+	Set to true when remote service is authoritative source of exchange rates, and can be stored automatically without
+	manual edition. Otherwise exrate is stored on first new currency transaction of the day.
+*/
+$xr_provider_authoritative = false;
+
+/*
+	Optional sorting sales documents lines during edition according to item code
+*/
+$sort_sales_items = false;
+
+/*
+	Trial Balance opening balance presentation option.
+	When set to true past years part of opening balance is cleared.
+*/
+$clear_trial_balance_opening = false;
 
 ?>

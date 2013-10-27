@@ -32,10 +32,15 @@ function get_customer_details_for_report($area=0, $salesid=0)
 	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no,
 			".TB_PREF."debtors_master.name,
 			".TB_PREF."debtors_master.address,
+			".TB_PREF."debtors_master.curr_code,
+			".TB_PREF."debtors_master.dimension_id,
+			".TB_PREF."debtors_master.dimension2_id,
+			".TB_PREF."debtors_master.notes,
 			".TB_PREF."sales_types.sales_type,
 			".TB_PREF."cust_branch.branch_code,
 			".TB_PREF."cust_branch.br_name,
 			".TB_PREF."cust_branch.br_address,
+			".TB_PREF."cust_branch.br_post_address,
 			".TB_PREF."cust_branch.contact_name,
 			".TB_PREF."cust_branch.area,
 			".TB_PREF."cust_branch.salesman,
@@ -49,17 +54,18 @@ function get_customer_details_for_report($area=0, $salesid=0)
 		INNER JOIN ".TB_PREF."areas
 			ON ".TB_PREF."cust_branch.area = ".TB_PREF."areas.area_code
 		INNER JOIN ".TB_PREF."salesman
-			ON ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code";
+			ON ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
+		WHERE ".TB_PREF."debtors_master.inactive = 0";
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
+			$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
 				AND ".TB_PREF."areas.area_code=".db_escape($area);
 		else
-			$sql .= " WHERE ".TB_PREF."areas.area_code=".db_escape($area);
+			$sql .= " AND ".TB_PREF."areas.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
+		$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
 	$sql .= " ORDER BY description,
 			".TB_PREF."salesman.salesman_name,
 			".TB_PREF."debtors_master.debtor_no,
@@ -68,6 +74,17 @@ function get_customer_details_for_report($area=0, $salesid=0)
     return db_query($sql,"No transactions were returned");
 }
 
+function get_contacts_for_branch($branch)
+{
+	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
+		FROM ".TB_PREF."crm_persons p,".TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='cust_branch' 
+			AND r.entity_id=".db_escape($branch);
+	$res = db_query($sql, "can't retrieve branch contacts");
+	$results = array();
+	while($contact = db_fetch($res))
+		$results[] = $contact;
+	return $results;
+}
 
 function getTransactions($debtorno, $branchcode, $date)
 {
@@ -98,12 +115,14 @@ function print_customer_details_listing()
     $more = $_POST['PARAM_3'];
     $less = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = 0;
 
 	if ($area == ALL_NUMERIC)
@@ -131,7 +150,7 @@ function print_customer_details_listing()
 	$more = (double)$more;
 	$less = (double)$less;
 
-	$cols = array(0, 150, 300, 400, 550);
+	$cols = array(0, 150, 300, 425, 550);
 
 	$headers = array(_('Customer Postal Address'), _('Price/Turnover'),	_('Branch Contact Information'),
 		_('Branch Delivery Address'));
@@ -142,9 +161,11 @@ function print_customer_details_listing()
     				    1 => array('text' => _('Activity Since'), 	'from' => $from, 		'to' => ''),
     				    2 => array('text' => _('Sales Areas'), 		'from' => $sarea, 		'to' => ''),
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
-    				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr));
+    				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr . " " . get_company_pref("curr_default")));
 
-    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize());
+    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -167,6 +188,7 @@ function print_customer_details_listing()
 		}
 		if ($printcustomer)
 		{
+			$newrow = 0;
 			if ($carea != $myrow['description'])
 			{
 				$rep->fontSize += 2;
@@ -191,27 +213,35 @@ function print_customer_details_listing()
 			}
 			$rep->NewLine();
 			// Here starts the new report lines 2010-11-02 Joe Hunt
-			$contacts = get_branch_contacts($myrow['branch_code']);
+			$contacts = get_contacts_for_branch($myrow['branch_code']);
 			$rep->TextCol(0, 1,	$myrow['name']);
 			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
 			$rep->TextCol(2, 3,	$myrow['br_name']);
 			$rep->NewLine();
 			$adr = Explode("\n", $myrow['address']);
-			$adr2 = Explode("\n", $myrow['br_address']);
+			if ($myrow['br_post_address'] == '')
+				$adr2 = Explode("\n", $myrow['br_address']);
+			else
+				$adr2 = Explode("\n", $myrow['br_post_address']);
 			$count1 = count($adr);
 			$count2 = count($adr2);
 			$count1 = max($count1, $count2);
+			$count1 = max($count1, 4); 
 			if (isset($adr[0]))
 				$rep->TextCol(0, 1, $adr[0]);
-			if ($more != 0.0 || $less != 0.0)
-				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec));
+			$rep->TextCol(1, 2,	_('Currency') . ": " . $myrow['curr_code']);
 			if (isset($contacts[0]))
-				$rep->TextCol(2, 3, $contacts[0]['name']);
+				$rep->TextCol(2, 3, $contacts[0]['name']. " " .$contacts[0]['name2']);
 			if (isset($adr2[0]))	
 				$rep->TextCol(3, 4, $adr2[0]);
 			$rep->NewLine();
 			if (isset($adr[1]))
 				$rep->TextCol(0, 1, $adr[1]);
+			if ($myrow['dimension_id'] != 0)
+			{
+				$dim = get_dimension($myrow['dimension_id']);
+				$rep->TextCol(1, 2,	_('Dimension') . ": " . $dim['name']);
+			}		
 			if (isset($contacts[0]))
 				$rep->TextCol(2, 3, _('Ph') . ": " . $contacts[0]['phone']);
 			if (isset($adr2[1]))
@@ -219,18 +249,37 @@ function print_customer_details_listing()
 			$rep->NewLine();
 			if (isset($adr[2]))
 				$rep->TextCol(0, 1, $adr[2]);
+			if ($myrow['dimension2_id'] != 0)
+			{
+				$dim = get_dimension($myrow['dimension2_id']);
+				$rep->TextCol(1, 2,	_('Dimension') . " 2: " . $dim['name']);
+			}	
+			if ($myrow['notes'] != '')
+			{
+				$oldrow = $rep->row;
+				$rep->NewLine();
+				$rep->TextColLines(1, 2, _("Gereral Notes:")." ".$myrow['notes'], -2);
+				$newrow = $rep->row;
+				$rep->row = $oldrow;
+			}	
 			if (isset($contacts[0]))
 				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax']);
 			if (isset($adr2[2]))
 				$rep->TextCol(3, 4, $adr2[2]);
+			if ($more != 0.0 || $less != 0.0)
+				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec));
 			for ($i = 3; $i < $count1; $i++)
 			{
 				$rep->NewLine();
 				if (isset($adr[$i]))
 					$rep->TextCol(0, 1, $adr[$i]);
+				if ($i == 3 && isset($contacts[0]) && isset($contacts[0]['email']))	
+					$rep->TextCol(2, 3, _('Email') . ": " . $contacts[0]['email']);
 				if (isset($adr2[$i]))
-					$rep->TextCol(0, 1, $adr2[$i]);
+					$rep->TextCol(3, 4, $adr2[$i]);
 			}	
+			if ($newrow != 0 && $newrow < $rep->row)
+				$rep->row = $newrow;
 			$rep->NewLine();
 			/*
 			$rep->TextCol(0, 1,	$myrow['name']);

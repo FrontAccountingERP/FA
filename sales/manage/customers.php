@@ -120,7 +120,10 @@ function handle_submit(&$selected_id)
 			add_crm_person($_POST['CustName'], $_POST['cust_ref'], '', $_POST['address'], 
 				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], '', '');
 
-			add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
+			$pers_id = db_insert_id();
+			add_crm_contact('cust_branch', 'general', $selected_branch, $pers_id);
+
+			add_crm_contact('customer', 'general', $selected_id, $pers_id);
 		}
 		commit_transaction();
 
@@ -337,7 +340,7 @@ else
 	hidden('customer_id');
 }
 
-if (!$selected_id)
+if (!$selected_id || list_updated('customer_id'))
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
 tabbed_content_start('tabs', array(

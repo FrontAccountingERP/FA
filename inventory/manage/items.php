@@ -18,9 +18,8 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-	
-page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
 
+page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -464,6 +463,10 @@ if (!$stock_id)
 
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $stock_id),
+		'sales_pricing' => array(_('S&ales Pricing'), $stock_id),
+		'purchase_pricing' => array(_('&Purchasing Pricing'), $stock_id),
+		'standard_cost' => array(_('Standard &Costs'), $stock_id),
+		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) ? $stock_id : null)),
 		'movement' => array(_('&Transactions'), $stock_id),
 		'status' => array(_('&Status'), $stock_id),
 	));
@@ -472,6 +475,30 @@ tabbed_content_start('tabs', array(
 		default:
 		case 'settings':
 			item_settings($stock_id); 
+			break;
+		case 'sales_pricing':
+			$_GET['stock_id'] = $stock_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/inventory/prices.php");
+			break;
+		case 'purchase_pricing':
+			$_GET['stock_id'] = $stock_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/inventory/purchasing_data.php");
+			break;
+		case 'standard_cost':
+			$_GET['stock_id'] = $stock_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/inventory/cost_update.php");
+			break;
+		case 'reorder_level':
+			if (!is_inventory_item($stock_id))
+			{
+				break;
+			}	
+			$_GET['stock_id'] = $stock_id;
+			$_GET['popup'] = 1;
+			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
 			$_GET['stock_id'] = $stock_id;

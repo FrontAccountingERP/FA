@@ -52,11 +52,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	}
 } 
 
+function key_in_crm_contacts($id) // extra function for testing foreign concatenated key. Joe 02.09.2013.
+{
+	$row = get_crm_category($id);
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."crm_contacts WHERE type='".$row['type']."' AND action='".$row['action']."'";
+	$result = db_query($sql, "check relations for crm_contacts failed");
+	$contacts = db_fetch($result);
+	return $contacts[0];
+}
+
 if ($Mode == 'Delete')
 {
 	$cancel_delete = 0;
 
-	if (key_in_foreign_table($selected_id, 'crm_relations', 'category_id'))
+	if (key_in_crm_contacts($selected_id))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this category because there are contacts related to it."));
@@ -83,9 +92,9 @@ if ($Mode == 'RESET')
 $result = get_crm_categories(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=50%");
+start_table(TABLESTYLE, "width=70%");
 
-$th = array(_("Type id"), _("Action id"), _("Short Name"), _("Description"),  "", "&nbsp;");
+$th = array(_("Category Type"), _("Category Subtype"), _("Short Name"), _("Description"),  "", "&nbsp;");
 inactive_control_column($th);
 
 table_header($th);

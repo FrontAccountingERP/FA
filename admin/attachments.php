@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
+include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 if (isset($_GET['vw']))
 	$view_id = $_GET['vw'];
@@ -81,8 +82,8 @@ if (isset($_GET['trans_no']))
 
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
-	if (!$_POST['trans_no'])
-		display_error(_("No transaction has been selected."));
+	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
+		display_error(_("Selected transaction does not exists."));
 	elseif ($Mode == 'ADD_ITEM' && (!isset($_FILES['filename']) || $_FILES['filename']['size'] == 0))
 		display_error(_("Select attachment file."));
 	else {
@@ -98,22 +99,24 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			fwrite($fp, $index_file);
 			fclose($fp);
 		}
+
+		$filename = basename($_FILES['filename']['name']);
+		$filesize = $_FILES['filename']['size'];
+		$filetype = $_FILES['filename']['type'];
+
 		// file name compatible with POSIX
 		// protect against directory traversal
 		if ($Mode == 'UPDATE_ITEM')
 		{
 			$unique_name = preg_replace('/[^a-zA-Z0-9.\-_]/', '', $_POST['unique_name']);
-			if ($Mode == 'UPDATE_ITEM' && file_exists($dir."/".$unique_name))
+			if ($filename && file_exists($dir."/".$unique_name))
 				unlink($dir."/".$unique_name);
 		}
 		else
 			$unique_name = uniqid('');
-		move_uploaded_file($tmpname, $dir."/".$unique_name);
 
 		//save the file
-		$filename = basename($_FILES['filename']['name']);
-		$filesize = $_FILES['filename']['size'];
-		$filetype = $_FILES['filename']['type'];
+		move_uploaded_file($tmpname, $dir."/".$unique_name);
 
 		if ($Mode == 'ADD_ITEM')
 		{
@@ -128,6 +131,8 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			display_notification(_("Attachment has been updated.")); 
 		}
 	}
+	refresh_pager('trans_tbl');
+	$Ajax->activate('_page_body');
 	$Mode = 'RESET';
 }
 

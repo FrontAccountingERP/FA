@@ -38,12 +38,14 @@ function print_list_of_journal_entries()
     $to = $_POST['PARAM_1'];
     $systype = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
+	$orientation = ($orientation ? 'L' : 'P');
     $dec = user_price_dec();
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
@@ -59,7 +61,9 @@ function print_list_of_journal_entries()
 						$systype == -1 ? _('All') : $systypes_array[$systype],
                             'to' => ''));
 
-    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
+    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize(), 9, $orientation);
+    if ($orientation == 'L')
+    	recalculate_cols($cols);
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

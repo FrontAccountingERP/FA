@@ -63,6 +63,7 @@ function line_start_focus() {
   global 	$Ajax;
 
   $Ajax->activate('items_table');
+  $Ajax->activate('footer');
   set_focus('_code_id_edit');
 }
 
@@ -91,7 +92,7 @@ if (isset($_GET['UpdatedID']))
 	$trans_no = $_GET['UpdatedID'];
 	$trans_type = ST_BANKPAYMENT;
 
-   	display_notification_centered(_("Payment $trans_no has been modified"));
+   	display_notification_centered(sprintf(_("Payment %d has been modified"), $trans_no));
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
@@ -133,9 +134,6 @@ if (isset($_GET['UpdatedDep']))
 	display_footer_exit();
 }
 
-if (isset($_POST['_date__changed'])) {
-	$Ajax->activate('_ex_rate');
-}
 //--------------------------------------------------------------------------------------------------
 
 function create_cart($type, $trans_no)
@@ -213,8 +211,9 @@ function create_cart($type, $trans_no)
 }
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_POST['Process']))
+function check_trans()
 {
+	global $Refs;
 
 	$input_error = 0;
 
@@ -234,7 +233,7 @@ if (isset($_POST['Process']))
 
 	$amnt_chg = -$_SESSION['pay_items']->gl_items_total()-$_SESSION['pay_items']->original_amount;
 
-	if ($limit != null && ($limit + $amnt_chg < 0))
+	if ($limit !== null && floatcmp($limit, -$amnt_chg) < 0)
 	{
 		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s)."), price_format($limit-$_SESSION['pay_items']->original_amount)));
 		set_focus('code_id');
@@ -284,14 +283,18 @@ if (isset($_POST['Process']))
 	if (!db_has_currency_rates(get_bank_account_currency($_POST['bank_account']), $_POST['date_'], true))
 		$input_error = 1;
 
-	if ($input_error == 1)
-		unset($_POST['Process']);
+	if (in_array(get_post('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
+		display_error(_("Settled amount have to be positive number."));
+		set_focus('person_id');
+		$input_error = 1;
+	}
+	return $input_error;
 }
 
-if (isset($_POST['Process']))
+if (isset($_POST['Process']) && !check_trans())
 {
 	begin_transaction();
-	
+
 	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
 	$new = $_SESSION['pay_items']->order_id == 0;
 
@@ -299,17 +302,18 @@ if (isset($_POST['Process']))
 		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_'], false);
+		$_POST['ref'], $_POST['memo_'], true, input_num('settled_amount', null));
 
+	add_new_exchange_rate(get_bank_account_currency(get_post('bank_account')), get_post('date_'), input_num('_ex_rate'));
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
 	new_doc_date($_POST['date_']);
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
-	
+
 	commit_transaction();
-	
+
 	if ($new)
 		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
 			"AddedID=$trans_no" : "AddedDep=$trans_no");
@@ -327,6 +331,12 @@ function check_item_data()
 	{
 		display_error( _("The amount entered is not a valid number or is less than zero."));
 		set_focus('amount');
+		return false;
+	}
+	if (isset($_POST['_ex_rate']) && input_num('_ex_rate') <= 0)
+	{
+		display_error( _("The exchange rate cannot be zero or a negative number."));
+		set_focus('_ex_rate');
 		return false;
 	}
 
@@ -398,7 +408,7 @@ start_row();
 echo "<td>";
 display_gl_items($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
 	_("Payment Items"):_("Deposit Items"), $_SESSION['pay_items']);
-gl_options_controls();
+gl_options_controls($_SESSION['pay_items']);
 echo "</td>";
 end_row();
 end_table(1);

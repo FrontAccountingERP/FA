@@ -490,7 +490,7 @@ function get_extensions_list($type = null)
 				'Name' => 'name',
 				'Description' => 'Descr',
 				'Type' => 'type',
-				'DefaultStatus'=> 'active',
+				'DefaultStatus' => 'active',
 //				'MenuTabs' => 'tabs',
 //				'MenuEntries' => 'entries',
 				'Encoding' => 'encoding',
@@ -645,7 +645,7 @@ function install_language($pkg_name)
 //
 function install_extension($pkg_name)
 {
-	global $path_to_root, $installed_extensions, $next_extension_id, $Ajax;
+	global $path_to_root, $installed_extensions, $next_extension_id, $Ajax, $db_connections;
 	
 	$pkg = get_pkg_or_list(array('extension', 'theme', 'chart'), $pkg_name);
 	if ($pkg) {
@@ -665,7 +665,7 @@ function install_extension($pkg_name)
 				'package' => $pkg['Package'],
 				'version' => $pkg['Version'],
 				'type' => $pkg['Type'],
-				'active' => true,
+				'active' => @$pkg['DefaultStatus'] == 'active' ? true : false,
 				'path' => $pkg['InstallPath'],
 			);
 //			if (isset($pkg['MenuTabs']))
@@ -676,8 +676,18 @@ function install_extension($pkg_name)
 //				$ext['acc_file'] = $pkg['AccessExtensions'];
 			if (isset($pkg['SqlScript']))
 				$ext['sql'] = $pkg['SqlScript'];
+
 			$local_exts[$ext_id] = $ext;
 			$ret = update_extensions($local_exts);
+
+			if (($ext['active'] == true) && file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
+			{
+				// we need to include the new hooks file to activate extension
+				include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
+				foreach($db_connections as $comp => $db)
+					activate_hooks($ext['package'], $comp);
+			}
+
 			unlink("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('ext_tbl');
 			return $ret;

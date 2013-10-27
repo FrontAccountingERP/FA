@@ -33,7 +33,8 @@ function get_receipt($type, $trans_no)
 {
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) AS Total, 
+				".TB_PREF."debtor_trans.ov_freight_tax) AS Total,
+				".TB_PREF."debtor_trans.ov_discount,
    				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
    				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
    				.TB_PREF."debtors_master.tax_id AS tax_id,
@@ -58,9 +59,11 @@ function print_receipts()
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$orientation = $_POST['PARAM_4'];
 
 	if (!$from || !$to) return;
 
+	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
  	$fno = explode("-", $from);
@@ -77,8 +80,10 @@ function print_receipts()
 
 	$cur = get_company_Pref('curr_default');
 
-	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
-	$rep->SetHeaderType('Header2');
+	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
+   	if ($orientation == 'L')
+    	recalculate_cols($cols);
+ 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
@@ -98,7 +103,6 @@ function print_receipts()
 			$baccount = db_fetch($res);
 			$params['bankaccount'] = $baccount['bank_act'];
 
-			$rep->title = _('RECEIPT');
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
 			$rep->NewPage();
@@ -133,17 +137,24 @@ function print_receipts()
 				$rep->TextColLines(1, 5, $memo, -2);
 			}
 
-			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+			$rep->row = $rep->bottomMargin + (16 * $rep->lineHeight);
 
 			$rep->TextCol(3, 6, _("Total Allocated"), -2);
 			$rep->AmountCol(6, 7, $total_allocated, $dec, -2);
 			$rep->NewLine();
 			$rep->TextCol(3, 6, _("Left to Allocate"), -2);
-			$rep->AmountCol(6, 7, $myrow['Total'] - $total_allocated, $dec, -2);
+			$rep->AmountCol(6, 7, $myrow['Total'] + $myrow['ov_discount'] - $total_allocated, $dec, -2);
+			if (floatcmp($myrow['ov_discount'], 0))
+			{
+				$rep->NewLine();
+				$rep->TextCol(3, 6, _("Discount"), - 2);
+				$rep->AmountCol(6, 7, -$myrow['ov_discount'], $dec, -2);
+			}	
 			$rep->NewLine();
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, _("TOTAL RECEIPT"), - 2);
 			$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
+
 			$words = price_in_words($myrow['Total'], ST_CUSTPAYMENT);
 			if ($words != "")
 			{

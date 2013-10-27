@@ -73,13 +73,14 @@ class cart
 	var $payment;
 	var $payment_terms; // cached payment terms
 	var $credit;
-	
 	// prepayment mode:
 	var $prepaid;		// true for documents issued in prepayment mode
 	var $prep_amount;	// prepayment required for SO, invoiced amount for prepaiament invoice
 	var $sum_paid; 		// sum of all allocated prepayments both to order and related invoices
 	var $alloc; 		// sum of payments allocated to this document
 	var $prepayments = array(); // allocation records for this document
+	var $ex_rate;
+
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -101,7 +102,28 @@ class cart
 		$this->read($type, $trans_no, $prepare_child);
 		$this->cart_id = uniqid('');
 	}
-	
+
+	/*
+		Optional sorting items by stock_id.
+	*/
+	function _cmp_lines($a, $b)
+	{
+		return strcmp($a->stock_id, $b->stock_id);
+	}
+
+	/*
+		Returns items array optionally sorted by item code.
+	*/
+	function get_items()
+	{
+		global $sort_sales_items;
+
+		$items = $this->line_items;
+		if (@$sort_sales_items)
+			uasort($items, array($this, '_cmp_lines'));
+
+		return $items;
+	}
 	//
 	//	Prepare cart to new child document entry, just after initial parent doc read.
 	//
@@ -114,6 +136,9 @@ class cart
 
 		$this->trans_type = $type;
 		$this->reference = $Refs->get_next($this->trans_type);
+		if ($type == ST_CUSTCREDIT)
+		    $this->src_date = $this->document_date;
+
 		$this->document_date = new_doc_date();
 
 		for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
@@ -134,9 +159,6 @@ class cart
 		if ($type == ST_SALESINVOICE) {
 			$this->due_date = get_invoice_duedate($this->payment, $this->document_date);
 		}
-
-		if ($type == ST_CUSTCREDIT)
-		    $this->src_date = $this->document_date;
 
 		$this->src_docs = $this->trans_no;
 		$this->trans_no = 0;

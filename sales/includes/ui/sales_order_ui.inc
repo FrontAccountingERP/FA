@@ -160,7 +160,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 	$id = find_submit('Edit');
 	$has_marked = false;
-	foreach ($order->line_items as $line_no=>$stock_item)
+
+	foreach ($order->get_items() as $line_no=>$stock_item)
 	{
 
 		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
@@ -372,7 +373,6 @@ function display_order_header(&$order, $editable, $date_text)
 			$row = get_customer_to_order($_POST['customer_id']);
 			if ($row['dissallow_invoices'] == 1)
 				$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
-		
 		}
 	}
 
@@ -380,10 +380,10 @@ function display_order_header(&$order, $editable, $date_text)
 
 	table_section(2);
 
-	if (!is_company_currency($order->customer_currency))
+	if (!is_company_currency($order->customer_currency) && in_array($order->trans_type, array(ST_SALESINVOICE, ST_CUSTDELIVERY)))
 	{
 		label_row(_("Customer Currency:"), $order->customer_currency);
-		exchange_rate_display($order->customer_currency, get_company_currency(),
+		exchange_rate_display(get_company_currency(), $order->customer_currency,
 			($editable ? $_POST['OrderDate'] : $order->document_date));
 	}
 
@@ -520,7 +520,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else	// prepare new line
 	{
-		sales_items_list_cells(null,'stock_id', null, false, true);
+		sales_items_list_cells(null,'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');

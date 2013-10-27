@@ -69,7 +69,7 @@ function end_form($breaks=0)
 	hidden('_modified', get_post('_modified', 0));
 	hidden('_token', $_SESSION['csrf_token']);
 	echo "</form>\n";
-	$Ajax->activate('token');
+	$Ajax->activate('_token');
 }
 
 function check_csrf_token()
@@ -313,18 +313,20 @@ function hyperlink_params_separate_td($target, $label, $params)
 
 //--------------------------------------------------------------------------------------------------
 
-function alt_table_row_color(&$k)
+function alt_table_row_color(&$k, $extra_class=null)
 {
+	$classes = $extra_class ? array($extra_class) : array();
 	if ($k == 1)
 	{
-		echo "<tr class='oddrow'>\n";
+		array_push($classes, 'oddrow');
 		$k = 0;
 	}
 	else
 	{
-		echo "<tr class='evenrow'>\n";
+		array_push($classes, 'evenrow');
 		$k++;
 	}
+	echo "<tr class='".implode(' ', $classes)."'>\n";
 }
 
 function table_section_title($msg, $colspan=2)
