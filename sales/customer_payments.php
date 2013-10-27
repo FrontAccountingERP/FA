@@ -18,7 +18,6 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-//include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
@@ -44,22 +43,25 @@ if (isset($_GET['customer_id']))
 	$_POST['customer_id'] = $_GET['customer_id'];
 }
 
-if (!isset($_POST['bank_account']))
-{ // first page call
-	$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+if (!isset($_POST['bank_account'])) { // first page call
+	$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0, get_post('customer_id'));
 
 	if (isset($_GET['SInvoice'])) {
 		//  get date and supplier
 		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
+		$dflt_act = get_default_bank_account($inv['curr_code']);
+		$_POST['bank_account'] = $dflt_act['id'];
 		if($inv) {
-			$_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->read();
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
-					$_POST['amount'] =
-						$_SESSION['alloc']->amount = price_format($_SESSION['alloc']->allocs[$line]->amount);
-					$_SESSION['alloc']->allocs[$line]->current_allocated =
-						$_SESSION['alloc']->allocs[$line]->amount;
+					$un_allocated = $trans->amount - $trans->amount_allocated;
+					if ($un_allocated){
+						$_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
+						$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
+					}
 					break;
 				}
 			}
@@ -73,6 +75,7 @@ if (list_updated('BranchID')) {
 	// when branch is selected via external editor also customer can change
 	$br = get_branch(get_post('BranchID'));
 	$_POST['customer_id'] = $br['debtor_no'];
+	$_SESSION['alloc']->person_id = $br['debtor_no'];
 	$Ajax->activate('customer_id');
 }
 
@@ -95,13 +98,15 @@ if (isset($_GET['AddedID'])) {
 
 	submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
 
+	submenu_view(_("&View this Customer Payment"), ST_CUSTPAYMENT, $payment_no);
+
+	submenu_option(_("Enter Another &Customer Payment"), "/sales/customer_payments.php");
+	submenu_option(_("Enter Other &Deposit"), "/gl/gl_bank.php?NewDeposit=Yes");
+	submenu_option(_("Enter Payment to &Supplier"), "/purchasing/supplier_payment.php");
+	submenu_option(_("Enter Other &Payment"), "/gl/gl_bank.php?NewPayment=Yes");
+	submenu_option(_("Bank Account &Transfer"), "/gl/bank_transfer.php");
+
 	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
-
-//	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
-
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_allocation_inquiry.php?customer_id=", _("Select Another &Customer Transaction for Payment"));
-
-	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 
 	display_footer_exit();
 }
@@ -136,7 +141,7 @@ function can_process()
 		return false;
 	} 
 	
-	if (!get_post('BranchID')) 
+	if (!get_post('BranchID'))
 	{
 		display_error(_("This customer has no branch defined."));
 		set_focus('BranchID');
@@ -193,14 +198,14 @@ function can_process()
 		}	
 	}
 
-	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-	{
-		display_error(_("The exchange rate must be numeric and greater than zero."));
-		set_focus('_ex_rate');
-		return false;
-	}
+//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
+//	{
+//		display_error(_("The exchange rate must be numeric and greater than zero."));
+//		set_focus('_ex_rate');
+//		return false;
+//	}
 
-	if ($_POST['discount'] == "") 
+	if (@$_POST['discount'] == "") 
 	{
 		$_POST['discount'] = 0;
 	}
@@ -213,10 +218,18 @@ function can_process()
 
 	//if ((input_num('amount') - input_num('discount') <= 0)) {
 	if (input_num('amount') <= 0) {
-		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
+		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;
 	}
+
+	if (isset($_POST['bank_amount']) && input_num('bank_amount')<=0)
+	{
+		display_error(_("The entered payment amount is zero or negative."));
+		set_focus('bank_amount');
+		return false;
+	}
+
 	if (!db_has_currency_rates(get_customer_currency($_POST['customer_id']), $_POST['DateBanked'], true))
 		return false;
 
@@ -234,33 +247,10 @@ if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
 }
-if (isset($_POST['_DateBanked_changed'])) {
-  $Ajax->activate('_ex_rate');
-}
-
-//Chaitanya : 13-OCT-2011 - To support Edit feature
-if (isset($_POST['ref']) && $_SESSION['alloc']->trans_no == 0) // added by Joe to fix the browser back button
-{
-	$tno = get_customer_trans_from_ref(ST_CUSTPAYMENT, $_POST['ref']);
-	if ($tno != false)
-	{
-		display_error( _("The entered reference is already in use."));
-		display_footer_exit();
-	}
-}
-$new = $_SESSION['alloc']->trans_no == 0;
 
 //----------------------------------------------------------------------------------------------
 
 if (get_post('AddPaymentItem') && can_process()) {
-	
-	$cust_currency = get_customer_currency($_POST['customer_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
-	$comp_currency = get_company_currency();
-	if ($comp_currency != $bank_currency && $bank_currency != $cust_currency)
-		$rate = 0;
-	else
-		$rate = input_num('_ex_rate');
 
 	new_doc_date($_POST['DateBanked']);
 
@@ -268,14 +258,12 @@ if (get_post('AddPaymentItem') && can_process()) {
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->write();
 
 	unset($_SESSION['alloc']);
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	//meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 	meta_forward($_SERVER['PHP_SELF'], $new_pmt ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
 }
 
@@ -312,24 +300,22 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
 	$old_ref = $myrow["reference"];
-	//$_POST['charge'] =  $myrow[""];
+	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
+	$_POST['charge'] =  price_format($charge);
 	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
+	$_POST["bank_amount"] = price_format($myrow['bank_amount']+$charge);
 	$_POST["discount"] = price_format($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
 
-	if (!isset($_POST['charge'])) // first page call
+	//Prepare allocation cart 
+	if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
+		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
+	else
 	{
-		//Prepare allocation cart 
-		if (isset($_POST['trans_no']) && $_POST['trans_no'] > 0 )
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
-		else
-		{
-			$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
-			$Ajax->activate('alloc_tbl');
-		}
+		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, $_POST['trans_no']);
+		$Ajax->activate('alloc_tbl');
 	}
-
 }
 
 //----------------------------------------------------------------------------------------------
@@ -340,12 +326,15 @@ start_form();
 	hidden('old_ref', $old_ref);
 
 	start_outer_table(TABLESTYLE2, "width=60%", 5);
+
 	table_section(1);
+
+	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 	if ($new)
 		customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	else {
-		label_cells(_("From Customer:"), $_POST['customer_name'], "class='label'");
+		label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
 		hidden('customer_id', $_POST['customer_id']);
 	}
 
@@ -361,6 +350,13 @@ start_form();
 		hidden('BranchID', ANY_NUMERIC);
 	}
 
+	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+		$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+		$_SESSION['alloc']->read();
+		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+		$Ajax->activate('alloc_tbl');
+	}
+
 	read_customer_data();
 
 	set_global_customer($_POST['customer_id']);
@@ -369,55 +365,47 @@ start_form();
 	$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
 	table_section(2);
-	if (!list_updated('bank_account'))
-		$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);	
-
-	//Chaitanya : 13-OCT-2011 - Is AJAX call really needed ???
-	//bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, false);
-	text_row(_("Reference:"), 'ref', null, 20, 40);
-
-	table_section(3);
 
 	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-	$comp_currency = get_company_currency();
-	$cust_currency = get_customer_currency($_POST['customer_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
+	ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
 
-	if ($cust_currency != $bank_currency) {
-		exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
+	table_section(3);
+
+	$comp_currency = get_company_currency();
+	$cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+	if (!$cust_currency)
+		$cust_currency = $comp_currency;
+	$_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST['bank_account']);
+
+	if ($cust_currency != $bank_currency)
+	{
+		amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
 	}
 
-	amount_row(_("Bank Charge:"), 'charge');
+	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
 	end_outer_table(1);
 
-	if ($cust_currency == $bank_currency) {
-		div_start('alloc_tbl');
-		show_allocatable(false);
-		div_end();
-	}
+	div_start('alloc_tbl');
+	show_allocatable(false);
+	div_end();
 
 	start_table(TABLESTYLE, "width=60%");
 
 	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
-	amount_row(_("Amount of Discount:"), 'discount');
 
-	amount_row(_("Amount:"), 'amount');
+	amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+
+	amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
 
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
 
-	if ($cust_currency != $bank_currency)
-		display_note(_("Amount and discount are in customer's currency."));
-
-	br();
-
 	if ($new)
-		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
-	else
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+	else
+		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
 
 	br();
 

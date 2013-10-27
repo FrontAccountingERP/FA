@@ -21,7 +21,11 @@ class SessionManager
 		$https = isset($secure) ? $secure : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
 
 		// Set session cookie options
-		session_set_cookie_params($limit, $path, $domain, $https, true);
+		if (version_compare(PHP_VERSION, '5.2', '<')) // avoid failure on older php versions
+			session_set_cookie_params($limit, $path, $domain, $https);
+		else
+			session_set_cookie_params($limit, $path, $domain, $https, true);
+
 		session_start();
 
 		// Make sure the session hasn't expired, and destroy it if it has
@@ -184,7 +188,7 @@ function write_login_filelog($login, $result)
 	$msg .= "*/\n";
 	$msg .= "\$login_faillog = " .var_export($login_faillog, true). ";\n";
 
-	$filename = $path_to_root."/faillog.php";
+	$filename = $path_to_root."/tmp/faillog.php";
 
 	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
 	{
@@ -367,7 +371,7 @@ include_once($path_to_root . "/config.php");
 get_text_init();
 
 if ($login_delay > 0)
-	@include_once($path_to_root . "/faillog.php");
+	@include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()

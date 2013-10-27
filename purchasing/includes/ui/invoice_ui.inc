@@ -20,6 +20,11 @@ function copy_from_trans(&$supp_trans)
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
 	$_POST['tax_algorithm'] = $supp_trans->tax_algorithm;
+
+	$_POST['_ex_rate'] = $supp_trans->ex_rate;
+	if (isset($supp_trans->tax_overrides))
+	    foreach($supp_trans->tax_overrides as $id => $value)
+		    $_POST['mantax'][$id] = price_format($value);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -34,7 +39,17 @@ function copy_to_trans(&$supp_trans)
  	if (isset($_POST['tax_algorithm']))
  	    $supp_trans->tax_algorithm = $_POST['tax_algorithm'];
 
+	$supp_trans->ex_rate = input_num('_ex_rate', null);
+
 	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
+    if (isset($_POST['mantax'])) {
+		foreach($_POST['mantax'] as $id => $tax) {
+	    	$supp_trans->tax_overrides[$id] = user_numeric($_POST['mantax'][$id]);
+	    	}
+	}
+	else
+		unset($supp_trans->tax_overrides);
+
 	if (count($supp_trans->grn_items) > 0)
 	{
 		foreach ( $supp_trans->grn_items as $grn)
@@ -135,7 +150,7 @@ function invoice_header(&$supp_trans)
 	if ($supplier_currency != $company_currency)
 	{
         label_row(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
-		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
+		exchange_rate_display($company_currency, $supplier_currency, $_POST['tran_date']);
 	}
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);
@@ -159,7 +174,7 @@ function invoice_totals(&$supp_trans)
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-    $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included, 0, true);
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
 

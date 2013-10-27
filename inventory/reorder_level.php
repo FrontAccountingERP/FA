@@ -114,7 +114,4 @@ div_end();
 submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
-if (!@$_GET['popup'])
-	end_page(@$_GET['popup'], false, false);
-
-?>
+end_page();

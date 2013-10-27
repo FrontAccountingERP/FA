@@ -30,7 +30,7 @@ $trans_editors = array(
 // credit invoice
 //	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
 	ST_CUSTCREDIT =>  "/sales/customer_credit_invoice.php?ModifyCredit=%s",
-	//ST_CUSTPAYMENT =>  ,
+	ST_CUSTPAYMENT =>  "/sales/customer_payments.php?trans_no=%d",
 	ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
 
 	//ST_LOCTRANSFER =>  ,

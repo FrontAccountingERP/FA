@@ -126,13 +126,16 @@ function get_customer_trans($trans_id, $trans_type)
 		."cust.name AS DebtorName, cust.address, "
 		."cust.curr_code, "
 		."cust.tax_id,
-		trans.prep_amount>0 as prepaid";
+		trans.prep_amount>0 as prepaid,"
+		."com.memo_";
 
-	if ($trans_type == ST_CUSTPAYMENT) {
+	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
 		// Chaitanya : Added bank_act to support Customer Payment Edit
 		$sql .= ",bank_act,".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
-			".TB_PREF."bank_accounts.account_type AS BankTransType ";
+			".TB_PREF."bank_accounts.account_type AS BankTransType,
+			".TB_PREF."bank_accounts.bank_curr_code,
+			".TB_PREF."bank_trans.amount as bank_amount";
 	}
 
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
@@ -146,11 +149,12 @@ function get_customer_trans($trans_id, $trans_type)
 		.TB_PREF."tax_groups.id AS tax_group_id ";
 	}
 
-	$sql .= " FROM ".TB_PREF."debtor_trans trans LEFT JOIN ".TB_PREF."comments com ON trans.type=com.type AND trans.trans_no=com.id
+	$sql .= " FROM ".TB_PREF."debtor_trans trans
+					LEFT JOIN ".TB_PREF."comments com ON trans.type=com.type AND trans.trans_no=com.id
 					LEFT JOIN ".TB_PREF."shippers ON ".TB_PREF."shippers.shipper_id=trans.ship_via, 
 					".TB_PREF."debtors_master cust";
 
-	if ($trans_type == ST_CUSTPAYMENT) {
+	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
@@ -166,7 +170,7 @@ function get_customer_trans($trans_id, $trans_type)
 		AND trans.type=".db_escape($trans_type)."
 		AND trans.debtor_no=cust.debtor_no";
 
-	if ($trans_type == ST_CUSTPAYMENT) {
+	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_id)."
 			AND ".TB_PREF."bank_trans.type=$trans_type
@@ -189,7 +193,6 @@ function get_customer_trans($trans_id, $trans_type)
 		display_db_error("no debtor trans found for given params", $sql, true);
 		exit;
 	}
-
 	if (db_num_rows($result) > 1) {
 		// can't return multiple
 		if($go_debug)

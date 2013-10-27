@@ -111,7 +111,7 @@ function print_order_status_list()
 
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right',	'right');
 
-	$headers = array(_('Code'),	_('Description'), _('Ordered'),	_('Invoiced'),
+	$headers = array(_('Code'),	_('Description'), _('Ordered'),	_('Delivered'),
 		_('Outstanding'), '');
 
     $params =   array( 	0 => $comments,

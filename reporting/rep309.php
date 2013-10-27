@@ -37,7 +37,7 @@ function getTransactions($category, $from, $to)
 			category.description AS cat_description,
 			item.stock_id,
 			item.description,
-			line.unit_price,
+			line.unit_price * trans.rate AS unit_price,
 			SUM(line.quantity) as quantity
 		FROM ".TB_PREF."stock_master item,
 			".TB_PREF."stock_category category,

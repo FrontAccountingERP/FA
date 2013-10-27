@@ -88,7 +88,9 @@ function print_invoices()
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize(), 9, $orientation);
 	if ($orientation == 'L')
 		recalculate_cols($cols);
-	for ($i = $from; $i <= $to; $i++)
+
+	$range = get_invoice_range($from, $to);
+	while($row = db_fetch($range))
 	{
 			if (!exists_customer_trans(ST_SALESINVOICE, $i))
 				continue;

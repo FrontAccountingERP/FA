@@ -252,14 +252,8 @@ function void_work_order($woid)
 			// clear the production record
 			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$$row['id'];
 			db_query($sql, "Cannot void a wo production");
-			
-			//Post voided entry if not prevoided explicitly
-			$void_entry = get_voided_entry(ST_MANURECEIVE, $row['id']);
-			if ($void_entry)
-				continue;
-			$memo_ = _("Voiding Work Order Trans # ").$woid;
-			add_audit_trail(ST_MANURECEIVE, $row['id'], today(), _("Voided.")."\n".$memo_);
-			add_voided_entry(ST_MANURECEIVE, $row['id'], today(), $memo_);
+
+			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
 		}
 
 		$result = get_work_order_issues($woid);

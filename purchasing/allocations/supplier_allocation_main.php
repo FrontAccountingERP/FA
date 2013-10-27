@@ -69,7 +69,7 @@ function alloc_link($row)
 {
 	return pager_link(_("Allocate"),
 		"/purchasing/allocations/supplier_allocate.php?trans_no="
-			.$row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY );
+			.$row["trans_no"] . "&trans_type=" . $row["type"], ICON_ALLOC);
 }
 
 function amount_left($row)

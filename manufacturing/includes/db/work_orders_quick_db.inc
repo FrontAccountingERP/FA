@@ -66,6 +66,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
         db_query($sql, "The work order requirements could not be added");
 
 		// insert a -ve stock move for each item
+		$UnitCost = get_standard_cost($bom_item["component"]);
 		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
 			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, 0, 1, $UnitCost);
 	}
@@ -80,6 +81,10 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 			$cost_adjust = true;
 	}
 
+
+	//Negative Stock Handling First; Prior to add_stock_move
+	if ($cost_adjust)
+		adjust_deliveries($stock_id, get_standard_cost($stock_id), $date_);
 
 	// -------------------------------------------------------------------------
 

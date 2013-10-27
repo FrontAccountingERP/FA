@@ -33,10 +33,10 @@ $company_currency = get_company_currency();
 $show_currencies = false;
 $show_both_amounts = false;
 
-if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency))
+if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['curr_code'] != $company_currency))
 	$show_currencies = true;
 
-if ($receipt['bank_curr_code'] != $receipt['SupplierCurrCode']) 
+if ($receipt['bank_curr_code'] != $receipt['curr_code']) 
 {
 	$show_currencies = true;
 	$show_both_amounts = true;
@@ -57,7 +57,7 @@ end_row();
 start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
+label_cells(_("Amount"), number_format2(-$receipt['bank_amount'], user_price_dec()), "class='tableheader2'");
 if ($receipt['ov_discount'] != 0)
 	label_cells(_("Discount"), number_format2(-$receipt['ov_discount']*$receipt['rate'], user_price_dec()), "class='tableheader2'");
 else
@@ -66,7 +66,7 @@ end_row();
 start_row();
 if ($show_currencies) 
 {
-	label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tableheader2'");
+	label_cells(_("Supplier's Currency"), $receipt['curr_code'], "class='tableheader2'");
 }
 if ($show_both_amounts)
 	label_cells(_("Amount"), number_format2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");

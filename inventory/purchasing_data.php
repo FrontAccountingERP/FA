@@ -230,7 +230,5 @@ end_table(1);
 submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
-if (!@$_GET['popup'])
-	end_page(@$_GET['popup'], false, false);
-
+end_page();
 ?>

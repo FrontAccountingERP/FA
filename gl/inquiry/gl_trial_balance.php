@@ -46,7 +46,12 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 
-    date_cells(_("From:"), 'TransFromDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+	$date = today();
+	if (!isset($_POST['TransToDate']))
+		$_POST['TransToDate'] = end_month($date);
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = add_days(end_month($date), -$_SESSION["wa_current_user"]->prefs->transaction_days());
+    date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
@@ -64,10 +69,10 @@ function gl_inquiry_controls()
 
 function display_trial_balance($type, $typename)
 {
-	global $path_to_root, $clear_trial_balance_opening;
-	
-	global $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
-	$printtitle = 0; //Flag for printing type name		
+	global $path_to_root, $clear_trial_balance_opening,
+		 $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
+
+	$printtitle = 0; //Flag for printing type name
 
 	$k = 0;
 

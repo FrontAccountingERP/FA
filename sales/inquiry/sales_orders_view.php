@@ -109,7 +109,7 @@ function check_overdue($row)
 		return (date1_greater_date2(Today(), sql2date($row['delivery_date'])));
 	else
 		return ($row['type'] == 0
-			&& date1_greater_date2(Today(), sql2date($row['ord_date']))
+			&& date1_greater_date2(Today(), sql2date($row['delivery_date']))
 			&& ($row['TotDelivered'] < $row['TotQuantity']));
 }
 
@@ -128,7 +128,7 @@ function prt_link($row)
 function edit_link($row) 
 {
 	global $page_nested;
-	
+
 	if ($page_nested)
 		return '';
 	global $trans_type;
@@ -261,6 +261,7 @@ if($show_dates) {
 	start_row();
 }
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, true);
+
 if (!@$_GET['popup'])
 	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
 if ($trans_type == ST_SALESQUOTE)

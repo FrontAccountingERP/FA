@@ -45,7 +45,7 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	$sql = "UPDATE ".TB_PREF."exchange_rates SET rate_buy=$buy_rate, rate_sell=".db_escape($sell_rate)
 	." WHERE curr_code=".db_escape($curr_code)." AND date_='$date'";
 				
-	db_query($sql, "could not add exchange rate for $curr_code");				
+	db_query($sql, "could not add exchange rate for $curr_code");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -60,7 +60,18 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	$sql = "INSERT INTO ".TB_PREF."exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (".db_escape($curr_code).", '$date', ".db_escape($buy_rate)
 		.", ".db_escape($sell_rate).")";
-	db_query($sql, "could not add exchange rate for $curr_code");				
+	db_query($sql, "could not add exchange rate for $curr_code");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function add_new_exchange_rate($curr_code, $date_, $ex_rate)
+{
+	if (is_company_currency($curr_code) || !$ex_rate)
+		return;
+
+	if (!get_date_exchange_rate($curr_code, $date_))
+		add_exchange_rate($curr_code, $date_, $ex_rate, $ex_rate);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -68,11 +79,15 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 function delete_exchange_rate($rate_id)
 {
 	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
-	db_query($sql, "could not delete exchange rate $rate_id");		
+	db_query($sql, "could not delete exchange rate $rate_id");
 }
 
 //-----------------------------------------------------------------------------
 //	Retrieve exchange rate as of date $date from external source (usually inet)
+//
+//	Exchange rate for currency revaluation purposes is defined in FA as home_currency/curr_b ratio i.e.
+//
+//	amount [home] = amount [curr] * ex_rate
 //
 function retrieve_exrate($curr_b, $date)
 {
@@ -88,6 +103,11 @@ function retrieve_exrate($curr_b, $date)
 
 function get_extern_rate($curr_b, $provider = 'ECB', $date) 
 {
+	global	$path_to_root;
+
+	if ($date != Today())	// no historical rates available
+		return 0;
+
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
 	{
@@ -118,7 +138,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	 	do {
 	       $ch = curl_init();
     	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
-	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
+	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
     	   curl_setopt ($ch, CURLOPT_HEADER, 0);
 	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 	       // prevent warning while save_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
@@ -134,9 +154,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	   
 	} else {
 		$contents = url_get_contents("http://".$site.$filename);
-	}
-	if (!$contents) {
-		display_warning(sprintf(_("Cannot retrieve currency rate from %s page. Please set the rate manually."), $provider));
 	}
 	if ($provider == 'ECB')
 	{

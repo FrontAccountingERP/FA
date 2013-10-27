@@ -86,6 +86,7 @@ class user_prefs
 				$this->startup_tab = "orders";
 			}
 			$this->transaction_days = $user['transaction_days'];
+
 			if (!file_exists("$path_to_root/themes/$this->theme"))
 				$this->theme = "default";
 		}

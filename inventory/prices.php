@@ -50,7 +50,6 @@ if (!isset($_POST['curr_abrev']))
 }
 
 //---------------------------------------------------------------------------------------------------
-
 $action = $_SERVER['PHP_SELF'];
 if (@$_GET['popup'])
 	$action .= "?stock_id=".get_post('stock_id');
@@ -212,6 +211,5 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();
-if (!@$_GET['popup'])
-	end_page(@$_GET['popup'], false, false);
+end_page();
 ?>

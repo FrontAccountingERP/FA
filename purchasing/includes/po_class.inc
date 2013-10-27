@@ -35,8 +35,10 @@ class purch_order
 	var $tax_algorithm;
 	var $stored_algorithm; // copy to find the change after invoice in processed
 	var $terms;
-	
+	var $ex_rate;
+
 	var $reference;
+	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry (direct invoice)
 	
 	var $prep_amount = 0; // prepayment required
 	var $alloc; // sum of payments allocated
@@ -153,8 +155,13 @@ class purch_order
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 	    if ($this->curr_code == 'CHF') {
 			$val = $taxes['1']['Value'];
-			$taxes['1']['Value'] = (floatval((intval(round(($val*20),0)))/20));
-		} 
+			$val1 = (floatval((intval(round(($val*20),0)))/20));
+			$taxes['1']['Value'] = $val1;
+		}
+		foreach($this->tax_overrides as $id => $value) // add values entered manually
+		{
+			$taxes[$id]['Override'] = $value;
+		}
 		return $taxes;
 	}
 

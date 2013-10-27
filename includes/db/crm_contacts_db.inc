@@ -41,7 +41,7 @@ function add_crm_person($ref, $name, $name2, $address, $phone, $phone2, $fax, $e
 }
 
 function update_crm_person($id, $ref, $name, $name2, $address, $phone, $phone2, $fax, $email, 
-	$lang, $notes, $cat_ids, $entity=null)
+	$lang, $notes, $cat_ids, $entity=null, $type=null)
 {
 	$sql = "UPDATE ".TB_PREF."crm_persons SET "
 		  ."ref=".db_escape($ref) . ", "
@@ -60,7 +60,7 @@ function update_crm_person($id, $ref, $name, $name2, $address, $phone, $phone2, 
 
 	$ret = db_query($sql, "Can't update crm person");
 	if ($ret) {
-		if(!update_person_contacts($id, $cat_ids, $entity))
+		if(!update_person_contacts($id, $cat_ids, $entity, $type))
 			return null;
 	}
 	commit_transaction();
@@ -147,9 +147,11 @@ function get_person_contacts($id)
 	return $contacts;
 }
 
-function update_person_contacts($id, $cat_ids, $entity_id=null) 
+function update_person_contacts($id, $cat_ids, $entity_id=null, $type=null)
 {
 	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE person_id=".db_escape($id);
+	if ($type)
+		$sql .= " AND type=".db_escape($type);
 
 	begin_transaction();
 
@@ -163,6 +165,8 @@ function update_person_contacts($id, $cat_ids, $entity_id=null)
 		$sql = "INSERT INTO ".TB_PREF."crm_contacts (person_id,type,action,entity_id)
 			SELECT ".db_escape($id).",t.type, t.action,".db_escape($entity_id, true)."
 			FROM ".TB_PREF."crm_categories t WHERE t.id=".implode(' OR t.id=', $cat_ids);
+		if ($type)
+			$sql .= " AND t.type=".db_escape($type);
 		$ret = db_query($sql, "Can't update person contacts");
 	}
 	commit_transaction();
@@ -171,10 +175,14 @@ function update_person_contacts($id, $cat_ids, $entity_id=null)
 
 function delete_entity_contacts($class, $entity)
 {
+	delete_crm_contacts(null, $class, $entity);
+	// cleanup
 	$res = get_crm_persons($class, null, $entity, null, true);
-
 	while($person = db_fetch($res)) {
-		delete_crm_person($person['id'], true);
+		$rels = get_person_contacts($person['id']);
+		if (count($rels) == 0) {
+			delete_crm_person($person['id']);
+		}
 	}
 }
 
@@ -261,17 +269,20 @@ function delete_crm_contact($id)
 /*
 	Delete selected contacts for given person
 */
-function delete_crm_contacts($person_id, $type = null, $entity_id=null, $action = null)
+function delete_crm_contacts($person_id = null, $type = null, $entity_id=null, $action = null)
 {
-	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE person_id=".db_escape($person_id);
-	if ($type)
-		$sql .= ' AND type='.db_escape($type);
-	if ($entity_id)
-		$sql .= ' AND entity_id='.db_escape($entity_id);
-	if ($action)
-		$sql .= ' AND action='.db_escape($action);
+	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE ";
 
-	return db_query($sql, "Can't delete crm contact");
+	if ($person_id)
+		$where[] = 'person_id='.db_escape($person_id);
+	if ($type)
+		$where[] = 'type='.db_escape($type);
+	if ($entity_id)
+		$where[] = 'entity_id='.db_escape($entity_id);
+	if ($action)
+		$where[] = 'action='.db_escape($action);
+
+	return db_query($sql.implode(' AND ', $where), "Can't delete crm contact");
 }
 
 /*

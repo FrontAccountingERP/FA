@@ -32,6 +32,8 @@ function write_sales_invoice(&$invoice)
 
 	$customer = get_customer($invoice->customer_id);
 
+	add_new_exchange_rate($customer['curr_code'], $date_, $invoice->ex_rate);
+
 	// offer price values without freight costs
 	$items_total = $invoice->get_items_total_dispatch();
 	$freight_tax = $invoice->get_shipping_tax();
@@ -196,8 +198,8 @@ function write_sales_invoice(&$invoice)
 				_('Cash invoice').' '.$invoice_no);
 			add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no);
 
-			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $amount);
-			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $amount);
+			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no);
+			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno);
 		}
 	}
 //_vd($allocs);
@@ -242,7 +244,7 @@ function void_sales_invoice($type, $type_no)
 		$deliveries = get_sales_parent_numbers($type, $type_no);
 
 		if ($deliveries !== 0) {
-			if (count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
+			if ($type == ST_SALESINVOICE && count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
 			{
 				void_sales_delivery(ST_CUSTDELIVERY, $deliveries[0], false);
 				$date_ = Today();
@@ -252,7 +254,7 @@ function void_sales_invoice($type, $type_no)
 			else
 			{
 				$srcdetails = get_sales_parent_lines($type, $type_no);
-					while ($row = db_fetch($srcdetails)) {
+				while ($row = db_fetch($srcdetails)) {
 					update_parent_line($type, $row['id'], -$row['quantity']);
 				}
 			}
