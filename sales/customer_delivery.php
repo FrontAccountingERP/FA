@@ -94,16 +94,16 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
 
 	if ($ord->count_items() == 0) {
-		echo "<br><center><b>" . _("This order has no items. There is nothing to delivery.") .
-			"</center></b>";
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different sales order to delivery"), "OutstandingOnly=1");
+		echo "<br><center><b>" . _("This order has no items. There is nothing to delivery.") .
+			"</center></b>";
 		display_footer_exit();
-	} else if (!$ord->prep_amount) {
-		echo "<br><center><b>"._("This prepayment order is not yet ready for delivery due to insufficient amount received.")
-			."</center></b>";
+	} else if (!$ord->is_released()) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",_("Select a different sales order to delivery"),
 			"OutstandingOnly=1");
+		echo "<br><center><b>"._("This prepayment order is not yet ready for delivery due to insufficient amount received.")
+			."</center></b>";
 		display_footer_exit();
 	}
  	// Adjust Shipping Charge based upon previous deliveries TAM

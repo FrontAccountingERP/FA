@@ -105,7 +105,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ship_via=".db_escape($ship_via).", alloc=$AllocAmt,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
 		payment_terms=".db_escape($payment_terms, true).",
-		tax_included=".db_escape($tax_included)."
+		tax_included=".db_escape($tax_included).",
 		prep_amount =".db_escape($prep_amount)."
 		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
 	}

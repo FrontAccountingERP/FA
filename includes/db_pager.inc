@@ -117,6 +117,11 @@ class db_pager {
 					}
 			}
 		}
+		//_vd($this->select);
+		//_vd($this->from);
+		//_vd($this->where);
+		//_vd($this->group);
+		//_vd($this->order);
 	}
 	//
 	//	Set additional constraint on record set
@@ -203,7 +208,7 @@ class db_pager {
 		} else 
 		  return false;
 		return true;
-	}	    
+	}
 	//
 	//	Calculates page numbers for html controls.
 	//

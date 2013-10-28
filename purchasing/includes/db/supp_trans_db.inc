@@ -214,7 +214,7 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 			$sql = $sql2;
 	} 
 	elseif (!isset($filter) || $filter == ALL_TEXT || $filter == '6') {
-		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr";
+		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr WHERE 1";
    	}
 
    	if (isset($filter) && $filter != ALL_TEXT)

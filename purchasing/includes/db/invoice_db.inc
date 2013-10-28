@@ -200,12 +200,15 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 				$taxitem['tax_type_id'], $taxitem['rate'], $supp_trans->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
-			if ($trans_type == ST_SUPPCREDIT)
-				$taxitem['Value'] = -$taxitem['Value'];
-			$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
-				$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
-				$supp_trans->supplier_id,
-				"A general ledger transaction for the tax amount could not be added");
+			if (isset($taxitem['purchasing_gl_code']))
+			{
+				if ($trans_type == ST_SUPPCREDIT)
+					$taxitem['Value'] = -$taxitem['Value'];
+				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
+					$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
+					$supp_trans->supplier_id,
+					"A general ledger transaction for the tax amount could not be added");
+			}
 		}
     }
     if ($trans_type == ST_SUPPCREDIT)
@@ -216,6 +219,8 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 		-($invoice_items_total +  $item_added_tax + $supp_trans->ov_discount),
 		$supp_trans->supplier_id,
 		"The general ledger transaction for the control total could not be added");
+
+	$to_allocate = ($invoice_items_total + $item_added_tax + $supp_trans->ov_discount);
 
     foreach ($supp_trans->gl_codes as $entered_gl_code)
     {

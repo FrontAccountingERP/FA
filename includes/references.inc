@@ -123,17 +123,19 @@ function is_new_reference($ref, $type, $trans_no=0)
 	}
 
 	if ($db_type != null) {
-		$sql = "SELECT $db_ref FROM $db_name 
+		$sql = "SELECT $db_ref FROM $db_name tbl
 			LEFT JOIN ".TB_PREF."voided v ON 
-				$db_name.$db_type=v.type AND $db_name.$db_trans=v.id
-			WHERE $db_name.$db_ref=$ref AND ISNULL(v.id)
-				AND $db_name.$db_type=$type";
+				tbl.$db_type=v.type AND tbl.$db_trans=v.id
+			WHERE $db_ref=$ref AND ISNULL(v.id)
+				AND tbl.$db_type=$type";
 	} else {
-		$sql = "SELECT $db_ref FROM $db_name 
+		$sql = "SELECT $db_ref ref FROM $db_name tbl
 			LEFT JOIN ".TB_PREF."voided v ON 
-				v.type=$type AND $db_name.$db_trans=v.id
+				v.type=$type AND tbl.$db_trans=v.id
 			WHERE $db_ref=$ref AND ISNULL(v.id)";
 	}
+	if ($trans_no)
+			$sql .= " AND tbl.`$db_trans` != ".db_escape($trans_no);
 
 	$result = db_query($sql, "could not test for unique reference");
 

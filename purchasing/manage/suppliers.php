@@ -132,6 +132,7 @@ function supplier_settings(&$supplier_id)
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
 	if (!$supplier_id) {
 		table_section_title(_("Contact Data"));
+		text_row(_("Contact Person:"), 'contact', null, 42, 40);
 		text_row(_("Phone Number:"), 'phone', null, 32, 30);
 		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
 		table_section_title(_("Contact Data"));
