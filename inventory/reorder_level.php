@@ -21,8 +21,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Reorder Levels"));
+page(_($help_context = "Reorder Levels"));
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 
@@ -39,14 +38,14 @@ if (list_updated('stock_id'))
 //------------------------------------------------------------------------------------
 
 $action = $_SERVER['PHP_SELF'];
-if (@$_GET['popup'])
+if ($page_nested)
 	$action .= "?stock_id=".get_post('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
@@ -73,9 +72,8 @@ $k=0; //row colour counter
 
 $result = get_loc_details($_POST['stock_id']);
 
-if (@$_GET['popup'])
+if ($page_nested)
 {
-	hidden('_tabs_sel', get_post('_tabs_sel'));
 	hidden('popup', @$_GET['popup']);
 }
 

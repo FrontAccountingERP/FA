@@ -21,8 +21,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Supplier Purchasing Data"));
+page(_($help_context = "Supplier Purchasing Data"));
 
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -107,14 +106,14 @@ if (list_updated('stock_id'))
 //--------------------------------------------------------------------------------------------------
 
 $action = $_SERVER['PHP_SELF'];
-if (@$_GET['popup'])
+if ($page_nested)
 	$action .= "?stock_id=".get_post('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	//Chaitanya : All items can be purchased
@@ -196,9 +195,8 @@ if ($Mode =='Edit')
 
 br();
 hidden('selected_id', $selected_id);
-if (@$_GET['popup'])
+if ($page_nested)
 {
-	hidden('_tabs_sel', get_post('_tabs_sel'));
 	hidden('popup', @$_GET['popup']);
 }
 

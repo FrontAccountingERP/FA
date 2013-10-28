@@ -23,13 +23,10 @@ include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-{
-	$js = "";
-	if ($use_popup_windows)
-		$js .= get_js_open_window(900, 500);
-	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
-}
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 
@@ -85,14 +82,14 @@ if (list_updated('stock_id'))
 //-----------------------------------------------------------------------------------------
 
 $action = $_SERVER['PHP_SELF'];
-if (@$_GET['popup'])
+if ($page_nested)
 	$action .= "?stock_id=".get_post('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	//echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
@@ -117,9 +114,8 @@ $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
 amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
 
-if (@$_GET['popup'])
+if ($page_nested)
 {
-	hidden('_tabs_sel', get_post('_tabs_sel'));
 	hidden('popup', @$_GET['popup']);
 }
 if ($myrow["mb_flag"]=='M')

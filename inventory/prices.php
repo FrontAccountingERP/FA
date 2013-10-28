@@ -22,8 +22,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Inventory Item Sales prices"));
+page(_($help_context = "Inventory Item Sales prices"));
 
 //---------------------------------------------------------------------------------------------------
 
@@ -51,14 +50,14 @@ if (!isset($_POST['curr_abrev']))
 
 //---------------------------------------------------------------------------------------------------
 $action = $_SERVER['PHP_SELF'];
-if (@$_GET['popup'])
+if ($page_nested)
 	$action .= "?stock_id=".get_post('stock_id');
 start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
@@ -183,9 +182,8 @@ if ($Mode == 'Edit')
 }
 
 hidden('selected_id', $selected_id);
-if (@$_GET['popup'])
+if ($page_nested)
 {
-	hidden('_tabs_sel', get_post('_tabs_sel'));
 	hidden('popup', @$_GET['popup']);
 }
 div_start('price_details');
