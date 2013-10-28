@@ -57,7 +57,12 @@ class db_pager {
 	var $key;	// key field name
 	
 	//  db_pager constructor
-	//  accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
+	//  accepts $sql query either as:
+	//  a. string in form 'SELECT field_list FROM table_joins [WHERE conditions [GROUP group_list [ORDER order_list]]]'
+	//		- if WHERE keyword is used in table_joins, WHERE conditions is obligatory
+	//  b. associative array using select, where, group and order keys ex :
+	//  	array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
+	//
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $table = null, $page_len=0) 
 	{
@@ -68,12 +73,8 @@ class db_pager {
 	 	$this->set_sql($sql);
 	}
 	//
-	//	Parse base sql select query.
-	//	or use an associative array.
-	//  Usefull is the query can't be split correctly (using subquery for example).
-	//  The associative array shouldn't contain the keyword itself.
-	//  ex :
-	//  array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
+	//	Parse base sql select query	or use an associative array.
+	//
 	function set_sql($sql)
 	{
 		if ($sql != $this->sql) {
@@ -88,27 +89,32 @@ class db_pager {
 				}
 				else {
 					// parse the query
+					$parts = preg_split('/\sFROM\s/si', $sql, 2);
+					if (count($parts) == 2) {
+						$this->select = $parts[0];
+						$sql = $parts[1];
+					} else {
+						if ($go_debug)
+							display_error("Invalid sql input for db_pager");
+					}
+
+					$parts = preg_split('/\sWHERE(?!.*WHERE.*)\s/si', $sql, 2); // last occurence
+					if(count($parts) == 2) {
+						$this->from = $parts[0];
+						$sql = $parts[1];
+
 						$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->order = $parts[1];
-					}
+						if(count($parts) == 2) {
+							$sql = $parts[0];
+							$this->order = $parts[1];
+						}
 						$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->group = $parts[1];
+						if(count($parts) == 2) {
+							$sql = $parts[0];
+							$this->group = $parts[1];
+						}
+						$this->where = $sql;
 					}
-						$parts = preg_split('/\sWHERE\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->where = $parts[1];
-					}
-						$parts = preg_split('/\sFROM\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->from = $parts[1];
-					}
-					$this->select = $sql;
 			}
 		}
 	}
