@@ -13,7 +13,7 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Inventory Item Status"));
+page(_($help_context = "Inventory Item Status"), @$_GET['popup']);
 
 if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
