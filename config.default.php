@@ -180,7 +180,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$allow_negative_prices = 1;
 
 	/* Show menu category icons in core themes */
-	$show_menu_category_icons = 0;
+	$show_menu_category_icons = 1;
 	
 	// Internal configurable variables
 	//-----------------------------------------------------------------------------------
