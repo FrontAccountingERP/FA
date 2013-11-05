@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-05 14:17+0200\n"
+"POT-Creation-Date: 2013-11-05 17:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,7 +149,7 @@ msgstr ""
 #: sales/manage/recurrent_invoices.php:130 sales/manage/sales_areas.php:103
 #: sales/manage/sales_groups.php:99 sales/manage/sales_people.php:119
 #: sales/manage/sales_points.php:99 sales/manage/sales_types.php:121
-#: sales/inquiry/customer_inquiry.php:198
+#: sales/inquiry/customer_inquiry.php:192
 #: sales/inquiry/sales_deliveries_view.php:154
 #: sales/inquiry/sales_orders_view.php:128
 #: sales/includes/ui/sales_credit_ui.inc:197
@@ -204,7 +204,7 @@ msgstr ""
 #: dimensions/view/view_dimension.php:55 gl/bank_account_reconcile.php:234
 #: gl/inquiry/bank_inquiry.php:70 gl/inquiry/gl_account_inquiry.php:126
 #: gl/inquiry/journal_inquiry.php:127 gl/inquiry/journal_inquiry.php:140
-#: includes/ui/allocation_cart.inc:263
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
 #: inventory/inquiry/stock_movements.php:82
 #: manufacturing/search_work_orders.php:159
 #: manufacturing/includes/manufacturing_ui.inc:157
@@ -227,8 +227,8 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:94
 #: sales/view/view_sales_order.php:96 sales/view/view_sales_order.php:129
 #: sales/view/view_sales_order.php:161
-#: sales/inquiry/customer_allocation_inquiry.php:144
-#: sales/inquiry/customer_inquiry.php:225
+#: sales/inquiry/customer_allocation_inquiry.php:145
+#: sales/inquiry/customer_inquiry.php:218
 msgid "#"
 msgstr ""
 
@@ -501,7 +501,7 @@ msgstr ""
 
 #: admin/company_preferences.php:165 admin/shipping_companies.php:142
 #: includes/ui/contacts_view.inc:109 inventory/manage/locations.php:202
-#: sales/manage/customers.php:231 sales/includes/ui/sales_order_ui.inc:633
+#: sales/manage/customers.php:234 sales/includes/ui/sales_order_ui.inc:633
 msgid "Address:"
 msgstr ""
 
@@ -516,7 +516,7 @@ msgstr ""
 
 #: admin/company_preferences.php:169 includes/ui/contacts_view.inc:104
 #: purchasing/manage/suppliers.php:159 sales/manage/customer_branches.php:262
-#: sales/manage/customers.php:254
+#: sales/manage/customers.php:257
 msgid "Fax Number:"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgid "Official Company Number:"
 msgstr ""
 
 #: admin/company_preferences.php:175 purchasing/manage/suppliers.php:94
-#: sales/manage/customers.php:233
+#: sales/manage/customers.php:236
 msgid "GSTNo:"
 msgstr ""
 
@@ -629,7 +629,7 @@ msgstr ""
 #: admin/forms_setup.php:61 admin/gl_setup.php:226 admin/inst_chart.php:74
 #: admin/inst_lang.php:103 admin/inst_module.php:137 admin/inst_module.php:155
 #: admin/inst_module.php:198 admin/inst_theme.php:96
-#: dimensions/dimension_entry.php:293 gl/gl_bank.php:408 gl/gl_budget.php:135
+#: dimensions/dimension_entry.php:293 gl/gl_bank.php:413 gl/gl_budget.php:135
 #: gl/manage/gl_quick_entries.php:60 gl/includes/ui/gl_bank_ui.inc:277
 #: gl/includes/ui/gl_journal_ui.inc:221 includes/ui/db_pager_view.inc:174
 #: includes/ui/simple_crud_class.inc:56 includes/ui/simple_crud_class.inc:227
@@ -799,7 +799,8 @@ msgstr ""
 #: admin/create_coy.php:344 admin/inst_chart.php:68 admin/inst_chart.php:70
 #: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:126
 #: admin/inst_theme.php:91 admin/inst_theme.php:93 admin/inst_upgrade.php:149
-#: gl/manage/gl_account_types.php:190 includes/ui/allocation_cart.inc:286
+#: gl/manage/gl_account_types.php:190 includes/ui/allocation_cart.inc:313
+#: includes/ui/mk.allocation_cart.inc:314
 msgid "None"
 msgstr ""
 
@@ -1614,8 +1615,8 @@ msgstr ""
 #: reporting/rep710.php:86 reporting/reports_main.php:327
 #: reporting/reports_main.php:491 reporting/includes/doctext.inc:140
 #: reporting/includes/doctext.inc:181 reporting/includes/doctext.inc:200
-#: sales/inquiry/customer_allocation_inquiry.php:143
-#: sales/inquiry/customer_inquiry.php:224
+#: sales/inquiry/customer_allocation_inquiry.php:144
+#: sales/inquiry/customer_inquiry.php:217
 msgid "Type"
 msgstr ""
 
@@ -1809,7 +1810,7 @@ msgstr ""
 
 #: admin/security_roles.php:180 gl/manage/gl_accounts.php:199
 #: inventory/manage/items.php:433 purchasing/manage/suppliers.php:289
-#: sales/manage/customers.php:326
+#: sales/manage/customers.php:329
 msgid "Show inactive:"
 msgstr ""
 
@@ -1931,7 +1932,7 @@ msgstr ""
 
 #: admin/shipping_companies.php:140 includes/ui/contacts_view.inc:103
 #: inventory/manage/locations.php:205 purchasing/manage/suppliers.php:130
-#: sales/manage/customer_branches.php:261 sales/manage/customers.php:253
+#: sales/manage/customer_branches.php:261 sales/manage/customers.php:256
 msgid "Secondary Phone Number:"
 msgstr ""
 
@@ -2070,7 +2071,7 @@ msgstr ""
 #: admin/view_print_transaction.php:43 admin/view_print_transaction.php:45
 #: admin/view_print_transaction.php:129 includes/ui/ui_controls.inc:188
 #: purchasing/inquiry/po_search_completed.php:113
-#: purchasing/inquiry/po_search.php:93 sales/inquiry/customer_inquiry.php:209
+#: purchasing/inquiry/po_search.php:93 sales/inquiry/customer_inquiry.php:202
 #: sales/inquiry/sales_deliveries_view.php:160
 #: sales/inquiry/sales_orders_view.php:119
 msgid "Print"
@@ -2119,8 +2120,8 @@ msgstr ""
 #: dimensions/inquiry/search_dimensions.php:128
 #: dimensions/view/view_dimension.php:55 gl/bank_account_reconcile.php:235
 #: gl/inquiry/bank_inquiry.php:70 gl/inquiry/journal_inquiry.php:131
-#: gl/view/bank_transfer_view.php:86 gl/view/gl_deposit_view.php:75
-#: gl/view/gl_payment_view.php:73 gl/view/gl_trans_view.php:35
+#: gl/view/bank_transfer_view.php:86 gl/view/gl_deposit_view.php:80
+#: gl/view/gl_payment_view.php:78 gl/view/gl_trans_view.php:35
 #: includes/ui/contacts_view.inc:41 inventory/inquiry/stock_movements.php:82
 #: inventory/view/view_adjustment.php:44 inventory/view/view_transfer.php:44
 #: manufacturing/search_work_orders.php:160
@@ -2149,8 +2150,8 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:95
 #: sales/view/view_dispatch.php:85 sales/view/view_invoice.php:84
 #: sales/view/view_receipt.php:39 sales/view/view_sales_order.php:81
-#: sales/inquiry/customer_allocation_inquiry.php:145
-#: sales/inquiry/customer_inquiry.php:227
+#: sales/inquiry/customer_allocation_inquiry.php:146
+#: sales/inquiry/customer_inquiry.php:220
 #: sales/inquiry/sales_deliveries_view.php:184
 #: sales/includes/ui/sales_credit_ui.inc:85
 #: sales/includes/ui/sales_credit_ui.inc:87
@@ -2166,8 +2167,8 @@ msgstr ""
 #: gl/inquiry/journal_inquiry.php:128 gl/view/accrual_trans.php:52
 #: gl/view/bank_transfer_view.php:83 gl/view/gl_deposit_view.php:68
 #: gl/view/gl_payment_view.php:66 gl/view/gl_trans_view.php:36
-#: includes/ui/allocation_cart.inc:263 includes/ui/ui_view.inc:547
-#: inventory/inquiry/stock_movements.php:84
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
+#: includes/ui/ui_view.inc:547 inventory/inquiry/stock_movements.php:84
 #: inventory/view/view_adjustment.php:45 inventory/view/view_transfer.php:47
 #: manufacturing/search_work_orders.php:166
 #: manufacturing/work_order_entry.php:419
@@ -2194,8 +2195,8 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:96
 #: sales/view/view_credit.php:69 sales/view/view_sales_order.php:96
 #: sales/view/view_sales_order.php:129 sales/view/view_sales_order.php:161
-#: sales/inquiry/customer_allocation_inquiry.php:147
-#: sales/inquiry/customer_inquiry.php:228
+#: sales/inquiry/customer_allocation_inquiry.php:148
+#: sales/inquiry/customer_inquiry.php:221
 msgid "Date"
 msgstr ""
 
@@ -2229,8 +2230,7 @@ msgstr ""
 #: manufacturing/work_order_entry.php:451
 #: manufacturing/work_order_release.php:103
 #: purchasing/includes/ui/invoice_ui.inc:174 purchasing/po_entry_items.php:529
-#: purchasing/supplier_payment.php:326 sales/customer_payments.php:406
-#: sales/customer_payments.php.sav:413
+#: purchasing/supplier_payment.php:324 sales/customer_payments.php:399
 msgid "Memo:"
 msgstr ""
 
@@ -2261,7 +2261,7 @@ msgstr ""
 #: gl/manage/revaluate_currencies.php:53
 #: manufacturing/work_order_add_finished.php:98
 #: manufacturing/work_order_costs.php:83 purchasing/po_receive_items.php:174
-#: purchasing/supplier_payment.php:183 sales/customer_credit_invoice.php:91
+#: purchasing/supplier_payment.php:185 sales/customer_credit_invoice.php:91
 #: sales/sales_order_entry.php:350 sales/manage/recurrent_invoices.php:41
 #: sales/manage/recurrent_invoices.php:46
 #: sales/manage/recurrent_invoices.php:51
@@ -2269,16 +2269,15 @@ msgid "The entered date is invalid."
 msgstr ""
 
 #: admin/void_transaction.php:254 gl/accruals.php:38 gl/bank_transfer.php:121
-#: gl/gl_bank.php:265 gl/gl_journal.php:162
+#: gl/gl_bank.php:266 gl/gl_journal.php:162
 #: gl/manage/revaluate_currencies.php:59 inventory/adjustments.php:114
 #: inventory/transfers.php:109 manufacturing/work_order_add_finished.php:104
 #: manufacturing/work_order_costs.php:89
 #: manufacturing/work_order_entry.php:160
 #: manufacturing/work_order_issue.php:83 purchasing/supplier_credit.php:176
-#: purchasing/supplier_invoice.php:174 purchasing/supplier_payment.php:189
-#: sales/create_recurrent_invoices.php:121 sales/credit_note_entry.php:157
-#: sales/customer_credit_invoice.php:95 sales/customer_payments.php:151
-#: sales/customer_payments.php.sav:151
+#: purchasing/supplier_invoice.php:184 sales/create_recurrent_invoices.php:121
+#: sales/credit_note_entry.php:157 sales/customer_credit_invoice.php:95
+#: sales/customer_payments.php:156
 msgid "The entered date is not in fiscal year."
 msgstr ""
 
@@ -2922,18 +2921,17 @@ msgid "The dimension reference must be entered."
 msgstr ""
 
 #: dimensions/dimension_entry.php:123 gl/bank_transfer.php:176
-#: gl/gl_bank.php:253 gl/gl_journal.php:176
+#: gl/gl_bank.php:254 gl/gl_journal.php:176
 #: gl/manage/revaluate_currencies.php:72 inventory/adjustments.php:101
 #: inventory/transfers.php:97 manufacturing/work_order_add_finished.php:84
 #: manufacturing/work_order_entry.php:139
 #: manufacturing/work_order_issue.php:96 purchasing/po_entry_items.php:366
 #: purchasing/po_receive_items.php:195 purchasing/supplier_credit.php:156
-#: purchasing/supplier_invoice.php:154 purchasing/supplier_payment.php:212
+#: purchasing/supplier_invoice.php:164 purchasing/supplier_payment.php:214
 #: sales/create_recurrent_invoices.php:57 sales/credit_note_entry.php:181
 #: sales/customer_credit_invoice.php:205 sales/customer_delivery.php:312
-#: sales/customer_invoice.php:319 sales/customer_payments.php:164
-#: sales/customer_payments.php:171 sales/customer_payments.php.sav:164
-#: sales/customer_payments.php.sav:171 sales/sales_order_entry.php:442
+#: sales/customer_invoice.php:319 sales/customer_payments.php:169
+#: sales/customer_payments.php:176 sales/sales_order_entry.php:442
 msgid "The entered reference is already in use."
 msgstr ""
 
@@ -3057,8 +3055,8 @@ msgstr ""
 #: purchasing/inquiry/supplier_inquiry.php:176 reporting/rep601.php:80
 #: reporting/rep702.php:54 reporting/rep704.php:84 reporting/rep704.php:87
 #: reporting/rep704.php:90 reporting/rep708.php:192 reporting/rep708.php:193
-#: sales/inquiry/customer_allocation_inquiry.php:151
-#: sales/inquiry/customer_inquiry.php:233
+#: sales/inquiry/customer_allocation_inquiry.php:152
+#: sales/inquiry/customer_inquiry.php:226
 msgid "Debit"
 msgstr ""
 
@@ -3075,8 +3073,8 @@ msgstr ""
 #: purchasing/inquiry/supplier_inquiry.php:177 reporting/rep601.php:80
 #: reporting/rep702.php:54 reporting/rep704.php:84 reporting/rep704.php:87
 #: reporting/rep704.php:90 reporting/rep708.php:192 reporting/rep708.php:193
-#: sales/inquiry/customer_allocation_inquiry.php:152
-#: sales/inquiry/customer_inquiry.php:234
+#: sales/inquiry/customer_allocation_inquiry.php:153
+#: sales/inquiry/customer_inquiry.php:227
 msgid "Credit"
 msgstr ""
 
@@ -3088,7 +3086,7 @@ msgstr ""
 #: reporting/rep204.php:84 reporting/rep307.php:117 reporting/rep601.php:80
 #: reporting/rep701.php:111 reporting/rep704.php:84 reporting/rep704.php:87
 #: reporting/rep704.php:90 reporting/rep708.php:185
-#: sales/inquiry/customer_allocation_inquiry.php:154
+#: sales/inquiry/customer_allocation_inquiry.php:155
 msgid "Balance"
 msgstr ""
 
@@ -3113,24 +3111,23 @@ msgstr ""
 #: manufacturing/includes/work_order_issue_ui.inc:156
 #: purchasing/includes/ui/invoice_ui.inc:105
 #: purchasing/includes/ui/po_ui.inc:176 purchasing/includes/ui/po_ui.inc:181
-#: purchasing/supplier_payment.php:300 sales/customer_payments.php:370
-#: sales/customer_payments.php.sav:377
+#: purchasing/supplier_payment.php:297 sales/customer_payments.php:368
 msgid "Reference:"
 msgstr ""
 
 #: dimensions/inquiry/search_dimensions.php:75
-#: includes/ui/allocation_cart.inc:284 includes/ui/ui_lists.inc:1923
-#: reporting/rep101.php:100 reporting/rep102.php:96 reporting/rep104.php:97
-#: reporting/rep104.php:101 reporting/rep105.php:95 reporting/rep105.php:99
-#: reporting/rep201.php:92 reporting/rep202.php:100 reporting/rep203.php:74
-#: reporting/rep204.php:77 reporting/rep301.php:92 reporting/rep301.php:99
-#: reporting/rep302.php:105 reporting/rep302.php:112 reporting/rep303.php:96
-#: reporting/rep303.php:103 reporting/rep304.php:98 reporting/rep304.php:103
-#: reporting/rep304.php:108 reporting/rep306.php:120 reporting/rep306.php:125
-#: reporting/rep306.php:130 reporting/rep306.php:135 reporting/rep307.php:103
-#: reporting/rep307.php:110 reporting/rep308.php:138 reporting/rep308.php:143
-#: reporting/rep309.php:92 reporting/rep702.php:61 reporting/rep710.php:86
-#: reporting/rep710.php:87
+#: includes/ui/allocation_cart.inc:311 includes/ui/mk.allocation_cart.inc:312
+#: includes/ui/ui_lists.inc:1923 reporting/rep101.php:100
+#: reporting/rep102.php:96 reporting/rep104.php:97 reporting/rep104.php:101
+#: reporting/rep105.php:95 reporting/rep105.php:99 reporting/rep201.php:92
+#: reporting/rep202.php:100 reporting/rep203.php:74 reporting/rep204.php:77
+#: reporting/rep301.php:92 reporting/rep301.php:99 reporting/rep302.php:105
+#: reporting/rep302.php:112 reporting/rep303.php:96 reporting/rep303.php:103
+#: reporting/rep304.php:98 reporting/rep304.php:103 reporting/rep304.php:108
+#: reporting/rep306.php:120 reporting/rep306.php:125 reporting/rep306.php:130
+#: reporting/rep306.php:135 reporting/rep307.php:103 reporting/rep307.php:110
+#: reporting/rep308.php:138 reporting/rep308.php:143 reporting/rep309.php:92
+#: reporting/rep702.php:61 reporting/rep710.php:86 reporting/rep710.php:87
 msgid "All"
 msgstr ""
 
@@ -3164,7 +3161,8 @@ msgid "Only Open:"
 msgstr ""
 
 #: dimensions/inquiry/search_dimensions.php:132
-#: dimensions/view/view_dimension.php:55 includes/ui/allocation_cart.inc:263
+#: dimensions/view/view_dimension.php:55 includes/ui/allocation_cart.inc:287
+#: includes/ui/mk.allocation_cart.inc:288
 #: purchasing/includes/ui/invoice_ui.inc:125
 #: purchasing/view/view_supp_credit.php:48
 #: purchasing/view/view_supp_invoice.php:51
@@ -3176,8 +3174,8 @@ msgstr ""
 #: reporting/includes/doctext.inc:184 reporting/includes/doctext.inc:186
 #: sales/customer_invoice.php:439 sales/view/view_dispatch.php:97
 #: sales/view/view_invoice.php:96
-#: sales/inquiry/customer_allocation_inquiry.php:148
-#: sales/inquiry/customer_inquiry.php:229
+#: sales/inquiry/customer_allocation_inquiry.php:149
+#: sales/inquiry/customer_inquiry.php:222
 #: sales/includes/ui/sales_order_ui.inc:601
 msgid "Due Date"
 msgstr ""
@@ -3256,9 +3254,9 @@ msgstr ""
 #: gl/inquiry/profit_loss.php:181 gl/manage/gl_quick_entries.php:261
 #: gl/manage/gl_quick_entries.php:263 gl/manage/gl_quick_entries.php:343
 #: gl/manage/gl_quick_entries.php:345 gl/view/accrual_trans.php:54
-#: gl/view/accrual_trans.php:56 gl/view/gl_deposit_view.php:99
-#: gl/view/gl_deposit_view.php:102 gl/view/gl_payment_view.php:98
-#: gl/view/gl_payment_view.php:101 gl/view/gl_trans_view.php:63
+#: gl/view/accrual_trans.php:56 gl/view/gl_deposit_view.php:104
+#: gl/view/gl_deposit_view.php:107 gl/view/gl_payment_view.php:103
+#: gl/view/gl_payment_view.php:106 gl/view/gl_trans_view.php:63
 #: gl/view/gl_trans_view.php:66 gl/includes/ui/gl_bank_ui.inc:152
 #: gl/includes/ui/gl_bank_ui.inc:153 gl/includes/ui/gl_bank_ui.inc:155
 #: gl/includes/ui/gl_journal_ui.inc:83 gl/includes/ui/gl_journal_ui.inc:84
@@ -3285,8 +3283,8 @@ msgstr ""
 #: reporting/reports_main.php:409 reporting/reports_main.php:420
 #: reporting/reports_main.php:432 sales/customer_delivery.php:395
 #: sales/customer_delivery.php:403 sales/customer_invoice.php:409
-#: sales/customer_invoice.php:447 sales/manage/customers.php:270
-#: sales/manage/customers.php:272 sales/includes/ui/sales_credit_ui.inc:132
+#: sales/customer_invoice.php:447 sales/manage/customers.php:273
+#: sales/manage/customers.php:275 sales/includes/ui/sales_credit_ui.inc:132
 #: sales/includes/ui/sales_credit_ui.inc:137
 #: sales/includes/ui/sales_order_ui.inc:456
 #: sales/includes/ui/sales_order_ui.inc:461
@@ -3296,9 +3294,9 @@ msgstr ""
 #: gl/accruals.php:98 gl/accruals.php:213 gl/inquiry/bank_inquiry.php:71
 #: gl/inquiry/gl_account_inquiry.php:141 gl/inquiry/gl_account_inquiry.php:143
 #: gl/inquiry/journal_inquiry.php:133 gl/view/accrual_trans.php:60
-#: gl/view/gl_deposit_view.php:100 gl/view/gl_deposit_view.php:103
-#: gl/view/gl_deposit_view.php:106 gl/view/gl_payment_view.php:99
-#: gl/view/gl_payment_view.php:102 gl/view/gl_payment_view.php:105
+#: gl/view/gl_deposit_view.php:105 gl/view/gl_deposit_view.php:108
+#: gl/view/gl_deposit_view.php:111 gl/view/gl_payment_view.php:104
+#: gl/view/gl_payment_view.php:107 gl/view/gl_payment_view.php:110
 #: gl/view/gl_trans_view.php:64 gl/view/gl_trans_view.php:67
 #: gl/view/gl_trans_view.php:70 gl/includes/ui/gl_bank_ui.inc:153
 #: gl/includes/ui/gl_bank_ui.inc:156 gl/includes/ui/gl_bank_ui.inc:159
@@ -3359,13 +3357,14 @@ msgstr ""
 #: gl/manage/gl_quick_entries.php:261 gl/manage/gl_quick_entries.php:263
 #: gl/manage/gl_quick_entries.php:265 gl/manage/gl_quick_entries.php:339
 #: gl/view/bank_transfer_view.php:70 gl/view/bank_transfer_view.php:80
-#: gl/view/gl_deposit_view.php:67 gl/view/gl_deposit_view.php:100
-#: gl/view/gl_deposit_view.php:103 gl/view/gl_deposit_view.php:106
-#: gl/view/gl_payment_view.php:65 gl/view/gl_payment_view.php:99
-#: gl/view/gl_payment_view.php:102 gl/view/gl_payment_view.php:105
+#: gl/view/gl_deposit_view.php:67 gl/view/gl_deposit_view.php:105
+#: gl/view/gl_deposit_view.php:108 gl/view/gl_deposit_view.php:111
+#: gl/view/gl_payment_view.php:65 gl/view/gl_payment_view.php:104
+#: gl/view/gl_payment_view.php:107 gl/view/gl_payment_view.php:110
 #: gl/includes/ui/gl_bank_ui.inc:153 gl/includes/ui/gl_bank_ui.inc:156
 #: gl/includes/ui/gl_bank_ui.inc:159 includes/sysnames.inc:132
-#: includes/ui/allocation_cart.inc:263 includes/ui/ui_lists.inc:1187
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
+#: includes/ui/ui_lists.inc:1187
 #: manufacturing/includes/manufacturing_ui.inc:236
 #: purchasing/includes/ui/invoice_ui.inc:258
 #: purchasing/includes/ui/invoice_ui.inc:260
@@ -3409,7 +3408,7 @@ msgstr ""
 
 #: gl/bank_account_reconcile.php:35 gl/bank_transfer.php:30 gl/gl_bank.php:49
 #: gl/inquiry/bank_inquiry.php:30 purchasing/supplier_payment.php:42
-#: sales/customer_payments.php:39 sales/customer_payments.php.sav:39
+#: sales/customer_payments.php:38
 msgid "There are no bank accounts defined in the system."
 msgstr ""
 
@@ -3503,14 +3502,17 @@ msgid "Transfer Date:"
 msgstr ""
 
 #: gl/bank_transfer.php:87 gl/bank_transfer.php:94
-#: sales/customer_payments.php:404 sales/customer_payments.php.sav:411
+#: sales/customer_payments.php:397
 msgid "Amount:"
 msgstr ""
 
 #: gl/bank_transfer.php:88 gl/bank_transfer.php:95
-#: purchasing/supplier_payment.php:313 sales/customer_payments.php:389
-#: sales/customer_payments.php.sav:396
+#: purchasing/supplier_payment.php:312 sales/customer_payments.php:383
 msgid "Bank Charge:"
+msgstr ""
+
+#: gl/bank_transfer.php:90
+msgid "Incoming Amount:"
 msgstr ""
 
 #: gl/bank_transfer.php:102
@@ -3518,11 +3520,11 @@ msgid "Enter Transfer"
 msgstr ""
 
 #: gl/bank_transfer.php:128 gl/bank_transfer.php:158 gl/bank_transfer.php:190
-#: purchasing/supplier_payment.php:126 purchasing/supplier_payment.php:132
+#: purchasing/supplier_payment.php:135 purchasing/supplier_payment.php:141
 msgid "The entered amount is invalid or less than zero."
 msgstr ""
 
-#: gl/bank_transfer.php:133 gl/gl_bank.php:223
+#: gl/bank_transfer.php:133 gl/gl_bank.php:224
 msgid "The total bank amount cannot be 0."
 msgstr ""
 
@@ -3531,28 +3533,28 @@ msgstr ""
 msgid "The total bank amount exceeds allowed limit (%s) for source account."
 msgstr ""
 
-#: gl/bank_transfer.php:150 gl/gl_bank.php:240
+#: gl/bank_transfer.php:150 gl/gl_bank.php:241
 #, php-format
 msgid ""
 "The bank transaction would result in exceed of authorized overdraft limit "
 "for transaction: %s #%s on %s."
 msgstr ""
 
-#: gl/bank_transfer.php:163 purchasing/supplier_payment.php:140
-#: sales/customer_payments.php:190 sales/customer_payments.php.sav:190
+#: gl/bank_transfer.php:163 purchasing/supplier_payment.php:149
+#: sales/customer_payments.php:195
 msgid ""
 "The Bank Charge Account has not been set in System and General GL Setup."
 msgstr ""
 
-#: gl/bank_transfer.php:169 gl/gl_bank.php:247 gl/gl_journal.php:168
+#: gl/bank_transfer.php:169 gl/gl_bank.php:248 gl/gl_journal.php:168
 #: gl/manage/revaluate_currencies.php:65 inventory/adjustments.php:94
 #: inventory/transfers.php:91 manufacturing/work_order_add_finished.php:77
 #: manufacturing/work_order_entry.php:132
 #: manufacturing/work_order_issue.php:89 purchasing/po_receive_items.php:188
-#: purchasing/supplier_payment.php:205 sales/credit_note_entry.php:147
+#: purchasing/supplier_payment.php:207 sales/credit_note_entry.php:147
 #: sales/customer_credit_invoice.php:102 sales/customer_delivery.php:166
-#: sales/customer_invoice.php:280 sales/customer_payments.php:157
-#: sales/customer_payments.php.sav:157 sales/sales_order_entry.php:413
+#: sales/customer_invoice.php:280 sales/customer_payments.php:162
+#: sales/sales_order_entry.php:413
 msgid "You must enter a reference."
 msgstr ""
 
@@ -3645,48 +3647,52 @@ msgstr ""
 msgid "Enter A &Payment"
 msgstr ""
 
-#: gl/gl_bank.php:217
+#: gl/gl_bank.php:218
 msgid "You must enter at least one payment line."
 msgstr ""
 
-#: gl/gl_bank.php:234 purchasing/supplier_payment.php:198
+#: gl/gl_bank.php:235 purchasing/supplier_payment.php:200
 #, php-format
 msgid "The total bank amount exceeds allowed limit (%s)."
 msgstr ""
 
-#: gl/gl_bank.php:259
+#: gl/gl_bank.php:260
 msgid "The entered date for the payment is invalid."
 msgstr ""
 
-#: gl/gl_bank.php:271
+#: gl/gl_bank.php:272
 msgid "You have to select customer and customer branch."
 msgstr ""
 
-#: gl/gl_bank.php:275
+#: gl/gl_bank.php:276
 msgid "You have to select supplier."
 msgstr ""
 
-#: gl/gl_bank.php:324
+#: gl/gl_bank.php:284
+msgid "Settled amount have to be positive number."
+msgstr ""
+
+#: gl/gl_bank.php:329
 msgid "The amount entered is not a valid number or is less than zero."
 msgstr ""
 
-#: gl/gl_bank.php:330 gl/manage/exchange_rates.php:39
+#: gl/gl_bank.php:335 gl/manage/exchange_rates.php:39
 msgid "The exchange rate cannot be zero or a negative number."
 msgstr ""
 
-#: gl/gl_bank.php:402
+#: gl/gl_bank.php:407
 msgid "Payment Items"
 msgstr ""
 
-#: gl/gl_bank.php:402
+#: gl/gl_bank.php:407
 msgid "Deposit Items"
 msgstr ""
 
-#: gl/gl_bank.php:410
+#: gl/gl_bank.php:415
 msgid "Process Payment"
 msgstr ""
 
-#: gl/gl_bank.php:410
+#: gl/gl_bank.php:415
 msgid "Process Deposit"
 msgstr ""
 
@@ -3743,8 +3749,8 @@ msgstr ""
 #: gl/gl_budget.php:127 gl/inquiry/balance_sheet.php:98
 #: gl/inquiry/balance_sheet.php:205 gl/inquiry/balance_sheet.php:236
 #: gl/inquiry/gl_trial_balance.php:224 gl/inquiry/profit_loss.php:115
-#: gl/inquiry/profit_loss.php:288 gl/view/gl_deposit_view.php:132
-#: gl/view/gl_payment_view.php:131 gl/view/gl_trans_view.php:106
+#: gl/inquiry/profit_loss.php:288 gl/view/gl_deposit_view.php:137
+#: gl/view/gl_payment_view.php:136 gl/view/gl_trans_view.php:106
 #: gl/includes/ui/gl_bank_ui.inc:202 gl/includes/ui/gl_journal_ui.inc:141
 #: inventory/includes/item_adjustments_ui.inc:63
 #: inventory/includes/item_adjustments_ui.inc:102
@@ -3844,7 +3850,7 @@ msgid "The credit amount entered is not a valid number or is less than zero."
 msgstr ""
 
 #: gl/gl_journal.php:243 includes/ui/ui_view.inc:732
-#: purchasing/supplier_credit.php:119 purchasing/supplier_invoice.php:119
+#: purchasing/supplier_credit.php:119 purchasing/supplier_invoice.php:128
 msgid "Cannot post to GL account used by more than one tax type."
 msgstr ""
 
@@ -4131,11 +4137,11 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:106
 #: sales/view/view_credit.php:70 sales/view/view_dispatch.php:86
 #: sales/view/view_invoice.php:85
-#: sales/inquiry/customer_allocation_inquiry.php:150
-#: sales/inquiry/customer_allocation_inquiry.php:160
+#: sales/inquiry/customer_allocation_inquiry.php:151
+#: sales/inquiry/customer_allocation_inquiry.php:161
 #: sales/inquiry/customer_inquiry.php:80
-#: sales/inquiry/customer_inquiry.php:232
-#: sales/inquiry/customer_inquiry.php:245
+#: sales/inquiry/customer_inquiry.php:225
+#: sales/inquiry/customer_inquiry.php:238
 #: sales/inquiry/sales_deliveries_view.php:189
 #: sales/inquiry/sales_orders_view.php:272
 #: sales/inquiry/sales_orders_view.php:286
@@ -4752,7 +4758,7 @@ msgstr ""
 msgid "GL Deposit"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:71 gl/includes/db/gl_db_banking.inc:212
+#: gl/view/gl_deposit_view.php:71 gl/includes/db/gl_db_banking.inc:213
 #: reporting/reports_main.php:96 reporting/reports_main.php:106
 #: reporting/reports_main.php:114 reporting/reports_main.php:128
 #: reporting/reports_main.php:136 reporting/reports_main.php:143
@@ -4761,29 +4767,37 @@ msgstr ""
 msgid "From"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:72
+#: gl/view/gl_deposit_view.php:74 gl/view/gl_payment_view.php:72
+msgid "Settle currency"
+msgstr ""
+
+#: gl/view/gl_deposit_view.php:75 gl/view/gl_payment_view.php:73
+msgid "Settled amount"
+msgstr ""
+
+#: gl/view/gl_deposit_view.php:77
 msgid "Deposit Type"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:81
+#: gl/view/gl_deposit_view.php:86
 msgid "This deposit has been voided."
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:87
+#: gl/view/gl_deposit_view.php:92
 msgid "There are no items for this deposit."
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:92
+#: gl/view/gl_deposit_view.php:97
 msgid "Items for this Deposit"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:94 gl/view/gl_payment_view.php:92
-msgid "Item Amounts are Shown in :"
+#: gl/view/gl_deposit_view.php:99 gl/view/gl_payment_view.php:97
+msgid "Item Amounts are Shown in:"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:99 gl/view/gl_deposit_view.php:102
-#: gl/view/gl_deposit_view.php:105 gl/view/gl_payment_view.php:98
-#: gl/view/gl_payment_view.php:101 gl/view/gl_payment_view.php:104
+#: gl/view/gl_deposit_view.php:104 gl/view/gl_deposit_view.php:107
+#: gl/view/gl_deposit_view.php:110 gl/view/gl_payment_view.php:103
+#: gl/view/gl_payment_view.php:106 gl/view/gl_payment_view.php:109
 #: gl/view/gl_trans_view.php:63 gl/view/gl_trans_view.php:66
 #: gl/view/gl_trans_view.php:69 gl/includes/ui/gl_bank_ui.inc:152
 #: gl/includes/ui/gl_bank_ui.inc:155 gl/includes/ui/gl_bank_ui.inc:158
@@ -4792,9 +4806,9 @@ msgstr ""
 msgid "Account Code"
 msgstr ""
 
-#: gl/view/gl_deposit_view.php:99 gl/view/gl_deposit_view.php:102
-#: gl/view/gl_deposit_view.php:105 gl/view/gl_payment_view.php:98
-#: gl/view/gl_payment_view.php:101 gl/view/gl_payment_view.php:104
+#: gl/view/gl_deposit_view.php:104 gl/view/gl_deposit_view.php:107
+#: gl/view/gl_deposit_view.php:110 gl/view/gl_payment_view.php:103
+#: gl/view/gl_payment_view.php:106 gl/view/gl_payment_view.php:109
 #: gl/includes/ui/gl_bank_ui.inc:152 gl/includes/ui/gl_bank_ui.inc:155
 #: gl/includes/ui/gl_bank_ui.inc:158 gl/includes/ui/gl_journal_ui.inc:83
 #: gl/includes/ui/gl_journal_ui.inc:86 gl/includes/ui/gl_journal_ui.inc:89
@@ -4813,20 +4827,20 @@ msgstr ""
 msgid "Pay To"
 msgstr ""
 
-#: gl/view/gl_payment_view.php:70 purchasing/view/view_supp_payment.php:64
+#: gl/view/gl_payment_view.php:75 purchasing/view/view_supp_payment.php:64
 #: purchasing/view/view_supp_payment.php:78 sales/view/view_receipt.php:50
 msgid "Payment Type"
 msgstr ""
 
-#: gl/view/gl_payment_view.php:79 purchasing/view/view_supp_payment.php:85
+#: gl/view/gl_payment_view.php:84 purchasing/view/view_supp_payment.php:85
 msgid "This payment has been voided."
 msgstr ""
 
-#: gl/view/gl_payment_view.php:85
+#: gl/view/gl_payment_view.php:90
 msgid "There are no items for this payment."
 msgstr ""
 
-#: gl/view/gl_payment_view.php:90
+#: gl/view/gl_payment_view.php:95
 msgid "Items for this Payment"
 msgstr ""
 
@@ -4847,11 +4861,12 @@ msgid "This transaction has been voided."
 msgstr ""
 
 #: gl/includes/db/gl_db_banking.inc:44 gl/includes/db/gl_db_banking.inc:47
-#: gl/includes/db/gl_db_banking.inc:59 gl/includes/db/gl_db_banking.inc:62
+#: gl/includes/db/gl_db_banking.inc:60 gl/includes/db/gl_db_banking.inc:63
+#: gl/includes/db/gl_db_banking.inc:256
 msgid "Exchange Variance"
 msgstr ""
 
-#: gl/includes/db/gl_db_banking.inc:212 reporting/reports_main.php:97
+#: gl/includes/db/gl_db_banking.inc:213 reporting/reports_main.php:97
 #: reporting/reports_main.php:107 reporting/reports_main.php:115
 #: reporting/reports_main.php:129 reporting/reports_main.php:137
 #: reporting/reports_main.php:144 reporting/reports_main.php:193
@@ -4859,7 +4874,7 @@ msgstr ""
 msgid "To"
 msgstr ""
 
-#: gl/includes/db/gl_db_banking.inc:439
+#: gl/includes/db/gl_db_banking.inc:445
 msgid "Document reentered."
 msgstr ""
 
@@ -4873,8 +4888,8 @@ msgstr ""
 #: inventory/includes/stock_transfers_ui.inc:42
 #: manufacturing/work_order_add_finished.php:208
 #: manufacturing/work_order_costs.php:152
-#: purchasing/allocations/supplier_allocate.php:53
-#: sales/allocations/customer_allocate.php:52
+#: purchasing/allocations/supplier_allocate.php:56
+#: sales/allocations/customer_allocate.php:54
 #: sales/includes/ui/sales_credit_ui.inc:121
 msgid "Date:"
 msgstr ""
@@ -4900,15 +4915,15 @@ msgstr ""
 msgid "Customer:"
 msgstr ""
 
-#: gl/includes/ui/gl_bank_ui.inc:71 sales/customer_payments.php:348
-#: sales/customer_payments.php.sav:355 sales/manage/recurrent_invoices.php:172
+#: gl/includes/ui/gl_bank_ui.inc:71 sales/customer_payments.php:345
+#: sales/manage/recurrent_invoices.php:172
 #: sales/includes/ui/sales_credit_ui.inc:37
 #: sales/includes/ui/sales_order_ui.inc:291
 msgid "Branch:"
 msgstr ""
 
 #: gl/includes/ui/gl_bank_ui.inc:85 gl/includes/ui/gl_bank_ui.inc:88
-#: sales/customer_payments.php:363 sales/customer_payments.php.sav:370
+#: sales/customer_payments.php:361
 msgid "This customer account is on hold."
 msgstr ""
 
@@ -5920,10 +5935,10 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:97
 #: sales/allocations/customer_allocation_main.php:105
 #: sales/manage/recurrent_invoices.php:102 sales/view/view_credit.php:47
-#: sales/inquiry/customer_allocation_inquiry.php:149
-#: sales/inquiry/customer_allocation_inquiry.php:159
-#: sales/inquiry/customer_inquiry.php:230
-#: sales/inquiry/customer_inquiry.php:244
+#: sales/inquiry/customer_allocation_inquiry.php:150
+#: sales/inquiry/customer_allocation_inquiry.php:160
+#: sales/inquiry/customer_inquiry.php:223
+#: sales/inquiry/customer_inquiry.php:237
 #: sales/inquiry/sales_deliveries_view.php:180
 #: sales/inquiry/sales_orders_view.php:264
 #: sales/inquiry/sales_orders_view.php:278
@@ -6404,54 +6419,65 @@ msgstr ""
 msgid "Zero/negative inventory handling"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:263
+#: includes/ui/allocation_cart.inc:285 includes/ui/mk.allocation_cart.inc:286
+#, php-format
+msgid "Allocated amounts in %s:"
+msgstr ""
+
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
 #: purchasing/allocations/supplier_allocation_main.php:94
 #: sales/allocations/customer_allocation_main.php:93
 msgid "Transaction Type"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:263 reporting/rep704.php:83
-#: reporting/rep704.php:86 reporting/rep704.php:89 reporting/rep709.php:111
-#: sales/view/view_credit.php:68 sales/view/view_sales_order.php:96
-#: sales/view/view_sales_order.php:129 sales/view/view_sales_order.php:161
-#: sales/inquiry/sales_orders_view.php:226
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
+msgid "Supplier Ref"
+msgstr ""
+
+#: includes/ui/allocation_cart.inc:287 includes/ui/mk.allocation_cart.inc:288
+#: reporting/rep704.php:83 reporting/rep704.php:86 reporting/rep704.php:89
+#: reporting/rep709.php:111 sales/view/view_credit.php:68
+#: sales/view/view_sales_order.php:96 sales/view/view_sales_order.php:129
+#: sales/view/view_sales_order.php:161 sales/inquiry/sales_orders_view.php:226
 #: sales/inquiry/sales_orders_view.php:263
 #: sales/inquiry/sales_orders_view.php:277
 msgid "Ref"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:264
+#: includes/ui/allocation_cart.inc:288 includes/ui/mk.allocation_cart.inc:289
 msgid "Other Allocations"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:264 includes/ui/ui_view.inc:548
-#: reporting/includes/doctext.inc:145 reporting/includes/doctext.inc:186
-msgid "This Allocation"
-msgstr ""
-
-#: includes/ui/allocation_cart.inc:264 includes/ui/allocation_cart.inc:311
-#: includes/ui/ui_view.inc:548
+#: includes/ui/allocation_cart.inc:288 includes/ui/allocation_cart.inc:341
+#: includes/ui/mk.allocation_cart.inc:289
+#: includes/ui/mk.allocation_cart.inc:343 includes/ui/ui_view.inc:548
 #: purchasing/allocations/supplier_allocation_main.php:101
-#: reporting/rep112.php:156 reporting/rep210.php:163
+#: reporting/rep112.php:157 reporting/rep210.php:164
 #: reporting/includes/doctext.inc:145 reporting/includes/doctext.inc:186
 #: sales/allocations/customer_allocation_main.php:100
 msgid "Left to Allocate"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:294 reporting/rep112.php:153
-#: reporting/rep210.php:160
+#: includes/ui/allocation_cart.inc:288 includes/ui/mk.allocation_cart.inc:289
+#: includes/ui/ui_view.inc:548 reporting/includes/doctext.inc:145
+#: reporting/includes/doctext.inc:186
+msgid "This Allocation"
+msgstr ""
+
+#: includes/ui/allocation_cart.inc:321 includes/ui/mk.allocation_cart.inc:322
+#: reporting/rep112.php:154 reporting/rep210.php:161
 msgid "Total Allocated"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:331
+#: includes/ui/allocation_cart.inc:362 includes/ui/mk.allocation_cart.inc:364
 msgid "The entry for one or more amounts is invalid or negative."
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:340
+#: includes/ui/allocation_cart.inc:373 includes/ui/mk.allocation_cart.inc:375
 msgid "At least one transaction is overallocated."
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:358
+#: includes/ui/allocation_cart.inc:392 includes/ui/mk.allocation_cart.inc:395
 msgid ""
 "These allocations cannot be processed because the amount allocated is more "
 "than the total amount left to allocate."
@@ -6491,13 +6517,13 @@ msgstr ""
 msgid "Contact active for:"
 msgstr ""
 
-#: includes/ui/contacts_view.inc:102 sales/manage/customers.php:252
+#: includes/ui/contacts_view.inc:102 sales/manage/customers.php:255
 msgid "Phone:"
 msgstr ""
 
 #: includes/ui/contacts_view.inc:105 inventory/manage/locations.php:207
 #: purchasing/manage/suppliers.php:160 sales/manage/customer_branches.php:263
-#: sales/manage/customers.php:255 sales/manage/sales_people.php:158
+#: sales/manage/customers.php:258 sales/manage/sales_people.php:158
 msgid "E-mail:"
 msgstr ""
 
@@ -6514,15 +6540,15 @@ msgstr ""
 msgid "Notes:"
 msgstr ""
 
-#: includes/ui/contacts_view.inc:132
+#: includes/ui/contacts_view.inc:131
 msgid "The contact name cannot be empty."
 msgstr ""
 
-#: includes/ui/contacts_view.inc:137
+#: includes/ui/contacts_view.inc:136
 msgid "Contact reference cannot be empty."
 msgstr ""
 
-#: includes/ui/contacts_view.inc:142
+#: includes/ui/contacts_view.inc:141
 msgid "You have to select at least one category."
 msgstr ""
 
@@ -7810,7 +7836,7 @@ msgid "New item"
 msgstr ""
 
 #: inventory/manage/items.php:454 purchasing/manage/suppliers.php:306
-#: sales/manage/customer_branches.php:322 sales/manage/customers.php:344
+#: sales/manage/customer_branches.php:322 sales/manage/customers.php:347
 msgid "&General settings"
 msgstr ""
 
@@ -7823,7 +7849,7 @@ msgid "&Purchasing Pricing"
 msgstr ""
 
 #: inventory/manage/items.php:459 purchasing/manage/suppliers.php:308
-#: sales/manage/customers.php:346
+#: sales/manage/customers.php:349
 msgid "&Transactions"
 msgstr ""
 
@@ -8233,8 +8259,8 @@ msgid "Return Items to Work Order"
 msgstr ""
 
 #: manufacturing/work_order_add_finished.php:214
-#: purchasing/allocations/supplier_allocate.php:64
-#: sales/allocations/customer_allocate.php:63
+#: purchasing/allocations/supplier_allocate.php:74
+#: sales/allocations/customer_allocate.php:72
 msgid "Process"
 msgstr ""
 
@@ -8897,7 +8923,7 @@ msgstr ""
 
 #: purchasing/includes/ui/invoice_ui.inc:143
 #: purchasing/manage/suppliers.php:105 sales/manage/customer_branches.php:246
-#: sales/manage/customers.php:294
+#: sales/manage/customers.php:297
 msgid "Tax Group:"
 msgstr ""
 
@@ -9127,8 +9153,8 @@ msgid "Amount Total"
 msgstr ""
 
 #: purchasing/includes/ui/po_ui.inc:296
-#: purchasing/allocations/supplier_allocate.php:63
-#: sales/allocations/customer_allocate.php:62
+#: purchasing/allocations/supplier_allocate.php:73
+#: sales/allocations/customer_allocate.php:71
 #: sales/includes/ui/sales_order_ui.inc:243
 msgid "Refresh"
 msgstr ""
@@ -9283,8 +9309,8 @@ msgid ""
 "purchased."
 msgstr ""
 
-#: purchasing/po_entry_items.php:329 purchasing/supplier_invoice.php:343
-#: purchasing/supplier_payment.php:114
+#: purchasing/po_entry_items.php:329 purchasing/supplier_invoice.php:354
+#: purchasing/supplier_payment.php:123
 msgid "There is no supplier selected."
 msgstr ""
 
@@ -9305,11 +9331,11 @@ msgstr ""
 msgid "There is no reference entered for this purchase order."
 msgstr ""
 
-#: purchasing/po_entry_items.php:374 purchasing/supplier_invoice.php:161
+#: purchasing/po_entry_items.php:374 purchasing/supplier_invoice.php:171
 msgid "You must enter a supplier's invoice reference."
 msgstr ""
 
-#: purchasing/po_entry_items.php:381 purchasing/supplier_invoice.php:187
+#: purchasing/po_entry_items.php:381 purchasing/supplier_invoice.php:197
 msgid ""
 "This invoice number has already been entered. It cannot be entered again."
 msgstr ""
@@ -9457,13 +9483,13 @@ msgstr ""
 msgid "Enter Another Credit Note"
 msgstr ""
 
-#: purchasing/supplier_credit.php:102 purchasing/supplier_invoice.php:102
+#: purchasing/supplier_credit.php:102 purchasing/supplier_invoice.php:111
 msgid ""
 "The account code entered is not a valid code, this line cannot be added to "
 "the transaction."
 msgstr ""
 
-#: purchasing/supplier_credit.php:112 purchasing/supplier_invoice.php:112
+#: purchasing/supplier_credit.php:112 purchasing/supplier_invoice.php:121
 msgid ""
 "The amount entered is not numeric. This line cannot be added to the "
 "transaction."
@@ -9489,7 +9515,7 @@ msgid ""
 "not valid."
 msgstr ""
 
-#: purchasing/supplier_credit.php:182 purchasing/supplier_invoice.php:180
+#: purchasing/supplier_credit.php:182 purchasing/supplier_invoice.php:190
 msgid ""
 "The invoice as entered cannot be processed because the due date is in an "
 "incorrect format."
@@ -9536,42 +9562,42 @@ msgstr ""
 msgid "Enter Another Invoice"
 msgstr ""
 
-#: purchasing/supplier_invoice.php:141
+#: purchasing/supplier_invoice.php:151
 msgid ""
 "The invoice cannot be processed because the there are no items or values on "
 "the invoice.  Invoices are expected to have a charge."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:147
+#: purchasing/supplier_invoice.php:157
 msgid "You must enter an invoice reference."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:168
+#: purchasing/supplier_invoice.php:178
 msgid ""
 "The invoice as entered cannot be processed because the invoice date is in an "
 "incorrect format."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:224
+#: purchasing/supplier_invoice.php:234
 msgid "The quantity to invoice must be numeric and greater than zero."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:231
+#: purchasing/supplier_invoice.php:241
 msgid "The price is not numeric."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:244
+#: purchasing/supplier_invoice.php:254
 msgid ""
 "The price being invoiced is more than the purchase order price by more than "
 "the allowed over-charge percentage. The system is set up to prohibit this. "
 "See the system administrator to modify the set up parameters if necessary."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:245 purchasing/supplier_invoice.php:258
+#: purchasing/supplier_invoice.php:255 purchasing/supplier_invoice.php:268
 msgid "The over-charge percentage allowance is :"
 msgstr ""
 
-#: purchasing/supplier_invoice.php:257
+#: purchasing/supplier_invoice.php:267
 msgid ""
 "The quantity being invoiced is more than the outstanding quantity by more "
 "than the allowed over-charge percentage. The system is set up to prohibit "
@@ -9579,12 +9605,12 @@ msgid ""
 "necessary."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:325
+#: purchasing/supplier_invoice.php:336
 #, php-format
 msgid "All yet non-invoiced items on delivery line # %d has been removed."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:367
+#: purchasing/supplier_invoice.php:378
 msgid "Enter Invoice"
 msgstr ""
 
@@ -9592,76 +9618,95 @@ msgstr ""
 msgid "Supplier Payment Entry"
 msgstr ""
 
-#: purchasing/supplier_payment.php:85
+#: purchasing/supplier_payment.php:92
 msgid "Invalid purchase invoice number."
 msgstr ""
 
-#: purchasing/supplier_payment.php:91
+#: purchasing/supplier_payment.php:98
 msgid "Payment has been sucessfully entered"
 msgstr ""
 
-#: purchasing/supplier_payment.php:93
+#: purchasing/supplier_payment.php:100
 msgid "&Print This Remittance"
 msgstr ""
 
-#: purchasing/supplier_payment.php:94
+#: purchasing/supplier_payment.php:101
 msgid "&Email This Remittance"
 msgstr ""
 
-#: purchasing/supplier_payment.php:96
+#: purchasing/supplier_payment.php:103
+msgid "View this Payment"
+msgstr ""
+
+#: purchasing/supplier_payment.php:104
 msgid "View the GL &Journal Entries for this Payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:98
-msgid "Select Another &Supplier Transaction for Payment"
+#: purchasing/supplier_payment.php:106
+msgid "Enter another supplier &payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:101
-msgid "Enter Another Supplier &Payment"
+#: purchasing/supplier_payment.php:107 sales/customer_payments.php:106
+msgid "Enter Other &Payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:160
+#: purchasing/supplier_payment.php:108
+msgid "Enter &Customer Payment"
+msgstr ""
+
+#: purchasing/supplier_payment.php:109 sales/customer_payments.php:104
+msgid "Enter Other &Deposit"
+msgstr ""
+
+#: purchasing/supplier_payment.php:110 sales/customer_payments.php:107
+msgid "Bank Account &Transfer"
+msgstr ""
+
+#: purchasing/supplier_payment.php:162
 msgid "The entered discount is invalid or less than zero."
 msgstr ""
 
-#: purchasing/supplier_payment.php:168
+#: purchasing/supplier_payment.php:170
 msgid ""
 "The total of the amount and the discount is zero or negative. Please enter "
 "positive values."
 msgstr ""
 
-#: purchasing/supplier_payment.php:175
+#: purchasing/supplier_payment.php:177
 msgid "The entered bank amount is zero or negative."
 msgstr ""
 
-#: purchasing/supplier_payment.php:284
+#: purchasing/supplier_payment.php:191
+msgid ""
+"The entered date is out of fiscal year or is closed for further data entry."
+msgstr ""
+
+#: purchasing/supplier_payment.php:274
 msgid "Payment To:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:294
+#: purchasing/supplier_payment.php:289
 msgid "From Bank Account:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:302
+#: purchasing/supplier_payment.php:295
 #: purchasing/view/view_supp_payment.php:55
 msgid "Date Paid"
 msgstr ""
 
-#: purchasing/supplier_payment.php:319
-#, php-format
-msgid "Accounts Payable settled in %s:"
+#: purchasing/supplier_payment.php:309
+msgid "Bank Amount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:324 sales/customer_payments.php:402
-#: sales/customer_payments.php.sav:409
+#: purchasing/supplier_payment.php:322 sales/customer_payments.php:395
 msgid "Amount of Discount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:325
+#: purchasing/supplier_payment.php:323
 msgid "Amount of Payment:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:329
+#: purchasing/supplier_payment.php:327
 msgid "Enter Payment"
 msgstr ""
 
@@ -9711,8 +9756,8 @@ msgstr ""
 #: purchasing/view/view_po.php:100
 #: purchasing/inquiry/supplier_allocation_inquiry.php:148
 #: purchasing/inquiry/supplier_inquiry.php:193
-#: sales/inquiry/customer_allocation_inquiry.php:164
-#: sales/inquiry/customer_inquiry.php:251
+#: sales/inquiry/customer_allocation_inquiry.php:165
+#: sales/inquiry/customer_inquiry.php:244
 #: sales/inquiry/sales_deliveries_view.php:206
 #: sales/inquiry/sales_orders_view.php:318
 msgid "Marked items are overdue."
@@ -9786,7 +9831,8 @@ msgstr ""
 msgid "Payment Currency"
 msgstr ""
 
-#: purchasing/view/view_supp_payment.php:62 sales/customer_delivery.php:433
+#: purchasing/view/view_supp_payment.php:62 reporting/rep112.php:162
+#: reporting/rep210.php:171 sales/customer_delivery.php:433
 #: sales/customer_invoice.php:470 sales/view/view_receipt.php:45
 #: sales/view/view_sales_order.php:202
 msgid "Discount"
@@ -9830,11 +9876,11 @@ msgstr ""
 msgid "Bank Name/Account:"
 msgstr ""
 
-#: purchasing/manage/suppliers.php:110 sales/manage/customers.php:264
+#: purchasing/manage/suppliers.php:110 sales/manage/customers.php:267
 msgid "Credit Limit:"
 msgstr ""
 
-#: purchasing/manage/suppliers.php:111 sales/manage/customers.php:266
+#: purchasing/manage/suppliers.php:111 sales/manage/customers.php:269
 msgid "Payment Terms:"
 msgstr ""
 
@@ -9881,7 +9927,7 @@ msgid "General"
 msgstr ""
 
 #: purchasing/manage/suppliers.php:153 sales/manage/customer_branches.php:269
-#: sales/manage/customers.php:287
+#: sales/manage/customers.php:290
 msgid "General Notes:"
 msgstr ""
 
@@ -9955,7 +10001,7 @@ msgid "New supplier"
 msgstr ""
 
 #: purchasing/manage/suppliers.php:307 sales/manage/customer_branches.php:323
-#: sales/manage/customers.php:345
+#: sales/manage/customers.php:348
 msgid "&Contacts"
 msgstr ""
 
@@ -10022,7 +10068,7 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:136
 #: reporting/rep101.php:119 reporting/rep201.php:111
 #: reporting/includes/doctext.inc:225
-#: sales/inquiry/customer_allocation_inquiry.php:153
+#: sales/inquiry/customer_allocation_inquiry.php:154
 msgid "Allocated"
 msgstr ""
 
@@ -10084,41 +10130,46 @@ msgstr ""
 msgid "Allocate Supplier Payment or Credit Note"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:49
+#: purchasing/allocations/supplier_allocate.php:52
 msgid "Allocation of"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:54
-#: sales/allocations/customer_allocate.php:53
+#: purchasing/allocations/supplier_allocate.php:58
+#: sales/allocations/customer_allocate.php:55
 msgid "Total:"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:63
-#: sales/allocations/customer_allocate.php:62
+#: purchasing/allocations/supplier_allocate.php:62
+#: sales/allocations/customer_allocate.php:59
+msgid "Total in clearing currency:"
+msgstr ""
+
+#: purchasing/allocations/supplier_allocate.php:73
+#: sales/allocations/customer_allocate.php:71
 msgid "Start again allocation of selected amount"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:64
-#: sales/allocations/customer_allocate.php:63
+#: purchasing/allocations/supplier_allocate.php:74
+#: sales/allocations/customer_allocate.php:72
 msgid "Process allocations"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:65
-#: purchasing/allocations/supplier_allocate.php:71
-#: sales/allocations/customer_allocate.php:64
-#: sales/allocations/customer_allocate.php:70
+#: purchasing/allocations/supplier_allocate.php:75
+#: purchasing/allocations/supplier_allocate.php:81
+#: sales/allocations/customer_allocate.php:73
+#: sales/allocations/customer_allocate.php:79
 msgid "Back to Allocations"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:66
-#: purchasing/allocations/supplier_allocate.php:72
-#: sales/allocations/customer_allocate.php:64
-#: sales/allocations/customer_allocate.php:71
+#: purchasing/allocations/supplier_allocate.php:76
+#: purchasing/allocations/supplier_allocate.php:82
+#: sales/allocations/customer_allocate.php:73
+#: sales/allocations/customer_allocate.php:80
 msgid "Abandon allocations and return to selection of allocatable amounts"
 msgstr ""
 
-#: purchasing/allocations/supplier_allocate.php:70
-#: sales/allocations/customer_allocate.php:68
+#: purchasing/allocations/supplier_allocate.php:80
+#: sales/allocations/customer_allocate.php:77
 msgid "There are no unsettled transactions to allocate."
 msgstr ""
 
@@ -10339,17 +10390,17 @@ msgid "Back Orders Only"
 msgstr ""
 
 #: reporting/rep105.php:109 reporting/rep204.php:84
-#: sales/inquiry/customer_allocation_inquiry.php:146
-#: sales/inquiry/customer_inquiry.php:226
+#: sales/inquiry/customer_allocation_inquiry.php:147
+#: sales/inquiry/customer_inquiry.php:219
 msgid "Order"
 msgstr ""
 
-#: reporting/rep105.php:109 reporting/rep106.php:83 reporting/rep112.php:179
+#: reporting/rep105.php:109 reporting/rep106.php:83 reporting/rep112.php:187
 #: sales/create_recurrent_invoices.php:134
 #: sales/customer_credit_invoice.php:236 sales/customer_delivery.php:339
-#: sales/customer_invoice.php:381 sales/manage/customers.php:251
-#: sales/manage/customers.php:290 sales/manage/recurrent_invoices.php:102
-#: sales/view/view_credit.php:58 sales/inquiry/customer_inquiry.php:231
+#: sales/customer_invoice.php:381 sales/manage/customers.php:254
+#: sales/manage/customers.php:293 sales/manage/recurrent_invoices.php:102
+#: sales/view/view_credit.php:58 sales/inquiry/customer_inquiry.php:224
 #: sales/inquiry/sales_deliveries_view.php:182
 #: sales/inquiry/sales_orders_view.php:265
 #: sales/inquiry/sales_orders_view.php:279
@@ -10373,8 +10424,8 @@ msgid "Loc"
 msgstr ""
 
 #: reporting/rep105.php:114 sales/customer_delivery.php:432
-#: sales/customer_invoice.php:469
-msgid "Invoiced"
+#: sales/customer_invoice.php:469 sales/includes/ui/sales_order_ui.inc:145
+msgid "Delivered"
 msgstr ""
 
 #: reporting/rep105.php:121
@@ -10476,31 +10527,31 @@ msgstr ""
 msgid "SALES QUOTATION"
 msgstr ""
 
-#: reporting/rep112.php:94 reporting/includes/doctext.inc:176
+#: reporting/rep112.php:95 reporting/includes/doctext.inc:176
 msgid "RECEIPT"
 msgstr ""
 
-#: reporting/rep112.php:125 reporting/rep210.php:133
+#: reporting/rep112.php:126 reporting/rep210.php:134
 msgid "As advance / full / part / payment towards:"
 msgstr ""
 
-#: reporting/rep112.php:160
+#: reporting/rep112.php:167
 msgid "TOTAL RECEIPT"
 msgstr ""
 
-#: reporting/rep112.php:170
+#: reporting/rep112.php:178
 msgid "Received / Sign"
 msgstr ""
 
-#: reporting/rep112.php:172
+#: reporting/rep112.php:180
 msgid "By Cash / Cheque* / Draft No."
 msgstr ""
 
-#: reporting/rep112.php:174
+#: reporting/rep112.php:182
 msgid "Dated"
 msgstr ""
 
-#: reporting/rep112.php:177
+#: reporting/rep112.php:185
 msgid "Drawn on Bank"
 msgstr ""
 
@@ -10594,12 +10645,12 @@ msgstr ""
 msgid "TOTAL PO"
 msgstr ""
 
-#: reporting/rep210.php:95 reporting/rep210.php:117
+#: reporting/rep210.php:96 reporting/rep210.php:118
 #: reporting/includes/doctext.inc:129
 msgid "REMITTANCE"
 msgstr ""
 
-#: reporting/rep210.php:168
+#: reporting/rep210.php:177
 msgid "TOTAL REMITTANCE"
 msgstr ""
 
@@ -10653,7 +10704,7 @@ msgid "Qty"
 msgstr ""
 
 #: reporting/rep304.php:114 reporting/rep309.php:98
-#: sales/manage/customer_branches.php:240 sales/manage/customers.php:260
+#: sales/manage/customer_branches.php:240 sales/manage/customers.php:263
 msgid "Sales"
 msgstr ""
 
@@ -11956,8 +12007,7 @@ msgid "Max. delivery"
 msgstr ""
 
 #: sales/customer_delivery.php:432 sales/customer_invoice.php:469
-#: sales/includes/ui/sales_order_ui.inc:145
-msgid "Delivered"
+msgid "Invoiced"
 msgstr ""
 
 #: sales/customer_delivery.php:503 sales/customer_invoice.php:554
@@ -12123,113 +12173,105 @@ msgstr ""
 msgid "Invoice Total"
 msgstr ""
 
-#: sales/customer_payments.php:33 sales/customer_payments.php.sav:33
+#: sales/customer_payments.php:32
 msgid "Customer Payment Entry"
 msgstr ""
 
-#: sales/customer_payments.php:37 sales/customer_payments.php.sav:37
+#: sales/customer_payments.php:36
 msgid "There are no customers defined in the system."
 msgstr ""
 
-#: sales/customer_payments.php:68 sales/customer_payments.php.sav:68
+#: sales/customer_payments.php:70
 msgid "Invalid sales invoice number."
 msgstr ""
 
-#: sales/customer_payments.php:94 sales/customer_payments.php.sav:94
+#: sales/customer_payments.php:97
 msgid "The customer payment has been successfully entered."
 msgstr ""
 
-#: sales/customer_payments.php:96 sales/customer_payments.php:113
-#: sales/customer_payments.php.sav:96 sales/customer_payments.php.sav:113
+#: sales/customer_payments.php:99 sales/customer_payments.php:118
 msgid "&Print This Receipt"
 msgstr ""
 
-#: sales/customer_payments.php:98 sales/customer_payments.php:115
-#: sales/customer_payments.php.sav:98 sales/customer_payments.php.sav:115
-msgid "&View the GL Journal Entries for this Customer Payment"
+#: sales/customer_payments.php:101
+msgid "&View this Customer Payment"
 msgstr ""
 
-#: sales/customer_payments.php:102 sales/customer_payments.php.sav:102
-msgid "Select Another &Customer Transaction for Payment"
-msgstr ""
-
-#: sales/customer_payments.php:104 sales/customer_payments.php:121
-#: sales/customer_payments.php.sav:104 sales/customer_payments.php.sav:121
+#: sales/customer_payments.php:103 sales/customer_payments.php:126
 msgid "Enter Another &Customer Payment"
 msgstr ""
 
-#: sales/customer_payments.php:111 sales/customer_payments.php.sav:111
+#: sales/customer_payments.php:105
+msgid "Enter Payment to &Supplier"
+msgstr ""
+
+#: sales/customer_payments.php:109 sales/customer_payments.php:120
+msgid "&View the GL Journal Entries for this Customer Payment"
+msgstr ""
+
+#: sales/customer_payments.php:116
 msgid "The customer payment has been successfully updated."
 msgstr ""
 
-#: sales/customer_payments.php:119 sales/customer_payments.php.sav:119
+#: sales/customer_payments.php:124
 msgid "Select Another Customer Payment for &Edition"
 msgstr ""
 
-#: sales/customer_payments.php:134 sales/customer_payments.php.sav:134
-#: sales/sales_order_entry.php:337
+#: sales/customer_payments.php:139 sales/sales_order_entry.php:337
 msgid "There is no customer selected."
 msgstr ""
 
-#: sales/customer_payments.php:141 sales/customer_payments.php.sav:141
-#: sales/sales_order_entry.php:344
+#: sales/customer_payments.php:146 sales/sales_order_entry.php:344
 msgid "This customer has no branch defined."
 msgstr ""
 
-#: sales/customer_payments.php:147 sales/customer_payments.php.sav:147
+#: sales/customer_payments.php:152
 msgid "The entered date is invalid. Please enter a valid date for the payment."
 msgstr ""
 
-#: sales/customer_payments.php:177 sales/customer_payments.php:183
-#: sales/customer_payments.php.sav:177 sales/customer_payments.php.sav:183
+#: sales/customer_payments.php:182 sales/customer_payments.php:188
 msgid "The entered amount is invalid or negative and cannot be processed."
 msgstr ""
 
-#: sales/customer_payments.php:209 sales/customer_payments.php.sav:209
+#: sales/customer_payments.php:214
 msgid "The entered discount is not a valid number."
 msgstr ""
 
-#: sales/customer_payments.php:216 sales/customer_payments.php.sav:216
+#: sales/customer_payments.php:221
 msgid ""
 "The balance of the amount and discount is zero or negative. Please enter "
 "valid amounts."
 msgstr ""
 
-#: sales/customer_payments.php:223 sales/customer_payments.php.sav:223
+#: sales/customer_payments.php:228
 msgid "The entered payment amount is zero or negative."
 msgstr ""
 
-#: sales/customer_payments.php:338 sales/customer_payments.php.sav:345
+#: sales/customer_payments.php:335
 msgid "Into Bank Account:"
 msgstr ""
 
-#: sales/customer_payments.php:341 sales/customer_payments.php:343
-#: sales/customer_payments.php.sav:348 sales/customer_payments.php.sav:350
+#: sales/customer_payments.php:338 sales/customer_payments.php:340
 msgid "From Customer:"
 msgstr ""
 
-#: sales/customer_payments.php:368 sales/customer_payments.php.sav:375
+#: sales/customer_payments.php:366
 msgid "Date of Deposit:"
 msgstr ""
 
-#: sales/customer_payments.php:384 sales/customer_payments.php.sav:391
+#: sales/customer_payments.php:380
 msgid "Payment Amount:"
 msgstr ""
 
-#: sales/customer_payments.php:393 sales/customer_payments.php.sav:400
-#, php-format
-msgid "Accounts Receivable settled in %s:"
-msgstr ""
-
-#: sales/customer_payments.php:400 sales/customer_payments.php.sav:407
+#: sales/customer_payments.php:393
 msgid "Customer prompt payment discount :"
 msgstr ""
 
-#: sales/customer_payments.php:410 sales/customer_payments.php.sav:419
+#: sales/customer_payments.php:403
 msgid "Add Payment"
 msgstr ""
 
-#: sales/customer_payments.php:412 sales/customer_payments.php.sav:417
+#: sales/customer_payments.php:405
 msgid "Update Payment"
 msgstr ""
 
@@ -12558,7 +12600,7 @@ msgstr ""
 msgid "Allocate Customer Payment or Credit Note"
 msgstr ""
 
-#: sales/allocations/customer_allocate.php:47
+#: sales/allocations/customer_allocate.php:50
 #, php-format
 msgid "Allocation of %s # %d"
 msgstr ""
@@ -12568,7 +12610,7 @@ msgid "Customer Allocations"
 msgstr ""
 
 #: sales/allocations/customer_allocation_main.php:32
-#: sales/manage/customer_branches.php:280 sales/manage/customers.php:324
+#: sales/manage/customer_branches.php:280 sales/manage/customers.php:327
 #: sales/inquiry/customer_allocation_inquiry.php:42
 #: sales/inquiry/customer_inquiry.php:48
 #: sales/inquiry/sales_orders_view.php:243
@@ -12693,11 +12735,11 @@ msgstr ""
 msgid "Branch Short Name:"
 msgstr ""
 
-#: sales/manage/customer_branches.php:241 sales/manage/customers.php:256
+#: sales/manage/customer_branches.php:241 sales/manage/customers.php:259
 msgid "Sales Person:"
 msgstr ""
 
-#: sales/manage/customer_branches.php:242 sales/manage/customers.php:293
+#: sales/manage/customer_branches.php:242 sales/manage/customers.php:296
 msgid "Sales Area:"
 msgstr ""
 
@@ -12706,11 +12748,11 @@ msgstr ""
 msgid "Sales Group:"
 msgstr ""
 
-#: sales/manage/customer_branches.php:244 sales/manage/customers.php:291
+#: sales/manage/customer_branches.php:244 sales/manage/customers.php:294
 msgid "Default Inventory Location:"
 msgstr ""
 
-#: sales/manage/customer_branches.php:245 sales/manage/customers.php:292
+#: sales/manage/customer_branches.php:245 sales/manage/customers.php:295
 msgid "Default Shipping Company:"
 msgstr ""
 
@@ -12786,121 +12828,121 @@ msgstr ""
 msgid "Customer has been updated."
 msgstr ""
 
-#: sales/manage/customers.php:127
+#: sales/manage/customers.php:130
 msgid "A new customer has been added."
 msgstr ""
 
-#: sales/manage/customers.php:130
+#: sales/manage/customers.php:133
 msgid ""
 "A default Branch has been automatically created, please check default Branch "
 "values by using link below."
 msgstr ""
 
-#: sales/manage/customers.php:153
+#: sales/manage/customers.php:156
 msgid ""
 "This customer cannot be deleted because there are transactions that refer to "
 "it."
 msgstr ""
 
-#: sales/manage/customers.php:160
+#: sales/manage/customers.php:163
 msgid ""
 "Cannot delete the customer record because orders have been created against "
 "it."
 msgstr ""
 
-#: sales/manage/customers.php:167
+#: sales/manage/customers.php:170
 msgid ""
 "Cannot delete this customer because there are branch records set up against "
 "it."
 msgstr ""
 
-#: sales/manage/customers.php:178
+#: sales/manage/customers.php:181
 msgid "Selected customer has been deleted."
 msgstr ""
 
-#: sales/manage/customers.php:227
+#: sales/manage/customers.php:230
 msgid "Name and Address"
 msgstr ""
 
-#: sales/manage/customers.php:229
+#: sales/manage/customers.php:232
 msgid "Customer Name:"
 msgstr ""
 
-#: sales/manage/customers.php:230
+#: sales/manage/customers.php:233
 msgid "Customer Short Name:"
 msgstr ""
 
-#: sales/manage/customers.php:238 sales/manage/customers.php:242
+#: sales/manage/customers.php:241 sales/manage/customers.php:245
 msgid "Customer's Currency:"
 msgstr ""
 
-#: sales/manage/customers.php:245
+#: sales/manage/customers.php:248
 msgid "Sales Type/Price List:"
 msgstr ""
 
-#: sales/manage/customers.php:248
+#: sales/manage/customers.php:251
 msgid "Customer status:"
 msgstr ""
 
-#: sales/manage/customers.php:262
+#: sales/manage/customers.php:265
 msgid "Discount Percent:"
 msgstr ""
 
-#: sales/manage/customers.php:263
+#: sales/manage/customers.php:266
 msgid "Prompt Payment Discount Percent:"
 msgstr ""
 
-#: sales/manage/customers.php:267
+#: sales/manage/customers.php:270
 msgid "Credit Status:"
 msgstr ""
 
-#: sales/manage/customers.php:280
+#: sales/manage/customers.php:283
 msgid "Customer branches"
 msgstr ""
 
-#: sales/manage/customers.php:282
+#: sales/manage/customers.php:285
 msgid "Select or &Add"
 msgstr ""
 
-#: sales/manage/customers.php:282
+#: sales/manage/customers.php:285
 msgid "&Add or Edit "
 msgstr ""
 
-#: sales/manage/customers.php:301
+#: sales/manage/customers.php:304
 msgid "Add New Customer"
 msgstr ""
 
-#: sales/manage/customers.php:305
+#: sales/manage/customers.php:308
 msgid "Update Customer"
 msgstr ""
 
-#: sales/manage/customers.php:306
+#: sales/manage/customers.php:309
 msgid "Update customer data"
 msgstr ""
 
-#: sales/manage/customers.php:307
+#: sales/manage/customers.php:310
 msgid "Select this customer and return to document entry."
 msgstr ""
 
-#: sales/manage/customers.php:308
+#: sales/manage/customers.php:311
 msgid "Delete Customer"
 msgstr ""
 
-#: sales/manage/customers.php:309
+#: sales/manage/customers.php:312
 msgid "Delete customer data if have been never used"
 msgstr ""
 
-#: sales/manage/customers.php:316
+#: sales/manage/customers.php:319
 msgid ""
 "There are no sales types defined. Please define at least one sales type "
 "before adding a customer."
 msgstr ""
 
-#: sales/manage/customers.php:325
+#: sales/manage/customers.php:328
 msgid "New customer"
 msgstr ""
 
-#: sales/manage/customers.php:347
+#: sales/manage/customers.php:350
 msgid "Sales &Orders"
 msgstr ""
 
@@ -13350,12 +13392,12 @@ msgstr ""
 msgid "CUSTOMER ACCOUNT IS ON HOLD"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:205
+#: sales/inquiry/customer_inquiry.php:198
 msgid "Print Receipt"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:235
-#: sales/inquiry/customer_inquiry.php:248
+#: sales/inquiry/customer_inquiry.php:228
+#: sales/inquiry/customer_inquiry.php:241
 msgid "RB"
 msgstr ""
 
@@ -13470,7 +13512,7 @@ msgid ""
 "browser tab. You cannot edit more than one sales document at once."
 msgstr ""
 
-#: sales/includes/db/custalloc_db.inc:292
+#: sales/includes/db/custalloc_db.inc:301
 msgid ""
 "Unsuspected overallocation happened due to sparse credit notes exists for "
 "this invoice.\n"
