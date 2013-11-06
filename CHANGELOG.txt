@@ -10,6 +10,15 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-11-06 07:52 +0100 Joe
+(3338) Release 2.3.19
+ CHANGELOG.txt
+ version.php
+
+2013-11-05 17:55 +0100 Janusz Dobrowolski
+(3337) Gettext template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
 2013-11-03 14:39 +0100 Janusz Dobrowolski
 (3336) Supplier Invoice: Fixed tax input refresh after change in gl/grn items.
  purchasing/supplier_invoice.php
