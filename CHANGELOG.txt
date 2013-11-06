@@ -10,9 +10,169 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2013-11-03 14:39 +0100 Janusz Dobrowolski
+(3336) Supplier Invoice: Fixed tax input refresh after change in gl/grn items.
+ purchasing/supplier_invoice.php
+
+2013-10-27 00:09 +0200 Janusz Dobrowolski
+(3325) Bank Payment View, Bank Deposit View: fixed 'left to allocate' amount, added value in customer/payment currency.
+ gl/includes/db/gl_db_bank_trans.inc
+ gl/view/gl_deposit_view.php
+ gl/view/gl_payment_view.php
+
+2013-10-27 00:05 +0200 Janusz Dobrowolski
+(3324) Supplier Allocations: Bank Payments transactions were improperly available for supplier payments allocations.
+ purchasing/includes/db/suppalloc_db.inc
+
+2013-10-26 19:15 +0200 Janusz Dobrowolski
+(3323) Bank Transfer: roundings for transfers between two currencies are posted to exchange variance account.
+ gl/includes/db/gl_db_banking.inc
+
+2013-10-18 11:33 +0200 Joe
+(3322) Supplier transactions now show supplier reference for PO Deliveries.
+ purchasing/includes/db/supp_trans_db.inc
+
+2013-10-14 13:53 +0200 Janusz Dobrowolski
+(3321) Fixed person contact deletion.
+ includes/db/crm_contacts_db.inc
+ includes/ui/contacts_view.inc
+
+2013-10-14 11:15 +0200 Joe
+(3320) When automatic creating a branch the contact is also created on the customer (Rerun).
+ sales/manage/customers.php
+
+2013-10-14 00:00 +0200 Joe
+(3319) Ehen automatic creating a branch the contact is also created on the customer.
+ sales/manage/customers.php
+
+2013-10-13 21:11 +0200 Janusz Dobrowolski
+(3318) Customer Allocation Inquiry, Supplier Allocation Inquiry: fixed payment forms initialization, different icons for playment and allocation links.
+ config.default.php
+ includes/types.inc
+ purchasing/allocations/supplier_allocation_main.php
+ purchasing/inquiry/supplier_allocation_inquiry.php
+ purchasing/supplier_payment.php
+ sales/allocations/customer_allocation_main.php
+ sales/customer_payments.php
+ sales/inquiry/customer_allocation_inquiry.php
+ themes/aqua/images/alloc.png
+ themes/cool/images/alloc.png
+ themes/default/images/alloc.png
+
+2013-10-13 19:27 +0200 Janusz Dobrowolski
+(3317) Customer/Supplier Balances Reports: fixed error in recalculation to home currency value.
+ reporting/rep101.php
+ reporting/rep201.php
+
+2013-09-26 12:57 +0200 Joe
+(3316) Some documents views didn't show new lines in comments. Fixed.
+ includes/ui/ui_view.inc
+ purchasing/includes/db/po_db.inc
+ sales/view/view_sales_order.php
+
+2013-09-24 17:45 +0200 Janusz Dobrowolski
+(3315) Supplier Payment: small fix in fixed ui translation.
+ purchasing/supplier_payment.php
+
+2013-09-24 17:43 +0200 Janusz Dobrowolski
+(3314) Added portuguese translation for installer.
+ install/isession.inc
+ install/lang/pt_PT/LC_MESSAGES/pt_PT.mo
+ install/lang/pt_PT/LC_MESSAGES/pt_PT.po
+
+2013-09-24 13:24 +0200 Janusz Dobrowolski
+(3313) Bank Payment/Bank Deposit: removed sparse sign from settled amount input, fixed sign in AR/AP record;
+Fixed amounts displayed in header for customer/supplier bank payments.
+ gl/gl_bank.php
+ gl/includes/db/gl_db_banking.inc
+ gl/includes/ui/gl_bank_ui.inc
+ purchasing/includes/db/supp_trans_db.inc
+ sales/includes/db/cust_trans_db.inc
+
+2013-09-21 00:19 +0200 Janusz Dobrowolski
+(3312) Customer Payments, Payments to Supplier: improved readbility and multiply cleanups in payments allocations.
+ includes/banking.inc
+ includes/ui/allocation_cart.inc
+ purchasing/allocations/supplier_allocate.php
+ purchasing/includes/db/supp_trans_db.inc
+ purchasing/includes/db/suppalloc_db.inc
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/inquiry/supplier_allocation_inquiry.php
+ purchasing/supplier_payment.php
+ purchasing/view/view_supp_payment.php
+ sales/allocations/customer_allocate.php
+ sales/allocations/customer_allocation_main.php
+ sales/customer_payments.php
+ sales/includes/db/cust_trans_db.inc
+ sales/includes/db/custalloc_db.inc
+ sales/inquiry/customer_allocation_inquiry.php
+
+2013-09-20 16:03 +0200 Janusz Dobrowolski
+(3311) Fixed bug in bank history check resulting in false negative balance errors.
+ gl/includes/db/gl_db_bank_trans.inc
+
+2013-09-18 15:28 +0200 Janusz Dobrowolski
+(3310) Printer Profiles: fixed sql error on update under some MySQL versions.
+ admin/db/printers_db.inc
+
+2013-09-18 15:01 +0200 Janusz Dobrowolski
+(3309) Supplier Payment, Payments, Bank Transfer: fixed account balance limit checks.
+ gl/bank_transfer.php
+ gl/gl_bank.php
+ purchasing/supplier_payment.php
+
+2013-09-17 08:54 +0200 Janusz Dobrowolski
+(3308) Bank Transfer: fixed typo in input description.
+ gl/bank_transfer.php
+
+2013-09-17 10:31 +0200 Joe
+(3307) 0002443: Receipts and Remittances now show discounts.
+ reporting/rep112.php
+ reporting/rep210.php
+
+2013-09-16 23:27 +0200 Joe
+(3306) 0002177: Currency problem in Item Sales Summary Report
+ reporting/rep309.php
+
+2013-09-16 15:35 +0200 Janusz Dobrowolski
+(3305) [0002429] Supplier Invoice: tax was not updated on GRN line addition/removal.
+ purchasing/supplier_invoice.php
+
+2013-09-16 12:49 +0200 Janusz Dobrowolski
+(3304) [0002340] Fixed problem with login after intallation, when special chars are used in password.
+ install/isession.inc
+
+2013-09-14 18:07 +0200 Janusz Dobrowolski
+(3303) Various small code cleanups.
+ gl/bank_transfer.php
+ gl/includes/db/gl_db_banking.inc
+ purchasing/supplier_payment.php
+ sales/customer_payments.php
+ sales/inquiry/customer_inquiry.php
+
+2013-09-11 13:19 +0200 Janusz Dobrowolski
+(3302) Units of Measure: fixed edition problems when abbreviation contains special characters.
+ inventory/manage/item_units.php
+
+2013-09-06 10:48 +0200 Janusz Dobrowolski
+(3301) Page number is now printed on all documents (starting from second page).
+ reporting/includes/header2.inc
+
+2013-09-16 10:55 +0200 Joe
+(3300) 0002430: Order Status Listing Report shows invoiced in heading rather than delivered. Fixed.
+ reporting/rep105.php
+
+2013-09-05 14:39 +0200 Joe
+(3299) CHANGELOG.txt
+ CHANGELOG.txt
+
 2013-09-05 14:36 +0200 Joe
-(3297) Release 2.3.18.
+(3298) Release 2.3.18.
  version.php
+
+2013-09-05 14:17 +0200 Janusz Dobrowolski
+(3297) Updated gettext template.
+ lang/new_language_template/LC_MESSAGES/empty.po
 
 2013-09-03 08:51 +0200 Janusz Dobrowolski
 (3296) Customer Payment: fixed missing charge amount during edition, fixed submit button name.
