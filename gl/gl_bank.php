@@ -280,7 +280,7 @@ function check_trans()
 	if (!db_has_currency_rates(get_bank_account_currency($_POST['bank_account']), $_POST['date_'], true))
 		$input_error = 1;
 
-	if (in_array(get_post('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
+	if (isset($_POST['settled_amount']) && in_array(get_post('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
 		display_error(_("Settled amount have to be positive number."));
 		set_focus('person_id');
 		$input_error = 1;
