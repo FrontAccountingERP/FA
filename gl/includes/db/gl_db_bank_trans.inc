@@ -66,9 +66,9 @@ function exists_bank_trans($type, $type_no)
 function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=null)
 {
 	$sql = "SELECT bt.*, act.*,
-		IFNULL(abs(dt.ov_amount), IFNULL (abs(st.ov_amount), bt.amount)) settled_amount,
-		IFNULL(abs(dt.ov_amount/bt.amount), IFNULL (abs(st.ov_amount/bt.amount), 1)) settle_rate,
-		IFNULL(debtor.curr_code, IFNULL (supplier.curr_code, act.bank_curr_code)) settle_curr
+		IFNULL(abs(dt.ov_amount), IFNULL(ABS(st.ov_amount), bt.amount)) settled_amount,
+		IFNULL(abs(dt.ov_amount/bt.amount), IFNULL(ABS(st.ov_amount/bt.amount), 1)) settle_rate,
+		IFNULL(debtor.curr_code, IFNULL(supplier.curr_code, act.bank_curr_code)) settle_curr
 
 		FROM ".TB_PREF."bank_trans bt
 				 LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=bt.type AND dt.trans_no=bt.trans_no
