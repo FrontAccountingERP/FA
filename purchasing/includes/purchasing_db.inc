@@ -209,15 +209,14 @@ function add_direct_supp_trans($cart)
 	$inv->ex_rate = $cart->ex_rate;
 
 	$inv_no = add_supp_invoice($inv);
+
 	// presume supplier data need correction
 	if ($inv->stored_algorithm != $inv->tax_algorithm)
 		update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
 
 	if ($cart->cash_account) {
-
-		$pmt_no = add_supp_payment($inv->supplier_id, $inv->tran_date, $cart->cash_account,
-			$total, 0,	$Refs->get_next(ST_SUPPAYMENT), 
-			_('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
+		$pmt_no = write_supp_payment(0, $inv->supplier_id, $cart->cash_account,	$inv->tran_date, $Refs->get_next(ST_SUPPAYMENT), 
+			$total, 0, _('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
 		add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->tran_date);
 		update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no);
 		update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no);
