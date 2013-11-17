@@ -29,6 +29,7 @@ function copy_from_cart()
     $_POST['tax_algorithm'] = $cart->tax_algorithm;
 	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	$_POST['_ex_rate'] = $cart->ex_rate;
+	$_POST['cash_account'] = $cart->cash_account;
     foreach($cart->tax_overrides as $id => $value)
 	    $_POST['mantax'][$id] = price_format($value);
 }
@@ -40,7 +41,10 @@ function copy_to_cart()
 	$cart->supplier_id = $_POST['supplier_id'];	
 	$cart->orig_order_date = $_POST['OrderDate'];
 	if ($cart->trans_type == ST_SUPPINVOICE)
+	{
 		$cart->due_date = $_POST['due_date'];
+		$cart->cash_account = get_post('cash_account');
+	}
 	$cart->reference = $_POST['ref'];
 	$cart->supp_ref = $_POST['supp_ref'];
 	$cart->Comments = $_POST['Comments'];	

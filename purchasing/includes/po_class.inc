@@ -36,6 +36,7 @@ class purch_order
 	var $stored_algorithm; // copy to find the change after invoice in processed
 	var $terms;
 	var $ex_rate;
+	var $cash_account;
 
 	var $reference;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry (direct invoice)

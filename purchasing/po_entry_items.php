@@ -133,9 +133,6 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Invoice")), 1);
 
-	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
-		"PInvoice=".$trans_no);
-
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
 		"filterType=$trans_type&trans_no=$trans_no");
 
@@ -413,104 +410,26 @@ function can_commit()
 	return true;
 }
 
-//---------------------------------------------------------------------------------------------------
-
 function handle_commit_order()
 {
-	global $Refs, $type_shortcuts;
-
 	$cart = &$_SESSION['PO'];
 
 	if (can_commit()) {
 
 		copy_to_cart();
-		if ($cart->trans_type != ST_PURCHORDER) {
-			// for direct grn/invoice set same dates for lines as for whole document
-			foreach ($cart->line_items as $line_no =>$line)
-				$cart->line_items[$line_no]->req_del_date = $cart->orig_order_date;
-		}
+		new_doc_date($cart->orig_order_date);
 		if ($cart->order_no == 0) { // new po/grn/invoice
-			/*its a new order to be inserted */
-			$ref = $cart->reference;
-			if ($cart->trans_type != ST_PURCHORDER) {
-				$cart->reference = 'auto';
-				begin_transaction();	// all db changes as single transaction for direct document
-			}
-			$order_no = add_po($cart);
-			new_doc_date($cart->orig_order_date); 
-        	$cart->order_no = $order_no;
-
-			if ($cart->trans_type == ST_PURCHORDER) {
+			$trans_no = add_direct_supp_trans($cart);
+			if ($trans_no) {
 				unset($_SESSION['PO']);
-        		meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
-        	}
-			//Direct GRN
-			if ($cart->trans_type == ST_SUPPRECEIVE)
-				$cart->reference = $ref;
-			if ($cart->trans_type != ST_SUPPINVOICE)	
-				$cart->Comments = $cart->reference; //grn does not hold supp_ref
-			foreach($cart->line_items as $key => $line)
-				$cart->line_items[$key]->receive_qty = $line->quantity;
-			$grn_no = add_grn($cart);
-			if ($cart->trans_type == ST_SUPPRECEIVE) {
-				commit_transaction(); // save PO+GRN
-				unset($_SESSION['PO']);
-        		meta_forward($_SERVER['PHP_SELF'], "AddedGRN=$grn_no");
+				if ($cart->trans_type == ST_PURCHORDER)
+	 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+				elseif ($cart->trans_type == ST_SUPPRECEIVE)
+					meta_forward($_SERVER['PHP_SELF'], "AddedGRN=$trans_no");
+				else
+					meta_forward($_SERVER['PHP_SELF'], "AddedPI=$trans_no");
 			}
-//			Direct Purchase Invoice
- 			$inv = new supp_trans(ST_SUPPINVOICE);
-			$inv->Comments = $cart->Comments;
-			$inv->supplier_id = $cart->supplier_id;
-			$inv->tran_date = $cart->orig_order_date;
-			$inv->due_date = $cart->due_date;
-			$inv->reference = $ref;
-			$inv->supp_reference = $cart->supp_ref;
-			$inv->tax_included = $cart->tax_included;
-			$inv->tax_algorithm = $cart->tax_algorithm;
-			$inv->stored_algorithm = $cart->stored_algorithm;
-			$supp = get_supplier($cart->supplier_id);
-			$inv->tax_group_id = $supp['tax_group_id'];
-			$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
-
-			$total = 0;
-			foreach($cart->line_items as $key => $line) {
-				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
-					$line->item_description, $line->receive_qty, 0, $line->receive_qty,
-					$line->price, $line->price, true, get_standard_cost($line->stock_id), '');
-				$total += round2(($line->receive_qty * $line->price), user_price_dec());
-			}
-			$inv->tax_overrides = $cart->tax_overrides;
-			if (!$inv->tax_included) {
-				$taxes = $inv->get_taxes($inv->tax_group_id, 0, false, $inv->tax_algorithm);
-				foreach( $taxes as $taxitem) {
-					$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
-				}
-			}
-			$inv->ex_rate = $cart->ex_rate;
-
-			$inv_no = add_supp_invoice($inv);
-			// presume supplier data need correction
-			if ($inv->stored_algorithm != $inv->tax_algorithm)
-				update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
-
-			if (get_post('cash_account')) {
-
-				$pmt_no = add_supp_payment($inv->supplier_id, $inv->tran_date, get_post('cash_account'),
-					$total, 0,	$Refs->get_next(ST_SUPPAYMENT), 
-					_('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
-				add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->tran_date);
-				update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no);
-				update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no);
-
-			}
-
-			commit_transaction(); // save PO+GRN+PI(+SP)
-
-			unset($_SESSION['PO']);
-       		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
-		}
-		else { // order modification
-
+		} else { // order modification
 			$order_no = update_po($cart);
 			unset($_SESSION['PO']);
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");	
