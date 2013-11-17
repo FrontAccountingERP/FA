@@ -101,7 +101,7 @@ function add_grn(&$po)
 
 	add_new_exchange_rate(get_supplier_currency($po->supplier_id), $date_, $po->ex_rate);
 
-	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
+	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_, $po->ex_rate);
 
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act) {	// otherwise GRN clearing account is not used
@@ -168,13 +168,13 @@ function add_grn(&$po)
 
 //----------------------------------------------------------------------------------------
 
-function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
+function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_, $rate)
 {
 	$date = date2sql($date_);
 
-	$sql = "INSERT INTO ".TB_PREF."grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
+	$sql = "INSERT INTO ".TB_PREF."grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code, rate)
 			VALUES (".db_escape($po_number).", ".db_escape($date).", "
-			.db_escape($supplier_id).", ".db_escape($reference).", ".db_escape($location).")";
+			.db_escape($supplier_id).", ".db_escape($reference).", ".db_escape($location).", ".db_escape($rate).")";
 
 	db_query($sql, "A grn batch record could not be inserted.");
 
@@ -368,6 +368,7 @@ function read_grn($grn_batch, &$order)
 
 	$row = db_fetch($result);
 	$po_number = $row["purch_order_no"];
+	$order->ex_rate = $row["rate"];
 
 	$result = read_po_header($po_number, $order);
 

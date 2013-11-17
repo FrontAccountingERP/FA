@@ -35,7 +35,8 @@ class fa2_4 {
 		if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
 			set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, 10);
 		}
-		$result = $this->update_workorders() && $this->switch_database_to_utf($pref);
+		$result = $this->update_workorders()  && $this->update_grn_rates() && $this->switch_database_to_utf($pref);
+
 		if ($result)
 			$result = $this->do_cleanup();
 
@@ -174,6 +175,23 @@ class fa2_4 {
 		db_query("ALTER DATABASE COLLATE $collation");
  	 	if ($test)
  	 		error_log('Convertion to utf8 done.');
+
+		return true;
+	}
+
+	function update_grn_rates()
+	{
+		$sql = "SELECT grn.id, grn.delivery_date, supp.curr_code 
+			FROM ".TB_PREF."grn_batch grn, ".TB_PREF."suppliers supp
+			WHERE supp.supplier_id=grn.supplier_id AND supp.curr_code!='".get_company_pref('curr_default')."'";
+		$result = db_query($sql);
+
+		if (!$result)
+			return false;
+
+		$sql = "UPDATE ".TB_PREF."grn_batch SET rate=%s WHERE id=%d";
+		while ($grn = db_fetch($result))
+			db_query(sprintf($sql, get_exchange_rate_from_home_currency($grn['curr_code'], sql2date($grn['delivery_date'])), $grn['id']));
 
 		return true;
 	}
