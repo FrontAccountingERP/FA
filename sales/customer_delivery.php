@@ -106,7 +106,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
-		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
+		hyperlink_params($path_to_root . "/sales/inquiry/customer_inquiry.php",
 			_("Select a different delivery"), "OutstandingOnly=1");
 		echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
 			"</center></b>";
