@@ -286,9 +286,9 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 		$id = get_next_trans_no(ST_JOURNAL);
 		$ref = $Refs->get_next(ST_JOURNAL);
-		$diff = get_standard_cost($stock_id) - $standard_cost;
-		
-		if ($diff !=0)
+		$diff = round($qoh*get_standard_cost($stock_id) + $quantity*$standard_cost, user_price_dec());
+
+		if ($diff != 0)
 		{
 			$stock_gl_code = get_stock_gl_code($stock_id);
 			$memo = _("Zero/negative inventory handling");
@@ -296,13 +296,13 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 				$stock_gl_code["inventory_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo, 
-				-$qoh * $diff);
+				-$diff);
 			//GL Posting to inventory adjustment account
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 				$stock_gl_code["adjustment_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
-				$qoh * $diff);
-				
+				$diff);
+
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	

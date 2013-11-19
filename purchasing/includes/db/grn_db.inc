@@ -12,11 +12,6 @@
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
-	//Handle if inventory will become negative
-    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
-    if (is_inventory_item($stock_id) && !$adj_only) 
-        handle_negative_inventory($stock_id, $qty, $price, $date);	
-
 	// probably this function should be optimized
 	// passing transaction cart as argument. This would
 	// save a couple of db calls like get_supplier()
@@ -40,6 +35,11 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$price_in_home_currency = $price;
 	
 	$price_in_home_currency_ = $price_in_home_currency;
+
+	//Handle if inventory will become negative
+    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
+    if (is_inventory_item($stock_id) && !$adj_only) 
+        handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
 	
 	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
