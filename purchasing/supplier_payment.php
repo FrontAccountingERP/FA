@@ -237,6 +237,7 @@ function handle_add_payment()
 	new_doc_date($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;
+	$_SESSION['alloc']->date_ = $_POST['DatePaid'];
 	$_SESSION['alloc']->write();
 
    	unset($_POST['bank_account']);

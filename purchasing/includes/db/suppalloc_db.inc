@@ -12,8 +12,11 @@
 //----------------------------------------------------------------------------------------
 
 function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
-	$trans_type_to, $trans_no_to, $date_)
+	$trans_type_to, $trans_no_to, $date_=null)
 {
+	if (!$date_)
+		$date = Today();
+
 	$date = date2sql($date_);
 	$sql = "INSERT INTO ".TB_PREF."supp_allocations (
 		amt, date_alloc,
