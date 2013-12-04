@@ -177,14 +177,14 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0, $f
 	{
 		include_once($path_to_root."/admin/db/attachments_db.inc");
 		$id = has_attachment($type_no, $trans_no);
-	}
+		$attach = get_attachment_string($type_no, $trans_no);
+    	echo $attach;	
+    }
 	$width = ($id != 0 ? "30%" : "20%");	
 	start_table(false, "width=$width");
 	start_row();
 	if ($no_menu)
 	{
-		if ($id != 0)
-			echo "<td align=center><a href='$path_to_root/admin/attachments.php?vw=$id' target='blanc_'>"._("View Attachment")."</a></td>\n";
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
 	}
 	echo "<td align=center><a href='javascript:goBack(".($final ? '-2' : '').");'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
