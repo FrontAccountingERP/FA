@@ -75,9 +75,10 @@ function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
 function get_stock_movements_before($stock_id, $StockLocation, $AfterDate)
 {
 	$after_date = date2sql($AfterDate);
-	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id) . "
-		AND loc_code=".db_escape( $StockLocation) . "
-		AND tran_date < '" . $after_date . "'";
+	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id);
+	if ($StockLocation)
+		$sql .= " AND loc_code=".db_escape( $StockLocation);
+	$sql .= " AND tran_date < '" . $after_date . "'";
 	$before_qty = db_query($sql, "The starting quantity on hand could not be calculated");
 
 	$before_qty_row = db_fetch_row($before_qty);
