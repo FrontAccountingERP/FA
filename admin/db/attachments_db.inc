@@ -64,7 +64,7 @@ function get_attachment_string($type, $id)
     {
         if (strlen($str_return))
             $str_return = $str_return . " \n";    
-        $str_return .= _("Attached File:")." <a href='$path_to_root/admin/attachments.php?vw=".$attachment["id"]." ' target='blanc_'>ID: ". 
+        $str_return .= _("Attached File:")." <a href='$path_to_root/admin/attachments.php?vw=".$attachment["id"]." ' target='blanc_'> ". 
         	$attachment["id"] . " " . $attachment["description"]. " - ". $attachment["filename"]."</a><br/>";
     }
     return $str_return . "<br/>";
