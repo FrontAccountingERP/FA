@@ -190,11 +190,16 @@ function delete_attachments_and_comments($type_no, $trans_no)
 	
 	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 	$result = db_query($sql, "Could not retrieve attachments");
+	$delflag = false;
 	while ($row = db_fetch($result))
 	{
+		$delflag = true;
 		$dir =  company_path(). "/attachments";
 		if (file_exists($dir."/".$row['unique_name']))
 			unlink($dir."/".$row['unique_name']);
+	}
+	if ($delflag)
+	{
 		$sql = "DELETE FROM ".TB_PREF."attachments WHERE  type_no = $type_no AND trans_no = $trans_no";
 		db_query($sql, "Could not delete attachment");
 	}	
