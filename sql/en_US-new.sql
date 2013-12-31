@@ -2074,7 +2074,7 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `show_codes` tinyint(1) NOT NULL default '0',
   `show_hints` tinyint(1) NOT NULL default '0',
   `last_visit_date` datetime default NULL,
-  `query_size` tinyint(1) default '10',
+  `query_size` tinyint(1) unsigned default '10',
   `graphic_links` tinyint(1) default '1',
   `pos` smallint(6) default '1',
   `print_profile` varchar(30) NOT NULL default '1',
