@@ -78,7 +78,7 @@ function clear_cust_alloctions($type, $type_no, $date="")
 		// 2014-01-16 Joe Hunt. Fix for voiding allocated currency sales_invoices.		
 		elseif ($type == ST_SALESINVOICE && $row['trans_type_to'] == $type && $row['trans_no_to'] == $type_no)		
 			exchange_variation($row['trans_type_from'], $row['trans_no_from'], $row['trans_type_to'], $row['trans_no_to'], 
-				sql2date($row['date_alloc']), $row['amt'], PT_SUPPLIER, true);
+				sql2date($row['date_alloc']), $row['amt'], PT_CUSTOMER, true);
 		//////////////////////
 	}
 
