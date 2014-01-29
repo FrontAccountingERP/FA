@@ -63,6 +63,15 @@ if (isset($_GET['AddedID'])) {
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 
+	$sql = "SELECT trans_type_from, trans_no_from FROM ".TB_PREF."cust_allocations
+			WHERE trans_type_to=".ST_SALESINVOICE." AND trans_no_to=".db_escape($invoice_no);
+	$result = db_query($sql, "could not retrieve customer allocation");
+	$row = db_fetch($result);
+
+	if ($row === false)
+		hyperlink_params("$path_to_root/sales/customer_payments.php", _("Entry &customer payment for this invoice"),
+		"SInvoice=".$invoice_no);
+
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 
 	display_footer_exit();

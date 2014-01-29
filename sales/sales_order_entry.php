@@ -231,6 +231,9 @@ if (isset($_GET['AddedID'])) {
 		submenu_option(_("Enter a &New Direct Invoice"),
 			"/sales/sales_order_entry.php?NewInvoice=0");
 
+	if ($row === false)
+		submenu_option(_("Entry &customer payment for this invoice"), "/sales/customer_payments.php?SInvoice=".$invoice);
+
 	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
 
 	display_footer_exit();

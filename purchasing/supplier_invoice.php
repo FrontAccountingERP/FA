@@ -45,7 +45,8 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 
-	hyperlink_no_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+		"PInvoice=".$invoice_no);
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 
