@@ -345,24 +345,24 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		if ($invoice_alloc_balance > 0) 
 		{ 	//the invoice is not already fully allocated 
 
-			$trans = get_supp_trans($invoice_no, ST_SUPPINVOICE);
-			$total = $trans['Total'];
+			$trans = get_supp_trans($invoice_id, ST_SUPPCREDIT);
+			$total = -$trans['Total'];
 
 			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
+
 			/*Now insert the allocation record if > 0 */
 			if ($allocate_amount != 0) 
 			{
-				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no, $allocate_amount);
-				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id, $allocate_amount);
 				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no,
 					$date_);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no);
+				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id);
 
 				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
 					$allocate_amount, PT_SUPPLIER);
 			}
 		}
 	}
-
 	$supp_trans->trans_no = $invoice_id;
 	hook_db_postwrite($supp_trans, $supp_trans->trans_type);
     commit_transaction();
