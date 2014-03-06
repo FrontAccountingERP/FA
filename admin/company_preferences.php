@@ -49,7 +49,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		$filename .= "/".clean_file_name($_FILES['pic']['name']);
 
 		 //But check for the worst
-		if (!in_array( substr($filename,-3), array('jpg','JPG','png','PNG')))
+		if (!in_array( substr($filename,-4), array('.jpg','.JPG','.png','.PNG')))
 		{
 			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;

@@ -27,7 +27,8 @@ include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
 
 function item_img_name($stock_id)
 {
-	return strtr($stock_id, "><\\/:|*?", '________');
+	$stock_id = strtr($stock_id, "><\\/:|*?", '________');
+	return clean_file_name($stock_id);
 }
 
 ?>

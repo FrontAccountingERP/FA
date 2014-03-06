@@ -169,7 +169,8 @@ function handle_submit($id)
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile']['tmp_name'];
-		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".po";
+		$code = preg_replace('/[^a-zA-Z_]/', '', $_POST['code']);
+		$file2 = $directory . "/LC_MESSAGES/$code.po";
 		if (file_exists($file2))
 			unlink($file2);
 		move_uploaded_file($file1, $file2);
@@ -177,7 +178,8 @@ function handle_submit($id)
 	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile2']['tmp_name'];
-		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".mo";
+		$code = preg_replace('/[^a-zA-Z_]/', '', $_POST['code']);
+		$file2 = $directory . "/LC_MESSAGES/$code.mo";
 		if (file_exists($file2))
 			unlink($file2);
 		move_uploaded_file($file1, $file2);

@@ -108,7 +108,10 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		// protect against directory traversal
 		if ($Mode == 'UPDATE_ITEM')
 		{
-			$unique_name = preg_replace('/[^a-zA-Z0-9.\-_]/', '', $_POST['unique_name']);
+		    $row = get_attachment($selected_id);
+		    if ($row['filename'] == "")
+        		exit();
+			$unique_name = $row['unique_name'];
 			if ($filename && file_exists($dir."/".$unique_name))
 				unlink($dir."/".$unique_name);
 		}
