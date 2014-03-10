@@ -10,6 +10,106 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2014-03-10 10:58 +0100 Joe
+(3367) Release 2.3.20
+ version.php
+
+2014-03-10 10:18 +0100 Janusz Dobrowolski
+(3366) Gettext template update.
+ lang/new_language_template/LC_MESSAGES/empty.po
+
+2014-03-07 00:57 +0100 Janusz Dobrowolski
+(3365) Fixed security issues in file uploads.
+ admin/attachments.php
+ admin/company_preferences.php
+ admin/inst_lang.php
+ includes/main.inc
+ inventory/includes/inventory_db.inc
+
+2014-03-10 10:15 +0100 Joe
+(3364) fixed a check that company logo exists when using header3.
+ reporting/includes/pdf_report.inc
+
+2014-02-07 09:02 +0100 Joe
+(3363) If no memo on GL line in GL account inquiry, the comments for the voucher is shown on the line.
+ gl/inquiry/gl_account_inquiry.php
+
+2014-02-07 01:13 +0100 Joe
+(3362) Supplier info not shown on gl inquiry for bank account.
+ purchasing/includes/db/supp_payment_db.inc
+
+2014-02-04 15:35 +0100 Joe
+(3361) Supp credit notes should not be shown in allocable list.
+ purchasing/includes/db/suppalloc_db.inc
+
+2014-02-04 12:47 +0100 Janusz Dobrowolski
+(3360) Fixed bug in Supplier Credit Note allocation to Purchase Invoice.
+ purchasing/includes/db/invoice_db.inc
+
+2014-01-29 08:49 +0100 Joe
+(3359) Link customer payment entry after saving Invoice (if not cash)
+ purchasing/supplier_invoice.php
+ sales/customer_invoice.php
+ sales/sales_order_entry.php
+
+2014-01-17 13:38 +0100 Joe
+(3358) 0002615: Rerun. voiding an allocated currency invoice doesn't clear FX account
+ sales/includes/db/custalloc_db.inc
+
+2014-01-16 19:34 +0100 Joe
+(3357) 0002615: voiding an allocated currency invoice doesn't clear FX account
+ purchasing/includes/db/suppalloc_db.inc
+ sales/includes/db/custalloc_db.inc
+
+2013-12-28 21:04 +0100 Janusz Dobrowolski
+(3349) Added debtor_trans key on order_ field.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2013-12-10 08:21 +0100 Joe
+(3348) Avoiding redundant passes in Fiscal Year deletion.
+ admin/db/fiscalyears_db.inc
+
+2013-12-05 09:58 +0100 Joe
+(3347) Rerun. Allowing more than one document attachment.
+ admin/db/attachments_db.inc
+
+2013-12-05 00:17 +0100 Joe
+(3346) Inventory Items Movements always starts with 0 qty. Fixed.
+ inventory/includes/db/movement_types_db.inc
+
+2013-12-04 10:24 +0100 Joe
+(3345) Allowing more than one document attachment.
+ admin/db/attachments_db.inc
+ includes/ui/ui_controls.inc
+
+2013-11-20 16:09 +0100 Janusz Dobrowolski
+(3344) Supplier Payments: Fixed error during payment allocation in strict MySQL mode.
+ includes/ui/allocation_cart.inc
+ purchasing/includes/db/suppalloc_db.inc
+ purchasing/supplier_payment.php
+
+2013-11-19 17:35 +0100 Janusz Dobrowolski
+(3343) Fixed back link presented when trying to modify fully invoiced Customer Delivery.
+ sales/customer_delivery.php
+
+2013-11-19 15:09 +0100 Janusz Dobrowolski
+(3342) Fixed inventory valuation bug after voiding foreign supplier GRN leading to negative inventory.
+ includes/db/inventory_db.inc
+ purchasing/includes/db/grn_db.inc
+
+2013-11-10 15:11 +0100 Janusz Dobrowolski
+(3341) Journal Inquiry (bank transaction view): fixed database error on bank transaction view triggered on some buggy MySQL versions.
+ gl/includes/db/gl_db_bank_trans.inc
+
+2013-11-06 21:13 +0100 Janusz Dobrowolski
+(3340) Payments, Deposits: fixed false error when payment is made in customer/supplier currency.
+ gl/gl_bank.php
+
+2013-11-06 08:01 +0100 Joe
+(3339) CHANGELOG
+ CHANGELOG.txt
+
 2013-11-06 07:52 +0100 Joe
 (3338) Release 2.3.19
  CHANGELOG.txt
