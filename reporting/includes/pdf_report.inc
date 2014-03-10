@@ -520,11 +520,10 @@ class FrontReport extends Cpdf
 		$this->fontSize = HEADER1_FONT_SIZE;
 
 		// Print company logo if present and requested, or else just print company name
-		if ($this->companyLogoEnable && ($this->company['coy_logo'] != ''))
+		// Build a string specifying the location of the company logo file
+		$logo = company_path() . "/images/" . $this->company['coy_logo'];
+		if ($this->companyLogoEnable && ($this->company['coy_logo'] != '') && file_exists($logo))
 		{
-			// Build a string specifying the location of the company logo file
-			$logo = company_path() . "/images/" . $this->company['coy_logo'];
-
 			// Width being zero means that the image will be scaled to the specified height
 			// keeping its aspect ratio intact.
 			if ($this->scaleLogoWidth)
