@@ -192,14 +192,14 @@ $reports->addReport(RC_SUPPLIER, 209, _('Print Purchase &Orders'),
 	array(	_('From') => 'PO',
 			_('To') => 'PO',
 			_('Currency Filter') => 'CURRENCY',
-			_('Email Customers') => 'YES_NO',
+			_('Email Suppliers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
 $reports->addReport(RC_SUPPLIER, 210, _('Print Remittances'),
 	array(	_('From') => 'REMITTANCE',
 			_('To') => 'REMITTANCE',
 			_('Currency Filter') => 'CURRENCY',
-			_('Email Customers') => 'YES_NO',
+			_('Email Suppliers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
 
