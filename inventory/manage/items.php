@@ -74,8 +74,8 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{	//File type Check
 		display_warning( _('Only graphics files can be uploaded'));
 		$upload_file ='No';
-	}	
-	elseif (@strtoupper(substr(trim($_FILES['pic']['name']), @in_array(strlen($_FILES['pic']['name']) - 3)), array('JPG','PNG','GIF')))
+	}
+	elseif (!in_array(strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)), array('JPG','PNG','GIF')))
 	{
 		display_warning(_('Only graphics files are supported - a file extension of .jpg, .png or .gif is expected'));
 		$upload_file ='No';
