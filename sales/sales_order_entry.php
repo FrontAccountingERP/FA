@@ -729,22 +729,7 @@ if ($customer_error == "") {
 	display_delivery_details($_SESSION['Items']);
 	echo "</td></tr>";
 	end_table(1);
-/*
-	if ($_SESSION['Items']->trans_no == 0) {
 
-		submit_center_first('ProcessOrder', $porder,
-		    _('Check entered data and save document'), 'default');
-		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
-	} else {
-		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
-			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
-		submit_center_first('ProcessOrder', $corder,
-		    _('Validate changes and update document'), 'default');
-	}
-
-	submit_center_last('CancelOrder', $cancelorder,
-	   _('Cancels document entry or removes sales order when editing an old document'));
-*/	   
 	if ($_SESSION['Items']->trans_no == 0) {
 
 		submit_center_first('ProcessOrder', $porder,
