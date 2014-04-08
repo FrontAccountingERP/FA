@@ -55,29 +55,7 @@ function add_sales_order(&$order)
 	foreach ($order->line_items as $line)
 	{
 		if ($loc_notification == 1 && is_inventory_item($line->stock_id))
-		{
-			$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
-				FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-				WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-				AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
-				AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
-			$res = db_query($sql,"a location could not be retreived");
-			$loc = db_fetch($res);
-			if ($loc['email'] != "")
-			{
-				$qoh = get_qoh_on_date($line->stock_id, $order->Location);
-				$qoh -= get_demand_qty($line->stock_id, $order->Location);
-				$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
-				$qoh -= $line->quantity;
-				if ($qoh < $loc['reorder_level'])
-				{
-					$st_ids[] = $line->stock_id;
-					$st_names[] = $line->item_description;
-					$st_num[] = $qoh - $loc['reorder_level'];
-					$st_reorder[] = $loc['reorder_level'];
-				}
-			}
-		}
+			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
 		$sql .= $order_no . ",".$order->trans_type .
@@ -98,23 +76,7 @@ function add_sales_order(&$order)
 	commit_transaction();
 
 	if ($loc_notification == 1 && count($st_ids) > 0)
-	{
-		require_once($path_to_root . "/reporting/includes/class.mail.inc");
-		$company = get_company_prefs();
-		$mail = new email($company['coy_name'], $company['email']);
-		$from = $company['coy_name'] . " <" . $company['email'] . ">";
-		$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-		$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-		$msg = "\n";
-		for ($i = 0; $i < count($st_ids); $i++)
-			$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " . _("Below") . ": " . $st_num[$i] . "\n";
-		$msg .= "\n" . _("Please reorder") . "\n\n";
-		$msg .= $company['coy_name'];
-		$mail->to($to);
-		$mail->subject($subject);
-		$mail->text($msg);
-		$ret = $mail->send();
-	}
+		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 	return $order_no;
 }
 
@@ -211,32 +173,7 @@ function update_sales_order($order)
 	foreach ($order->line_items as $line)
 	{
 		if ($loc_notification == 1 && is_inventory_item($line->stock_id))
-		{
-			$sql = "SELECT ".TB_PREF."loc_stock.*, "
-				  .TB_PREF."locations.location_name, "
-				  .TB_PREF."locations.email
-				FROM ".TB_PREF."loc_stock, "
-				  .TB_PREF."locations
-				WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-				 AND ".TB_PREF."loc_stock.stock_id = ".db_escape($line->stock_id)."
-				 AND ".TB_PREF."loc_stock.loc_code = ".db_escape($order->Location);
-			$res = db_query($sql,"a location could not be retreived");
-			$loc = db_fetch($res);
-			if ($loc['email'] != "")
-			{
-				$qoh = get_qoh_on_date($line->stock_id, $order->Location);
-				$qoh -= get_demand_qty($line->stock_id, $order->Location);
-				$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
-				$qoh -= $line->quantity;
-				if ($qoh < $loc['reorder_level'])
-				{
-					$st_ids[] = $line->stock_id;
-					$st_names[] = $line->item_description;
-					$st_num[] = $qoh - $loc['reorder_level'];
-					$st_reorder[] = $loc['reorder_level'];
-				}
-			}
-		}
+			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 		if($line->id) {
 			$sql = "UPDATE ".TB_PREF."sales_order_details
 						SET description = ".db_escape($line->item_description) . ", 
@@ -270,25 +207,7 @@ function update_sales_order($order)
 	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
-	{
-		require_once($path_to_root . "/reporting/includes/class.mail.inc");
-		$company = get_company_prefs();
-		$mail = new email($company['coy_name'], $company['email']);
-		$from = $company['coy_name'] . " <" . $company['email'] . ">";
-		$to = $loc['location_name'] . " <" . $loc['email'] . ">";
-		$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-		$msg = "\n";
-		for ($i = 0; $i < count($st_ids); $i++)
-			$msg .= $st_ids[$i] . " " . $st_names[$i] . ", "
-			  . _("Re-Order Level") . ": " . $st_reorder[$i] . ", "
-			  . _("Below") . ": " . $st_num[$i] . "\n";
-		$msg .= "\n" . _("Please reorder") . "\n\n";
-		$msg .= $company['coy_name'];
-		$mail->to($to);
-		$mail->subject($subject);
-		$mail->text($msg);
-		$ret = $mail->send();
-	}
+		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 }
 
 //----------------------------------------------------------------------------------------
