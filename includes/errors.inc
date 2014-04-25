@@ -195,10 +195,14 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	}
 	
 	$str .= "<br><br>";
-	if($msg)
-		trigger_error($str, E_USER_ERROR);
-	else	// $msg can be null here only in debug mode, otherwise the error is ignored
-		trigger_error($str, E_USER_WARNING);
+	if ($go_debug)
+		error_log($str);
+	else {
+		if($msg)
+			trigger_error($str, E_USER_ERROR);
+		else	// $msg can be null here only in debug mode, otherwise the error is ignored
+			trigger_error($str, E_USER_WARNING);
+	}
 	if ($exit)
 		exit;
 }
