@@ -54,7 +54,7 @@ class current_user
 
 	function set_company($company)
 	{
-		$this->company = $company;
+		$this->company = (int)$company;
 	}
 
 	function login($company, $loginname, $password)

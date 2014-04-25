@@ -29,10 +29,10 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		editable=".db_escape($editable);
 
 	if ($units != '')
-		$sql .= ", units='$units'";
+		$sql .= ", units=".db_escape($units);
 
 	if ($mb_flag != '')
-		$sql .= ", mb_flag='$mb_flag'";
+		$sql .= ", mb_flag=".db_escape($mb_flag);
 
 	$sql .= " WHERE stock_id=".db_escape($stock_id);
 

@@ -412,7 +412,7 @@ html_cleanup($_SERVER);
 
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
-if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
+if (!defined('FA_LOGOUT_PHP_FILE')){
 
 	login_timeout();
 
