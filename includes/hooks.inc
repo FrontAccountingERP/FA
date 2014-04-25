@@ -225,9 +225,10 @@ function install_hooks()
 	$Hooks = array();
 	
 	// include current language related $Hooks object if locale file exists
-	if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
+	$lang_code  = clean_file_name($_SESSION['language']->code);
+	if (file_exists($path_to_root . "/lang/" . $lang_code . "/locale.inc"))
 	{
-		include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
+		include_once($path_to_root . "/lang/" . $lang_code . "/locale.inc");
 		$code = $_SESSION['language']->code;
 		$hook_class = 'hooks_'.$code;
 		$Hooks[$code] = new $hook_class;
