@@ -101,6 +101,17 @@ function get_user_by_login($user_id)
 
 //-----------------------------------------------------------------------------------------------
 
+function get_user_by_email($email)
+{
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE email=".db_escape($email);
+
+	$result = db_query($sql, "could not get user for email $email");
+
+	return db_fetch($result);
+}
+
+//-----------------------------------------------------------------------------------------------
+
 function delete_user($id)
 {
 	$sql="DELETE FROM ".TB_PREF."users WHERE id=".db_escape($id);
