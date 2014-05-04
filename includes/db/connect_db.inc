@@ -26,6 +26,15 @@ function set_global_connection($company=-1)
 
 	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 		mysql_select_db($connection["dbname"], $db);
+	///// From MySql release 5.6.6 the sql_mode is no longer empty as it was prior to
+	///// this release. Just for safety we set it empty for all 5.6 release and higher.
+	///// This non empty sql_mode values can interphere with FA, so all is set empty during
+	///// our sessions.
+	///// We are, however, investigating the existing code to be compatible in the future.
+	///// We are also working on a mysql/mysqli solution to go to release 2.4.
+	if (strncmp(mysql_get_server_info(), "5.6", 3) >= 0) 
+		db_query("SET sql_mode = ''");
+	/////
 	return $db;
 }
 
