@@ -23,7 +23,7 @@ function tst_mysql()
 {
 	$test['descr'] = _('MySQL version'). ' >=4.1';
 	$test['type'] = 3;
-	$test['test'] = mysql_get_server_info();
+	$test['test'] = db_get_version();
 	$test['result'] = $test['test']>='4.1';
 	$test['comments'] = _('Upgrade MySQL server to version at least 4.1');
 
@@ -34,7 +34,7 @@ function tst_phpmysql()
 {
 	$test['descr'] = _('PHP MySQL extension');
 	$test['type'] = 3;
-	$test['result'] = function_exists('mysql_connect');
+	$test['result'] = db_extension_exists();
 	$test['test'] = $test['result'] ? _('Yes'): _('No');
 	
 	$test['comments'] = _('Your PHP has to have MySQL extension enabled.');

@@ -326,8 +326,7 @@ class db_pager {
 	    }
 				
 	    if (count($ord)) {
-			$ord = array_map(function_exists('mysql_real_escape_string') ? 
-				'mysql_real_escape_string': 'mysql_escape_string', $ord);
+			$ord = array_map('db_escape_function', $ord);
 			$sql .= " ORDER BY " . implode(',', $ord);
 		} else {
 			if($order)

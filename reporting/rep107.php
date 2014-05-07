@@ -92,10 +92,10 @@ function print_invoices()
 	$range = get_invoice_range($from, $to);
 	while($row = db_fetch($range))
 	{
-			if (!exists_customer_trans(ST_SALESINVOICE, $i))
+			if (!exists_customer_trans(ST_SALESINVOICE, $row['trans_no']))
 				continue;
 			$sign = 1;
-			$myrow = get_customer_trans($i, ST_SALESINVOICE);
+			$myrow = get_customer_trans($row['trans_no'], ST_SALESINVOICE);
 
 			if($customer && $myrow['debtor_no'] != $customer) {
 				continue;
@@ -130,7 +130,7 @@ function print_invoices()
 				while($inv = db_fetch($result))
 				{
 					$prepayments[] = $inv;
-					if ($inv['trans_no'] == $i)
+					if ($inv['trans_no'] == $row['trans_no'])
 					break;
 				}
 
@@ -140,7 +140,7 @@ function print_invoices()
 					unset($prepayments);
 			}
 
-   			$result = get_customer_trans_details(ST_SALESINVOICE, $i);
+   			$result = get_customer_trans_details(ST_SALESINVOICE, $row['trans_no']);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
@@ -177,7 +177,7 @@ function print_invoices()
 					$rep->NewPage();
 			}
 
-			$memo = get_comments_string(ST_SALESINVOICE, $i);
+			$memo = get_comments_string(ST_SALESINVOICE, $row['trans_no']);
 			if ($memo != "")
 			{
 				$rep->NewLine();
@@ -234,7 +234,7 @@ function print_invoices()
 			$rep->TextCol(3, 6, _("Shipping"), -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
-			$tax_items = get_trans_tax_details(ST_SALESINVOICE, $i);
+			$tax_items = get_trans_tax_details(ST_SALESINVOICE, $row['trans_no']);
 			$first = true;
     		while ($tax_item = db_fetch($tax_items))
     		{
