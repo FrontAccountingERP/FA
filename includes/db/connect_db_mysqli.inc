@@ -193,7 +193,7 @@ function db_create_db($connection)
 	if (!mysqli_select_db($db, $connection["dbname"]))
 	{
 		$sql = "CREATE DATABASE IF NOT EXISTS " . $connection["dbname"] . "";
-		if (!mysqli_query($sql) || !mysqli_select_db($db, $connection["dbname"]))
+		if (!mysqli_query($db, $sql) || !mysqli_select_db($db, $connection["dbname"]))
 			return 0;
 	}
 	return $db;
