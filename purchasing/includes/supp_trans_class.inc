@@ -121,23 +121,27 @@ class supp_trans
         $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id, 
         	$this->tax_included);
 
-		if ($gl_codes)
-		{
-			foreach ($this->gl_codes as $gl_code)
-			{
-				$index = is_tax_account($gl_code->gl_code);
-				if ($index !== false)
-				{
-					$taxes[$index]['Value'] += $gl_code->amount;
-				}
-			}
-		}
-
-		if(isset($this->tax_overrides))
+		if (isset($this->tax_overrides))
 			foreach($this->tax_overrides as $id => $value) // add values entered manually
 			{
 				$taxes[$id]['Override'] = $value;
 			}
+
+		// Taxes included in gl_codes table have exact value, but count to overrides as well.
+		// Therefore when we want to now taxes only for items (gl_codes==false),
+		// we have to subtract gl_taxes from override values.
+		foreach ($this->gl_codes as $gl_code)
+		{
+			$index = is_tax_account($gl_code->gl_code);
+			if ($index !== false)
+			{
+				if ($gl_codes)
+					$taxes[$index]['Value'] += $gl_code->amount;
+				elseif (isset($this->tax_overrides))
+					$taxes[$index]['Override'] -= $gl_code->amount;
+			}
+		}
+
         return $taxes;
     }
 	//
