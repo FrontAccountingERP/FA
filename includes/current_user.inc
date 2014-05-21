@@ -132,7 +132,7 @@ class current_user
 	}
 
 	function reset_password($company, $email) {
-		global $path_to_root, $app_title;
+		global $app_title;
 
 		$this->set_company($company);
 		$this->logged = false;
@@ -154,7 +154,7 @@ class current_user
 
 			return true;
 		}
-    	return false;
+   		return false;
     }
 
 	function check_user_access()
