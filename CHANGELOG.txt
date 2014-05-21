@@ -10,6 +10,92 @@
 ------------
 This is a changelog for FrontAccounting All releases.
 
+2014-05-21 08:59 +0200 Janusz Dobrowolski
+(3386) Fixed unexpected additional GL postings when tax was used in Supplier Invoice additional GL lines.
+ purchasing/includes/supp_trans_class.inc
+ purchasing/supplier_credit.php
+
+2014-05-21 08:58 +0200 Janusz Dobrowolski
+(3385) Small code cleanups.
+ includes/current_user.inc
+ purchasing/supplier_invoice.php
+
+2014-04-26 09:14 +0200 Janusz Dobrowolski
+(3384) Added option to allow password reset (by Mithy).
+ access/login.php
+ access/password_reset.php
+ admin/db/users_db.inc
+ config.default.php
+ includes/current_user.inc
+ includes/session.inc
+
+2014-04-26 00:57 +0200 Janusz Dobrowolski
+(3383) Fixed directory traversal issues.
+ admin/inst_module.php
+ includes/hooks.inc
+
+2014-04-26 00:12 +0200 Janusz Dobrowolski
+(3382) Redirect all database errors to error log unless $go_debug is switched on.
+ includes/errors.inc
+
+2014-04-26 00:01 +0200 Janusz Dobrowolski
+(3381) A couple of security issues fixed.
+ access/logout.php
+ admin/create_coy.php
+ admin/db/users_db.inc
+ includes/current_user.inc
+ includes/session.inc
+ inventory/includes/db/items_db.inc
+ taxes/db/tax_types_db.inc
+
+2014-03-23 16:02 +0100 Janusz Dobrowolski
+(3380) Fixed email option labels in Supplier Reports.
+ reporting/reports_main.php
+
+2014-05-05 16:19 +0200 Joe
+(3377) Allow changing currency on customer/supplier as long as no transactions exist.
+ purchasing/manage/suppliers.php
+ sales/manage/customers.php
+
+2014-05-04 09:46 +0200 Joe
+(3376) Backward compatible empty sql mode for MySql databases greater than release 5.5.
+ includes/db/connect_db.inc
+
+2014-04-08 09:20 +0200 Joe
+(3375) Sending location email when below reorder also in Itmes Transfer and Adjustment
+ inventory/includes/db/items_adjust_db.inc
+ inventory/includes/db/items_transfer_db.inc
+ inventory/includes/inventory_db.inc
+ sales/includes/db/sales_order_db.inc
+
+2014-04-05 10:15 +0200 Joe
+(3374) Selecting the cancel button in confirming the voiding of document did not work properly. Rerun
+ sales/sales_order_entry.php
+
+2014-04-05 10:08 +0200 Joe
+(3373) Selecting the cancel button in confirming the voiding of document did not work properly.
+ sales/sales_order_entry.php
+
+2014-04-04 23:51 +0200 Joe
+(3372) When canceling a non finished sales quotation FA should not try to delete record.
+ sales/sales_order_entry.php
+
+2014-04-03 16:37 +0200 Joe
+(3371) Bad elsif sentense in items.php (image upload)
+ inventory/manage/items.php
+
+2014-03-11 23:57 +0100 Joe
+(3370) Changed decimal places in preferences to be number lists.
+ admin/display_prefs.php
+
+2014-03-10 11:06 +0100 Joe
+(3369) Crusial update instructions
+ update.html
+
+2014-03-10 11:01 +0100 Joe
+(3368) New CHANGELOG.txt
+ CHANGELOG.txt
+
 2014-03-10 10:58 +0100 Joe
 (3367) Release 2.3.20
  version.php
