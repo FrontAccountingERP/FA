@@ -286,16 +286,14 @@ function credit_sales_invoice_allocate($invoice_no, $credit_no, $amount, $date)
 
 		while(($free < $amount) && ($alloc = db_fetch($result))) {
 			$unalloc = min($alloc['amt'], $amount-$free);
-			update_debtor_trans_allocation($alloc['trans_type_to'], $alloc['trans_no_to'], 
-				-$unalloc);
-			update_debtor_trans_allocation($alloc['trans_type_from'], $alloc['trans_no_from'], 
-				-$unalloc);
 
 			delete_cust_allocation($alloc['id']);
 			if ($unalloc < $alloc['amt'])
 				add_cust_allocation($alloc['amt']-$unalloc, $alloc['trans_type_from'],
 					$alloc['trans_no_from'], ST_SALESINVOICE, $invoice_no);
 
+			update_debtor_trans_allocation($alloc['trans_type_to'], $alloc['trans_no_to']);
+			update_debtor_trans_allocation($alloc['trans_type_from'], $alloc['trans_no_from']);
 			$free += $unalloc;
 		}
 	}
@@ -306,9 +304,9 @@ function credit_sales_invoice_allocate($invoice_no, $credit_no, $amount, $date)
  Check all credit notes allocated to this invoice for summarized freight charges."));
 		return false;
 	}
-	update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $amount);
-	update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no, $amount);
 	add_cust_allocation($amount, ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $invoice_no);
+	update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no);
+	update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no);
 
 	exchange_variation(ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $invoice_no, $date,
 		$amount, PT_CUSTOMER);
