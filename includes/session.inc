@@ -144,6 +144,35 @@ function login_fail()
 	die();
 }
 
+function password_reset_fail()
+{
+	global $path_to_root;
+	
+  echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
+  echo "<b>" . _("The email address does not exist in the system.") . "<b><br><br>";
+
+  echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
+  echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
+  echo "</center>";
+
+	kill_login();
+	die();
+}
+
+function password_reset_success()
+{
+	global $path_to_root;
+
+  echo "<center><br><br><font size='5' color='green'><b>" . _("New password sent") . "<b></font><br><br>";
+  echo "<b>" . _("A new password has been sent to your mailbox.") . "<b><br><br>";
+
+  echo "<br><a href='$path_to_root/index.php'>" . _("Login here") . "</a>";
+  echo "</center>";
+	
+	kill_login();
+	die();
+}
+
 function check_faillog()
 {
 	global $login_delay, $login_faillog, $login_max_attempts;
@@ -416,7 +445,7 @@ html_cleanup($_SERVER);
 
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
-if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
+if (!defined('FA_LOGOUT_PHP_FILE')){
 
 	login_timeout();
 
@@ -427,6 +456,33 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
 	if (!$_SESSION["wa_current_user"]->logged_in())
 	{
+      if (@$allow_password_reset && !$allow_demo_mode
+        && (isset($_GET['reset']) || isset($_POST['email_entry_field']))) {
+		  if (!isset($_POST["email_entry_field"])) {
+        include($path_to_root . "/access/password_reset.php");
+        exit();
+      }
+      else {
+        if (isset($_POST["company_login_nickname"]) && !isset($_POST["company_login_name"])) {
+          for ($i = 0; $i < count($db_connections); $i++) {
+            if ($db_connections[$i]["name"] == $_POST["company_login_nickname"]) {
+              $_POST["company_login_name"] = $i;
+              unset($_POST["company_login_nickname"]);
+              break 1; // cannot pass variables to break from PHP v5.4 onwards
+            }
+          }
+        }
+        $_succeed = isset($db_connections[$_POST["company_login_name"]]) &&
+          $_SESSION["wa_current_user"]->reset_password($_POST["company_login_name"],
+          $_POST["email_entry_field"]);
+        if ($_succeed)
+        {
+          password_reset_success();
+        }
+
+        password_reset_fail();
+      }
+    }
 		// Show login screen
 		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
 		{

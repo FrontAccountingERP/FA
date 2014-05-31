@@ -237,6 +237,9 @@ if (isset($_GET['AddedID'])) {
 		submenu_option(_("Enter a &New Direct Invoice"),
 			"/sales/sales_order_entry.php?NewInvoice=0");
 
+	if ($row === false)
+		submenu_option(_("Entry &customer payment for this invoice"), "/sales/customer_payments.php?SInvoice=".$invoice);
+
 	submenu_option(_("Add an Attachment"), "/admin/attachments.php?filterType=".ST_SALESINVOICE."&trans_no=$invoice");
 
 	display_footer_exit();
@@ -608,7 +611,8 @@ function  handle_cancel_order()
 		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 	{
-		delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
+		if ($_SESSION['Items']->trans_no != 0) 
+			delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 		display_notification(_("This sales quotation has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 	} else { // sales order
@@ -745,16 +749,20 @@ if ($customer_error == "") {
 
 		submit_center_first('ProcessOrder', $porder,
 		    _('Check entered data and save document'), 'default');
+		submit_center_last('CancelOrder', $cancelorder,
+	   		_('Cancels document entry or removes sales order when editing an old document'), true);
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	} else {
-		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
-			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');
+		submit_center_last('CancelOrder', $cancelorder,
+	   		_('Cancels document entry or removes sales order when editing an old document'), true);
+		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
+			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
+		else
+			submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	}
 
-	submit_center_last('CancelOrder', $cancelorder,
-	   _('Cancels document entry or removes sales order when editing an old document'));
 } else {
 	display_error($customer_error);
 }

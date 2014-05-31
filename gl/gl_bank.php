@@ -283,7 +283,7 @@ function check_trans()
 	if (!db_has_currency_rates(get_bank_account_currency($_POST['bank_account']), $_POST['date_'], true))
 		$input_error = 1;
 
-	if (in_array(get_post('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
+	if (isset($_POST['settled_amount']) && in_array(get_post('PayType'), array(PT_SUPPLIER, PT_CUSTOMER)) && (input_num('settled_amount') <= 0)) {
 		display_error(_("Settled amount have to be positive number."));
 		set_focus('person_id');
 		$input_error = 1;
@@ -298,13 +298,14 @@ if (isset($_POST['Process']) && !check_trans())
 	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
 	$new = $_SESSION['pay_items']->order_id == 0;
 
+	add_new_exchange_rate(get_bank_account_currency(get_post('bank_account')), get_post('date_'), input_num('_ex_rate'));
+
 	$trans = write_bank_transaction(
 		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
 		$_POST['ref'], $_POST['memo_'], true, input_num('settled_amount', null));
 
-	add_new_exchange_rate(get_bank_account_currency(get_post('bank_account')), get_post('date_'), input_num('_ex_rate'));
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
 	new_doc_date($_POST['date_']);

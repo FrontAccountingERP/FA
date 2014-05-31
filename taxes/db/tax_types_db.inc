@@ -83,7 +83,7 @@ function delete_tax_type($type_id)
 	db_query($sql, "could not delete tax type");
 
 	// also delete any item tax exemptions associated with this type
-	$sql = "DELETE FROM ".TB_PREF."item_tax_type_exemptions WHERE tax_type_id=$type_id";
+	$sql = "DELETE FROM ".TB_PREF."item_tax_type_exemptions WHERE tax_type_id=".db_escape($type_id);
 
 	db_query($sql, "could not delete item tax type exemptions");
 

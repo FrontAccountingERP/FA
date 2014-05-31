@@ -33,7 +33,7 @@ class allocation
 	function allocation($type, $trans_no, $person_id = null, $person_type_id=null)
 	{
 		$this->allocs = array();
-		
+
 		$this->trans_no = $trans_no;
 		$this->type = $type;
 		if ($person_id)
@@ -132,7 +132,8 @@ class allocation
 				$this->currency = isset($trans['bank_curr_code']) ? $trans['bank_curr_code'] : $trans['curr_code'];
 				$this->bank_amount = @$trans["bank_amount"];
 				$this->amount = $trans["Total"];
-			}
+			} else
+				$this->date_ = Today();
 		}
 	/* Now populate the array of possible (and previous actual) allocations 
 		for this customer/supplier. First get the transactions that have 

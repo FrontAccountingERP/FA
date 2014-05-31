@@ -653,7 +653,8 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `tax_included` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `debtor_no` (`debtor_no`,`branch_code`),
-  KEY `tran_date` (`tran_date`)
+  KEY `tran_date` (`tran_date`),
+  KEY `order_` (`order_`)
 ) ENGINE=InnoDB;
 
 --

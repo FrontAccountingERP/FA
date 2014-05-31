@@ -13,7 +13,7 @@
 
 function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
 {
-	global $Refs;
+	global $loc_notification, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
@@ -24,8 +24,18 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 
 	$transfer_id = get_next_trans_no(ST_LOCTRANSFER);
 
+	if ($loc_notification == 1)
+	{
+		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+		$st_ids = array();
+		$st_names = array();
+		$st_num = array();
+		$st_reorder = array();
+	}
 	foreach ($Items as $line_item)
 	{
+		if ($loc_notification == 1)
+			$loc = calculate_reorder_level($location_from, $line_item, $st_ids, $st_names, $st_num, $st_reorder); 
 		add_stock_transfer_item($transfer_id, $line_item->stock_id, $location_from,
 			$location_to, $date_, $type, $reference, $line_item->quantity);
 	}
@@ -39,6 +49,9 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 	hook_db_postwrite($args, ST_LOCTRANSFER);
 
 	commit_transaction();
+	
+	if ($loc_notification == 1 && count($st_ids) > 0)
+		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 
 	return $transfer_id;
 }

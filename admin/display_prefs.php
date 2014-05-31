@@ -70,10 +70,10 @@ start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Decimal Places"));
 
-text_row_ex(_("Prices/Amounts:"), 'prices_dec', 5, 5, '', user_price_dec());
-text_row_ex(_("Quantities:"), 'qty_dec', 5, 5, '', user_qty_dec());
-text_row_ex(_("Exchange Rates:"), 'rates_dec', 5, 5, '', user_exrate_dec());
-text_row_ex(_("Percentages:"), 'percent_dec',  5, 5, '', user_percent_dec());
+number_list_row(_("Prices/Amounts:"), 'prices_dec', user_price_dec(), 0, 10);
+number_list_row(_("Quantities:"), 'qty_dec', user_qty_dec(), 0, 10);
+number_list_row(_("Exchange Rates:"), 'rates_dec', user_exrate_dec(), 0, 10);
+number_list_row(_("Percentages:"), 'percent_dec', user_percent_dec(), 0, 10);
 
 table_section_title(_("Dateformat and Separators"));
 

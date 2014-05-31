@@ -25,11 +25,11 @@ $comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting', '
 //---------------------------------------------------------------------------------------------
 if (isset($_GET['selected_id']))
 {
-	$selected_id = $_GET['selected_id'];
+	$selected_id = (int)$_GET['selected_id'];
 }
 elseif (isset($_POST['selected_id']))
 {
-	$selected_id = $_POST['selected_id'];
+	$selected_id = (int)$_POST['selected_id'];
 }
 else
 	$selected_id = -1;
@@ -172,7 +172,7 @@ function handle_delete()
 {
 	global $def_coy, $db_connections, $comp_subdirs, $path_to_root;
 
-	$id = $_GET['id'];
+	$id = (int)$_GET['id'];
 
 	// First make sure all company directories from the one under removal are writable. 
 	// Without this after operation we end up with changed per-company owners!

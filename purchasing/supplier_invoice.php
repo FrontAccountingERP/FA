@@ -68,7 +68,8 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 
-	hyperlink_no_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+		"PInvoice=".$invoice_no);
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 
@@ -107,6 +108,15 @@ function clear_fields()
 	$Ajax->activate('gl_items');
 	set_focus('gl_code');
 }
+
+function reset_tax_input()
+{
+	global $Ajax;
+
+	unset($_POST['mantax']);
+	$Ajax->activate('inv_tot');
+}
+
 //------------------------------------------------------------------------------------------------
 //	GL postings are often entered in the same form to two accounts
 //  so fileds are cleared only on user demand.
@@ -151,6 +161,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 			$_POST['dimension_id'], $_POST['dimension2_id'], 
 			input_num('amount'), $_POST['memo_']);
+		reset_tax_input();
 		set_focus('gl_code');
 	}
 }
@@ -279,7 +290,7 @@ function check_item_data($n)
 		}
 	}
 
-	if ($check_qty_charged_vs_del_qty == True)
+	if ($check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n]))
 	{
 		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))
@@ -312,7 +323,7 @@ function commit_item_data($n)
 			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),
 			$_POST['order_price'.$n], input_num('ChgPrice'.$n), $complete,
 			$_POST['std_cost_unit'.$n], "");
-		unset($_POST['mantax']);
+		reset_tax_input();
 	}
 }
 
@@ -342,9 +353,8 @@ $id3 = find_submit('Delete');
 if ($id3 != -1)
 {
 	$_SESSION['supp_trans']->remove_grn_from_trans($id3);
-	unset($_POST['mantax']);
 	$Ajax->activate('grn_items');
-	$Ajax->activate('inv_tot');
+	reset_tax_input();
 }
 
 $id4 = find_submit('Delete2');
@@ -352,8 +362,8 @@ if ($id4 != -1)
 {
 	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
 	clear_fields();
+	reset_tax_input();
 	$Ajax->activate('gl_items');
-	$Ajax->activate('inv_tot');
 }
 
 $id2 = -1;
@@ -365,7 +375,7 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
 		remove_not_invoice_item($id2);
 		display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 
-	}   		
+	}
 }
 
 if (isset($_POST['go']))
@@ -373,7 +383,7 @@ if (isset($_POST['go']))
 	$Ajax->activate('gl_items');
 	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
-	$Ajax->activate('inv_tot');
+	reset_tax_input();
 }
 
 start_form();

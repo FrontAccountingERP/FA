@@ -42,8 +42,8 @@ function local_extension($id)
 			'active' => false
 	);
 
-	if (file_exists($path_to_root.'/modules/'.$id.'/hooks.php')) {
-		include_once($path_to_root.'/modules/'.$id.'/hooks.php');
+	if (file_exists($path_to_root.'/modules/'.clean_file_name($id).'/hooks.php')) {
+		include_once($path_to_root.'/modules/'.clean_file_name($id).'/hooks.php');
 	}
 	$hooks_class = 'hooks_'.$id;
 	if (class_exists($hooks_class, false)) {

@@ -51,6 +51,25 @@ function delete_attachment($id)
 	$sql = "DELETE FROM ".TB_PREF."attachments WHERE id = ".db_escape($id);
 	db_query($sql, "Could not delete attachment");
 }
+
+//----------------------------------------------------------------------------------------
+
+function get_attachment_string($type, $id)
+{
+	global $path_to_root;
+    $str_return = "";    
+    $sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no=".db_escape($type)." AND trans_no=".db_escape($id)." ORDER BY trans_no";
+    $return = db_query($sql, "Could not retrieve attachments");
+    while ($attachment = db_fetch($return))
+    {
+        if (strlen($str_return))
+            $str_return = $str_return . " \n";    
+        $str_return .= _("Attached File:")." <a href='$path_to_root/admin/attachments.php?vw=".$attachment["id"]." ' target='blanc_'> ". 
+        	$attachment["id"] . " " . $attachment["description"]. " - ". $attachment["filename"]."</a><br/>";
+    }
+    return $str_return . "<br/>";
+}
+
 //----------------------------------------------------------------------------------------
 
 function get_attached_documents($type)

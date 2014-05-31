@@ -194,6 +194,8 @@ function show_results()
 		display_debit_or_credit_cells($myrow["amount"]);
 		if ($show_balances)
 		    amount_cell($running_total);
+		if ($myrow['memo_'] == "")
+			$myrow['memo_'] = get_comments_string($myrow['type'], $myrow['type_no']);
     	label_cell($myrow['memo_']);
     	end_row();
 

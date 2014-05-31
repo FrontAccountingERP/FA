@@ -101,6 +101,17 @@ function get_user_by_login($user_id)
 
 //-----------------------------------------------------------------------------------------------
 
+function get_user_by_email($email)
+{
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE email=".db_escape($email);
+
+	$result = db_query($sql, "could not get user for email $email");
+
+	return db_fetch($result);
+}
+
+//-----------------------------------------------------------------------------------------------
+
 function delete_user($id)
 {
 	$sql="DELETE FROM ".TB_PREF."users WHERE id=".db_escape($id);
@@ -197,7 +208,7 @@ function show_users_online()
 		}
 
 		// Add user to database
-		db_query("INSERT INTO ".TB_PREF."useronline (timestamp, ip, file) VALUES ('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')");
+		db_query("INSERT INTO ".TB_PREF."useronline (timestamp, ip, file) VALUES ('". $timestamp ."',". db_escape($ip) .",". db_escape($_SERVER['PHP_SELF']) .")");
 		//Remove users that were not online within $timeoutseconds.
 		db_query("DELETE FROM ".TB_PREF."useronline WHERE timestamp<". $timeout);
 

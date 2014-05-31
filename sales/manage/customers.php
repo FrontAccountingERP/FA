@@ -236,7 +236,8 @@ function customer_settings($selected_id)
 	text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
-	if (!$selected_id || is_new_customer($selected_id)) 
+	if (!$selected_id || is_new_customer($selected_id) || (!key_in_foreign_table($selected_id, 'debtor_trans', 'debtor_no') &&
+		!key_in_foreign_table($selected_id, 'sales_orders', 'debtor_no'))) 
 	{
 		currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
 	} 

@@ -54,7 +54,7 @@ class current_user
 
 	function set_company($company)
 	{
-		$this->company = $company;
+		$this->company = (int)$company;
 	}
 
 	function login($company, $loginname, $password)
@@ -140,6 +140,32 @@ class current_user
 		}
 		return $this->logged;
 	}
+
+	function reset_password($company, $email) {
+		global $app_title;
+
+		$this->set_company($company);
+		$this->logged = false;
+
+		set_global_connection();
+
+		$myrow = get_user_by_email($email);
+
+		if ($myrow['id'] != "") {
+
+			$bytes = openssl_random_pseudo_bytes(8, $cstrong);
+			$password   = base64_encode($bytes);
+
+			$hash = md5($password);
+
+			update_user_password($myrow['id'], $myrow['user_id'], $hash);
+
+			mail($myrow['email'], _("New password for")." ".$app_title, $password);
+
+			return true;
+		}
+   		return false;
+    }
 
 	function check_user_access()
 	{

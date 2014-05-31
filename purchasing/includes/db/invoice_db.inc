@@ -368,17 +368,18 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 		if ($invoice_alloc_balance > 0) 
 		{ 	//the invoice is not already fully allocated 
 
-			$trans = get_supp_trans($supp_trans->src_docs, ST_SUPPINVOICE);
-			$total = $trans['Total'];
+			$trans = get_supp_trans($invoice_id, ST_SUPPCREDIT);
+			$total = -$trans['Total'];
 
 			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
+
 			/*Now insert the allocation record if > 0 */
 			if ($allocate_amount != 0) 
 			{
-				update_supp_trans_allocation(ST_SUPPINVOICE, $supp_trans->src_docs);
-				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id);
-				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $supp_trans->src_docs,
+				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no,
 					$date_);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no);
+				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id);
 
 				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $supp_trans->src_docs, $date_,
 					$allocate_amount, PT_SUPPLIER);
@@ -391,6 +392,7 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 //_vd(get_payments_for($sales_order, ST_PURCHORDER));
 //_vd(get_payments_for($invoice_id, ST_SUPPINVOICE));
 //exit;
+	$supp_trans->trans_no = $invoice_id;
 	hook_db_postwrite($supp_trans, $supp_trans->trans_type);
     commit_transaction();
 

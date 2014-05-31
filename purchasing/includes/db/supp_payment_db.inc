@@ -52,11 +52,11 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 	{
 		$charge_act = get_company_pref('bank_charge_act');
 		$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $charge_act, 0, 0, '',
-			$bank_charge, $bank['bank_curr_code']);
+			$bank_charge, $bank['bank_curr_code'], PT_SUPPLIER, $supplier_id);
 	}
 
 	$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $bank['account_code'], 0, 0, '',
-		-($bank_amount + $bank_charge), $bank['bank_curr_code']);
+		-($bank_amount + $bank_charge), $bank['bank_curr_code'], PT_SUPPLIER, $supplier_id);
 
 	/*Post a balance post if $total != 0 due to variance in AP and bank posted values*/
 	if ($total != 0)
