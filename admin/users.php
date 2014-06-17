@@ -93,16 +93,25 @@ if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
 
 if ($Mode == 'Delete' && check_csrf_token())
 {
-	delete_user($selected_id);
-	display_notification_centered(_("User has been deleted."));
-	$Mode = 'RESET';
+	$cancel_delete = 0;
+    if (key_in_foreign_table($selected_id, 'audit_trail', 'user'))
+    {
+        $cancel_delete = 1;
+        display_error(_("Cannot delete this user because entries are associated with this user."));
+    }
+    if ($cancel_delete == 0) 
+    {
+    	delete_user($selected_id);
+    	display_notification_centered(_("User has been deleted."));
+    } //end if Delete group
+    $Mode = 'RESET';
 }
 
 //-------------------------------------------------------------------------------------------------
 if ($Mode == 'RESET')
 {
  	$selected_id = -1;
-	$sav = get_post('show_inactive');
+	$sav = get_post('show_inactive', null);
 	unset($_POST);	// clean all input fields
 	$_POST['show_inactive'] = $sav;
 }
