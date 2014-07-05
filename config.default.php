@@ -198,6 +198,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	   Pallete skin attributes set in reporting/includes/class.graphic.inc */
 	$graph_skin 	= 1;
 
+	/* UTF-8 font for Business Graphics. Copy it to /reporting/fonts/ folder. */
+	$UTF8_fontfile	= "FreeSans.ttf";
+
 /*	
 	Before upgrade from pre-2.2 FA you have to move here your customized
 	security roles definitions. If you have used standard roles, you
