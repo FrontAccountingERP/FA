@@ -145,19 +145,22 @@ class graph
     var $dec1 = 0;
     var $dec2 = 0;
     var $h3d = 15; // 3D height
-	var $built_in = true;
+	var $built_in = false;
 	var $fontfile = "";
 	var $encoding;
 	
     function graph()
     {
-		$this->encoding = $_SESSION['language']->encoding;
+    	global $UTF8_fontfile;
+		$this->encoding = strtoupper($_SESSION['language']->encoding);
 		$path = dirname(__FILE__).'/../fonts/';
 
-		// If you use utf-8 encoding you have to download and install FreeSans.ttf font.
+		// If you use UTF-8 encoding you have to download and install FreeSans.ttf font.
 		// It is not bundled with application due to its size.
-		$this->fontfile = $this->encoding=='UTF-8' ? $path.'FreeSans.ttf' : $path.'LiberationSans-Regular.ttf';
-
+		// You can also use another UTF-8 font and put it in config.php with the name in $UTF8_fontfile 
+		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($UTF8_fontfile) && $UTF8_fontfile != "" ? $path.$UTF8_fontfile : $path.'FreeSans.ttf') : 
+			$path.'LiberationSans-Regular.ttf';
+		
         $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;
         $this->biggest_y        = NULL;
@@ -270,7 +273,12 @@ class graph
                 if ($i % 2 == 0) 
                 {
                     $value = $this->number_formated($this->higher_value * $i / 10, $this->dec1);
-                    $less = 7 * strlen($value);
+                    $len1 = strlen($this->higher_value_str);
+                    $len2 = strlen($value);
+                    if ($len2 < $len1)
+                    	$len2 += ($len1-$len2-1);
+                    $less = 7 * $len2;
+                    //$this->_imagestring($this->img, $this->size, ($x1-$less-7), ($y2-7), $value, $this->color['axis_values']);
                     $this->_imagestring($this->img, $this->size, ($x1-$less-7), ($y2-7), $value, $this->color['axis_values']);
                 }
             }
@@ -771,7 +779,11 @@ class graph
     function string_width($string, $size) 
     {
         $single_width = $size + 4;
-        return $single_width * strlen($string);
+        if ($this->encoding == "UTF-8")
+        	$width = mb_strlen($string, "UTF-8");
+        else	
+        	$width = strlen($string);
+        return $single_width * $width;
     }
 
     function string_height($size) 
@@ -954,14 +966,23 @@ class graph
 
     function _imagestring($img, $size, $x, $y, $string, $col, $alt=0)
     {
-       	if ($alt && strlen($string) > 12)
-       		$string = substr($string, 0, 12);
+       	if ($alt && mb_strlen($string) > 12)
+   			$string = mb_substr($string, 0, 12);
 
 		if ($this->encoding != 'UTF-8') {
 			if (function_exists('iconv'))
 				$string = iconv($this->encoding, 'UTF-8', $string);
 			else
 				$string = mb_convert_encoding($string, 'UTF-8', $this->encoding);
+		}
+		
+		// New 2014-06-26 Joe Hunt for handling ev. RTL languages
+		if ($this->encoding == 'UTF-8')
+		{
+			if (is_arabic($string))
+				$string = arabic($string, "we");
+			elseif (is_hebrew($string))
+				$string = hebrew($string);
 		}
 
     	if ($this->built_in)
@@ -972,11 +993,11 @@ class graph
     	{
     		if ($size == 1)
     			$size = 7;
-    		else if ($size == 2)
+    		elseif ($size == 2)
     			$size = 8;
-    		else if ($size == 3)
+    		elseif ($size == 3)
     			$size = 9;
-    		else if ($size == 4)
+    		elseif ($size == 4)
     			$size = 11;
     		else
     			$size = 12;
@@ -985,9 +1006,293 @@ class graph
     		//	$angle = -15;
     		//else
    				$angle = 0;
-
-    		imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
+   			
+   			imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
     	}
     }	
 }
+
+// The following is for handling RTL texts. GD does not handle RTL at all.
+// The function, arabic, has been taken from Milad Rastian and
+// modified by Bagram Siadat.
+// The function has been further modified and several bugs are fixed.
+
+function is_arabic($text)
+{
+	return preg_match('/\p{Arabic}/u', $text);
+} 
+
+function is_hebrew($text)
+{
+	return preg_match('/\p{Hebrew}/u', $text);
+} 
+
+function utf8_strlen($str) 
+{
+	return preg_match_all('/[\x00-\x7F\xC0-\xFD]/', $str, $dummy);
+}
+
+function utf8_chr($uni) 
+{
+	$r = "";
+    # ASCII range (including control chars)
+    if ( ($uni >= 0) && ($uni <= 0x007f) ) 
+            $r .= chr($uni);
+	elseif ($uni <= 0x07ff) // 2 byte sequence
+ 	{
+		$r .= chr(0xc0 | ($uni >> 6));
+		$r .= chr(0x80 | ($uni & 0x003f));
+	} 
+	elseif($uni == 0xFEFF) // Byte order mark (skip)
+		return chr(0); // nop -- zap the BOM
+	elseif ($uni >= 0xD800 && $uni <= 0xDFFF) // Test for illegal surrogates 
+		return chr(0); // found a surrogate
+	elseif ($uni <= 0xffff) // 3 byte sequence 
+	{
+		$r .= chr(0xe0 | ($uni >> 12));
+		$r .= chr(0x80 | (($uni >> 6) & 0x003f));
+		$r .= chr(0x80 | ($uni & 0x003f));
+	} 
+	elseif ($uni <= 0x10ffff) // 4 byte sequence 
+	{
+		$r .= chr(0xf0 | ($uni >> 18));
+		$r .= chr(0x80 | (($uni >> 12) & 0x3f));
+		$r .= chr(0x80 | (($uni >> 6) & 0x3f));
+		$r .= chr(0x80 | ($uni & 0x3f));
+	} 
+	else 
+		return chr(0);
+	return $r;
+}
+
+global $p_chars;
+$p_chars = array (
+    utf8_chr(0x0622) => array (utf8_chr(0xfe82), utf8_chr(0xfe82), utf8_chr(0x0622)),
+    utf8_chr(0x0627) => array (utf8_chr(0xfe8e), utf8_chr(0xfe8e), utf8_chr(0x0627)),
+    utf8_chr(0x0628) => array (utf8_chr(0xfe90), utf8_chr(0xfe92), utf8_chr(0xfe91)),
+    utf8_chr(0x067e) => array (utf8_chr(0xfb57), utf8_chr(0xfb59), utf8_chr(0xfb58)),
+    utf8_chr(0x062a) => array (utf8_chr(0xfe96), utf8_chr(0xfe98), utf8_chr(0xfe97)),
+    utf8_chr(0x062b) => array (utf8_chr(0xfe9a), utf8_chr(0xfe9c), utf8_chr(0xfe9b)),
+    utf8_chr(0x062c) => array (utf8_chr(0xfe9e), utf8_chr(0xfea0), utf8_chr(0xfe9f)),
+    utf8_chr(0x0686) => array (utf8_chr(0xfb7b), utf8_chr(0xfb7d), utf8_chr(0xfb7c)),
+    utf8_chr(0x062d) => array (utf8_chr(0xfea2), utf8_chr(0xfea4), utf8_chr(0xfea3)),
+    utf8_chr(0x062e) => array (utf8_chr(0xfea6), utf8_chr(0xfea8), utf8_chr(0xfea7)),
+    utf8_chr(0x062f) => array (utf8_chr(0xfeaa), utf8_chr(0xfeaa), utf8_chr(0xfea9)),
+    utf8_chr(0x0630) => array (utf8_chr(0xfeac), utf8_chr(0xfeac), utf8_chr(0xfeab)),
+    utf8_chr(0x0631) => array (utf8_chr(0xfeae), utf8_chr(0xfeae), utf8_chr(0xfead)),
+    utf8_chr(0x0632) => array (utf8_chr(0xfeb0), utf8_chr(0xfeb0), utf8_chr(0xfeaf)),
+    utf8_chr(0x0698) => array (utf8_chr(0xfb8b), utf8_chr(0xfb8b), utf8_chr(0xfb8a)),
+    utf8_chr(0x0633) => array (utf8_chr(0xfeb2), utf8_chr(0xfeb4), utf8_chr(0xfeb3)),
+    utf8_chr(0x0634) => array (utf8_chr(0xfeb6), utf8_chr(0xfeb8), utf8_chr(0xfeb7)),
+    utf8_chr(0x0635) => array (utf8_chr(0xfeba), utf8_chr(0xfebc), utf8_chr(0xfebb)),
+    utf8_chr(0x0636) => array (utf8_chr(0xfebe), utf8_chr(0xfec0), utf8_chr(0xfebf)),
+    utf8_chr(0x0637) => array (utf8_chr(0xfec2), utf8_chr(0xfec4), utf8_chr(0xfec3)),
+    utf8_chr(0x0638) => array (utf8_chr(0xfec6), utf8_chr(0xfec8), utf8_chr(0xfec7)),
+    utf8_chr(0x0639) => array (utf8_chr(0xfeca), utf8_chr(0xfecc), utf8_chr(0xfecb)),
+    utf8_chr(0x063a) => array (utf8_chr(0xfece), utf8_chr(0xfed0), utf8_chr(0xfecf)),
+    utf8_chr(0x0641) => array (utf8_chr(0xfed2), utf8_chr(0xfed4), utf8_chr(0xfed3)),
+    utf8_chr(0x0642) => array (utf8_chr(0xfed6), utf8_chr(0xfed8), utf8_chr(0xfed7)),
+    utf8_chr(0x06a9) => array (utf8_chr(0xfeda), utf8_chr(0xfedc), utf8_chr(0xfedb)),
+    utf8_chr(0x06af) => array (utf8_chr(0xfb93), utf8_chr(0xfb95), utf8_chr(0xfb94)),
+    utf8_chr(0x0644) => array (utf8_chr(0xfede), utf8_chr(0xfee0), utf8_chr(0xfedf)),
+    utf8_chr(0x0645) => array (utf8_chr(0xfee2), utf8_chr(0xfee4), utf8_chr(0xfee3)),
+    utf8_chr(0x0646) => array (utf8_chr(0xfee6), utf8_chr(0xfee8), utf8_chr(0xfee7)),
+    utf8_chr(0x0648) => array (utf8_chr(0xfeee), utf8_chr(0xfeee), utf8_chr(0xfeed)),
+    utf8_chr(0x06cc) => array (utf8_chr(0xfbfd), utf8_chr(0xfbff), utf8_chr(0xfbfe)),
+    utf8_chr(0x0643) => array (utf8_chr(0xfeda), utf8_chr(0xfedc), utf8_chr(0xfedb)),
+    utf8_chr(0x064a) => array (utf8_chr(0xfef2), utf8_chr(0xfef4), utf8_chr(0xfef3)),
+    utf8_chr(0x0623) => array (utf8_chr(0xfe84), utf8_chr(0xfe84), utf8_chr(0xfe83)),
+    utf8_chr(0x0624) => array (utf8_chr(0xfe86), utf8_chr(0xfe86), utf8_chr(0xfe85)),
+    utf8_chr(0x0625) => array (utf8_chr(0xfe88), utf8_chr(0xfe88), utf8_chr(0xfe87)),
+    utf8_chr(0x0626) => array (utf8_chr(0xfe8a), utf8_chr(0xfe8c), utf8_chr(0xfe8b)),
+    utf8_chr(0x0629) => array (utf8_chr(0xfe94), utf8_chr(0xfe98), utf8_chr(0xfe97))
+);
+
+global $nastaligh;
+$nastaligh = array (
+    utf8_chr(0x0647) => array (utf8_chr(0xfbab), utf8_chr(0xfbad), utf8_chr(0xfbac))
+);
+global $normal;
+$normal = array (
+    utf8_chr(0x0647) => array (utf8_chr(0xfeea), utf8_chr(0xfeec), utf8_chr(0xfeeb))
+);
+
+global $mp_chars;
+$mp_chars = array (utf8_chr(0x0622), utf8_chr(0x0627), utf8_chr(0x062f), utf8_chr(0x0630), utf8_chr(0x0631), utf8_chr(0x0632), 
+	utf8_chr(0x0698), utf8_chr(0x0648), utf8_chr(0x0623), utf8_chr(0x0625), utf8_chr(0x0624));
+
+global $ignorelist;
+$ignorelist = array (utf8_chr(0x0000), utf8_chr(0x064c), utf8_chr(0x064d), utf8_chr(0x064b), utf8_chr(0x064f), utf8_chr(0x0650), 
+	utf8_chr(0x064e), utf8_chr(0x0651), utf8_chr(0x0653), utf8_chr(0x0670), utf8_chr(0x0654), utf8_chr(0xfe76), utf8_chr(0xfe7a), 
+	utf8_chr(0xfe78), utf8_chr(0xfe7c), utf8_chr(0xfe7e), utf8_chr(0xfe74), utf8_chr(0xfe70), utf8_chr(0xfc5e), utf8_chr(0xfc5f), 
+	utf8_chr(0xfc60), utf8_chr(0xfc61), utf8_chr(0xfc62), utf8_chr(0xfc63));
+
+///
+function arabic($str,$z="",$method='normal')
+{
+	global $p_chars,$mp_chars, $ignorelist,$nastaligh,$normal;
+	$str_back = $output = $e_output = $str_next = $str1 = $num = "";
+	if ($method == 'nastaligh')
+		$p_chars = array_merge($p_chars, $nastaligh);
+	else
+		$p_chars = array_merge($p_chars, $normal);
+	$str_len = utf8_strlen($str);
+	preg_match_all("/./u", $str, $ar);
+	for ($i = 0; $i < $str_len; $i++)
+	{
+		if (isset($ar[0][$i]))
+			$str1 = $ar[0][$i];
+		if(isset($ar[0][$i+1]) && in_array($ar[0][$i+1], $ignorelist))
+		{
+			if (isset($ar[0][$i+2]))
+				$str_next = $ar[0][$i+2];
+			if ($i == 2) 
+				$str_back = $ar[0][$i-2];
+			if ($i > 1 && $i != 2) 
+				$str_back = $ar[0][$i-1];
+		}
+		elseif ($i > 0 && isset($ar[0][$i-1]) && !in_array($ar[0][$i-1], $ignorelist))
+		{
+			if (isset($ar[0][$i+1]))
+				$str_next = $ar[0][$i+1];
+			if ($i != 0) 
+				$str_back = $ar[0][$i-1];
+		}
+		else
+		{
+			if (isset($ar[0][$i+1]) && !empty($ar[0][$i+1]))
+				$str_next = $ar[0][$i+1];
+			elseif ($i > 0 && isset($ar[0][$i-1])) 
+				$str_next = $ar[0][$i-1];
+			if ($i > 1 && isset($ar[0][$i-2])) 
+				$str_back = $ar[0][$i-2];
+		}
+		if (!in_array($str1,$ignorelist))
+		{
+			if (array_key_exists($str1,$p_chars))
+			{
+				if (!$str_back || $str_back==" " || !array_key_exists($str_back,$p_chars))
+				{
+					if (!array_key_exists($str_back, $p_chars) && !array_key_exists($str_next, $p_chars)) 
+						$output = $str1.$output;
+					else 
+						$output = $p_chars[$str1][2].$output;
+					continue;
+				}
+				elseif (array_key_exists($str_next, $p_chars) && array_key_exists($str_back, $p_chars))
+				{
+					if (in_array($str_back, $mp_chars) && array_key_exists($str_next, $p_chars))
+						$output = $p_chars[$str1][2].$output;
+					else
+						$output = $p_chars[$str1][1].$output;
+					continue;
+				}
+				elseif (array_key_exists($str_back, $p_chars) && !array_key_exists($str_next, $p_chars))
+				{
+					if (in_array($str_back, $mp_chars))
+						$output = $str1.$output;
+					else
+						$output = $p_chars[$str1][0].$output;
+					continue;
+				}
+			}
+			elseif ($z == "we")
+			{
+				$number = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+					"\xD9\xA0", "\xD9\xA1", "\xD9\xA2", "\xD9\xA3", "\xD9\xA4", "\xD9\xA5", "\xD9\xA6", 
+					"\xD9\xA7", "\xD9\xA8", "\xD9\xA9",	"\xDB\xB0", "\xDB\xB1", "\xDB\xB2", "\xDB\xB3", 
+					"\xDB\xB4", "\xDB\xB5", "\xDB\xB6", "\xDB\xB7", "\xDB\xB8", "\xDB\xB9");
+				if (in_array($str1, $number))
+				{
+					$num .= $str1;
+					$str1 = "";
+				}
+				if (!in_array($str_next, $number))
+				{
+					$str1 .= $num;
+					$num = "";
+				}
+				//$output = $str1.$output;
+				$output = $output.$str1;
+			}
+			elseif ($z == "fa")
+			{
+				$number = array (utf8_chr(0x0660), utf8_chr(0x0661), utf8_chr(0x0662), 
+					utf8_chr(0x0663), utf8_chr(0x0664), utf8_chr(0x0665), utf8_chr(0x0666), 
+					utf8_chr(0x0667), utf8_chr(0x0668), utf8_chr(0x0669), utf8_chr(0x06f4), 
+					utf8_chr(0x06f5), utf8_chr(0x06f6), utf8_chr(0x0030), utf8_chr(0x0031), 
+					utf8_chr(0x0032), utf8_chr(0x0033), utf8_chr(0x0034), utf8_chr(0x0035), 
+					utf8_chr(0x0036), utf8_chr(0x0037), utf8_chr(0x0038), utf8_chr(0x0039));
+				switch ($str1)
+				{
+					case ")" : 
+						$str1 = "("; 
+						break;
+					case "(" : 
+						$str1 = ")"; 
+						break;
+					case "}" : 
+						$str1 = "{"; 
+						break;
+					case "{" : 
+						$str1 = "}"; 
+						break;
+					case "]" : 
+						$str1 = "["; 
+						break;
+					case "[" : 
+						$str1 = "]"; 
+						break;
+					case ">" : 
+						$str1 = "<"; 
+						break;
+					case "<" : 
+						$str1 = ">"; 
+						break;
+				}
+				if (in_array($str1, $number))
+				{
+					$num .= $str1;
+					$str1 = "";
+				}
+				if (!in_array($str_next, $number))
+				{
+					$str1 .= $num;
+					$num = "";
+				}
+				$output = $str1.$output;
+			}
+			else
+			{
+				if (($str1 == utf8_chr(0x060c)) || ($str1 == utf8_chr(0x061f)) || ($str1 == utf8_chr(0x0621)) || 
+					(array_key_exists($str_next, $p_chars) && array_key_exists($str_back, $p_chars)) || 
+					($str1 == " " && array_key_exists($str_back, $p_chars)) || ($str1 == " " && 
+					array_key_exists($str_next, $p_chars)))
+				{
+					if ($e_output)
+					{
+						$output = $e_output.$output;
+						$e_output = "";
+					}
+					$output = $str1.$output;
+				}
+				else
+				{
+					$e_output .= $str1;
+					if (array_key_exists($str_next, $p_chars) || $str_next == "")
+					{
+						$output = $e_output.$output;
+						$e_output = "";
+					}
+				}
+			}
+		}
+		else
+			$output = $str1.$output;
+		$str_next = null;
+		$str_back = null;
+	}
+	return  $output;
+}
+
 ?>
