@@ -284,7 +284,8 @@ class graph
             }
 
             // Axis X
-            $this->_imagestring($this->img, $this->size, $this->graphic_area_x2+10, $this->graphic_area_y2+3, $this->axis_x, $this->color['title']);
+            //$this->_imagestring($this->img, $this->size, $this->graphic_area_x2+10, $this->graphic_area_y2+3, $this->axis_x, $this->color['title']);
+            $this->_imagestring($this->img, $this->size, $this->graphic_area_x2+40, $this->graphic_area_y2+3, $this->axis_x, $this->color['title']);
             imageline($this->img, $this->graphic_area_x1, $this->graphic_area_y2, $this->graphic_area_x2, $this->graphic_area_y2, $this->color['axis_line']);
             // Axis Y
             $this->_imagestring($this->img, $this->size, 20, $this->graphic_area_y1-20, $this->axis_y, $this->color['title']);
@@ -372,7 +373,8 @@ class graph
                 imageline($this->img, ($x2+1), ($y1-1), ($x2+1), $y2, $this->color['bars_shadow']);
                 imageline($this->img, ($x2+2), ($y1-1), ($x2+2), $y2, $this->color['bars_shadow']);
                 imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars']);
-                $this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($parameter)*7/2)), ($y2+2), $parameter, $this->color['axis_values'], $alt);
+                //$this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($parameter)*7/2)), ($y2+2), $parameter, $this->color['axis_values'], $alt);
+                $this->_imagestring($this->img, $this->size, $x1, ($y2+2), $parameter, $this->color['axis_values'], $alt);
             }
         }
 
@@ -443,7 +445,8 @@ class graph
                 {
                     imageline($this->img, $x[$i], ($this->graphic_area_y1+10), $x[$i], ($this->graphic_area_y2-1), $this->color['bg_lines']);
                 }
-                $this->_imagestring($this->img, $this->size, ($x[$i] - (strlen($parameter)*7/2 )), ($this->graphic_area_y2+2), $parameter, $this->color['axis_values'], $alt);
+                //$this->_imagestring($this->img, $this->size, ($x[$i] - (strlen($parameter)*7/2 )), ($this->graphic_area_y2+2), $parameter, $this->color['axis_values'], $alt);
+                $this->_imagestring($this->img, $this->size, $x[$i], ($this->graphic_area_y2+2), $parameter, $this->color['axis_values'], $alt);
 
                 $x[$i+1] = $x[$i] + 40;
             }
@@ -966,9 +969,6 @@ class graph
 
     function _imagestring($img, $size, $x, $y, $string, $col, $alt=0)
     {
-       	if ($alt && mb_strlen($string) > 12)
-   			$string = mb_substr($string, 0, 12);
-
 		if ($this->encoding != 'UTF-8') {
 			if (function_exists('iconv'))
 				$string = iconv($this->encoding, 'UTF-8', $string);
@@ -977,6 +977,15 @@ class graph
 		}
 		
 		// New 2014-06-26 Joe Hunt for handling ev. RTL languages
+		if ($alt)
+		{
+			if ($this->encoding == 'UTF-8' && is_arabic($string))
+				$alt_len = 18;
+			else
+				$alt_len = 12;
+			if (strlen($string) > $alt_len)
+   				$string = substr($string, 0, $alt_len);
+   		}		
 		if ($this->encoding == 'UTF-8')
 		{
 			if (is_arabic($string))
