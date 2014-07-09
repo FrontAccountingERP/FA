@@ -361,7 +361,7 @@ function get_sql_for_customer_inquiry()
    	return $sql;
 }
 
-function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item=null)
+function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item=null, $customer_id=ALL_TEXT)
 {
 	$sql = "SELECT trans.trans_no,
 			debtor.name,
@@ -415,6 +415,9 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
+		
+		if ($customer_id != ALL_TEXT)
+			$sql .= " AND sorder.debtor_no = ".db_escape($customer_id) . " AND trans.debtor_no = ".db_escape($customer_id);		
 
 		$sql .= " GROUP BY trans.trans_no ";
 
