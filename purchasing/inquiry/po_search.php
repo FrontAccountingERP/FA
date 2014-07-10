@@ -73,6 +73,8 @@ start_row();
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
+supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, true, true);
+
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table(1);
@@ -121,7 +123,7 @@ else
 }
 
 //figure out the sql required from the inputs available
-$sql = get_sql_for_po_search();
+$sql = get_sql_for_po_search($_POST['supplier_id']);
 
 //$result = db_query($sql,"No orders were returned");
 

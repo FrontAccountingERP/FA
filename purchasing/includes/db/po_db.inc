@@ -247,7 +247,7 @@ function get_short_info($stock_id)
 	return db_query($sql,"The stock details for " . $stock_id . " could not be retrieved");
 }
 
-function get_sql_for_po_search_completed()
+function get_sql_for_po_search_completed($supplier_id=ALL_TEXT)
 {
 	global $order_number, $selected_stock_item;;
 
@@ -292,14 +292,16 @@ function get_sql_for_po_search_completed()
 		{
 			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
 		}
-
+		if ($supplier_id != ALL_TEXT)
+			$sql .= " AND supplier.supplier_id=".db_escape($supplier_id);
+		
 	} //end not order number selected
 
 	$sql .= " GROUP BY porder.order_no";
 	return $sql;
 }	
 
-function get_sql_for_po_search()
+function get_sql_for_po_search($supplier_id=ALL_TEXT)
 {
 	global $all_items, $order_number, $selected_stock_item;;
 	
@@ -345,6 +347,8 @@ function get_sql_for_po_search()
 		{
 			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
 		}
+		if ($supplier_id != ALL_TEXT)
+			$sql .= " AND supplier.supplier_id=".db_escape($supplier_id);
 	} //end not order number selected
 
 	$sql .= " GROUP BY porder.order_no";

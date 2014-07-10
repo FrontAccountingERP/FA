@@ -417,7 +417,7 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
 		
 		if ($customer_id != ALL_TEXT)
-			$sql .= " AND sorder.debtor_no = ".db_escape($customer_id) . " AND trans.debtor_no = ".db_escape($customer_id);		
+			$sql .= " AND trans.debtor_no = ".db_escape($customer_id);		
 
 		$sql .= " GROUP BY trans.trans_no ";
 

@@ -74,6 +74,9 @@ start_row();
 
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 
+if (!@$_GET['popup'])
+	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, true, true);
+
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table(1);
@@ -115,7 +118,7 @@ function prt_link($row)
 
 //---------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_po_search_completed();
+$sql = get_sql_for_po_search_completed(!@$_GET['popup'] ? $_POST['supplier_id'] : ALL_TEXT);
 
 $cols = array(
 		_("#") => array('fun'=>'trans_view', 'ord'=>''), 
