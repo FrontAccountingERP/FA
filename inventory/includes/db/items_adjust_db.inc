@@ -130,7 +130,7 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 
 	add_stock_move(ST_INVADJUST, $stock_id, $adj_id, $location,
-        $date_, $reference, $quantity, $standard_cost, $type);
+        $date_, $reference, $quantity, $standard_cost);
 
 	if ($standard_cost > 0)
 	{
