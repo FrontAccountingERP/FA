@@ -12,7 +12,7 @@
 $page_security = 'SA_ITEMSVALREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
-// Creator:	Jujuk
+// Creator:	Jujuk, Joe Hunt
 // date_:	2011-05-24
 // Title:	Stock Movements
 // ----------------------------------------------------------------
@@ -33,8 +33,7 @@ inventory_movements();
 function fetch_items($category=0)
 {
 		$sql = "SELECT stock_id, stock.description AS name,
-				stock.category_id,
-				units,material_cost,
+				stock.category_id,units,
 				cat.description
 			FROM ".TB_PREF."stock_master stock LEFT JOIN ".TB_PREF."stock_category cat ON stock.category_id=cat.category_id
 				WHERE mb_flag <> 'D'";
@@ -78,6 +77,28 @@ function trans_qty($stock_id, $location=null, $from_date, $to_date, $inward = tr
 
 }
 
+function avg_unit_cost($stock_id, $location=null, $to_date)
+{
+	if ($to_date == null)
+		$to_date = Today();
+
+	$to_date = date2sql($to_date);
+
+	$sql = "SELECT AVG (standard_cost)   FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)."
+		AND tran_date < '$to_date'";
+
+	if ($location != '')
+		$sql .= " AND loc_code = ".db_escape($location);
+
+	$result = db_query($sql, "QOH calculation failed");
+
+	$myrow = db_fetch_row($result);	
+
+	return $myrow[0];
+
+}
+
 //----------------------------------------------------------------------------------------------------
 
 function trans_qty_unit_cost($stock_id, $location=null, $from_date, $to_date, $inward = true)
@@ -92,7 +113,7 @@ function trans_qty_unit_cost($stock_id, $location=null, $from_date, $to_date, $i
 
 	$to_date = date2sql($to_date);
 
-	$sql = "SELECT AVG (price)   FROM ".TB_PREF."stock_moves
+	$sql = "SELECT AVG (standard_cost)   FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."
 		AND tran_date >= '$from_date' 
 		AND tran_date <= '$to_date'";
@@ -144,7 +165,7 @@ function inventory_movements()
 	else
 		$loc = get_location_name($location);
 
-	$cols = array(0, 60, 130, 160, 185, 210, 250, 275, 300, 340, 365, 390, 430, 455, 480, 520);
+	$cols = array(0, 60, 130, 160, 185, 215, 250, 275, 305, 340, 365, 395, 430, 455, 485, 520);
 
 	$headers = array(_('Category'), _('Description'),	_('UOM'), '', '', _('OpeningStock'), '', '',_('StockIn'), '', '', _('Delivery'), '', '', _('ClosingStock'));
 	$headers2 = array("", "", "", _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"));
@@ -164,8 +185,10 @@ function inventory_movements()
     $rep->Info($params, $cols, $headers2, $aligns, $cols, $headers, $aligns);
     $rep->NewPage();
 
+	$totval_open = $totval_in = $totval_out = $totval_close = 0; 
 	$result = fetch_items($category);
 
+	$dec = user_price_dec();
 	$catgor = '';
 	while ($myrow=db_fetch($result))
 	{
@@ -182,43 +205,55 @@ function inventory_movements()
 		$rep->TextCol(0, 1,	$myrow['stock_id']);
 		$rep->TextCol(1, 2, $myrow['name']);
 		$rep->TextCol(2, 3, $myrow['units']);
-		$qoh_start= $inward = $outward = $qoh_end = 0; 
 		
-		$qoh_start += get_qoh_on_date($myrow['stock_id'], $location, add_days($from_date, -1));
-		$qoh_end += get_qoh_on_date($myrow['stock_id'], $location, $to_date);
+		$qoh_start = get_qoh_on_date($myrow['stock_id'], $location, add_days($from_date, -1));
+		$qoh_end = get_qoh_on_date($myrow['stock_id'], $location, $to_date);
 		
-		$inward += trans_qty($myrow['stock_id'], $location, $from_date, $to_date);
-		$outward += trans_qty($myrow['stock_id'], $location, $from_date, $to_date, false);
-		$unitCost=$myrow['material_cost'];
+		$inward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date);
+		$outward = trans_qty($myrow['stock_id'], $location, $from_date, $to_date, false);
+		$openCost = avg_unit_cost($myrow['stock_id'], $location, $from_date);
+		$unitCost = avg_unit_cost($myrow['stock_id'], $location, add_days($to_date, 1));
 		$rep->AmountCol(3, 4, $qoh_start, get_qty_dec($myrow['stock_id']));
-//		$rep->AmountCol(4, 5, $unitCost, get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(4, 5, $myrow['material_cost']);
-		$rep->AmountCol(5, 6, $qoh_start*$unitCost, get_qty_dec($myrow['stock_id']));
+		$rep->AmountCol(4, 5, $openCost, $dec);
+		$openCost *= $qoh_start;
+		$totval_open += $openCost;
+		$rep->AmountCol(5, 6, $openCost);
 		
 		if($inward>0){
 			$rep->AmountCol(6, 7, $inward, get_qty_dec($myrow['stock_id']));
-			$unitCost_IN=	trans_qty_unit_cost($myrow['stock_id'], $location, $from_date, $to_date);
-			$rep->AmountCol(7, 8, $unitCost_IN,get_qty_dec($myrow['stock_id']));
-			$rep->AmountCol(8, 9, $inward*$unitCost_IN, get_qty_dec($myrow['stock_id']));
+			$unitCost_in = trans_qty_unit_cost($myrow['stock_id'], $location, $from_date, $to_date);
+			$rep->AmountCol(7, 8, $unitCost_in,$dec);
+			$unitCost_in *= $inward;
+			$totval_in += $unitCost_in;
+			$rep->AmountCol(8, 9, $unitCost_in);
 		}
 		
 		if($outward>0){
 			$rep->AmountCol(9, 10, $outward, get_qty_dec($myrow['stock_id']));
-		
-			$unitCost_out=	trans_qty_unit_cost($myrow['stock_id'], $location, $from_date, $to_date, false);
-			$rep->AmountCol(10, 11, $unitCost_out,get_qty_dec($myrow['stock_id']));
-			$rep->AmountCol(11, 12, $outward*$unitCost_out, get_qty_dec($myrow['stock_id']));
+			$unitCost_out =	trans_qty_unit_cost($myrow['stock_id'], $location, $from_date, $to_date, false);
+			$rep->AmountCol(10, 11, $unitCost_out,$dec);
+			$unitCost_out *= $outward;
+			$totval_out += $unitCost_out;
+			$rep->AmountCol(11, 12, $unitCost_out);
 		}
 		
 		$rep->AmountCol(12, 13, $qoh_end, get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(13, 14, $myrow['material_cost'],get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(14, 15, $qoh_end*$unitCost, get_qty_dec($myrow['stock_id']));
+		$rep->AmountCol(13, 14, $unitCost,$dec);
+		$unitCost *= $qoh_end;
+		$totval_close += $unitCost;
+		$rep->AmountCol(14, 15, $unitCost);
 		
 		$rep->NewLine(0, 1);
 	}
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine(2);
+	$rep->TextCol(0, 1,	_("Total"));
+	$rep->AmountCol(5, 6, $totval_open);
+	$rep->AmountCol(8, 9, $totval_in);
+	$rep->AmountCol(11, 12, $totval_out);
+	$rep->AmountCol(14, 15, $totval_close);
+	$rep->Line($rep->row  - 4);
 
-	$rep->NewLine();
     $rep->End();
 }
 
