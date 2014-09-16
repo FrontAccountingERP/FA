@@ -12,10 +12,10 @@
 //$path_to_root="..";
 
 
-if (strncmp(phpversion(), "5.4", 3) >= 0) // mysql_... functions deprecated from php 5.5
+if (function_exists('mysqli_connect'))
 	include_once("connect_db_mysqli.inc");
-else	
-	include_once("connect_db_mysql.inc");
+else
+	include_once("connect_db_mysql.inc"); // use deprecated mysql_* API as fallback on old servers
 
 function db_get_version()
 {
@@ -109,7 +109,7 @@ function db_fixed()
 /*
 	Check database default charset.
 */
-function db_get_charset()
+function db_get_default_charset()
 {
 	$result = db_query("SELECT @@character_set_database");
 	$var = db_fetch($result);

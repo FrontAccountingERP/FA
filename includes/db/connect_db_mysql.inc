@@ -14,7 +14,7 @@ function set_global_connection($company=-1)
 {
 	global $db, $transaction_level, $path_to_root, $db_connections;
 
-	include ($path_to_root . "/config_db.php");
+	include ($path_to_rrot . "/config_db.php");
 	if ($company == -1) 
 		$company = $_SESSION["wa_current_user"]->company;
 
@@ -264,4 +264,12 @@ function db_set_encoding($ui_encoding=null)
 		mysql_set_charset($mysql_enc);
 }
 
-?>
+function db_get_charset($db)
+{
+	return mysql_client_encoding();
+}
+
+function db_set_charset($db, $charset)
+{
+	return mysql_set_charset($charset, $db);
+}

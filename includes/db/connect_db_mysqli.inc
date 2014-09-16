@@ -264,4 +264,14 @@ function db_set_encoding($ui_encoding=null)
 		mysqli_set_charset($db, $mysql_enc);
 }
 
-?>
+function db_get_charset($db)
+{
+	return mysqli_character_set_name($db);
+}
+
+function db_set_charset($db, $charset)
+{
+	global $db;
+
+	return mysqli_set_charset($db, $charset);
+}

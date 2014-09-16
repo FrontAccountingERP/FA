@@ -299,7 +299,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	$table_queries = array();
 	$sql_errors = array();
 
-	$old_encoding = mysql_client_encoding();
+	$old_encoding = db_get_charset($db);
 
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
@@ -397,7 +397,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 			$encoding = 'latin1'; // standard encoding on mysql client
 	}
 
-	mysql_set_charset($encoding);
+	db_set_charset($db, $encoding);
 
 /*/	{ 	// for debugging purposes
 	global $path_to_root;
@@ -460,7 +460,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
 
-	mysql_set_charset($old_encoding); // restore connection encoding
+	db_set_charset($db, $old_encoding); // restore connection encoding
 
 	if (count($sql_errors)) {
 		if ($return_errors)
