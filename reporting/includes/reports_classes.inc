@@ -137,6 +137,9 @@ class BoxReports
 				if ($ctrl) break;
 			}
 			if ($ctrl == '') {
+				if (($id == 102 || $id == 202) && $cnt == 3) // set default Show Also Allocated to Yes in aged reports 2014-09-19 Joe Hunt
+					$_POST['PARAM_'.$cnt] = 1;
+				
 				if (isset($_COOKIE['select'][$id][$cnt])) // saved parameters 2010-10-06 Joe Hunt
 					$_POST['PARAM_'.$cnt] = $_COOKIE['select'][$id][$cnt];
 				$ctrl = $this->get_ctrl('PARAM_'.$cnt, $type);
