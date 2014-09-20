@@ -204,8 +204,7 @@ function check_data()
 		foreach ($_SESSION['supp_trans']->grn_items as $n => $item) {
 			if (is_inventory_item($item->item_code))
 			{
-				$qoh = get_qoh_on_date($item->item_code, null, $_SESSION['supp_trans']->tran_date);
-				if ($item->this_quantity_inv > $qoh)
+				if (check_negative_stock($item->item_code, -$item->this_quantity_inv, null, $_SESSION['supp_trans']->tran_date))
 				{
 					$stock = get_item($item->item_code);
 					display_error(_("The return cannot be processed because there is an insufficient quantity for item:") .

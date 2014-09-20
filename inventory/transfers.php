@@ -115,17 +115,14 @@ if (isset($_POST['Process']))
 		display_error(_("The locations to transfer from and to must be different."));
 		set_focus('FromStockLocation');
 		$input_error = 1;
-	} 
-	else 
+	}
+	elseif (!$SysPrefs->allow_negative_stock())
 	{
-		$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
-		if ($failed_item >= 0) 
+		$low_stock = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
+
+		if ($low_stock)
 		{
-			$line = $tr->line_items[$failed_item];
-        	display_error(_("The quantity entered is greater than the available quantity for this item at the source location :") .
-        		" " . $line->stock_id . " - " .  $line->item_description);
-        	echo "<br>";
-			$_POST['Edit'.$failed_item] = 1; // enter edit mode
+    		display_error(_("The transfer cannot be processed because it would cause negative inventory balance in source location for marked items as of document date or later."));
 			$input_error = 1;
 		}
 	}

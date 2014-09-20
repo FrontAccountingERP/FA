@@ -80,7 +80,7 @@ function handle_new_order()
 
 function can_process()
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 
 	$adj = &$_SESSION['adj_items'];
 
@@ -114,16 +114,16 @@ function can_process()
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('AdjDate');
 		return false;
-	} else {
-		$failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
-		if ($failed_item >= 0) 
+	}
+	elseif (!$SysPrefs->allow_negative_stock())
+	{
+		$low_stock = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
+
+		if ($low_stock)
 		{
-			$line = $adj->line_items[$failed_item];
-    		display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
-    			" " . $line->stock_id . " - " .  $line->item_description);
-			$_POST['Edit'.$failed_item] = 1; // enter edit mode
+    		display_error(_("The adjustment cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
 			unset($_POST['Process']);
-		return false;
+			return false;
 		}
 	}
 	return true;
@@ -141,6 +141,7 @@ if (isset($_POST['Process']) && can_process()){
 	unset($_SESSION['adj_items']);
 
    	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+
 } /*end of process credit note */
 
 //-----------------------------------------------------------------------------------------------

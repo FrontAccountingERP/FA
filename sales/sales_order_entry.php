@@ -333,7 +333,10 @@ function line_start_focus() {
 
 //--------------------------------------------------------------------------------
 function can_process() {
-	global $Refs;
+
+	global $Refs, $SysPrefs;
+
+	copy_to_cart();
 
 	if (!get_post('customer_id')) 
 	{
@@ -364,14 +367,20 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
-	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-	if (strlen($_POST['deliver_to']) <= 1) {
-		display_error(_("You must enter the person or company to whom delivery should be made to."));
-		set_focus('deliver_to');
+
+	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
+	{
+		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
 
+	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
 
+		if (strlen($_POST['deliver_to']) <= 1) {
+			display_error(_("You must enter the person or company to whom delivery should be made to."));
+			set_focus('deliver_to');
+			return false;
+		}
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
@@ -394,7 +403,6 @@ function can_process() {
 			set_focus('delivery_date');
 			return false;
 		}
-		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
 		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type==ST_SALESQUOTE)
 				display_error(_("The requested valid date is before the date of the quotation."));
@@ -435,7 +443,7 @@ if (isset($_POST['update'])) {
 }
 
 if (isset($_POST['ProcessOrder']) && can_process()) {
-	copy_to_cart();
+
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
 
@@ -505,23 +513,8 @@ function check_item_data()
 		set_focus('qty');
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
-	} // Joe Hunt added 2008-09-22 -------------------------
-	elseif ($is_inventory_item && $_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE 
-		&& !$SysPrefs->allow_negative_stock())
-	{
-		$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
-		$qoh_today = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], null); // Of course we must also test for stock availability by todays date.
-		$qty = input_num('qty');
-		if ($qty > $qoh || $qty > $qoh_today)
-		{
-			$stock = get_item($_POST['stock_id']);
-			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-				" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
-				_("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($_POST['stock_id'])));
-			return false;
-		}
-		return true;
 	}
+
 	$cost_home = get_standard_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
 	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (input_num('price') < $cost)

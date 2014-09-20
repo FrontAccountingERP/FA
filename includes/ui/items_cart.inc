@@ -82,15 +82,32 @@ class items_cart
 		return count($this->line_items);
 	}
 
+	/*
+		Checks cart quantities on document_date.
+		Returns array of stock_ids which stock quantities would go negative on some day.
+	*/
 	function check_qoh($location, $date_, $reverse=false)
 	{
+		$low_stock = array();
+
+		// collect quantities by stock_id
+		$qtys = array();
 		foreach ($this->line_items as $line_no => $line_item)
 		{
-			$item_ret = $line_item->check_qoh($location, $date_, $reverse);
-			if ($item_ret != null)
-				return $line_no;
+			$qty = $reverse ? -$line_item->quantity : $line_item->quantity;
+
+			$qtys[$line_item->stock_id]['qty'] = $qty + @$qtys[$line_item->stock_id]['qty'];
+			$qtys[$line_item->stock_id]['line'] = $line_no;
 		}
-		return -1;
+
+		foreach($qtys as $stock_id => $sum)
+		{
+			$fail = check_negative_stock($stock_id, $sum['qty'], $location, $date_);
+			if ($fail)
+				$low_stock[] = $stock_id;
+		}
+
+		return $low_stock;
 	}
 
 	// ----------- GL item functions
@@ -218,10 +235,14 @@ class line_item
 		$this->price = 0;
 	}
 
+	/*
+		This method is generally obsolete and subject to removal in FA 2.4 (preserved for now to support 2.3 extensions).
+		Use items_cart::check_qoh instead.
+	*/
 	function check_qoh($location, $date_, $reverse)
 	{
 		global $SysPrefs;
-		
+
     	if (!$SysPrefs->allow_negative_stock())
     	{
 			if (has_stock_holding($this->mb_flag))
@@ -233,11 +254,9 @@ class line_item
 				if ($quantity >= 0)
 					return null;
 
-				$qoh = get_qoh_on_date($this->stock_id, $location, $date_);
-        		if ($quantity + $qoh < 0)
-        		{
-        			return $this;
-        		}
+				$fail = check_negative_stock($this->stock_id, $quantity, $location, $date_);
+				if ($fail)
+					return $this;
     		}
     	}
 

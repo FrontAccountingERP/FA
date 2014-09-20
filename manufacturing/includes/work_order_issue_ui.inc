@@ -38,6 +38,8 @@ function display_issue_items($title, &$order)
 //	$total = 0;
 	$k = 0;  //row colour counter
 
+	if (count($order->line_items))
+		$low_stock = $order->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 	$id = find_submit('Edit');
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
@@ -46,7 +48,10 @@ function display_issue_items($title, &$order)
 
 		if ($id != $line_no)
 		{
-    		alt_table_row_color($k);
+			if (in_array($stock_item->stock_id, $low_stock))
+				start_row("class='stockmankobg'");	// notice low stock status
+			else 
+				alt_table_row_color($k);
 
 			view_stock_status_cell($stock_item->stock_id);
 			label_cell($stock_item->item_description);
@@ -73,6 +78,8 @@ function display_issue_items($title, &$order)
 //	label_row(_("Total"), number_format2($total,user_price_dec()), "colspan=5", "align=right");
 
     end_table();
+	if (@$low_stock)
+		display_note(_("Marked items have insufficient quantities in stock as on day of issue."), 0, 1, "class='stockmankofg'");
 	div_end();
 }
 

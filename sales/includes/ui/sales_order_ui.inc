@@ -127,7 +127,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
 		$order->set_location($myrow["default_location"], $myrow["location_name"]);
-		
+
 	return $ret_error;
 }
 
@@ -158,8 +158,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$k = 0;  //row colour counter
 
 	$id = find_submit('Edit');
-	$has_marked = false;
 
+	$low_stock = $order->check_qoh($_POST['OrderDate'], $_POST['Location']);
 	foreach ($order->get_items() as $line_no=>$stock_item)
 	{
 
@@ -169,23 +169,10 @@ function display_order_summary($title, &$order, $editable_items=false)
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id) && 
-				$order->trans_type != ST_SALESORDER && $order->trans_type!=ST_SALESQUOTE) {
-				$qoh = get_qoh_on_date($stock_item->stock_id, 
-					$_POST['Location'], $_POST['delivery_date']);
-				if (($stock_item->qty_dispatched -$stock_item->qty_done) > $qoh)
-				{
-					// oops, we don't have enough of one of the component items
-					start_row("class='stockmankobg'");
-					$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " .
-					_("Quantity On Hand") . " = " 
-					. number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
-					$has_marked = true;
-				 } else 
-					alt_table_row_color($k);
-			} else {
+			if (in_array($stock_item->stock_id, $low_stock))
+				start_row("class='stockmankobg'");	// notice low stock status
+			else 
 				alt_table_row_color($k);
-			}
 
 			view_stock_status_cell($stock_item->stock_id);
 
@@ -244,12 +231,9 @@ function display_order_summary($title, &$order, $editable_items=false)
 	end_row();
 
 	end_table();
-	if ($has_marked) {
+	if ($low_stock)
 		display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-		if ($order->trans_type!=30 && !$SysPrefs->allow_negative_stock())
-			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
-				. '<br>'. $qoh_msg);
-	}
+
     div_end();
 }
 

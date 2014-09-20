@@ -41,7 +41,7 @@ function load_stock_levels($location)
 	$sql = "SELECT stock_id, SUM(qty) FROM ".TB_PREF."stock_moves WHERE tran_date <= '$date'";
 	if ($location != '') $sql .= " AND loc_code = ".db_escape($location);
 	$sql .= " GROUP BY stock_id";
-	$result = db_query($sql, "QOH calulcation failed");
+	$result = db_query($sql, "QOH calculation failed");
 	while ($row = db_fetch($result)) {
 		$qoh_stock[$row[0]] = $row[1];
 	}
