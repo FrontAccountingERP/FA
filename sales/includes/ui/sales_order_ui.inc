@@ -135,7 +135,6 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $SysPrefs;
 
 	display_heading($title);
 

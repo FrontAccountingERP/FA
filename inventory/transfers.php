@@ -76,7 +76,6 @@ function handle_new_order()
 
 if (isset($_POST['Process']))
 {
-	global $Refs;
 
 	$tr = &$_SESSION['transfer_items'];
 	$input_error = 0;
@@ -84,7 +83,7 @@ if (isset($_POST['Process']))
 	if (count($tr->line_items) == 0)	{
 		display_error(_("You must enter at least one non empty item line."));
 		set_focus('stock_id');
-		return false;
+		$input_error = 1;
 	}
 	if (!$Refs->is_valid($_POST['ref'])) 
 	{
