@@ -31,7 +31,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote, $print_invoice_no, $no_zero_lines_amount;
+	global $path_to_root, $print_as_quote, $print_invoice_no, $no_zero_lines_amount, $print_item_images_on_quote, $pic_height;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -47,6 +47,10 @@ function print_sales_quotations()
 	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
 
+	$pictures = (isset($print_item_images_on_quote) && $print_item_images_on_quote==1);
+	// If you want a larger image, then increase $pic_height f.i.
+	// $pic_height += 25;
+	
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
 	// $headers in doctext.inc
@@ -116,6 +120,20 @@ function print_sales_quotations()
 				$rep->TextCol(6, 7,	$DisplayNet, -2);
 			}	
 			$rep->row = $newrow;
+			
+			if ($pictures)
+			{
+				$image = company_path(). "/images/" . item_img_name($myrow2['stk_code']) . ".jpg";
+				if (file_exists($image))
+				{
+					//$rep->NewLine();
+					if ($rep->row - $pic_height < $rep->bottomMargin)
+						$rep->NewPage();
+					$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
+					$rep->row -= $pic_height;
+					$rep->NewLine();
+				}
+			}
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();

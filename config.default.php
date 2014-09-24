@@ -192,6 +192,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
     /* Whether to allow sending new password by e-mail */
     $allow_password_reset = false;
 
+    /* Print Item Images on Sales Quotations. Set to 1 if so. */
+    $print_item_images_on_quote = 0;
+
 	/* for uploaded item pictures */
 	$pic_width 		= 80;
 	$pic_height 	= 50;
