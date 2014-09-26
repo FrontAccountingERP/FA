@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 11, 2010 at 11:32 PM
+-- Generation Time: Sep 26, 2014 at 11:32 AM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6-1+lenny2
 
@@ -149,17 +149,17 @@ CREATE TABLE IF NOT EXISTS `0_bank_trans` (
 -- Dumping data for table `0_bank_trans`
 --
 
-INSERT INTO `0_bank_trans` VALUES(1, 22, 4, '1', '1', '2009-06-21', -3465, 0, 0, 3, '2', NULL);
-INSERT INTO `0_bank_trans` VALUES(2, 26, 1, '1', '', '2009-06-21', -10, 0, 0, 1, '1', NULL);
-INSERT INTO `0_bank_trans` VALUES(3, 26, 1, '1', '', '2009-06-21', -20, 0, 0, 1, '0', NULL);
-INSERT INTO `0_bank_trans` VALUES(4, 0, 18, '1', '1', '2009-02-20', 1000, 0, 0, 0, '', NULL);
-INSERT INTO `0_bank_trans` VALUES(5, 0, 19, '1', '2', '2009-02-21', 4000, 0, 0, 0, '', NULL);
-INSERT INTO `0_bank_trans` VALUES(6, 2, 5, '1', '1', '2009-06-21', 100, 0, 0, 4, '3', NULL);
-INSERT INTO `0_bank_trans` VALUES(7, 1, 8, '1', '1', '2009-06-21', -50, 0, 0, 4, '1', NULL);
-INSERT INTO `0_bank_trans` VALUES(8, 26, 5, '1', '', '2009-06-21', -10, 0, 0, 1, '1', NULL);
-INSERT INTO `0_bank_trans` VALUES(9, 26, 5, '1', '', '2009-06-21', -20, 0, 0, 1, '0', NULL);
-INSERT INTO `0_bank_trans` VALUES(10, 26, 7, '1', '', '2009-06-21', -10, 0, 0, 1, '1', NULL);
-INSERT INTO `0_bank_trans` VALUES(11, 26, 7, '1', '', '2009-06-21', -20, 0, 0, 1, '0', NULL);
+INSERT INTO `0_bank_trans` VALUES(1, 22, 4, '1', '1', '2014-06-21', -3465, 0, 0, 3, '2', NULL);
+INSERT INTO `0_bank_trans` VALUES(2, 26, 1, '1', '', '2014-06-21', -10, 0, 0, 1, '1', NULL);
+INSERT INTO `0_bank_trans` VALUES(3, 26, 1, '1', '', '2014-06-21', -20, 0, 0, 1, '0', NULL);
+INSERT INTO `0_bank_trans` VALUES(4, 0, 18, '1', '1', '2014-02-20', 1000, 0, 0, 0, '', NULL);
+INSERT INTO `0_bank_trans` VALUES(5, 0, 19, '1', '2', '2014-02-21', 4000, 0, 0, 0, '', NULL);
+INSERT INTO `0_bank_trans` VALUES(6, 2, 5, '1', '1', '2014-06-21', 100, 0, 0, 4, '3', NULL);
+INSERT INTO `0_bank_trans` VALUES(7, 1, 8, '1', '1', '2014-06-21', -50, 0, 0, 4, '1', NULL);
+INSERT INTO `0_bank_trans` VALUES(8, 26, 5, '1', '', '2014-06-21', -10, 0, 0, 1, '1', NULL);
+INSERT INTO `0_bank_trans` VALUES(9, 26, 5, '1', '', '2014-06-21', -20, 0, 0, 1, '0', NULL);
+INSERT INTO `0_bank_trans` VALUES(10, 26, 7, '1', '', '2014-06-21', -10, 0, 0, 1, '1', NULL);
+INSERT INTO `0_bank_trans` VALUES(11, 26, 7, '1', '', '2014-06-21', -20, 0, 0, 1, '0', NULL);
 
 -- --------------------------------------------------------
 
@@ -554,9 +554,9 @@ CREATE TABLE IF NOT EXISTS `0_currencies` (
 
 INSERT INTO `0_currencies` VALUES('US Dollars', 'USD', '$', 'United States', 'Cents', 1, 0);
 INSERT INTO `0_currencies` VALUES('CA Dollars', 'CAD', '$', 'Canada', 'Cents', 1, 0);
-INSERT INTO `0_currencies` VALUES('Euro', 'EUR', '?', 'Europe', 'Cents', 1, 0);
-INSERT INTO `0_currencies` VALUES('Pounds', 'GBP', '?', 'England', 'Pence', 1, 0);
-INSERT INTO `0_currencies` VALUES('DK Kroner', 'DKK', '?', 'Denmark', 'Ore', 1, 0);
+INSERT INTO `0_currencies` VALUES('Euro', 'EUR', '€', 'Europe', 'Cents', 1, 0);
+INSERT INTO `0_currencies` VALUES('Pounds', 'GBP', '£', 'England', 'Pence', 1, 0);
+INSERT INTO `0_currencies` VALUES('DK Kroner', 'DKK', 'kr', 'Denmark', 'Ore', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -582,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `0_cust_allocations` (
 -- Dumping data for table `0_cust_allocations`
 --
 
-INSERT INTO `0_cust_allocations` VALUES(1, 37.68, '2009-06-21', 3, 11, 18, 10);
+INSERT INTO `0_cust_allocations` VALUES(1, 37.68, '2014-06-21', 3, 11, 18, 10);
 
 -- --------------------------------------------------------
 
@@ -702,14 +702,14 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
 -- Dumping data for table `0_debtor_trans`
 --
 
-INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2014-06-21', '2014-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2014-06-21', '2014-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2014-06-21', '2014-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2014-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2014-06-21', '2014-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2014-06-21', '2014-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2014-06-21', '2014-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2014-06-21', '2014-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
 
 -- --------------------------------------------------------
 
@@ -775,8 +775,8 @@ CREATE TABLE IF NOT EXISTS `0_dimensions` (
 -- Dumping data for table `0_dimensions`
 --
 
-INSERT INTO `0_dimensions` VALUES(1, '1', 'Support', 1, 0, '2009-06-21', '2015-07-11');
-INSERT INTO `0_dimensions` VALUES(2, '2', 'Development', 1, 0, '2009-06-21', '2015-07-11');
+INSERT INTO `0_dimensions` VALUES(1, '1', 'Support', 1, 0, '2014-06-21', '2020-07-11');
+INSERT INTO `0_dimensions` VALUES(2, '2', 'Development', 1, 0, '2014-06-21', '2020-07-11');
 
 -- --------------------------------------------------------
 
@@ -799,9 +799,9 @@ CREATE TABLE IF NOT EXISTS `0_exchange_rates` (
 -- Dumping data for table `0_exchange_rates`
 --
 
-INSERT INTO `0_exchange_rates` VALUES(1, 'DKK', 0.18717252868313, 0.18717252868313, '2009-06-21');
-INSERT INTO `0_exchange_rates` VALUES(2, 'GBP', 1.6445729799917, 1.6445729799917, '2009-06-21');
-INSERT INTO `0_exchange_rates` VALUES(3, 'EUR', 1.3932, 1.3932, '2009-06-21');
+INSERT INTO `0_exchange_rates` VALUES(1, 'DKK', 0.18717252868313, 0.18717252868313, '2014-06-21');
+INSERT INTO `0_exchange_rates` VALUES(2, 'GBP', 1.6445729799917, 1.6445729799917, '2014-06-21');
+INSERT INTO `0_exchange_rates` VALUES(3, 'EUR', 1.3932, 1.3932, '2014-06-21');
 
 -- --------------------------------------------------------
 
@@ -818,18 +818,14 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `begin` (`begin`),
   UNIQUE KEY `end` (`end`)
-) ENGINE=InnoDB  AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 1);
-INSERT INTO `0_fiscal_year` VALUES(2, '2009-01-01', '2009-12-31', 1);
-INSERT INTO `0_fiscal_year` VALUES(3, '2010-01-01', '2010-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(4, '2011-01-01', '2011-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(5, '2012-01-01', '2012-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(6, '2013-01-01', '2013-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(1, '2013-01-01', '2013-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(2, '2014-01-01', '2014-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`
@@ -860,91 +856,89 @@ CREATE TABLE IF NOT EXISTS `0_gl_trans` (
 -- Dumping data for table `0_gl_trans`
 --
 
-INSERT INTO `0_gl_trans` VALUES(1, 20, 7, '2009-06-21', '2100', '', -3465, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(2, 20, 7, '2009-06-21', '1510', '', 1000, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(3, 20, 7, '2009-06-21', '1510', '', 1100, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(4, 20, 7, '2009-06-21', '1510', '', 1200, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(5, 20, 7, '2009-06-21', '2150', '', 165, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(6, 22, 4, '2009-06-21', '2100', '', 3465, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(7, 22, 4, '2009-06-21', '1060', '', -3465, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(8, 26, 1, '2009-06-21', '1510', '', -100, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(9, 26, 1, '2009-06-21', '1510', '', -110, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(10, 26, 1, '2009-06-21', '1510', '', -120, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(11, 26, 1, '2009-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(12, 26, 1, '2009-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(13, 26, 1, '2009-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(14, 26, 1, '2009-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(15, 26, 1, '2009-06-21', '1510', '', 330, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(16, 13, 2, '2009-06-21', '5010', '', 20, 0, 0, 2, '1');
-INSERT INTO `0_gl_trans` VALUES(17, 13, 2, '2009-06-21', '1510', '', -20, 0, 0, 2, '1');
-INSERT INTO `0_gl_trans` VALUES(18, 13, 3, '2009-06-21', '5010', '', 10, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(19, 13, 3, '2009-06-21', '1510', '', -10, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(20, 10, 17, '2009-06-21', '4010', '', -50, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(21, 10, 17, '2009-06-21', '1200', '', 52.5, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(22, 10, 17, '2009-06-21', '2150', '', -2.5, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(23, 13, 4, '2009-06-21', '5010', '', 10, 2, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(24, 13, 4, '2009-06-21', '1510', '', -10, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(25, 10, 18, '2009-06-21', '4010', '', -50, 2, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(26, 10, 18, '2009-06-21', '1200', '', 52.5, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(27, 10, 18, '2009-06-21', '2150', '', -2.5, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(28, 0, 18, '2009-02-20', '1060', '', 1000, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(29, 0, 18, '2009-02-20', '3350', '', -1000, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(30, 0, 19, '2009-02-21', '1060', '', 4000, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(31, 0, 19, '2009-02-21', '3350', '', -4000, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(32, 26, 3, '2009-06-21', '1510', '', -20, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(33, 26, 3, '2009-06-21', '1510', '', -22, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(34, 26, 3, '2009-06-21', '1510', '', -24, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(35, 26, 3, '2009-06-21', '1540', '', 66, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(36, 2, 5, '2009-06-21', '2150', 'Cash Sales', -4.76, 0, 0, 4, '3');
-INSERT INTO `0_gl_trans` VALUES(37, 2, 5, '2009-06-21', '4010', 'Cash Sales', -95.24, 0, 0, 4, '3');
-INSERT INTO `0_gl_trans` VALUES(38, 2, 5, '2009-06-21', '1060', '', 100, 0, 0, 4, '3');
-INSERT INTO `0_gl_trans` VALUES(39, 1, 8, '2009-06-21', '2150', 'Maintenance', 2.38, 0, 0, 4, '1');
-INSERT INTO `0_gl_trans` VALUES(40, 1, 8, '2009-06-21', '5765', 'Maintenance', 47.62, 0, 0, 4, '1');
-INSERT INTO `0_gl_trans` VALUES(41, 1, 8, '2009-06-21', '1060', '', -50, 0, 0, 4, '1');
-INSERT INTO `0_gl_trans` VALUES(42, 20, 8, '2009-06-21', '2100', '', -20, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(43, 20, 8, '2009-06-21', '2150', '', 0.95, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(44, 20, 8, '2009-06-21', '5780', '', 19.05, 0, 0, 3, '2');
-INSERT INTO `0_gl_trans` VALUES(45, 26, 4, '2009-06-21', '1510', '', -40, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(46, 26, 4, '2009-06-21', '1510', '', -44, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(47, 26, 4, '2009-06-21', '1510', '', -48, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(48, 26, 4, '2009-06-21', '1540', '', 132, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(49, 26, 2, '2009-06-21', '1510', '', -20, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(50, 26, 2, '2009-06-21', '1510', '', -22, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(51, 26, 2, '2009-06-21', '1510', '', -24, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(52, 26, 2, '2009-06-21', '1540', '', 66, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(53, 26, 5, '2009-06-21', '1510', '', -50, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(54, 26, 5, '2009-06-21', '1510', '', -55, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(55, 26, 5, '2009-06-21', '1510', '', -60, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(56, 26, 5, '2009-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(57, 26, 5, '2009-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(58, 26, 5, '2009-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(59, 26, 5, '2009-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(60, 26, 5, '2009-06-21', '1540', '', 165, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(61, 26, 6, '2009-06-21', '1510', '', 50, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(62, 26, 6, '2009-06-21', '1510', '', 55, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(63, 26, 6, '2009-06-21', '1510', '', 60, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(64, 26, 6, '2009-06-21', '1540', '', -165, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(65, 26, 7, '2009-06-21', '1510', '', 20, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(66, 26, 7, '2009-06-21', '1510', '', 22, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(67, 26, 7, '2009-06-21', '1510', '', 24, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(68, 26, 7, '2009-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(69, 26, 7, '2009-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
-INSERT INTO `0_gl_trans` VALUES(70, 26, 7, '2009-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(71, 26, 7, '2009-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
-INSERT INTO `0_gl_trans` VALUES(72, 26, 7, '2009-06-21', '1540', '', -66, 0, 0, NULL, '');
-INSERT INTO `0_gl_trans` VALUES(73, 13, 5, '2009-06-21', '5010', '', 10, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(74, 13, 5, '2009-06-21', '1510', '', -10, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(75, 10, 19, '2009-06-21', '4010', '', -47.62, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(76, 10, 19, '2009-06-21', '1200', '', 55, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(77, 10, 19, '2009-06-21', '4430', '', -5, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(78, 10, 19, '2009-06-21', '2150', '', -2.38, 0, 0, 2, '2');
-INSERT INTO `0_gl_trans` VALUES(79, 11, 3, '2009-06-21', '5010', '', -10, 2, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(80, 11, 3, '2009-06-21', '1510', '', 10, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(81, 11, 3, '2009-06-21', '4010', '', 50, 2, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(82, 11, 3, '2009-06-21', '1200', '', -52.5, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES(83, 11, 3, '2009-06-21', '2150', '', 2.5, 0, 0, 2, '3');
-INSERT INTO `0_gl_trans` VALUES ('84', '0', '20', '2009-12-31', '3590', 'Closing Year', '-91.19', '0', '0', NULL, NULL);
-INSERT INTO `0_gl_trans` VALUES ('85', '0', '20', '2009-12-31', '9990', 'Closing Year', '91.19', '0', '0', NULL, NULL);
+INSERT INTO `0_gl_trans` VALUES(1, 20, 7, '2014-06-21', '2100', '', -3465, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(2, 20, 7, '2014-06-21', '1510', '', 1000, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(3, 20, 7, '2014-06-21', '1510', '', 1100, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(4, 20, 7, '2014-06-21', '1510', '', 1200, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(5, 20, 7, '2014-06-21', '2150', '', 165, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(6, 22, 4, '2014-06-21', '2100', '', 3465, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(7, 22, 4, '2014-06-21', '1060', '', -3465, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(8, 26, 1, '2014-06-21', '1510', '', -100, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(9, 26, 1, '2014-06-21', '1510', '', -110, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(10, 26, 1, '2014-06-21', '1510', '', -120, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(11, 26, 1, '2014-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(12, 26, 1, '2014-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(13, 26, 1, '2014-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(14, 26, 1, '2014-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(15, 26, 1, '2014-06-21', '1510', '', 330, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(16, 13, 2, '2014-06-21', '5010', '', 20, 0, 0, 2, '1');
+INSERT INTO `0_gl_trans` VALUES(17, 13, 2, '2014-06-21', '1510', '', -20, 0, 0, 2, '1');
+INSERT INTO `0_gl_trans` VALUES(18, 13, 3, '2014-06-21', '5010', '', 10, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(19, 13, 3, '2014-06-21', '1510', '', -10, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(20, 10, 17, '2014-06-21', '4010', '', -50, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(21, 10, 17, '2014-06-21', '1200', '', 52.5, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(22, 10, 17, '2014-06-21', '2150', '', -2.5, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(23, 13, 4, '2014-06-21', '5010', '', 10, 2, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(24, 13, 4, '2014-06-21', '1510', '', -10, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(25, 10, 18, '2014-06-21', '4010', '', -50, 2, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(26, 10, 18, '2014-06-21', '1200', '', 52.5, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(27, 10, 18, '2014-06-21', '2150', '', -2.5, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(28, 0, 18, '2014-02-20', '1060', '', 1000, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(29, 0, 18, '2014-02-20', '3350', '', -1000, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(30, 0, 19, '2014-02-21', '1060', '', 4000, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(31, 0, 19, '2014-02-21', '3350', '', -4000, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(32, 26, 3, '2014-06-21', '1510', '', -20, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(33, 26, 3, '2014-06-21', '1510', '', -22, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(34, 26, 3, '2014-06-21', '1510', '', -24, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(35, 26, 3, '2014-06-21', '1540', '', 66, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(36, 2, 5, '2014-06-21', '2150', 'Cash Sales', -4.76, 0, 0, 4, '3');
+INSERT INTO `0_gl_trans` VALUES(37, 2, 5, '2014-06-21', '4010', 'Cash Sales', -95.24, 0, 0, 4, '3');
+INSERT INTO `0_gl_trans` VALUES(38, 2, 5, '2014-06-21', '1060', '', 100, 0, 0, 4, '3');
+INSERT INTO `0_gl_trans` VALUES(39, 1, 8, '2014-06-21', '2150', 'Maintenance', 2.38, 0, 0, 4, '1');
+INSERT INTO `0_gl_trans` VALUES(40, 1, 8, '2014-06-21', '5765', 'Maintenance', 47.62, 0, 0, 4, '1');
+INSERT INTO `0_gl_trans` VALUES(41, 1, 8, '2014-06-21', '1060', '', -50, 0, 0, 4, '1');
+INSERT INTO `0_gl_trans` VALUES(42, 20, 8, '2014-06-21', '2100', '', -20, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(43, 20, 8, '2014-06-21', '2150', '', 0.95, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(44, 20, 8, '2014-06-21', '5780', '', 19.05, 0, 0, 3, '2');
+INSERT INTO `0_gl_trans` VALUES(45, 26, 4, '2014-06-21', '1510', '', -40, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(46, 26, 4, '2014-06-21', '1510', '', -44, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(47, 26, 4, '2014-06-21', '1510', '', -48, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(48, 26, 4, '2014-06-21', '1540', '', 132, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(49, 26, 2, '2014-06-21', '1510', '', -20, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(50, 26, 2, '2014-06-21', '1510', '', -22, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(51, 26, 2, '2014-06-21', '1510', '', -24, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(52, 26, 2, '2014-06-21', '1540', '', 66, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(53, 26, 5, '2014-06-21', '1510', '', -50, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(54, 26, 5, '2014-06-21', '1510', '', -55, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(55, 26, 5, '2014-06-21', '1510', '', -60, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(56, 26, 5, '2014-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(57, 26, 5, '2014-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(58, 26, 5, '2014-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(59, 26, 5, '2014-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(60, 26, 5, '2014-06-21', '1540', '', 165, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(61, 26, 6, '2014-06-21', '1510', '', 50, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(62, 26, 6, '2014-06-21', '1510', '', 55, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(63, 26, 6, '2014-06-21', '1510', '', 60, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(64, 26, 6, '2014-06-21', '1540', '', -165, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(65, 26, 7, '2014-06-21', '1510', '', 20, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(66, 26, 7, '2014-06-21', '1510', '', 22, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(67, 26, 7, '2014-06-21', '1510', '', 24, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(68, 26, 7, '2014-06-21', '1060', 'Overhead Cost', -10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(69, 26, 7, '2014-06-21', '1530', 'Overhead Cost', 10, 0, 0, 1, '1');
+INSERT INTO `0_gl_trans` VALUES(70, 26, 7, '2014-06-21', '1060', 'Labour Cost', -20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(71, 26, 7, '2014-06-21', '1530', 'Labour Cost', 20, 0, 0, 1, '0');
+INSERT INTO `0_gl_trans` VALUES(72, 26, 7, '2014-06-21', '1540', '', -66, 0, 0, NULL, '');
+INSERT INTO `0_gl_trans` VALUES(73, 13, 5, '2014-06-21', '5010', '', 10, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(74, 13, 5, '2014-06-21', '1510', '', -10, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(75, 10, 19, '2014-06-21', '4010', '', -47.62, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(76, 10, 19, '2014-06-21', '1200', '', 55, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(77, 10, 19, '2014-06-21', '4430', '', -5, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(78, 10, 19, '2014-06-21', '2150', '', -2.38, 0, 0, 2, '2');
+INSERT INTO `0_gl_trans` VALUES(79, 11, 3, '2014-06-21', '5010', '', -10, 2, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(80, 11, 3, '2014-06-21', '1510', '', 10, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(81, 11, 3, '2014-06-21', '4010', '', 50, 2, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(82, 11, 3, '2014-06-21', '1200', '', -52.5, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES(83, 11, 3, '2014-06-21', '2150', '', 2.5, 0, 0, 2, '3');
 
 -- --------------------------------------------------------
 
@@ -969,7 +963,7 @@ CREATE TABLE IF NOT EXISTS `0_grn_batch` (
 -- Dumping data for table `0_grn_batch`
 --
 
-INSERT INTO `0_grn_batch` VALUES(1, 2, 1, '1', '2009-06-21', 'DEF');
+INSERT INTO `0_grn_batch` VALUES(1, 2, 1, '1', '2014-06-21', 'DEF');
 
 -- --------------------------------------------------------
 
@@ -1112,8 +1106,8 @@ CREATE TABLE IF NOT EXISTS `0_item_units` (
 -- Dumping data for table `0_item_units`
 --
 
-INSERT INTO `0_item_units` VALUES('ea.', 'Each', 0, 0);
-INSERT INTO `0_item_units` VALUES('hrs', 'Hours', 1, 0);
+INSERT INTO `0_item_units` VALUES('each', 'Each', 0, 0);
+INSERT INTO `0_item_units` VALUES('hr', 'Hours', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1347,8 +1341,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
 -- Dumping data for table `0_purch_orders`
 --
 
-INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
-INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
+INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2014-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
+INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2014-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1377,11 +1371,11 @@ CREATE TABLE IF NOT EXISTS `0_purch_order_details` (
 -- Dumping data for table `0_purch_order_details`
 --
 
-INSERT INTO `0_purch_order_details` VALUES(1, 1, '102', '17inch VGA Monitor', '2009-07-01', 100, 10, 10, 10, 100, 100);
-INSERT INTO `0_purch_order_details` VALUES(2, 1, '103', '32MB VGA Card', '2009-07-01', 100, 11, 11, 11, 100, 100);
-INSERT INTO `0_purch_order_details` VALUES(3, 1, '104', '52x CD Drive', '2009-07-01', 100, 12, 12, 12, 100, 100);
-INSERT INTO `0_purch_order_details` VALUES(4, 2, '102', '17inch VGA Monitor', '2009-07-01', 0, 5, 0, 0, 1, 0);
-INSERT INTO `0_purch_order_details` VALUES(5, 2, '103', '32MB VGA Card', '2009-07-01', 0, 5, 0, 0, 1, 0);
+INSERT INTO `0_purch_order_details` VALUES(1, 1, '102', '17inch VGA Monitor', '2014-07-01', 100, 10, 10, 10, 100, 100);
+INSERT INTO `0_purch_order_details` VALUES(2, 1, '103', '32MB VGA Card', '2014-07-01', 100, 11, 11, 11, 100, 100);
+INSERT INTO `0_purch_order_details` VALUES(3, 1, '104', '52x CD Drive', '2014-07-01', 100, 12, 12, 12, 100, 100);
+INSERT INTO `0_purch_order_details` VALUES(4, 2, '102', '17inch VGA Monitor', '2014-07-01', 0, 5, 0, 0, 1, 0);
+INSERT INTO `0_purch_order_details` VALUES(5, 2, '103', '32MB VGA Card', '2014-07-01', 0, 5, 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1551,11 +1545,11 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
 -- Dumping data for table `0_sales_orders`
 --
 
-INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2009-06-22', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2009-06-22', 4, 0);
-INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2009-07-01', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2009-06-22', 3, 0);
-INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2009-06-22', 4, 0);
+INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2014-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2014-06-22', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2014-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2014-06-22', 4, 0);
+INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2014-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2014-07-01', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2014-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2014-06-22', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2014-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2014-06-22', 4, 0);
 
 -- --------------------------------------------------------
 
@@ -1748,7 +1742,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_category` (
 INSERT INTO `0_stock_category` VALUES(1, 'Components', 1, 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES(2, 'Charges', 1, 'each', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES(3, 'Systems', 1, 'each', 'M', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
-INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hrs', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
+INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hr', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1787,11 +1781,11 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
 -- Dumping data for table `0_stock_master`
 --
 
-INSERT INTO `0_stock_master` VALUES('102', 1, 1, '17inch VGA Monitor', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 10, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('103', 1, 1, '32MB VGA Card', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 11, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('104', 1, 1, '52x CD Drive', '', 'ea.', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 12, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('201', 4, 1, 'Assembly Labour', '', 'hrs', 'D', '4010', '5010', '5010', '5040', '1530', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_master` VALUES('3400', 3, 1, 'P4 Business System', '', 'ea.', 'M', '4010', '5010', '1540', '5040', '1530', 0, 0, 0, 0, 33, 3.9999999999999, 2, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('102', 1, 1, '17inch VGA Monitor', '', 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 10, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('103', 1, 1, '32MB VGA Card', '', 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 11, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('104', 1, 1, '52x CD Drive', '', 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 12, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('201', 4, 1, 'Assembly Labour', '', 'hr', 'D', '4010', '5010', '5010', '5040', '1530', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `0_stock_master` VALUES('3400', 3, 1, 'P4 Business System', '', 'each', 'M', '4010', '5010', '1540', '5040', '1530', 0, 0, 0, 0, 33, 3.9999999999999, 2, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1823,42 +1817,42 @@ CREATE TABLE IF NOT EXISTS `0_stock_moves` (
 -- Dumping data for table `0_stock_moves`
 --
 
-INSERT INTO `0_stock_moves` VALUES(1, 1, '102', 25, 'DEF', '2009-06-21', 2, 10, '', 100, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(2, 1, '103', 25, 'DEF', '2009-06-21', 2, 11, '', 100, 0, 11, 1);
-INSERT INTO `0_stock_moves` VALUES(3, 1, '104', 25, 'DEF', '2009-06-21', 2, 12, '', 100, 0, 12, 1);
-INSERT INTO `0_stock_moves` VALUES(4, 1, '102', 26, 'DEF', '2009-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(5, 1, '103', 26, 'DEF', '2009-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(6, 1, '104', 26, 'DEF', '2009-06-21', 0, 0, '1', -10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(7, 1, '3400', 26, 'DEF', '2009-06-21', 0, 0, '1', 10, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(8, 2, '102', 13, 'DEF', '2009-06-21', 0, 30.4, '1', -2, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(9, 3, '102', 13, 'DEF', '2009-06-21', 0, 50, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(10, 4, '102', 13, 'DEF', '2009-06-21', 0, 35.89, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(11, 3, '102', 26, 'DEF', '2009-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(12, 3, '103', 26, 'DEF', '2009-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(13, 3, '104', 26, 'DEF', '2009-06-21', 0, 0, '3', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(14, 3, '3400', 26, 'DEF', '2009-06-21', 0, 0, '3', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(15, 4, '102', 26, 'DEF', '2009-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(16, 4, '103', 26, 'DEF', '2009-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(17, 4, '104', 26, 'DEF', '2009-06-21', 0, 0, '4', -4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(18, 4, '3400', 26, 'DEF', '2009-06-21', 0, 0, '4', 4, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(19, 2, '102', 26, 'DEF', '2009-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(20, 2, '103', 26, 'DEF', '2009-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(21, 2, '104', 26, 'DEF', '2009-06-21', 0, 0, '', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(22, 1, '3400', 29, 'DEF', '2009-06-21', 0, 0, '', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(23, 5, '102', 26, 'DEF', '2009-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(24, 5, '103', 26, 'DEF', '2009-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(25, 5, '104', 26, 'DEF', '2009-06-21', 0, 0, '5', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(26, 5, '3400', 26, 'DEF', '2009-06-21', 0, 0, '5', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(27, 6, '102', 26, 'DEF', '2009-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(28, 6, '103', 26, 'DEF', '2009-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(29, 6, '104', 26, 'DEF', '2009-06-21', 0, 0, '6', 5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(30, 6, '3400', 26, 'DEF', '2009-06-21', 0, 0, '6', -5, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(31, 7, '102', 26, 'DEF', '2009-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(32, 7, '103', 26, 'DEF', '2009-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(33, 7, '104', 26, 'DEF', '2009-06-21', 0, 0, '7', 2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(34, 7, '3400', 26, 'DEF', '2009-06-21', 0, 0, '7', -2, 0, 0, 1);
-INSERT INTO `0_stock_moves` VALUES(35, 5, '102', 13, 'DEF', '2009-06-21', 0, 50, 'auto', -1, 0, 10, 1);
-INSERT INTO `0_stock_moves` VALUES(36, 3, '102', 11, 'DEF', '2009-06-21', 0, 37.68, 'Return Ex Inv: 18', 1, 0, 10, 0);
+INSERT INTO `0_stock_moves` VALUES(1, 1, '102', 25, 'DEF', '2014-06-21', 2, 10, '', 100, 0, 10, 1);
+INSERT INTO `0_stock_moves` VALUES(2, 1, '103', 25, 'DEF', '2014-06-21', 2, 11, '', 100, 0, 11, 1);
+INSERT INTO `0_stock_moves` VALUES(3, 1, '104', 25, 'DEF', '2014-06-21', 2, 12, '', 100, 0, 12, 1);
+INSERT INTO `0_stock_moves` VALUES(4, 1, '102', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(5, 1, '103', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(6, 1, '104', 26, 'DEF', '2014-06-21', 0, 0, '1', -10, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(7, 1, '3400', 26, 'DEF', '2014-06-21', 0, 0, '1', 10, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(8, 2, '102', 13, 'DEF', '2014-06-21', 0, 30.4, '1', -2, 0, 10, 1);
+INSERT INTO `0_stock_moves` VALUES(9, 3, '102', 13, 'DEF', '2014-06-21', 0, 50, 'auto', -1, 0, 10, 1);
+INSERT INTO `0_stock_moves` VALUES(10, 4, '102', 13, 'DEF', '2014-06-21', 0, 35.89, 'auto', -1, 0, 10, 1);
+INSERT INTO `0_stock_moves` VALUES(11, 3, '102', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(12, 3, '103', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(13, 3, '104', 26, 'DEF', '2014-06-21', 0, 0, '3', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(14, 3, '3400', 26, 'DEF', '2014-06-21', 0, 0, '3', 2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(15, 4, '102', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(16, 4, '103', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(17, 4, '104', 26, 'DEF', '2014-06-21', 0, 0, '4', -4, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(18, 4, '3400', 26, 'DEF', '2014-06-21', 0, 0, '4', 4, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(19, 2, '102', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(20, 2, '103', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(21, 2, '104', 26, 'DEF', '2014-06-21', 0, 0, '', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(22, 1, '3400', 29, 'DEF', '2014-06-21', 0, 0, '', 2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(23, 5, '102', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(24, 5, '103', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(25, 5, '104', 26, 'DEF', '2014-06-21', 0, 0, '5', -5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(26, 5, '3400', 26, 'DEF', '2014-06-21', 0, 0, '5', 5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(27, 6, '102', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(28, 6, '103', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(29, 6, '104', 26, 'DEF', '2014-06-21', 0, 0, '6', 5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(30, 6, '3400', 26, 'DEF', '2014-06-21', 0, 0, '6', -5, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(31, 7, '102', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(32, 7, '103', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(33, 7, '104', 26, 'DEF', '2014-06-21', 0, 0, '7', 2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(34, 7, '3400', 26, 'DEF', '2014-06-21', 0, 0, '7', -2, 0, 0, 1);
+INSERT INTO `0_stock_moves` VALUES(35, 5, '102', 13, 'DEF', '2014-06-21', 0, 50, 'auto', -1, 0, 10, 1);
+INSERT INTO `0_stock_moves` VALUES(36, 3, '102', 11, 'DEF', '2014-06-21', 0, 37.68, 'Return Ex Inv: 18', 1, 0, 10, 0);
 
 -- --------------------------------------------------------
 
@@ -1926,7 +1920,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_allocations` (
 -- Dumping data for table `0_supp_allocations`
 --
 
-INSERT INTO `0_supp_allocations` VALUES(1, 3465, '2009-06-21', 4, 22, 7, 20);
+INSERT INTO `0_supp_allocations` VALUES(1, 3465, '2014-06-21', 4, 22, 7, 20);
 
 -- --------------------------------------------------------
 
@@ -1994,9 +1988,9 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
 -- Dumping data for table `0_supp_trans`
 --
 
-INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2009-06-21', '2009-07-01', 3300, 0, 165, 1, 3465, 0);
-INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2009-06-21', '2009-07-01', 20, 0, 0, 1, 0, 0);
-INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2009-06-21', '2009-06-21', -3465, 0, 0, 1, 3465, 0);
+INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2014-06-21', '2014-07-01', 3300, 0, 165, 1, 3465, 0);
+INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2014-06-21', '2014-07-01', 20, 0, 0, 1, 0, 0);
+INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2014-06-21', '2014-06-21', -3465, 0, 0, 1, 3465, 0);
 
 -- --------------------------------------------------------
 
@@ -2032,7 +2026,7 @@ INSERT INTO `0_sys_prefs` VALUES('coy_logo', 'setup.company', 'varchar', 100, 'l
 INSERT INTO `0_sys_prefs` VALUES('domicile', 'setup.company', 'varchar', 55, '');
 INSERT INTO `0_sys_prefs` VALUES('curr_default', 'setup.company', 'char', 3, 'USD');
 INSERT INTO `0_sys_prefs` VALUES('use_dimension', 'setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '6');
+INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '2');
 INSERT INTO `0_sys_prefs` VALUES('no_item_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_customer_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_supplier_list', 'setup.company', 'tinyint', 1, '0');
@@ -2247,17 +2241,17 @@ CREATE TABLE IF NOT EXISTS `0_trans_tax_details` (
 -- Dumping data for table `0_trans_tax_details`
 --
 
-INSERT INTO `0_trans_tax_details` VALUES(1, 20, 7, '2009-06-21', 1, 5, 1, 0, 3300, 165, '5t');
-INSERT INTO `0_trans_tax_details` VALUES(2, 13, 3, '2009-06-21', 1, 5, 1, 0, 50, 2.5, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(3, 10, 17, '2009-06-21', 1, 5, 1, 0, 50, 2.5, '1');
-INSERT INTO `0_trans_tax_details` VALUES(4, 13, 4, '2009-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(5, 10, 18, '2009-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '2');
-INSERT INTO `0_trans_tax_details` VALUES(6, 2, 5, '2009-06-21', 1, 5, 1, 0, 95.2, 4.76, '');
-INSERT INTO `0_trans_tax_details` VALUES(7, 1, 8, '2009-06-21', 1, 5, 1, 0, -47.6, -2.38, '');
-INSERT INTO `0_trans_tax_details` VALUES(8, 20, 8, '2009-06-21', 1, 5, 1, 0, -19, -0.95, 'cc');
-INSERT INTO `0_trans_tax_details` VALUES(9, 13, 5, '2009-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(10, 10, 19, '2009-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, '3');
-INSERT INTO `0_trans_tax_details` VALUES(11, 11, 3, '2009-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '1');
+INSERT INTO `0_trans_tax_details` VALUES(1, 20, 7, '2014-06-21', 1, 5, 1, 0, 3300, 165, '5t');
+INSERT INTO `0_trans_tax_details` VALUES(2, 13, 3, '2014-06-21', 1, 5, 1, 0, 50, 2.5, 'auto');
+INSERT INTO `0_trans_tax_details` VALUES(3, 10, 17, '2014-06-21', 1, 5, 1, 0, 50, 2.5, '1');
+INSERT INTO `0_trans_tax_details` VALUES(4, 13, 4, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, 'auto');
+INSERT INTO `0_trans_tax_details` VALUES(5, 10, 18, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '2');
+INSERT INTO `0_trans_tax_details` VALUES(6, 2, 5, '2014-06-21', 1, 5, 1, 0, 95.2, 4.76, '');
+INSERT INTO `0_trans_tax_details` VALUES(7, 1, 8, '2014-06-21', 1, 5, 1, 0, -47.6, -2.38, '');
+INSERT INTO `0_trans_tax_details` VALUES(8, 20, 8, '2014-06-21', 1, 5, 1, 0, -19, -0.95, 'cc');
+INSERT INTO `0_trans_tax_details` VALUES(9, 13, 5, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, 'auto');
+INSERT INTO `0_trans_tax_details` VALUES(10, 10, 19, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, '3');
+INSERT INTO `0_trans_tax_details` VALUES(11, 11, 3, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '1');
 
 -- --------------------------------------------------------
 
@@ -2311,10 +2305,10 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `show_codes` tinyint(1) NOT NULL default '0',
   `show_hints` tinyint(1) NOT NULL default '0',
   `last_visit_date` datetime default NULL,
-  `query_size` tinyint(1) default '10',
+  `query_size` tinyint(1) unsigned NOT NULL default '10',
   `graphic_links` tinyint(1) default '1',
   `pos` smallint(6) default '1',
-  `print_profile` varchar(30) NOT NULL default '1',
+  `print_profile` varchar(30) NOT NULL default '',
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
   `startup_tab` varchar(20) NOT NULL default '',
@@ -2327,8 +2321,8 @@ CREATE TABLE IF NOT EXISTS `0_users` (
 -- Dumping data for table `0_users`
 --
 
-INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2010-05-11 23:27:46', 10, 1, 1, '1', 1, 0, 'orders', 0);
-INSERT INTO `0_users` VALUES(2, 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 9, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, 0, '2008-02-06 19:02:35', 10, 1, 1, '1', 1, 0, 'orders', 0);
+INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2014-05-11 23:27:46', 10, 1, 1, '1', 1, 0, 'orders', 0);
+INSERT INTO `0_users` VALUES(2, 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 9, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, 0, '2014-02-06 19:02:35', 10, 1, 1, '1', 1, 0, 'orders', 0);
 
 -- --------------------------------------------------------
 
@@ -2401,13 +2395,13 @@ CREATE TABLE IF NOT EXISTS `0_workorders` (
 -- Dumping data for table `0_workorders`
 --
 
-INSERT INTO `0_workorders` VALUES(1, '1', 'DEF', 10, '3400', '2009-06-21', 0, '2009-06-21', '2009-06-21', 10, 1, 1, 10);
-INSERT INTO `0_workorders` VALUES(2, '2', 'DEF', 3, '3400', '2009-06-21', 2, '2009-07-11', '2009-06-21', 2, 0, 1, 0);
-INSERT INTO `0_workorders` VALUES(3, '3', 'DEF', 2, '3400', '2009-06-21', 0, '2009-06-21', '2009-06-21', 2, 1, 1, 0);
-INSERT INTO `0_workorders` VALUES(4, '4', 'DEF', 4, '3400', '2009-06-21', 0, '2009-06-21', '2009-06-21', 4, 1, 1, 0);
-INSERT INTO `0_workorders` VALUES(5, '5', 'DEF', 5, '3400', '2009-06-21', 0, '2009-06-21', '2009-06-21', 5, 1, 1, 10);
-INSERT INTO `0_workorders` VALUES(6, '6', 'DEF', -5, '3400', '2009-06-21', 1, '2009-06-21', '2009-06-21', -5, 1, 1, 0);
-INSERT INTO `0_workorders` VALUES(7, '7', 'DEF', -2, '3400', '2009-06-21', 1, '2009-06-21', '2009-06-21', -2, 1, 1, 10);
+INSERT INTO `0_workorders` VALUES(1, '1', 'DEF', 10, '3400', '2014-06-21', 0, '2014-06-21', '2014-06-21', 10, 1, 1, 10);
+INSERT INTO `0_workorders` VALUES(2, '2', 'DEF', 3, '3400', '2014-06-21', 2, '2014-07-11', '2014-06-21', 2, 0, 1, 0);
+INSERT INTO `0_workorders` VALUES(3, '3', 'DEF', 2, '3400', '2014-06-21', 0, '2014-06-21', '2014-06-21', 2, 1, 1, 0);
+INSERT INTO `0_workorders` VALUES(4, '4', 'DEF', 4, '3400', '2014-06-21', 0, '2014-06-21', '2014-06-21', 4, 1, 1, 0);
+INSERT INTO `0_workorders` VALUES(5, '5', 'DEF', 5, '3400', '2014-06-21', 0, '2014-06-21', '2014-06-21', 5, 1, 1, 10);
+INSERT INTO `0_workorders` VALUES(6, '6', 'DEF', -5, '3400', '2014-06-21', 1, '2014-06-21', '2014-06-21', -5, 1, 1, 0);
+INSERT INTO `0_workorders` VALUES(7, '7', 'DEF', -2, '3400', '2014-06-21', 1, '2014-06-21', '2014-06-21', -2, 1, 1, 10);
 
 -- --------------------------------------------------------
 
@@ -2473,7 +2467,7 @@ CREATE TABLE IF NOT EXISTS `0_wo_manufacture` (
 -- Dumping data for table `0_wo_manufacture`
 --
 
-INSERT INTO `0_wo_manufacture` VALUES(1, '1', 2, 2, '2009-06-21');
+INSERT INTO `0_wo_manufacture` VALUES(1, '1', 2, 2, '2014-06-21');
 
 -- --------------------------------------------------------
 
