@@ -521,8 +521,8 @@ CREATE TABLE IF NOT EXISTS `0_currencies` (
 
 INSERT INTO `0_currencies` VALUES('US Dollars', 'USD', '$', 'United States', 'Cents', 1, 0);
 INSERT INTO `0_currencies` VALUES('CA Dollars', 'CAD', '$', 'Canada', 'Cents', 1, 0);
-INSERT INTO `0_currencies` VALUES('Euro', 'EUR', '€', 'Europe', 'Cents', 1, 0);
-INSERT INTO `0_currencies` VALUES('Pounds', 'GBP', '£', 'England', 'Pence', 1, 0);
+INSERT INTO `0_currencies` VALUES('Euro', 'EUR', '?', 'Europe', 'Cents', 1, 0);
+INSERT INTO `0_currencies` VALUES('Pounds', 'GBP', '?', 'England', 'Pence', 1, 0);
 
 -- --------------------------------------------------------
 
