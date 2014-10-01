@@ -174,9 +174,11 @@ function print_supplier_balances()
 			$grandtotal[$i] += $init[$i];
 		}
 		$rep->NewLine(1, 2);
-		if (db_num_rows($res)==0) continue;
-
 		$rep->Line($rep->row + 4);
+		if (db_num_rows($res)==0) {
+			$rep->NewLine(1, 2);
+			continue;
+		}	
 		while ($trans=db_fetch($res))
 		{
 			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
