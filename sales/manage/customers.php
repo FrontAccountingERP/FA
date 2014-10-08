@@ -117,7 +117,7 @@ function handle_submit(&$selected_id)
                 
         	$selected_branch = db_insert_id();
         
-			add_crm_person($_POST['CustName'], $_POST['cust_ref'], '', $_POST['address'], 
+			add_crm_person($_POST['cust_ref'], $_POST['CustName'], '', $_POST['address'], 
 				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], '', '');
 
 			$pers_id = db_insert_id();
