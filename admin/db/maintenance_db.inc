@@ -284,10 +284,12 @@ function db_import($filename, $connection, $force=true)
 
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
+	$check_line_end = false;
 	// uncrompress gziped backup files
 	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
-		$lines = db_ungzip("lines", $filename);
-	elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
+	{	$lines = db_ungzip("lines", $filename);
+		$check_line_len = true;
+	} elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
 		$lines = db_unzip("lines", $filename);
 	else
 		$lines = file("". $filename);
@@ -297,8 +299,9 @@ function db_import($filename, $connection, $force=true)
 	$delimiter = ';';
 	foreach($lines as $line_no => $line)
 	{
+		$gzfile_bug = $check_line_len && (strlen($line) == 8190); // there is a bug in php (at least 4.1.1-5.5.9) gzfile which limits line length to 8190 bytes!
+
 		$line = trim($line);
-		
 		$line = str_replace("0_", $connection["tbpref"], $line);
 
 		if ($query_table == '') 
@@ -320,8 +323,7 @@ function db_import($filename, $connection, $force=true)
 		 if($query_table != '')  // inside allowed query
 		 {
 		 	$table = $query_table;
-
-			if (substr($line, -strlen($delimiter)) == $delimiter) // end of query found
+			if (!$gzfile_bug && substr($line, -strlen($delimiter)) == $delimiter) // end of query found 
 			{
 				$line = substr($line, 0, strlen($line) - strlen($delimiter)); // strip delimiter
 				$query_table = '';
