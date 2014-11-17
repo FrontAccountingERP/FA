@@ -112,7 +112,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	if ($provider == 'ECB')
 	{
 		$filename = "/stats/eurofxref/eurofxref-daily.xml";
-		$site = "www.ecb.int";
+		$site = "www.ecb.europa.eu";
 	}
 	elseif ($provider == 'YAHOO')
 	{
@@ -141,15 +141,15 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
     	   curl_setopt ($ch, CURLOPT_HEADER, 0);
 	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	       // prevent warning while save_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
-		   if (!ini_get('save_mode') && !ini_get('open_basedir'))
+	       // prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
+		   if (!ini_get('safe_mode') && !ini_get('open_basedir'))
     	   	curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
 	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
     	   $contents = curl_exec ($ch);
 	       curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
-		   $site="195.128.2.97";
+		   $site="172.230.157.137";
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
