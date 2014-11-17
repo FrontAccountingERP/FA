@@ -37,7 +37,7 @@ class SessionManager
 				// Reset session data and regenerate id
 				$_SESSION = array();
 				$_SESSION['IPaddress'] = $_SERVER['REMOTE_ADDR'];
-				$_SESSION['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION['userAgent'] = @$_SERVER['HTTP_USER_AGENT'];
 				$this->regenerateSession();
 
 			// Give a 5% chance of the session id changing on any request
@@ -63,7 +63,7 @@ class SessionManager
 		if ($_SESSION['IPaddress'] != $_SERVER['REMOTE_ADDR'])
 			return false;
 
-		if ( $_SESSION['userAgent'] != $_SERVER['HTTP_USER_AGENT'])
+		if ( $_SESSION['userAgent'] != @$_SERVER['HTTP_USER_AGENT'])
 			return false;
 
 		return true;
