@@ -563,12 +563,13 @@ class cart
 			if (has_stock_holding($line_item->mb_flag))
 			{
 				if (!$this->trans_no) // new delivery
-					$qtys[$line_item->stock_id]['qty'] = $line_item->quantity + @$qtys[$line_item->stock_id]['qty'];
+					$qtys[$line_item->stock_id]['qty'] = $line_item->qty_dispatched + @$qtys[$line_item->stock_id]['qty'];
 				else	// DN modification: check change in quantity
-					$qtys[$line_item->stock_id]['qty'] = ($line_item->qty_dispatched-$line_item->quantity) + @$qtys[$line_item->stock_id]['qty'];
+					$qtys[$line_item->stock_id]['qty'] = ($line_item->qty_dispatched-$line_item->qty_old) + @$qtys[$line_item->stock_id]['qty'];
 				$qtys[$line_item->stock_id]['line'] = $line_no;
 			}
 		}
+
 		foreach($qtys as $stock_id => $sum)
 		{
 			if (check_negative_stock($stock_id, -$sum['qty'], $location ? $location : $this->Location, $date ? $date : $this->document_date))

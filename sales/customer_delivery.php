@@ -434,7 +434,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		// (but anyway dispatch is checked again later before transaction is saved)
 
 		$qty = $ln_itm->qty_dispatched;
-		if ($check = check_negative_stock($ln_itm->stock_id, -$ln_itm->qty_dispatched, $_POST['Location'], $_POST['DispatchDate']))
+		if ($check = check_negative_stock($ln_itm->stock_id, $ln_itm->qty_done-$ln_itm->qty_dispatched, $_POST['Location'], $_POST['DispatchDate']))
 			$qty = $check['qty'];
 
 		$q_class =  hook_get_dispatchable_quantity($ln_itm, $_POST['Location'], $_POST['DispatchDate'], $qty);
