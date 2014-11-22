@@ -162,7 +162,7 @@ function _set_combo_select(e) {
 				event.returnValue = false;
   			  	return false;
   			}
-		    if (box && (key == 32) && (this.className == 'combo2')) {
+		    if (box && (key == 32) && (string_contains(this.className, 'combo2'))) {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
@@ -275,12 +275,12 @@ var inserts = {
 	'input': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
-			    save_focus(this);
-				if (this.className == 'combo' || this.className == 'combo3')
+				save_focus(this);
+				if (string_contains(this.className, 'combo') || string_contains(this.className, 'combo3'))
 					this.select();
 			};
 		}
-		if (e.className == 'combo' || e.className == 'combo2' || e.className == 'combo3') {
+		if (string_contains(e.className, 'combo') || string_contains(e.className, 'combo2') || string_contains(e.className, 'combo3')) {
 				_set_combo_input(e);
 		}
 		else

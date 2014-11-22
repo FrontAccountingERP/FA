@@ -356,5 +356,6 @@ function element_pos(e) {
 }
 
 function string_contains(haystack, needle) {
-  return haystack.indexOf(needle) > -1;
+  var words = haystack.split(' ');
+  return words.indexOf(needle) > -1;
 }
