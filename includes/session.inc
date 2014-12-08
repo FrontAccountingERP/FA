@@ -316,7 +316,7 @@ function html_cleanup(&$parms)
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
@@ -484,7 +484,8 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding)), 
+					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2'
+						 ? 'ISO-8859-1' : $_SESSION['language']->encoding)), 
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");
