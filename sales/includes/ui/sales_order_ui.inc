@@ -123,6 +123,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	}
 	elseif ($order->trans_type == ST_SALESORDER)
 		$order->due_date = add_days($order->document_date, $SysPrefs->default_delivery_required_by());
+	elseif ($order->trans_type == ST_SALESQUOTE)
+		$order->due_date = add_days($order->document_date, $SysPrefs->default_quote_valid_days());
 	if($order->payment_terms['cash_sale']) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
