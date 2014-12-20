@@ -613,7 +613,6 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
-  KEY `branch_code` (`branch_code`),
   KEY `branch_ref` (`branch_ref`),
   KEY `group_no` (`group_no`)
 ) ENGINE=MyISAM  AUTO_INCREMENT=4 ;
@@ -1978,9 +1977,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `alloc` double NOT NULL default '0',
   `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`type`,`trans_no`),
-  KEY `supplier_id` (`supplier_id`),
-  KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
-  KEY `type` (`type`),
+  KEY `supplier_id` (`supplier_id`,`supp_reference`),
   KEY `tran_date` (`tran_date`)
 ) ENGINE=InnoDB;
 
