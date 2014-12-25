@@ -43,6 +43,7 @@ function defaultCompany()
 	    	document.getElementById('log_msg').innerHTML='$demo_text'}, 1000*$login_delay);</script>";
 	    $demo_text = $blocked_msg;
 	}
+	flush_dir(user_js_cache());
 	if (!isset($def_coy))
 		$def_coy = 0;
 	$def_theme = "default";

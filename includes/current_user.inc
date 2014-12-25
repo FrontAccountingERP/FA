@@ -136,6 +136,7 @@ class current_user
 		    	$this->logged = true;
 				$this->last_act = time();
 				$this->timeout = session_timeout();
+				flush_dir(user_js_cache()); // refresh cache on login
 			}
 		}
 		return $this->logged;
@@ -598,6 +599,18 @@ function add_user_js_data() {
   add_js_source($js);
 }
 
+function user_js_cache($id=null)
+{
+	global $path_to_root;
+
+	if (!$id)
+		$id = @$_SESSION['wa_current_user']->user;
+
+	if (!$id)
+		$id = 0; // before login
+	return $path_to_root.'/company/'.user_company().'/js_cache/'.$id;
+}
+
 //--------------------------------------------------------------------------
 
 function session_timeout()
@@ -688,7 +701,7 @@ function recalculate_cols(&$cols)
 
 function flush_dir($path, $wipe = false) 
 {
-	$dir = opendir($path);
+	$dir = @opendir($path);
 	if(!$dir)
 		return;
 

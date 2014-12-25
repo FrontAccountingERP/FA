@@ -69,11 +69,32 @@ function cache_js_file($fpath, $text)
 
 	if(!$go_debug) $text = js_compress($text);
 
-        $file = fopen($fpath, 'w');
+    $file = force_open($fpath);
 	if (!$file) return false;
 	if (!fwrite($file, $text)) return false;
 	return fclose($file);
 
+}
+
+/*
+	Open file for writing with creration of subfolders if needed.
+*/
+function force_open($fname)
+{
+	$file = pathinfo($fname);
+
+	$path = $fname[0] == '/' ? '/' : '';
+	$tree = explode('/', $file['dirname']);
+	foreach($tree as $level) {
+		$path .= $level;
+		if (!file_exists($path)) {
+			if (!mkdir($path)) {
+				return null;
+			}
+		}
+		$path .= '/';
+	}
+	return fopen($fname, 'w');
 }
 
 function add_js_file($filename) 

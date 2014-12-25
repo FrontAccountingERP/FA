@@ -889,7 +889,7 @@ function reset_focus()
 function get_js_date_picker()
 {
     global $go_debug;
-    $fpath = company_path().'/js_cache/'.'date_picker.js';
+    $fpath = user_js_cache().'/'.'date_picker.js';
 
     if (!file_exists($fpath) || $go_debug) {
 
