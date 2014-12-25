@@ -219,7 +219,7 @@ function write_login_filelog($login, $result)
 
 	$filename = $path_to_root."/tmp/faillog.php";
 
-	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
+	if ((!file_exists($filename) && is_writable($path_to_root.'/tmp')) || is_writable($filename))
 	{
 		file_put_contents($filename, $msg);
 	}
