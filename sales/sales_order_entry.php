@@ -377,6 +377,11 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
+	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
+	{
+		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
+		return false;
+	}
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
 		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] < 0) && ((input_num('prep_amount')<=0) ||
 			input_num('prep_amount')>$_SESSION['Items']->get_trans_total())) {
@@ -390,19 +395,6 @@ function can_process() {
 			return false;
 		}
 
-	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
-	{
-		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
-		return false;
-	}
-
-	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-
-		if (strlen($_POST['deliver_to']) <= 1) {
-			display_error(_("You must enter the person or company to whom delivery should be made to."));
-			set_focus('deliver_to');
-			return false;
-		}
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
