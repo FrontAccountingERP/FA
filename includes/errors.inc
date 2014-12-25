@@ -71,9 +71,7 @@ function error_handler($errno, $errstr, $file, $line) {
 		}
 	}
 
-	if ($go_debug>1) {
-		$bt = get_backtrace(true, 1);
-	}
+	$bt = $go_debug>1 ? get_backtrace(true, 1) : array();
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting()) {
@@ -196,7 +194,7 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	}
 	
 	$str .= "<br><br>";
-	if ($go_debug)
+	if (!$go_debug)
 		error_log($str);
 	else {
 		if($msg)
