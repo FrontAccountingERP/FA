@@ -62,7 +62,8 @@ function error_handler($errno, $errstr, $file, $line) {
 	// Please use restrainedly to not risk loss of important messages
 	$excluded_warnings = array(
 		'html_entity_decode', 'htmlspecialchars',	// nevermind encodings, special chars are processed anyway
-		'should be compatible with that'			// ignore cpdf/frontreport wrapper warnings
+		'should be compatible with that',			// ignore cpdf/frontreport wrapper warnings
+		'mysql extension is deprecated'				// ignore strict warning in 5.4
 	);
 	foreach($excluded_warnings as $ref) {
 		if (strpos($errstr, $ref) !== false) {

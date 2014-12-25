@@ -37,7 +37,7 @@ class SessionManager
 				// Reset session data and regenerate id
 				$_SESSION = array();
 				$_SESSION['IPaddress'] = $_SERVER['REMOTE_ADDR'];
-				$_SESSION['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION['userAgent'] = @$_SERVER['HTTP_USER_AGENT'];
 				$this->regenerateSession();
 
 			// Give a 5% chance of the session id changing on any request
@@ -63,7 +63,7 @@ class SessionManager
 		if ($_SESSION['IPaddress'] != $_SERVER['REMOTE_ADDR'])
 			return false;
 
-		if ( $_SESSION['userAgent'] != $_SERVER['HTTP_USER_AGENT'])
+		if ( $_SESSION['userAgent'] != @$_SERVER['HTTP_USER_AGENT'])
 			return false;
 
 		return true;
@@ -316,7 +316,7 @@ function html_cleanup(&$parms)
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
@@ -488,7 +488,8 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding)), 
+					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2'
+						 ? 'ISO-8859-1' : $_SESSION['language']->encoding)), 
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");

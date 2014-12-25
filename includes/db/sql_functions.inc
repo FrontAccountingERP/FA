@@ -59,4 +59,21 @@ function update_record_status($id, $status, $table, $key) {
 		
   	db_query($sql, "Can't update record status");
 }
-?>
+//-----------------------------------------------------------------------------
+//
+//	Helper for sql subquery returning running totals from delta tables like stock_moves or bank_trans
+//
+//	$table - table name with optional WHERE clause
+//  $column - delta column
+//	$index  - comma delimited list of columns for total grouping and order
+//  Returns running totals with respective index column
+//
+function running_total_sql($table, $column, $index)
+{
+
+	return "SELECT daily.$index, daily.$column, (@total:=@total+daily.$column) total 
+		FROM
+			(SELECT $index, sum($column) $column FROM $table GROUP BY $index ORDER BY $index) daily,
+			(SELECT @total:=0) total_var";
+}
+

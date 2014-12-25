@@ -41,7 +41,7 @@ function load_stock_levels($location)
 	$sql = "SELECT stock_id, SUM(qty) FROM ".TB_PREF."stock_moves WHERE tran_date <= '$date'";
 	if ($location != '') $sql .= " AND loc_code = ".db_escape($location);
 	$sql .= " GROUP BY stock_id";
-	$result = db_query($sql, "QOH calulcation failed");
+	$result = db_query($sql, "QOH calculation failed");
 	while ($row = db_fetch($result)) {
 		$qoh_stock[$row[0]] = $row[1];
 	}
@@ -109,7 +109,7 @@ function get_demand_asm_qty($stock_id, $location)
 		$sql .= TB_PREF."sales_orders.from_stk_loc =".db_escape($location)." AND ";
 	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."sales_order_details.stk_code AND
-				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')
+				   ".TB_PREF."stock_master.mb_flag='M'
 				   GROUP BY ".TB_PREF."sales_order_details.stk_code";
     $result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {
@@ -161,7 +161,7 @@ function get_on_worder_qty($stock_id, $location)
 	else
 		$qoo = 0.0;
 	$flag = get_mb_flag($stock_id);
-	if ($flag == 'A' || $flag == 'M')
+	if ($flag == 'M')
 	{
 		$sql = "SELECT SUM((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued)) AS qoo
 			FROM ".TB_PREF."workorders 

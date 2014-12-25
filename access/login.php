@@ -125,7 +125,11 @@ function defaultCompany()
 		// add all request variables to be resend together with login data
 		if (!in_array($p, array('ui_mode', 'user_name_entry_field', 
 			'password', 'SubmitUser', 'company_login_name'))) 
-			echo "<input type='hidden' name='$p' value='$val'>";
+			if (!is_array($val))
+				echo "<input type='hidden' name='$p' value='$val'>";
+			else
+				foreach($val as $i => $v)
+					echo "<input type='hidden' name='{$p}[$i]' value='$v'>";
 	}
 	end_form(1);
 	$Ajax->addScript(true, "document.forms[0].password.focus();");

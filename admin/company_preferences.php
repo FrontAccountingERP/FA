@@ -161,15 +161,15 @@ start_outer_table(TABLESTYLE2);
 
 table_section(1);
 
-text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
-textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 6);
+text_row_ex(_("Name (to appear on reports):"), 'coy_name', 50, 50);
+textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 34, 6);
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 text_row_ex(_("Phone Number:"), 'phone', 25, 55);
 text_row_ex(_("Fax Number:"), 'fax', 25);
-email_row_ex(_("Email Address:"), 'email', 25, 55);
+email_row_ex(_("Email Address:"), 'email', 50, 55);
 
-email_row_ex(_("BCC Address for all outgoing mails:"), 'bcc_email', 25, 55);
+email_row_ex(_("BCC Address for all outgoing mails:"), 'bcc_email', 50, 55);
 
 text_row_ex(_("Official Company Number:"), 'coy_no', 25);
 text_row_ex(_("GSTNo:"), 'gst_no', 25);

@@ -255,8 +255,7 @@ function void_work_order($woid)
 
 			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
 		}
-
-		$result = get_work_order_issues($woid);
+		$result = get_additional_issues($woid); // check the issued quantities
 		$cost = 0;
 		$issue_no = 0;
 		while ($row = db_fetch($result))
@@ -276,13 +275,10 @@ function void_work_order($woid)
 		if ($cost != 0)
 			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
 
-		//Adust avg labour cost
-		$cost = get_gl_wo_cost($woid, WO_LABOUR); 
+		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
 		if ($cost != 0)
-			add_labour_cost($work_order['stock_id'], 1, $date, -$cost, true);
-			
-		//Adust avg overhead cost
-		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); 
+			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
+		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
 		if ($cost != 0)
 			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 		

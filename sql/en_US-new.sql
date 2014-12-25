@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 11, 2010 at 11:37 PM
+-- Generation Time: Sep 26, 2014 at 11:37 AM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6-1+lenny2
 
@@ -576,6 +576,7 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `bank_account` varchar(60) DEFAULT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
+  KEY `branch_code` (`branch_code`),
   KEY `branch_ref` (`branch_ref`),
   KEY `group_no` (`group_no`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
@@ -755,18 +756,14 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `begin` (`begin`),
   UNIQUE KEY `end` (`end`)
-) ENGINE=InnoDB  AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(2, '2009-01-01', '2009-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(3, '2010-01-01', '2010-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(4, '2011-01-01', '2011-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(5, '2012-01-01', '2012-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(6, '2013-01-01', '2013-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(1, '2013-01-01', '2013-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(2, '2014-01-01', '2014-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`
@@ -812,7 +809,6 @@ CREATE TABLE IF NOT EXISTS `0_grn_batch` (
   `reference` varchar(60) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `loc_code` varchar(5) default NULL,
-  `rate` double NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `delivery_date` (`delivery_date`),
   KEY `purch_order_no` (`purch_order_no`)
@@ -956,7 +952,8 @@ CREATE TABLE IF NOT EXISTS `0_item_units` (
 -- Dumping data for table `0_item_units`
 --
 
-INSERT INTO `0_item_units` VALUES('ea.', 'Each', 0, 0);
+INSERT INTO `0_item_units` VALUES('each', 'Each', 0, 0);
+INSERT INTO `0_item_units` VALUES('hr', 'Hours', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1568,8 +1565,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_category` (
 INSERT INTO `0_stock_category` VALUES(1, 'Components', 1, 'each', 'B', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES(2, 'Charges', 1, 'each', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES(3, 'Systems', 1, 'each', 'M', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
-INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hrs', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
-
+INSERT INTO `0_stock_category` VALUES(4, 'Services', 1, 'hr', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 -- --------------------------------------------------------
 
 --
@@ -1758,7 +1754,9 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `tax_included` tinyint(1) NOT NULL default '0',
   `tax_algorithm` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`type`,`trans_no`),
-  KEY `supplier_id` (`supplier_id`,`supp_reference`),
+  KEY `supplier_id` (`supplier_id`),
+  KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
+  KEY `type` (`type`),
   KEY `tran_date` (`tran_date`)
 ) ENGINE=InnoDB;
 
@@ -1801,7 +1799,7 @@ INSERT INTO `0_sys_prefs` VALUES('coy_logo', 'setup.company', 'varchar', 100, ''
 INSERT INTO `0_sys_prefs` VALUES('domicile', 'setup.company', 'varchar', 55, '');
 INSERT INTO `0_sys_prefs` VALUES('curr_default', 'setup.company', 'char', 3, 'USD');
 INSERT INTO `0_sys_prefs` VALUES('use_dimension', 'setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '6');
+INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '2');
 INSERT INTO `0_sys_prefs` VALUES('no_item_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_customer_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_supplier_list', 'setup.company', 'tinyint', 1, '0');
@@ -2072,10 +2070,10 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `show_codes` tinyint(1) NOT NULL default '0',
   `show_hints` tinyint(1) NOT NULL default '0',
   `last_visit_date` datetime default NULL,
-  `query_size` tinyint(1) unsigned default '10',
+  `query_size` tinyint(1) unsigned NOT NULL default '10',
   `graphic_links` tinyint(1) default '1',
   `pos` smallint(6) default '1',
-  `print_profile` varchar(30) NOT NULL default '1',
+  `print_profile` varchar(30) NOT NULL default '',
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
   `startup_tab` varchar(20) NOT NULL default '',

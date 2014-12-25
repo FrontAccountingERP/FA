@@ -67,10 +67,10 @@ function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $locat
 	$date_, $type, $reference, $quantity)
 {
 	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from,
-       	$date_, $reference, -$quantity, 0, $type);
+       	$date_, $reference, -$quantity, 0);
 
 	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to,
-	   	$date_, $reference, $quantity, 0, $type);
+	   	$date_, $reference, $quantity, 0);
 
 }
 

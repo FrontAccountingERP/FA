@@ -332,8 +332,17 @@ function html_entity_decode_php4($text_to_convert) {
 		"&lt;" => "<"
 	);
 	$return_text = strtr($text_to_convert, $htmlentities_table);
-	$return_text = preg_replace('~&#x([0-9a-f]+);~ei', 'code_to_utf8(hexdec("\\1"))', $return_text);
-	$return_text = preg_replace('~&#([0-9]+);~e', 'code_to_utf8(\\1)', $return_text);
+	
+	if (version_compare(PHP_VERSION, '5.3.0') >= 0) // 07.11.2014, from php 5.3.0 fixed deprecated preg_replace with the /e flag. Joe. 
+	{
+		$return_text = preg_replace_callback('~&#x([0-9a-f]+);~i', function ($m){ return chr(hexdec($m[1]));}, $return_text);
+		$return_text = preg_replace_callback('~&#([0-9]+);~', function ($m){ return chr($m[1]);}, $return_text);
+	}
+	else
+	{
+		$return_text = preg_replace('~&#x([0-9a-f]+);~ei', 'code_to_utf8(hexdec("\\1"))', $return_text);
+		$return_text = preg_replace('~&#([0-9]+);~e', 'code_to_utf8(\\1)', $return_text);
+	}
 	return $return_text;
 }
 

@@ -153,7 +153,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 function check_data()
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 
 	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))	{
 		display_error(_("The entered date of delivery is invalid."));
@@ -196,6 +196,14 @@ function check_data()
 	}
 
 	if (!check_quantities()) {
+		return false;
+	}
+
+	copy_to_cart();
+
+	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
+	{
+		display_error(_("This document cannot be processed because there is insufficient quantity for: ").implode(',', $low_stock));
 		return false;
 	}
 
@@ -248,7 +256,7 @@ function check_quantities()
 			$min = 0;
 			$max = $itm->quantity - $itm->qty_done;
 		}
-		
+
 			if (check_num('Line'.$line, $min, $max)) {
 				$_SESSION['Items']->line_items[$line]->qty_dispatched =
 				  input_num('Line'.$line);
@@ -273,7 +281,7 @@ function check_quantities()
 }
 //------------------------------------------------------------------------------
 
-function check_qoh()
+if (isset($_POST['process_delivery']) && check_data())
 {
     global $SysPrefs;
     $dn = &$_SESSION['Items'];
@@ -316,9 +324,11 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	}
 	$newdelivery = ($dn->trans_no == 0);
 
-	copy_to_cart();
-	if ($newdelivery) new_doc_date($dn->document_date);
+	if ($newdelivery)
+		new_doc_date($dn->document_date);
+
 	$delivery_no = $dn->write($bo_policy);
+
 	if ($delivery_no == -1)
 	{
 		display_error(_("The entered reference is already in use."));
@@ -337,7 +347,7 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	}
 }
 
-if (isset($_POST['Update']) || isset($_POST['_Location_update']) || isset($_POST['qty'])) {
+if (isset($_POST['Update']) || isset($_POST['_Location_update']) || isset($_POST['qty']) || isset($_POST['process_delivery'])) {
 	$Ajax->activate('Items');
 }
 //------------------------------------------------------------------------------
@@ -465,16 +475,22 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		// quantity input box. This allows for example a hook to modify the default quantity to what's dispatchable
 		// (if there is not enough in hand), check at other location or other order people etc ...
 		// This hook also returns a 'reason' (css classes) which can be used to theme the row.
+		//
+		// FIXME: hook_get_dispatchable definition does not allow qoh checks on transaction level
+		// (but anyway dispatch is checked again later before transaction is saved)
 
-		$qoh = get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
-		$q_class =  hook_get_dispatchable_quantity($ln_itm, $_POST['Location'], $_POST['DispatchDate'], $qoh);
+		$qty = $ln_itm->qty_dispatched;
+		if ($check = check_negative_stock($ln_itm->stock_id, $ln_itm->qty_done-$ln_itm->qty_dispatched, $_POST['Location'], $_POST['DispatchDate']))
+			$qty = $check['qty'];
+
+		$q_class =  hook_get_dispatchable_quantity($ln_itm, $_POST['Location'], $_POST['DispatchDate'], $qty);
+
 		// Skip line if needed
 		if($q_class === 'skip')  continue;
 		if(is_array($q_class)) {
 		  list($ln_itm->qty_dispatched, $row_classes) = $q_class;
 			$has_marked = true;
 		}
-
 	}
 
 	alt_table_row_color($k, $row_classes);
@@ -534,7 +550,7 @@ label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","ali
 end_table(1);
 
 if ($has_marked) {
-	display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
+	display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
 }
 start_table(TABLESTYLE2);
 

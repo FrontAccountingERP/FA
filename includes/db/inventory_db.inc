@@ -9,44 +9,75 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
+function get_qoh_on_date($stock_id, $location=null, $date_=null)
 {
     if ($date_ == null)
-    {
-        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
-            WHERE stock_id=".db_escape($stock_id);
         $date_ = Today();
-        $date = date2sql($date_);
-    }
-    else
-    {
-        $date = date2sql($date_);
-        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+
+    $date = date2sql($date_);
+
+    $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
             WHERE stock_id=".db_escape($stock_id)."
             AND tran_date <= '$date'"; 
-    }
-        
+
     if ($location != null)
         $sql .= " AND loc_code = ".db_escape($location);
 
-    $result = db_query($sql, "QOH calulcation failed");
+    $result = db_query($sql, "QOH calculation failed");
 
     $myrow = db_fetch_row($result);
-    if ($exclude > 0)
-    {
-        $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
-            WHERE stock_id=".db_escape($stock_id)
-            ." AND type=".db_escape($exclude)
-            ." AND tran_date = '$date'";
-
-        $result = db_query($sql, "QOH calulcation failed");
-        $myrow2 = db_fetch_row($result);
-        if ($myrow2 !== false)
-            $myrow[0] -= $myrow2[0];
-    }
 
     $qoh =  $myrow[0];
 		return $qoh ? $qoh : 0;
+}
+
+/**
+*	Check whether change in stock on date would not cause negative qoh in stock history.
+*	Returns null on success or max. available quantity with respective date otherwise.
+*   Running balance is checked on daily basis only, as we do not control time of transaction.
+*
+*	$delta_qty - tested change in stock qty at $date.
+*	$date - check date; when set to null checks all the stock history.
+**/
+
+function check_negative_stock($stock_id, $delta_qty, $location=null, $date=null)
+{
+
+	if ($delta_qty >= 0)
+		 return null;	// qty increese is always safe
+
+	if (!isset($date))
+		$date = Today();
+
+	$date = date2sql($date);
+
+	// check stock status on date
+    $sql = "SELECT SUM(qty) qty, '$date' tran_date FROM ".TB_PREF."stock_moves
+            WHERE stock_id=".db_escape($stock_id)."
+            AND tran_date <= '$date'"; 
+
+    if ($location)
+        $sql .= " AND loc_code = ".db_escape($location);
+
+    $result = db_query($sql, "QOH calculation failed");
+    $qos = db_fetch_assoc($result);
+
+	// check also all stock changes after the date to avoid negative stock in future
+	$sql = TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id) . " AND tran_date > '$date'";
+
+	if ($location)
+		$sql .= " AND loc_code=".db_escape($location);
+
+	$rt = running_total_sql($sql, 'qty', 'tran_date');
+
+	$sql = "SELECT  {$qos['qty']}+total qty, tran_date FROM ($rt) stock_status ORDER by total, tran_date";
+	$history = db_query($sql, 'cannot check stock history');
+	$min_qos = db_fetch($history);
+
+	if ($min_qos && ($min_qos['qty'] < $qos['qty']))
+		$qos = $min_qos;
+
+	return  -$delta_qty > $qos['qty'] ? $qos : null;
 }
 
 //--------------------------------------------------------------------------------------

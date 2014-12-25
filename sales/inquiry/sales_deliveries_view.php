@@ -113,6 +113,8 @@ start_row();
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
+
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
 hidden('OutstandingOnly', $_POST['OutstandingOnly']);
@@ -173,7 +175,7 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item);
+$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item, $_POST['customer_id']);
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view'), 

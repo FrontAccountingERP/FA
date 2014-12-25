@@ -324,7 +324,7 @@ class tar_file extends archive
 			{
 				$temp = unpack("a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100symlink/a6magic/a2temp/a32temp/a32temp/a8temp/a8temp/a155prefix/a12temp", $block);
 				$file = array (
-					'name' => $temp['prefix'] . $temp['name'],
+					'name' => rtrim($temp['prefix']) . rtrim($temp['name']),
 					'stat' => array (
 						2 => octdec($temp['mode']),
 						4 => octdec($temp['uid']),

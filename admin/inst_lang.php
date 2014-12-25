@@ -77,7 +77,7 @@ function display_languages()
 
 		$support = $GetText->check_support($lang, $charset);
 
-		if (function_exists('gettext') && !$support && !get_post('DisplayAll')) continue;
+		if (function_exists('gettext') && !$support && !get_post('DisplayAll') && $lang != 'C') continue;
 
 		label_cell($lang);
 		label_cell($available ? get_package_view_str($lang, $lang_name) : $lang_name);

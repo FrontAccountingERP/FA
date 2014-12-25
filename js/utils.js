@@ -1,11 +1,11 @@
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function set_mark(img) {
@@ -31,8 +31,8 @@ function disp_msg(msg, cl) {
 // 	- input object - all form values are also submited
 //  - arbitrary string - POST var trigger with value 1 is added to request;
 //		if form parameter exists also form values are submited, otherwise
-//		request is directed to current location 
-// 
+//		request is directed to current location
+//
 JsHttpRequest.request= function(trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout || 10000;	// default timeout value
@@ -48,27 +48,27 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			var url = trigger.href;
 			if (trigger.id) content[trigger.id] = 1;
 		} else {
-		var submitObj = typeof(trigger) == "string" ? 
+		var submitObj = typeof(trigger) == "string" ?
 			document.getElementsByName(trigger)[0] : trigger;
-		
+
 		form = form || (submitObj && submitObj.form);
 
 		var upload = form && form.enctype=='multipart/form-data';
-		
-		var url = form ? form.getAttribute('action') : 
+
+		var url = form ? form.getAttribute('action') :
 		  window.location.toString();
 
 		var content = this.formInputs(trigger, form, upload);
 
 		if (!form) url = url.substring(0, url.indexOf('?'));
-		
+
 		if (!submitObj) {
 			content[trigger] = 1;
 			}
 		}
 			// this is to avoid caching problems
 		content['_random'] = Math.random()*1234567;
-	
+
 		var tcheck = setTimeout(
 			function() {
 				for(var id in JsHttpRequest.PENDING)  {
@@ -89,12 +89,12 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
         JsHttpRequest.query(
             (upload ? "form." : "")+"POST "+url, // force form loader
 	    	content,
-            // Function is called when an answer arrives. 
+            // Function is called when an answer arrives.
 	    function(result, errors) {
                 // Write the answer.
 			var newwin = 0;
 	        if (result) {
-		  	  for(var i in result ) { 
+		  	  for(var i in result ) {
 			  atom = result[i];
 			  cmd = atom['n'];
 			  property = atom['p'];
@@ -141,7 +141,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			window.scrollTo(0,0);
 			//document.getElementById('msgbox').scrollIntoView(true);
 	  // Restore focus if we've just lost focus because of DOM element refresh
-		  	if(!newwin) { 
+		  	if(!newwin) {
 		  		setFocus();
 			}
 		}
@@ -157,7 +157,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 
 		if (typeof(inp) == "string")
 			submitObj = document.getElementsByName(inp)[0]||inp;
-		
+
 		objForm = objForm || (submitObj && submitObj.form);
 
 		if (objForm)
@@ -168,7 +168,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			  var el = formElements[i];
 			  var name = el.name;
 				if (!el.name) continue;
-				if(upload) { // for form containing file inputs collect all 
+				if(upload) { // for form containing file inputs collect all
 					// form elements and add value of trigger submit button
 					// (internally form is submitted via form.submit() not button click())
 					if (submitObj.type=='submit' && el==submitObj)
@@ -178,7 +178,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 					}
 				}
 				if (el.type )
-				  if( 
+				  if(
 				  ((el.type == 'radio' || el.type == 'checkbox') && el.checked == false)
 				  || (el.type == 'submit' && (!submitObj || el.name!=submitObj.name)))
 					continue;
@@ -204,7 +204,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 					{
 						q[name] = el.value;
 					}
-				} 
+				}
 			}
 		}
 		return q;
@@ -224,7 +224,7 @@ function price_format(post, num, dec, label, color) {
 	decsize = Math.pow(10, dec);
 	num = Math.floor(num*decsize+0.50000000001);
 	cents = num%decsize;
-	num = Math.floor(num/decsize).toString(); 
+	num = Math.floor(num/decsize).toString();
 	for( i=cents.toString().length; i<dec; i++){
 		cents = "0"+cents;
 	}
@@ -249,9 +249,9 @@ function get_amount(doc, label) {
 	    if(label)
 			var val = document.getElementById(doc).innerHTML;
 	    else
-			var val = typeof(doc) == "string" ? 
+			var val = typeof(doc) == "string" ?
 			document.getElementsByName(doc)[0].value : doc.value;
-		
+
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
 		val = +val.replace(new RegExp('\\'+user.ds, 'g'),'.');
 		return isNaN(val) ? 0 : val;
@@ -270,22 +270,22 @@ function setFocus(name, byId) {
  	el = name;
  else {
 	if(!name) { // page load/ajax update
-		if (_focus)	
+		if (_focus)
 			name = _focus;	// last focus set in onfocus handlers
-		else 
+		else
 	 		if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
 			  var cur = document.getElementsByName('_focus')[document.forms.length-1];
 			  if(cur) name = cur.value;
 			}
 	  }
-      if (name) 
+      if (name)
 	    if(byId || !(el = document.getElementsByName(name)[0]))
 		  el = document.getElementById(name);
   }
   if (el != null && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
-	
+
     var tmp = function() {el.focus(); if (el.select) el.select();};
 	setTimeout(tmp, 0);
   }
@@ -304,7 +304,7 @@ function move_focus(dir, e0, neighbours)
 		var p = element_pos(e);
 		if (p!=null && (e.className=='menu_option' || e.className=='printlink'
 				 || e.className == 'repclass_link' || e.className == 'repopts_link')) {
-			if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
+			if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y))
 				|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
 					var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
 					if ((l1<l) || (l==0)) {
@@ -353,4 +353,9 @@ function element_pos(e) {
 	// parentNode has style.display set to none
 	if (parentNode != document.documentElement) return null;
 	return res;
+}
+
+function string_contains(haystack, needle) {
+  var words = haystack.split(' ');
+  return words.indexOf(needle) > -1;
 }

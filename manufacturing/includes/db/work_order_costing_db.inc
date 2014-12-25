@@ -67,9 +67,14 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false)
 		if ($qoh + $qty >= 0)
 			$cost_adjust = true;
 		$qoh = 0;
-	}		
-	if ($qoh + $qty != 0)	
-		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
+	}
+	if ($qoh + $qty != 0)
+	{
+		if ($qoh == 0)
+			$material_cost += $m_cost;
+		else
+			$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
+	}
 	
 	if ($advanced && $cost_adjust) // new 2010-02-10
 		adjust_deliveries($stock_id, $bom_cost, $date_);	
@@ -120,6 +125,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	
+			if ($qty != 0)
+				$overhead_cost = ($qoh * $overhead_cost + $costs) / $qty;
 		}
 	}
 	else
@@ -173,6 +180,8 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	
+			if ($qty != 0)
+				$labour_cost = ($qoh * $labour_cost + $costs) / $qty;
 		}
 	}
 	else
@@ -226,6 +235,8 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	
+			if ($qty != 0)
+			 	$material_cost = $costs / $qty; 
 		}
 	}
 	else

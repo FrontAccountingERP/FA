@@ -142,24 +142,19 @@ function print_supplier_balances()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$accumulate = 0;
+		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init[0] = $init[1] = 0.0;
-		$init[0] = round2(abs($bal['charges']), $dec);
-		$init[1] = round2(Abs($bal['credits']), $dec);
-		$init[2] = round2($bal['Allocated'], $dec);
+		$init[0] = round2(abs($bal['charges']*$rate), $dec);
+		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
+		$init[2] = round2($bal['Allocated']*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding'], $dec);
-		$total = array(0,0,0,0);
-		for ($i = 0; $i < 4; $i++)
-		{
-			$total[$i] += $init[$i];
-			$grandtotal[$i] += $init[$i];
-		}
+			$init[3] = round2($bal['OutStanding']*$rate, $dec);
 		$res = getTransactions($myrow['supplier_id'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
 
@@ -172,15 +167,21 @@ function print_supplier_balances()
 		$rep->AmountCol(5, 6, $init[1], $dec);
 		$rep->AmountCol(6, 7, $init[2], $dec);
 		$rep->AmountCol(7, 8, $init[3], $dec);
+		$total = array(0,0,0,0);
+		for ($i = 0; $i < 4; $i++)
+		{
+			$total[$i] += $init[$i];
+			$grandtotal[$i] += $init[$i];
+		}
 		$rep->NewLine(1, 2);
-		if (db_num_rows($res)==0) continue;
-
 		$rep->Line($rep->row + 4);
+		if (db_num_rows($res)==0) {
+			$rep->NewLine(1, 2);
+			continue;
+		}	
 		while ($trans=db_fetch($res))
 		{
 			if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
-			$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
-
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);

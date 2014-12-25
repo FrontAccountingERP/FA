@@ -61,7 +61,10 @@
 		}
 		$this->LineTo($right, $iline2 ,$right, $iline4);
 		$this->LineTo($this->leftMargin, $iline5 ,$this->leftMargin, $iline7);
-		$this->LineTo($this->cols[$cols - 2] + 4, $iline5 ,$this->cols[$cols - 2] + 4, $iline7);
+		if ($this->l['a_meta_dir'] == 'rtl') // avoid line overwrite in rtl language
+			$this->LineTo($this->cols[$cols - 2], $iline5 ,$this->cols[$cols - 2], $iline7);
+		else	
+			$this->LineTo($this->cols[$cols - 2] + 4, $iline5 ,$this->cols[$cols - 2] + 4, $iline7);
 		$this->LineTo($right, $iline5 ,$right, $iline7);
 
 		// Company Logo

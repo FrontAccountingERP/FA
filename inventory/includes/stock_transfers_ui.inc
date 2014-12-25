@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 {
     if ($order->find_cart_item($new_item))
-         display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
+         display_error(_("For Part :") . $new_item . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
 	else
          $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 }
@@ -63,13 +63,17 @@ function display_transfer_items($title, &$order)
 	$subtotal = 0;
 	$k = 0;  //row colour counter
 
+	$low_stock = $order->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 	$id = find_submit('Edit');
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
 		if ($id != $line_no)
 		{
-    		alt_table_row_color($k);
+			if (in_array($stock_item->stock_id, $low_stock))
+				start_row("class='stockmankobg'");	// notice low stock status
+			else 
+				alt_table_row_color($k);
 
 			view_stock_status_cell($stock_item->stock_id);
     		label_cell($stock_item->item_description);
@@ -92,6 +96,8 @@ function display_transfer_items($title, &$order)
 		transfer_edit_item_controls($order);
 
     end_table();
+	if ($low_stock)
+		display_note(_("Marked items have insufficient quantities in stock as on day of transfer."), 0, 1, "class='stockmankofg'");
 	div_end();
 }
 

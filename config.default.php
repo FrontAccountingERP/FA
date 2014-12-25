@@ -176,6 +176,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$config_allocation_settled_allowance = 0.005;
 
+	/* Show average costed values instead of fixed standard cost in report, Inventory Valuation Report */
+	$use_costed_values = 0;	
+	
 	/* Allow negative prices for dummy/service items. To be moved to GL db settings */
 	$allow_negative_prices = 1;
 
@@ -192,6 +195,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
     /* Whether to allow sending new password by e-mail */
     $allow_password_reset = false;
 
+    /* Print Item Images on Sales Quotations. Set to 1 if so. */
+    $print_item_images_on_quote = 0;
+
 	/* for uploaded item pictures */
 	$pic_width 		= 80;
 	$pic_height 	= 50;
@@ -200,6 +206,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* skin for Business Graphics. 1 = Office, 2 = Matrix, or 3 = Spring. 
 	   Pallete skin attributes set in reporting/includes/class.graphic.inc */
 	$graph_skin 	= 1;
+
+	/* UTF-8 font for Business Graphics. Copy it to /reporting/fonts/ folder. */
+	$UTF8_fontfile	= "FreeSans.ttf";
 
 /*	
 	Before upgrade from pre-2.2 FA you have to move here your customized

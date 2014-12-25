@@ -102,9 +102,7 @@ function can_process()
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 	if ($failed_item != -1) 
 	{
-		$item = $_SESSION['issue_items']->line_items[$failed_item];
-    	display_error( _("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
-    		" " . $item->stock_id . " - " .  $item->item_description);
+   		display_error(_("The issue cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
 		return false;
 	}
 

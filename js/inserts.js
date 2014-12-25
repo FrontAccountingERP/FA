@@ -1,11 +1,11 @@
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 var _focus;
@@ -46,7 +46,7 @@ function _expand(tabobj) {
 
   if (ul.getAttribute("rel")){
 	for (var i=0; i<alltabs.length; i++){
-	  alltabs[i].className = "ajaxbutton"  //deselect all tabs
+	  alltabs[i].className = "ajaxbutton"  //deselect all tabs // Review CP 2014-11 This will remove all other classes from the element.
 	}
 	tabobj.className = "current";
 	JsHttpRequest.request(tabobj)
@@ -61,17 +61,17 @@ function expandtab(tabcontentid, tabnumber) {
 
 function _set_combo_input(e) {
 		e.setAttribute('_last', e.value);
-		e.onblur=function() { 
+		e.onblur=function() {
 		  var but_name = this.name.substring(0, this.name.length-4)+'button';
 		  var button = document.getElementsByName(but_name)[0];
 		  var select = document.getElementsByName(this.getAttribute('rel'))[0];
 		  save_focus(select);
-// submit request if there is submit_on_change option set and 
+// submit request if there is submit_on_change option set and
 // search field has changed.
-		
+
 		  if (button && (this.value != this.getAttribute('_last'))) {
 			JsHttpRequest.request(button);
-		  } else if(this.className=='combo2') {
+		  } else if(string_contains(this.className, 'combo2')) {
 				this.style.display = 'none';
 				select.style.display = 'inline';
 				setFocus(select);
@@ -82,12 +82,12 @@ function _set_combo_input(e) {
 			var select = document.getElementsByName(this.getAttribute('rel'))[0];
 			if(select && select.selectedIndex>=0) {
 			  var len = select.length;
-			  var byid = this.className=='combo' || this.className=='combo3';
+			  var byid = string_contains(this.className, 'combo') || string_contains(this.className, 'combo3');
 			  var ac = this.value.toUpperCase();
 			  select.options[select.selectedIndex].selected = false;
 			  for (i = 0; i < len; i++) {
 				var txt = byid ? select.options[i].value : select.options[i].text;
-				if (this.className=='combo3') {
+				if (string_contains(this.className, 'combo3')) {
 				  if(txt.toUpperCase().indexOf(ac) == 0) {
 					select.options[i].selected = true;
 				  	break;
@@ -101,7 +101,7 @@ function _set_combo_input(e) {
 			  }
 			}
 		};
-    	e.onkeydown = function(ev) { 
+    	e.onkeydown = function(ev) {
 	  		ev = ev||window.event;
 	  		key = ev.keyCode||ev.which;
 	  		if(key == 13) {
@@ -112,7 +112,7 @@ function _set_combo_input(e) {
 }
 
 function _update_box(s) {
-	var byid = s.className=='combo' || s.className=='combo3';
+	var byid = string_contains(s.className, 'combo') || string_contains(s.className, 'combo3');
 	var rel = s.getAttribute('rel');
 	var box = document.getElementsByName(rel)[0];
 		if(box && s.selectedIndex>=0) {
@@ -128,29 +128,29 @@ function _update_box(s) {
 
 function _set_combo_select(e) {
 		// When combo position is changed via js (eg from searchbox)
-		// no onchange event is generated. To ensure proper change 
+		// no onchange event is generated. To ensure proper change
 		// signaling we must track selectedIndex in onblur handler.
 		e.setAttribute('_last', e.selectedIndex);
 		e.onblur = function() {
 		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
-//			if(this.className=='combo')
+//			if(string_contains(this.className, 'combo'))
 //			    _update_box(this);
 			if ((this.selectedIndex != this.getAttribute('_last'))
-				||((this.className=='combo' || this.className=='combo3') && _update_box(this))
+				||((string_contains(this.className, 'combo') || string_contains(this.className, 'combo3')) && _update_box(this))
 				)
 					this.onchange();
 		}
 		e.onchange = function() {
 			var s = this;
 			this.setAttribute('_last', this.selectedIndex);
-			if(s.className=='combo' || this.className=='combo3')
+			if(string_contains(s.className, 'combo') || string_contains(this.className, 'combo3'))
 			    _update_box(s);
 			if(s.selectedIndex>=0) {
 				 var sname = '_'+s.name+'_update';
 				 var update = document.getElementsByName(sname)[0];
 				 if(update) {
 					    JsHttpRequest.request(update);
-				} 
+				}
 			}
 			return true;
 		}
@@ -162,7 +162,7 @@ function _set_combo_select(e) {
 				event.returnValue = false;
   			  	return false;
   			}
-		    if (box && (key == 32) && (this.className == 'combo2')) {
+		    if (box && (key == 32) && (string_contains(this.className, 'combo2'))) {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
@@ -178,7 +178,7 @@ function _set_combo_select(e) {
 var _w;
 
 function callEditor(key) {
-  var el = document.getElementsByName(editors[key][1])[0]; 
+  var el = document.getElementsByName(editors[key][1])[0];
   if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
   var left = (screen.width - editors[key][2]) / 2;
   var top = (screen.height - editors[key][3]) / 2;
@@ -186,7 +186,7 @@ function callEditor(key) {
 	  "edit","scrollbars=yes,resizable=0,width="+editors[key][2]+",height="+editors[key][3]+",left="+left+",top="+top+",screenX="+left+",screenY="+top);
   if (_w.opener == null)
 	  _w.opener = self;
-  editors._call = key; // store call point for passBack 
+  editors._call = key; // store call point for passBack
   _w.focus();
 }
 
@@ -196,7 +196,7 @@ function passBack(value) {
 		var back = o.editors[o.editors._call]; // form input bindings
 		var to = o.document.getElementsByName(back[1])[0];
 		if (to) {
-			if (to[0] != undefined)	
+			if (to[0] != undefined)
 				to[0].value = value; // ugly hack to set selector to any value
 			to.value = value;
 			// update page after item selection
@@ -230,12 +230,12 @@ function fix_date(date, last)
 		day = dat[2]; month = dat[1]; year = dat[0];
 	}
 	if (cur[1] != undefined && cur[1] != "") // day or month entered, could be string 3
-	{ 
+	{
 		if (user.datefmt == 0 || user.datefmt == 3 || ((user.datefmt == 2 || user.datefmt == 5) && (cur[2] == undefined || cur[2] == "")))
 			day = cur[1];
-		else	
+		else
 			month = cur[1];
-	}		
+	}
 	if (cur[0] != undefined && cur[0] != "") // day or month entered. could be string 3
 	{
 		if (cur[1] == undefined || cur[1] == "")
@@ -244,7 +244,7 @@ function fix_date(date, last)
 			month = cur[0];
 		else if (user.datefmt == 2 || user.datefmt == 5)
 			year = cur[0];
-		else	
+		else
 			day = cur[0];
 	}
 	if (cur[2] != undefined && cur[2] != "") // year,
@@ -253,11 +253,11 @@ function fix_date(date, last)
 			day = cur[2];
 		else
 			year = cur[2];
-	}		
+	}
 	if (user.datefmt<3) {
 		if (day<10) day = '0'+parseInt(day, 10);
 		if (month<10) month = '0'+parseInt(month, 10);
-	}	
+	}
 	if (year<100) year = year<60 ? (2000+parseInt(year,10)) : (1900+parseInt(year,10));
 
 //	console.info(day,month,year)
@@ -275,33 +275,33 @@ var inserts = {
 	'input': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
-			    save_focus(this);
-				if (this.className == 'combo' || this.className == 'combo3') 
+				save_focus(this);
+				if (string_contains(this.className, 'combo') || string_contains(this.className, 'combo3'))
 					this.select();
 			};
 		}
-		if (e.className == 'combo' || e.className == 'combo2' || e.className == 'combo3') {
+		if (string_contains(e.className, 'combo') || string_contains(e.className, 'combo2') || string_contains(e.className, 'combo3')) {
 				_set_combo_input(e);
-		} 
+		}
 		else
     		if(e.type == 'text' ) {
-   	  			e.onkeydown = function(ev) { 
+   	  			e.onkeydown = function(ev) {
   					ev = ev||window.event;
   					key = ev.keyCode||ev.which;
  	  				if(key == 13) {
 						if(e.className == 'searchbox') e.onblur();
 						return false;
-					} 
+					}
 					return true;
 	  			}
 			}
 	},
-	'input.combo2,input[aspect="fallback"]': 
+	'input.combo2,input[aspect="fallback"]':
 	function(e) {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
 	},
-	'div.js_only': 
+	'div.js_only':
 	function(e) {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
@@ -326,7 +326,7 @@ var inserts = {
 
 	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': 
+	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':
 	function(e) {
 			e.onclick = function() {
 				if (validate(e)) {
@@ -389,7 +389,7 @@ var inserts = {
 				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top="+top+",left="+left+",screenX="+left+",screenY="+top);
 			  if (_w.opener == null)
 				  _w.opener = self;
-			//  editors._call = key; // store call point for passBack 
+			//  editors._call = key; // store call point for passBack
 //			  _w.moveTo(50, 50);
 			  _w.focus();
 			return false;
@@ -402,7 +402,7 @@ var inserts = {
 			};
 		}
   		var c = e.className;
-		if (c == 'combo' || c == 'combo2' || c == 'combo3')
+		if (string_contains(c, 'combo') || string_contains(c, 'combo2') || string_contains(c, 'combo3'))
 			_set_combo_select(e);
 		else {
 			e.onkeydown = function(ev) {	// block unintentional page escape with 'history back' key pressed on buttons
@@ -433,7 +433,7 @@ var inserts = {
 		}
 	},
 	'a': function(e) { // traverse menu
-  		e.onkeydown = function(ev) { 
+  		e.onkeydown = function(ev) {
 			ev = ev||window.event;
 			key = ev.keyCode||ev.which;
 			if(key==37 || key==38 || key==39 || key==40) {
@@ -443,18 +443,18 @@ var inserts = {
 			}
 		}
 		// prevent unneeded transaction entry abortion
-		if (e.className == 'shortcut' 
-		 || e.className == 'menu_option' 
+		if (e.className == 'shortcut'
+		 || e.className == 'menu_option'
 		 || e.className == 'menu_tab'
  		 || e.className == 'selected')
 			e.onclick = function(ev) {
-				if (_validate._processing 
+				if (_validate._processing
 				 && _validate._modified
 				 && !confirm(_validate._processing)) {
 					ev.returnValue = false;
 					return false;
 				}
-				if (_hotkeys.alt)	// ommit Chrome accesskeys 
+				if (_hotkeys.alt)	// ommit Chrome accesskeys
 					return false;
  				window.location = e.href;
 			}
@@ -482,12 +482,12 @@ var inserts = {
 		}
 	}
 /*	'tr.editrow': function(e) {
-		  	e.onkeydown = function(ev) { 
+		  	e.onkeydown = function(ev) {
 	  		ev = ev||window.event;
 	  		key = ev.keyCode||ev.which;
 	  		if(key == 13) {
 			  // Find & click additem/update button
-			  
+
 	  		} else	if(key == 27) {
 	  		  return false;
 			}
@@ -520,7 +520,7 @@ function stopEv(ev) {
 			return false;
 }
 /*
-	Modified accesskey system. While Alt key is pressed letter keys moves 
+	Modified accesskey system. While Alt key is pressed letter keys moves
 	focus to next marked link. Alt key release activates focused link.
 */
 function setHotKeys() {
@@ -538,7 +538,7 @@ function setHotKeys() {
 			var l = document.getElementsBySelector('[accesskey='+key+']');
 			var cnt = l.length;
 			_hotkeys.list = l;
-			for (var i=0; i<cnt; i++) { 
+			for (var i=0; i<cnt; i++) {
 				n = (n+1)%cnt;
 				// check also if the link is visible
 				if (l[n].accessKey==key && (l[n].offsetWidth || l[n].offsetHeight)) {
@@ -563,7 +563,7 @@ function setHotKeys() {
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
 
-					if (el.className!='editbutton' && (asp && asp.indexOf('selector') !== -1) && (key==13 || key==27)) {
+					if (!string_contains(el.className, 'editbutton') && (asp && asp.indexOf('selector') !== -1) && (key==13 || key==27)) {
 						passBack(key==13 ? el.getAttribute('rel') : false);
 						ev.returnValue = false;
 						return false;
@@ -589,7 +589,7 @@ function setHotKeys() {
 		if (editors!=='undefined' && editors[key]) {
 			callEditor(key);
 			return stopEv(ev); // prevent default binding
-		} 
+		}
 		return true;
 	};
 	document.onkeyup = function(ev) {
@@ -601,7 +601,7 @@ function setHotKeys() {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus >= 0) {
 					var link = _hotkeys.list[_hotkeys.focus];
-					if(link.onclick) 
+					if(link.onclick)
 						link.onclick();
 					else
 						if (link.target=='_blank') {
@@ -611,7 +611,7 @@ function setHotKeys() {
 							window.location = link.href;
 				}
 			return stopEv(ev);
-			} 
+			}
 		}
 		return true;
 	}

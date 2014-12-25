@@ -156,11 +156,11 @@ function dec_amount($row, $amount)
 $sql = get_sql_for_work_orders($outstanding_only, $all_items);
 
 $cols = array(
-	_("#") => array('fun'=>'view_link'), 
+	_("#") => array('fun'=>'view_link', 'ord'=>''), 
 	_("Reference"), // viewlink 2 ?
 	_("Type") => array('fun'=>'wo_type_name'),
 	_("Location"), 
-	_("Item") => array('fun'=>'view_stock'),
+	_("Item") => array('fun'=>'view_stock', 'ord'=>''),
 	_("Required") => array('fun'=>'dec_amount', 'align'=>'right'),
 	_("Manufactured") => array('fun'=>'dec_amount', 'align'=>'right'),
 	_("Date") => array('name'=>'date_', 'type'=>'date', 'ord'=>'desc'), 
