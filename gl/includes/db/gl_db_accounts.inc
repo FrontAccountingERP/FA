@@ -227,4 +227,22 @@ function gl_account_in_bank_accounts($acc)
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 
 }
-?>
+
+//----------------------------------------------------------------------------------
+//	Check if given account is used by any bank_account. 
+//	Returns id of first bank_account using account_code, null otherwise.
+//
+//	Keep in mind that direct posting to bank account is depreciated
+//	because we have no way to select right bank account if 
+//	there is more than one using given gl account.
+//
+function is_bank_account($account_code)
+{
+	$sql= "SELECT id FROM ".TB_PREF."bank_accounts WHERE account_code=".db_escape($account_code);
+	$result = db_query($sql, "checking account is bank account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
+}

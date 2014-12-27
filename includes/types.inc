@@ -140,7 +140,7 @@ function payment_person_name($type, $person_id, $full=true) {
 //
 //	Returns counterparty (supplier/customer) name for selected transaction.
 //
-function get_counterparty_name($trans_type, $trans_no, $full=true)
+function get_counterparty_name($trans_type, $trans_no)
 {
 	switch($trans_type)
 	{

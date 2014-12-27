@@ -308,7 +308,7 @@ function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_da
 }
 //---------------------------------------------------------------------------------------------
 
-function get_default_bank_account($curr)
+function get_default_bank_account($curr=null)
 {
 	/* default bank account is selected as first found account from:
 		. default account in $curr if any
@@ -317,6 +317,8 @@ function get_default_bank_account($curr)
 		. first defined account in home currency
 	*/
 	$home_curr = get_company_pref('curr_default');
+	if (!isset($curr))
+		$curr = $home_curr;
 
 	$sql = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM "
 		.TB_PREF."bank_accounts b"
@@ -374,6 +376,17 @@ function identify_bank_account($account_number)
 		return db_fetch($result);
 	else
 		return null;
+}
+
+//----------------------------------------------------------------------------------
+
+function get_bank_account_currency($id)
+{
+	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($id);
+	$result = db_query($sql, "retreive bank account currency");
+
+	$myrow = db_fetch_row($result);
+	return $myrow[0];
 }
 
 ?>

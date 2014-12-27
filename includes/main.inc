@@ -12,7 +12,6 @@
 include_once($path_to_root . "/includes/db/connect_db.inc");
 
 include_once($path_to_root . "/includes/types.inc");
-include_once($path_to_root . "/includes/systypes.inc");
 include_once($path_to_root . "/includes/references.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");

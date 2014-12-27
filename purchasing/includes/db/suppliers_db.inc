@@ -187,3 +187,14 @@ function update_supp_tax_algorithm($supplier_id, $tax_algorithm)
 		. " WHERE supplier_id=".db_escape($supplier_id);
 	return db_query($sql, "cannot update supplier's tax calculation algorithm");
 }
+
+function get_supplier_currency($supplier_id)
+{
+    $sql = "SELECT curr_code FROM ".TB_PREF."suppliers WHERE supplier_id = ".db_escape($supplier_id);
+
+	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
+
+	$myrow=db_fetch_row($result);
+	return $myrow[0];
+}
+

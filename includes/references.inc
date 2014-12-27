@@ -100,48 +100,4 @@ class references
 	}
 }
 
-//----------------------------------------------------------------------------
-//
-//	Check if reference was not used so far (for other transaction than $trans_no)
-//
-function is_new_reference($ref, $type, $trans_no=0)
-{
-	$db_info = get_systype_db_info($type);
-	$db_name = $db_info[0];
-	$db_type = $db_info[1];
-	$db_trans = $db_info[2];
-	$db_ref = $db_info[3];
-	
-	$ref = db_escape(trim($ref));
-	$type = db_escape($type);
-	
-	if ($db_ref == null) { // journal or bank trans store references in refs table
-		$db_name = TB_PREF."refs";
-		$db_type = 'type';
-		$db_trans = 'id';
-		$db_ref = 'reference';
-	}
-
-	if ($db_type != null) {
-		$sql = "SELECT $db_ref FROM $db_name tbl
-			LEFT JOIN ".TB_PREF."voided v ON 
-				tbl.$db_type=v.type AND tbl.$db_trans=v.id
-			WHERE $db_ref=$ref AND ISNULL(v.id)
-				AND tbl.$db_type=$type";
-	} else {
-		$sql = "SELECT $db_ref ref FROM $db_name tbl
-			LEFT JOIN ".TB_PREF."voided v ON 
-				v.type=$type AND tbl.$db_trans=v.id
-			WHERE $db_ref=$ref AND ISNULL(v.id)";
-	}
-	if ($trans_no)
-			$sql .= " AND tbl.`$db_trans` != ".db_escape($trans_no);
-
-	$result = db_query($sql, "could not test for unique reference");
-
-	return (db_num_rows($result) == 0);
-
-}
-
-
 ?>

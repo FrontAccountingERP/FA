@@ -25,28 +25,9 @@ include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 //---------------------------------------------------------------------------------------------
-// If theme is used in customer record set to default
-//
-function clean_user_themes($id)
-{
-	global $db_connections, $db, $installed_extensions;
 
-	$theme = $installed_extensions[$id]['package'];
-	$comp = user_company();
-
-	foreach ($db_connections as $n => $conn) {
-		$db = $_SESSION["wa_current_user"]->set_db_connection($n);
-		$sql = "UPDATE {$conn['tbpref']}users SET theme='default' WHERE theme='$theme'";
-		if (!db_query($sql, 'Cannot update user theme settings'))
-			return false;
-	}
-	$db = $_SESSION["wa_current_user"]->set_db_connection($comp);
-
-	$_SESSION['wa_current_user']->prefs->theme = 'default';
-	return true;
-}
-
-if (($id = find_submit('Delete', false)) && clean_user_themes($id))
+if (($id = find_submit('Delete', false))
+	&& clean_user_themes($installed_extensions[$id]['package']))
 {
 	$extensions = get_company_extensions();
 	$theme = $extensions[$id]['package'];

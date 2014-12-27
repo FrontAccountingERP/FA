@@ -424,24 +424,23 @@ else
     date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
-	$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
-	$rs = db_query($sql,"could not get bank accounts");
-	$r = db_fetch_row($rs);
+	$bank_act = get_default_bank_account();
 	if (!isset($_POST['Labour']))
 	{
 		$_POST['Labour'] = price_format(0);
-		$_POST['cr_lab_acc'] = $r[0];
+		$_POST['cr_lab_acc'] = $bank_act['account_code'];
 	}
+
 	amount_row($wo_cost_types[WO_LABOUR], 'Labour');
 	gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 	if (!isset($_POST['Costs']))
 	{
 		$_POST['Costs'] = price_format(0);
-		$_POST['cr_acc'] = $r[0];
+		$_POST['cr_acc'] = $bank_act['account_code'];
 	}
 	amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
 	gl_all_accounts_list_row(_("Credit Overhead Account"), 'cr_acc', null);
-	
+
 }
 
 if (get_post('released'))

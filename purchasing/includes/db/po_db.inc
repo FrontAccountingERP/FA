@@ -9,6 +9,38 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+// ------------------------------------------------------------------------------
+
+function get_supplier_details_to_order(&$order, $supplier_id)
+{
+	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included, supp.tax_algorithm,
+			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
+				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit,
+				terms.terms, terms.days_before_due, terms.day_in_following_month
+		FROM ".TB_PREF."suppliers supp
+			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
+			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.terms_indicator
+		WHERE supp.supplier_id = ".db_escape($supplier_id)."
+		GROUP BY
+			  supp.supp_name";
+
+	$result = db_query($sql, "The supplier details could not be retreived");
+	$myrow = db_fetch($result);
+
+	$order->credit = $myrow["cur_credit"];
+	$order->terms = array( 
+		'description' => $myrow['terms'],
+		'days_before_due' => $myrow['days_before_due'], 
+		'day_in_following_month' => $myrow['day_in_following_month'] );
+
+	$_POST['supplier_id'] = $supplier_id;
+	$_POST['supplier_name'] = $myrow["supp_name"];
+	$_POST['curr_code'] = $myrow["curr_code"];
+
+	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
+		$myrow["tax_group_id"], $myrow["tax_included"], $myrow["tax_algorithm"]);
+}
+
 //----------------------------------------------------------------------------------------
 
 function delete_po($po)

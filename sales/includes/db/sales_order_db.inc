@@ -596,3 +596,13 @@ function is_sales_order_started($order_no)
 	$result = db_fetch(db_query($sql, "cannot retrieve sales invoices for sales order"));
 	return $result[0];
 }
+
+//---------------------------------------------------------------------------------------------
+//
+// Mark/unmark sales order as template.
+//
+function sales_order_set_template($id, $status)
+{
+  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = ".db_escape($status)." WHERE order_no=".db_escape($id);
+  	db_query($sql, "Can't change sales order type");
+}

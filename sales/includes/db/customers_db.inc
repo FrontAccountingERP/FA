@@ -186,4 +186,15 @@ function get_customer_by_ref($reference)
 	return db_fetch($result);
 }
 
-?>
+//----------------------------------------------------------------------------------
+
+function get_customer_currency($customer_id)
+{
+    $sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($customer_id);
+
+	$result = db_query($sql, "Retreive currency of customer $customer_id");
+
+	$myrow=db_fetch_row($result);
+	return $myrow[0];
+}
+

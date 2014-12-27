@@ -201,27 +201,17 @@ function invoice_prep_link($row)
 		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], ICON_DOC) : '';
 }
 
-//---------------------------------------------------------------------------------------------
-// Update db record if respective checkbox value has changed.
-//
-function change_tpl_flag($id)
-{
-	global	$Ajax;
-	
-  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=$id";
-
-  	db_query($sql, "Can't change sales order type");
-	$Ajax->activate('orders_tbl');
-}
-
 $id = find_submit('_chgtpl');
 if ($id != -1)
-	change_tpl_flag($id);
+{
+	sales_order_set_template($id, check_value('chgtpl'.$id));
+	$Ajax->activate('orders_tbl');
+}
 
 if (isset($_POST['Update']) && isset($_POST['last'])) {
 	foreach($_POST['last'] as $id => $value)
 		if ($value != check_value('chgtpl'.$id))
-			change_tpl_flag($id);
+			sales_order_set_template($id, !check_value('chgtpl'.$id));
 }
 
 $show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'InvoiceTemplates', 'DeliveryTemplates'));

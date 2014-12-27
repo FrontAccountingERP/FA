@@ -34,10 +34,7 @@
 
 	if (!in_array($this->formData['doctype'], array(ST_STATEMENT, ST_WORKORDER)))
 	{
-		$id = $this->formData['payment_terms'];
-		$sql = "SELECT terms, days_before_due FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
-		$result = db_query($sql,"could not get paymentterms");
-		$row = db_fetch($result);
+		$row = get_payment_terms($this->formData['payment_terms']);
 		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
 		if ($this->formData['doctype'] == ST_SALESINVOICE && $this->formData['prepaid'])
 			$this->formData['prepaid'] = ($row['days_before_due'] >= 0) ? 'final' : 'partial';

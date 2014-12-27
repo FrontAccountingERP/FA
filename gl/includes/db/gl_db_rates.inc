@@ -33,6 +33,25 @@ function get_date_exchange_rate($curr_code, $date_)
 		return $row[0];
 }
 
+/*
+	Return last exchange rate of $currency not later than $date.
+*/
+function get_last_exchange_rate($curr_code, $date_)
+{
+	$date = date2sql($date_);
+
+	$sql = "SELECT rate_buy, max(date_) as date_ FROM ".TB_PREF."exchange_rates WHERE curr_code = ".db_escape($curr_code)."
+				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
+
+	$result = db_query($sql, "could not query exchange rates");
+
+
+	if (db_num_rows($result) == 0)
+		return false;
+
+	return db_fetch_row($result);
+}
+
 //---------------------------------------------------------------------------------------------
 
 function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
