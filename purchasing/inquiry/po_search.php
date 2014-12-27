@@ -112,18 +112,9 @@ if (isset($_POST['order_number']) && ($_POST['order_number'] != ""))
 	$order_number = $_POST['order_number'];
 }
 
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != $all_items))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	unset($selected_stock_item);
-}
-
 //figure out the sql required from the inputs available
-$sql = get_sql_for_po_search($_POST['supplier_id']);
+$sql = get_sql_for_po_search($_POST['OrdersAfterDate'], $_POST['OrdersToDate'], $_POST['supplier_id'],
+	$_POST['StockLocation']);
 
 //$result = db_query($sql,"No orders were returned");
 

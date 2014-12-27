@@ -275,7 +275,8 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 {
 
 	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
-		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
+		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_'],
+		$_POST['old_stk_id'], $_POST['old_qty']);
 	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 }
@@ -301,7 +302,7 @@ if (isset($_POST['delete']))
 	{ //ie not cancelled the delete as a result of above tests
 
 		// delete the actual work order
-		delete_work_order($selected_id);
+		delete_work_order($selected_id, $_POST['stock_id'], $_POST['quantity'], $_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 	}
 }

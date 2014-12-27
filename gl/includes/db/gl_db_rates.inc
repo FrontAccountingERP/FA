@@ -218,11 +218,11 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 
 //-----------------------------------------------------------------------------
 
-function get_sql_for_exchange_rates()
+function get_sql_for_exchange_rates($curr)
 {
 	$sql = "SELECT date_, rate_buy, id FROM "
 		.TB_PREF."exchange_rates "
-		."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
+		."WHERE curr_code=".db_escape($curr)."
 		 ORDER BY date_ DESC";
 	return $sql;	 
 }

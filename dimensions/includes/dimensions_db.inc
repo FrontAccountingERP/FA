@@ -181,8 +181,8 @@ function get_dimension_balance($id, $from, $to)
 
 //--------------------------------------------------------------------------------------
 
-function get_sql_for_search_dimensions($dim)
-{	
+function get_sql_for_search_dimensions($dim, $from, $to, $order='', $type = -1, $open=false, $overdue = false)
+{
 	$sql = "SELECT dim.id,
 		dim.reference,
 		dim.name,
@@ -192,34 +192,30 @@ function get_sql_for_search_dimensions($dim)
 		dim.closed
 		FROM ".TB_PREF."dimensions as dim WHERE id > 0";
 
-	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
+	if ($order)
 	{
-		$sql .= " AND reference LIKE ".db_escape("%". $_POST['OrderNumber'] . "%");
+		$sql .= " AND reference LIKE ".db_escape("%". $order . "%");
 	} else {
 
 		if ($dim == 1)
 			$sql .= " AND type_=1";
 
-		if (isset($_POST['OpenOnly']))
-		{
+		if ($open)
 			$sql .= " AND closed=0";
-		}
 
-		if (isset($_POST['type_']) && ($_POST['type_'] > 0))
-		{
-			$sql .= " AND type_=".db_escape($_POST['type_']);
-		}
+		if ($type > 0)
+			$sql .= " AND type_=".db_escape($type);
 
-		if (isset($_POST['OverdueOnly']))
+		if ($overdue)
 		{
 			$today = date2sql(Today());
 
 			$sql .= " AND due_date < '$today'";
 		}
 
-		$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
-			AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
+		$sql .= " AND date_ >= '" . date2sql($from) . "'
+			AND date_ <= '" . date2sql($to) . "'";
 	}
 	return $sql;
-}	
+}
 ?>

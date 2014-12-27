@@ -138,7 +138,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	exit;
 
 } else {
-	check_edit_conflicts();
+	check_edit_conflicts(get_post('cart_id'));
 
 	if (!check_quantities()) {
 		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));

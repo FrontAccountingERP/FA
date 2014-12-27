@@ -189,7 +189,7 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 
 set_global_curr_code($_POST['curr_abrev']);
 
-$sql = get_sql_for_exchange_rates();
+$sql = get_sql_for_exchange_rates($_POST['curr_abrev']);
 
 $cols = array(
 	_("Date to Use From") => 'date', 

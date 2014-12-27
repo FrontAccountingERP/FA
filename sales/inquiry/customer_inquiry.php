@@ -191,7 +191,8 @@ function check_overdue($row)
 		&& floatcmp($row["TotalAmount"], $row["Allocated"]) != 0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_customer_inquiry();
+$sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransToDate'),
+	get_post('customer_id'), get_post('filterType'));
 
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");

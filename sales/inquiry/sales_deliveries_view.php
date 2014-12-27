@@ -36,14 +36,12 @@ else
 
 if (isset($_GET['selected_customer']))
 {
-	$selected_customer = $_GET['selected_customer'];
+	$_POST['customer_id'] = $_GET['selected_customer'];
 }
 elseif (isset($_POST['selected_customer']))
 {
-	$selected_customer = $_POST['selected_customer'];
+	$_POST['customer_id'] = $_POST['selected_customer'];
 }
-else
-	$selected_customer = -1;
 
 if (isset($_POST['BatchInvoice']))
 {
@@ -124,17 +122,6 @@ end_row();
 end_table(1);
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != ALL_TEXT))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	$selected_stock_item = null;
-}
-
-//---------------------------------------------------------------------------------------------
 function trans_view($trans, $trans_no)
 {
 	return get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
@@ -175,7 +162,8 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item, $_POST['customer_id']);
+$sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post('DeliveryToDate'), get_post('customer_id'),
+	get_post('SelectStockFromList'), get_post('StockLocation'), get_post('DeliveryNumber'), get_post('OutstandingOnly'));
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view'), 

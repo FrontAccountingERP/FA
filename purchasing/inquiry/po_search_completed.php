@@ -25,7 +25,7 @@ page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
 
 if (isset($_GET['order_number']))
 {
-	$order_number = $_GET['order_number'];
+	$_POST['order_number'] = $_GET['order_number'];
 }
 
 //-----------------------------------------------------------------------------------
@@ -78,22 +78,7 @@ submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table(1);
 //---------------------------------------------------------------------------------------------
-if (isset($_POST['order_number']))
-{
-	$order_number = $_POST['order_number'];
-}
 
-if (isset($_POST['SelectStockFromList']) &&	($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != ALL_TEXT))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	unset($selected_stock_item);
-}
-
-//---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
 	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
@@ -117,7 +102,9 @@ function prt_link($row)
 
 //---------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_po_search_completed(!@$_GET['popup'] ? $_POST['supplier_id'] : ALL_TEXT);
+$sql = get_sql_for_po_search_completed(get_post('OrdersAfterDate'), get_post('OrdersToDate'),
+	@$_GET['popup'] ? ALL_TEXT : get_post('supplier_id'),
+	get_post('StockLocation'), get_post('order_number'), get_post('SelectStockFromList'));
 
 $cols = array(
 		_("#") => array('fun'=>'trans_view', 'ord'=>''), 

@@ -37,7 +37,7 @@ function select_link($row)
     		"/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 }
 
-$sql = get_sql_for_where_used();
+$sql = get_sql_for_where_used($_POST['stock_id']);
 
    $cols = array(
    	_("Parent Item") => array('fun'=>'select_link'), 

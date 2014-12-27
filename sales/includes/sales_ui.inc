@@ -42,11 +42,11 @@ function processing_active()
 	Check if the cart was not destroyed during opening the edition page in
 	another browser tab.
 */
-function check_edit_conflicts($cartname='Items')
+function check_edit_conflicts($cart_id, $cartname='Items')
 {
 	global $Ajax, $no_check_edit_conflicts;
 
-	if ((!isset($no_check_edit_conflicts) || $no_check_edit_conflicts==0) && get_post('cart_id') && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
+	if ((!isset($no_check_edit_conflicts) || $no_check_edit_conflicts==0) && get_post('cart_id') && $cart_id != $_SESSION[$cartname]->cart_id) {
 		display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 		$Ajax->activate('_page_body');
 		display_footer_exit();

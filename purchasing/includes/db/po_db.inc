@@ -258,9 +258,9 @@ function get_short_info($stock_id)
 	return db_query($sql,"The stock details for " . $stock_id . " could not be retrieved");
 }
 
-function get_sql_for_po_search_completed($supplier_id=ALL_TEXT)
+function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $location=ALL_TEXT,
+	$order_number = '', $stock_id = '')
 {
-	global $order_number, $selected_stock_item;;
 
 	$sql = "SELECT 
 		porder.order_no, 
@@ -280,8 +280,8 @@ function get_sql_for_po_search_completed($supplier_id=ALL_TEXT)
 		AND porder.supplier_id = supplier.supplier_id
 		AND location.loc_code = porder.into_stock_location ";
 
-	if (isset($_GET['supplier_id']))
-		$sql .= "AND supplier.supplier_id=".@$_GET['supplier_id']." ";
+	if ($supplier_id != ALL_TEXT)
+		$sql .= "AND supplier.supplier_id=".$supplier_id." ";
 	if (isset($order_number) && $order_number != "")
 	{
 		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
@@ -289,30 +289,30 @@ function get_sql_for_po_search_completed($supplier_id=ALL_TEXT)
 	else
 	{
 
-		$data_after = date2sql($_POST['OrdersAfterDate']);
-		$date_before = date2sql($_POST['OrdersToDate']);
+		$data_after = date2sql($from);
+		$date_before = date2sql($to);
 
 		$sql .= " AND porder.ord_date >= '$data_after'";
 		$sql .= " AND porder.ord_date <= '$date_before'";
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
+		if ($location != ALL_TEXT)
 		{
-			$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+			$sql .= " AND porder.into_stock_location = ".db_escape($location);
 		}
 		if (isset($selected_stock_item))
 		{
-			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
+			$sql .= " AND line.item_code=".db_escape($stock_id);
 		}
 		if ($supplier_id != ALL_TEXT)
 			$sql .= " AND supplier.supplier_id=".db_escape($supplier_id);
-		
-	} //end not order number selected
+
+	}
 
 	$sql .= " GROUP BY porder.order_no";
 	return $sql;
-}	
+}
 
-function get_sql_for_po_search($supplier_id=ALL_TEXT)
+function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_TEXT)
 {
 	global $all_items, $order_number, $selected_stock_item;;
 	
@@ -343,15 +343,15 @@ function get_sql_for_po_search($supplier_id=ALL_TEXT)
 	}
 	else
 	{
-		$data_after = date2sql($_POST['OrdersAfterDate']);
-		$data_before = date2sql($_POST['OrdersToDate']);
+		$data_after = date2sql($from);
+		$data_before = date2sql($to);
 
 		$sql .= "  AND porder.ord_date >= '$data_after'";
 		$sql .= "  AND porder.ord_date <= '$data_before'";
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
+		if ($location != ALL_TEXT)
 		{
-			$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+			$sql .= " AND porder.into_stock_location = ".db_escape($location);
 		}
 
 		if (isset($selected_stock_item))

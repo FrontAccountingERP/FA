@@ -252,10 +252,10 @@ function get_allocatable_from_supp_transactions($supplier_id, $trans_no=null, $t
 }
 
 
-function get_sql_for_supplier_allocation_inquiry()
+function get_sql_for_supplier_allocation_inquiry($from, $to, $filter, $supplier_id, $all=false)
 {
- 	$date_after = date2sql($_POST['TransAfterDate']);
- 	$date_to = date2sql($_POST['TransToDate']);
+ 	$date_after = date2sql($from);
+ 	$date_to = date2sql($to);
 
     $sql = "SELECT 
 		trans.type, 
@@ -277,31 +277,32 @@ function get_sql_for_supplier_allocation_inquiry()
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";
 
-   	if ($_POST['supplier_id'] != ALL_TEXT)
-   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
+   	if ($supplier_id != ALL_TEXT)
+   		$sql .= " AND trans.supplier_id = ".db_escape($supplier_id);
+
+   	if ($filter != ALL_TEXT)
    	{
-   		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
+   		if (($filter == '1') || ($filter == '2'))
    		{
    			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		}
-   		elseif ($_POST['filterType'] == '3')
+   		elseif ($filter == '3')
    		{
 			$sql .= " AND trans.type = ".ST_SUPPAYMENT." ";
    		}
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5'))
+   		elseif (($filter == '4') || ($filter == '5'))
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
    		}
 
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5'))
+   		if (($filter == '2') || ($filter == '5'))
    		{
    			$today =  date2sql(Today());
 			$sql .= " AND trans.due_date < '$today' ";
    		}
    	}
 
-   	if (!check_value('showSettled'))
+   	if (!$all)
    	{
    		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
    	}

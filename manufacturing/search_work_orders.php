@@ -153,7 +153,8 @@ function dec_amount($row, $amount)
 	return number_format2($amount, $row['decimals']);
 }
 
-$sql = get_sql_for_work_orders($outstanding_only, $all_items);
+$sql = get_sql_for_work_orders($outstanding_only, $_POST['SelectedStockItem'], $_POST['StockLocation'],
+	$_POST['OrderNumber'], check_value('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link', 'ord'=>''), 

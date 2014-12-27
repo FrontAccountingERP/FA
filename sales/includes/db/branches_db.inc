@@ -139,7 +139,7 @@ function get_default_info_for_branch($customer_id)
 	return db_fetch($result);
 }
 
-function get_sql_for_customer_branches()
+function get_sql_for_customer_branches($customer_id)
 {
 	$sql = "SELECT "
 		."b.branch_code, "
@@ -163,7 +163,7 @@ function get_sql_for_customer_branches()
 		WHERE b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code
-		AND b.debtor_no = ".db_escape($_POST['customer_id']);
+		AND b.debtor_no = ".db_escape($customer_id);
 
 	if (!get_post('show_inactive')) $sql .= " AND !b.inactive";
 	$sql .= " GROUP BY b.branch_code ORDER BY branch_ref";

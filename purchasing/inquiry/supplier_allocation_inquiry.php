@@ -120,7 +120,8 @@ function fmt_credit($row)
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_supplier_allocation_inquiry();
+$sql = get_sql_for_supplier_allocation_inquiry($_POST['TransAfterDate'],$_POST['TransToDate'],
+	$_POST['filterType'], $_POST['supplier_id'], check_value('showSettled'));
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),

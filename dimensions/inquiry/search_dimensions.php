@@ -121,7 +121,8 @@ function edit_link($row)
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
-$sql = get_sql_for_search_dimensions($dim);
+$sql = get_sql_for_search_dimensions($dim, $_POST['FromDate'], $_POST['ToDate'],
+	$_POST['OrderNumber'], $_POST['type_'], $_POST['OpenOnly'], $_POST['OverdueOnly']);
 
 $cols = array(
 	_("#") => array('fun'=>'view_link'), 

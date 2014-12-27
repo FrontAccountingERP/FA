@@ -13,7 +13,7 @@
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 @include_once($path_to_root . "/lang/installed_languages.inc");
-include_once($path_to_root . "/includes/lang/gettext.php");
+include_once($path_to_root . "/includes/lang/gettext.inc");
 
 class language 
 {

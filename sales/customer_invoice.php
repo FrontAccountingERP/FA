@@ -48,7 +48,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
 
-check_edit_conflicts();
+check_edit_conflicts(get_post('cart_id'));
 
 if (isset($_GET['AddedID'])) {
 

@@ -244,7 +244,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts();
+	check_edit_conflicts(get_post('cart_id'));
 //-----------------------------------------------------------------------------
 
 function copy_to_cart()

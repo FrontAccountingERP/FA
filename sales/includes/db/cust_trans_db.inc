@@ -285,11 +285,10 @@ function post_void_customer_trans($type, $type_no)
 }
 
 //----------------------------------------------------------------------------------------
-
-function get_sql_for_customer_inquiry()
+function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter = ALL_TEXT)
 {
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
+    $date_after = date2sql($from);
+    $date_to = date2sql($to);
 
   	$sql = "SELECT 
   		trans.type, 
@@ -303,7 +302,7 @@ function get_sql_for_customer_inquiry()
 		debtor.curr_code,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
-   	if ($_POST['filterType'] != ALL_TEXT)
+   	if ($filter != ALL_TEXT)
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 
 //	else
@@ -325,34 +324,34 @@ function get_sql_for_customer_inquiry()
 			AND trans.tran_date <= '$date_to'
 			AND trans.branch_code = branch.branch_code";
 
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+   	if ($cust_id != ALL_TEXT)
+   		$sql .= " AND trans.debtor_no = ".db_escape($cust_id);
 
-   	if ($_POST['filterType'] != ALL_TEXT)
+   	if ($filter != ALL_TEXT)
    	{
-   		if ($_POST['filterType'] == '1')
+   		if ($filter == '1')
    		{
    			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
-   		elseif ($_POST['filterType'] == '2')
+   		elseif ($filter == '2')
    		{
    			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
-   		elseif ($_POST['filterType'] == '3')
+   		elseif ($filter == '3')
    		{
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
 					." OR trans.type = ".ST_BANKDEPOSIT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		}
-   		elseif ($_POST['filterType'] == '4')
+   		elseif ($filter == '4')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
-   		elseif ($_POST['filterType'] == '5')
+   		elseif ($filter == '5')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
    		}
 
-    	if ($_POST['filterType'] == '2')
+    	if ($filter == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
@@ -365,7 +364,7 @@ function get_sql_for_customer_inquiry()
    	return $sql;
 }
 
-function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item=null, $customer_id=ALL_TEXT)
+function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item, $location, $delivery, $outstanding=false)
 {
 	$sql = "SELECT trans.trans_no,
 			debtor.name,
@@ -395,33 +394,29 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 				AND trans.branch_code = branch.branch_code
 				AND trans.debtor_no = branch.debtor_no ";
 
-	if ($_POST['OutstandingOnly'] == true) {
+	if ($outstanding == true) {
 		 $sql .= " AND line.qty_done < line.quantity ";
 	}
 
 	//figure out the sql required from the inputs available
-	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
+	if ($delivery)
 	{
-		$delivery = "%".$_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE ".db_escape($delivery);
+		$sql .= " AND trans.trans_no LIKE %".db_escape($delivery);
 		$sql .= " GROUP BY trans.trans_no";
 	}
 	else
 	{
-		$sql .= " AND trans.tran_date >= '".date2sql($_POST['DeliveryAfterDate'])."'";
-		$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
+		$sql .= " AND trans.tran_date >= '".date2sql($from)."'";
+		$sql .= " AND trans.tran_date <= '".date2sql($to)."'";
 
-		if ($selected_customer != -1)
-			$sql .= " AND trans.debtor_no=".db_escape($selected_customer)." ";
+		if ($stock_item)
+			$sql .= " AND line.stock_id=".db_escape($stock_item)." ";
 
-		if (isset($selected_stock_item))
-			$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
+		if ($location != ALL_TEXT)
+			$sql .= " AND sorder.from_stk_loc = ".db_escape($location)." ";
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
-		
 		if ($customer_id != ALL_TEXT)
-			$sql .= " AND trans.debtor_no = ".db_escape($customer_id);		
+			$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
 
 		$sql .= " GROUP BY trans.trans_no ";
 

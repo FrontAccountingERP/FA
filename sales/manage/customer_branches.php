@@ -283,9 +283,9 @@ echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 echo customer_list('customer_id', null, false, true);
 echo "</center><br>";
 
-$num_branches = db_customer_has_branches($_POST['customer_id']);
+$num_branches = db_customer_has_branches(get_post('customer_id'));
 
-$sql = get_sql_for_customer_branches();
+$sql = get_sql_for_customer_branches(get_post('customer_id'));
 
 //------------------------------------------------------------------------------------------------
 if ($num_branches)
