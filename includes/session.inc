@@ -363,7 +363,7 @@ set_error_handler('error_handler' /*, errtypes */);
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
-include_once($path_to_root . "/includes/lang/language.php");
+include_once($path_to_root . "/includes/lang/language.inc");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
