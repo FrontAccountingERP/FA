@@ -76,9 +76,9 @@ number_list_row(_("Quantities:"), 'qty_dec', user_qty_dec(), 0, 10);
 number_list_row(_("Exchange Rates:"), 'rates_dec', user_exrate_dec(), 0, 10);
 number_list_row(_("Percentages:"), 'percent_dec', user_percent_dec(), 0, 10);
 
-table_section_title(_("Dateformat and Separators"));
+table_section_title(_("Date Format and Separators"));
 
-dateformats_list_row(_("Dateformat:"), "date_format", user_date_format());
+dateformats_list_row(_("Date Format:"), "date_format", user_date_format());
 
 dateseps_list_row(_("Date Separator:"), "date_sep", user_date_sep());
 

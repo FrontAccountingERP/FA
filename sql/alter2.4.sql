@@ -88,3 +88,12 @@ ALTER TABLE `0_users` ADD `save_report_selections` SMALLINT( 6 ) NOT NULL defaul
 ALTER TABLE `0_users` ADD `use_date_picker` TINYINT(1) NOT NULL default '1' COMMENT 'Use Date Picker for all Date Values' AFTER `save_report_selections`;
 ALTER TABLE `0_users` ADD `def_print_destination` TINYINT(1) NOT NULL default '0' COMMENT 'Default Report Destination' AFTER `use_date_picker`;
 ALTER TABLE `0_users` ADD `def_print_orientation` TINYINT(1) NOT NULL default '0' COMMENT 'Default Report Orientation' AFTER `def_print_destination`;
+
+INSERT INTO `0_sys_prefs` VALUES('no_zero_lines_amount', 'glsetup.sales', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES('show_po_item_codes', 'glsetup.purchase', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('accounts_alpha', 'glsetup.general', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('loc_notification', 'glsetup.inventory', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('print_invoice_no', 'glsetup.sales', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('allow_negative_prices', 'glsetup.inventory', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES('print_item_images_on_quote', 'glsetup.inventory', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10');
