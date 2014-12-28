@@ -17,11 +17,11 @@
 function print_document_link($doc_no, $link_text, $link=true, $type_no, 
 	$icon=false, $class='printlink', $id='', $email=0, $extra=0)
 {
-	global $path_to_root, $def_print_orientation;
+	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
 
 	$url = $path_to_root.'/reporting/prn_redirect.php?';
-	$def_orientation = (isset($def_print_orientation) && $def_print_orientation == 1 ? 1 : 0);
+	$def_orientation = (user_def_print_orientation() == 1 ? 1 : 0);
 
 	switch ($type_no)
 	{
@@ -144,6 +144,45 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 	if (user_graphic_links() && $icon)
 		$pars[0] = set_icon($icon, $pars[0]);
 	return "<a target='_blank' href='$url'$id$class $pars[1]>$pars[0]</a>";
+}
+
+/*
+// Purpose: Function to parse a string into parameters
+// Release Date: 2014-12-26
+// Author: ApMuthu <apmuthu@usa.net>
+// Usage:
+$str = "PPFrt#2000 CID#6378465 TaxEx#2345-038 abcde ertrgdert COD#4253 jdegtd PIN#6473654";
+$p = parse_notes_params($str);
+echo print_r($p, true);
+
+An example of usage will be in the reporting/rep110.php file at near the end just before the last $rep-Font(); statement: 
+
+
+    $notes_params = parse_notes_params($branch['notes']);
+    if ($packing_slip == 0 && array_key_exists('CID', $notes_params)) {
+        $rep->NewLine(1);
+        $rep->TextCol(1, 7, "Old Customer# : " . $notes_params['CID'], - 2);
+    }
+*/
+
+function parse_notes_params($str, $sep=" ", $delim="#") {
+    $str_params = explode($sep, $str);
+    $param_array=Array('notes' => '');
+    foreach ($str_params AS $str_param) {
+        $param_set=explode($delim, trim($str_param));
+        $key = (array_key_exists(0, $param_set) ? trim($param_set[0]) : '');
+        $val = (array_key_exists(1, $param_set) ? trim($param_set[1]) : '');
+        if (strlen($key) > 0 && strlen($val) > 0) {
+            $param_array[$key]=$val;
+        } else {
+            // stop at first missing parameter set
+            // break;
+            // Collect the rest into notes
+            $param_array['notes'] .= (" " .  $str_param);
+        }
+    }
+    $param_array['notes'] = trim($param_array['notes']);
+    return $param_array;
 }
 
 ?>

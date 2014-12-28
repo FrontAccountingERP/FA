@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------------
 function add_sales_order(&$order)
 {
-	global $loc_notification, $path_to_root, $Refs;
+	global $SysPrefs, $path_to_root, $Refs;
 
 	begin_transaction();
 	hook_db_prewrite($order, $order->trans_type);
@@ -45,7 +45,7 @@ function add_sales_order(&$order)
 
 	$order->trans_no = array($order_no=>0);
 
-	if ($loc_notification == 1)
+	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
@@ -55,7 +55,7 @@ function add_sales_order(&$order)
 	}
 	foreach ($order->line_items as $line)
 	{
-		if ($loc_notification == 1 && is_inventory_item($line->stock_id))
+		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($line->stock_id))
 			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
@@ -77,7 +77,7 @@ function add_sales_order(&$order)
 	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
 
-	if ($loc_notification == 1 && count($st_ids) > 0)
+	if ($SysPrefs->loc_notification() == 1 && count($st_ids) > 0)
 		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 	return $order_no;
 }
@@ -120,7 +120,7 @@ function update_sales_order_version($order)
 
 function update_sales_order($order)
 {
-	global $loc_notification, $path_to_root, $Refs;
+	global $SysPrefs, $path_to_root, $Refs;
 
 	$del_date = date2sql($order->due_date);
 	$ord_date = date2sql($order->document_date);
@@ -168,7 +168,7 @@ function update_sales_order($order)
 
 	db_query($sql, "Old order Cannot be Deleted");
 
-	if ($loc_notification == 1)
+	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
@@ -178,7 +178,7 @@ function update_sales_order($order)
 	}
 	foreach ($order->line_items as $line)
 	{
-		if ($loc_notification == 1 && is_inventory_item($line->stock_id))
+		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($line->stock_id))
 			$loc = calculate_reorder_level($order->Location, $line, $st_ids, $st_names, $st_num, $st_reorder); 
 
 		if (!$line->id) //new line
@@ -215,7 +215,7 @@ function update_sales_order($order)
 
 	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
-	if ($loc_notification == 1 && count($st_ids) > 0)
+	if ($SysPrefs->loc_notification() == 1 && count($st_ids) > 0)
 		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 }
 

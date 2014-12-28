@@ -58,7 +58,7 @@ function get_po_details($order_no)
 
 function print_po()
 {
-	global $path_to_root, $show_po_item_codes;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -135,7 +135,7 @@ function print_po()
 			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
 			$DisplayNet = number_format2($Net,$dec);
-			if ($show_po_item_codes) {
+			if ($SysPrefs->show_po_item_codes()) {
 				$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
 				$rep->TextCol(1, 2,	$myrow2['description'], -2);
 			} else
@@ -172,14 +172,14 @@ function print_po()
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+			if ($SysPrefs->suppress_tax_rates() == 1)
 				$tax_type_name = $tax_item['tax_type_name'];
 			else
 				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
 
 			if ($myrow['tax_included'])
 			{
-				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
 				{
 					if ($first)
 					{

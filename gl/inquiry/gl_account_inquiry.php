@@ -25,7 +25,7 @@ $js = '';
 set_focus('account');
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);

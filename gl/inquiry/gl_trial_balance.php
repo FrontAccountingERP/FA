@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js = get_js_date_picker();
 
 page(_($help_context = "Trial Balance"), false, false, "", $js);

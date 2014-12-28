@@ -42,7 +42,8 @@ if (isset($_POST['setprefs']))
 			'theme', 'page_size', 'language', 'startup_tab',
 			'show_gl' => 0, 'show_codes'=> 0, 'show_hints' => 0,
 			'rep_popup' => 0, 'graphic_links' => 0, 'sticky_doc_date' => 0,
-			'query_size' => 10.0, 'transaction_days' => 30)));
+			'query_size' => 10.0, 'transaction_days' => 30, 'save_report_selections' => 0,
+			'use_date_picker' => 0, 'def_print_destination' => 0, 'def_print_orientation' => 0)));
 
 		if ($chg_lang)
 			$_SESSION['language']->set_language($_POST['language']);
@@ -93,14 +94,24 @@ decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
 /* The array $decseps is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
+
+check_row(_("Use Date Picker"), 'use_date_picker', user_use_date_picker());
+
 if (!isset($_POST['language']))
 	$_POST['language'] = $_SESSION['language']->code;
 
-table_section_title(_("Language"));
+table_section_title(_("Reports"));
 
-languages_list_row(_("Language:"), 'language', $_POST['language']);
+text_row_ex(_("Save Report Selection Days:"), 'save_report_selections', 5, 5, '', user_save_report_selections());
+
+yesno_list_row(_("Default Report Destination:"), 'def_print_destination', user_def_print_destination(), 
+	$name_yes=_("Excel"), $name_no=_("PDF/Printer"));
+
+yesno_list_row(_("Default Report Orientation:"), 'def_print_orientation', user_def_print_orientation(), 
+	$name_yes=_("Landscape"), $name_no=_("Portrait"));
 
 table_section(2);
+
 table_section_title(_("Miscellaneous"));
 
 check_row(_("Show hints for new users:"), 'show_hints', user_hints());
@@ -133,12 +144,16 @@ check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup
 check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_links(),
 	false, _('Set this option to on for using icons instead of text links'));
 
-text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
-
 check_row(_("Remember last document date:"), 'sticky_doc_date', sticky_doc_date(),
 	false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
 
+text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
+
 text_row_ex(_("Transaction days:"), 'transaction_days', 5, 5, '', user_transaction_days());
+
+table_section_title(_("Language"));
+
+languages_list_row(_("Language:"), 'language', $_POST['language']);
 
 end_outer_table(1);
 

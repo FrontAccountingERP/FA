@@ -423,7 +423,7 @@ function display_debit_or_credit_cells($value, $bold=false)
 
 function display_customer_trans_tax_details($tax_items, $columns)
 {
-	global $alternative_tax_include_on_docs, $suppress_tax_rates;
+	global $SysPrefs;
 	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
@@ -431,13 +431,13 @@ function display_customer_trans_tax_details($tax_items, $columns)
      		continue;
 
     	$tax = number_format2($tax_item['amount'],user_price_dec());
-		if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+		if ($SysPrefs->suppress_tax_rates() == 1)
 			$tax_type_name = $tax_item['tax_type_name'];
 		else
 			$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
     	if ($tax_item['included_in_price'])
     	{
-			if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+			if ($SysPrefs->alternative_tax_include_on_docs() == 1)
   			{
   				if ($first)
   					label_row(_("Total Tax Excluded"), number_format2($tax_item['net_amount'], user_price_dec()),

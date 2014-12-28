@@ -71,23 +71,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* No check on edit conflicts. Maybe needed to be set to 1 in certains Windows Servers */
 	$no_check_edit_conflicts = 0;
 	
-	/* Do not print zero lines amount of 0.00 in Sales Documents if service item. 1 = do not */
-	$no_zero_lines_amount = 1;
-
 	/* Use icon for editkey (=true) right of combobox. 1 = use, 0 = do not use */
 	$use_icon_for_editkey = 0;
 
 	/* Creates automatic a default branch with contact. Value 0 do not create auto branch */
 	$auto_create_branch = 1;
 
-	/* Save Report selections (a value > 0 means days to save. 0 = no save) */
-	$save_report_selections = 0;
-
 	/* use popup windows for views */
 	$use_popup_windows = 1;
-
-	/* use date picker for all date fields */
-	$use_date_picker = 1;
 
 	/* use Audit Trails in GL */
 	/* This variable is deprecated. Setting this to 1, will stamp the user name in the memo fields in GL */
@@ -103,15 +94,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* show users online discretely in the footer */
 	$show_users_online = 0;
 
-	/* show item codes on purchase order */
-	$show_po_item_codes = 0;
-
-	/* default print destination. 0 = PDF/Printer, 1 = Excel */
-	$def_print_destination = 0;
-
-	/* default print orientation. 0 = Portrait, 1 = Landscape */
-	$def_print_orientation = 0;
-
  	// Wiki context help configuration
  	// If your help wiki use translated page titles uncomment next line
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
@@ -126,25 +108,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* per user data/cache directory */
 	$comp_path = $path_to_root.'/company';
 
-	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
-	$accounts_alpha = 0;
-
 	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
 	2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
 	$date_system = 0;
-
-	/* email stock location if order below reorder-level */
-	/* Remember to set an email on the Location(s). */
-	$loc_notification = 0;
-
-	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
-	$print_invoice_no = 0;
-
-	/* 1 = print Subtotal tax excluded, tax and Total tax included */
-	$alternative_tax_include_on_docs = 0;
-
-	/* suppress tax rates on documents. 0 = no, 1 = yes. */
-	$suppress_tax_rates = 0;
 
 	/* allow reopening closed transactions */
 	$allow_gl_reopen = 0;
@@ -179,9 +145,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* Show average costed values instead of fixed standard cost in report, Inventory Valuation Report */
 	$use_costed_values = 0;	
 	
-	/* Allow negative prices for dummy/service items. To be moved to GL db settings */
-	$allow_negative_prices = 1;
-
 	/* Show menu category icons in core themes */
 	$show_menu_category_icons = 1;
 	
@@ -194,9 +157,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
     /* Whether to allow sending new password by e-mail */
     $allow_password_reset = false;
-
-    /* Print Item Images on Sales Quotations. Set to 1 if so. */
-    $print_item_images_on_quote = 0;
 
 	/* for uploaded item pictures */
 	$pic_width 		= 80;

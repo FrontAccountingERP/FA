@@ -20,7 +20,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Closing GL Transactions"), false, false, "", $js);
 

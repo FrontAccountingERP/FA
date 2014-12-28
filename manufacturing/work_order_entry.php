@@ -24,7 +24,7 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
@@ -63,7 +63,7 @@ if (isset($_GET['AddedID']))
 		submenu_print(_("&Email This Work Order"), ST_WORKORDER, $id, null, 1);
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype, 'PARAM_3' => '',
-    		'PARAM_4' => (isset($def_print_orientation) && $def_print_orientation == 1 ? 1 : 0)); 
+    		'PARAM_4' => (user_def_print_orientation() == 1 ? 1 : 0)); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$stype&trans_no=$id");
 	}

@@ -547,6 +547,25 @@ function user_transaction_days()
     return $_SESSION["wa_current_user"]->prefs->transaction_days();
 }
 
+function user_save_report_selections()
+{
+    return $_SESSION["wa_current_user"]->prefs->save_report_selections();
+}
+
+function user_use_date_picker()
+{
+    return $_SESSION["wa_current_user"]->prefs->use_date_picker();
+}
+
+function user_def_print_destination()
+{
+    return $_SESSION["wa_current_user"]->prefs->def_print_destination();
+}
+
+function user_def_print_orientation()
+{
+    return $_SESSION["wa_current_user"]->prefs->def_print_orientation();
+}
 
 function user_check_access($sec_area)
 {

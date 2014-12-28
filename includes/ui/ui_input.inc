@@ -606,7 +606,7 @@ function link_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 function date_cells($label, $name, $title = null, $check=null, $inc_days=0, 
 	$inc_months=0, $inc_years=0, $params=null, $submit_on_change=false)
 {
-	global $use_date_picker, $path_to_root, $Ajax;
+	global $path_to_root, $Ajax;
 
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
@@ -624,7 +624,7 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 			$_POST[$name] = $dd;
 		}
 	}
-	if ($use_date_picker)
+	if (user_use_date_picker())
 	{
 		$calc_image = (file_exists("$path_to_root/themes/".user_theme()."/images/cal.gif")) ? 
 			"$path_to_root/themes/".user_theme()."/images/cal.gif" : "$path_to_root/themes/default/images/cal.gif";

@@ -34,7 +34,7 @@ print_deliveries();
 
 function print_deliveries()
 {
-	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
+	global $path_to_root, $packing_slip, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -125,7 +125,7 @@ function print_deliveries()
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
-				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
 				{
 					$rep->TextCol(2, 3,	$DisplayQty, -2);
 					$rep->TextCol(3, 4,	$myrow2['units'], -2);
@@ -170,14 +170,14 @@ function print_deliveries()
     					continue;
     				$DisplayTax = number_format2($tax_item['amount'], $dec);
  
- 					if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+ 					if ($SysPrefs->suppress_tax_rates() == 1)
  		   				$tax_type_name = $tax_item['tax_type_name'];
  		   			else
  		   				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
 
  					if ($myrow['tax_included'])
     				{
-   						if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+   						if ($SysPrefs->alternative_tax_include_on_docs() == 1)
     					{
     						if ($first)
     						{

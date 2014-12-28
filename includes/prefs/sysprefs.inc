@@ -86,7 +86,51 @@ class sys_prefs
 		global $config_allocation_settled_allowance;
 		return $config_allocation_settled_allowance;
 	}
-	
+
+	function no_zero_lines_amount() 
+	{
+		return $this->prefs['no_zero_lines_amount'];
+	}
+
+	function show_po_item_codes() 
+	{
+		return $this->prefs['show_po_item_codes'];
+	}
+
+	function accounts_alpha() 
+	{
+		return $this->prefs['accounts_alpha'];
+	}
+
+	function loc_notification() 
+	{
+		return $this->prefs['loc_notification'];
+	}
+
+	function print_invoice_no() 
+	{
+		return $this->prefs['print_invoice_no'];
+	}
+
+	function allow_negative_prices() 
+	{
+		return $this->prefs['allow_negative_prices'];
+	}
+
+	function print_item_images_on_quote() 
+	{
+		return $this->prefs['print_item_images_on_quote'];
+	}
+
+	function alternative_tax_include_on_docs() 
+	{
+		return $this->prefs['alternative_tax_include_on_docs'];
+	}
+
+	function suppress_tax_rates() 
+	{
+		return $this->prefs['suppress_tax_rates'];
+	}
 }
 
 ?>

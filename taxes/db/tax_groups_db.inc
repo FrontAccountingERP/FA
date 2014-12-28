@@ -89,12 +89,11 @@ function delete_tax_group_items($id)
 //
 function get_tax_group_rates($group_id=null, $tax_shipping=false)
 {
-	global $suppress_tax_rates;
+	global $SysPrefs;
 
 	$sql = 
 	"SELECT t.id as tax_type_id,"
-		.(isset($suppress_tax_rates) && $suppress_tax_rates == 1
-			? "t.name as tax_type_name,"
+		.($SysPrefs->suppress_tax_rates() == 1 ? "t.name as tax_type_name,"
 			: "CONCAT(t.name, ' (', t.rate, '%)') as tax_type_name,")
 		."t.sales_gl_code,
 		  t.purchasing_gl_code,

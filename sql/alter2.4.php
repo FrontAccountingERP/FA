@@ -35,7 +35,51 @@ class fa2_4 {
 		if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
 			set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, 10);
 		}
-		$result = $this->update_workorders()  && $this->update_grn_rates() && $this->switch_database_to_utf($pref);
+		if (get_company_pref('default_quote_valid_days') === null) { // new in 2.3.23 installations
+			set_company_pref('default_quote_valid_days', 'glsetup.sales', 'smallint', 6, 30);
+		}
+		if (get_company_pref('no_zero_lines_amount') === null) { // new in 2.4 installations
+			set_company_pref('no_zero_lines_amount', 'glsetup.sales', 'tinyint', 1, '1');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('show_po_item_codes') === null) { // new in 2.4 installations
+			set_company_pref('show_po_item_codes', 'glsetup.purchase', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('accounts_alpha') === null) { // new in 2.4 installations
+			set_company_pref('accounts_alpha', 'glsetup.general', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('loc_notification') === null) { // new in 2.4 installations
+			set_company_pref('loc_notification', 'glsetup.inventory', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('print_invoice_no') === null) { // new in 2.4 installations
+			set_company_pref('print_invoice_no', 'glsetup.sales', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('allow_negative_prices') === null) { // new in 2.4 installations
+			set_company_pref('allow_negative_prices', 'glsetup.inventory', 'tinyint', 1, '1');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('print_item_images_on_quote') === null) { // new in 2.4 installations
+			set_company_pref('print_item_images_on_quote', 'glsetup.inventory', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('bcc_email') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+			set_company_pref('bcc_email', 'setup.company', 'varchar', 100, '');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('alternative_tax_include_on_docs') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+			set_company_pref('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+		if (get_company_pref('suppress_tax_rates') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+			set_company_pref('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
+			refresh_sys_prefs();
+		}
+
+$result = $this->update_workorders()  && $this->update_grn_rates() && $this->switch_database_to_utf($pref);
 
 		if ($result)
 			$result = $this->do_cleanup();

@@ -40,7 +40,7 @@ function navi_button_cell($name, $value, $enabled=true, $align='left') {
 //    Sql paged table view. Call this function inside form.
 //
 function display_db_pager(&$pager) {
-    global	$use_popup_windows, $use_date_picker, $path_to_root;
+    global	$use_popup_windows, $path_to_root;
 
 	$pager->select_records();
 

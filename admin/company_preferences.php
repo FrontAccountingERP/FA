@@ -23,9 +23,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 if (isset($_POST['update']) && $_POST['update'] != "")
 {
-
 	$input_error = 0;
-
 	if (!check_num('login_tout', 10))
 	{
 		display_error(_("Login timeout must be positive number not less than 10."));
@@ -109,7 +107,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
 				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
-				'bcc_email'))
+				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates'))
 		);
 
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
@@ -124,8 +122,17 @@ if (get_company_pref('bcc_email') === null) { // available from 2.3.14, can be n
 	set_company_pref('bcc_email', 'setup.company', 'varchar', 100, '');
 	refresh_sys_prefs();
 }
+if (get_company_pref('alternative_tax_include_on_docs') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+	set_company_pref('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0');
+	refresh_sys_prefs();
+}
+if (get_company_pref('suppress_tax_rates') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
+	set_company_pref('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
+	refresh_sys_prefs();
+}
 
 start_form(true);
+
 $myrow = get_company_prefs();
 
 $_POST['coy_name'] = $myrow["coy_name"];
@@ -156,6 +163,8 @@ $_POST['round_to'] = $myrow['round_to'];
 $_POST['auto_curr_reval'] = $myrow['auto_curr_reval'];	
 $_POST['del_coy_logo']  = 0;
 $_POST['bcc_email']  = $myrow["bcc_email"];
+$_POST['alternative_tax_include_on_docs']  = $myrow["alternative_tax_include_on_docs"];
+$_POST['suppress_tax_rates']  = $myrow["suppress_tax_rates"];
 
 start_outer_table(TABLESTYLE2);
 
@@ -174,10 +183,11 @@ email_row_ex(_("BCC Address for all outgoing mails:"), 'bcc_email', 50, 55);
 text_row_ex(_("Official Company Number:"), 'coy_no', 25);
 text_row_ex(_("GSTNo:"), 'gst_no', 25);
 
-currencies_list_row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
 fiscalyears_list_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
 text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
 text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
+check_row(_("Put alternative Tax Include on Docs"), 'alternative_tax_include_on_docs', null);
+check_row(_("Suppress Tax Rates on Docs"), 'suppress_tax_rates', null);
 
 table_section(2);
 
@@ -197,6 +207,7 @@ check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);
 label_row("", "&nbsp;");
+currencies_list_row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
 check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POST['auto_curr_reval']);
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
 text_row_ex(_("Login Timeout:"), 'login_tout', 10, 10, '', null, null, _('seconds'));

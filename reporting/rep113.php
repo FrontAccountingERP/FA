@@ -32,7 +32,7 @@ print_credits();
 
 function print_credits()
 {
-	global $path_to_root, $alternative_tax_include_on_docs, $suppress_tax_rates;
+	global $path_to_root, $SysPrefs;
 	
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -155,14 +155,14 @@ function print_credits()
     				continue;
     			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
     			
-    			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+    			if ($SysPrefs->suppress_tax_rates() == 1)
     				$tax_type_name = $tax_item['tax_type_name'];
     			else
     				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
 
     			if ($myrow['tax_included'])
     			{
-    				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+    				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
     				{
     					if ($first)
     					{

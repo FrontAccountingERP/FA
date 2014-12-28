@@ -2063,6 +2063,7 @@ INSERT INTO `0_sys_prefs` VALUES('default_sales_discount_act', 'glsetup.sales', 
 INSERT INTO `0_sys_prefs` VALUES('default_prompt_payment_act', 'glsetup.sales', 'varchar', 15, '4500');
 INSERT INTO `0_sys_prefs` VALUES('default_delivery_required', 'glsetup.sales', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10');
+INSERT INTO `0_sys_prefs` VALUES('default_quote_valid_days', 'glsetup.sales', 'smallint', 6, '30');
 INSERT INTO `0_sys_prefs` VALUES('default_dim_required', 'glsetup.dims', 'int', 11, '20');
 INSERT INTO `0_sys_prefs` VALUES('pyt_discount_act', 'glsetup.purchase', 'varchar', 15, '5060');
 INSERT INTO `0_sys_prefs` VALUES('creditors_act', 'glsetup.purchase', 'varchar', 15, '2100');
@@ -2081,6 +2082,18 @@ INSERT INTO `0_sys_prefs` VALUES('grn_clearing_act', 'glsetup.purchase', 'varcha
 INSERT INTO `0_sys_prefs` VALUES('bcc_email', 'setup.company', 'varchar', 100, '');
 INSERT INTO `0_sys_prefs` VALUES('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
 INSERT INTO `0_sys_prefs` VALUES('gl_closing_date','setup.closing_date', 'date', 8, '');
+INSERT INTO `0_sys_prefs` VALUES('alternative_tax_include_on_docs','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('no_zero_lines_amount','glsetup.sales', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES('show_po_item_codes','glsetup.purchase', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('accounts_alpha','glsetup.general', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('loc_notification','glsetup.inventory', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('print_invoice_no','glsetup.sales', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('allow_negative_prices','glsetup.inventory', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('alternative_tax_include_on_docs','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
+
 
 -- --------------------------------------------------------
 
@@ -2328,6 +2341,10 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `sticky_doc_date` tinyint(1) default '0',
   `startup_tab` varchar(20) NOT NULL default '',
   `transaction_days` smallint(6) NOT NULL default '30',
+  'save_report_selections' smallint(6) NOT NULL default '0',
+  'use_date_picker' tinyint(1) NOT NULL default '1',
+  'def_print_destination' tinyint(1) NOT NULL default '0',
+  'def_print_orientation' tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`)
@@ -2337,8 +2354,8 @@ CREATE TABLE IF NOT EXISTS `0_users` (
 -- Dumping data for table `0_users`
 --
 
-INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2014-05-11 23:27:46', 10, 1, 1, '1', 1, 0, 'orders', 30, 0);
-INSERT INTO `0_users` VALUES(2, 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 9, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, 0, '2014-02-06 19:02:35', 10, 1, 1, '1', 1, 0, 'orders', 30, 0);
+INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2014-05-11 23:27:46', 10, 1, 1, '1', 1, 0, 'orders', 30, 0, 1, 0, 0, 0);
+INSERT INTO `0_users` VALUES(2, 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 9, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, 0, '2014-02-06 19:02:35', 10, 1, 1, '1', 1, 0, 'orders', 30, 0, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 

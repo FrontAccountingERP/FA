@@ -424,7 +424,7 @@ class FrontReport extends Cpdf
 	function Header2()
 	{
 		global $path_to_root, $print_as_quote,
-			$print_invoice_no, $packing_slip, $dflt_lang; // FIXME should be passed as params
+			$SysPrefs, $packing_slip, $dflt_lang; // FIXME should be passed as params
 
 		$doctype = $this->formData['doctype'];
 		$header2type = true;

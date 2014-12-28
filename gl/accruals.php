@@ -11,7 +11,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_trans.inc");
 
 $js = get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 // Begin the UI

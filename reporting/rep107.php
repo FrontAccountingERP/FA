@@ -27,9 +27,9 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 //----------------------------------------------------------------------------------------------------
 function get_invoice_range($from, $to)
 {
-	global $print_invoice_no;
+	global $SysPrefs;
 
-	$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+	$ref = ($SysPrefs->print_invoice_no() == 1 ? "trans_no" : "reference");
 
 	$sql = "SELECT trans.trans_no, trans.reference
 		FROM ".TB_PREF."debtor_trans trans 
@@ -49,7 +49,7 @@ print_invoices();
 
 function print_invoices()
 {
-	global $path_to_root, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
+	global $path_to_root, $SysPrefs;
 	
 	$show_this_payment = true; // include payments invoiced here in summary
 
@@ -163,7 +163,7 @@ function print_invoices()
 				$rep->TextColLines($c++, $c, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
-				if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+				if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
 				{
 					$rep->TextCol($c++, $c,	$DisplayQty, -2);
 					$rep->TextCol($c++, $c,	$myrow2['units'], -2);
@@ -242,14 +242,14 @@ function print_invoices()
     				continue;
     			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
 
-    			if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+    			if ($SysPrefs->suppress_tax_rates() == 1)
     				$tax_type_name = $tax_item['tax_type_name'];
     			else
     				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
 
     			if ($myrow['tax_included'])
     			{
-    				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+    				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
     				{
     					if ($first)
     					{

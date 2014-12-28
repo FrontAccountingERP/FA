@@ -33,7 +33,7 @@ $print_as_quote = 0;
 
 function print_sales_orders()
 {
-	global $path_to_root, $print_as_quote, $no_zero_lines_amount;
+	global $path_to_root, $print_as_quote, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -128,7 +128,7 @@ function print_sales_orders()
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
 			$newrow = $rep->row;
 			$rep->row = $oldrow;
-			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
 			{
 				$rep->TextCol(2, 3,	$DisplayQty, -2);
 				$rep->TextCol(3, 4,	$myrow2['units'], -2);
@@ -179,7 +179,7 @@ function print_sales_orders()
 
 			if ($myrow['tax_included'])
 			{
-				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
 				{
 					if ($first)
 					{

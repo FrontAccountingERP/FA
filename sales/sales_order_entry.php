@@ -55,7 +55,7 @@ if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
 
-if ($use_date_picker) {
+if (user_use_date_picker()) {
 	$js .= get_js_date_picker();
 }
 
@@ -505,7 +505,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 function check_item_data()
 {
-	global $SysPrefs, $allow_negative_prices;
+	global $SysPrefs;
 	
 	$is_inventory_item = is_inventory_item(get_post('stock_id'));
 	if(!get_post('stock_id_text', true)) {
@@ -517,7 +517,7 @@ function check_item_data()
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
-	} elseif (!check_num('price', 0) && (!$allow_negative_prices || $is_inventory_item)) {
+	} elseif (!check_num('price', 0) && (!SysPrefs->$allow_negative_prices() || $is_inventory_item)) {
 		display_error( _("Price for inventory item must be entered and can not be less than 0"));
 		set_focus('price');
 		return false;

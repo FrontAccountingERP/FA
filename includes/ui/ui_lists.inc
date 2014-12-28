@@ -2451,3 +2451,15 @@ function subledger_list_row($label, $name, $selected_id=null, $all_option = fals
 	echo subledger_list($name, $account, $selected_id);
 	echo "</td>\n</tr>\n";
 }
+
+function accounts_type_list_row($label, $name, $selected_id=null)
+{
+	echo "<tr>";
+	if ($label != null)
+		echo "<td class='label'>$label</td>\n";
+	echo "<td>";
+	$sel = array(_("Numeric"), _("Alpha Numeric"), _("ALPHA NUMERIC"));
+	echo array_selector($name, $selected_id, $sel); 
+	echo "</td></tr>\n";
+}
+
