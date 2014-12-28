@@ -517,7 +517,7 @@ function check_item_data()
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
-	} elseif (!check_num('price', 0) && (!SysPrefs->$allow_negative_prices() || $is_inventory_item)) {
+	} elseif (!check_num('price', 0) && (!$SysPrefs->$allow_negative_prices() || $is_inventory_item)) {
 		display_error( _("Price for inventory item must be entered and can not be less than 0"));
 		set_focus('price');
 		return false;
