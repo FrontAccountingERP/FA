@@ -49,7 +49,7 @@ function get_last_exchange_rate($curr_code, $date_)
 	if (db_num_rows($result) == 0)
 		return false;
 
-	return db_fetch_row($result);
+	return db_fetch_assoc($result);
 }
 
 //---------------------------------------------------------------------------------------------
