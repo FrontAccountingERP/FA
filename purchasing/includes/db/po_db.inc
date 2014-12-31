@@ -13,12 +13,18 @@
 
 function delete_po($po)
 {
+	global $Refs;
+
+	begin_transaction();
 	hook_db_prevoid($po, ST_PURCHORDER);
 	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=".db_escape($po);
 	db_query($sql, "The order header could not be deleted");
 
 	$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no =".db_escape($po);
 	db_query($sql, "The order detail lines could not be deleted");
+
+	$Refs->restore_last(ST_PURCHORDER, $po);
+	commit_transaction();
 }
 
 //----------------------------------------------------------------------------------------
