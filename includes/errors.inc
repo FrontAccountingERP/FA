@@ -196,7 +196,7 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	}
 	
 	$str .= "<br><br>";
-	if ($go_debug)
+	if (!$go_debug)
 		error_log($str);
 	else {
 		if($msg)
