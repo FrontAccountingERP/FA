@@ -376,4 +376,3 @@ class simple_crud {
 	}
 };
 
-?>

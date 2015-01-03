@@ -164,4 +164,3 @@ class email
         return $ret;
     }
 }
-?>

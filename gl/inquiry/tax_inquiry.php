@@ -135,4 +135,3 @@ show_results();
 
 end_page();
 
-?>

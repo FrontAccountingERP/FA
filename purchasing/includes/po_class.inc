@@ -252,4 +252,3 @@ class po_line_details
 	}
 }
 
-?>

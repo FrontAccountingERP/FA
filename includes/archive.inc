@@ -463,4 +463,3 @@ class gzip_file extends tar_file
 	}
 }
 
-?>

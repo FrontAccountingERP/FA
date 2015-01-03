@@ -288,4 +288,3 @@ echo "</tr></table></center>";
 end_form();
 end_page();
 
-?>

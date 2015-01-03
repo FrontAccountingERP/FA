@@ -167,4 +167,3 @@ class contacts extends simple_crud {
 	}
 }
 
-?>

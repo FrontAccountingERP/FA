@@ -104,4 +104,3 @@ function get_sql_for_attached_documents($type)
 }
 
 
-?>

@@ -123,4 +123,3 @@ function print_dimension_summary()
     $rep->End();
 }
 
-?>

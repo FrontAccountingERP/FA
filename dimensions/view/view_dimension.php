@@ -98,4 +98,3 @@ br(1);
 
 end_page(true, false, false, ST_DIMENSION, $id);
 
-?>

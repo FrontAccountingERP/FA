@@ -73,5 +73,3 @@ br(2);
 
 end_page(true, false, false, ST_MANURECEIVE, $wo_production);
 
-?>
-

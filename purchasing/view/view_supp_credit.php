@@ -77,4 +77,3 @@ if (!$voided)
 
 end_page(true, false, false, ST_SUPPCREDIT, $trans_no);
 
-?>

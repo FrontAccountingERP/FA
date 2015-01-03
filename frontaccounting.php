@@ -86,4 +86,3 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->add_application(new setup_app());
 		}
 }
-?>

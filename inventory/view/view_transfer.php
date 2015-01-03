@@ -76,4 +76,3 @@ end_table(1);
 is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 
 end_page(true, false, false, ST_LOCTRANSFER, $trans_no);
-?>

@@ -233,4 +233,3 @@ submit_center_last('Process', _("Process Transfer"), '',  'default');
 end_form();
 end_page();
 
-?>

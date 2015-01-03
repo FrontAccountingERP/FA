@@ -347,4 +347,3 @@ end_form();
 
 end_page(@$_REQUEST['popup']);
 
-?>

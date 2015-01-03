@@ -185,4 +185,3 @@ function parse_notes_params($str, $sep=" ", $delim="#") {
     return $param_array;
 }
 
-?>

@@ -142,4 +142,3 @@ else
 }
 
 end_page(true, false, false, ST_BANKPAYMENT, $trans_no);
-?>

@@ -287,4 +287,3 @@ class gl_codes
 	}
 }
 
-?>

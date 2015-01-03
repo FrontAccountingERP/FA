@@ -143,4 +143,3 @@ function print_Chart_of_Accounts()
 	$rep->End();
 }
 
-?>

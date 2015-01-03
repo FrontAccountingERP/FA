@@ -61,4 +61,3 @@ function void_supp_invoice_items($type, $type_no)
 	db_query($sql, "could not void supptrans details");
 }
 
-?>

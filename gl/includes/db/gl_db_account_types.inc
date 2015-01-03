@@ -159,4 +159,3 @@ function delete_account_class($id)
 	db_query($sql, "could not delete account type");
 }
 
-?>

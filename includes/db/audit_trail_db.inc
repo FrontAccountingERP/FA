@@ -126,4 +126,3 @@ function is_closed_trans($type, $trans_no) {
 	return db_num_rows($res);
 }
 
-?>

@@ -187,4 +187,3 @@ function print_payment_report()
     $rep->End();
 }
 
-?>

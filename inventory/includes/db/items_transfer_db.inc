@@ -119,4 +119,3 @@ function void_stock_transfer($type_no)
 	void_stock_move(ST_LOCTRANSFER, $type_no);
 }
 
-?>

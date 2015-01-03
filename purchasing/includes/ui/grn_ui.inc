@@ -88,4 +88,3 @@ function edit_grn_summary(&$po)
 	end_outer_table(1);
 }
 
-?>

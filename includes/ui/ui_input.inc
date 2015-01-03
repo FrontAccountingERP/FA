@@ -977,4 +977,3 @@ function bank_balance_row($bank_acc, $parms='')
 		."</a>", $parms);
 }
 
-?>

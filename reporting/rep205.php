@@ -206,4 +206,3 @@ function print_supplier_details_listing()
     $rep->End();
 }
 
-?>

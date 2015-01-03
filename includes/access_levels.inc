@@ -314,4 +314,3 @@ function get_access_extensions($id) {
 	return array($security_areas, $security_sections);
 }
 */
-?>

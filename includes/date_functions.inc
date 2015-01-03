@@ -667,4 +667,3 @@ function islamic_to_gregorian($i_y, $i_m, $i_d)
 	}
 	return array($y, $m, $d);
 }
-?>

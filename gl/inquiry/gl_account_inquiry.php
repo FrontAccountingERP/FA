@@ -238,4 +238,3 @@ div_end();
 
 end_page();
 
-?>

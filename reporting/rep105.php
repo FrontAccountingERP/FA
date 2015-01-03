@@ -172,4 +172,3 @@ function print_order_status_list()
 	$rep->End();
 }
 
-?>

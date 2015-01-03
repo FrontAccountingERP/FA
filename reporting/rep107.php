@@ -303,4 +303,3 @@ function print_invoices()
 		$rep->End();
 }
 
-?>

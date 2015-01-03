@@ -98,4 +98,3 @@ function void_supp_payment($type, $type_no)
 }
 
 
-?>

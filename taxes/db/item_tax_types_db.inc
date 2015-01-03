@@ -106,4 +106,3 @@ function get_item_tax_type_exemptions($id)
 	return db_query($sql, "could not get item tax type exemptions");
 }
 
-?>

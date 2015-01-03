@@ -389,4 +389,3 @@ function get_bank_account_currency($id)
 	return $myrow[0];
 }
 
-?>

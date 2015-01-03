@@ -262,4 +262,3 @@ function print_aged_customer_analysis()
     $rep->End();
 }
 
-?>

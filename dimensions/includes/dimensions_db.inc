@@ -218,4 +218,3 @@ function get_sql_for_search_dimensions($dim, $from, $to, $order='', $type = -1, 
 	}
 	return $sql;
 }
-?>

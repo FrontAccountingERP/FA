@@ -127,4 +127,3 @@ function is_tax_account($account_code)
 }
 
 
-?>

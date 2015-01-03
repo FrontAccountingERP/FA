@@ -213,4 +213,3 @@
 
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;
-?>

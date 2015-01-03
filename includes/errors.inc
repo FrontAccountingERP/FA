@@ -244,4 +244,3 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 	return $db_error;		
 }
 
-?>

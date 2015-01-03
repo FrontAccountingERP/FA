@@ -163,4 +163,3 @@ function print_inventory_sales()
     $rep->End();
 }
 
-?>

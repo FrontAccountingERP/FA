@@ -423,4 +423,3 @@ function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item
 	} //end no delivery number selected
 	return $sql;
 }
-?>

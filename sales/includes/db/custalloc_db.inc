@@ -361,4 +361,3 @@ function credit_sales_invoice_allocate($invoice_no, $credit_no, $amount, $date)
 	return true;
 }
 
-?>

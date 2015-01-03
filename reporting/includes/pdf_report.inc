@@ -1088,4 +1088,3 @@ class FrontReport extends Cpdf
 	}
 }
 
-?>

@@ -160,4 +160,3 @@ function item_in_foreign_codes($stock_id)
 	}
 	return $msg;
 }
-?>

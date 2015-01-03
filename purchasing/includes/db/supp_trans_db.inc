@@ -244,4 +244,3 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
    	}
    	return $sql;
 }
-?>

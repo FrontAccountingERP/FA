@@ -721,4 +721,3 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	}
 }
 
-?>

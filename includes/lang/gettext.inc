@@ -543,7 +543,6 @@ class gettext_php_support_compiler
             fwrite($fp, '    \'' . $key . '\' => \'' . $value . "',\n");
         }
         fwrite($fp, ');' . "\n");
-        fwrite($fp, '?>');
         fclose($fp);
     }
 }
@@ -569,4 +568,3 @@ function set_ext_domain($path='') {
 		$GetText->add_domain($_SESSION['language']->code,
 			$lang_path, $path ? '' : $_SESSION['language']->version);
 }
-?>

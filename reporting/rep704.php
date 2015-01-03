@@ -201,4 +201,3 @@ function print_GL_transactions()
 	$rep->End();
 }
 
-?>

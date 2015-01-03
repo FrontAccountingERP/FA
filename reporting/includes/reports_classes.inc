@@ -500,4 +500,3 @@ function add_custom_reports(&$reports)
 		include_once($file);
 }
 
-?>

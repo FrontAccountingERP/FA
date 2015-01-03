@@ -99,4 +99,3 @@ end_table(1);
 submit_center( 'UPDATE_ITEM', _('Change password'), true, '',  'default');
 end_form();
 end_page();
-?>

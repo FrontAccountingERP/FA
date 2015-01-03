@@ -78,4 +78,3 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 	db_query($sql, "The debtor transaction detail could not be written");
 }
 
-?>

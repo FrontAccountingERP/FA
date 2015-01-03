@@ -337,4 +337,3 @@ function sanitize_database($pref, $test = false) {
 }
 
 $install = new fa2_2;
-?>

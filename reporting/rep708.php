@@ -285,4 +285,3 @@ function print_trial_balance()
 	$rep->End();
 }
 
-?>

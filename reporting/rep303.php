@@ -217,4 +217,3 @@ function print_stock_check()
     $rep->End();
 }
 
-?>

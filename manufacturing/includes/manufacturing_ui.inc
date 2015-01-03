@@ -357,4 +357,3 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
     }
 }
 
-?>

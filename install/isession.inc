@@ -153,4 +153,3 @@ $SysPrefs = &$_SESSION['SysPrefs'];
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);
 
-?>

@@ -93,4 +93,3 @@ function get_loc_details($stock_id)
 	return db_query($sql,"an item reorder could not be retreived");
 }
 
-?>

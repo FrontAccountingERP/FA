@@ -49,4 +49,3 @@ function delete_credit_status($status_id)
 	db_query($sql, "could not delete credit status");	
 }
 
-?>

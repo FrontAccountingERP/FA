@@ -245,4 +245,3 @@ function get_sql_for_exchange_rates($curr)
 		 ORDER BY date_ DESC";
 	return $sql;	 
 }
-?>

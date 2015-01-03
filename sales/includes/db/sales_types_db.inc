@@ -62,4 +62,3 @@ function delete_sales_type($id)
 	db_query($sql,"The Sales type prices could not be deleted");
 }
 
-?>

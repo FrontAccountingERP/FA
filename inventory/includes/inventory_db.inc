@@ -77,4 +77,3 @@ function send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder)
 	$mail->text($msg);
 	return $mail->send();
 }
-?>

@@ -117,4 +117,3 @@ function print_bill_of_material()
     $rep->End();
 }
 
-?>

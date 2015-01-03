@@ -94,4 +94,3 @@ function movement_types_in_stock_moves($selected_id)
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 
 }
-?>

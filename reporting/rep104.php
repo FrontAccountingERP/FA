@@ -215,4 +215,3 @@ function print_price_listing()
     $rep->End();
 }
 
-?>

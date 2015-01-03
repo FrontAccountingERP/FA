@@ -96,4 +96,3 @@ function get_category_name($id)
 	return $row[0];
 }
 
-?>

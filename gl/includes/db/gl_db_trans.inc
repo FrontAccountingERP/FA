@@ -670,4 +670,3 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 	$sql .= " GROUP BY gl.tran_date, a.gl_seq, gl.type, gl.type_no";
 	return $sql;
 }
-?>

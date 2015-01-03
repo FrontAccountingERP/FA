@@ -163,4 +163,3 @@ class fa2_1 {
 };
 
 $install = new fa2_1;
-?>

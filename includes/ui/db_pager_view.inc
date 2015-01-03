@@ -203,4 +203,3 @@ function display_db_pager(&$pager) {
 }
 
 
-?>

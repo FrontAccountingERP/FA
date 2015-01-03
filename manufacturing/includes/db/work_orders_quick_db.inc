@@ -190,4 +190,3 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 
 //--------------------------------------------------------------------------------------
 
-?>

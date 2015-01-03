@@ -116,4 +116,3 @@ display_db_pager($table);
 
 end_form();
 end_page();
-?>

@@ -628,4 +628,3 @@ function page_modified($status = true)
 		add_js_source($js);
 }
 
-?>

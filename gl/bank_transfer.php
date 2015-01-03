@@ -230,4 +230,3 @@ if (isset($_POST['AddPayment']))
 gl_payment_controls();
 
 end_page();
-?>

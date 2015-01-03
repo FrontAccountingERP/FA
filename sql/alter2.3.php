@@ -374,4 +374,3 @@ class fa2_3 {
 
 $install = new fa2_3;
 
-?>

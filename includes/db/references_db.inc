@@ -120,4 +120,3 @@ function is_new_reference($ref, $type, $trans_no=0)
 }
 
 
-?>

@@ -759,4 +759,3 @@ if ($customer_error == "") {
 
 end_form();
 end_page();
-?>

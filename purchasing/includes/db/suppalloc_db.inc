@@ -308,4 +308,3 @@ function get_sql_for_supplier_allocation_inquiry($from, $to, $filter, $supplier_
    	}
    	return $sql;
 }
-?>

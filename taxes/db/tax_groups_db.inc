@@ -139,4 +139,3 @@ function get_shipping_tax_as_array($id)
 	
 	return $ret_tax_array;
 }
-?>

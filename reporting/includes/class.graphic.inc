@@ -1304,4 +1304,3 @@ function arabic($str,$z="",$method='normal')
 	return  $output;
 }
 
-?>

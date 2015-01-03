@@ -379,4 +379,3 @@ function get_gl_wo_cost($woid, $cost_type)
 	return $cost;	
 }
 
-?>

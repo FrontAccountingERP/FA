@@ -53,4 +53,3 @@ function check_edit_conflicts($cart_id, $cartname='Items')
 	}
 }
 
-?>

@@ -68,4 +68,3 @@ function get_shipper($selected_id)
 	return db_fetch($result);
 }
 
-?>

@@ -195,4 +195,3 @@ end_table(1);
 div_end();
 end_page();
 
-?>

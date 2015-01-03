@@ -63,4 +63,3 @@ function get_recurrent_invoice($selected_id)
 	$result = db_query($sql,"could not get recurrent invoice");
 	return db_fetch($result);
 }
-?>

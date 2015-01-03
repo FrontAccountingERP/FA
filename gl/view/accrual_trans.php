@@ -105,4 +105,3 @@ end_table(1);
 
 end_page(true);
 
-?>

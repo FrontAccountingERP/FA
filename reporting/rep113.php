@@ -207,4 +207,3 @@ function print_credits()
 		$rep->End();
 }
 
-?>

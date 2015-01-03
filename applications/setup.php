@@ -81,4 +81,3 @@ class setup_app extends application
 }
 
 
-?>

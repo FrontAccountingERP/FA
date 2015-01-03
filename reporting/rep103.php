@@ -317,4 +317,3 @@ function print_customer_details_listing()
     $rep->End();
 }
 
-?>

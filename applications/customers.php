@@ -82,4 +82,3 @@ class customers_app extends application
 }
 
 
-?>

@@ -174,4 +174,3 @@ function print_bank_transactions()
 	$rep->End();
 }
 
-?>

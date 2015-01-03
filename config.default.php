@@ -250,4 +250,3 @@ $sort_sales_items = false;
 */
 $clear_trial_balance_opening = false;
 
-?>

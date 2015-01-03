@@ -147,4 +147,3 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	}
 }
 
-?>

@@ -166,4 +166,3 @@ function get_cust_bank_charge($type, $trans_no)
 	return $myrow['0'];
 }
 
-?>

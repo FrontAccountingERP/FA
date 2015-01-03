@@ -266,4 +266,3 @@ defined('ICON_SUBMIT') || define('ICON_SUBMIT', 'ok.gif');
 defined('ICON_ESCAPE') || define('ICON_ESCAPE', 'escape.png');
 defined('ICON_ALLOC') || define('ICON_ALLOC', 'alloc.png');
 
-?>

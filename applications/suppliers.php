@@ -55,4 +55,3 @@ class suppliers_app extends application
 }
 
 
-?>

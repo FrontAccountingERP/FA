@@ -40,4 +40,3 @@ class dimensions_app extends application
 	}
 }
 
-?>

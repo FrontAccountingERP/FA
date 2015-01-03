@@ -224,4 +224,3 @@ function print_sales_quotations()
 		$rep->End();
 }
 
-?>

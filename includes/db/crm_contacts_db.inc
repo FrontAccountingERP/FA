@@ -313,4 +313,3 @@ function is_crm_category_used($id)
 }
 
 
-?>

@@ -512,4 +512,3 @@ add_custom_reports($reports);
 echo $reports->getDisplay();
 
 end_page();
-?>

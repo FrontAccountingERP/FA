@@ -318,4 +318,3 @@ function inventory_movements()
     $rep->End();
 }
 
-?>

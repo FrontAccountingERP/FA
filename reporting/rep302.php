@@ -192,4 +192,3 @@ function print_inventory_planning()
     $rep->End();
 }
 
-?>

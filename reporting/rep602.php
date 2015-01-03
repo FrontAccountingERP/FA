@@ -217,4 +217,3 @@ function print_bank_transactions_reconcile()
 	$rep->End();
 }
 
-?>

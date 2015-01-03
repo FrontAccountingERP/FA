@@ -111,4 +111,3 @@ class remote_printer {
 
 }
 
-?>

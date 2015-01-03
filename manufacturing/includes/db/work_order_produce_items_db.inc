@@ -170,4 +170,3 @@ function void_work_order_produce($type_no)
 }
 
 
-?>

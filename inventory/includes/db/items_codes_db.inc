@@ -159,4 +159,3 @@ function get_where_used($item_code)
 			AND item_code!=".db_escape($item_code);
 	return db_query($sql, "where used query failed");
 }
-?>

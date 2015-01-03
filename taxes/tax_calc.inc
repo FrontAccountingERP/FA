@@ -240,4 +240,3 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	return $ret_tax_array;
 }
 
-?>

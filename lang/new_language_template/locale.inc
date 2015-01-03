@@ -55,4 +55,3 @@ class hooks_xx_XX extends hooks {
 	}
 */
 }
-?>

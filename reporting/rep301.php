@@ -258,4 +258,3 @@ function print_inventory_valuation_report()
     $rep->End();
 }
 
-?>

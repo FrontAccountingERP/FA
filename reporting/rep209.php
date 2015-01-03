@@ -228,4 +228,3 @@ function print_po()
 		$rep->End();
 }
 
-?>

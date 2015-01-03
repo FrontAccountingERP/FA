@@ -90,4 +90,3 @@ if (!function_exists("_"))
 		return $retVal;
 	}
 }
-?>

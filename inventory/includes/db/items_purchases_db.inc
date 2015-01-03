@@ -66,4 +66,3 @@ function get_item_purchasing_data($selected_id, $stock_id)
 }
 
 
-?>

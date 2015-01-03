@@ -326,4 +326,3 @@ function print_balance_sheet()
 	$rep->End();
 }
 
-?>

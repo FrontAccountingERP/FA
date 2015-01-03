@@ -161,4 +161,3 @@ display_allocations_to(PT_SUPPLIER, $purchase_order->supplier_id, ST_PURCHORDER,
 
 end_page(true, false, false, ST_PURCHORDER, $_GET['trans_no']);
 
-?>

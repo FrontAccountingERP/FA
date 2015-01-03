@@ -106,4 +106,3 @@ function get_print_profile($name)
 	return db_query($sql,"could not get printing profile");
 }
 
-?>

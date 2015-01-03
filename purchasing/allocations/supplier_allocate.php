@@ -128,4 +128,3 @@ if (isset($_SESSION['alloc']))
 
 end_page();
 
-?>

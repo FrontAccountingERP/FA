@@ -61,4 +61,3 @@ if (!$voided)
 }
 
 end_page(true, false, false, ST_CUSTPAYMENT, $trans_id);
-?>

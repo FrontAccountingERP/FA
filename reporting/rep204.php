@@ -152,4 +152,3 @@ function print_outstanding_GRN()
     $rep->End();
 }
 
-?>

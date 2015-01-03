@@ -75,4 +75,3 @@ function get_unit_dec($stock_id)
 	return $row[0];
 }
 
-?>

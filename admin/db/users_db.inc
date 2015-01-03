@@ -221,4 +221,3 @@ function show_users_online()
 	return "$users ".($users == 1 ? _("user online") : _("users online"));
 
 }
-?>

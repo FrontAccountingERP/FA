@@ -154,4 +154,3 @@ if (!$voided)
 
 end_page(true, false, false, ST_CUSTCREDIT, $trans_id);
 
-?>

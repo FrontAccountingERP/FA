@@ -409,4 +409,3 @@ function get_sales_child_documents($trans_type, $trans_no)
 	return db_query($sql,"The related credit notes could not be retreived");
 }
 
-?>

@@ -41,4 +41,3 @@ display_bom($_POST['stock_id']);
 end_form();
 
 end_page();
-?>

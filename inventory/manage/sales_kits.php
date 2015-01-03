@@ -251,4 +251,3 @@ if (get_post('item_code') == '') {
 
 end_page();
 
-?>

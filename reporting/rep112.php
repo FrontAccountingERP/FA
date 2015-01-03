@@ -180,4 +180,3 @@ function print_receipts()
 	$rep->End();
 }
 
-?>

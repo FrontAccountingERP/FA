@@ -334,4 +334,3 @@ class Cpdf extends FPDI {
 
 } // end of class
 
-?>

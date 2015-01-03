@@ -225,4 +225,3 @@ function print_sales_orders()
 		$rep->End();
 }
 
-?>

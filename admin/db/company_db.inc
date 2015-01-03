@@ -216,4 +216,3 @@ function clean_user_themes($theme)
 }
 
 
-?>

@@ -724,4 +724,3 @@ class line_details
 	}
 }
 
-?>

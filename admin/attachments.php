@@ -94,7 +94,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		if (!file_exists($dir))
 		{
 			mkdir ($dir,0777);
-			$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
+			$index_file = "<?php\nheader(\"Location: ../index.php\");\n";
 			$fp = fopen($dir."/index.php", "w");
 			fwrite($fp, $index_file);
 			fclose($fp);
@@ -258,4 +258,3 @@ end_form();
 
 end_page();
 
-?>

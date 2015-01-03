@@ -227,4 +227,3 @@ function print_tax_report()
 	$rep->End();
 }
 
-?>

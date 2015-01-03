@@ -48,6 +48,3 @@ echo "</div></td>
 end_page(false, true);
 session_unset();
 @session_destroy();
-?>
-
-

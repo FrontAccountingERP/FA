@@ -91,4 +91,3 @@ function change_stock_moves_std_cost($stock_id, $date, $diff_cost)
 	.	db_escape($stock_id)." AND tran_date <= '$date' AND qty <> 0 AND standard_cost > 0.001 AND type <> ".ST_LOCTRANSFER;
 	db_query($sql,"The stock moves cost details for the inventory item could not be updated");
 }
-?>

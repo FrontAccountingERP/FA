@@ -135,4 +135,3 @@ submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
 end_page();
-?>

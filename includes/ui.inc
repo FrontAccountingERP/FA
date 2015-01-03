@@ -17,4 +17,3 @@ include_once($path_to_root . "/includes/ui/ui_globals.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-?>

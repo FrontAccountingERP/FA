@@ -223,4 +223,3 @@ function get_systypes()
 	return $result;
 }
 
-?>

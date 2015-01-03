@@ -215,4 +215,3 @@ function check_void_bank_trans($type, $type_no)
 	return true;
 }
 
-?>

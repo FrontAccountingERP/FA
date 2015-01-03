@@ -377,4 +377,3 @@ function clean_file_name($filename) {
     return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
 }
 
-?>

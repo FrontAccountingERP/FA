@@ -194,4 +194,3 @@ function print_grn_valuation()
     $rep->End();
 }
 
-?>

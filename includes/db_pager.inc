@@ -514,4 +514,3 @@ function refresh_pager($name)
 	if (isset($_SESSION[$name]))
 		$_SESSION[$name]->ready = false;
 }
-?>

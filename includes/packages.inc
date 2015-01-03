@@ -725,4 +725,3 @@ function get_package_info($pkg, $type=null, $filter=array(), $outkey=null, $down
 	return get_pkg_or_list($type, $pkg, $filter, null, false);
 }
 
-?>

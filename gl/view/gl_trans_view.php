@@ -130,4 +130,3 @@ is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has b
 
 end_page(true, false, false, $_GET['type_id'], $_GET['trans_no']);
 
-?>

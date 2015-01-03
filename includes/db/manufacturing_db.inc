@@ -302,4 +302,3 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	return 0;
 } //end of function check_for_recursive_bom
 
-?>

@@ -183,4 +183,3 @@ function print_remittances()
 		$rep->End();
 }
 
-?>

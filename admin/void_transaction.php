@@ -335,4 +335,3 @@ voiding_controls();
 
 end_page();
 
-?>

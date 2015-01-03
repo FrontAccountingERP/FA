@@ -63,4 +63,3 @@ function get_stock_price_type_currency($stock_id, $type, $currency)
 	
 	return db_fetch($result);
 }
-?>

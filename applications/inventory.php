@@ -60,4 +60,3 @@ class inventory_app extends application
 }
 
 
-?>

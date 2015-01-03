@@ -81,4 +81,3 @@ class general_ledger_app extends application
 }
 
 
-?>

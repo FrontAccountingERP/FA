@@ -735,4 +735,3 @@ function is_admin_company()
 	return $this->company == 0;
 }
 
-?>

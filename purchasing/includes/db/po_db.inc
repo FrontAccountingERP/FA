@@ -398,4 +398,3 @@ function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_
 	return $sql;
 }
 
-?>

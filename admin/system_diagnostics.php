@@ -24,4 +24,3 @@ display_system_tests();
 
 end_page();
 
-?>

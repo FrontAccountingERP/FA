@@ -253,4 +253,3 @@ function _get_branch_contacts($branch_code, $action=null, $customer_id=null, $de
 	return $results;
 }
 
-?>

@@ -145,4 +145,3 @@ function print_workorders()
 		$rep->End();
 }
 
-?>

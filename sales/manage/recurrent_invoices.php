@@ -191,4 +191,3 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 end_form();
 
 end_page();
-?>

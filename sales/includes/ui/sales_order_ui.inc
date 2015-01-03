@@ -642,4 +642,3 @@ function display_delivery_details(&$order)
 	div_end();
 }
 
-?>

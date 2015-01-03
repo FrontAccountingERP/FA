@@ -177,4 +177,3 @@ function print_salesman_list()
 	$rep->End();
 }
 
-?>

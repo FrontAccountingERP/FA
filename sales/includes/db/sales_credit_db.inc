@@ -287,4 +287,3 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	return $total;
 }
 
-?>

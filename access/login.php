@@ -162,4 +162,3 @@ function defaultCompany()
 	echo "</table><br><br>\n";
 	echo "</body></html>\n";
 
-?>

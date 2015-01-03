@@ -147,4 +147,3 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	error_box();
 }
 
-?>

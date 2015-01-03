@@ -73,4 +73,3 @@ if ($rep_file) {
 	display_error("Cannot find report file '$rep'");
 exit();
 
-?>

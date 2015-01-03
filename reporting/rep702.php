@@ -147,4 +147,3 @@ function print_list_of_journal_entries()
     $rep->End();
 }
 
-?>

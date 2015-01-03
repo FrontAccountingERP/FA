@@ -298,4 +298,3 @@ class user_prefs
 
 }
 
-?>

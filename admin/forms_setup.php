@@ -66,4 +66,3 @@ end_form(2);
 
 end_page();
 
-?>

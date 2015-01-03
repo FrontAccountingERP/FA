@@ -245,5 +245,3 @@ while ($class = db_fetch($classresult))
 
 end_page();
 
-?>
-

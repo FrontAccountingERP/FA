@@ -268,4 +268,3 @@ display_allocations_to(PT_CUSTOMER, $_SESSION['View']->customer_id, $_GET['trans
 
 end_page(true, false, false, $_GET['trans_type'], $_GET['trans_no']);
 
-?>

@@ -117,4 +117,3 @@ function db_get_default_charset()
 }
 
 	
-?>

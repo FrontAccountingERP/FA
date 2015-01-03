@@ -242,4 +242,3 @@ function print_supplier_balances()
     $rep->End();
 }
 
-?>

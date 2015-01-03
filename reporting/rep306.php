@@ -298,4 +298,3 @@ function print_inventory_purchase()
     $rep->End();
 }
 
-?>

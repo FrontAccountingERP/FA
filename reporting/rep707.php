@@ -345,4 +345,3 @@ function print_profit_and_loss_statement()
 	$rep->End();
 }
 
-?>

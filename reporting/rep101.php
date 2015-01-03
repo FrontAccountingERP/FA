@@ -249,4 +249,3 @@ function print_customer_balances()
     	$rep->End();
 }
 
-?>
