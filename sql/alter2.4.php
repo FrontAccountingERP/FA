@@ -50,6 +50,20 @@ class fa2_4 {
 		if ($result)
 			$result = $this->do_cleanup();
 
+		//remove obsolete and temporary columns.
+		// this have to be done here as db_import rearranges alter query order
+		$dropcol = array(
+				'cust_branch' => array('contact_name', 'disable_trans'),
+		);
+
+		foreach($dropcol as $table => $columns)
+			foreach($columns as $col) {
+				if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`")==false) {
+					display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
+					return false;
+				}
+			}
+
 		return  update_company_prefs(array('version_id'=>$db_version));
 	}
 	//

@@ -551,7 +551,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 	if ($editkey)
 		set_editor('branch', $name, $editkey);
 
-	$where = $enabled ? array("disable_trans = 0") : array();
+	$where = $enabled ? array("inactive = 0") : array();
 	$ret = combo_input($name, $selected_id, $sql, 'branch_code', 'branch_ref',
 	array(
 		'where' => $where,

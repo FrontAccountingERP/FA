@@ -113,7 +113,7 @@ function handle_submit(&$selected_id)
         	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
                 $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
                 get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
-                $_POST['location'], $_POST['address'], 0, 0, $_POST['ship_via'], $_POST['notes']);
+                $_POST['location'], $_POST['address'], 0, $_POST['ship_via'], $_POST['notes'], $_POST['bank_account']);
                 
         	$selected_branch = db_insert_id();
         
@@ -257,6 +257,7 @@ function customer_settings($selected_id)
 		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
 		text_row(_("Fax Number:"), 'fax', null, 32, 30);
 		email_row(_("E-mail:"), 'email', null, 35, 55);
+		text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
 		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
 	}
 	table_section(2);

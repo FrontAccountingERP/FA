@@ -596,7 +596,6 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `br_address` tinytext NOT NULL,
   `area` int(11) default NULL,
   `salesman` int(11) NOT NULL default '0',
-  `contact_name` varchar(60) NOT NULL default '',
   `default_location` varchar(5) NOT NULL default '',
   `tax_group_id` int(11) default NULL,
   `sales_account` varchar(15) NOT NULL default '',
@@ -604,7 +603,6 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
   `receivables_account` varchar(15) NOT NULL default '',
   `payment_discount_account` varchar(15) NOT NULL default '',
   `default_ship_via` int(11) NOT NULL default '1',
-  `disable_trans` tinyint(4) NOT NULL default '0',
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
@@ -620,9 +618,9 @@ CREATE TABLE IF NOT EXISTS `0_cust_branch` (
 -- Dumping data for table `0_cust_branch`
 --
 
-INSERT INTO `0_cust_branch` VALUES(1, 1, 'Beefeater Ltd.', 'Beefeater', '', 1, 1, 'Main Branch', 'DEF', 2, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
-INSERT INTO `0_cust_branch` VALUES(2, 2, 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '','', 0);
-INSERT INTO `0_cust_branch` VALUES(3, 3, 'Brezan', 'Brezan', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'Main Branch', 'DEF', 1, '', '4510', '1200', '4500', 1, 0, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
+INSERT INTO `0_cust_branch` VALUES(1, 1, 'Beefeater Ltd.', 'Beefeater', '', 1, 1, 'DEF', 2, '', '4510', '1200', '4500', 1, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
+INSERT INTO `0_cust_branch` VALUES(2, 2, 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'DEF', 1, '', '4510', '1200', '4500', 1, 'Address 1\nAddress 2\nAddress 3', 0, '','', 0);
+INSERT INTO `0_cust_branch` VALUES(3, 3, 'Brezan', 'Brezan', 'Address 1\nAddress 2\nAddress 3', 1, 1, 'DEF', 1, '', '4510', '1200', '4500', 1, 'Address 1\nAddress 2\nAddress 3', 0, '', '', 0);
 
 -- --------------------------------------------------------
 
