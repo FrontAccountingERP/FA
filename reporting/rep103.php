@@ -41,7 +41,6 @@ function get_customer_details_for_report($area=0, $salesid=0)
 			".TB_PREF."cust_branch.br_name,
 			".TB_PREF."cust_branch.br_address,
 			".TB_PREF."cust_branch.br_post_address,
-			".TB_PREF."cust_branch.contact_name,
 			".TB_PREF."cust_branch.area,
 			".TB_PREF."cust_branch.salesman,
 			".TB_PREF."areas.description,

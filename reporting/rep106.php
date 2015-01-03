@@ -35,20 +35,27 @@ function GetSalesmanTrans($from, $to)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT DISTINCT ".TB_PREF."debtor_trans.*,
-		ov_amount+ov_discount AS InvoiceTotal,
-		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name,
-		".TB_PREF."cust_branch.contact_name, ".TB_PREF."salesman.*
-		FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master, ".TB_PREF."sales_orders, ".TB_PREF."cust_branch,
-			".TB_PREF."salesman
-		WHERE ".TB_PREF."sales_orders.order_no=".TB_PREF."debtor_trans.order_
-		    AND ".TB_PREF."sales_orders.branch_code=".TB_PREF."cust_branch.branch_code
-		    AND ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
-		    AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no
-		    AND (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE." OR ".TB_PREF."debtor_trans.type=".ST_CUSTCREDIT.")
-		    AND ".TB_PREF."debtor_trans.tran_date>='$fromdate'
-		    AND ".TB_PREF."debtor_trans.tran_date<='$todate'
-		ORDER BY ".TB_PREF."salesman.salesman_code, ".TB_PREF."debtor_trans.tran_date";
+	$sql = "SELECT DISTINCT trans.*,
+			ov_amount+ov_discount AS InvoiceTotal,
+			cust.name AS DebtorName,
+			cust.curr_code,
+			branch.br_name,
+			branch.contact_name,
+			sorder.customer_ref,
+			salesman.*
+		FROM ".TB_PREF."debtor_trans trans,
+			 ".TB_PREF."debtors_master cust,
+			 ".TB_PREF."sales_orders sorder,
+			 ".TB_PREF."cust_branch branch,
+			".TB_PREF."salesman salesman
+		WHERE sorder.order_no=trans.order_
+		    AND sorder.branch_code=branch.branch_code
+		    AND branch.salesman=salesman.salesman_code
+		    AND trans.debtor_no=cust.debtor_no
+		    AND (trans.type=".ST_SALESINVOICE." OR trans.type=".ST_CUSTCREDIT.")
+		    AND trans.tran_date>='$fromdate'
+		    AND trans.tran_date<='$todate'
+		ORDER BY salesman.salesman_code, trans.tran_date";
 
 	return db_query($sql, "Error getting order details");
 }
@@ -146,7 +153,7 @@ function print_salesman_list()
 			$rep->TextCol(0, 1,	$myrow['trans_no']);
 			$rep->TextCol(1, 2,	$myrow['DebtorName']);
 			$rep->TextCol(2, 3,	$myrow['br_name']);
-			$rep->TextCol(3, 4,	$myrow['contact_name']);
+			$rep->TextCol(3, 4,	$myrow['customer_ref']);
 			$rep->DateCol(4, 5,	$myrow['tran_date'], true);
 			$rep->AmountCol(5, 6, $amt, $dec);
 			$rep->AmountCol(6, 7, $prov, $dec);
