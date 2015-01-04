@@ -30,6 +30,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	$input_error = 0;
 
+	if (strlen($_POST['order_no']) == 0) 
+	{
+		$input_error = 1;
+		display_error(_("No order has been selected as a template for recurrent invoicing."));
+		set_focus('order_no');
+	}
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
