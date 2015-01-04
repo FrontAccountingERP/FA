@@ -80,7 +80,6 @@ function get_counterparty_name($trans_type, $trans_no, $full=true)
 			." AND order.debtor_no=debtor.debtor_no";
 			break;
 
-		case ST_RECEIPTINVOICE :
 		case ST_SALESINVOICE :
 		case ST_CUSTCREDIT :
 		case ST_CUSTPAYMENT :
