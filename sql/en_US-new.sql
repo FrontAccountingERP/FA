@@ -807,6 +807,7 @@ CREATE TABLE IF NOT EXISTS `0_grn_batch` (
   `reference` varchar(60) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `loc_code` varchar(5) default NULL,
+  `rate` double NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `delivery_date` (`delivery_date`),
   KEY `purch_order_no` (`purch_order_no`)

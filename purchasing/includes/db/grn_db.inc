@@ -99,7 +99,14 @@ function add_grn(&$po)
 	begin_transaction();
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
-	add_new_exchange_rate(get_supplier_currency($po->supplier_id), $date_, $po->ex_rate);
+	if (!is_company_currency($po->curr_code))
+	{
+		if (!$po->ex_rate)
+			$po->ex_rate = get_date_exchange_rate($po->curr_code, $date_);
+		else
+			add_new_exchange_rate($po->curr_code, $date_, $po->ex_rate);
+	} else
+		$po->ex_rate = 1;
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_, $po->ex_rate);
 
