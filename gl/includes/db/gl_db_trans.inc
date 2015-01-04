@@ -42,7 +42,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		else
 			$memo_ = $_SESSION["wa_current_user"]->username . " - " . $memo_;
 	}
-	if (!is_subledger_account($account) && $account==get_company_pref('deffered_income_act') || $account==get_company_pref('grn_clearing_act'))
+	if (!is_subledger_account($account) || $account==get_company_pref('grn_clearing_act'))
 		$person_id = $person_type_id = null;
 
 	$sql = "INSERT INTO ".TB_PREF."gl_trans ( type, type_no, tran_date,
