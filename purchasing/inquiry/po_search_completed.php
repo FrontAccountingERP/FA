@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -25,7 +26,7 @@ page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
 
 if (isset($_GET['order_number']))
 {
-	$_POST['order_number'] = $_GET['order_number'];
+	$order_number = $_GET['order_number'];
 }
 
 //-----------------------------------------------------------------------------------
@@ -71,12 +72,27 @@ start_row();
 
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null, true, true);
 
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table(1);
+//---------------------------------------------------------------------------------------------
+if (isset($_POST['order_number']))
+{
+	$order_number = $_POST['order_number'];
+}
+
+if (isset($_POST['SelectStockFromList']) &&	($_POST['SelectStockFromList'] != "") &&
+	($_POST['SelectStockFromList'] != ALL_TEXT))
+{
+ 	$selected_stock_item = $_POST['SelectStockFromList'];
+}
+else
+{
+	unset($selected_stock_item);
+}
 //---------------------------------------------------------------------------------------------
 
 function trans_view($trans)
@@ -103,7 +119,7 @@ function prt_link($row)
 //---------------------------------------------------------------------------------------------
 
 $sql = get_sql_for_po_search_completed(get_post('OrdersAfterDate'), get_post('OrdersToDate'),
-	@$_GET['popup'] ? ALL_TEXT : get_post('supplier_id'),
+	get_post('supplier_id') !== '' ? get_post('supplier_id') : ALL_TEXT,
 	get_post('StockLocation'), get_post('order_number'), get_post('SelectStockFromList'));
 
 $cols = array(

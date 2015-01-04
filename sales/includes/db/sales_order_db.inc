@@ -464,7 +464,7 @@ function get_branch_to_order($customer_id, $branch_id) {
 	OutstandingOnly
 	PrepaidOrders
 */
-function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_no, $filter, 
+function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter, 
 	$stock_item=null, $from='', $to='', $ref='', $location='', $customer_id=ALL_TEXT)
 {
 
@@ -533,8 +533,8 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type, $trans_n
 		if ($trans_type == ST_SALESQUOTE && !check_value('show_all'))
 			$sql .= " AND sorder.delivery_date >= '".date2sql(Today())."' AND line.qty_sent=0"; // show only outstanding, not realized quotes
 
-		if ($selected_customer != -1)
-			$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
+		//if ($selected_customer != -1)
+		//	$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
 
 		if (isset($stock_item))
 			$sql .= " AND line.stk_code=".db_escape($stock_item);
