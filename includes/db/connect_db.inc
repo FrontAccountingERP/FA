@@ -116,4 +116,12 @@ function db_get_default_charset()
 	return $var[0];
 }
 
-	
+/*
+	SQL db profiling stub
+*/
+if (!function_exists('db_profile'))
+{
+	function db_profile($sql=false)
+	{
+	}
+}

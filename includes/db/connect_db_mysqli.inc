@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+define('SQL_MODE', 'STRICT_ALL_TABLES,NO_ZERO_IN_DATE');
 
 function set_global_connection($company=-1)
 {
@@ -32,8 +33,8 @@ function set_global_connection($company=-1)
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
 	///// our sessions.
 	///// We are, however, investigating the existing code to be compatible in the future.
-	if (strncmp(db_get_version(), "5.6", 3) >= 0) 
-		db_query("SET sql_mode = ''");
+//	if (strncmp(db_get_version(), "5.6", 3) >= 0) 
+		db_query("SET sql_mode = '".SQL_MODE."'");
 	/////
 	return $db;
 }
@@ -58,17 +59,12 @@ function db_query($sql, $err_msg=null)
 		$sql_queries .= "<pre>$sql</pre>\n<hr>";
 	}
 
-	// mysql profiling
-	global $profile_sql;
-	if (@$profile_sql) 
-		get_usec();
+	db_profile(); // mysql profiling
+
 	$result = mysqli_query($db, $sql);
-	if (@$profile_sql)
-	{
-		$profile_sql= false;
-		_vd($sql.'<br>:'.db_num_rows($result).'rows, '.get_usec());
-	}
-	
+
+	db_profile($sql);
+
 	if($sql_trail) {
 		$db_last_inserted_id = mysqli_insert_id($db);	// preserve in case trail insert is done
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {

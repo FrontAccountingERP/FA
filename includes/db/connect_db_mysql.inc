@@ -46,7 +46,7 @@ function db_query($sql, $err_msg=null)
 {
 	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
 		$db_connections, $db_last_inserted_id;
-	
+
 	// set current db prefix
 	$comp = isset($_SESSION["wa_current_user"]->cur_con) ? $_SESSION["wa_current_user"]->cur_con : 0;
 	$cur_prefix = $db_connections[$comp]['tbpref'];
@@ -58,17 +58,12 @@ function db_query($sql, $err_msg=null)
 		$sql_queries .= "<pre>$sql</pre>\n<hr>";
 	}
 
-	// mysql profiling
-	global $profile_sql;
-	if (@$profile_sql) 
-		get_usec();
+	db_profile(); // mysql profiling
+
 	$result = mysql_query($sql, $db);
-	if (@$profile_sql)
-	{
-		$profile_sql= false;
-		_vd($sql.'<br>:'.db_num_rows($result).'rows, '.get_usec());
-	}
-	
+
+	db_profile($sql);
+
 	if($sql_trail) {
 		$db_last_inserted_id = mysql_insert_id($db);	// preserve in case trail insert is done
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {

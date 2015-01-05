@@ -146,7 +146,7 @@ class fa2_4 {
 		 // site default encoding is presumed as encoding for all databases!
 		$lang = array_search_value($dflt_lang, $installed_languages, 'code');
 		$new_encoding = get_mysql_encoding_name(strtoupper($lang['encoding']));
-	//	get_usec();
+
 		if ($test)
  	 		error_log('Switching database to utf8 encoding from '.$old_encoding);
 		$collation = get_mysql_collation();
@@ -154,7 +154,6 @@ class fa2_4 {
 		$tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
 		while($tbl = db_fetch($tresult)) {
 			$table = $tbl[0];
-		// if ($table != '1_chart_master') continue; _vd($table); get_usec(); // fast debug on single table
 
 			db_query("ALTER TABLE `$table` CONVERT TO CHARACTER SET $old_encoding"); // convert encoding on utf-8 tables
 
