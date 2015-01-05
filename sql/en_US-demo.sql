@@ -952,7 +952,7 @@ CREATE TABLE IF NOT EXISTS `0_grn_batch` (
   `reference` varchar(60) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `loc_code` varchar(5) default NULL,
-  `rate` double NULL default '1'
+  `rate` double NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `delivery_date` (`delivery_date`),
   KEY `purch_order_no` (`purch_order_no`)
@@ -2075,7 +2075,7 @@ INSERT INTO `0_sys_prefs` VALUES('default_adj_act', 'glsetup.items', 'varchar', 
 INSERT INTO `0_sys_prefs` VALUES('default_inv_sales_act', 'glsetup.items', 'varchar', 15, '4010');
 INSERT INTO `0_sys_prefs` VALUES('default_assembly_act', 'glsetup.items', 'varchar', 15, '1530');
 INSERT INTO `0_sys_prefs` VALUES('default_workorder_required', 'glsetup.manuf', 'int', 11, '20');
-INSERT INTO `0_sys_prefs` VALUES('version_id', 'system', 'varchar', 11, '2.3rc');
+INSERT INTO `0_sys_prefs` VALUES('version_id', 'system', 'varchar', 11, '2.4.0');
 INSERT INTO `0_sys_prefs` VALUES('auto_curr_reval', 'setup.company', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550');
 INSERT INTO `0_sys_prefs` VALUES('bcc_email', 'setup.company', 'varchar', 100, '');

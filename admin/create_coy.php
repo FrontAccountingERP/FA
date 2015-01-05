@@ -36,9 +36,9 @@ else
 
 //---------------------------------------------------------------------------------------------
 
-function check_data()
+function check_data($selected_id)
 {
-	global $db_connections, $tb_pref_counter, $selected_id;
+	global $db_connections, $tb_pref_counter;
 
 	if($selected_id != -1) {
 		if ($_POST['name'] == "")
@@ -88,13 +88,13 @@ function remove_connection($id) {
 }
 //---------------------------------------------------------------------------------------------
 
-function handle_submit()
+function handle_submit($selected_id)
 {
-	global $db_connections, $def_coy, $tb_pref_counter, $db,
-	    $comp_subdirs, $path_to_root, $selected_id;
+	global $Ajax, $db_connections, $def_coy, $tb_pref_counter, $db,
+	    $comp_subdirs, $path_to_root;
 
 	$error = false;
-	if (!check_data())
+	if (!check_data($selected_id))
 		return false;
 
 	if ($selected_id==-1)
@@ -106,7 +106,7 @@ function handle_submit()
 		$def_coy = $selected_id;
 
 	$db_connections[$selected_id]['name'] = $_POST['name'];
-	if($new) {
+	if ($new) {
 		$db_connections[$selected_id]['host'] = $_POST['host'];
 		$db_connections[$selected_id]['dbuser'] = $_POST['dbuser'];
 		$db_connections[$selected_id]['dbpassword'] = $_POST['dbpassword'];
@@ -122,7 +122,7 @@ function handle_submit()
 			$db_connections[$selected_id]['tbpref'] = "";
 
 		$conn = $db_connections[$selected_id];
-		if (($db = db_create_db($conn)) == 0)
+		if (($db = db_create_db($conn)) === false)
 		{
 			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 			$error = true;
@@ -136,15 +136,16 @@ function handle_submit()
 				if (!isset($_POST['admpassword']) || $_POST['admpassword'] == "")
 					$_POST['admpassword'] = "password";
 				update_admin_password($conn, md5($_POST['admpassword']));
-			}	
+			}
 		}
-		set_global_connection();
 		if ($error) {
 			remove_connection($selected_id);
 			return false;
 		}
 	}
+
 	$error = write_config_db($new);
+	set_global_connection();
 	if ($error == -1)
 		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -2)
@@ -163,16 +164,15 @@ function handle_submit()
 	$exts = get_company_extensions();
 	write_extensions($exts, $selected_id);
 	display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
+	$Ajax->activate('_page_body');
 	return true;
 }
 
 //---------------------------------------------------------------------------------------------
 
-function handle_delete()
+function handle_delete($id)
 {
-	global $def_coy, $db_connections, $comp_subdirs, $path_to_root;
-
-	$id = (int)$_GET['id'];
+	global $Ajax, $def_coy, $db_connections, $comp_subdirs, $path_to_root;
 
 	// First make sure all company directories from the one under removal are writable. 
 	// Without this after operation we end up with changed per-company owners!
@@ -211,6 +211,7 @@ function handle_delete()
 
 	if ($def_coy == $id)
 		$def_coy = 0;
+
 	$error = write_config_db();
 	if ($error == -1)
 		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
@@ -230,6 +231,7 @@ function handle_delete()
 		return;
 	}
 	display_notification(_("Selected company has been deleted"));
+	$Ajax->activate('_page_body');
 }
 
 //---------------------------------------------------------------------------------------------
@@ -366,12 +368,12 @@ function display_company_edit($selected_id)
 //---------------------------------------------------------------------------------------------
 
 if (isset($_GET['c']) && $_GET['c'] == 'df') {
-	handle_delete();
+	handle_delete( (int)$_GET['id'] );
 	$selected_id = -1;
 }
 
 if (get_post('save')) {
-	if (handle_submit())
+	if (handle_submit($selected_id))
 		$selected_id = -1;
 }
 
