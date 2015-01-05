@@ -221,7 +221,7 @@ echo "<hr>";
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+$sql = get_sql_for_bank_account_reconcile(get_post('bank_account'), get_post('reconcile_date'));
 
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);

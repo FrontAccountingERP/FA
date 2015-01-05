@@ -173,7 +173,7 @@ function voiding_controls()
     end_table(1);
     
 	$trans_ref = false;
-	$sql = get_sql_for_view_transactions($_POST['filterType'], $_POST['FromTransNo'], $_POST['ToTransNo'], $trans_ref);
+	$sql = get_sql_for_view_transactions(get_post('filterType'), get_post('FromTransNo'), get_post('ToTransNo'), $trans_ref);
 	if ($sql == "")
 		return;
 

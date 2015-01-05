@@ -401,7 +401,7 @@ function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item
 	//figure out the sql required from the inputs available
 	if ($delivery)
 	{
-		$sql .= " AND trans.trans_no LIKE %".db_escape($delivery);
+		$sql .= " AND trans.trans_no LIKE ".db_escape('%' . $delivery . '%');
 		$sql .= " GROUP BY trans.trans_no";
 	}
 	else
@@ -409,7 +409,7 @@ function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item
 		$sql .= " AND trans.tran_date >= '".date2sql($from)."'";
 		$sql .= " AND trans.tran_date <= '".date2sql($to)."'";
 
-		if ($stock_item)
+		if ($stock_item != ALL_TEXT)
 			$sql .= " AND line.stock_id=".db_escape($stock_item)." ";
 
 		if ($location != ALL_TEXT)

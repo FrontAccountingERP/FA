@@ -465,7 +465,7 @@ function get_branch_to_order($customer_id, $branch_id) {
 	PrepaidOrders
 */
 function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter, 
-	$stock_item=null, $from='', $to='', $ref='', $location='', $customer_id=ALL_TEXT)
+	$stock_item='', $from='', $to='', $ref='', $location=ALL_TEXT, $customer_id=ALL_TEXT)
 {
 
 	$sql = "SELECT 
@@ -515,8 +515,7 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 	elseif ($ref != "")
 	{
 		// search orders with reference like 
-		$number_like = "%".$ref."%";
-		$sql .= " AND sorder.reference LIKE ".db_escape($number_like);
+		$sql .= " AND sorder.reference LIKE ".db_escape('%' . $ref . '%');
 //				." GROUP BY sorder.order_no";
 	}
 	else	// ... or select inquiry constraints
@@ -536,10 +535,10 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 		//if ($selected_customer != -1)
 		//	$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
 
-		if (isset($stock_item))
+		if ($stock_item != ALL_TEXT)
 			$sql .= " AND line.stk_code=".db_escape($stock_item);
 
-		if ($location)
+		if ($location != ALL_TEXT)
 			$sql .= " AND sorder.from_stk_loc = ".db_escape($location);
 
 		if ($filter=='OutstandingOnly')

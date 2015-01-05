@@ -122,7 +122,7 @@ function edit_link($row)
 }
 
 $sql = get_sql_for_search_dimensions($dim, $_POST['FromDate'], $_POST['ToDate'],
-	$_POST['OrderNumber'], $_POST['type_'], $_POST['OpenOnly'], $_POST['OverdueOnly']);
+	$_POST['OrderNumber'], $_POST['type_'], check_value('OpenOnly'), check_value('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link'), 

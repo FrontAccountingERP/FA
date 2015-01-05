@@ -162,7 +162,7 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post('DeliveryToDate'), get_post('customer_id'),
+$sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post('DeliveryToDate'), get_post('customer_id'),	
 	get_post('SelectStockFromList'), get_post('StockLocation'), get_post('DeliveryNumber'), get_post('OutstandingOnly'));
 
 $cols = array(

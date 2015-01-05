@@ -293,7 +293,6 @@ function get_short_info($stock_id)
 function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $location=ALL_TEXT,
 	$order_number = '', $stock_id = '')
 {
-
 	$sql = "SELECT 
 		porder.order_no, 
 		porder.reference, 
@@ -314,7 +313,7 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 
 	if ($supplier_id != ALL_TEXT)
 		$sql .= "AND supplier.supplier_id=".$supplier_id." ";
-	if (isset($order_number) && $order_number != "")
+	if ($order_number != "")
 	{
 		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
 	}
@@ -331,7 +330,7 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 		{
 			$sql .= " AND porder.into_stock_location = ".db_escape($location);
 		}
-		if (isset($selected_stock_item))
+		if ($stock_id !== '')
 		{
 			$sql .= " AND line.item_code=".db_escape($stock_id);
 		}
@@ -344,10 +343,8 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 	return $sql;
 }
 
-function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_TEXT)
+function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_TEXT, $order_number='', $stock_id='')
 {
-	global $all_items, $order_number, $selected_stock_item;;
-	
 	$sql = "SELECT 
 		porder.order_no, 
 		porder.reference,
@@ -369,7 +366,7 @@ function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_
 		AND location.loc_code = porder.into_stock_location
 		AND (line.quantity_ordered > line.quantity_received) ";
 
-	if (isset($order_number) && $order_number != "")
+	if ($order_number != "")
 	{
 		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
 	}
@@ -386,9 +383,9 @@ function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_
 			$sql .= " AND porder.into_stock_location = ".db_escape($location);
 		}
 
-		if (isset($selected_stock_item))
+		if ($stock_id != '')
 		{
-			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
+			$sql .= " AND line.item_code=".db_escape($stock_id);
 		}
 		if ($supplier_id != ALL_TEXT)
 			$sql .= " AND supplier.supplier_id=".db_escape($supplier_id);

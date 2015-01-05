@@ -26,7 +26,7 @@ page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
 
 if (isset($_GET['order_number']))
 {
-	$order_number = $_GET['order_number'];
+	$_POST['order_number'] = $_GET['order_number'];
 }
 
 //-----------------------------------------------------------------------------------
@@ -119,8 +119,7 @@ function prt_link($row)
 //---------------------------------------------------------------------------------------------
 
 $sql = get_sql_for_po_search_completed(get_post('OrdersAfterDate'), get_post('OrdersToDate'),
-	get_post('supplier_id') !== '' ? get_post('supplier_id') : ALL_TEXT,
-	get_post('StockLocation'), get_post('order_number'), get_post('SelectStockFromList'));
+	get_post('supplier_id'), get_post('StockLocation'), get_post('order_number'), get_post('SelectStockFromList'));
 
 $cols = array(
 		_("#") => array('fun'=>'trans_view', 'ord'=>''), 

@@ -337,7 +337,7 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 		$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$order.'%');
 	}
 
-	if ($stock_id != '')
+	if ($stock_id != ALL_TEXT)
 	{
 		$sql .= " AND workorder.stock_id=".db_escape($stock_id);
 	}
