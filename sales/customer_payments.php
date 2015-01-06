@@ -54,6 +54,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 		if($inv) {
 			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
 			$_SESSION['alloc']->read();
+			$_POST['BranchID'] = $inv['branch_code'];
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
