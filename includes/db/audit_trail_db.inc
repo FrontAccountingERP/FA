@@ -12,6 +12,8 @@
 
 function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 {
+	begin_transaction();
+
 	$date = date2sql($trans_date);
 	$sql = "INSERT INTO ".TB_PREF."audit_trail"
 		. " (type, trans_no, user, gl_date, description)
@@ -29,6 +31,7 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 		. db_escape($trans_no);
 
 	db_query($sql, "Cannot update audit gl_seq");
+	commit_transaction();
 }
 
 function get_audit_trail_all($trans_type, $trans_no)

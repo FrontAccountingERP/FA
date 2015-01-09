@@ -2,6 +2,8 @@ ALTER TABLE `0_suppliers` ADD COLUMN  `tax_algorithm` tinyint(1) NOT NULL defaul
 ALTER TABLE `0_supp_trans` ADD COLUMN `tax_algorithm` tinyint(1) NULL default '1' AFTER `tax_included`;
 INSERT INTO `0_sys_prefs` VALUES('tax_algorithm','glsetup.customer', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES('gl_closing_date','setup.closing_date', 'date', 8, '');
+ALTER TABLE `0_audit_trail` CHANGE   `fiscal_year` int(11) NOT NULL default 0,
+
 # Fix eventual invalid date/year in audit records
 UPDATE `0_audit_trail` audit 
 		LEFT JOIN `0_gl_trans` gl ON  gl.`type`=audit.`type` AND gl.type_no=audit.trans_no

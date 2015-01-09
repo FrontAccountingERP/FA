@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `0_audit_trail` (
   `user` smallint(6) unsigned NOT NULL default '0',
   `stamp` timestamp NOT NULL,
   `description` varchar(60) default NULL,
-  `fiscal_year` int(11) NOT NULL,
+  `fiscal_year` int(11) NOT NULL default 0,
   `gl_date` date NOT NULL default '0000-00-00',
   `gl_seq` int(11) unsigned default NULL,
   PRIMARY KEY  (`id`),
