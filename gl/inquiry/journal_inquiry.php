@@ -79,33 +79,8 @@ function gl_link($row)
 	return get_gl_view_str($row["type"], $row["type_no"]);
 }
 
-$editors = array(
-	ST_JOURNAL => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
-	ST_BANKPAYMENT => "/gl/gl_bank.php?ModifyPayment=Yes&trans_no=%d&trans_type=%d",
-	ST_BANKDEPOSIT => "/gl/gl_bank.php?ModifyDeposit=Yes&trans_no=%d&trans_type=%d",
-//	4=> Funds Transfer,
-   ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
-//   11=>
-// free hand (debtors_trans.order_==0)
-//	"/sales/credit_note_entry.php?ModifyCredit=%d"
-// credit invoice
-//	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
-//	 12=> Customer Payment,
-   ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
-//   16=> Location Transfer,
-//   17=> Inventory Adjustment,
-//   20=> Supplier Invoice,
-//   21=> Supplier Credit Note,
-//   22=> Supplier Payment,
-//   25=> Purchase Order Delivery,
-//   28=> Work Order Issue,
-//   29=> Work Order Production",
-//   35=> Cost Update,
-);
-
 function edit_link($row)
 {
-	global $editors;
 
 	$ok = true;
 	if ($row['type'] == ST_SALESINVOICE)
@@ -113,11 +88,8 @@ function edit_link($row)
 		$myrow = get_customer_trans($row["type_no"], $row["type"]);
 		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["type_no"]) !== false)
 			$ok = false;
-	}		
-	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) && $ok ? 
-		pager_link(_("Edit"), 
-			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
-			ICON_EDIT) : '';
+	}
+	return $ok ? trans_editor_link($row["type"], $row["type_no"]) : '';
 }
 
 $sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),

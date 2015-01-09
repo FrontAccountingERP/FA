@@ -106,8 +106,7 @@ function wo_type_name($dummy, $type)
 function edit_link($row)
 {
 	return  $row['closed'] ? '<i>'._('Closed').'</i>' :
-		pager_link(_("Edit"),
-			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+		trans_editor_link(ST_WORKORDER, $row["id"]);
 }
 
 function release_link($row)

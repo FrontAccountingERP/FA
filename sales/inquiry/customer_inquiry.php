@@ -155,7 +155,7 @@ function fmt_credit($row)
 function credit_link($row)
 {
 	global $page_nested;
-	
+
 	if ($page_nested)
 		return '';
 	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
@@ -171,8 +171,8 @@ function edit_link($row)
 	if ($page_nested)
 		return '';
 
-	return edit_trans_link($row['type'], $row['trans_no'], $row['type']==ST_CUSTCREDIT && $row['order_']==0 ?
-		"/sales/credit_note_entry.php?ModifyCredit=%d" : 0);
+	return $row['type'] == ST_CUSTCREDIT && $row['order_'] ? '' : 	// allow  only free hand credit notes edition
+			trans_editor_link($row['type'], $row['trans_no']);
 }
 
 function prt_link($row)
@@ -181,7 +181,7 @@ function prt_link($row)
 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
   	elseif ($row['type'] == ST_BANKPAYMENT) // bank payment printout not defined yet.
 		return '';
- 	else	
+ 	else
  		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 

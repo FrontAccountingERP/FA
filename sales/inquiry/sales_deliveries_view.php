@@ -140,8 +140,7 @@ function batch_checkbox($row)
 function edit_link($row)
 {
 	return $row["Outstanding"]==0 ? '' :
-		pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery="
-			.$row['trans_no'], ICON_EDIT);
+		trans_editor_link(ST_CUSTDELIVERY, $row['trans_no']);
 }
 
 function prt_link($row)

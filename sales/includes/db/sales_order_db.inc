@@ -489,7 +489,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 			prep_amount,
 			allocs.ord_payments,
 			inv.inv_payments,
-			sorder.total
+			sorder.total,
+			sorder.trans_type
 		FROM ".TB_PREF."sales_orders as sorder
 		LEFT JOIN (SELECT trans_no_to, sum(amt) ord_payments FROM ".TB_PREF."cust_allocations WHERE trans_type_to=".ST_SALESORDER." GROUP BY trans_no_to)
 			 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no

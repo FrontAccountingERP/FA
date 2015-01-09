@@ -163,7 +163,7 @@ function check_overdue($row)
 
 function edit_link($row)
 {
-	return edit_trans_link($row['type'], $row['trans_no']);
+	return trans_editor_link($row['type'], $row['trans_no']);
 }
 //------------------------------------------------------------------------------------------------
 

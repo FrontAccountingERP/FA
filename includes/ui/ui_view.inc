@@ -1431,3 +1431,37 @@ function payment_link($name, $options)
 
 	return strtr($link, $patterns);
 }
+
+function trans_editor_link($type, $trans_no)
+{
+	global $path_to_root;
+
+	$editor_url = array(
+		ST_JOURNAL => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
+		ST_BANKPAYMENT => "/gl/gl_bank.php?ModifyPayment=Yes&trans_no=%d&trans_type=%d",
+		ST_BANKDEPOSIT => "/gl/gl_bank.php?ModifyDeposit=Yes&trans_no=%d&trans_type=%d",
+	    ST_BANKTRANSFER => "/gl/bank_transfer.php?ModifyTransfer=Yes&trans_no=%d&trans_type=%d",
+    	ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
+		ST_CUSTCREDIT => "/sales/credit_note_entry.php?ModifyCredit=%d", // only for free hand credit notes (debtors_trans.order_==0)
+		ST_CUSTPAYMENT => "/sales/customer_payments.php?trans_no=%d",
+		ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
+//   16=> Location Transfer,
+//   17=> Inventory Adjustment,
+		ST_SUPPINVOICE => "/purchasing/supplier_invoice.php?ModifyInvoice=%d",
+		ST_SUPPCREDIT =>  "/purchasing/supplier_credit.php?ModifyCredit=%d",
+//   21=> Supplier Credit Note,
+//   22=> Supplier Payment,
+//   25=> Purchase Order Delivery,
+		ST_PURCHORDER => "/purchasing/po_entry_items.php?ModifyOrderNumber=%d",
+//   28=> Work Order Issue,
+//   29=> Work Order Production",
+		ST_WORKORDER => "/manufacturing/work_order_entry.php?trans_no=%d",
+		ST_SALESORDER => "/sales/sales_order_entry.php?ModifyOrderNumber=%d",
+		ST_SALESQUOTE => "/sales/sales_order_entry.php?ModifyQuotationNumber=%d",
+	//   35=> Cost Update,
+	);
+
+	return !isset($editor_url[$type]) ? '' :
+		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
+			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
+}

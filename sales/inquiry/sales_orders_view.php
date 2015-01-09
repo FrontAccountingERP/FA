@@ -106,12 +106,7 @@ function edit_link($row)
 {
 	global $page_nested;
 
-	if ($page_nested)
-		return '';
-	global $trans_type;
-	$modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
-  return pager_link( _("Edit"),
-    "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+	return $page_nested ? '' : trans_editor_link($row['trans_type'], $row['order_no']);
 }
 
 function dispatch_link($row)

@@ -86,8 +86,7 @@ function trans_view($trans)
 
 function edit_link($row) 
 {
-  return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	return trans_editor_link(ST_PURCHORDER, $trans["order_no"]);
 }
 
 function prt_link($row)

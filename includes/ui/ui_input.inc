@@ -943,26 +943,6 @@ function supplier_credit_row($supplier, $credit, $parms='')
 		."</a>", $parms);
 }
 
-/*
-	Edit transaction link to be used in transaction inquires
-*/
-function edit_trans_link($trans_type, $trans_no, $url='')
-{
-	global $path_to_root, $trans_editors;
-
-	if (!$url) $url = @$trans_editors[$trans_type];
-
-	if (!$trans_no || !$url)
-		return '';
-
-	if (is_closed_trans($trans_type, $trans_no)) {
-		return set_icon(ICON_CLOSED, _('Closed'));
-	} else {
-		$link_text = user_graphic_links() ? set_icon(ICON_EDIT, _('Edit')) : _('Edit');
-		return "<a href='".$path_to_root . sprintf($url, $trans_no, $trans_type)."'>$link_text</a>";
-	}
-}
-
 function bank_balance_row($bank_acc, $parms='')
 {
 	global $path_to_root;
