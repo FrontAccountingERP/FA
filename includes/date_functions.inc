@@ -421,6 +421,38 @@ and converts to a yyyy/mm/dd format */
 	return sprintf("%04d-%02d-%02d", $year, $month, $day);
 }// end of function
 
+/**
+ *	Compare dates in sql format.
+ *	Return +1 if sql date1>date2, -1 if date1<date2,
+ *  or 0 if dates are equal.
+ */
+function sql_date_comp($date1, $date2)
+{
+	@list($year1, $month1, $day1) = explode("-", $date1);
+	@list($year2, $month2, $day2) = explode("-", $date2);
+
+	if ($year1 != $year2) {
+		return $year1 < $year2 ? -1 : +1;
+    }
+    elseif ($month1 != $month2) {
+		return $month1 < $month2 ? -1 : +1;
+	}
+	elseif ($day1 != $day2) {
+		return $day1 < $day2 ? -1 : +1;
+	}
+	return 0;
+}
+/*
+	Compare dates in user format.
+*/
+function date_comp($date1, $date2)
+{
+	$date1 = date2sql($date1);
+	$date2 = date2sql($date2);
+
+	return sql_date_comp($date1, $date2);
+}
+
 function date1_greater_date2 ($date1, $date2) 
 {
 
@@ -452,7 +484,6 @@ function date1_greater_date2 ($date1, $date2)
 	}
 	return 0;
 }
-
 
 function date_diff2 ($date1, $date2, $period) 
 {
