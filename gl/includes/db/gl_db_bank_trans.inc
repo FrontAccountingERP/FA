@@ -102,6 +102,7 @@ function get_bank_trans_for_bank_account($bank_account, $from, $to)
 		AND ISNULL(v.date_)
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
+		AND amount != 0
 		ORDER BY trans_date, t.id";
 
 	return db_query($sql,"The transactions for '" . $bank_account . "' could not be retrieved");
@@ -178,7 +179,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 		return null;	// unlimited account
 
 	if (floatcmp($balance, -$delta_amount) < 0)
-		return array('amount' => $balance - $delta_amount, 'trans_date'=> $date);
+		return array('amount' => $balance + $delta_amount, 'trans_date'=> date2sql($date));
 
 	$balance += $delta_amount;
 
@@ -195,7 +196,10 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 	while ($trans = db_fetch($history)) {
 		$balance += $trans['amount'];
 		if ($balance < 0)
+		{
+			$trans['amount'] = $balance;
 			return $trans;
+		}
 	}
 
 	return null;

@@ -25,7 +25,14 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
+
+if (isset($_GET['ModifyTransfer'])) {
+	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Transfer");
+} else {
+	$_SESSION['page_title'] = _($help_context = "Bank Account Transfer Entry");
+}
+
+page($_SESSION['page_title'], false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
@@ -51,10 +58,42 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 //----------------------------------------------------------------------------------------
 
-function gl_payment_controls()
+function gl_payment_controls($trans_no)
 {
 	global $Refs;
 	
+	if (!in_ajax()) {
+		if ($trans_no) {
+			$result = get_bank_trans(ST_BANKTRANSFER, $trans_no);
+
+			if (db_num_rows($result) != 2)
+				display_db_error("Bank transfer does not contain two records");
+
+			$trans1 = db_fetch($result);
+			$trans2 = db_fetch($result);
+
+			if ($trans1["amount"] < 0) {
+				$from_trans = $trans1; // from trans is the negative one
+				$to_trans = $trans2;
+			} else {
+			$from_trans = $trans2;
+				$to_trans = $trans1;
+			}
+			$_POST['DatePaid'] = sql2date($to_trans['trans_date']);
+			$_POST['ref'] = $to_trans['ref'];
+			$_POST['memo_'] = get_comments_string($to_trans['type'], $trans_no);
+			$_POST['FromBankAccount'] = $from_trans['bank_act'];
+			$_POST['ToBankAccount'] = $to_trans['bank_act'];
+			$_POST['target_amount'] = price_format($to_trans['amount']);
+			$_POST['amount'] = price_format(-$from_trans['amount']);
+		} else {
+			$_POST['ref'] = $Refs->get_next(ST_BANKTRANSFER);
+			$_POST['memo_'] = '';
+			$_POST['FromBankAccount'] = 0;
+			$_POST['ToBankAccount'] = 0;
+			$_POST['amount'] = 0;
+		}
+	}
 	$home_currency = get_company_currency();
 
 	start_form();
@@ -76,7 +115,7 @@ function gl_payment_controls()
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+	ref_row(_("Reference:"), 'ref', '', $_POST['ref']);
 
 	table_section(2);
 
@@ -99,16 +138,21 @@ function gl_payment_controls()
 
 	end_outer_table(1); // outer table
 
-    submit_center('AddPayment',_("Enter Transfer"), true, '', 'default');
+	if ($trans_no) {
+		hidden('_trans_no', $trans_no);
+		submit_center('submit', _("Modify Transfer"), true, '', 'default');
+	} else {
+		submit_center('submit', _("Enter Transfer"), true, '', 'default');
+	}
 
 	end_form();
 }
 
 //----------------------------------------------------------------------------------------
 
-function check_valid_entries()
+function check_valid_entries($trans_no)
 {
-	global $Refs;
+	global $Refs, $systypes_array;
 	
 	if (!is_date($_POST['DatePaid'])) 
 	{
@@ -139,18 +183,42 @@ function check_valid_entries()
 
 	$amnt_tr = input_num('charge') + input_num('amount');
 
-	if ($limit !== null && floatcmp($limit, $amnt_tr) < 0)
-	{
-		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s) for source account."), price_format($limit)));
+	if ($trans_no) {
+		$problemTransaction = check_bank_transfer( $trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],
+			$amnt_tr, input_num('target_amount', $amnt_tr));
+
+	if ($problemTransaction != null	) {
+		if (!array_key_exists('trans_no', $problemTransaction)) {
+			display_error(sprintf(
+				_("This bank transfer change would result in exceeding authorized overdraft limit (%s) of the account '%s'"),
+				price_format(-$problemTransaction['amount']), $problemTransaction['bank_account_name']
+			));
+		} else {
+			display_error(sprintf(
+				_("This bank transfer change would result in exceeding authorized overdraft limit on '%s' for transaction: %s #%s on %s."),
+				$problemTransaction['bank_account_name'], $systypes_array[$problemTransaction['type']],
+				$problemTransaction['trans_no'], sql2date($problemTransaction['trans_date'])
+			));
+		}
 		set_focus('amount');
 		return false;
-	}
-	if ($trans = check_bank_account_history(-$amnt_tr, $_POST['FromBankAccount'], $_POST['DatePaid'])) {
-
-		display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
-			$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
-		set_focus('amount');
-		$input_error = 1;
+		}
+	} else {
+		if (null != ($problemTransaction = check_bank_account_history(-$amnt_tr, $_POST['FromBankAccount'], $_POST['DatePaid']))) {
+			if (!array_key_exists('trans_no', $problemTransaction)) {
+				display_error(sprintf(
+					_("This bank transfer would result in exceeding authorized overdraft limit of the account (%s)"),
+					price_format(-$problemTransaction['amount'])
+				));
+			} else {
+				display_error(sprintf(
+					_("This bank transfer would result in exceeding authorized overdraft limit for transaction: %s #%s on %s."),
+					$systypes_array[$problemTransaction['type']], $problemTransaction['trans_no'], sql2date($problemTransaction['trans_date'])
+				));
+			}
+			set_focus('amount');
+			return false;
+		}
 	}
 
 	if (isset($_POST['charge']) && !check_num('charge', 0)) 
@@ -171,8 +239,7 @@ function check_valid_entries()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) 
-	{
+	if (! $trans_no && ! is_new_reference($_POST['ref'], ST_BANKTRANSFER)) {
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
@@ -208,25 +275,35 @@ function check_valid_entries()
 
 //----------------------------------------------------------------------------------------
 
-function handle_add_deposit()
+function bank_transfer_handle_submit()
 {
-	new_doc_date($_POST['DatePaid']);
-	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'), input_num('target_amount'));
+	$trans_no = array_key_exists('_trans_no', $_POST) ?  $_POST['_trans_no'] : null;
+	if ($trans_no) {
+		$trans_no = update_bank_transfer($trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'), input_num('target_amount'));
+	} else {
+		new_doc_date($_POST['DatePaid']);
+		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'), input_num('target_amount'));
+	}
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }
 
 //----------------------------------------------------------------------------------------
 
-if (isset($_POST['AddPayment']))
-{
-	if (check_valid_entries() == true) 
-	{
-		handle_add_deposit();
+$trans_no = '';
+if (!$trans_no && isset($_POST['_trans_no'])) {
+	$trans_no = $_POST['_trans_no'];
+}
+if (!$trans_no && isset($_GET['trans_no'])) {
+	$trans_no = $_GET["trans_no"];
+}
+
+if (isset($_POST['submit'])) {
+    if (check_valid_entries($trans_no) == true) {
+        bank_transfer_handle_submit();
 	}
 }
 
-gl_payment_controls();
+gl_payment_controls($trans_no);
 
 end_page();

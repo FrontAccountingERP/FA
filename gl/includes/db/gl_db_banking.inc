@@ -193,7 +193,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$amount, $ref, $memo_, $charge=0, $target_amount=0)
 {
 	global $Refs, $SysPrefs;
-	
+
 	begin_transaction();
 	$args = func_get_args(); if (count($args) < 8) $args[] = 0;
 	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
@@ -282,6 +282,80 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	return $trans_no;
 }
+
+function check_bank_transfer(
+    $trans_no, $from_account, $to_account, $date_,
+    $amount, $target_amount=0)
+{
+	$dbResult = get_bank_trans(ST_BANKTRANSFER, $trans_no);
+	if (2 != db_num_rows($dbResult)) {
+		// How are errors handled? Throw an exception would be nice. CP 2014-10
+	}
+
+	$old_from = db_fetch($dbResult);
+	$old_to = db_fetch($dbResult);
+	if ($old_to['amount'] < 0.0) {
+		$tmp = $old_from;
+		$old_from = $old_to;
+		$old_to = $tmp;
+	}
+	// There are four accounts to consider:
+	// 1) The original from account that is being voided. This results in funds being put back which is always fine.
+	// 2) The original to account that is being voided. This results in funds being removed which may result in a
+	//    negative balance in the account at some time and therefore needs to be checked.
+	$problemTransaction = check_bank_account_history(-$old_to['amount'], $old_to['bank_act'], sql2date($old_to['trans_date']));
+	if ($problemTransaction) {
+		// If the destination account is the same as that being edited, it may be that this edit will resolve the
+		// problem of voiding.
+		if ($to_account == $old_to['bank_act'] && sql_date_comp($problemTransaction['trans_date'], date2sql($date_)) >= 0) {
+			$problemTransaction = check_bank_account_history($target_amount-$old_to['amount'], $to_account, $date_);
+		}
+	}
+	if (null != $problemTransaction) {
+		$problemTransaction['account'] = $old_to['bank_act'];
+		$problemTransaction['bank_account_name'] = $old_to['bank_account_name'];
+		return $problemTransaction;
+	}
+
+	// 3) The edited from account, that is having funds removed which may result in a
+	//    negative balance in the account at some time and therefore needs to be checked.
+	$problemTransaction = check_bank_account_history(-$amount, $from_account, $date_);
+	if ($problemTransaction) {
+		// If the target account is the same as that being edited, it may be that voiding old transfer will
+		// solve balance problem.
+		//
+		if ($from_account == $old_from['bank_act'] && sql_date_comp($problemTransaction['trans_date'], $old_from['trans_date']) >=0 ) {
+			$problemTransaction = check_bank_account_history(-$amount-$old_from['amount'], $from_account, $date_);
+		}
+	}
+
+	if (null != $problemTransaction) {
+		$problemTransaction['account'] = $old_from['bank_act'];
+		$problemTransaction['bank_account_name'] = $old_from['bank_account_name'];
+		return $problemTransaction;
+	}
+	// 4) The edited to account, that is having funds added which is always ok.
+
+	return $problemTransaction;
+
+}
+
+function update_bank_transfer(
+	$trans_no, $from_account, $to_account, $date_,
+	$amount, $ref, $memo_, $charge=0, $target_amount=0)
+{
+	begin_transaction();
+	delete_comments(ST_BANKTRANSFER, $trans_no);
+	void_bank_trans(ST_BANKTRANSFER, $trans_no, true);
+	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
+	$new_trans_no = add_bank_transfer(
+		$from_account, $to_account, $date_, $amount,
+		$ref, $memo_, $charge, $target_amount
+	);
+	commit_transaction();
+	return $new_trans_no;
+}
+
 //----------------------------------------------------------------------------------
 //	Add bank payment or deposit to database.
 //
