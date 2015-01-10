@@ -64,7 +64,7 @@ $th = array_merge($first_cols, $dim_cols, $remaining_cols);
 table_header($th);
 $end = $_GET['date'];
 $account = $_GET['act'];
-$begin = add_days($end, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+$begin = add_days($end, -user_transaction_days());
 
 $result = get_gl_transactions($begin, $end, -1,	$account, 0, 0, null);
 $j = 0;

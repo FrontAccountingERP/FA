@@ -69,7 +69,7 @@ function get_invoices($customer_id, $to, $all=true)
 
 function print_aged_customer_analysis()
 {
-    global $path_to_root, $systypes_array;
+    global $path_to_root, $systypes_array, $SysPrefs;
 
     	$to = $_POST['PARAM_0'];
     	$fromcust = $_POST['PARAM_1'];
@@ -238,7 +238,6 @@ function print_aged_customer_analysis()
    	$rep->Line($rep->row - 8);
    	if ($graphics)
    	{
-   		global $SysPrefs;
 		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Days");
@@ -247,7 +246,7 @@ function print_aged_customer_analysis()
 		$pg->type      = $graphics;
 		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($SysPrefs->decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;

@@ -240,7 +240,7 @@ function display_companies()
 {
 	global $def_coy, $db_connections;
 
-	$coyno = $_SESSION["wa_current_user"]->company;
+	$coyno = user_company();
 
 	echo "
 		<script language='javascript'>

@@ -17,7 +17,7 @@
 	$js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
 {
-	document.forms[0].company_login_name.options[".$_SESSION["wa_current_user"]->company."].selected = true;
+	document.forms[0].company_login_name.options[".user_company()."].selected = true;
 }
 </script>";
 	add_js_file('login.js');
@@ -86,7 +86,7 @@ function defaultCompany()
 	echo "</td>\n";
 	end_row();
 
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".fallback_mode()."' />\n";
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build ".$SysPrefs->build_version." - "._("Login"));
 	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($SysPrefs->allow_demo_mode ? "demouser":"");
@@ -98,11 +98,10 @@ function defaultCompany()
 	password_row(_("Password:"), 'password', $password);
 
 	if ($login_timeout) {
-		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
+		hidden('company_login_name', user_company());
 	} else {
-		if (isset($_SESSION['wa_current_user']->company))
-			$coy =  $_SESSION['wa_current_user']->company;
-		else
+		$coy =  user_company();
+		if (!isset($coy))
 			$coy = $def_coy;
 		if (!@$SysPrefs->text_company_selection) {
 			echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";

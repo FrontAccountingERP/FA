@@ -160,7 +160,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	Show a blank editbox only if true where the Company NickName
 	will have to be manually entered. This is when privacy is needed.
 */
-$text_company_selection  = false;
+	$text_company_selection  = false;
 
 /*  Should FA hide menu items (Applications, Modules, and Actions) from the user if they don't have access to them? 
     0 for no       1 for yes
@@ -173,30 +173,30 @@ $text_company_selection  = false;
 	$login_delay seconds delay is required between login attempts after $login_max_attemps failed logins.
 	Set $login_delay to 0 to disable the feature (not recommended)
 */
-$login_delay = 30;
-$login_max_attempts = 10;
+	$login_delay = 30;
+	$login_max_attempts = 10;
 
 /*
 	Choose Exchange Rate Provider
 	Default is ECB for backwards compatibility
 */
-$xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
-$dflt_xr_provider = 0;
+	$xr_providers = array("ECB", "YAHOO", "GOOGLE", "BLOOMBERG");
+	$dflt_xr_provider = 0;
 
 /*
 	Set to true when remote service is authoritative source of exchange rates, and can be stored automatically without
 	manual edition. Otherwise exrate is stored on first new currency transaction of the day.
 */
-$xr_provider_authoritative = false;
+	$xr_provider_authoritative = false;
 
 /*
 	Optional sorting sales documents lines during edition according to item code
 */
-$sort_sales_items = false;
+	$sort_sales_items = false;
 
 /*
 	Trial Balance opening balance presentation option.
 	When set to true past years part of opening balance is cleared.
 */
-$clear_trial_balance_opening = false;
+	$clear_trial_balance_opening = false;
 

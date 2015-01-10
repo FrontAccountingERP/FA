@@ -125,8 +125,7 @@ function download_file($filename)
     return true;
 }
 
-$db_name = $_SESSION["wa_current_user"]->company;
-$conn = $db_connections[$db_name];
+$conn = $db_connections[user_company()];
 $backup_name = clean_file_name(get_post('backups'));
 $backup_path = BACKUP_PATH . $backup_name;
 

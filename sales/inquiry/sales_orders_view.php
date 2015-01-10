@@ -210,7 +210,7 @@ ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
 ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
 if ($show_dates)
 {
-  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -user_transaction_days());
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true, true);

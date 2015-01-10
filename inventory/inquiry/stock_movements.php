@@ -55,7 +55,7 @@ start_row();
 
 locations_list_cells(_("From Location:"), 'StockLocation', null, true);
 
-date_cells(_("From:"), 'AfterDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+date_cells(_("From:"), 'AfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'BeforeDate');
 
 submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');

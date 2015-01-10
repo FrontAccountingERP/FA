@@ -18,7 +18,7 @@ function set_global_connection($company=-1)
 
 	include ($path_to_root . "/config_db.php");
 	if ($company == -1) 
-		$company = $_SESSION["wa_current_user"]->company;
+		$company = user_company();
 
 	cancel_transaction(); // cancel all aborted transactions if any
 

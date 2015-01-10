@@ -304,8 +304,8 @@ function round2($number, $decimals=0)
 function number_format2($number, $decimals=0)
 {
 	global $SysPrefs;
-	$tsep = $SysPrefs->thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
-	$dsep = $SysPrefs->decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
+	$tsep = $SysPrefs->thoseps[user_dec_sep()];
+	$dsep = $SysPrefs->decseps[user_dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
 	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
@@ -342,8 +342,7 @@ function fallback_mode() {
 }
 
 function price_format($number) {
-    return number_format2($number,
-	$_SESSION["wa_current_user"]->prefs->price_dec());
+    return number_format2($number, user_price_dec());
 }
 
 function price_decimal_format($number, &$dec)
@@ -383,7 +382,7 @@ function get_qty_dec($stock_id=null)
 	if ($stock_id != null)
 		$dec = get_unit_dec($stock_id);
 	if ($stock_id == null || $dec == -1 || $dec == null)
-		$dec = $_SESSION["wa_current_user"]->prefs->qty_dec();
+		$dec = user_qty_dec();
 	return $dec;
 }
 //-------------------------------------------------------------------

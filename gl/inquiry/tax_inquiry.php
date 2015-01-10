@@ -58,7 +58,7 @@ function tax_inquiry_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	date_cells(_("from:"), 'TransFromDate', '', null, -$_SESSION["wa_current_user"]->prefs->transaction_days());
+	date_cells(_("from:"), 'TransFromDate', '', null, -user_transaction_days());
 	date_cells(_("to:"), 'TransToDate');
 	submit_cells('Show',_("Show"),'','', 'default');
 
