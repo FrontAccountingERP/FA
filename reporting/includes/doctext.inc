@@ -14,6 +14,8 @@
 *	Set document type dependent elements of common page layout.
 *
 */
+	global $SysPrefs;
+
 	$Addr1 = array(
 			'title' => _("Charge To"),
 			'name' => @$this->formData['br_name'] ? $this->formData['br_name'] : @$this->formData['DebtorName'],

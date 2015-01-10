@@ -19,7 +19,7 @@
 function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="", $rate=0)
 {
-	global $use_audit_trail;
+	global $SysPrefs;
 
 	$date = date2sql($date_);
 	if ($currency != null)
@@ -35,7 +35,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		$dimension = 0;
 	if ($dimension2 == null || $dimension2 < 0)
 		$dimension2 = 0;
-	if (isset($use_audit_trail) && $use_audit_trail)
+	if (isset($SysPrefs->use_audit_trail) && $SysPrefs->use_audit_trail)
 	{
 		if ($memo_ == "" || $memo_ == null)
 			$memo_ = $_SESSION["wa_current_user"]->username;
@@ -106,7 +106,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$account=null, $dimension=0, $dimension2=0, $filter_type=null,
 	$amount_min=null, $amount_max=null)
 {
-	global $show_voided_gl_trans;
+	global $SysPrefs;
 	
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
@@ -121,7 +121,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 		AND ISNULL(v.date_)
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
-	if (isset($show_voided_gl_trans) && $show_voided_gl_trans == 0)
+	if (isset($SysPrefs->show_voided_gl_trans) && $SysPrefs->show_voided_gl_trans == 0)
 		$sql .= " AND ".TB_PREF."gl_trans.amount <> 0"; 
 	if ($trans_no > 0)
 		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE ".db_escape('%'.$trans_no);

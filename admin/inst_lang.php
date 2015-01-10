@@ -17,7 +17,7 @@ include_once($path_to_root."/includes/packages.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js = get_js_open_window(900, 500);
 
 page(_($help_context = "Install/Update Languages"), false, false, "", $js);
@@ -30,7 +30,7 @@ simple_page_mode(true);
 //
 function display_languages()
 {
-	global $table_style, $installed_languages, $dflt_lang, $GetText;
+	global $installed_languages, $dflt_lang, $GetText;
 	
 	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"),
 		_("Installed"), _("Available"), _("Default"), "", "");

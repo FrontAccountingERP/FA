@@ -14,7 +14,7 @@ $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -81,9 +81,9 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		display_warning(_('Only graphics files are supported - a file extension of .jpg, .png or .gif is expected'));
 		$upload_file ='No';
 	} 
-	elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024)) 
+	elseif ( $_FILES['pic']['size'] > ($SysPrefs->max_image_size * 1024)) 
 	{ //File Size Check
-		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $SysPrefs->max_image_size);
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
@@ -254,9 +254,9 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 	}
 }
 
-function item_settings(&$stock_id) 
+function item_settings(&$stock_id, $new_id) 
 {
-	global $SysPrefs, $path_to_root, $new_item, $pic_height;
+	global $SysPrefs, $path_to_root;
 
 	start_outer_table(TABLESTYLE2);
 
@@ -396,7 +396,7 @@ function item_settings(&$stock_id)
 	 // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 		$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
 			"]' src='".company_path().'/images/'.item_img_name($_POST['NewStockID']).
-			".jpg?nocache=".rand()."'"." height='$pic_height' border='0'>";
+			".jpg?nocache=".rand()."'"." height='".$SysPrefs->pic_height."' border='0'>";
 		$check_remove_image = true;
 	} 
 	else 
@@ -474,7 +474,7 @@ tabbed_content_start('tabs', array(
 	switch (get_post('_tabs_sel')) {
 		default:
 		case 'settings':
-			item_settings($stock_id); 
+			item_settings($stock_id, $new_id); 
 			break;
 		case 'sales_pricing':
 			$_GET['stock_id'] = $stock_id;

@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -257,8 +257,7 @@ if (isset($_POST['PostInvoice']))
 
 function check_item_data($n)
 {
-	global $check_price_charged_vs_order_price,
-		$check_qty_charged_vs_del_qty, $SysPrefs;
+	global $SysPrefs;
 
 	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
 	{
@@ -275,7 +274,7 @@ function check_item_data($n)
 	}
 
 	$margin = $SysPrefs->over_charge_allowance();
-	if ($check_price_charged_vs_order_price == True)
+	if ($SysPrefs->check_price_charged_vs_order_price == True)
 	{
 		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
 		     if ($_POST['order_price'.$n]==0 ||
@@ -290,7 +289,7 @@ function check_item_data($n)
 		}
 	}
 
-	if ($check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n]))
+	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n]))
 	{
 		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))

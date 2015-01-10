@@ -22,7 +22,7 @@ include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 

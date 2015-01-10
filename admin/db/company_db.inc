@@ -36,7 +36,7 @@ function get_company_pref($prefs = null)
 	
 	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
-		$_SESSION['SysPrefs'] = new sys_prefs();
+//		$_SESSION['SysPrefs'] = new sys_prefs();
 
 		$sql = "SELECT name, value FROM ".TB_PREF."sys_prefs";
 		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
@@ -214,5 +214,22 @@ function clean_user_themes($theme)
 	$_SESSION['wa_current_user']->prefs->theme = 'default';
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -23,6 +23,12 @@ include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
 
 $page_nested = -1;
+// static js files path
+$js_path = $path_to_root.'/js/';
+// standard external js scripts included in all files
+$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
+// additional js source included in header
+$js_lib = $js_userlib = array();
 
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false, $css='')
 {
@@ -64,9 +70,9 @@ function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no
 
 function cache_js_file($fpath, $text) 
 {
-	global $go_debug;
+	global $SysPrefs;
 
-	if(!$go_debug) $text = js_compress($text);
+	if (!$SysPrefs->go_debug) $text = js_compress($text);
 
     $file = force_open($fpath);
 	if (!$file) return false;
@@ -117,7 +123,7 @@ function add_js_ufile($filename)
 function add_js_source($text) 
 {
 	  global $js_lib;
-	  
+
 	  $search = array_search($text, $js_lib);
 	  if ($search === false || $search === null) // php>4.2.0 returns null
 		$js_lib[] = $text;

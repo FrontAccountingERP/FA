@@ -31,7 +31,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote, $SysPrefs, $pic_height;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -48,8 +48,8 @@ function print_sales_quotations()
 	$dec = user_price_dec();
 
 	$pictures = $SysPrefs->print_item_images_on_quote();
-	// If you want a larger image, then increase $pic_height f.i.
-	// $pic_height += 25;
+	// If you want a larger image, then increase pic_height f.i.
+	// $SysPrefs->pic_height += 25;
 	
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -127,10 +127,10 @@ function print_sales_quotations()
 				if (file_exists($image))
 				{
 					//$rep->NewLine();
-					if ($rep->row - $pic_height < $rep->bottomMargin)
+					if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 						$rep->NewPage();
-					$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
-					$rep->row -= $pic_height;
+					$rep->AddImage($image, $rep->cols[1], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
+					$rep->row -= $SysPrefs->pic_height;
 					$rep->NewLine();
 				}
 			}

@@ -29,11 +29,9 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 print_sales_orders();
 
-$print_as_quote = 0;
-
 function print_sales_orders()
 {
-	global $path_to_root, $print_as_quote, $SysPrefs;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 

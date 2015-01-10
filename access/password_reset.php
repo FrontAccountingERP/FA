@@ -28,7 +28,7 @@ function defaultCompany()
 
 	$login_timeout = $_SESSION["wa_current_user"]->last_act;
 
-	$title = $app_title." ".$version." - "._("Password reset");
+	$title = $SysPrefs->app_title." ".$version." - "._("Password reset");
 	$encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "iso-8859-1";
 	$rtl = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
 	$onload = !$login_timeout ? "onload='defaultCompany()'" : "";
@@ -53,12 +53,12 @@ function defaultCompany()
 	start_table(false, "class='login'");
 	start_row();
 	echo "<td align='center' colspan=2>";
-  echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+  echo "<a target='_blank' href='".$SysPrefs->power_url."'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 	echo "</td>\n";
 	end_row();
 
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
-	table_section_title(_("Version")." $version   Build $build_version - "._("Password reset"));
+	table_section_title(_("Version")." $version   Build ".$SysPrefs->build_version." - "._("Password reset"));
 
 	text_row(_("Email"), "email_entry_field", "", 20, 30);
 
@@ -66,7 +66,7 @@ function defaultCompany()
     $coy =  $_SESSION['wa_current_user']->company;
   else
     $coy = $def_coy;
-  if (!@$text_company_selection) {
+  if (!@$SysPrefs->text_company_selection) {
     echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";
     for ($i = 0; $i < count($db_connections); $i++)
       echo "<option value=$i ".($i==$coy ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
@@ -105,10 +105,10 @@ function defaultCompany()
 	echo "</tr></table>\n";
 	echo "<table class='footer'>\n";
 	echo "<tr>\n";
-	echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+	echo "<td><a target='_blank' href='".$SysPrefs->power_url."' tabindex='-1'>".$SysPrefs->app_title." $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
+	echo "<td><a target='_blank' href='".$SysPrefs->power_url."' tabindex='-1'>".$SysPrefs->power_by."</a></td>\n";
 	echo "</tr>\n";
 	echo "</table><br><br>\n";
 	echo "</body></html>\n";

@@ -119,7 +119,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 function get_customer_trans($trans_id, $trans_type)
 {
-	global $go_debug;
+	global $SysPrefs;
 
 	$sql = "SELECT trans.*,"
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
@@ -188,14 +188,14 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if (db_num_rows($result) == 0) {
 		// can't return nothing
-		if($go_debug)
+		if ($SysPrefs->go_debug)
 			display_backtrace();
 		display_db_error("no debtor trans found for given params", $sql, true);
 		exit;
 	}
 	if (db_num_rows($result) > 1) {
 		// can't return multiple
-		if($go_debug)
+		if($SysPrefs->go_debug)
 			display_backtrace();
 		display_db_error("duplicate debtor transactions found for given params", $sql, true);
 		exit;

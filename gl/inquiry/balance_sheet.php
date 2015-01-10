@@ -47,9 +47,9 @@ if (isset($_GET["AccGrp"]))
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $convert, $dimension, $dimension2, $drilldown, $path_to_root)
+function display_type ($type, $typename, $from, $to, $convert, $dimension, $dimension2, $drilldown)
 {
-	global $levelptr, $k;
+	global $path_to_root, $levelptr, $k;
 	
 	$acctstotal = 0;
 	$typestotal = 0;
@@ -86,7 +86,7 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 	while ($accounttype=db_fetch($result))
 	{			
 		$typestotal += display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-			$convert, $dimension, $dimension2, $drilldown, $path_to_root);	
+			$convert, $dimension, $dimension2, $drilldown);
 	}
 
 	//Display Type Summary if total is != 0  
@@ -185,7 +185,7 @@ function display_balance_sheet()
 			while ($accounttype=db_fetch($typeresult))
 			{
 				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-						$convert, $dimension, $dimension2, $drilldown, $path_to_root);	
+						$convert, $dimension, $dimension2, $drilldown);	
 				//Print Summary 
 				if ($TypeTotal != 0 )
 				{
@@ -252,7 +252,7 @@ function display_balance_sheet()
 		table_section_title($_POST["AccGrp"]. " " . get_account_type_name($_POST["AccGrp"]));	
 		
 		$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-			$convert, $dimension, $dimension2, $drilldown, $path_to_root);
+			$convert, $dimension, $dimension2, $drilldown);
 	}
 	
 	end_table(1); // outer table

@@ -48,8 +48,6 @@ function get_fiscalyear($id)
 
 function get_current_fiscalyear()
 {
-	global $path_to_root;
-	include_once($path_to_root . "/admin/db/company_db.inc");
 	$year = get_company_pref('f_year');
 
 	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);

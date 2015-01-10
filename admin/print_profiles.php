@@ -23,9 +23,9 @@ $selected_id = get_post('profile_id','');
 // Returns array of defined reports
 //
 function get_reports() {
-	global $path_to_root, $go_debug;
+	global $path_to_root, $SysPrefs;
 
-if ($go_debug || !isset($_SESSION['reports'])) {	
+if ($SysPrefs->go_debug || !isset($_SESSION['reports'])) {	
 	// to save time, store in session.
 		$paths = array (
 			$path_to_root.'/reporting/',
@@ -105,7 +105,7 @@ if ( get_post('submit'))
 		update_printer_profile($_POST['profile_id'], $prof);
 		if ($selected_id == '') {
 			display_notification_centered(_('New printing profile has been created')); 
-			clear_form();
+			clear_form($selected_id);
 		} else {
 			display_notification_centered(_('Printing profile has been updated'));
 		}

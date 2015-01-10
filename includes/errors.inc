@@ -56,7 +56,7 @@ function get_backtrace($html = false, $skip=0)
 //    display in message box.
 
 function error_handler($errno, $errstr, $file, $line) {
-    global $messages, $go_debug, $SysPrefs;
+    global $messages, $SysPrefs;
 
 	// skip well known warnings we don't care about.
 	// Please use restrainedly to not risk loss of important messages
@@ -71,7 +71,7 @@ function error_handler($errno, $errstr, $file, $line) {
 		}
 	}
 
-	$bt = $go_debug>1 ? get_backtrace(true, 1) : array();
+	$bt = $SysPrefs->go_debug>1 ? get_backtrace(true, 1) : array();
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting()) {
@@ -91,7 +91,7 @@ function error_handler($errno, $errstr, $file, $line) {
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
 function fmt_errors($center=false) {
-    global $messages, $path_to_root, $go_debug;
+    global $messages, $path_to_root, $SysPrefs;
 
   $msg_class = array(
   	E_USER_ERROR => 'err_msg',
@@ -103,7 +103,7 @@ function fmt_errors($center=false) {
 //  $class = 'no_msg';
   if (count($messages)) {
 	foreach($messages as $cnt=>$msg) {
-		if ($go_debug && $msg[0]>E_USER_NOTICE)
+		if ($SysPrefs->go_debug && $msg[0]>E_USER_NOTICE)
 		 	$msg[0] = E_ERROR;
 
 		if ($msg[0]>$type) continue;
@@ -123,7 +123,7 @@ function fmt_errors($center=false) {
 		if (!in_array($msg[0], array(E_USER_NOTICE, E_USER_ERROR, E_USER_WARNING)) && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
 
-		if ($go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
+		if ($SysPrefs->go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
 		  $str .= '<br>'.$msg[4];
 		$content .= ($cnt ? '<hr>' : '').$str;
 	}
@@ -168,7 +168,7 @@ function end_flush() {
 
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
-	global $db, $debug, $go_debug, $db_connections;
+	global $db, $SysPrefs, $db_connections;
 
 	$warning = $msg==null;
 	$db_error = db_error_no();
@@ -185,16 +185,16 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 		$str .= "error message : " . db_error_msg($db) . "<br>";
 	}
 	
-	if ($debug == 1) 
+	if ($SysPrefs->debug == 1) 
 	{
 		$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
 
 		$str .= "sql that failed was : ".str_replace(TB_PREF, $cur_prefix, $sql_statement)."<br>";
-//		if ($go_debug > 1) display_backtrace();
+//		if ($SysPrefs->go_debug > 1) display_backtrace();
 	}
 	
 	$str .= "<br><br>";
-	if (!$go_debug)
+	if (!$SysPrefs->go_debug)
 		error_log($str);
 	else {
 		if($msg)
@@ -208,10 +208,8 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 
 function frindly_db_error($db_error)
 {
-	global $db_duplicate_error_code;
-	
-	if ($db_error == $db_duplicate_error_code) 
-	{	
+	if ($db_error == DB_DUPLICATE_ERROR) 
+	{
 		display_error(_("The entered information is a duplicate. Please go back and enter different values."));
 		return true;
 	}
@@ -221,13 +219,13 @@ function frindly_db_error($db_error)
 
 function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_error=true)
 {
-	global $db, $go_debug;
+	global $db, $SysPrefs;
 	$db_error = db_error_no();
 	
 	if ($db_error != 0) 
 	{
 		
-		if ($go_debug || !frindly_db_error($db_error)) {
+		if ($SysPrefs->go_debug || !frindly_db_error($db_error)) {
 				display_db_error($msg, $sql_statement, false);
 		}
 		
@@ -241,6 +239,6 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 			end_page(); exit;
 		}
 	}
-	return $db_error;		
+	return $db_error;
 }
 

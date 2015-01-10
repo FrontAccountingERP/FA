@@ -125,7 +125,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 function print_link($link_text, $rep, $pars = array(), $dir = '', 
 	$icon=false, $class='printlink', $id='')
 {
-	global $path_to_root, $pdf_debug;
+	global $path_to_root, $SysPrefs;
 
 	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
 
@@ -137,7 +137,7 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 	$url .= implode ('&', $pars);
 
 	if ($class != '')
-		$class = $pdf_debug ? '' : " class='$class'";
+		$class = $SysPrefs->pdf_debug ? '' : " class='$class'";
 	if ($id != '')
 		$id = " id='$id'";
 	$pars = access_string($link_text);

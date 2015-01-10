@@ -116,10 +116,10 @@ class cart
 	*/
 	function get_items()
 	{
-		global $sort_sales_items;
+		global $SysPrefs;
 
 		$items = $this->line_items;
-		if (@$sort_sales_items)
+		if (@$SysPrefs->sort_sales_items)
 			uasort($items, array($this, '_cmp_lines'));
 
 		return $items;

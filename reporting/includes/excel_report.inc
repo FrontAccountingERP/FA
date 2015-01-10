@@ -61,7 +61,8 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 	{
-		global $dateseps, $page_security;
+		global $SysPrefs, $page_security;
+
 		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 		{
 			display_error(_("The security settings on your account do not permit you to print this report"));
@@ -99,7 +100,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->formatTitle->setTopColor('gray');
 
 		$how = user_date_format();
-		$sep = $dateseps[user_date_sep()];
+		$sep = $SysPrefs->dateseps[user_date_sep()];
 		if ($sep == '.')
 			$sep = "\\.";
 		if ($how == 0)
@@ -225,7 +226,6 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	function Info($params, $cols, $headers, $aligns,
 		$cols2 = null, $headers2 = null, $aligns2 = null)
 	{
-		global $app_title, $version, $power_by, $power_url;
 		$this->company = get_company_prefs();
 		$year = get_current_fiscalyear();
 		if ($year['closed'] == 0)

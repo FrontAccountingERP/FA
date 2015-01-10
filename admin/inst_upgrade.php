@@ -52,11 +52,10 @@ function get_installers()
 //
 //	Apply one differential data set.
 //
-function upgrade_step($index, $company, $conn) 
+function upgrade_step($inst, $company, $conn) 
 {
-	global $path_to_root, $installers;
+	global $path_to_root;
 
-	$inst = $installers[$index];
 	$pref = $conn['tbpref'];
 	$ret = true;
 
@@ -110,7 +109,8 @@ if (get_post('Upgrade'))
 	// apply all upgrade data
 		foreach ($installers as $i => $inst) 
 		{
-			$ret = upgrade_step($i, $comp, $conn);
+
+			$ret = upgrade_step($installers[$index], $i, $comp, $conn);
 			if (!$ret)
 			{
 				display_error(

@@ -171,9 +171,9 @@ function check_user_activity($id)
 //-----------------------------------------------------------------------------------------------
 function show_users_online()
 {
-	global $show_users_online, $db, $GetText;
-	
-	if (!isset($show_users_online) || $show_users_online == 0 || !defined('TB_PREF') || 
+	global $db, $GetText, $SysPrefs;
+
+	if (!isset($SysPrefs->show_users_online) || $SysPrefs->show_users_online == 0 || !defined('TB_PREF') || 
 		!isset($GetText) || !isset($db))
 		return "";
 	$result = db_query("SHOW TABLES LIKE '".TB_PREF."useronline'");	

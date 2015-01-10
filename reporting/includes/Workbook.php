@@ -102,7 +102,6 @@ define('SPREADSHEET_EXCEL_WRITER_EQ', "=");
 */
 define('SPREADSHEET_EXCEL_WRITER_NE', "<>");
 
-$encoding_string='';
 /**
 * Class for creating OLE streams for Excel Spreadsheets
 *
@@ -4878,11 +4877,10 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
     */
     function setInputEncoding($encoding)
     {
-    	global $encoding_string; 
          if ($encoding != 'UTF-16LE' && !function_exists('iconv')) {
              die("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
-         $this->_input_encoding = $encoding_string = $encoding;
+         $this->_input_encoding = $encoding;
     }
 
     /** added 2009-03-05 by Joe Hunt, FA for arabic languages */
@@ -7744,7 +7742,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
 /*        
         if ($this->_BIFF_version == 0x0600) 	// Tried to fix the correct handling here, with the
         {										// corrected specification from M$ - Joe Hunt 2009-03-08
-        	global $encoding_string;
+        	$encoding_string = $this->_input_encoding;
         	if ($encoding_string == 'UTF-16LE')
         	{
         	    $strlen = function_exists('mb_strlen') ? mb_strlen($sheetname, 'UTF-16LE') : (strlen($sheetname) / 2);

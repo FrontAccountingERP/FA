@@ -18,15 +18,29 @@ class sys_prefs
 
 	function sys_prefs()
 	{
-//		$this->prefs = get_company_prefs();
-	
+		global $path_to_root;
+
+		include $path_to_root.'/config.default.php';
+		include $path_to_root.'/config.php';
+
+		// set system wide preferences
+		foreach(get_defined_vars() as $name => $value)
+			$this->$name = $value;
+
+		if (!@$this->time_zone)
+			$this->time_zone = ini_get('date.timezone');
+
+		if (!$this->time_zone)
+			$this->time_zone = 'Europe/Berlin';
+
+   	    ini_set('date.timezone', $this->time_zone);
 	}
-	
+
 	function allow_negative_stock() 
 	{
 		return $this->prefs['allow_negative_stock'];
 	}
-	
+
     /* Sherifoz 26.06.03 Proportion by which items can be received over the quantity that is specified in a purchase
     invoice
     The figure entered is interpreted as a percentage ie 10 means 0.1 or 10% not 10 times
@@ -83,8 +97,7 @@ class sys_prefs
 	
 	function allocation_settled_allowance()
 	{
-		global $config_allocation_settled_allowance;
-		return $config_allocation_settled_allowance;
+		return $this->config_allocation_settled_allowance;
 	}
 
 	function no_zero_lines_amount() 

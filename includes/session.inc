@@ -175,11 +175,11 @@ function password_reset_success()
 
 function check_faillog()
 {
-	global $login_delay, $login_faillog, $login_max_attempts;
+	global $SysPrefs, $login_faillog;
 
 	$user = $_SESSION["wa_current_user"]->user;
 
-	if (@$login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$login_max_attempts) && (time() < $login_faillog[$user]['last'] + $login_delay))
+	if (@$SysPrefs->login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$SysPrefs->login_max_attempts) && (time() < $login_faillog[$user]['last'] + $SysPrefs->login_delay))
 		return true;
 
 	return false;
@@ -190,7 +190,7 @@ function check_faillog()
 */
 function write_login_filelog($login, $result)
 {
-	global $login_faillog, $login_max_attempts, $path_to_root;
+	global $login_faillog, $SysPrefs, $path_to_root;
 
 	$user = $_SESSION["wa_current_user"]->user;
 
@@ -201,7 +201,7 @@ function write_login_filelog($login, $result)
 
  	if (!$result)
 	{
-		if ($login_faillog[$user][$ip] < @$login_max_attempts) {
+		if ($login_faillog[$user][$ip] < @$SysPrefs->login_max_attempts) {
 
  			$login_faillog[$user][$ip]++;
  		} else {
@@ -345,11 +345,11 @@ if (!isset($path_to_root))
 //----------------------------------------------------------------------------------------
 // set to reasonable values if not set in config file (pre-2.3.12 installations)
 
-if ((!isset($login_delay)) || ($login_delay < 0))
-    $login_delay = 10;
+if ((!isset($SysPrefs->login_delay)) || ($SysPrefs->login_delay < 0))
+    $SysPrefs->login_delay = 10;
 
-if ((!isset($login_max_attempts)) || ($login_max_attempts < 0))
-    $login_max_attempts = 3; 
+if ((!isset($SysPrefs->login_max_attempts)) || ($SysPrefs->login_max_attempts < 0))
+    $SysPrefs->login_max_attempts = 3; 
 
 
 // Prevent register_globals vulnerability
@@ -379,6 +379,23 @@ foreach ($installed_extensions as $ext)
 		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
 
+$_SESSION['SysPrefs'] = new sys_prefs();
+
+$SysPrefs = &$_SESSION['SysPrefs'];
+
+if ($SysPrefs->go_debug > 0)
+	error_reporting(-1);
+else
+	error_reporting(E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE);
+ini_set("display_errors", "On");
+
+if ($SysPrefs->error_logfile != '') {
+	ini_set("error_log", $SysPrefs->error_logfile);
+	ini_set("ignore_repeated_errors", "On");
+	ini_set("log_errors", "On");
+}
+
+
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.
@@ -396,10 +413,9 @@ $Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
-include_once($path_to_root . "/config.php");
 get_text_init();
 
-if ($login_delay > 0)
+if ($SysPrefs->login_delay > 0)
 	@include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
@@ -456,7 +472,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 
 	if (!$_SESSION["wa_current_user"]->logged_in())
 	{
-      if (@$allow_password_reset && !$allow_demo_mode
+      if (@$SysPrefs->allow_password_reset && !$SysPrefs->allow_demo_mode
         && (isset($_GET['reset']) || isset($_POST['email_entry_field']))) {
 		  if (!isset($_POST["email_entry_field"])) {
         include($path_to_root . "/access/password_reset.php");
@@ -539,7 +555,6 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 	}
 }
 
-$SysPrefs = &$_SESSION['SysPrefs'];
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

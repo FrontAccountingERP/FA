@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true))
 {

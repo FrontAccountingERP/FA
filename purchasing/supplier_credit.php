@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -161,7 +161,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value, $Refs, $SysPrefs;
+	global $Refs, $SysPrefs;
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
@@ -207,12 +207,6 @@ function check_data()
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 		set_focus('due_date');
-		return false;
-	}
-
-	if ($_SESSION['supp_trans']->ov_amount < ($total_gl_value + $total_grn_value))
-	{
-		display_error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
 		return false;
 	}
 
@@ -356,9 +350,9 @@ invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
+	display_grn_items($_SESSION['supp_trans'], 1);
 
-	$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
+	display_gl_items($_SESSION['supp_trans'], 1);
 
 	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);

@@ -59,7 +59,7 @@ class current_user
 
 	function login($company, $loginname, $password)
 	{
-		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $login_delay;
+		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $SysPrefs;
 
 		$this->set_company($company);
 	    $this->logged = false;
@@ -77,7 +77,7 @@ class current_user
 		if (!isset($Auth_Result))	// if not used: standard method
 			$Auth_Result = get_user_auth($loginname, md5($password));
 
-		if ($login_delay > 0)
+		if ($SysPrefs->login_delay > 0)
 			write_login_filelog($loginname, $Auth_Result);
 
 		if ($Auth_Result)
@@ -143,7 +143,7 @@ class current_user
 	}
 
 	function reset_password($company, $email) {
-		global $app_title;
+		global $SysPrefs;
 
 		$this->set_company($company);
 		$this->logged = false;
@@ -161,7 +161,7 @@ class current_user
 
 			update_user_password($myrow['id'], $myrow['user_id'], $hash);
 
-			mail($myrow['email'], _("New password for")." ".$app_title, $password);
+			mail($myrow['email'], _("New password for")." ".$SysPrefs->app_title, $password);
 
 			return true;
 		}
@@ -258,9 +258,9 @@ class current_user
 
 	function hide_inaccessible_menu_items()
 	{
-		global $hide_inaccessible_menu_items;
+		global $SysPrefs;
 
-		if (!isset($hide_inaccessible_menu_items) || $hide_inaccessible_menu_items == 0)
+		if (!isset($SysPrefs->hide_inaccessible_menu_items) || $SysPrefs->hide_inaccessible_menu_items == 0)
 		{
 			return false;
 		}
@@ -278,9 +278,9 @@ class current_user
 
 	function update_prefs($prefs)
 	{
-		global $allow_demo_mode;
-		
-		if(!$allow_demo_mode) {
+		global $SysPrefs;
+
+		if (!$SysPrefs->allow_demo_mode) {
 			update_user_prefs($this->user, $prefs);
 		}
 
@@ -303,9 +303,9 @@ function round2($number, $decimals=0)
 */
 function number_format2($number, $decimals=0)
 {
-	global $thoseps, $decseps;
-	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
-	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
+	global $SysPrefs;
+	$tsep = $SysPrefs->thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
+	$dsep = $SysPrefs->decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
 	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
@@ -405,14 +405,14 @@ function percent_format($number) {
 }
 
 function user_numeric($input) {
-    global $decseps, $thoseps;
+    global $SysPrefs;
 
     $num = trim($input);
-    $sep = $thoseps[user_tho_sep()];
+    $sep = $SysPrefs->thoseps[user_tho_sep()];
     if ($sep!='')
     	$num = str_replace( $sep, '', $num);
 
-    $sep = $decseps[user_dec_sep()];
+    $sep = $SysPrefs->decseps[user_dec_sep()];
     if ($sep!='.')
     	$num = str_replace( $sep, '.', $num);
 
@@ -579,19 +579,19 @@ function set_user_prefs($prefs)
 }
 
 function add_user_js_data() {
-	global $path_to_root, $thoseps, $decseps, $date_system, $dateseps;
+	global $path_to_root, $SysPrefs;
 
-	$ts = $thoseps[user_tho_sep()];
-	$ds = $decseps[user_dec_sep()];
+	$ts = $SysPrefs->thoseps[user_tho_sep()];
+	$ds = $SysPrefs->decseps[user_dec_sep()];
 
     $js = "\n"
 	  . "var user = {\n"
 	  . "theme: '". $path_to_root . '/themes/'. user_theme().'/'."',\n"
 	  . "loadtxt: '"._('Requesting data...')."',\n"
 	  . "date: '".Today()."',\n"	// server date
-	  . "datesys: ".$date_system.",\n"
+	  . "datesys: ".$SysPrefs->date_system.",\n"
 	  . "datefmt: ".user_date_format().",\n"
-	  . "datesep: '".$dateseps[user_date_sep()]."',\n"
+	  . "datesep: '".$SysPrefs->dateseps[user_date_sep()]."',\n"
 	  . "ts: '$ts',\n"
 	  . "ds: '$ds',\n"
 	  . "pdec : " . user_price_dec() . "}\n";
@@ -720,7 +720,10 @@ function flush_dir($path, $wipe = false)
 */
 function company_path($comp=null)
 {
-	global $path_to_root, $comp_path;
+	global $path_to_root, $SysPrefs;
+
+	$comp_path = $SysPrefs->comp_path;
+
 
 	if (!isset($comp))
 		$comp = user_company();

@@ -151,15 +151,15 @@ class graph
 	
     function graph()
     {
-    	global $UTF8_fontfile;
+    	global $SysPrefs;
 		$this->encoding = strtoupper($_SESSION['language']->encoding);
 		$path = dirname(__FILE__).'/../fonts/';
 
 		// If you use UTF-8 encoding you have to download and install FreeSans.ttf font.
 		// It is not bundled with application due to its size.
 		// You can also use another UTF-8 font and put it in config.php with the name in $UTF8_fontfile 
-		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($UTF8_fontfile) && $UTF8_fontfile != "" ? $path.$UTF8_fontfile : $path.'FreeSans.ttf') : 
-			$path.'LiberationSans-Regular.ttf';
+		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($SysPrefs->UTF8_fontfile) && $SysPrefs->UTF8_fontfile != "" ?
+			$path.$SysPrefs->UTF8_fontfile : $path.'FreeSans.ttf') : $path.'LiberationSans-Regular.ttf';
 		
         $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;
@@ -1074,7 +1074,9 @@ function utf8_chr($uni)
 	return $r;
 }
 
-global $p_chars;
+///
+function arabic($str,$z="",$method='normal')
+{
 $p_chars = array (
     utf8_chr(0x0622) => array (utf8_chr(0xfe82), utf8_chr(0xfe82), utf8_chr(0x0622)),
     utf8_chr(0x0627) => array (utf8_chr(0xfe8e), utf8_chr(0xfe8e), utf8_chr(0x0627)),
@@ -1117,29 +1119,22 @@ $p_chars = array (
     utf8_chr(0x0629) => array (utf8_chr(0xfe94), utf8_chr(0xfe98), utf8_chr(0xfe97))
 );
 
-global $nastaligh;
 $nastaligh = array (
     utf8_chr(0x0647) => array (utf8_chr(0xfbab), utf8_chr(0xfbad), utf8_chr(0xfbac))
 );
-global $normal;
+
 $normal = array (
     utf8_chr(0x0647) => array (utf8_chr(0xfeea), utf8_chr(0xfeec), utf8_chr(0xfeeb))
 );
 
-global $mp_chars;
 $mp_chars = array (utf8_chr(0x0622), utf8_chr(0x0627), utf8_chr(0x062f), utf8_chr(0x0630), utf8_chr(0x0631), utf8_chr(0x0632), 
 	utf8_chr(0x0698), utf8_chr(0x0648), utf8_chr(0x0623), utf8_chr(0x0625), utf8_chr(0x0624));
 
-global $ignorelist;
 $ignorelist = array (utf8_chr(0x0000), utf8_chr(0x064c), utf8_chr(0x064d), utf8_chr(0x064b), utf8_chr(0x064f), utf8_chr(0x0650), 
 	utf8_chr(0x064e), utf8_chr(0x0651), utf8_chr(0x0653), utf8_chr(0x0670), utf8_chr(0x0654), utf8_chr(0xfe76), utf8_chr(0xfe7a), 
 	utf8_chr(0xfe78), utf8_chr(0xfe7c), utf8_chr(0xfe7e), utf8_chr(0xfe74), utf8_chr(0xfe70), utf8_chr(0xfc5e), utf8_chr(0xfc5f), 
 	utf8_chr(0xfc60), utf8_chr(0xfc61), utf8_chr(0xfc62), utf8_chr(0xfc63));
 
-///
-function arabic($str,$z="",$method='normal')
-{
-	global $p_chars,$mp_chars, $ignorelist,$nastaligh,$normal;
 	$str_back = $output = $e_output = $str_next = $str1 = $num = "";
 	if ($method == 'nastaligh')
 		$p_chars = array_merge($p_chars, $nastaligh);

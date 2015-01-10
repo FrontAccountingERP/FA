@@ -52,9 +52,9 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;
 		}
-		elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024))
+		elseif ( $_FILES['pic']['size'] > ($SysPrefs->max_image_size * 1024))
 		{ //File Size Check
-			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $SysPrefs->max_image_size);
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['type'] == "text/plain" )

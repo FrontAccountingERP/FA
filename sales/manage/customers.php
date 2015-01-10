@@ -15,7 +15,7 @@ $path_to_root = "../..";
 include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
@@ -79,7 +79,7 @@ function can_process()
 
 function handle_submit(&$selected_id)
 {
-	global $path_to_root, $Ajax, $auto_create_branch;
+	global $path_to_root, $Ajax, $SysPrefs;
 
 	if (!can_process())
 		return;
@@ -108,7 +108,7 @@ function handle_submit(&$selected_id)
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
          
-		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		if (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 		{
         	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
                 $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
@@ -129,7 +129,7 @@ function handle_submit(&$selected_id)
 
 		display_notification(_("A new customer has been added."));
 
-		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		if (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 			display_notification(_("A default Branch has been automatically created, please check default Branch values by using link below."));
 		
 		$Ajax->activate('_page_body');
@@ -187,7 +187,7 @@ if (isset($_POST['delete']))
 
 function customer_settings($selected_id) 
 {
-	global $SysPrefs, $path_to_root, $auto_create_branch;
+	global $SysPrefs, $path_to_root;
 	
 	if (!$selected_id) 
 	{
@@ -250,7 +250,7 @@ function customer_settings($selected_id)
 
 	if($selected_id)
 		record_status_list_row(_("Customer status:"), 'inactive');
-	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
+	elseif (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
 		text_row(_("Phone:"), 'phone', null, 32, 30);
@@ -290,7 +290,7 @@ function customer_settings($selected_id)
 	}
 
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
-	if (!$selected_id && isset($auto_create_branch) && $auto_create_branch == 1)
+	if (!$selected_id && isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
 		locations_list_row(_("Default Inventory Location:"), 'location');

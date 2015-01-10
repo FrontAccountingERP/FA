@@ -71,7 +71,7 @@ function getTransactions($category, $location, $item_like)
 
 function print_stock_check()
 {
-    global $path_to_root, $pic_height;
+    global $path_to_root, $SysPrefs;
 
     	$category = $_POST['PARAM_0'];
     	$location = $_POST['PARAM_1'];
@@ -204,10 +204,10 @@ function print_stock_check()
 			if (file_exists($image))
 			{
 				$rep->NewLine();
-				if ($rep->row - $pic_height < $rep->bottomMargin)
+				if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 					$rep->NewPage();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
-				$rep->row -= $pic_height;
+				$rep->AddImage($image, $rep->cols[1], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
+				$rep->row -= $SysPrefs->pic_height;
 				$rep->NewLine();
 			}
 		}

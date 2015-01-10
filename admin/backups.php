@@ -16,6 +16,8 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
+define("BACKUP_PATH", $SysPrefs->comp_path.'/'.user_company()."/backup/");
+
 if (get_post('view')) {
 	if (!get_post('backups')) {
 		display_error(_('Select backup file first.'));
@@ -57,7 +59,7 @@ function check_paths()
 
 function generate_backup($conn, $ext='no', $comm='')
 {
-	$filename = db_backup($conn, $ext, $comm);
+	$filename = db_backup($conn, $ext, $comm, BACKUP_PATH);
 	if ($filename)
 		display_notification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);

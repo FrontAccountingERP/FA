@@ -31,7 +31,7 @@ echo "<table width='100%' border='0'>
     <td><div align='center'><font size=2>";
 echo _("Thank you for using") . " ";
 
-echo "<strong>$app_title $version</strong>";
+echo "<strong>".$SysPrefs->app_title." $version</strong>";
 
 echo "</font></div></td>
   </tr>

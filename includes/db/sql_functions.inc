@@ -15,10 +15,11 @@
 //-------------------------------------------------------------------
 // Multilevel transaction control.
 //
+$transaction_level = 0;
 
 function begin_transaction()
 {
-	global $transaction_level; // set in set_global_connection()
+	global $transaction_level;
 
 	if (!$transaction_level) {
 		db_query("BEGIN", "could not start a transaction");
@@ -48,6 +49,7 @@ function cancel_transaction()
 	if ($transaction_level) {
 		db_query("ROLLBACK", "could not cancel a transaction");	
 	}
+	$transaction_level = 0;
 }
 
 //-----------------------------------------------------------------------------

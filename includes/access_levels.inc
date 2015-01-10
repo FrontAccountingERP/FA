@@ -250,7 +250,7 @@ $security_areas =array(
 	'SA_GLREP' => array(SS_GL_A|4, _("GL reports and inquiries")),
 );
 
-if (!@$allow_gl_reopen)
+if (!@$SysPrefs->allow_gl_reopen)
 	unset($security_areas['SA_GLREOPEN']);
 /*
 	This function should be called whenever we want to extend core access level system

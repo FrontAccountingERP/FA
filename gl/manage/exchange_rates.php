@@ -108,8 +108,9 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $Ajax, $xr_providers, $dflt_xr_provider;
-	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
+	global $selected_id, $Ajax, $SysPrefs;
+	$xchg_rate_provider = ((isset($SysPrefs->xr_providers) && isset($SysPrefs->dflt_xr_provider))
+		? $SysPrefs->xr_providers[$SysPrefs->dflt_xr_provider] : 'ECB');
 	start_table(TABLESTYLE2);
 
 	if ($selected_id != "")

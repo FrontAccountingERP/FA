@@ -163,7 +163,7 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 
 function print_annual_expense_breakdown()
 {
-	global $path_to_root, $date_system;
+	global $path_to_root, $SysPrefs;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -218,9 +218,9 @@ function print_annual_expense_breakdown()
 	$yr = $row['yr'];
 	$mo = $row['mo'];
 	$da = 1;
-	if ($date_system == 1)
+	if ($SysPrefs->date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
-	elseif ($date_system == 2)
+	elseif ($SysPrefs->date_system == 2)
 		list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
 	$per12 = strftime('%b',mktime(0,0,0,$mo,$da,$yr));
 	$per11 = strftime('%b',mktime(0,0,0,$mo-1,$da,$yr));

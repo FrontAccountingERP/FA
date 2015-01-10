@@ -168,8 +168,6 @@ function inquiry_controls()
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	
-	//Compare Combo
-	global $sel;
 	$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));	
 	echo "<td>"._("Compare to").":</td>\n";
 	echo "<td>";
@@ -184,13 +182,15 @@ function inquiry_controls()
     end_table();
 
 	hidden('AccGrp');
+
+	return $sel[get_post('Compare')];
 }
 
 //----------------------------------------------------------------------------------------------------
 
-function display_profit_and_loss()
+function display_profit_and_loss($compare)
 {
-	global $path_to_root, $sel;
+	global $path_to_root;
 
 	if (!isset($_POST['Dimension']))
 		$_POST['Dimension'] = 0;
@@ -201,7 +201,6 @@ function display_profit_and_loss()
 
 	$from = $_POST['TransFromDate'];
 	$to = $_POST['TransToDate'];
-	$compare = $_POST['Compare'];
 	
 	if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0))
 		$drilldown = 1; // Deeper Level
@@ -234,7 +233,7 @@ function display_profit_and_loss()
 	$tableheader =  "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>
         <td class='tableheader'>" . _("Period") . "</td>
-		<td class='tableheader'>" . $sel[$compare] . "</td>
+		<td class='tableheader'>" . $compare . "</td>
 		<td class='tableheader'>" . _("Achieved %") . "</td>
         </tr>";	
 	
@@ -332,9 +331,9 @@ function display_profit_and_loss()
 
 start_form();
 
-inquiry_controls();
+$sel = inquiry_controls();
 
-display_profit_and_loss();
+display_profit_and_loss($sel);
 
 end_form();
 

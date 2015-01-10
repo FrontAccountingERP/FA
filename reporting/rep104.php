@@ -66,7 +66,7 @@ function get_kits($category=0)
 
 function print_price_listing()
 {
-    global $path_to_root, $pic_height, $pic_width;
+    global $path_to_root, $SysPrefs;
 
     $currency = $_POST['PARAM_0'];
     $category = $_POST['PARAM_1'];
@@ -169,10 +169,10 @@ function print_price_listing()
 			if (file_exists($image))
 			{
 				$rep->NewLine();
-				if ($rep->row - $pic_height < $rep->bottomMargin)
+				if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 					$rep->NewPage();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
-				$rep->row -= $pic_height;
+				$rep->AddImage($image, $rep->cols[1], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
+				$rep->row -= $SysPrefs->pic_height;
 				$rep->NewLine();
 			}
 		}

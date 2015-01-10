@@ -25,7 +25,6 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
-$packing_slip = 0;
 //----------------------------------------------------------------------------------------------------
 
 print_deliveries();
@@ -34,7 +33,7 @@ print_deliveries();
 
 function print_deliveries()
 {
-	global $path_to_root, $packing_slip, $SysPrefs;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 

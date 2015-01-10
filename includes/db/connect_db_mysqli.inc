@@ -9,18 +9,20 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-define('SQL_MODE', 'STRICT_ALL_TABLES,NO_ZERO_IN_DATE');
+define('DB_DUPLICATE_ERROR', 1062);
+define('SQL_MODE', ''); // STRICT_ALL_TABLES,NO_ZERO_IN_DATE ?
+
+$db_last_inserted_id = 0;
 
 function set_global_connection($company=-1)
 {
-	global $db, $transaction_level, $path_to_root, $db_connections;
+	global $db, $path_to_root, $db_connections;
 
 	include ($path_to_root . "/config_db.php");
 	if ($company == -1) 
 		$company = $_SESSION["wa_current_user"]->company;
 
-	cancel_transaction(); // cancel all aborted transactions if any
-	$transaction_level = 0;
+	cancel_transaction(); // cancel all aborted transactions (if any)
 
 	$_SESSION["wa_current_user"]->cur_con = $company;
 
@@ -33,27 +35,23 @@ function set_global_connection($company=-1)
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
 	///// our sessions.
 	///// We are, however, investigating the existing code to be compatible in the future.
-//	if (strncmp(db_get_version(), "5.6", 3) >= 0) 
 		db_query("SET sql_mode = '".SQL_MODE."'");
 	/////
 	return $db;
 }
 
-$db_duplicate_error_code = 1062;
-
 //DB wrapper functions to change only once for whole application
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
-		$db_connections, $db_last_inserted_id;
-	
+	global $db, $SysPrefs, $sql_queries, $Ajax,	$db_connections, $db_last_inserted_id;
+
 	// set current db prefix
 	$comp = isset($_SESSION["wa_current_user"]->cur_con) ? $_SESSION["wa_current_user"]->cur_con : 0;
 	$cur_prefix = $db_connections[$comp]['tbpref'];
 	$sql = str_replace(TB_PREF, $cur_prefix, $sql);
 
-	if ($show_sql)
+	if ($SysPrefs->show_sql)
 	{
 		$Ajax->activate('footer_debug');
 		$sql_queries .= "<pre>$sql</pre>\n<hr>";
@@ -65,9 +63,9 @@ function db_query($sql, $err_msg=null)
 
 	db_profile($sql);
 
-	if($sql_trail) {
+	if($SysPrefs->sql_trail) {
 		$db_last_inserted_id = mysqli_insert_id($db);	// preserve in case trail insert is done
-		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
+		if ($SysPrefs->select_trail || (strstr($sql, 'SELECT') === false)) {
 			mysqli_query($db, "INSERT INTO ".$cur_prefix."sql_trail
 				(`sql`, `result`, `msg`)
 				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
@@ -75,7 +73,7 @@ function db_query($sql, $err_msg=null)
 		}
 	}
 
-	if ($err_msg != null || $go_debug) {
+	if ($err_msg != null || $SysPrefs->go_debug) {
 		$exit = $err_msg != null;
 		if (function_exists('xdebug_call_file'))
 			check_db_error('<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg, $sql, $exit);
@@ -164,9 +162,9 @@ function db_error_msg($conn)
 
 function db_insert_id()
 {
-	global $db_last_inserted_id, $sql_trail, $db;
+	global $db_last_inserted_id, $SysPrefs, $db;
 
-	return $sql_trail ? $db_last_inserted_id : mysqli_insert_id($db);
+	return $SysPrefs->sql_trail ? $db_last_inserted_id : mysqli_insert_id($db);
 }
 
 function db_num_affected_rows()

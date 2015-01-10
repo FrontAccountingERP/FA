@@ -238,16 +238,16 @@ function print_aged_customer_analysis()
    	$rep->Line($rep->row - 8);
    	if ($graphics)
    	{
-   		global $decseps, $graph_skin;
+   		global $SysPrefs;
 		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Days");
 		$pg->axis_y    = _("Amount");
 		$pg->graphic_1 = $to;
 		$pg->type      = $graphics;
-		$pg->skin      = $graph_skin;
+		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;

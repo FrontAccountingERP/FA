@@ -263,9 +263,10 @@ function write_lang()
 */
 function db_import($filename, $connection, $force=true, $init=true, $protect=false, $return_errors=false)
 {
-	global $db, $go_debug, $sql_trail;
+	global $db, $SysPrefs;
 
-	$sql_trail = false;
+	$trail = $SysPrefs->sql_trail;
+	$SysPrefs->sql_trail = false;
 
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
@@ -413,8 +414,8 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 /*/
 	if ($return_errors)
 	{	// prevent errors display
-		$save_debug = $go_debug;
-		$go_debug = 0;
+		$save_debug = $SysPrefs->go_debug;
+		$SysPrefs->go_debug = 0;
 	}
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
@@ -457,7 +458,9 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	}
 
 	if ($return_errors)
-		$go_debug = $save_debug;
+		$SysPrefs->go_debug = $save_debug;
+
+	$SysPrefs->sql_trail = $trail;
 
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
@@ -530,15 +533,12 @@ function db_unzip($mode, $path)
     	return explode("\n", $file_data);
 }
 
-function db_backup($conn, $ext='no', $comm='', $path=null)
+function db_backup($conn, $ext='no', $comm='', $path='')
 {
 	if ($conn['tbpref'] != "")
 		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
 	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
-	if (!isset($path))
-		$path = BACKUP_PATH;
 
 	return db_export($conn, $path . clean_file_name($filename), $ext, $comm);
 }
@@ -548,7 +548,7 @@ function db_backup($conn, $ext='no', $comm='', $path=null)
 function db_export($conn, $filename, $zip='no', $comment='')
 {
 
-	global $app_title, $version, $power_url, $path_to_root;
+	global $SysPrefs, $version;
 
     $error = false;
     // set max string size before writing to file
@@ -572,8 +572,8 @@ function db_export($conn, $filename, $zip='no', $comment='')
     //create comment
     $out="# MySQL dump of database '".$conn["dbname"]."' on host '".$conn["host"]."'\n";
     $out.="# Backup Date and Time: ".date("Y-m-d H:i")."\n";
-    $out.="# Built by " . $app_title . " " . $version ."\n";
-    $out.="# ".$power_url."\n";
+    $out.="# Built by " . $SysPrefs->app_title . " " . $version ."\n";
+    $out.="# ".$SysPrefs->power_url."\n";
     $out.="# Company: ". @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding)."\n";
     $out.="# User: ".$_SESSION["wa_current_user"]->name."\n\n";
     $out.="# Compatibility: ".get_company_pref('version_id')."\n\n";
@@ -809,7 +809,6 @@ function order_sql_tables($tables, $fks)
 // returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
 function save_to_file($path, $zip, $fileData)
 {
-	global $path_to_root;
 
 	$backupfile = basename($path);
 

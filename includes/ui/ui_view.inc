@@ -272,7 +272,7 @@ function check_ui_refresh($name=null)
 //
 function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
-    global $Ajax, $xr_provider_authoritative;
+    global $Ajax, $SysPrefs;
 
 	$readonly = false;
 
@@ -299,7 +299,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
  					$rate = retrieve_exrate($currency, $date_);
 					if (!$rate)
 						display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
-					elseif ($xr_provider_authoritative) {
+					elseif ($SysPrefs->xr_provider_authoritative) {
 						// if the remote exrate is considered authoritative we can store the rate here,
 						// otherwise exrate will be stored during transaction write
 						$readonly = true;
@@ -424,6 +424,7 @@ function display_debit_or_credit_cells($value, $bold=false)
 function display_customer_trans_tax_details($tax_items, $columns)
 {
 	global $SysPrefs;
+
 	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
@@ -888,13 +889,14 @@ function reset_focus()
 
 function get_js_date_picker()
 {
-    global $go_debug;
+    global $SysPrefs, $tmonths;
+
     $fpath = user_js_cache().'/'.'date_picker.js';
 
-    if (!file_exists($fpath) || $go_debug) {
+    if (!file_exists($fpath) || $SysPrefs->go_debug) {
 
-	global $dateseps, $date_system, $tmonths;
-
+	$date_system = $SysPrefs->date_system;
+	$dateseps = $SysPrefs->dateseps;
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
 	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 || $how == 3 ? 0 : 1));	// weekstart (sun = 0, mon = 1)

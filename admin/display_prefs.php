@@ -51,13 +51,13 @@ if (isset($_POST['setprefs']))
 
 		flush_dir(company_path().'/js_cache');	
 
-		if ($chg_theme && $allow_demo_mode)
+		if ($chg_theme && $SysPrefs->allow_demo_mode)
 			$_SESSION["wa_current_user"]->prefs->theme = $_POST['theme'];
 		if ($chg_theme || $chg_lang || $chg_date_format || $chg_date_sep)
 			meta_forward($_SERVER['PHP_SELF']);
 
 		
-		if ($allow_demo_mode)  
+		if ($SysPrefs->allow_demo_mode)  
 			display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 		else
 			display_notification_centered(_("Display settings have been updated."));

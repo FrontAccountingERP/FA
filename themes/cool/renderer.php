@@ -13,9 +13,9 @@
 	{
 		function get_icon($category)
 		{
-			global  $path_to_root, $show_menu_category_icons;
+			global  $path_to_root, $SysPrefs;
 
-			if ($show_menu_category_icons)
+			if ($SysPrefs->show_menu_category_icons)
 				$img = $category == '' ? 'right.gif' : $category.'.png';
 			else	
 				$img = 'right.gif';
@@ -34,7 +34,7 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $help_base_url, $db_connections;
+			global $path_to_root, $SysPrefs, $db_connections;
 			echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>";
 			echo "<td colspan='2' rowspan='2'>\n";
@@ -77,7 +77,7 @@
 				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
-				if ($help_base_url != null)
+				if ($SysPrefs->help_base_url != null)
 				{
 					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url()."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
@@ -101,8 +101,7 @@
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url, 
-				$power_by, $path_to_root, $Pagehelp, $Ajax;
+			global $version, $SysPrefs, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			echo "</td></tr></table>\n"; // 'main_page'
@@ -126,17 +125,13 @@
 			{
 				echo "<table align='center' id='footer'>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online(). "</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='".$SysPrefs->power_url."'><font color='#ffffff'>".$SysPrefs->app_title
+					." $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online(). "</font></a></td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffff00'>$power_by</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='".$SysPrefs->power_url."'><font color='#ffff00'".$SysPrefs->power_by
+					."</font></a></td>\n";
 				echo "</tr>\n";
-				if ($allow_demo_mode==true)
-				{
-					echo "<tr>\n";
-					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='middle' /></a></div></td>\n";
-					echo "</tr>\n";
-				}
 				echo "</table><br><br>\n";
 			}
 		}

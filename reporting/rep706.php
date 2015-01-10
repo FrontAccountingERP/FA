@@ -127,7 +127,7 @@ print_balance_sheet();
 
 function print_balance_sheet()
 {
-	global $path_to_root;
+	global $path_to_root, $SysPrefs;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -303,16 +303,15 @@ function print_balance_sheet()
 		$pg->x[] = _('Calculated Return');
 		$pg->y[] = abs($calc_open);
 		$pg->z[] = abs($calc_period);
-		global $decseps, $graph_skin;
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Group");
 		$pg->axis_y    = _("Amount");
 		$pg->graphic_1 = $headers[2];
 		$pg->graphic_2 = $headers[3];
 		$pg->type      = $graphics;
-		$pg->skin      = $graph_skin;
+		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". uniqid("").".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;

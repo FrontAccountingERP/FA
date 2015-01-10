@@ -47,7 +47,7 @@ class BoxReports
 
 	function getDisplay($class=null)
 	{
-		global $path_to_root, $pdf_debug, $Ajax;
+		global $path_to_root, $SysPrefs, $Ajax;
 
 		if (find_submit('Rep') != -1) {
 			include($path_to_root.'/reporting/prn_redirect.php');
@@ -99,7 +99,7 @@ class BoxReports
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
+						false, '', $SysPrefs->pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls(), $report->id);
 					$st_params .= "\n<input type=hidden name='Class' value=".$cur_class.">"
 						."\n</form></td></tr></table>\n";
@@ -167,7 +167,7 @@ class BoxReports
 	//
 	function get_ctrl($name, $type)
 	{
-		global $path_to_root, $pdf_debug, $SysPrefs,
+		global $path_to_root, $SysPrefs,
 			$type_shortcuts;
 
 		$st = '';

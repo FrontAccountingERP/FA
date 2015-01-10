@@ -110,9 +110,11 @@ function delete_exchange_rate($rate_id)
 //
 function retrieve_exrate($curr_b, $date)
 {
-	global $xr_providers, $dflt_xr_provider;
-	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
-	
+	global $SysPrefs;
+
+	$xchg_rate_provider = ((isset($SysPrefs->xr_providers) && isset($SysPrefs->dflt_xr_provider)) 
+		? $SysPrefs->xr_providers[$SysPrefs->dflt_xr_provider] : 'ECB');
+
 	$rate = hook_retrieve_exrate($curr_b, $date);
 	if (is_numeric($rate))
 		return $rate;

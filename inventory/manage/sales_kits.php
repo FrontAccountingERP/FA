@@ -141,7 +141,7 @@ if (get_post('update_name')) {
 }
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
-	update_component($_POST['item_code'], $selected_id);
+	update_component($_POST['item_code'], $selected_id, $selected_kit);
 
 if ($Mode == 'Delete')
 {

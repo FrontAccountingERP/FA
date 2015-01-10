@@ -8,7 +8,7 @@ Changed functions:
 	get_company_pref($prefs = null)
 	get_company_prefs()
  maintenance_db.inc:
-	db_backup($conn, $ext='no', $comm='', $path=null)
+	db_backup($conn, $ext='no', $comm='', $path='')
 	db_export($conn, $filename, $zip='no', $comment='', $no_default=false)
 	save_to_file($path, $zip, $fileData)
  tax_types_db.inc:
@@ -48,7 +48,7 @@ Description:
 Before 2.4:
 	db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
 Now:
-	db_backup($conn, $ext='no', $comm='', $path=null)
+	db_backup($conn, $ext='no', $comm='', $path='')
 Description: 
 	$tbpref parameter has been removed. Calls should be done after switch to selected company database with 
 	set_global_connection($company).
