@@ -425,6 +425,7 @@ class FrontReport extends Cpdf
 	{
 		global $dflt_lang; // FIXME should be passed as params
 
+		$this->SetLang(@$this->formData['rep_lang'] ? $this->formData['rep_lang'] : $dflt_lang);
 		$doctype = $this->formData['doctype'];
 		$header2type = true;
 
@@ -952,7 +953,7 @@ class FrontReport extends Cpdf
 		if ($SysPrefs->pdf_debug == 1)
 		{
 			$pdfcode = $this->Output('','S');
-			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
+			$pdfcode = str_replace("\n", "\n<br>", html_specials_encode($pdfcode));
 			echo '<html><body>';
 			echo trim($pdfcode);
 			echo '</body></html>';

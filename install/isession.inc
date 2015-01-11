@@ -39,18 +39,21 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_specials_encode($str)
+{
+	return htmlspecialchars($str, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
+}
+
 function html_cleanup(&$parms)
 {
 	foreach($parms as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+			$parms[$name] = html_specials_encode($value);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
-
 
 function check_page_security($page_security)
 {

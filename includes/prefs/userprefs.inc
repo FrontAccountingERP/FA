@@ -93,11 +93,11 @@ class user_prefs
 				$this->sticky_date = 0;
 				$this->startup_tab = "orders";
 			}
-			$this->transaction_days = $user['transaction_days'];
-			$this->save_report_selections = $user['save_report_selections'];
-			$this->use_date_picker = $user['use_date_picker'];
-			$this->def_print_destination = $user['def_print_destination'];
-			$this->def_print_orientation = $user['def_print_orientation'];
+			$this->transaction_days = @$user['transaction_days'];
+			$this->save_report_selections = @$user['save_report_selections'];
+			$this->use_date_picker = @$user['use_date_picker'];
+			$this->def_print_destination = @$user['def_print_destination'];
+			$this->def_print_orientation = @$user['def_print_orientation'];
 
 			if (!file_exists("$path_to_root/themes/$this->theme"))
 				$this->theme = "default";

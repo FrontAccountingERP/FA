@@ -240,7 +240,8 @@ function check_page_security($page_security)
 			 _("Security settings have not been defined for your user account.")
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) {
+	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) 
+	{
 		$msg = _('Access to application has been blocked until database upgrade is completed by system administrator.');
 	}
 	
@@ -309,14 +310,25 @@ function strip_quotes($data)
 	return $data;
 }
 
+/*
+	htmlspecialchars does not support certain encodings.
+	ISO-8859-2 fortunately has the same special characters positions as 
+	ISO-8859-1, so fix is easy. If any other unsupported encoding is used,
+	add workaround here.
+*/
+function html_specials_encode($str)
+{
+	return htmlspecialchars($str, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ?
+		 'ISO-8859-1' : $_SESSION['language']->encoding);
+}
+
 function html_cleanup(&$parms)
 {
 	foreach($parms as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
+			$parms[$name] = html_specials_encode($value);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
@@ -503,8 +515,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2'
-						 ? 'ISO-8859-1' : $_SESSION['language']->encoding)), 
+					'', html_specials_encode($_SERVER['REQUEST_URI'])),
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");
