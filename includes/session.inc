@@ -342,16 +342,6 @@ if (!isset($path_to_root))
 	$path_to_root = ".";
 }
 
-//----------------------------------------------------------------------------------------
-// set to reasonable values if not set in config file (pre-2.3.12 installations)
-
-if ((!isset($SysPrefs->login_delay)) || ($SysPrefs->login_delay < 0))
-    $SysPrefs->login_delay = 10;
-
-if ((!isset($SysPrefs->login_max_attempts)) || ($SysPrefs->login_max_attempts < 0))
-    $SysPrefs->login_max_attempts = 3; 
-
-
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
@@ -382,6 +372,15 @@ foreach ($installed_extensions as $ext)
 $_SESSION['SysPrefs'] = new sys_prefs();
 
 $SysPrefs = &$_SESSION['SysPrefs'];
+
+//----------------------------------------------------------------------------------------
+// set to reasonable values if not set in config file (pre-2.3.12 installations)
+
+if ((!isset($SysPrefs->login_delay)) || ($SysPrefs->login_delay < 0))
+    $SysPrefs->login_delay = 10;
+
+if ((!isset($SysPrefs->login_max_attempts)) || ($SysPrefs->login_max_attempts < 0))
+    $SysPrefs->login_max_attempts = 3; 
 
 if ($SysPrefs->go_debug > 0)
 	error_reporting(-1);
