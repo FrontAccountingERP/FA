@@ -254,7 +254,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 	}
 }
 
-function item_settings(&$stock_id, $new_id) 
+function item_settings(&$stock_id, $new_item) 
 {
 	global $SysPrefs, $path_to_root;
 
@@ -474,7 +474,7 @@ tabbed_content_start('tabs', array(
 	switch (get_post('_tabs_sel')) {
 		default:
 		case 'settings':
-			item_settings($stock_id, $new_id); 
+			item_settings($stock_id, $new_item); 
 			break;
 		case 'sales_pricing':
 			$_GET['stock_id'] = $stock_id;
