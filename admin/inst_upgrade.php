@@ -52,16 +52,13 @@ function get_installers()
 //
 //	Apply one differential data set.
 //
-function upgrade_step($inst, $company, $conn) 
+function upgrade_step($inst, $company, $conn, $force) 
 {
 	global $path_to_root;
 
 	$pref = $conn['tbpref'];
 	$ret = true;
 
-	$force = get_post('force_'.$index);
-	if ($force || get_post('install_'.$index)) 
-	{
 		$state = $inst->installed($pref);
 		if (!$state || $force) 
 		{
@@ -85,7 +82,6 @@ function upgrade_step($inst, $company, $conn)
 				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
 				$ret = false;
 			}
-	}
 	return $ret;
 }
 
@@ -110,7 +106,10 @@ if (get_post('Upgrade'))
 		foreach ($installers as $i => $inst) 
 		{
 
-			$ret = upgrade_step($installers[$index], $i, $comp, $conn);
+			$force = get_post('force_'.$i);
+			if ($force || get_post('install_'.$i)) 
+				$ret = upgrade_step($installers[$i], $comp, $conn, $force);
+
 			if (!$ret)
 			{
 				display_error(
