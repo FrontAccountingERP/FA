@@ -63,9 +63,9 @@ div_end();
 
 //--------------------------------------------------------------------------------------------------
 
-function update_component($kit_code, $selected_item)
+function update_component($kit_code, $selected_item, $selected_kit)
 {
-	global $Mode, $Ajax, $selected_kit;
+	global $Mode, $Ajax;
 	
 	if (!check_num('quantity', 0))
 	{
