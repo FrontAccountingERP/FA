@@ -214,22 +214,3 @@ function clean_user_themes($theme)
 	$_SESSION['wa_current_user']->prefs->theme = 'default';
 	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
