@@ -86,7 +86,7 @@ function trans_view($trans)
 
 function edit_link($row) 
 {
-	return trans_editor_link(ST_PURCHORDER, $trans["order_no"]);
+	return trans_editor_link(ST_PURCHORDER, $row["order_no"]);
 }
 
 function prt_link($row)
@@ -127,7 +127,7 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'receive_link')
 );
 
-if (get_post('StockLocation') != $all_items) {
+if ($_POST['StockLocation'] != ALL_TEXT) {
 	$cols[_("Location")] = 'skip';
 }
 

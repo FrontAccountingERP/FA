@@ -104,8 +104,8 @@ function edit_link($row)
 {
 	global $page_nested;
 
-	return $page_nested ? ''
-		trans_editor_link(ST_PURCHORDER, $trans["order_no"]);
+	return $page_nested ? '' :
+		trans_editor_link(ST_PURCHORDER, $row["order_no"]);
 }
 
 function prt_link($row)
@@ -131,9 +131,10 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'prt_link'),
 );
 
-if (get_post('StockLocation') != $all_items) {
+if (get_post('StockLocation') != ALL_TEXT) {
 	$cols[_("Location")] = 'skip';
 }
+
 //---------------------------------------------------------------------------------------------------
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);
