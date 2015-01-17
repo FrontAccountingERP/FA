@@ -473,12 +473,18 @@ function user_show_codes()
 
 function user_date_format()
 {
-	return $_SESSION["wa_current_user"]->prefs->date_format();
+  global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ?
+	  $_SESSION["wa_current_user"]->prefs->date_format() : $SysPrefs->dflt_date_fmt;
 }
 
 function user_date_display()
 {
-	return $_SESSION["wa_current_user"]->prefs->date_display();
+  global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ?
+	  $_SESSION["wa_current_user"]->prefs->date_display() : $SysPres->dflt_date_sep;
 }
 
 function user_date_sep()
@@ -488,12 +494,14 @@ function user_date_sep()
 
 function user_tho_sep()
 {
-	return $_SESSION["wa_current_user"]->prefs->tho_sep();
+	return isset($_SESSION["wa_current_user"]) ?
+		$_SESSION["wa_current_user"]->prefs->tho_sep() : 0;
 }
 
 function user_dec_sep()
 {
-	return $_SESSION["wa_current_user"]->prefs->dec_sep();
+	return isset($_SESSION["wa_current_user"]) ?
+		$_SESSION["wa_current_user"]->prefs->dec_sep() : 0;
 }
 
 function user_theme()

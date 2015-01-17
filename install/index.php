@@ -122,6 +122,9 @@ function install_connect_db() {
 	$db = db_create_db($conn);
 	if (!$db) {
 		display_error(_("Cannot connect to database. User or password is invalid or you have no permittions to create database."));
+	} else {
+		if (strncmp(db_get_version(), "5.6", 3) >= 0) 
+			db_query("SET sql_mode = ''");
 	}
 	return $db;
 }
@@ -292,6 +295,7 @@ elseif(get_post('install_coas'))
 			'pass' => $_POST['pass'],
 			'name' => $_POST['name'],
 			'admin' => $_POST['admin'],
+			'lang' => $_POST['lang']
 		));
 		if (do_install()) {
 			$_POST['Page'] = 6;

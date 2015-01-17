@@ -127,6 +127,8 @@ function handle_submit($selected_id)
 			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 			$error = true;
 		} else {
+			if (strncmp(db_get_version(), "5.6", 3) >= 0) 
+				db_query("SET sql_mode = ''");
 			if (!db_import($path_to_root.'/sql/'.get_post('coa'), $conn, $selected_id)) {
 				display_error(_('Cannot create new company due to bugs in sql file.'));
 				$error = true;

@@ -183,8 +183,7 @@ function db_create_db($connection)
 {
 	$db = mysql_connect($connection["host"] ,
 		$connection["dbuser"], $connection["dbpassword"]);
-	if (strncmp(db_get_version(), "5.6", 3) >= 0) 
-		db_query("SET sql_mode = ''");
+
 	if (!mysql_select_db($connection["dbname"], $db))
 	{
 		$sql = "CREATE DATABASE IF NOT EXISTS " . $connection["dbname"] . "";

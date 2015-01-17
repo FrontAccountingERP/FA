@@ -21,7 +21,8 @@ class sys_prefs
 		global $path_to_root;
 
 		include $path_to_root.'/config.default.php';
-		include $path_to_root.'/config.php';
+		if (file_exists($path_to_root.'/config.php'))
+			include $path_to_root.'/config.php';
 
 		// set system wide preferences
 		foreach(get_defined_vars() as $name => $value)

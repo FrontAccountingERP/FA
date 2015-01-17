@@ -86,6 +86,9 @@ header("Cache-control: private");
 
 include_once($path_to_root . "/config.default.php");
 
+$_SESSION['SysPrefs'] = new sys_prefs();
+$SysPrefs = &$_SESSION['SysPrefs'];
+
 $inst_langs = array(
   'C' => array ( 'name' => 'English',	'code' => 'C',		'encoding' => 'iso-8859-1'),
   'ar_EG' => array ( 'name' => 'Arabic',	'code' => 'ar_EG',	'encoding' => 'utf-8', 'rtl' => true),
@@ -119,6 +122,7 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 	$l = array_search_value($i_lang, $inst_langs,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
 	 isset($l['rtl']) ? 'rtl' : 'ltr');
+
 }
 if (!isset($installed_languages))
 	$installed_languages = array();
@@ -149,8 +153,6 @@ html_cleanup($_GET);
 html_cleanup($_POST);
 html_cleanup($_REQUEST);
 html_cleanup($_SERVER);
-
-$SysPrefs = &$_SESSION['SysPrefs'];
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

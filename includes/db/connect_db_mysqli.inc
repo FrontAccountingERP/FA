@@ -182,11 +182,10 @@ function db_field_name($result, $n)
 function db_create_db($connection)
 {
 	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
-	if (strncmp(db_get_version(), "5.6", 3) >= 0) 
-		db_query("SET sql_mode = ''");
+
 	if (!mysqli_select_db($db, $connection["dbname"]))
 	{
-		$sql = "CREATE DATABASE IF NOT EXISTS " . $connection["dbname"] . "";
+		$sql = "CREATE DATABASE IF NOT EXISTS `" . $connection["dbname"] . "`";
 		if (!mysqli_query($db, $sql) || !mysqli_select_db($db, $connection["dbname"]))
 			return 0;
 	}
