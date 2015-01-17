@@ -127,7 +127,7 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'receive_link')
 );
 
-if ($_POST['StockLocation'] != ALL_TEXT) {
+if (get_post('StockLocation') != ALL_TEXT) {
 	$cols[_("Location")] = 'skip';
 }
 
