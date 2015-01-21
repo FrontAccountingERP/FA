@@ -448,17 +448,23 @@ function user_qty_dec()
 
 function user_price_dec()
 {
-	return $_SESSION["wa_current_user"]->prefs->price_dec();
+	global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->price_dec() : $SysPrefs->prices_dec;
 }
 
 function user_exrate_dec()
 {
-	return $_SESSION["wa_current_user"]->prefs->exrate_dec();
+	global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->exrate_dec() : $SysPrefs->rates_dec;
 }
 
 function user_percent_dec()
 {
-	return $_SESSION["wa_current_user"]->prefs->percent_dec();
+	global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->percent_dec() : $SysPrefs->percent_dec;
 }
 
 function user_show_gl_info()
@@ -473,41 +479,38 @@ function user_show_codes()
 
 function user_date_format()
 {
-  global $SysPrefs;
+	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ?
-	  $_SESSION["wa_current_user"]->prefs->date_format() : $SysPrefs->dflt_date_fmt;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_format() : $SysPrefs->dflt_date_fmt;
 }
 
 function user_date_display()
 {
-  global $SysPrefs;
+	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ?
-	  $_SESSION["wa_current_user"]->prefs->date_display() : $SysPres->dflt_date_sep;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_display() : $SysPrefs->dflt_date_sep;
 }
 
 function user_date_sep()
 {
-	return $_SESSION["wa_current_user"]->prefs->date_sep();
+	global $SysPrefs;
+
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_sep() : $SysPrefs->dflt_date_sep;
 }
 
 function user_tho_sep()
 {
-	return isset($_SESSION["wa_current_user"]) ?
-		$_SESSION["wa_current_user"]->prefs->tho_sep() : 0;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->tho_sep() : 0;
 }
 
 function user_dec_sep()
 {
-	return isset($_SESSION["wa_current_user"]) ?
-		$_SESSION["wa_current_user"]->prefs->dec_sep() : 0;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->dec_sep() : 0;
 }
 
 function user_theme()
 {
-	return isset($_SESSION["wa_current_user"]) ?
-		$_SESSION["wa_current_user"]->prefs->get_theme() : 'default';
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->get_theme() : 'default';
 }
 
 function user_pagesize()

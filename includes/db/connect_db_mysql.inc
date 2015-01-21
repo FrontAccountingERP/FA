@@ -42,7 +42,7 @@ function set_global_connection($company=-1)
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $SysPres, $sql_queries, $Ajax, $db_connections, $db_last_inserted_id;
+	global $db, $SysPrefs, $sql_queries, $Ajax, $db_connections, $db_last_inserted_id;
 
 	// set current db prefix
 	$comp = isset($_SESSION["wa_current_user"]->cur_con) ? $_SESSION["wa_current_user"]->cur_con : 0;
