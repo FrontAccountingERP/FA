@@ -486,9 +486,27 @@ function user_date_format()
 
 function user_date_display()
 {
-	global $SysPrefs;
-
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_display() : $SysPrefs->dflt_date_sep;
+ 	$fmt ='m/d/Y';
+ 	if (isset($_SESSION["wa_current_user"])) {
+  		$fmt = $_SESSION["wa_current_user"]->prefs->date_display();
+ 	} else {
+  		$sep = user_date_sep();
+  		$user_date_fmt = user_date_format();
+  		switch ($user_date_fmt) {
+   			case 0:
+    			$fmt = "m".$sep."d".$sep."Y"; break;
+   			case 1:
+    			$fmt = "d".$sep."m".$sep."Y"; break;
+   			case 2:
+    			$fmt = "Y".$sep."m".$sep."d"; break;
+   			case 3:
+    			$fmt = "M".$sep."j".$sep."Y"; break;
+   			case 4:
+    			$fmt = "j".$sep."M".$sep."Y"; break;
+   			default:
+    			$fmt = "Y".$sep."M".$sep."j";
+  		}
+  	}
 }
 
 function user_date_sep()

@@ -84,8 +84,8 @@ function print_sales_quotations()
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
-		$rep->SetHeaderType('Header2');
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
