@@ -95,13 +95,13 @@ function print_sales_orders()
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESORDER);

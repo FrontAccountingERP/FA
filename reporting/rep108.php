@@ -113,13 +113,13 @@ function print_statements()
 		}
 
 		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		//= get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
 		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 		$rep->NewLine();
 		$doctype = ST_STATEMENT;

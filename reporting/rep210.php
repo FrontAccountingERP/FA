@@ -106,13 +106,13 @@ function print_remittances()
 				$rep->title = _('REMITTANCE');
 				$rep->filename = "Remittance" . $i . ".pdf";
 			}
-			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_supplier_contacts($myrow['supplier_id'], 'invoice');
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
+			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
 			$result = get_allocatable_to_supp_transactions($myrow['supplier_id'], $myrow['trans_no'], $myrow['type']);
 

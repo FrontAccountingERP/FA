@@ -79,14 +79,13 @@ function print_sales_quotations()
 			else	
 				$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
 		}
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
+		$rep->SetHeaderType('Header2');
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
-		//$rep->headerFunc = 'Header2';
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);

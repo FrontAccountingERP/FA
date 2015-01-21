@@ -111,7 +111,6 @@ function print_invoices()
 				$rep->title = _('INVOICE');
 				$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
 			}	
-			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -119,6 +118,7 @@ function print_invoices()
 			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], true);
 			$baccount['payment_service'] = $pay_service;
 			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_SALESINVOICE, $contacts);
+			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
 			// calculate summary start row for later use
 			$summary_start_row = $rep->bottomMargin + (15 * $rep->lineHeight);

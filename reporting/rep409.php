@@ -72,7 +72,6 @@ function print_workorders()
 			$rep->title = _('WORK ORDER');
 			$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
 		}
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -81,6 +80,7 @@ function print_workorders()
 			'name' => $myrow['contact'], 'name2' => '', 'contact');
 
 		$rep->SetCommonData($myrow, null, null, '', 26, $contact);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_wo_requirements($i);

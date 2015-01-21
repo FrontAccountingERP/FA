@@ -83,7 +83,6 @@ function print_receipts()
 	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
     	recalculate_cols($cols);
- 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
@@ -105,6 +104,7 @@ function print_receipts()
 
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
+ 			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
 			$result = get_allocatable_to_cust_transactions($myrow['debtor_no'], $myrow['trans_no'], $myrow['type']);
 

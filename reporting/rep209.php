@@ -100,13 +100,13 @@ function print_po()
 			$rep->title = _('PURCHASE ORDER');
 			$rep->filename = "PurchaseOrder" . $i . ".pdf";
 		}	
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_supplier_contacts($myrow['supplier_id'], 'order');
 		$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_PURCHORDER, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_po_details($i);
