@@ -9,8 +9,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class fa2_3 {
-	var $version = '2.3';	// version installed
+class fa2_3 extends fa_patch {
+	var $previous = '2.2rc';		// applicable database version
+	var $version = '2.3rc';	// version installed
 	var $description;
 	var $sql = 'alter2.3.sql';
 	var $preconf = true;
@@ -24,7 +25,7 @@ class fa2_3 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($company, $force) 
+	function install($company, $force=false) 
 	{
 		global $db_version, $dflt_lang;
 
@@ -98,36 +99,19 @@ class fa2_3 {
 	//
 	//	Checking before install
 	//
-	function pre_check($pref, $force)
+	function prepare()
 	{
 
-		if ($this->beta && !$force)
+		if ($this->beta)
 			$this->sql = 'alter2.3rc.sql';
 
 		return true;
 	}
-	//
-	//	Test if patch was applied before.
-	//
-	function installed($pref) {
-		$this->beta = !check_table($pref, 'suppliers', 'tax_included');
 
-		$n = 1; // number of patches to be installed
-		$patchcnt = 0;
-
-		if (!$this->beta) {
-			$n += 3;
-			if (!check_table($pref, 'comments', 'type', array('Key'=>'MUL'))) $patchcnt++;
-			if (!check_table($pref, 'sys_prefs')) $patchcnt++;
-			if (!check_table($pref, 'sales_orders', 'payment_terms')) $patchcnt++;
-		}
-		if (!check_table($pref, 'purch_orders', 'tax_included')) $patchcnt++;
-		return $n == $patchcnt ? true : ($patchcnt ? ($patchcnt.'/'. $n) : 0);
-	}
 	//=========================================================================================
 	//	2.3 specific update functions
 	//
-	
+
 	/*
 		Update order totals
 	*/
@@ -264,11 +248,11 @@ class fa2_3 {
 		}
 	return true;
 	}
-	
+
 	function fix_extensions()
 	{
 		global $path_to_root, $next_extension_id, $installed_languages;
-		
+
 		$lang_chd = false;
 		foreach($installed_languages as $i => $lang) {
 			if (!isset($lang['path'])) {
@@ -281,15 +265,14 @@ class fa2_3 {
 		if ($lang_chd)
 			write_lang();
 
-		
 		$installed_extensions= get_company_extensions();
 		if (!isset($next_extension_id))
 			$next_extension_id = 1;
 		$new_exts = array();
-		
+
 /*	Old extension modules are uninstalled - they need manual porting after 
 	heavy changes in extension system in FA2.3
-	
+
 		foreach($installed_extensions as $i => $ext)
 		{
 			if (isset($ext['title'])) // old type entry

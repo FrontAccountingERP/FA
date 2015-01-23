@@ -90,7 +90,7 @@ function get_mysql_collation($lang=null)
 		'it' => 'roman',
 	);
 
-	return 'utf8_'.(isset($db_collation[$lang]) ? $db_collation[$lang] : 'general').'_ci';
+	return 'utf8_'.(isset($db_collation[$lang]) ? $db_collation[$lang] : 'unicode').'_ci';
 }
 
 /*

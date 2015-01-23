@@ -9,7 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class fa2_1 {
+class fa2_1 extends fa_patch {
+	var $previous = '';		// applicable database version
 	var $version = '2.1';	// version installed
 	var $description;
 	var $sql = 'alter2.1.sql';
@@ -21,7 +22,7 @@ class fa2_1 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($company, $force) 
+	function install($company, $force=false) 
 	{
 		global $db;
 
@@ -128,13 +129,16 @@ class fa2_1 {
 		
 		return true;
 	}
+
 	//
 	//	Checking before install
 	//
-	function pre_check($pref)
+	function prepare()
 	{
 	// We cannot perform successfull upgrade on system where the
-	// trans tax details tables was deleted during previous try.  
+	// trans tax details tables was deleted during previous try.
+		$pref = $this->companies[$company]['tbpref'];
+
 		if (check_table($pref, 'debtor_trans_tax_details') 
 			|| check_table($pref, 'supp_invoice_tax_items')) {
 			display_error(_("Seems that system upgrade to version 2.1 has 
@@ -143,22 +147,9 @@ class fa2_1 {
 			database restore from last backup file first."));
 
 			return false;
-		} 
+		}
 
 		return true; // true when ok, fail otherwise
-	}
-	//
-	//	Test if patch was applied before.
-	//
-	function installed($pref) {
-		$n = 4; // number of features to be installed
-		if (!check_table($pref, 'item_codes')) $n--;
-//		if (!check_table($pref, 'company', 'foreign_codes')) $n--;
-		if (!check_table($pref, 'suppliers', 'credit_limit')) $n--;
-		if (!check_table($pref, 'bank_trans', 'reconciled', 
-			array('Type'=>'date'))) $n--;
-		if (!check_table($pref, 'trans_tax_details')) $n--;
-		return $n == 0 ? true : 5 - $n;
 	}
 };
 

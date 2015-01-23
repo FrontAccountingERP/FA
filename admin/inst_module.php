@@ -17,7 +17,7 @@ include_once($path_to_root."/includes/packages.inc");
 if ($SysPrefs->use_popup_windows) {
 	$js = get_js_open_window(900, 500);
 }
-page(_($help_context = "Install/Activate extensions"));
+page(_($help_context = "Install/Activate extensions"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");

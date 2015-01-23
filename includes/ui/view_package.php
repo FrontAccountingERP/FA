@@ -51,7 +51,7 @@ foreach ($pkg as $field => $value) {
 	if ($value == '')
 		continue;
 	start_row();
-	label_cells($field, nl2br(htmlentities(is_array($value) ? implode("\n", $value) :$value)),
+	label_cells($field, nl2br(html_specials_encode(is_array($value) ? implode("\n", $value) :$value)),
 		 "class='tableheader2'");
 	end_row();
 }

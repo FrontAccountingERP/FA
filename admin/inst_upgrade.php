@@ -13,168 +13,107 @@ $page_security = 'SA_SOFTWAREUPGRADE';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Software Upgrade"));
+if ($SysPrefs->use_popup_windows) {
+	$js = get_js_open_window(900, 500);
+}
+page(_($help_context = "Software Upgrade"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/admin/includes/fa_patch.class.inc");
 
-//
-//	Creates table of installer objects sorted by version.
-//
-function get_installers()
-{
-	global $path_to_root;
-
-	$patchdir = $path_to_root."/sql/";
-	$upgrades = array();	
-	$datadir = @opendir($patchdir);
-
-	if ($datadir)
-	{
-		while(false !== ($fname = readdir($datadir)))
-		{ // check all php files but index.php
-			if (!is_dir($patchdir . $fname) && ($fname != 'index.php')
-				&& stristr($fname, '.php') != false && $fname[0] != '.')
-			{
-				unset($install);
-				include_once($patchdir . $fname);
-				if (isset($install)) // add installer if found
-					$upgrades[$install->version] =  $install;
-			}
-		}
-		ksort($upgrades); // sort by file name
-		$upgrades = array_values($upgrades);
-	}
-	return $upgrades;
-}
-//
-//	Apply one differential data set.
-//
-function upgrade_step($inst, $company, $conn, $force) 
-{
-	global $path_to_root;
-
-	$pref = $conn['tbpref'];
-	$ret = true;
-
-		$state = $inst->installed($pref);
-		if (!$state || $force) 
-		{
-			if (!$inst->pre_check($pref, $force)) return false;
-			$sql = $inst->sql;
-
-			error_log(sprintf(_("Database upgrade for company '%s' (%s:%s*) started..."),
-				$conn['name'], $conn['dbname'], $conn['tbpref']));
-
-			if ($sql != '')
-				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force, true);
-
- 			$ret &= $inst->install($company, $force);
-
-			if (!$ret && is_callable(array($inst, 'post_fail')))
-				$inst->post_fail($pref);
-
-			error_log(_("Database upgrade finished."));
-		} else
-			if ($state!==true) {
-				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
-				$ret = false;
-			}
-	return $ret;
-}
-
+$site_status = get_site_status($db_connections);
 $installers = get_installers();
 
 if (get_post('Upgrade')) 
 {
+	$comp = get_post('select_comp');
 
-	$ret = true;
-	foreach ($db_connections as $comp => $conn) 
-	{
-	// connect to database
-		if (!(set_global_connection($comp))) 
+    if ($comp === '')
+		display_error(_('Select company to be upgraded.'));
+	else {
+		$patch = @$installers[$site_status[$comp]['version']];
+		if ($patch)
 		{
-			display_error(_("Cannot connect to database for company")
-				." '".$conn['name']."'");
-			continue;
-		}
-	// create security backup	
-		db_backup($conn, 'no', 'Security backup before upgrade');
-	// apply all upgrade data
-		foreach ($installers as $i => $inst) 
-		{
+			if (!$patch->upgrade_company($comp, check_value('force')))
+				display_error(implode('<hr>', $patch->errors));
+			else
+				display_notification(_("Company upgraded successfully."));
 
-			$force = get_post('force_'.$i);
-			if ($force || get_post('install_'.$i)) 
-				$ret = upgrade_step($installers[$i], $comp, $conn, $force);
-
-			if (!$ret)
-			{
-				display_error(
-				sprintf(_("Database upgrade to version %s failed for company '%s'."),
-					$inst->version, $conn['name'])
-					.'<br>'
-					._('You should restore company database from latest backup file'));
-			}
+			$site_status = get_site_status($db_connections); // update info
+		    $Ajax->activate('_page_body');
 		}
-// 		db_close($conn); ?
-		if (!$ret) break;
 	}
-	set_global_connection();
-	if($ret)
-	{	// re-read the prefs
-		global $path_to_root;
-		include_once($path_to_root . "/admin/db/users_db.inc");
-		$user = get_user_by_login($_SESSION["wa_current_user"]->username);
-		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
-		display_notification(_('All companies data has been successfully updated'));
-	}	
-	refresh_sys_prefs(); // re-read system setup
-	$Ajax->activate('_page_body');
+}
+$i = find_submit('Clear');
+if ($i != -1)
+{
+  unlink($path_to_root.'/tmp/upgrade.'.$i.'.log');
+  $Ajax->activate('_page_body');
+}
+if (get_post('_select_comp_update'))
+{
+  $Ajax->activate('_page_body');
 }
 
 start_form();
+
+$th = array(_("Company"), _("Table set"), _("Current version"), _("Last log"), _('Upgrade'));
 start_table(TABLESTYLE);
-$th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
-	_("Force upgrade"));
 table_header($th);
 
-$k = 0; //row colour counter
-$partial = 0;
-foreach($installers as $i => $inst)
+$uptodate = true;
+foreach($site_status as $i => $comp)
 {
-	alt_table_row_color($k);
-	start_row();
-	label_cell($inst->version);
-	label_cell($inst->description);
-	label_cell($inst->sql ? $inst->sql : '<i>'._('None').'</i>', 'align=center');
-// this is checked only for first (site admin) company, 
-// but in fact we should always upgrade all data sets after
-// source upgrade.
-	$check = $inst->installed(TB_PREF);
-	if ($check === true)
-		label_cell(_("Installed"));
-	else 
-		if (!$check)
-			check_cells(null,'install_'.$i, 0);
-		else {
-			label_cell("<span class=redfg>"
-				. sprintf(_("Partially installed (%s)"), $check) . "</span>");
-			$partial++;
-		}
+	$status = $comp['version']==$db_version;
 
-	check_cells(null,'force_'.$i, 0);
+	alt_table_row_color($k);
+
+	label_cell($comp['name']);
+	label_cell($comp['table_set']);
+
+	label_cell($comp['version'], 'align=center' .($status ? '':' class=redfg')/*, 'class='.( $status ? 'ok' : 'error')*/);
+
+	$log = $path_to_root.'/tmp/upgrade.'.$i.'.log';
+	if (file_exists($log))
+	{
+		label_cell(viewer_link(_('View log'), "admin/view/view_upgrade_log.php?id=$i", null, $i, 'log.png')
+		  .button('Clear'.$i, _('Clear'), _('Clear log'), ICON_DELETE), 'align=center');
+		submit_js_confirm('Clear'.$i, _("Do you really want to clear this upgrade log?"));
+	} else
+		label_cell('-', 'align=center');
+
+
+	if (!$status)
+	{
+		label_cell(radio(null, 'select_comp', $i, null, true), 'align=center');
+		$uptodate = false;
+	} else
+		label_cell(_('Up to date'));
 	end_row();
 }
-end_table(1);
-if ($partial!=0)	{
-	display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
-You have to clean database manually to enable them, or try to perform forced upgrade."));
-	br();
+
+end_table();
+br();
+
+div_start('upgrade_args');
+if (get_post('select_comp') !== '')
+{
+	$patch = @$installers[$site_status[get_post('select_comp')]['version']];
+	if ($patch)
+		$patch->show_params(get_post('select_comp'));
 }
-submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
+div_end();
+
+if ($uptodate)
+	display_note(_('All company database schemes are up to date.'));
+else {
+	if (get_post('select_comp') === '')
+		display_note(_("Select company for incremental upgrade."), 0, 1, "class='stockmankofg'");
+	submit_center('Upgrade', _('Upgrade'), true, _('Save database and perform upgrade'), 'process');
+}
 end_form();
 
 end_page();

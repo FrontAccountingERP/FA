@@ -82,8 +82,9 @@ function set_company_pref($pref, $category, $type, $length, $value)
 
 function refresh_sys_prefs()
 {
-	flush_dir(user_js_cache()); // clear cache
+//	flush_dir(user_js_cache()); // clear cache
 	unset($_SESSION['SysPrefs']);
+	$_SESSION['SysPrefs'] = new sys_prefs();
 	get_company_prefs();
 }
 

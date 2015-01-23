@@ -16,13 +16,11 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
-define("BACKUP_PATH", $SysPrefs->comp_path.'/'.user_company()."/backup/");
-
 if (get_post('view')) {
 	if (!get_post('backups')) {
 		display_error(_('Select backup file first.'));
 	} else {
-		$filename = BACKUP_PATH . clean_file_name(get_post('backups'));
+		$filename = $SysPrefs->backup_dir().clean_file_name(get_post('backups'));
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
@@ -36,7 +34,7 @@ if (get_post('view')) {
 };
 if (get_post('download')) {
 	if (get_post('backups')) {
-		download_file(BACKUP_PATH . clean_file_name(get_post('backups')));
+		download_file($SysPrefs->backup_dir().clean_file_name(get_post('backups')));
 		exit;
 	} else
 		display_error(_("Select backup file first."));
@@ -48,10 +46,12 @@ check_paths();
 
 function check_paths()
 {
-	if (!file_exists(BACKUP_PATH)) {
+  global $SysPrefs;
+
+	if (!file_exists($SysPrefs->backup_dir())) {
 		display_error (_("Backup paths have not been set correctly.") 
 			._("Please contact System Administrator.")."<br>" 
-			. _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>");
+			. _("cannot find backup directory") . " - " . $SysPrefs->backup_dir() . "<br>");
 		end_page();
 		exit;
 	}
@@ -59,7 +59,9 @@ function check_paths()
 
 function generate_backup($conn, $ext='no', $comm='')
 {
-	$filename = db_backup($conn, $ext, $comm, BACKUP_PATH);
+	global $SysPrefs;
+
+	$filename = db_backup($conn, $ext, $comm, $SysPrefs->backup_dir());
 	if ($filename)
 		display_notification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);
@@ -72,11 +74,11 @@ function generate_backup($conn, $ext='no', $comm='')
 
 function get_backup_file_combo()
 {
-	global $path_to_root, $Ajax;
+	global $path_to_root, $Ajax, $SysPrefs;
 	
 	$ar_files = array();
     default_focus('backups');
-    $dh = opendir(BACKUP_PATH);
+    $dh = opendir($SysPrefs->backup_dir());
 	while (($file = readdir($dh)) !== false)
 		$ar_files[] = $file;
 	closedir($dh);
@@ -127,7 +129,7 @@ function download_file($filename)
 
 $conn = $db_connections[user_company()];
 $backup_name = clean_file_name(get_post('backups'));
-$backup_path = BACKUP_PATH . $backup_name;
+$backup_path = $SysPrefs->backup_dir() . $backup_name;
 
 if (get_post('creat')) {
 	generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -165,7 +167,7 @@ if (get_post('upload'))
 		if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
 			display_error(_("You can only upload *.sql backup files"));
 		elseif (is_uploaded_file($tmpname)) {
-			rename($tmpname, BACKUP_PATH . $fname);
+			rename($tmpname, $SysPrefs->backup_dir() . $fname);
 			display_notification(_("File uploaded to backup directory"));
 			$Ajax->activate('backups');
 		} else

@@ -9,21 +9,81 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class fa2_4 {
+function collations_list_row($label, $name, $selected_id=null)
+{
+
+$mysql_collations = array(
+  'xx' => 'Unicode (multilanguage)',
+  'is' => 'Icelandic',
+  'lv' => 'Latvian',
+  'ro' => 'Romanian',
+  'sl' => 'Slovenian',
+  'pl' => 'Polish',
+  'et' => 'Estonian',
+  'es' => 'Spanish', // or 'spanish2',
+  'sw' => 'Swedish',
+  'tr' => 'Turkish',
+  'cs' => 'Czech',
+  'da' => 'Danish',
+  'lt' => 'Lithuanian',
+  'sk' => 'Slovak',
+  'sp' => 'Spanish (alternative)',
+  'fa' => 'Persian',
+  'hu' => 'Hungarian',
+  'fr' => 'French',
+  'it' => 'Italian',
+);
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td class='label'>$label</td>\n";
+	echo "<td>";
+
+	echo array_selector($name, $selected_id, $mysql_collations, 
+		array('select_submit'=> false) );
+	echo "</td></tr>\n";
+}
+
+class fa2_4 extends fa_patch {
+	var $previous = '2.3rc';		// applicable database version
 	var $version = '2.4.0';	// version installed
 	var $description;
 	var $sql = 'alter2.4.sql';
 	var $preconf = true;
 	
 	function fa2_4() {
+		parent::fa_patch();
 		$this->description = _('Upgrade from version 2.3 to 2.4');
 	}
 	
+    /*
+	    Shows parameters to be selected before upgrade (if any)
+	*/
+    function show_params($comp)
+	{
+	  display_note(_('Set optimal parameters and start upgrade:'));
+	  start_table(TABLESTYLE);
+	  start_row();
+		collations_list_row(_('Text collation optimization:'), 'collation', substr($_SESSION['language']->code, 0, 2));
+	  end_row();
+	  end_table();
+	  br();
+    }
+
+	/*
+	    Fetches selected upgrade parameters.
+    */
+	function prepare()
+    {
+		$this->collation = get_mysql_collation(get_post('collation'));
+		return true;
+	}
+
 	//
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($company, $force=false) 
+	function install($company, $force=false)
 	{
 		global $db_version, $db_connections;
 
@@ -50,48 +110,16 @@ class fa2_4 {
 		if ($result)
 			$result = $this->do_cleanup();
 
-		//remove obsolete and temporary columns.
-		// this have to be done here as db_import rearranges alter query order
-		$dropcol = array(
-				'cust_branch' => array('contact_name', 'disable_trans'),
-		);
-
-		foreach($dropcol as $table => $columns)
-			foreach($columns as $col) {
-				if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`")==false) {
-					display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
-					return false;
-				}
-			}
-
-		return  update_company_prefs(array('version_id'=>$db_version));
-	}
-	//
-	//	Checking before install
-	//
-	function pre_check($pref, $force)
-	{
-		return true;
+		return $result;
 	}
 
 	//
 	// optional procedure done after upgrade fail, before backup is restored
 	//
-	function post_fail($pref)
+	function post_fail($company)
 	{
+		$pref = $this->companies[$company]['tbpref'];
 		db_query("DROP TABLE IF EXISTS " . $pref . 'wo_costing');
-	}
-	//
-	//	Test if patch was applied before.
-	//
-	function installed($pref)
-	{
-		$n = 2; // number of patches to be installed
-		$patchcnt = 0;
-
-		if (!check_table($pref, 'suppliers', 'tax_algorithm')) $patchcnt++;
-		if (!check_table($pref, 'wo_costing')) $patchcnt++;
-		return $n == $patchcnt ? true : ($patchcnt ? ($patchcnt.'/'. $n) : 0);
 	}
 
 	function update_workorders()
@@ -102,11 +130,8 @@ class fa2_4 {
 		." AND person_type_id=1";
 		$res = db_query($sql);
 		if (!$res)
-		{
-			display_error("Cannot update work orders costs"
-				.':<br>'. db_error_msg($db));
-			return false;
-		}
+			return $this->log_error(sprintf(_("Cannot update work orders costs:\n%s"), db_error_msg($db)));
+
 		while ($row = db_fetch($res))
 		{
 			$journal_id = get_next_trans_no(ST_JOURNAL);
@@ -116,7 +141,7 @@ class fa2_4 {
 				WHERE `type`=".ST_WORKORDER." AND type_no={$row['type_no']} AND tran_date='{$row['tran_date']}'
 				AND person_id='{$row['person_id']}'";
 			if (!db_query($sql1)) return false;
-			
+
 			$sql2 = "INSERT INTO ".TB_PREF."wo_costing (workorder_id, cost_type, trans_no) 
 				VALUES ({$row['type_no']}, {$row['person_id']}, {$journal_id})";
 			if (!db_query($sql2)) return false;
@@ -135,9 +160,9 @@ class fa2_4 {
  	. for all text/char column:
 	 - suppress autorecoding by change of the type to related binary/blob type
 	 - change column to utf8 encodding and selected collation.
-	. change default table encoding to utf8
+	. change default table encoding to utf8 and selected collation
 */
-	function switch_database_to_utf($pref, $test = false) {
+	function switch_database_to_utf($pref, $dbg = false) {
 
 		global $installed_languages, $dflt_lang;
 
@@ -147,9 +172,8 @@ class fa2_4 {
 		$lang = array_search_value($dflt_lang, $installed_languages, 'code');
 		$new_encoding = get_mysql_encoding_name(strtoupper($lang['encoding']));
 
-		if ($test)
- 	 		error_log('Switching database to utf8 encoding from '.$old_encoding);
-		$collation = get_mysql_collation();
+ 		$this->log_error(sprintf('Switching database to utf8 encoding from %s', $old_encoding), 'Info');
+		$collation = $this->collation;
 		$tsql = "SHOW TABLES LIKE '".($pref=='' ? '' : substr($pref, 0, -1).'\\_')."%'";
 		$tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
 		while($tbl = db_fetch($tresult)) {
@@ -170,8 +194,8 @@ class fa2_4 {
 
 				if ($bintype != $col['Type'])
 				{ // this is char/text column, so change encoding to proper encoding
-			 	 	if ($test)
- 	 					error_log($table.'.'.$col['Field']);
+			 	 	if ($dbg)
+ 	 					$this->log_error(sprintf('%s switched to uft8.', $table.'.'.$col['Field']), 'Debug');
 
 					$null = $col['Null'] === 'YES' ? ' NULL ' : ' NOT NULL ';
 					$default = $col['Null'] !== 'YES' && isset($col['Default']) ? ' DEFAULT '.db_escape($col['Default']) : '';
@@ -196,8 +220,7 @@ class fa2_4 {
 			db_query("ALTER TABLE `$table` COLLATE $collation");
 		}
 		db_query("ALTER DATABASE COLLATE $collation");
- 	 	if ($test)
- 	 		error_log('Convertion to utf8 done.');
+ 		$this->log_error(_('Convertion to utf8 done.'), 'Info');
 
 		return true;
 	}
@@ -221,19 +244,24 @@ class fa2_4 {
 
 	function do_cleanup()
 	{
+		global $db;
+
+		//remove obsolete and temporary columns.
+		// this have to be done here as db_import rearranges alter query order
 		$dropcol = array(
 				'tax_group_items' => array('rate'),
 				'budget_trans' => array('type', 'type_no', 'person_id', 'person_type_id', 'memo_'),
+				'cust_branch' => array('contact_name', 'disable_trans'),
 		);
 
 		foreach($dropcol as $table => $columns)
 			foreach($columns as $col) {
 				if (db_query("ALTER TABLE `".TB_PREF."{$table}` DROP `$col`") == false) {
-					display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
-					return false;
+					return $this->log_error(sprintf(_("Cannot drop column in %s table: %s"), $table, db_error_msg($db)));
 				}
 			}
-	}
+		return true;
+  }
 }
 
 $install = new fa2_4;

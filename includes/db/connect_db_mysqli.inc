@@ -37,6 +37,7 @@ function set_global_connection($company=-1)
 	///// We are, however, investigating the existing code to be compatible in the future.
 		db_query("SET sql_mode = '".SQL_MODE."'");
 	/////
+	refresh_sys_prefs();
 	return $db;
 }
 

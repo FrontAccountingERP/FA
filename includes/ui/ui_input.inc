@@ -387,7 +387,7 @@ function check_row($label, $name, $value=null, $submit_on_change=false, $title=f
 function radio($label, $name, $value, $selected=null, $submit_on_change=false)
 {
 	if (!isset($selected))
-		$selected = get_post($name) == $value;
+		$selected = get_post($name) === (string)$value;
 
 	if ($submit_on_change === true)
 		$submit_on_change = 

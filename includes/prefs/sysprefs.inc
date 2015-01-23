@@ -145,5 +145,16 @@ class sys_prefs
 	{
 		return $this->prefs['suppress_tax_rates'];
 	}
+
+	function backup_dir($comp=null)
+	{
+		if (!isset($comp))
+			$comp = user_company();
+
+		if (isset($this->backup_path))
+			return sprintf($this->backup_path, $comp);
+		else
+			return $this->comp_path.'/'.$comp."/backup/";
+	}
 }
 

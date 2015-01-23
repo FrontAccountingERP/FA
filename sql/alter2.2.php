@@ -10,12 +10,13 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-class fa2_2 {
-	var $version = '2.2';	// version installed
+class fa2_2 extends fa_patch  {
+	var $previous = '2.1';		// applicable database version
+	var $version = '2.2rc';	// version installed
 	var $description;
 	var $sql = 'alter2.2.sql';
 	var $preconf = true;
-	var $beta = false; // upgrade from 2.1 or 2.2beta; set in pre_check
+	var $beta = false; // upgrade from 2.1 or 2.2beta; set in prepare()
 	
 	function fa2_2() {
 		global $security_groups;
@@ -28,10 +29,10 @@ class fa2_2 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($company, $force) 
+	function install($company, $force=false) 
 	{
 		global $db, $systypes_array, $db_connections;
-		
+
 		if (!$this->preconf)
 			return false;
 
@@ -101,48 +102,17 @@ class fa2_2 {
 	//
 	//	Checking before install
 	//
-	function pre_check($pref, $force)
-	{	
+	function prepare()
+	{
 		global $security_groups;
-		
-		if ($this->beta && !$force)
+
+		if ($this->beta)
 			$this->sql = 'alter2.2rc.sql';
 		// return ok when security groups still defined (upgrade from 2.1)
 		// or usersonline not defined (upgrade from 2.2 beta)
-		return isset($security_groups) || (check_table($pref, 'usersonline')!=0);
-	}
-	//
-	//	Test if patch was applied before.
-	//
-	function installed($pref) {
-		$n = 1; // number of patches to be installed
-		$patchcnt = 0;
-		if (!$this->beta) {
-			$n = 16;
- 			if (check_table($pref, 'company')) // skip in 2.3
- 				$n -= 3;
- 			else {
- 				if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
- 				if (!check_table($pref, 'company', 'profit_loss_year_act'))	$patchcnt++;
- 				if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
- 			}
-			if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $patchcnt++;
-			if (!check_table($pref, 'users', 'sticky_doc_date')) $patchcnt++;
-			if (!check_table($pref, 'users', 'startup_tab')) $patchcnt++;
-			if (!check_table($pref, 'cust_branch', 'inactive')) $patchcnt++;
-			if (!check_table($pref, 'chart_class', 'ctype')) $patchcnt++;
-			if (!check_table($pref, 'audit_trail')) $patchcnt++;
-			if (!check_table($pref, 'currencies', 'auto_update')) $patchcnt++;
-			if (!check_table($pref, 'stock_master','no_sale')) $patchcnt++;
-			if (!check_table($pref, 'suppliers', 'supp_ref')) $patchcnt++;
-			if (!check_table($pref, 'users', 'role_id')) $patchcnt++;
-			if (!check_table($pref, 'sales_orders', 'reference')) $patchcnt++;
-			if (!check_table($pref, 'tags')) $patchcnt++;
-		} 
-		if (!check_table($pref, 'useronline')) $patchcnt++;
+		$pref = $this->companies[$company]['tbpref'];
 
-		$n -= $patchcnt;
-		return $n == 0 ? true : $patchcnt;
+		return isset($security_groups) || (check_table($pref, 'usersonline')!=0);
 	}
 };
 
