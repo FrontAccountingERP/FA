@@ -210,7 +210,7 @@ function get_package_view_str($pkg, $label="", $icon=false, $class='', $id='')
 		$label = _("Info");
 //		$icon = ICON_GL;
 	}
-	return viewer_link($label, "includes/ui/view_package.php?id=$pkg", $class, $id, $icon);
+	return viewer_link($label, "admin/view/view_package.php?id=$pkg", $class, $id, $icon);
 }
 
 
