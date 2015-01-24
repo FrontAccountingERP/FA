@@ -168,6 +168,11 @@ class cart
 		while (($line_no < count($this->line_items)) && ($srcline = db_fetch($srcdetails))) {
 			$line = &$this->line_items[$line_no];
 			$src_docs[] = $src_type == ST_SALESORDER ?  $srcline['order_no'] : $srcline['debtor_trans_no'];
+			while($srcline['id'] != $line->src_id) // Logic : This will increment the line_items array till sales_order line is matched.
+ 			{	// 0002259: Fixes Delivery note bug : Parent constraints not working if sales order line deleted after delivery 
+     			$line_no++;
+     			$line = &$this->line_items[$line_no];
+ 			}
 			if ($srcline['id'] == $line->src_id) {
 				if ($this->trans_type == ST_SALESINVOICE)
 					$line->src_no = $srcline['debtor_trans_no'];
