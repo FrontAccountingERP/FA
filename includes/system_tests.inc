@@ -124,7 +124,7 @@ function tst_debug()
 	$test['descr'] = _('Debugging mode');
 	$test['type'] = 0;
 	$test['test'] = $SysPrefs->go_debug ? _("Yes") : _("No");
-	$test['result'] = $go_debug != 0;
+	$test['result'] = $SysPrefs->go_debug != 0;
 	$test['comments'] = _('To switch debugging on set $go_debug>0 in config.php file');
 
 	return $test;
