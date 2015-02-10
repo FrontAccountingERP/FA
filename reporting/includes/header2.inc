@@ -141,9 +141,10 @@
 		$this->NewLine();
 		$this->Text($mcol + 100, $this->formData['document_name']);
 		$this->Text($mcol + 180, $this->formData['document_number']);
-
+		$this->NewLine(2);
+	
 		if ($this->pageNumber > 1)
-			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
+			$this->Text($mcol + 180, _("Page") . ' ' . $this->pageNumber);
 		$this->row = $iline1 - $this->lineHeight;
 		$this->fontSize -= 4;
 		$this->Text($ccol, $Addr1['title'], $icol);
