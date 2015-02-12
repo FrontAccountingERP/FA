@@ -111,6 +111,9 @@ function print_receipts()
 			$myrow = get_receipt($j, $i);
 			if (!$myrow)
 				continue;			
+			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+				continue;
+			}
 			$res = get_bank_trans($j, $i);
 			$baccount = db_fetch($res);
 			$params['bankaccount'] = $baccount['bank_act'];
