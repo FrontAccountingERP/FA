@@ -610,16 +610,9 @@ function void_supp_invoice($type, $type_no)
 						
 						add_audit_trail(ST_JOURNAL, $id, $old_date);
 						add_comments(ST_JOURNAL, $id, $old_date, $memo);
-						$Refs->save(ST_JOURNAL, $id, $ref);						
-					}	
+						$Refs->save(ST_JOURNAL, $id, $ref);
+					}
 				}
-				/*$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
-				if ($deliveries[0] != 0) // have deliveries been done during the period?
-				{
-					update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
-				}
-				update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
-				*/
          	}
         }
 	}

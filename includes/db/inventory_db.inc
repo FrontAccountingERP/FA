@@ -381,16 +381,6 @@ function update_stock_move($type, $trans_no, $stock_id, $cost)
 	db_query($sql, "The stock movement standard_cost cannot be updated");
 }
 
-function update_stock_move_pid($type, $type_no, $stock_id, $pid, $cost)
-{
-	$sql = "UPDATE ".TB_PREF."stock_moves SET standard_cost=".db_escape($cost)
-		." WHERE type=".db_escape($type)
-		."	AND trans_no=".db_escape($type_no)
-		."	AND stock_id=".db_escape($stock_id)
-		."  AND person_id = ".db_escape($pid);
-	db_query($sql, "The stock movement standard_cost cannot be updated");
-}
-
 //--------------------------------------------------------------------------------------------------
 
 function get_stock_moves($type, $type_no, $visible=false)
