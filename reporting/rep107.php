@@ -75,7 +75,7 @@ function print_invoices()
 			$sign = 1;
 			$myrow = get_customer_trans($i, ST_SALESINVOICE);
 
-			if($customer != ALL_TEXT && $myrow['debtor_no'] != $customer) {
+			if ($customer && $myrow['debtor_no'] != $customer) {
 				continue;
 			}
 			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
