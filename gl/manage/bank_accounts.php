@@ -36,7 +36,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ($Mode=='ADD_ITEM' && (gl_account_in_bank_accounts(get_post('account_code')) 
 			|| key_in_foreign_table(get_post('account_code'), 'gl_trans', 'account'))) {
 		$input_error = 1;
-		display_error(_("The GL account selected is already in use. Select another GL account."));
+		display_error(_("The GL account selected is already in use or has transactions. Select another empty GL account."));
 		set_focus('account_code');
 	}
 	if ($input_error != 1)
