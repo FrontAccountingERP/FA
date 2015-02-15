@@ -70,7 +70,9 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_3' => $email, 
 				'PARAM_4' => '',
 				'PARAM_5' => '', 
-				'PARAM_6' => $def_orientation);
+				'PARAM_6' => $rep == 107 ? '' : $def_orientation);
+			if ($rep == 107)
+				$ar['PARAM_7'] = $def_orientation;
 			break;
 		case ST_PURCHORDER :
 			$rep = 209;
