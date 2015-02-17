@@ -11,6 +11,11 @@
 ***********************************************************************/
 include_once($path_to_root . "/admin/db/company_db.inc");
 
+/*
+	System and per company prefferences.
+	Object is created only with site wide preffernces.
+	After user login refresh_company_prefs method have to be called to initialize company specific settings.
+*/
 class sys_prefs 
 {
 	var $prefs;
@@ -18,13 +23,13 @@ class sys_prefs
 
 	function sys_prefs()
 	{
-		global $path_to_root;
+		global $path_to_root, $db_version;
 
+		// retrieve set system wide preferences
 		include $path_to_root.'/config.default.php';
 		if (file_exists($path_to_root.'/config.php'))
 			include $path_to_root.'/config.php';
 
-		// set system wide preferences
 		foreach(get_defined_vars() as $name => $value)
 			$this->$name = $value;
 
@@ -35,6 +40,27 @@ class sys_prefs
 			$this->time_zone = 'Europe/Berlin';
 
    	    ini_set('date.timezone', $this->time_zone);
+	}
+
+	/*
+		Initialize company specific preferrencies.
+	*/
+	function refresh_company_prefs()
+	{
+		global $db_version;
+
+		$sql = "SELECT name, value FROM ".TB_PREF."sys_prefs";
+		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
+
+		if(!$result)
+			return null;
+
+		while($pref = db_fetch_assoc($result)) {
+			$this->prefs[$pref['name']] = $pref['value'];
+		}
+
+		// update current db status for info in log file
+		$this->db_ok = $this->prefs['version_id'] == $db_version;
 	}
 
 	function allow_negative_stock() 

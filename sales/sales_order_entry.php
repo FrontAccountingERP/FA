@@ -633,9 +633,9 @@ function  handle_cancel_order()
 
 function create_cart($type, $trans_no)
 { 
-	global $Refs;
+	global $Refs, $SysPrefs;
 
-	if (!$_SESSION['SysPrefs']->db_ok) // create_cart is called before page() where the check is done
+	if (!$SysPrefs->db_ok) // create_cart is called before page() where the check is done
 		return;
 
 	processing_start();

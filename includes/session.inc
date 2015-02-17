@@ -240,7 +240,7 @@ function check_page_security($page_security)
 			 _("Security settings have not been defined for your user account.")
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) 
+	} elseif (!$SysPrefs->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) 
 	{
 		$msg = _('Access to application has been blocked until database upgrade is completed by system administrator.');
 	}
@@ -262,7 +262,7 @@ function check_page_security($page_security)
 		end_page(@$_REQUEST['popup']);
 		exit;
 	}
-	if (!$_SESSION['SysPrefs']->db_ok 
+	if (!$SysPrefs->db_ok 
 		&& !in_array($page_security, array('SA_SOFTWAREUPGRADE', 'SA_OPEN', 'SA_BACKUP')))
 	{
 		display_error(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
@@ -380,6 +380,8 @@ foreach ($installed_extensions as $ext)
 	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
 		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
+$Session_manager = new SessionManager();
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
 
 $_SESSION['SysPrefs'] = new sys_prefs();
 
@@ -417,9 +419,6 @@ if ($SysPrefs->error_logfile != '') {
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 hook_session_start(@$_POST["company_login_name"]);
-
-$Session_manager = new SessionManager();
-$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
@@ -554,17 +553,19 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			$lang->set_language($_SESSION['language']->code);
 		}
 	} else
-	{	set_global_connection();
-			if (db_fixed())
-				db_set_encoding($_SESSION['language']->encoding);
-	}
+	{
+		set_global_connection();
 
+		if (db_fixed())
+			db_set_encoding($_SESSION['language']->encoding);
+
+		$SysPrefs->refresh_company_prefs();
+	}
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
 		$_SESSION["App"]->init();
 	}
 }
-
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

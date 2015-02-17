@@ -33,28 +33,11 @@ function update_company_prefs($params)
 function get_company_pref($prefs = null)
 {
 	global $SysPrefs, $db_version;
-	
-	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
-//		$_SESSION['SysPrefs'] = new sys_prefs();
+	if (!isset($SysPrefs->prefs))	 // just after first login or reset
+		$SysPrefs->refresh_company_prefs();
 
-		$sql = "SELECT name, value FROM ".TB_PREF."sys_prefs";
-		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
-
-		if(!$result)
-			return null;
-
-		while($pref = db_fetch_assoc($result)) {
-			$_SESSION['SysPrefs']->prefs[$pref['name']] = $pref['value'];
-		}
-
-		$SysPrefs = &$_SESSION['SysPrefs'];
-
-		// update current db status for info in log file
-		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $db_version;
-	}
-
-	$all = $_SESSION['SysPrefs']->prefs;
+	$all = $SysPrefs->prefs;
 
 	if (!$prefs)
 		return $all;
@@ -65,7 +48,7 @@ function get_company_pref($prefs = null)
 	foreach($prefs as $name)
 		$ret[$name] = $all[$name];
 
-		return $ret;
+	return $ret;
 }
 
 function get_company_prefs()
@@ -82,10 +65,13 @@ function set_company_pref($pref, $category, $type, $length, $value)
 
 function refresh_sys_prefs()
 {
+	global $SysPrefs;
+
 //	flush_dir(user_js_cache()); // clear cache
 	unset($_SESSION['SysPrefs']);
 	$_SESSION['SysPrefs'] = new sys_prefs();
-	get_company_prefs();
+	$SysPrefs = &$_SESSION['SysPrefs'];
+	$SysPrefs->refresh_company_prefs();
 }
 
 function get_base_sales_type()
