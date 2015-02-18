@@ -28,8 +28,8 @@ function get_post($name, $dflt='')
 			}
 		return $ret;
 	} else
-		return is_float($dflt) ? input_num($name, $dflt) : 
-				((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+		return is_float($dflt) ? input_num($name, $dflt) :
+				((!isset($_POST[$name]) /*|| $_POST[$name] === ''*/) ? $dflt : $_POST[$name]);
 }
 //---------------------------------------------------------------------------------
 $form_nested = -1;
@@ -40,7 +40,6 @@ function start_form($multi=false, $dummy=false, $action="", $name="")
 	global $form_nested;
 
 	if (++$form_nested) return;
-
 
 	if ($name != "")
 		$name = "name='$name'";
@@ -67,10 +66,12 @@ function end_form($breaks=0)
 		br($breaks);
 	hidden('_focus');
 	hidden('_modified', get_post('_modified', 0));
+	hidden('_confirmed'); // helper for final form confirmation
 	hidden('_token', $_SESSION['csrf_token']);
 
 	echo implode('', $hidden_fields)."</form>\n";
 	$Ajax->activate('_token');
+	$Ajax->activate('_confirmed');
 }
 
 function check_csrf_token()
@@ -186,15 +187,15 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0, $f
 		include_once($path_to_root."/admin/db/attachments_db.inc");
 		$id = has_attachment($type_no, $trans_no);
 		$attach = get_attachment_string($type_no, $trans_no);
-    	echo $attach;	
-    }
+    	echo $attach;
+	}
 	$width = ($id != 0 ? "30%" : "20%");	
 	start_table(false, "width='$width'");
 	start_row();
 	if ($no_menu)
 	{
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
-	}
+	}	
 	echo "<td align=center><a href='javascript:goBack(".($final ? '-2' : '').");'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
 	end_row();
 	end_table();
@@ -238,7 +239,7 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
 			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+-		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -247,7 +248,6 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 
 function menu_link($url, $label, $id=null)
 {
-
 	$id = default_focus($id);
 	$pars = access_string($label);
 	return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
@@ -255,8 +255,7 @@ function menu_link($url, $label, $id=null)
 
 function submenu_option($title, $url, $id=null)
 {
-	global $path_to_root;
-	display_note(menu_link($path_to_root . $url, $title, $id), 0, 1);
+	display_note( menu_link($url, $title, $id), 0, 1);
 }
 
 function submenu_view($title, $type, $number, $id=null)
@@ -449,6 +448,28 @@ function tab_changed($name)
 	return array('from' => $from = get_post("_{$name}_sel"),
 		'to' => $to);
 }
+/*
+	Check whether tab has been just switched on
+*/
+function tab_opened($name, $tab)
+{
+	return (get_post('_'.$name.'_sel') != $tab) && (find_submit($name.'_', false) == $tab);
+}
+/*
+	Check whether tab has been just switched off
+*/
+function tab_closed($name, $tab)
+{
+	return (get_post('_'.$name.'_sel') == $tab) && (find_submit($name.'_', false) != $tab);
+}
+/*
+	Check whether tab is visible on current page
+*/
+function tab_visible($name, $tab)
+{
+	$new = find_submit($name.'_', false);
+	return (get_post('_'.$name.'_sel') == $tab && !$new) || $new==$tab;
+}
 
 /* Table editor interfaces. Key is editor type
 	0 => url of editor page
@@ -480,7 +501,7 @@ function set_editor($type, $input, $caller=true)
 
 	$Editors[$key] = array( $path_to_root . $popup_editors[$type][0], $input, 
 		$popup_editors[$type][3], $popup_editors[$type][4]);
-
+	
 	$help = 'F' . ($key - 111) . ' - ';
 	$help .= $popup_editors[$type][2];
 	$Pagehelp[] = $help;
@@ -599,7 +620,22 @@ function confirm_dialog($submit, $msg) {
 	} else
 		return get_post('DialogConfirm', 0);
 }
+/*
+	Confirm dialog to be used optionally in final form checking routine.
+	Displays warning conditionally unless it was displayed
+*/
+function display_confirmation($msg)
+{
+	global $Ajax;
 
+	if (!get_post('_confirmed'))
+	{
+		$_POST['_confirmed'] = 1;
+		display_warning($msg);
+		return false;
+	} else
+		return true;
+}
 /*
 	Block menu/shortcut links during transaction procesing.
 */
@@ -628,4 +664,3 @@ function page_modified($status = true)
 	} else
 		add_js_source($js);
 }
-

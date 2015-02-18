@@ -206,6 +206,18 @@ function is_subledger_account($account)
 	return $myrow[0];
 }
 
+function get_subaccount_data($code_id, $person_id)
+{
+	$sql = "SELECT debtor_ref as name, branch_code as id 
+		FROM ".TB_PREF."cust_branch branch LEFT JOIN ".TB_PREF."debtors_master d ON branch.debtor_no = d.debtor_no
+		WHERE branch.receivables_account=".db_escape($code_id)." AND d.debtor_no=".db_escape($person_id)
+		." UNION SELECT supp_ref as name, '' as id FROM ".TB_PREF."suppliers supp
+		WHERE supplier_id=".db_escape($person_id)." AND payable_account=".db_escape($code_id);
+	$result = db_query($sql, 'cannot retrieve counterparty name');
+
+	return  db_fetch($result);
+}
+
 function get_subaccount_name($code_id, $person_id)
 {
 	$sql = "SELECT debtor_ref as ref FROM ".TB_PREF."cust_branch branch LEFT JOIN ".TB_PREF."debtors_master d ON branch.debtor_no = d.debtor_no

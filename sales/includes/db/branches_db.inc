@@ -251,3 +251,13 @@ function _get_branch_contacts($branch_code, $action=null, $customer_id=null, $de
 	return $results;
 }
 
+function get_default_branch($customer_id, $ar_account=null)
+{
+	$sql = "SELECT * 
+		FROM ".TB_PREF."cust_branch WHERE debtor_no = ".db_escape($customer_id);
+	if($ar_account)
+		$sql .= " AND receivables_account=".db_escape($ar_account);
+	$result = db_query($sql,"cannot retrieve default branch");
+	return db_fetch($result);
+}
+

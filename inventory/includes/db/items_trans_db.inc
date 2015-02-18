@@ -56,15 +56,21 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 		if ($value_of_change != 0)
 		{
 			$stock_gl_code = get_stock_gl_code($stock_id);
-	   		$update_no = get_next_trans_no(ST_COSTUPDATE);
-			$memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand for item '%s'"),
-				number_format2($last_cost, 2), number_format2($new_cost, 2), $stock_id);
-			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], 
-				$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
 
-			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
-				$value_of_change);
+			$cart = new items_cart(ST_COSTUPDATE);
+			$cart->tran_date = $cart->doc_date = $cart->event_date = $date_;
+			if (!is_date_in_fiscalyear($cart->tran_date))
+				$cart->tran_date = end_fiscalyear();
+			$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date, $date_);
 
+			$cart->memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand of %s"),
+				number_format2($last_cost, 2), number_format2($new_cost), $qoh);
+
+			$cart->add_gl_item($stock_gl_code["adjustment_account"],
+				$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], -$value_of_change);
+			$cart->add_gl_item($stock_gl_code["inventory_account"], 0, 0, $value_of_change);
+
+			write_journal_entries($cart);
 			change_stock_moves_std_cost($stock_id, $date_, $new_cost - $last_cost);	
 		}
    	}

@@ -37,14 +37,29 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	$diff = $amount - $for_amount;
 	if (floatcmp($diff,0))
 	{
-		if ($trans_no == null)
-			$trans_no = get_next_trans_no(ST_JOURNAL);
+		// generate journal entry // FIXME: use cart?
+		global $Refs;
+
+		begin_transaction();
+		$trans_no = get_next_trans_no(ST_JOURNAL);
+		$ref = $Refs->get_next(ST_JOURNAL);
+
+		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , $currency, $ref, '', $rate, $date_, $date_);
+		$Refs->save(ST_JOURNAL, $trans_no, $ref);
+		add_audit_trail(ST_JOURNAL, $trans_no, $date_);
+		add_comments(ST_JOURNAL, $trans_no, $date_, $memo);
+
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
 		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
-    		-$diff, null, $person_type_id, $person_id);
+    		$diff, null, $person_type_id, $person_id);
+
+		// positive change in value is positive variance for AR and bank accounts, and negative for AP
+    	$variance_act = ($diff < 0 && $person_id==PT_SUPPLIER) || ($diff > 0 && $person_id != PT_SUPPLIER)
+    		 ? 'exchange_diff_act' : 'exchange_diff_neg_act';
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
-    		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
+    		_("Exchange Variance"),	-$diff, null, $person_type_id, $person_id);
+		commit_transaction();
 		return true;
 	}
 	return false;
@@ -56,15 +71,21 @@ function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person
 	global $Refs;
 	if ($amount == 0)
 		return;
+
+	begin_transaction();
 	$trans_no = get_next_trans_no(ST_JOURNAL);
+	$ref = $Refs->get_next(ST_JOURNAL);
+
+	add_journal(ST_JOURNAL, $trans_no, $amount, $date, $currency, $ref, '', $rate, $date, $date);
+	$Refs->save(ST_JOURNAL, $trans_no, $ref);
+	add_audit_trail(ST_JOURNAL, $trans_no, $date);
+
 	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ledger_act, 0, 0, _("Exchange Variance"),
 		$amount, null, $person_type_id, $person_id);
 	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ex_act, 0, 0, 
 		_("Exchange Variance"),	-$amount, null, $person_type_id, $person_id);
 	add_comments(ST_JOURNAL, $trans_no, $date, $memo);
-	$ref = $Refs->get_next(ST_JOURNAL);
-	$Refs->save(ST_JOURNAL, $trans_no, $ref);
-	add_audit_trail(ST_JOURNAL, $trans_no, $date);
+	commit_transaction();
 }
 
 function get_cust_account_curr_balances($date)

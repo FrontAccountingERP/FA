@@ -70,12 +70,11 @@ function get_customer_details($customer_id, $to=null, $all=true)
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
+	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
 	if ($all)
-    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
-    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
+    	$value = "IFNULL($sign*(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
     else		
-    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
-    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
+    	$value = "IFNULL($sign*(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
     		trans.alloc),0)";
 	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
     $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
@@ -188,9 +187,11 @@ function get_customer_by_ref($reference)
 
 //----------------------------------------------------------------------------------
 
-function get_customer_currency($customer_id)
+function get_customer_currency($customer_id=null, $branch_id=null)
 {
-    $sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($customer_id);
+    $sql = "SELECT curr_code FROM ".TB_PREF."debtors_master cust
+    		LEFT JOIN ".TB_PREF."cust_branch branch ON branch.debtor_no=cust.debtor_no
+    	WHERE " .(isset($branch_id) ? "branch_code = ".db_escape($branch_id) : "cust.debtor_no = ".db_escape($customer_id));
 
 	$result = db_query($sql, "Retreive currency of customer $customer_id");
 

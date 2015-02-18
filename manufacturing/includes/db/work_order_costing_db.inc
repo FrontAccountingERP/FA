@@ -110,6 +110,7 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			$ref = $Refs->get_next(ST_JOURNAL);
 			
 			$stock_gl_code = get_stock_gl_code($stock_id);
+			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
 			$memo = "WO Overhead cost settlement JV for zero/negative respository of ".$stock_id;
 			//Reverse the inventory effect if $qoh <=0
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
@@ -163,7 +164,8 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 
 			$id = get_next_trans_no(ST_JOURNAL);
 			$ref = $Refs->get_next(ST_JOURNAL);
-			
+			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
+
 			$stock_gl_code = get_stock_gl_code($stock_id);
 			$memo = "WO labour cost settlement JV for zero/negative respository of ".$stock_id;
 			//Reverse the inventory effect if $qoh <=0
@@ -176,7 +178,7 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 				$stock_gl_code["adjustment_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 				$costs);
-				
+
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	
@@ -185,8 +187,8 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		}
 	}
 	else
-	{		
-		if ($qoh + $qty != 0)	
+	{
+		if ($qoh + $qty != 0)
 			$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
 	}	
 	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
@@ -218,6 +220,7 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 
 			$id = get_next_trans_no(ST_JOURNAL);
 			$ref = $Refs->get_next(ST_JOURNAL);
+			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
 			
 			$stock_gl_code = get_stock_gl_code($stock_id);
 			$memo = "WO Issue settlement JV for zero/negative respository of ".$stock_id;
@@ -272,7 +275,8 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $db_acc, $da
 		add_bank_trans(ST_JOURNAL, $journal_id, $is_bank_to, "",
 			$date, -$amount, PT_WORKORDER, $wo_id, get_company_currency(),
 			"Cannot insert a destination bank transaction");
-	}
+	} else
+		add_journal(ST_JOURNAL, $journal_id, $amount, $date, get_company_currency(), $ref);
 
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $db_acc,
 		$dim1, $dim2,  $wo_cost_types[$cost_type], $amount);

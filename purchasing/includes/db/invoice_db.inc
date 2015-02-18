@@ -332,7 +332,8 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 						global $Refs;
 
 						$id = get_next_trans_no(ST_JOURNAL);
-						$ref = $Refs->get_next(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
+						add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
 						$stock_id = $entered_grn->item_code;
 						$stock_gl_code = get_stock_gl_code($stock_id);
 						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
@@ -381,9 +382,9 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 			if ($allocate_amount != 0) 
 			{
 				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no,
-					$date_);
-				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no);
-				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id);
+					$supp_trans->supplier_id, $date_);
+				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no, $supp_trans->supplier_id);
+				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id, $supp_trans->supplier_id);
 
 				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $supp_trans->src_docs, $date_,
 					$allocate_amount, PT_SUPPLIER);
@@ -600,6 +601,7 @@ function void_supp_invoice($type, $type_no)
 						//Chaitanya : Post a journal entry
 						$id = get_next_trans_no(ST_JOURNAL);
 						$ref = $Refs->get_next(ST_JOURNAL);
+						add_journal(ST_JOURNAL, $id, $details_row["quantity"] * $diff, $old_date, get_company_currency(), $ref);
 						$stock_id = $details_row["stock_id"];
 						$stock_gl_code = get_stock_gl_code($stock_id);
 						$memo = "Reversing Supplier invoice adjustment for zero inventory of ".$stock_id." Invoice: ".$trans['reference'];

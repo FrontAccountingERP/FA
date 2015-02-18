@@ -33,7 +33,7 @@ class allocation
 	function allocation($type, $trans_no, $person_id = null, $person_type_id=null)
 	{
 		$this->allocs = array();
-
+		
 		$this->trans_no = $trans_no;
 		$this->type = $type;
 		if ($person_id)
@@ -130,10 +130,9 @@ class allocation
 				$this->date_ = sql2date($trans["tran_date"]);
 				$this->person_curr = $trans['curr_code'];
 				$this->currency = isset($trans['bank_curr_code']) ? $trans['bank_curr_code'] : $trans['curr_code'];
-				$this->bank_amount = @$trans["bank_amount"];
+				$this->bank_amount = isset($trans["bank_amount"]) ? $trans["bank_amount"] : $trans["Total"]; // not set for journal entry
 				$this->amount = $trans["Total"];
-			} else
-				$this->date_ = Today();
+			}
 		}
 	/* Now populate the array of possible (and previous actual) allocations 
 		for this customer/supplier. First get the transactions that have 
@@ -172,7 +171,6 @@ class allocation
 
 		while ($myrow = db_fetch($trans_items))
 		{
-//_vd($myrow);
 			$this->add_or_update_item ($myrow["type"], $myrow["trans_no"],
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
@@ -185,12 +183,14 @@ class allocation
 	//
 	function write()
 	{
+		global 	$no_exchange_variations;
+
 		begin_transaction();
 
 		if ($this->person_type == PT_SUPPLIER)
-			clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
+			clear_supp_alloctions($this->type, $this->trans_no, $this->person_id, $this->date_);
 		else
-		 	clear_cust_alloctions($this->type, $this->trans_no);
+		 	clear_cust_alloctions($this->type, $this->trans_no, $this->person_id, $this->date_);
 
 		// now add the new allocations
 		$total_allocated = 0;
@@ -204,21 +204,22 @@ class allocation
 				if ($this->person_type == PT_SUPPLIER) {
 					add_supp_allocation($amount,
 						$this->type, $this->trans_no,
-			    	 	$alloc_item->type, $alloc_item->type_no, $this->date_);
+			    	 	$alloc_item->type, $alloc_item->type_no, $this->person_id, $this->date_);
 
-					update_supp_trans_allocation($alloc_item->type, $alloc_item->type_no);
+					update_supp_trans_allocation($alloc_item->type, $alloc_item->type_no, $this->person_id);
 				} else {
 	 				add_cust_allocation($amount,
 						$this->type, $this->trans_no,
- 			     		$alloc_item->type, $alloc_item->type_no, $this->date_);
+ 			     		$alloc_item->type, $alloc_item->type_no, $this->person_id, $this->date_);
 
-	 				update_debtor_trans_allocation($alloc_item->type, $alloc_item->type_no);
+	 				update_debtor_trans_allocation($alloc_item->type, $alloc_item->type_no, $this->person_id);
 				}
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-				if (!in_array($alloc_item->type, array(ST_SALESQUOTE, ST_SALESORDER, ST_PURCHORDER)))
-				 exchange_variation($this->type, $this->trans_no,
-					$alloc_item->type, $alloc_item->type_no, $this->date_,
-					$amount, $this->person_type);
+				if ($alloc_item->type != ST_SALESORDER && !@$no_exchange_variations
+					&& $alloc_item->type != ST_PURCHORDER && $alloc_item->type != ST_JOURNAL && $this->type != ST_JOURNAL)
+					exchange_variation($this->type, $this->trans_no,
+						$alloc_item->type, $alloc_item->type_no, $this->date_,
+						$amount, $this->person_type);
 
 				//////////////////////////////////////////////////////////////
 				$total_allocated += $alloc_item->current_allocated;
@@ -226,9 +227,9 @@ class allocation
 
 		}  /*end of the loop through the array of allocations made */
 		if ($this->person_type == PT_SUPPLIER)
-			update_supp_trans_allocation($this->type, $this->trans_no);
+			update_supp_trans_allocation($this->type, $this->trans_no, $this->person_id);
 		else
-		 	update_debtor_trans_allocation($this->type,	$this->trans_no);
+		 	update_debtor_trans_allocation($this->type,	$this->trans_no, $this->person_id);
 
 		commit_transaction();
 
@@ -284,7 +285,7 @@ function show_allocatable($show_totals) {
 
 	if (count($cart->allocs)) 
 	{
-		if ($cart->currency != $cart->person_curr)
+//		if ($cart->currency != $cart->person_curr)
 			display_heading(sprintf(_("Allocated amounts in %s:"), $cart->person_curr));
 		start_table(TABLESTYLE, "width='60%'");
    		$th = array(_("Transaction Type"), _("#"), $supp_ref ? _("Supplier Ref"): _("Ref"), _("Date"), _("Due Date"), _("Amount"),
@@ -328,7 +329,8 @@ function show_allocatable($show_totals) {
 
 			if ($_SESSION['alloc']->type == ST_SUPPCREDIT
 				|| $_SESSION['alloc']->type == ST_SUPPAYMENT
-				||  $_SESSION['alloc']->type == ST_BANKPAYMENT)
+				||  $_SESSION['alloc']->type == ST_BANKPAYMENT || 
+				($_SESSION['alloc']->type == ST_JOURNAL && $_SESSION['alloc']->person_type == PT_SUPPLIER))
 				$amount = -$amount;
 */
 			$amount = abs($cart->amount);
@@ -360,7 +362,6 @@ function check_allocations()
 	for ($counter = 0; $counter < get_post("TotalNumberOfAllocs"); $counter++)
 	{
 		if (!isset($_POST['amount'.$counter])) continue;
-
 		if (!check_num('amount' . $counter, 0))
 		{
 			display_error(_("The entry for one or more amounts is invalid or negative."));
@@ -386,7 +387,8 @@ function check_allocations()
 /*
 	$amount = $_SESSION['alloc']->amount;
 
-	if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT)))
+	if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT)) || 
+		($_SESSION['alloc']->type==ST_JOURNAL && $_SESSION['alloc']->person_type == PT_SUPPLIER))
 		$amount = -$amount;
 */
 	$amount = abs($_SESSION['alloc']->amount);
@@ -398,4 +400,23 @@ function check_allocations()
 	}
 
 	return true;
+}
+
+//----------------------------------------------------------------------------------------
+//
+//	Returns sales or purchase invoice allocations to be reallocated after invoice edition.
+//
+function get_inv_allocations($trans_no, $trans_type, $person_id)
+{
+	$allocs = array();
+	if ($trans_type == ST_SUPPINVOICE || $trans_type == ST_SUPPCREDIT)
+		$result = get_allocatable_from_supp_transactions($person_id, $trans_no, $trans_type);
+	else
+		$result = get_allocatable_from_cust_transactions($person_id, $trans_no, $trans_type);
+
+	while($dat = db_fetch($result))
+	{
+		$allocs[] = array('type'=> $dat['type'], 'trans_no'=> $dat['trans_no'], 'amount'=>$dat['alloc']);
+	}
+	return $allocs;
 }

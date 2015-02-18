@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 /**********************************************
 Author: Joe Hunt
 Name: Revenue / Cost Accruals v2.2
@@ -8,7 +18,7 @@ $page_security = 'SA_ACCRUALS';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/gl/includes/db/gl_db_trans.inc");
+include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 $js = get_js_open_window(800, 500);
 if (user_use_date_picker())
@@ -61,11 +71,11 @@ if (isset($_POST['go']) || isset($_POST['show']))
 			$date_ = begin_month($date_); // avoid skip on shorter months
 			$date  = end_month($date_); // avoid skip on shorter months
 		}
-		$lastdate = ($freq == 1 ? add_days($date_, 7*$per)
-				: ($freq == 2 ? add_days($date_, 14*$per)
-				: ($freq == 3 ? add_months($date_, $per)
-				: add_months($date_, 3*$per))));
-
+		
+		$lastdate = ($freq == 1 ? add_days($date_, 7*$per) :
+			($freq == 2 ? add_days($date_, 14*$per) :
+			($freq == 3 ? end_month(add_months($date_, $per)) : 
+			end_month(add_months($date_, 3*$per)))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
 			display_error(_("Some of the period dates are outside the fiscal year or are closed for further data entry. Create a new fiscal year first!"));
@@ -112,31 +122,33 @@ if (isset($_POST['go']) || isset($_POST['show']))
 					switch($freq)
 					{
 						case 1:
-							$date = add_days($date_, $i*7);
+							$date = $date_ = add_days($date_, 7);
 							break;
 						case 2:
-							$date = add_days($date_, $i*14);
+							$date = $date_ = add_days($date_, 14);
 							break;
 						case 3:
-							$date = add_months($date_, $i*1);
+							$date_ = add_months($date_, 1);
+							$date = end_month($date_);
 							break;
 						case 4:
-							$date = add_months($date_, $i*3);
+							$date_ = add_months($date_, 3);
+							$date = end_month($date_);
 							break;
 					}
 					$am0 = $am;
 				}
 				if (isset($_POST['go']))
 				{
-					$id = get_next_trans_no(ST_JOURNAL);
-					$ref = $Refs->get_next(ST_JOURNAL);
-					add_gl_trans(ST_JOURNAL, $id, $date, get_post('acc_act'), 0,
-						0, $ref, $am0 * -1);
-					add_gl_trans(ST_JOURNAL, $id, $date, get_post('res_act'), get_post('dimension_id'),
-						get_post('dimension2_id'), $ref, $am0);
-					add_audit_trail(ST_JOURNAL, $id, $date);
-					add_comments(ST_JOURNAL, $id, $date, $memo);
-					$Refs->save(ST_JOURNAL, $id, $ref);
+					$cart = new items_cart(ST_JOURNAL);
+					$cart->memo_ = $memo;
+					$cart->reference = $Refs->get_next(ST_JOURNAL, null, $date);
+					$cart->tran_date = $cart->doc_date = $cart->event_date = $date;
+					$cart->add_gl_item(get_post('acc_act'), 0, 0, -$am0, $cart->reference);
+					$cart->add_gl_item(get_post('res_act'), get_post('dimension_id'),
+						get_post('dimension2_id'), $am0, $cart->reference);
+					write_journal_entries($cart);
+					$cart->clear_items();
 				}
 				else
 				{
@@ -224,4 +236,3 @@ submit_js_confirm('go', _("Are you sure you want to post accruals?"));
 end_form();
 
 end_page();
-

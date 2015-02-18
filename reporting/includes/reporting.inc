@@ -116,9 +116,11 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_3' => '', 
 				'PARAM_4' => $def_orientation);
 			break;
+		default:
+			return null;
 //		default: $ar = array();
 	}
-	
+
 	return print_link($link_text, $rep, $ar, "", $icon, $class, $id);
 }
 //

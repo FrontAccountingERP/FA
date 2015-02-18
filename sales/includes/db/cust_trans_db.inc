@@ -300,6 +300,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 		debtor.name, 
 		branch.br_name,
 		debtor.curr_code,
+		debtor.debtor_no,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
    	if ($filter != ALL_TEXT)
@@ -312,17 +313,21 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 		$sql .= "trans.alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue ,
-		Sum(line.quantity-line.qty_done) AS Outstanding
+		Sum(line.quantity-line.qty_done) AS Outstanding,
+		Sum(line.qty_done) AS HasChild
 		FROM "
 			.TB_PREF."debtor_trans as trans
 			LEFT JOIN ".TB_PREF."debtor_trans_details as line
-				ON trans.trans_no=line.debtor_trans_no AND trans.type=line.debtor_trans_type,"
-			.TB_PREF."debtors_master as debtor, "
-			.TB_PREF."cust_branch as branch
+				ON trans.trans_no=line.debtor_trans_no AND trans.type=line.debtor_trans_type
+			LEFT JOIN ".TB_PREF."voided as v
+				ON trans.trans_no=v.id AND trans.type=v.type
+			LEFT JOIN ".TB_PREF."cust_branch as branch ON trans.branch_code=branch.branch_code,"
+			.TB_PREF."debtors_master as debtor
 		WHERE debtor.debtor_no = trans.debtor_no
 			AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code";
+			AND trans.branch_code = branch.branch_code
+			AND ISNULL(v.date_)";
 
    	if ($cust_id != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($cust_id);

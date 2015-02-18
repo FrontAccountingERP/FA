@@ -243,6 +243,9 @@ define('BO_SUPPLIER', 3);
 
 include_once($path_to_root . '/includes/sysnames.inc');
 
+// tax register type
+define('TR_OUTPUT', 0); // sales
+define('TR_INPUT', 1);	// purchase
 //---------------------------------------------------------------------------------
 // Constants optionally redefined locally
 //

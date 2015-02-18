@@ -14,11 +14,13 @@ function get_qoh_on_date($stock_id, $location=null, $date_=null)
     if ($date_ == null)
         $date_ = Today();
 
-    $date = date2sql($date_);
-
-    $sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
-            WHERE stock_id=".db_escape($stock_id)."
-            AND tran_date <= '$date'"; 
+     $date = date2sql($date_);
+     $sql = "SELECT SUM(qty)
+     	FROM ".TB_PREF."stock_moves st
+   		LEFT JOIN ".TB_PREF."voided v ON st.type=v.type AND st.trans_no=v.id
+          WHERE ISNULL(v.id)
+          AND stock_id=".db_escape($stock_id)."
+          AND tran_date <= '$date'"; 
 
     if ($location != null)
         $sql .= " AND loc_code = ".db_escape($location);
@@ -242,6 +244,8 @@ function get_purchases_from_trans($stock_id, $from)
 
 function adjust_deliveries($stock_id, $material_cost, $to)
 {
+	global $Refs;
+
 	if (!is_inventory_item($stock_id))
 		return;
 	
@@ -259,7 +263,7 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	
 	$row = get_purchases_from_trans($stock_id, $from);
 	$purchase_diff = 0;
-	$old_purchase_cost = 0;
+	$old_purchase_cost = $new_purchase_cost = 0;
 	if ($row != false)
 	{
 		$old_purchase_cost = $row[1];
@@ -268,28 +272,28 @@ function adjust_deliveries($stock_id, $material_cost, $to)
 	}
 
 	$diff =  $sales_diff - $purchase_diff;
-	
+
 	if ($diff != 0)
 	{
-	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
-		if (!is_date_in_fiscalyear($to))
-			$to = end_fiscalyear();
-	   
 		$stock_gl_code = get_stock_gl_code($stock_id);
 
 		$dec = user_price_dec();
 		$old_cost = -round2($old_sales_cost-$old_purchase_cost,$dec);
 		$new_cost = -round2($new_sales_cost-$new_purchase_cost,$dec);
 
-		$memo_ = sprintf(_("Cost was %s changed to %s x quantity on hand for item '%s'"),
-			number_format2($old_cost, 2), number_format2($new_cost, 2), $stock_id);
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
-			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
+		$cart = new items_cart(ST_COSTUPDATE);
+		$cart->tran_date = $cart->doc_date = $cart->event_date = $to;
+		if (!is_date_in_fiscalyear($cart->tran_date))
+			$cart->tran_date = end_fiscalyear();
+		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date, $to);
 
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
-			-$diff);
-		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
-   	}
+		$cart->memo_ = _("Cost was ") . $old_cost. _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+
+		$cart->add_gl_item($stock_gl_code["cogs_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $diff);
+		$cart->add_gl_item($stock_gl_code["inventory_account"], 0, 0, -$diff);
+
+		write_journal_entries($cart);
+	}
 }
 
 function get_stock_gl_code($stock_id)
@@ -321,6 +325,10 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 		if ($diff != 0)
 		{
+			begin_transaction();
+			add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
+			$Refs->save(ST_JOURNAL, $id, $ref);
+
 			$stock_gl_code = get_stock_gl_code($stock_id);
 			$memo = _("Zero/negative inventory handling");
 			//Reverse the inventory effect if $qoh <=0
@@ -337,6 +345,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 			add_audit_trail(ST_JOURNAL, $id, $date_);
 			add_comments(ST_JOURNAL, $id, $date_, $memo);
 			$Refs->save(ST_JOURNAL, $id, $ref);	
+			commit_transaction();
 		}
 	}
 }

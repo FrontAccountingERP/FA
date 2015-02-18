@@ -37,6 +37,14 @@ function find_submit($prefix, $numeric=true)
     }
     return $numeric ? -1 : null;
 }
+/*
+	Helper function.
+	Returns true if input $name with $submit_on_change option set is subject to update.
+*/
+function input_changed($name)
+{
+	return isset($_POST['_'.$name.'_changed']);
+}
 
 //------------------------------------------------------------------------------
 //
