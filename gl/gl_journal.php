@@ -130,8 +130,6 @@ function create_cart($type=0, $trans_no=0)
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->reference = $header['reference'];
 
-		$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
-
 		// update net_amounts from tax register
 
 		// retrieve tax details
@@ -164,7 +162,6 @@ function create_cart($type=0, $trans_no=0)
 		if (!is_date_in_fiscalyear($cart->tran_date))
 			$cart->tran_date = end_fiscalyear();
 		$cart->reference = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
-		$_POST['ref_original'] = -1;
 	}
 
 	$_POST['memo_'] = $cart->memo_;
@@ -239,15 +236,8 @@ if (isset($_POST['Process']))
 		set_focus('doc_date');
 		$input_error = 1;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_JOURNAL, $_SESSION['journal_items']->order_id))
 	{
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	} 
-	elseif (($_POST['ref'] != $_POST['ref_original']) && $Refs->exists(ST_JOURNAL,$_POST['ref'])) 
-	{
-   		display_error( _("The entered reference is already in use."));
    		set_focus('ref');
    		$input_error = 1;
 	}

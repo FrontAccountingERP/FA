@@ -515,6 +515,7 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 		// display_error($sql);
     return db_query($sql,"Cannot retrieve tax summary");
 }
+
 //--------------------------------------------------------------------------------------------------
 
 function exists_gl_trans($type, $trans_id)

@@ -153,7 +153,8 @@ function create_cart($type, $trans_no)
 		$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
 		$_POST['bank_account'] = $bank_trans["bank_act"];
 		$_POST['PayType'] = $bank_trans["person_type_id"];
-		
+		$cart->reference = $bank_trans["ref"];
+
 		if ($bank_trans["person_type_id"] == PT_CUSTOMER)
 		{
 			$trans = get_customer_trans($trans_no, $type);	
@@ -174,7 +175,6 @@ function create_cart($type, $trans_no)
 
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->tran_date = sql2date($bank_trans['trans_date']);
-		$cart->reference = $Refs->get($type, $trans_no);
 
 		$cart->original_amount = $bank_trans['amount'];
 		$result = get_gl_trans($type, $trans_no);
@@ -197,7 +197,7 @@ function create_cart($type, $trans_no)
 			$cart->gl_items[$line_no]->amount *= $ex_rate;
 
 	} else {
-		$cart->reference = $Refs->get_next($cart->trans_type);
+		$cart->reference = $Refs->get_next($cart->trans_type, null, $cart->tran_date);
 		$cart->tran_date = new_doc_date();
 		if (!is_date_in_fiscalyear($cart->tran_date))
 			$cart->tran_date = end_fiscalyear();
@@ -246,15 +246,8 @@ function check_trans()
 		set_focus('amount');
 		$input_error = 1;
 	}
-	if (!$Refs->is_valid($_POST['ref']))
+	if (!check_reference($_POST['ref'], $_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id))
 	{
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	}
-	elseif ($_POST['ref'] != $_SESSION['pay_items']->reference && !is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
-	{
-		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
 	}

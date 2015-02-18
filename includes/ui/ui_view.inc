@@ -262,7 +262,7 @@ function check_ui_refresh($name=null)
 		$name = $bt[1]['function'];
 	$old = @$_SESSION['ui_context'][$name];
 	$new = $_SESSION['ui_context'][$name] = $bt[1]['args'];
-	return ($new != $old) || ($_SERVER['REQUEST_METHOD'] == 'GET');
+	return ($new != $old);
 }
 
 //--------------------------------------------------------------------------------------

@@ -331,7 +331,7 @@ function check_data()
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'], ST_SALESINVOICE)) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
@@ -460,7 +460,10 @@ end_row();
 start_row();
 
 if ($_SESSION['Items']->trans_no == 0) {
-	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_SALESINVOICE,
+		array('customer' => $_SESSION['Items']->customer_id,
+			'branch' => $_SESSION['Items']->Branch,
+			'date' => get_post('InvoiceDate')));
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }

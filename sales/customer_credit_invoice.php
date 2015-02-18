@@ -97,7 +97,7 @@ function can_process()
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
 			display_error(_("You must enter a reference."));;
 			set_focus('ref');
 			return false;
@@ -241,7 +241,10 @@ function display_credit_items()
 //		$_POST['ref'] = $Refs->get_next(11);
 
     if ($_SESSION['Items']->trans_no==0) {
-		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTCREDIT,
+		array('customer' => $_SESSION['Items']->customer_id,
+			'branch' => $_SESSION['Items']->Branch,
+			'date' => get_post('CreditDate')));
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}

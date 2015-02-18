@@ -240,3 +240,20 @@ UPDATE `0_salesman`
 	SET `break_pt` = `break_pt`*100.0/`provision`
 WHERE `provision` != 0;
 
+# reference lines
+DROP TABLE IF EXISTS `0_reflines`;
+CREATE TABLE `0_reflines` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `trans_type` int(11) NOT NULL,
+  `prefix` char(5) NOT NULL DEFAULT '',
+  `pattern` varchar(35) NOT NULL DEFAULT '1',
+  `description` varchar(60) NOT NULL DEFAULT '',
+  `default` tinyint(1) NOT NULL DEFAULT '0',
+  `inactive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `prefix` (`trans_type`, `prefix`)
+) ENGINE=InnoDB;
+
+INSERT INTO `0_reflines` (`trans_type`, `pattern`, `default`) SELECT `type_id`, `next_reference`, 1 FROM `0_sys_types`;
+
+DROP TABLE `0_sys_types`;

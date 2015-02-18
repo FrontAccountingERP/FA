@@ -156,7 +156,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 	{
 		add_comments(ST_JOURNAL, $trans_no, $date, $memo);
 		if ($ref == "")
-			$ref = $Refs->get_next(ST_JOURNAL);
+			$ref = $Refs->get_next(ST_JOURNAL, null, $date);
 		$Refs->save(ST_JOURNAL, $trans_no, $ref);
 		add_audit_trail(ST_JOURNAL, $trans_no, $date);
 	}	
@@ -288,7 +288,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	}
 	if ($exchanged == true)
 	{
-		$ref1 = $Refs->get_next(ST_JOURNAL);
+		$ref1 = $Refs->get_next(ST_JOURNAL, null, $date_);
 		$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 		add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
 	}
@@ -525,7 +525,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id))
     	{
-   			$ref1 = $Refs->get_next(ST_JOURNAL);
+   			$ref1 = $Refs->get_next(ST_JOURNAL, null, $date_);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
 		}

@@ -1465,6 +1465,48 @@ CREATE TABLE IF NOT EXISTS `0_recurrent_invoices` (
 --
 
 
+--- Structure of table `0_reflines`
+
+DROP TABLE IF EXISTS `0_reflines`;
+
+CREATE TABLE `0_reflines` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `trans_type` int(11) NOT NULL,
+  `prefix` char(5) NOT NULL DEFAULT '',
+  `pattern` varchar(35) NOT NULL DEFAULT '1',
+  `description` varchar(60) NOT NULL DEFAULT '',
+  `default` tinyint(1) NOT NULL DEFAULT '0',
+  `inactive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `prefix` (`trans_type`, `prefix`)
+) ENGINE=InnoDB AUTO_INCREMENT=23;
+
+--- Data of table `0_reflines`
+
+INSERT INTO `0_reflines` VALUES
+('1', '0', '', '{001}/{YYYY}', '', '1', '0'),
+('2', '1', '', '{001}/{YYYY}', '', '1', '0'),
+('3', '2', '', '{001}/{YYYY}', '', '1', '0'),
+('4', '4', '', '{001}/{YYYY}', '', '1', '0'),
+('5', '10', '', '{001}/{YYYY}', '', '1', '0'),
+('6', '11', '', '{001}/{YYYY}', '', '1', '0'),
+('7', '12', '', '{001}/{YYYY}', '', '1', '0'),
+('8', '13', '', '{001}/{YYYY}', '', '1', '0'),
+('9', '16', '', '{001}/{YYYY}', '', '1', '0'),
+('10', '17', '', '{001}/{YYYY}', '', '1', '0'),
+('11', '18', '', '{001}/{YYYY}', '', '1', '0'),
+('12', '20', '', '{001}/{YYYY}', '', '1', '0'),
+('13', '21', '', '{001}/{YYYY}', '', '1', '0'),
+('14', '22', '', '{001}/{YYYY}', '', '1', '0'),
+('15', '25', '', '{001}/{YYYY}', '', '1', '0'),
+('16', '26', '', '{001}/{YYYY}', '', '1', '0'),
+('17', '28', '', '{001}/{YYYY}', '', '1', '0'),
+('18', '29', '', '{001}/{YYYY}', '', '1', '0'),
+('19', '30', '', '{001}/{YYYY}', '', '1', '0'),
+('20', '32', '', '{001}/{YYYY}', '', '1', '0'),
+('21', '35', '', '{001}/{YYYY}', '', '1', '0'),
+('22', '40', '', '{001}/{YYYY}', '', '1', '0');
+
 -- --------------------------------------------------------
 
 --
@@ -2094,48 +2136,6 @@ INSERT INTO `0_sys_prefs` VALUES('allow_negative_prices','glsetup.inventory', 't
 INSERT INTO `0_sys_prefs` VALUES('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('alternative_tax_include_on_docs','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `0_sys_types`
---
-
-DROP TABLE IF EXISTS `0_sys_types`;
-CREATE TABLE IF NOT EXISTS `0_sys_types` (
-  `type_id` smallint(6) NOT NULL default '0',
-  `type_no` int(11) NOT NULL default '1',
-  `next_reference` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`type_id`)
-) ENGINE=InnoDB;
-
---
--- Dumping data for table `0_sys_types`
---
-
-INSERT INTO `0_sys_types` VALUES(0, 19, '3');
-INSERT INTO `0_sys_types` VALUES(1, 8, '2');
-INSERT INTO `0_sys_types` VALUES(2, 5, '2');
-INSERT INTO `0_sys_types` VALUES(4, 3, '1');
-INSERT INTO `0_sys_types` VALUES(10, 19, '4');
-INSERT INTO `0_sys_types` VALUES(11, 3, '2');
-INSERT INTO `0_sys_types` VALUES(12, 6, '1');
-INSERT INTO `0_sys_types` VALUES(13, 5, '2');
-INSERT INTO `0_sys_types` VALUES(16, 2, '1');
-INSERT INTO `0_sys_types` VALUES(17, 2, '1');
-INSERT INTO `0_sys_types` VALUES(18, 1, '3');
-INSERT INTO `0_sys_types` VALUES(20, 8, '3');
-INSERT INTO `0_sys_types` VALUES(21, 1, '1');
-INSERT INTO `0_sys_types` VALUES(22, 4, '2');
-INSERT INTO `0_sys_types` VALUES(25, 1, '2');
-INSERT INTO `0_sys_types` VALUES(26, 1, '8');
-INSERT INTO `0_sys_types` VALUES(28, 1, '1');
-INSERT INTO `0_sys_types` VALUES(29, 1, '2');
-INSERT INTO `0_sys_types` VALUES(30, 5, '6');
-INSERT INTO `0_sys_types` VALUES(32, 0, '1');
-INSERT INTO `0_sys_types` VALUES(35, 1, '1');
-INSERT INTO `0_sys_types` VALUES(40, 1, '3');
 
 -- --------------------------------------------------------
 

@@ -39,7 +39,8 @@ function display_order_header(&$order)
 
     date_row(_("Date:"), 'AdjDate', '', true);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER));
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER, null, array('date'=>get_post('Adjdate'), 'location'=> get_post('FromStockLocation'))),
+		 false, ST_LOCTRANSFER);
 
 	end_outer_table(1); // outer table
 }

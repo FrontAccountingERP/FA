@@ -126,16 +126,8 @@ function can_process()
 
 	if (!isset($selected_id))
 	{
-    	if (!$Refs->is_valid($_POST['wo_ref']))
+    	if (!check_reference($_POST['wo_ref'], ST_WORKORDER))
     	{
-    		display_error(_("You must enter a reference."));
-			set_focus('wo_ref');
-    		return false;
-    	}
-
-    	if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER))
-    	{
-    		display_error(_("The entered reference is already in use."));
 			set_focus('wo_ref');
     		return false;
     	}
@@ -380,7 +372,7 @@ if (isset($selected_id))
 else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
-	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
+	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER, null, get_post('date_')), false, ST_WORKORDER);
 
 	wo_types_list_row(_("Type:"), 'type', null);
 }

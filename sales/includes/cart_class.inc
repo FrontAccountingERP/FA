@@ -135,7 +135,8 @@ class cart
 			$type = get_child_type($this->trans_type);
 
 		$this->trans_type = $type;
-		$this->reference = $Refs->get_next($this->trans_type);
+		$this->reference = $Refs->get_next($this->trans_type, null, array('date' => $this->document_date,
+			'customer' => $this->customer_id, 'branch' => $this->Branch));
 		if ($type == ST_CUSTCREDIT)
 		    $this->src_date = $this->document_date;
 
@@ -244,7 +245,8 @@ class cart
 				$this->document_date = new_doc_date();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
-				$this->reference = $Refs->get_next($this->trans_type);
+				$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),
+					'customer' => $this->customer_id));
 				if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
 				{
 					$dim = get_company_pref('use_dimension');

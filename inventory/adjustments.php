@@ -87,16 +87,9 @@ function can_process()
 		set_focus('stock_id');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
-	{
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
 
-	if (!is_new_reference($_POST['ref'], ST_INVADJUST)) 
+	if (!check_reference($_POST['ref'], ST_INVADJUST))
 	{
-		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}

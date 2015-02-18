@@ -160,7 +160,11 @@ function issue_options_controls()
 
 	echo "<br>";
 	start_table();
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(28));
+ 	date_row(_("Issue Date:"), 'date_');
+ 	locations_list_row(_("From Location:"), 'Location');
+ 	workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
+
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_MANUISSUE, null, array('date'=> get_post('date_'), 'location' => get_post('Location'));
  
  	if (!isset($_POST['IssueType']))
  		$_POST['IssueType'] = 0;
@@ -168,10 +172,7 @@ function issue_options_controls()
  	yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'],
  		_("Return Items to Location"), _("Issue Items to Work order"));
  
- 	locations_list_row(_("From Location:"), 'Location');
- 	workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
  
- 	date_row(_("Issue Date:"), 'date_');
 
 	textarea_row(_("Memo"), 'memo_', null, 50, 3);
 

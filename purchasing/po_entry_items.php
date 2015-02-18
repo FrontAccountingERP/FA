@@ -353,22 +353,14 @@ function can_commit()
 
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!$Refs->is_valid(get_post('ref'))) 
+    	if (!check_reference(get_post('ref'), $_SESSION['PO']->trans_type))
     	{
-    		display_error(_("There is no reference entered for this purchase order."));
-			set_focus('ref');
-    		return false;
-    	} 
-
-    	if (!is_new_reference(get_post('ref'), $_SESSION['PO']->trans_type)) 
-    	{
-    		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
     		return false;
     	}
 	}
 
-	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && !$Refs->is_valid(get_post('supp_ref'))) 
+	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && empty(trim(get_post('supp_ref'))))
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_ref');

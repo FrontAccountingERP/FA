@@ -38,7 +38,8 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$doc->document_date = $date; 
 
 	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
-	$doc->reference = $Refs->get_next($doc->trans_type);
+	$doc->reference = $Refs->get_next($doc->trans_type, null, array('customer' => $customer_id, 'branch' => $branch_id,
+		'date' => $date));
 	if ($doc->Comments != "")
 		$doc->Comments .= "\n";
 	$doc->Comments .= sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1));
@@ -50,7 +51,8 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	}	
 	$cart = $doc;
 	$cart->trans_type = ST_SALESINVOICE;
-	$cart->reference = $Refs->get_next($cart->trans_type);
+	$cart->reference = $Refs->get_next($cart->trans_type, null, array('customer' => $customer_id, 'branch' => $branch_id,
+		'date' => $date));
 	$invno = $cart->write(1);
 	if ($invno == -1)
 	{

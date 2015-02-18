@@ -170,24 +170,9 @@ function check_data()
 		return false;
 	}
 
-	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
+	if (!check_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT, $_SESSION['supp_trans']->trans_no))
 	{
-		display_error(_("You must enter an credit note reference."));
 		set_focus('reference');
-		return false;
-	}
-
-	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT, $_SESSION['supp_trans']->trans_no))
-	{
-		display_error(_("The entered reference is already in use."));
-		set_focus('reference');
-		return false;
-	}
-
-	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
-	{
-		display_error(_("You must enter a supplier's credit note reference."));
-		set_focus('supp_reference');
 		return false;
 	}
 

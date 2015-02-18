@@ -71,16 +71,8 @@ function can_process($wo_details)
 {
 	global $SysPrefs, $Refs;
 
-	if (!$Refs->is_valid($_POST['ref']))
+	if (!check_reference($_POST['ref'], ST_MANURECEIVE))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], 29))
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -191,7 +183,8 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 start_table(TABLESTYLE2);
 br();
 
-ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
+ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29, null, get_post('date_')), false, ST_MANUISSUE);
+date_row(_("Date:"), 'date_');
 
 if (!isset($_POST['ProductionType']))
 	$_POST['ProductionType'] = 1;
@@ -200,8 +193,6 @@ yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'],
 	_("Produce Finished Items"), _("Return Items to Work Order"));
 
 small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-
-date_row(_("Date:"), 'date_');
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 

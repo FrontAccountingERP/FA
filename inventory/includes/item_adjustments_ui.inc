@@ -35,7 +35,9 @@ function display_order_header(&$order)
     date_row(_("Date:"), 'AdjDate', '', true);
 
 	table_section(2, "50%");
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST));
+
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST, null, array('location'=>get_post('StockLocation'), 'date'=>get_post('AdjDate'))),
+		 false, ST_INVADJUST);
 
 	end_outer_table(1); // outer table
 }

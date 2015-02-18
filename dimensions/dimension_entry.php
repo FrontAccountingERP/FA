@@ -109,17 +109,8 @@ function can_process()
 
 	if ($selected_id == -1) 
 	{
-
-    	if (!$Refs->is_valid($_POST['ref'])) 
+    	if (!check_reference($_POST['ref'], ST_DIMENSION))
     	{
-    		display_error( _("The dimension reference must be entered."));
-			set_focus('ref');
-    		return false;
-    	}
-
-    	if (!is_new_reference($_POST['ref'], ST_DIMENSION)) 
-    	{
-    		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
     		return false;
     	}
@@ -264,7 +255,7 @@ if ($selected_id != -1)
 else 
 {
 	$_POST['dimension_tags'] = array();
-	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
+	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION), false, ST_DIMENSION);
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);

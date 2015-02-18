@@ -107,8 +107,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			global $Refs;
 
 			$id = get_next_trans_no(ST_JOURNAL);
-			$ref = $Refs->get_next(ST_JOURNAL);
-			
+			$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
+
 			$stock_gl_code = get_stock_gl_code($stock_id);
 			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
 			$memo = "WO Overhead cost settlement JV for zero/negative respository of ".$stock_id;
@@ -163,7 +163,7 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			global $Refs;
 
 			$id = get_next_trans_no(ST_JOURNAL);
-			$ref = $Refs->get_next(ST_JOURNAL);
+			$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
 
 			$stock_gl_code = get_stock_gl_code($stock_id);
@@ -219,7 +219,7 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 			global $Refs;
 
 			$id = get_next_trans_no(ST_JOURNAL);
-			$ref = $Refs->get_next(ST_JOURNAL);
+			$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 			add_journal(ST_JOURNAL, $id, $costs, $date_, get_company_currency(), $ref);
 			
 			$stock_gl_code = get_stock_gl_code($stock_id);
@@ -265,7 +265,7 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $db_acc, $da
 	begin_transaction();
 
     $journal_id = get_next_trans_no(ST_JOURNAL);
-    if (!$ref) $ref = $Refs->get_next(ST_JOURNAL);
+    if (!$ref) $ref = $Refs->get_next(ST_JOURNAL, null, $date);
 
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $cr_acc,
 		0, 0, $wo_cost_types[$cost_type], -$amount);

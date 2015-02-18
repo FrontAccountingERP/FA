@@ -84,7 +84,8 @@ function create_new_po($trans_type, $trans_no)
 		read_po($trans_no, $cart);
 		$cart->order_no = $trans_no;
 	} else
-		$cart->reference = $Refs->get_next($trans_type);
+		$cart->reference = $Refs->get_next($trans_type, null,
+			array('supplier_id' => $cart->supplier_id, 'date' => get_post('OrderDate')));
 	$_SESSION['PO'] = &$cart;
 }
 

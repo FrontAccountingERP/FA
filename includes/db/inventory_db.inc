@@ -320,7 +320,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 		global $Refs;
 
 		$id = get_next_trans_no(ST_JOURNAL);
-		$ref = $Refs->get_next(ST_JOURNAL);
+		$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 		$diff = round($qoh*get_standard_cost($stock_id) + $quantity*$standard_cost, user_price_dec());
 
 		if ($diff != 0)

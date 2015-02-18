@@ -159,22 +159,7 @@ function can_process()
 		return false;
 	}
 
-	if (!$Refs->is_valid($_POST['ref'])) {
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	if (isset($_POST['trans_no']) && $_POST['trans_no'] == 0 && (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT))) {
-		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
-		return false;
-	}
-	//Avoid duplicate reference while modifying
-	elseif ($_POST['ref'] != $_POST['old_ref'] && !is_new_reference($_POST['ref'], ST_CUSTPAYMENT))
-	{
-		display_error( _("The entered reference is already in use."));
+	if (!check_reference($_POST['ref'], ST_CUSTPAYMENT, @$_POST['trans_no'])) {
 		set_focus('ref');
 		return false;
 	}
@@ -281,12 +266,12 @@ function read_customer_data()
 	//Chaitanya : 13-OCT-2011 - To support Edit feature
 	//If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
-		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT, null, array(
+			'customer' => get_post('customer_id'), 'date' => get_post('DateBanked')));
 }
 
 //----------------------------------------------------------------------------------------------
 $new = 1;
-$old_ref = 0;
 
 //Chaitanya : 13-OCT-2011 - To support Edit feature
 if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
@@ -300,7 +285,6 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['BranchID'] = $myrow["branch_code"];
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
-	$old_ref = $myrow["reference"];
 	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
 	$_POST['charge'] =  price_format($charge);
 	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
@@ -324,7 +308,6 @@ $new = !$_SESSION['alloc']->trans_no;
 start_form();
 
 	hidden('trans_no');
-	hidden('old_ref', $old_ref);
 
 	start_outer_table(TABLESTYLE2, "width='60%'", 5);
 

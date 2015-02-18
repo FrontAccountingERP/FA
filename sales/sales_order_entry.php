@@ -431,7 +431,7 @@ function can_process() {
 			return false;
 		}	
 	}	
-	if (!$Refs->is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'], $_SESSION['Items']->trans_type)) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
@@ -462,7 +462,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	if ($ret == -1)
 	{
 		display_error(_("The entered reference is already in use."));
-		$ref = get_next_reference($_SESSION['Items']->trans_type);
+		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => Today()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
 			display_error(_("The reference number field has been increased. Please save the document again."));
@@ -658,7 +658,7 @@ function create_cart($type, $trans_no)
 			$doc->pos = get_sales_point(user_pos());
 		} else
 			$doc->due_date = $doc->document_date;
-		$doc->reference = $Refs->get_next($doc->trans_type);
+		$doc->reference = $Refs->get_next($doc->trans_type, null, array('date' => Today()));
 		//$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {
 			$doc->line_items[$line_no]->qty_done = 0;

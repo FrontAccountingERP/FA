@@ -73,28 +73,20 @@ function can_process()
 {
 	global $Refs;
 
-	if (!is_date($_POST['date_'])) 
+	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the issue is invalid."));
 		set_focus('date_');
 		return false;
 	} 
-	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
+	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_MANUISSUE))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_MANUISSUE)) 
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}

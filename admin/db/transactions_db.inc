@@ -36,8 +36,6 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 		$sql .= ", t.$type_name as type";
 	$sql .= " FROM $table_name t LEFT JOIN ".TB_PREF."voided v ON"
 		." t.$trans_no_name=v.id AND v.type=$filtertype";
-	if (!$trans_ref)
-		$sql .= " LEFT JOIN ".TB_PREF."refs r ON t.$trans_no_name=r.id AND r.type=$filtertype";
 
 	$sql .= " WHERE ISNULL(v.`memo_`)";
 	if ($from != null && $to != null)
@@ -209,16 +207,8 @@ function get_systype_db_info($type)
         case     31              : return array(TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
         case     ST_SALESQUOTE   : return array(TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
         case	 ST_DIMENSION    : return array(TB_PREF."dimensions", null, "id", "reference", "date_");
-        case     ST_COSTUPDATE   : return array(TB_PREF."gl_trans", "type", "type_no", null, "tran_date");
+        case     ST_COSTUPDATE   : return array(TB_PREF."journal", "type", "trans_no", "reference", "tran_date");
 	}
 
 	display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
 }
-
-function get_systypes()
-{
-	$sql = "SELECT * FROM ".TB_PREF."sys_types";
-	$result = db_query($sql, "could not query systypes table");
-	return $result;
-}
-

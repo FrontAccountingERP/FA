@@ -23,7 +23,7 @@ function display_bank_header(&$order)
 	
     date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
 
-	ref_row(_("Reference:"), 'ref', '');
+	ref_row(_("Reference:"), 'ref', '', $order->reference, false, $order->trans_type, get_post('date_'));
 
 	table_section(2, "33%");
 

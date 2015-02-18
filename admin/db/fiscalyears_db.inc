@@ -160,7 +160,7 @@ function close_year($year)
 	if ($balance != 0.0)
 	{
 		$cart = new items_cart(ST_JOURNAL);
-		$cart->reference = $Refs->get_next(ST_JOURNAL, null, $to);
+		$cart->reference = $Refs->get_next(ST_JOURNAL, null, sql2date($to));
 		$cart->tran_date = $cart->doc_date = $cart->event_date = $to;
 
 		$cart->add_gl_item($co['retained_earnings_act'], 0, 0, -$balance, _("Closing Year"), '', 0);
@@ -372,6 +372,7 @@ function delete_this_fiscalyear($selected_id)
 		$trans_type = ST_JOURNAL;
 		$date_ = sql2date($to);
 		$reference = $Refs->get_next($trans_type, null, $date_);
+		$Refs->save($trans_type, $trans_no, $reference);
 		add_journal($trans_type, $trans_no, $total, $date_, get_company_currency(), $reference);
 		$Refs->save($trans_type, $trans_no, $reference);
 		add_audit_trail($trans_type, $trans_no, $date_);

@@ -143,7 +143,7 @@ function can_process()
 	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost',0)))
 		return false;
 	if($_SESSION['Items']->trans_no == 0) {
-	    if (!$Refs->is_valid($_POST['ref'])) {
+	    if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
 			display_error( _("You must enter a reference."));
 			set_focus('ref');
 			$input_error = 1;

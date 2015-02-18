@@ -60,16 +60,8 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_JOURNAL))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_JOURNAL)) 
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -102,7 +94,7 @@ function display_reval()
 	if (!isset($_POST['date']))
 		$_POST['date'] = Today();
     date_row(_("Date for Revaluation:"), 'date', '', null, 0, 0, 0, null, true);
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_JOURNAL));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_JOURNAL, null, $_POST['date']), false, ST_JOURNAL);
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 	end_table(1);
 

@@ -83,15 +83,8 @@ if (isset($_POST['Process']))
 		set_focus('stock_id');
 		$input_error = 1;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_LOCTRANSFER))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	} 
-	elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER)) 
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
 	} 

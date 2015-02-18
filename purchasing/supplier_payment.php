@@ -202,16 +202,8 @@ function check_inputs()
 		return false;
 	}
 
-    if (!$Refs->is_valid($_POST['ref'])) 
-    {
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) 
+	if (!check_reference($_POST['ref'], ST_SUPPAYMENT))
 	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -295,7 +287,9 @@ start_form();
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT, null, 
+    	array('supplier'=>get_post('supplier_id'), 'date'=>get_post('DatePaid'))), false, ST_SUPPAYMENT);
+
 
 	table_section(3);
 

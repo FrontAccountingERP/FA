@@ -524,3 +524,17 @@ function check_is_editable($trans_type, $trans_no, $msg=null)
 		check_is_closed($trans_type, $trans_no, $msg);
 }
 
+function check_reference($reference, $trans_type, $trans_no=0, $context=null, $line=null)
+{
+	global $Refs;
+
+	if (!$Refs->is_valid($reference, $trans_type, $context, $line))
+	{
+		display_error(_("The entered reference is invalid.")); return false;
+	}
+	elseif (!$Refs->is_new_reference($reference, $trans_type, $trans_no))
+	{
+		display_error( _("The entered reference is already in use.")); return false;
+	}
+	return true;
+}

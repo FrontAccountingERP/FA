@@ -597,7 +597,7 @@ function void_supp_invoice($type, $type_no)
 
 						//Chaitanya : Post a journal entry
 						$id = get_next_trans_no(ST_JOURNAL);
-						$ref = $Refs->get_next(ST_JOURNAL);
+						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 						add_journal(ST_JOURNAL, $id, $details_row["quantity"] * $diff, $old_date, get_company_currency(), $ref);
 						$stock_id = $details_row["stock_id"];
 						$stock_gl_code = get_stock_gl_code($stock_id);

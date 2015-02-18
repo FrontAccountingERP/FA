@@ -117,7 +117,10 @@ function invoice_header(&$supp_trans)
 		copy_from_trans($supp_trans);
 	}
 
-   	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type));
+   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
+
+   	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type, null, 
+   		array('supplier' => get_post('supplier_id'), 'date' => get_post('tran_date'))), false, $supp_trans->trans_type);
 
 	if ($supp_trans->trans_type == ST_SUPPCREDIT)
 	{
@@ -133,7 +136,6 @@ function invoice_header(&$supp_trans)
 
 	table_section(2, "33%");
 
-   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
 		$Ajax->activate('_ex_rate');
 		$supp_trans->tran_date = $_POST['tran_date'];
