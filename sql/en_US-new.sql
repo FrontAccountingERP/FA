@@ -1217,6 +1217,7 @@ CREATE TABLE IF NOT EXISTS `0_quick_entries` (
   `id` smallint(6) unsigned NOT NULL auto_increment,
   `type` tinyint(1) NOT NULL default '0',
   `description` varchar(60) NOT NULL,
+  `usage` varchar(120) NULL,
   `base_amount` double NOT NULL default '0',
   `base_desc` varchar(60) default NULL,
   `bal_type` tinyint(1) NOT NULL default '0',
@@ -1228,9 +1229,9 @@ CREATE TABLE IF NOT EXISTS `0_quick_entries` (
 -- Dumping data for table `0_quick_entries`
 --
 
-INSERT INTO `0_quick_entries` VALUES(1, 1, 'Maintenance', 0, 'Amount', 0);
-INSERT INTO `0_quick_entries` VALUES(2, 4, 'Phone', 0, 'Amount', 0);
-INSERT INTO `0_quick_entries` VALUES(3, 2, 'Cash Sales', 0, 'Amount', 0);
+INSERT INTO `0_quick_entries` VALUES(1, 1, 'Maintenance', NULL, 0, 'Amount', 0);
+INSERT INTO `0_quick_entries` VALUES(2, 4, 'Phone', NULL, 0, 'Amount', 0);
+INSERT INTO `0_quick_entries` VALUES(3, 2, 'Cash Sales', 'Retail sales without invoice', 0, 'Amount', 0);
 
 -- --------------------------------------------------------
 
@@ -1243,6 +1244,7 @@ CREATE TABLE IF NOT EXISTS `0_quick_entry_lines` (
   `id` smallint(6) unsigned NOT NULL auto_increment,
   `qid` smallint(6) unsigned NOT NULL,
   `amount` double default '0',
+  `memo` tinytext NOT NULL,
   `action` varchar(2) NOT NULL,
   `dest_id` varchar(15) NOT NULL default '',
   `dimension_id` smallint(6) unsigned default NULL,
@@ -1255,12 +1257,12 @@ CREATE TABLE IF NOT EXISTS `0_quick_entry_lines` (
 -- Dumping data for table `0_quick_entry_lines`
 --
 
-INSERT INTO `0_quick_entry_lines` VALUES(1, 1, 0, 't-', '1', 0, 0);
-INSERT INTO `0_quick_entry_lines` VALUES(2, 2, 0, 't-', '1', 0, 0);
-INSERT INTO `0_quick_entry_lines` VALUES(3, 3, 0, 't-', '1', 0, 0);
-INSERT INTO `0_quick_entry_lines` VALUES(4, 3, 0, '=', '4010', 0, 0);
-INSERT INTO `0_quick_entry_lines` VALUES(5, 1, 0, '=', '5765', 0, 0);
-INSERT INTO `0_quick_entry_lines` VALUES(6, 2, 0, '=', '5780', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(1, 1, 0, '', 't-', '1', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(2, 2, 0, '', 't-', '1', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(3, 3, 0, '', 't-', '1', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(4, 3, 0, '', '=', '4010', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(5, 1, 0, '', '=', '5765', 0, 0);
+INSERT INTO `0_quick_entry_lines` VALUES(6, 2, 0, '', '=', '5780', 0, 0);
 
 -- --------------------------------------------------------
 

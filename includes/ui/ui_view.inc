@@ -625,7 +625,7 @@ function display_allocations_to($person_type, $person_id, $type, $type_no, $tota
 function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 {
 	$bank_amount = 0;
-	
+
 	if (!isset($id) || $id == null || $id == "")
 	{
 		display_error( _("No Quick Entries are defined."));
@@ -635,31 +635,79 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 	{
 		if ($type == QE_DEPOSIT)
 			$base = -$base;
-		if ($type != QE_SUPPINV)	// only one quick entry on journal/bank transaction
+		if ($type != QE_SUPPINV && $type != QE_JOURNAL)	// only one quick entry on journal/bank transaction
 			$cart->clear_items();
-		$qe = get_quick_entry($id);
-		if ($qe['bal_type'] == 1)
-		{
-			if ($qe['base_amount'] == 1.0) // monthly
-				$begin = begin_month($cart->tran_date);
-			else
-			{
-				if (is_account_balancesheet($qe['base_desc'])) // total
-					$begin = "";
-				else
-					$begin = begin_fiscalyear(); // from fiscalyear begin
-			}
-			$base = get_gl_trans_from_to($begin, $cart->tran_date, $qe['base_desc']);
 
-		}
-		if ($descr != '') $qe['description'] .= ': '.$descr;
-		$result = get_quick_entry_lines($id);
-		if (db_num_rows($result) == 0)
+		// as for now tax_group is passed only in QE_SUPPINV
+		$qe_lines = quickentry_calculate($base, $id, @$cart->tax_group_id, $cart->tran_date);
+
+		if ($qe_lines === 0)
 		{
 			display_error( _("No Quick Entry lines are defined."));
 			set_focus('totamount');
 			return 0;
+		} elseif ($qe_lines === -1)
+		{
+			display_error(_("Cannot post to GL account used by more than one tax type."));
+			return 0;
 		}
+		foreach($qe_lines as $qe_line)
+		{
+			if ($descr != '') $qe_line['descr'] .= ': '.$descr;
+			if ($type != QE_SUPPINV)
+				$cart->add_gl_item($qe_line['code'], $qe_line['dim1'],
+					$qe_line['dim2'], $qe_line['amount'], $qe_line['descr']);
+			else 
+			{
+				$acc_name = get_gl_account_name($qe_line['code']);
+				$cart->add_gl_codes_to_trans($qe_line['code'], 
+					$acc_name, $qe_line['dim1'], 
+					$qe_line['dim2'], $qe_line['amount'], $qe_line['descr']);
+			}
+		}
+	}
+	return $bank_amount;
+}
+
+//--------------------------------------------------------------------------------------
+
+function quickentry_calculate($base, $id, $taxgroup=null, $date=null)
+{
+		$gl_entries = array();
+		$qe = get_quick_entry($id);
+		$type = $qe['type'];
+		$total = $base;
+		// quick entry made on account balance is special case.
+		if ($qe['bal_type'] == 1) // if this is quick entry based on balance - calculate it
+		{
+			// Note, that this is ugly hack overriding standard field usage 
+			// just to make the feature available between major FA releases!
+			$gl_code = $qe['base_desc'];
+			$monthly = $qe['base_amount'] == 1.0;
+
+			if (!isset($date))
+				$date = Today();
+
+			if ($monthly) // marked as monthly
+				$begin = begin_month($date);
+			else
+			{
+				if (is_account_balancesheet($gl_code)) // total
+					$begin = "";
+				else
+					$begin = begin_fiscalyear(); // from fiscalyear begin
+			}
+			$base = get_gl_trans_from_to($begin, $date, $gl_code);
+
+		}
+
+		$result = get_quick_entry_lines($id);
+		if (db_num_rows($result) == 0)
+		{
+			return 0;
+		}
+
+		// first calculate total rate in case more than one tax is used
 		$totrate = 0;
 		while ($row = db_fetch($result))
 		{
@@ -669,14 +717,15 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					if (substr($row['action'],0,1) != 'T') 
-						$totrate += get_tax_type_rate($row['dest_id']);
+					if (substr($row['action'], 0, 1) != 'T') 
+						$totrate += get_tax_type_default_rate($row['dest_id']);
 			}
 		}
 		$first = true;
 		$taxbase = 0;
 		foreach($qe_lines as $qe_line)
 		{
+			$gl_code = $qe_line['dest_id'];
 			switch (strtolower($qe_line['action'])) {
 				case "=": // post current base amount to GL account
 					$part = $base;
@@ -714,57 +763,44 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 						$part = $taxbase;
 					else
 						$part = $base/100;
+
 					$item_tax = get_tax_type($qe_line['dest_id']);
 					//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 					if ($type == QE_SUPPINV)
 					{
-						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
-						$res = get_tax_group_rates($cart->tax_group_id);
+						$res = get_tax_group_rates($taxgroup);
 						while ($row = db_fetch($res))
 							$rates += $row['rate'];
 						if ($rates == 0)
 							continue 2;
 					}
 					$tax = round2($part * $item_tax['rate'],  user_price_dec());
-					if ($tax==0) continue 2;
+					if ($tax == 0) continue 2;
 					$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 						? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 					if (!is_tax_gl_unique($gl_code)) {
-	   					display_error(_("Cannot post to GL account used by more than one tax type."));
-						break 2;
+						return -1; // more than one taxtype used with this GL account
 					}
-					if ($type != QE_SUPPINV)
-						$cart->add_gl_item($gl_code, 
-							$qe_line['dimension_id'], $qe_line['dimension2_id'], 
-							$tax, $qe['description']);
-					else 
-					{
-						$acc_name = get_gl_account_name($gl_code);
-						$cart->add_gl_codes_to_trans($gl_code, 
-							$acc_name, $qe_line['dimension_id'], 
-							$qe_line['dimension2_id'], $tax, $qe['description']);
-					}
+
+					$part = $tax;
 					if (strpos($qe_line['action'], '+'))
 						$base += $tax;
 					elseif (strpos($qe_line['action'], '-'))
 						$base -= $tax;
-					continue 2;
+				}
+				$gl_entries[] = array(
+					'code' => $gl_code, 
+					'name' => get_gl_account_name($gl_code),
+					'dim1' => $qe_line['dimension_id'], 
+					'dim2' => $qe_line['dimension2_id'], 
+					'amount' => $part, 
+					'descr' => $qe_line['memo']
+				);
 			}
-			if ($type != QE_SUPPINV)
-				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			else 
-			{
-				$acc_name = get_gl_account_name($qe_line['dest_id']);
-				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
-					$acc_name, $qe_line['dimension_id'], 
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			}
-		}
-	}	
-	return $bank_amount;
+	return $gl_entries;
 }
+
 
 //--------------------------------------------------------------------------------------
 //

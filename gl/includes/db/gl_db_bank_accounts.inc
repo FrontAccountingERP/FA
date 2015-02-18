@@ -115,22 +115,22 @@ function get_bank_charge_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type)
+function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type, $usage)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type) 
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type, `usage`) 
 	VALUES (".db_escape($description).", ".db_escape($type).", "
-		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).")";
+		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).", ".db_escape($usage).")";
 
 	db_query($sql, "could not insert quick entry for $description");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc, $bal_type)
+function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc, $bal_type, $usage)
 {
 	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
 		type=".db_escape($type).", base_amount=".db_escape($base_amount)
-		.", base_desc=".db_escape($base_desc).", bal_type=".db_escape($bal_type)."
+		.", base_desc=".db_escape($base_desc).", bal_type=".db_escape($bal_type).", `usage`=".db_escape($usage)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry for $selected_id");
@@ -147,25 +147,25 @@ function delete_quick_entry($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2)
+function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2, $memo)
 {
 	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines 
-		(qid, action, dest_id, amount, dimension_id, dimension2_id) 
+		(qid, action, dest_id, amount, dimension_id, dimension2_id, memo) 
 	VALUES 
 		(".db_escape($qid).", ".db_escape($action).",".db_escape($dest_id).",
-			".db_escape($amount).", ".db_escape($dim).", ".db_escape($dim2).")";
+			".db_escape($amount).", ".db_escape($dim).", ".db_escape($dim2).", ".db_escape($memo).")";
 
 	db_query($sql, "could not insert quick entry line for $qid");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2)
+function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2, $memo)
 {
 	$sql = "UPDATE ".TB_PREF."quick_entry_lines SET qid = ".db_escape($qid)
 		.", action=".db_escape($action).",
 		dest_id=".db_escape($dest_id).", amount=".db_escape($amount)
-		.", dimension_id=".db_escape($dim).", dimension2_id=".db_escape($dim2)." 
+		.", dimension_id=".db_escape($dim).", dimension2_id=".db_escape($dim2).", memo=".db_escape($memo)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry line for $selected_id");

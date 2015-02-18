@@ -102,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0));
+				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0), $_POST['usage']);
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0));
+				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type', 0), $_POST['usage']);
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -117,16 +117,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2') 
 {
-	if ($selected_id2 != -1) 
+	if (!get_post('dest_id')) {
+   		display_error(_("You must select GL account."));
+		set_focus('dest_id');
+	}
+	elseif ($selected_id2 != -1) 
 	{
 		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id']);
+			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['memo']);
 		display_notification(_('Selected quick entry line has been updated'));
 	} 
 	else 
 	{
 		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id']);
+			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['memo']);
 		display_notification(_('New quick entry line has been added'));
 	}
 	$Mode2 = 'RESET2';
@@ -167,7 +171,7 @@ if ($Mode2 == 'BDel')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$_POST['description'] = $_POST['type'] = '';
+	$_POST['description'] = $_POST['type'] = $_POST['usage'] = '';
 	$_POST['base_desc']= _('Base Amount');
 	$_POST['base_amount'] = price_format(0);
 	$_POST['bal_type'] = 0;
@@ -183,7 +187,7 @@ if ($Mode2 == 'RESET2')
 $result = get_quick_entries();
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Description"), _("Type"), "", "");
+$th = array(_("Description"), _("Type"), _("Usage"),  "", "");
 table_header($th);
 
 $k = 0;
@@ -193,6 +197,7 @@ while ($myrow = db_fetch($result))
 	$type_text = $quick_entry_types[$myrow["type"]];
 	label_cell($myrow['description']);
 	label_cell($type_text);
+	label_cell($myrow['usage']);
 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
@@ -214,6 +219,7 @@ if ($selected_id != -1)
 		$_POST['description']  = $myrow["description"];
 		$_POST['type']  = $myrow["type"];
 		$_POST['base_desc']  = $myrow["base_desc"];
+		$_POST['usage']  = $myrow["usage"];
 		$_POST['bal_type']  = $myrow["bal_type"];
 		$_POST['base_amount']  = $myrow["bal_type"] ?
 			$myrow["base_amount"] : price_format($myrow["base_amount"]);
@@ -222,6 +228,7 @@ if ($selected_id != -1)
 } 
 
 text_row_ex(_("Description").':', 'description', 50, 60);
+text_row_ex(_("Usage").':', 'usage', 80, 120);
 
 quick_entry_types_list_row(_("Entry Type").':', 'type', null, true);
 
@@ -258,11 +265,11 @@ if ($selected_id != -1)
 	start_table(TABLESTYLE2);
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Memo"), _("Dimension"), _("Dimension")." 2", "", "");
 	elseif ($dim == 1)	
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Memo"), _("Dimension"), "", "");
 	else	
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Memo"), "", "");
 
 	table_header($th);
 	$k = 0;
@@ -287,7 +294,8 @@ if ($selected_id != -1)
 				label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
 			else
 				amount_cell($myrow['amount']);
-		}		
+			label_cell($myrow['memo']);
+		}
    		if ($dim >= 1)
 			label_cell(get_dimension_string($myrow['dimension_id'], true));
    		if ($dim > 1)
@@ -312,6 +320,7 @@ if ($selected_id != -1)
 			$_POST['dest_id']  = $myrow["dest_id"];
 			$_POST['actn']  = $myrow["action"];
 			$_POST['amount']  = $myrow["amount"];
+			$_POST['memo']  = $myrow["memo"];
 			$_POST['dimension_id']  = $myrow["dimension_id"];
 			$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	 	}
@@ -338,6 +347,7 @@ if ($selected_id != -1)
 			else
 				amount_row(_("Amount").":", 'amount', price_format(0));
 		}
+		text_row_ex(_("Line memo").':', 'memo', 50, 256, '');
 	}
 	if ($dim >= 1) 
 		dimensions_list_row(_("Dimension").":", 'dimension_id', null, true, " ", false, 1);

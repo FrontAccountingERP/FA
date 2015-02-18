@@ -151,3 +151,6 @@ UPDATE `0_supp_invoice_items` si
 	LEFT JOIN `0_gl_trans` gl ON si.supp_trans_type=gl.`type` AND si.supp_trans_no=gl.type_no AND si.gl_code=gl.account
 	SET si.dimension_id=gl.dimension_id, si.dimension2_id=gl.dimension2_id
 WHERE si.grn_item_id=-1 AND (gl.dimension_id OR gl.dimension2_id)
+
+ALTER TABLE `0_quick_entries` ADD COLUMN `usage` varchar(120) NULL AFTER `description`;
+ALTER TABLE `0_quick_entry_lines` ADD COLUMN `memo` tinytext NOT NULL AFTER `amount`;
