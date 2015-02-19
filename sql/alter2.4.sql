@@ -139,3 +139,6 @@ ALTER TABLE `0_tag_associations` ENGINE=InnoDB;
 ALTER TABLE `0_useronline` ENGINE=InnoDB;
 ALTER TABLE `0_users` ENGINE=InnoDB;
 ALTER TABLE `0_workcentres` ENGINE=InnoDB;
+
+ALTER TABLE `0_gl_trans` CHANGE `type_no` `type_no` int(11) NOT NULL default '0';
+ALTER TABLE `0_loc_stock` CHANGE `reorder_level` `reorder_level` double NOT NULL default '0';
