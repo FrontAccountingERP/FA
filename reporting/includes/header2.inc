@@ -160,7 +160,7 @@
 		$this->row = $temp;
 		$this->Text($mcol, $Addr2['name']);
 		$this->NewLine();
-		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $Addr2['address']);
+		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $Addr2['address'], 'left', 0, 0, NULL, 1);
 
 		// Auxiliary document information
 		$col = $this->leftMargin;

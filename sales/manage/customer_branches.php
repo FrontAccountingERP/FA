@@ -222,7 +222,7 @@ function branch_settings($selected_id, $num_branches) {
 	hidden('popup', @$_REQUEST['popup']);
 
 	table_section_title(_("Name and Contact"));
-	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
+	text_row(_("Branch Name:"), 'br_name', null, 50, 60);
 	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
 
 	table_section_title(_("Sales"));
