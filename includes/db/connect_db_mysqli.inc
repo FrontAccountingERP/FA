@@ -60,7 +60,14 @@ function db_query($sql, $err_msg=null)
 
 	db_profile(); // mysql profiling
 
-	$result = mysqli_query($db, $sql);
+	$retry = MAX_DEADLOCK_RETRY;
+	do {
+		$result = mysqli_query($db, $sql);
+		if (mysqli_errno($db) == 1213)	{ // deadlock detected
+			sleep(1); $retry--;
+		} else
+			$retry = 0;
+	} while ($retry);
 
 	db_profile($sql);
 
@@ -77,48 +84,47 @@ function db_query($sql, $err_msg=null)
 	if ($err_msg != null || $SysPrefs->go_debug) {
 		$exit = $err_msg != null;
 		if (function_exists('xdebug_call_file'))
-			check_db_error('<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg, $sql, $exit);
-		else
-			check_db_error($err_msg, $sql, $exit);
+			$err_msg = '<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg;
+		check_db_error($err_msg, $sql, $exit);
 	}
 	return $result;
 }
 
-function db_fetch_row ($result)
+function db_fetch_row($result)
 {
 	$ret = mysqli_fetch_row($result);
 	return ($ret === null ? false : $ret);
 }
 
-function db_fetch_assoc ($result)
+function db_fetch_assoc($result)
 {
 	$ret = mysqli_fetch_assoc($result);
 	return ($ret === null ? false : $ret);
 }
 
-function db_fetch ($result)
+function db_fetch($result)
 {
 	$ret = mysqli_fetch_array($result);
 	return ($ret === null ? false : $ret);
 }
 
-function db_seek (&$result,$record)
+function db_seek(&$result,$record)
 {
 	return mysqli_data_seek($result, $record);
 }
 
-function db_free_result ($result)
+function db_free_result($result)
 {
 	if ($result)
 		mysqli_free_result($result);
 }
 
-function db_num_rows ($result)
+function db_num_rows($result)
 {
 	return mysqli_num_rows($result);
 }
 
-function db_num_fields ($result)
+function db_num_fields($result)
 {
 	return mysqli_num_fields($result);
 }
@@ -150,7 +156,7 @@ function db_escape($value = "", $nullify = false)
 	return $value;
 }
 
-function db_error_no ()
+function db_error_no()
 {
 	global $db;
     return mysqli_errno($db);

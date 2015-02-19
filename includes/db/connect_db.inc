@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //$path_to_root="..";
-
+define('MAX_DEADLOCK_RETRY', 3);
 
 if (function_exists('mysqli_connect'))
 	include_once("connect_db_mysqli.inc");
