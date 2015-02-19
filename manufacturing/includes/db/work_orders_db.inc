@@ -534,6 +534,11 @@ function get_sql_for_work_orders($outstanding_only, $all_items)
 		$sql .= " AND workorder.loc_code=".db_escape($_POST['StockLocation']);
 	}
 
+	if (isset($_POST['OrderId']) && $_POST['OrderId'] != "")
+	{
+		$sql .= " AND workorder.id LIKE ".db_escape('%'.$_POST['OrderId'].'%');
+	}
+
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 	{
 		$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$_POST['OrderNumber'].'%');

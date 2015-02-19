@@ -64,9 +64,15 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_o
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
+ref_cells(_("#:"), 'OrderId', '',null, '', true);
 ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
 
 locations_list_cells(_("at Location:"), 'StockLocation', null, true);
+
+end_row();
+end_table();
+start_table(TABLESTYLE_NOBORDER);
+start_row();
 
 check_cells( _("Only Overdue:"), 'OverdueOnly', null);
 
