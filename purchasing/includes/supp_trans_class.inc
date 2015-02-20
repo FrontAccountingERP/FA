@@ -48,6 +48,9 @@ class supp_trans
 	var $currency;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry
 
+	var $dimension,
+		$dimension2;
+
 	function supp_trans($trans_type, $trans_no=0)
 	{
 		$this->trans_type = $trans_type;

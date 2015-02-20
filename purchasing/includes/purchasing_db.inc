@@ -184,6 +184,8 @@ function add_direct_supp_trans($cart)
 	$inv->supplier_id = $cart->supplier_id;
 	$inv->tran_date = $cart->orig_order_date;
 	$inv->due_date = $cart->due_date;
+	$inv->dimension = $cart->dimension;
+	$inv->dimension2 = $cart->dimension2;
 	$inv->reference = $ref;
 	$inv->supp_reference = $cart->supp_ref;
 	$inv->tax_included = $cart->tax_included;

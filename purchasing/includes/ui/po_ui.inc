@@ -30,6 +30,8 @@ function copy_from_cart()
 	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	$_POST['_ex_rate'] = $cart->ex_rate;
 	$_POST['cash_account'] = $cart->cash_account;
+    $_POST['dimension'] = $cart->dimension;
+    $_POST['dimension2'] = $cart->dimension2;
     foreach($cart->tax_overrides as $id => $value)
 	    $_POST['mantax'][$id] = price_format($value);
 }
@@ -50,6 +52,8 @@ function copy_to_cart()
 	$cart->Comments = $_POST['Comments'];	
 	$cart->Location = $_POST['StkLocation'];
 	$cart->delivery_address = $_POST['delivery_address'];
+   	$cart->dimension = @$_POST['dimension'];
+	$cart->dimension2 =  @$_POST['dimension2'];
 	if (isset($_POST['tax_algorithm']))
 	    $cart->tax_algorithm = $_POST['tax_algorithm'];
 	$cart->prep_amount = input_num('prep_amount', 0);
@@ -151,7 +155,6 @@ function display_po_header(&$order)
 			$_POST['OrderDate']);
 	}
 
-
     if ($editable)
     {
     	ref_row(_("Reference:"), 'ref');
@@ -168,6 +171,11 @@ function display_po_header(&$order)
 		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 
   	text_row(_("Supplier's Reference:"), 'supp_ref', null, 16, 15);
+
+	if (get_company_pref('use_dimension'))
+		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
+	if (get_company_pref('use_dimension') == 2)
+		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
 	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true); 
 
 	table_section(3);

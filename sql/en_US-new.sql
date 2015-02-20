@@ -1721,6 +1721,8 @@ CREATE TABLE IF NOT EXISTS `0_supp_invoice_items` (
   `unit_price` double NOT NULL default '0',
   `unit_tax` double NOT NULL default '0',
   `memo_` tinytext,
+  `dimension_id` int(11) NOT NULL DEFAULT '0',
+  `dimension2_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`),
   KEY `Transaction` (`supp_trans_type`,`supp_trans_no`,`stock_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -142,3 +142,12 @@ ALTER TABLE `0_workcentres` ENGINE=InnoDB;
 
 ALTER TABLE `0_gl_trans` CHANGE `type_no` `type_no` int(11) NOT NULL default '0';
 ALTER TABLE `0_loc_stock` CHANGE `reorder_level` `reorder_level` double NOT NULL default '0';
+
+# added dimensions in supplier documents
+ALTER TABLE `0_supp_invoice_items` ADD COLUMN `dimension_id` int(11) NOT NULL DEFAULT '0' AFTER `memo_`;
+ALTER TABLE `0_supp_invoice_items` ADD COLUMN `dimension2_id` int(11) NOT NULL DEFAULT '0' AFTER `dimension_id`;
+
+UPDATE `0_supp_invoice_items` si
+	LEFT JOIN `0_gl_trans` gl ON si.supp_trans_type=gl.`type` AND si.supp_trans_no=gl.type_no AND si.gl_code=gl.account
+	SET si.dimension_id=gl.dimension_id, si.dimension2_id=gl.dimension2_id
+WHERE si.grn_item_id=-1 AND (gl.dimension_id OR gl.dimension2_id)

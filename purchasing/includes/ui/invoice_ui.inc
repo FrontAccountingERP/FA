@@ -20,6 +20,8 @@ function copy_from_trans(&$supp_trans)
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
 	$_POST['tax_algorithm'] = $supp_trans->tax_algorithm;
+    $_POST['dimension'] = $supp_trans->dimension;
+    $_POST['dimension2'] = $supp_trans->dimension2;
 
 	$_POST['_ex_rate'] = $supp_trans->ex_rate;
 	if (isset($supp_trans->tax_overrides))
@@ -38,6 +40,8 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->reference = $_POST['reference'];
  	if (isset($_POST['tax_algorithm']))
  	    $supp_trans->tax_algorithm = $_POST['tax_algorithm'];
+   	$supp_trans->dimension = @$_POST['dimension'];
+	$supp_trans->dimension2 =  @$_POST['dimension2'];
 
 	$supp_trans->ex_rate = input_num('_ex_rate', null);
 
@@ -123,6 +127,12 @@ function invoice_header(&$supp_trans)
 		label_row(_("Source Invoices:"), implode(',' , $supp_trans->src_docs),'','','src_docs');
 	}
 		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 60);
+
+	if (get_company_pref('use_dimension'))
+		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
+
+	if (get_company_pref('use_dimension') == 2)
+		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
 
 	table_section(2, "33%");
 
