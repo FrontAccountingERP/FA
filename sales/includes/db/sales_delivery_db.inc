@@ -54,11 +54,13 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if ($trans_no == 0) {
 		$delivery->trans_no = array($delivery_no=>0);
 	} else {
+		move_trans_attachments(ST_CUSTDELIVERY, $trans_no, $delivery_no);
 		void_gl_trans(ST_CUSTDELIVERY, $delivery_no, true);
 		void_stock_move(ST_CUSTDELIVERY, $delivery_no);
 		void_trans_tax_details(ST_CUSTDELIVERY, $delivery_no);
 		delete_comments(ST_CUSTDELIVERY, $delivery_no);
 	}
+
 
 	// for prepaid delivery repost income from deffered account
 	if ($delivery->is_prepaid())

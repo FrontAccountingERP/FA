@@ -90,7 +90,8 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
-	}
+	} else
+		move_trans_attachments(ST_SALESINVOICE, $trans_no, $invoice_no);
 
 	$total = 0;
 	// for prepayments use deferred income account if set

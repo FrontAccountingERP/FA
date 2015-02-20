@@ -417,7 +417,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
         	$ref, $cust_amount);
-
+		move_trans_attachments($trans_type, $old_trans, $trans_no);
     }
     elseif ($person_type_id == PT_SUPPLIER)
     {
@@ -433,7 +433,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 		$trans_no = write_supp_trans($trans_type, 0, $person_id, $date_, '',
 			$ref, "", $supp_amount, 0, 0);
-
+		move_trans_attachments($trans_type, $old_trans, $trans_no);
     }
     else
     {

@@ -103,4 +103,11 @@ function get_sql_for_attached_documents($type)
 	." ORDER BY trans_no DESC";
 }
 
+function move_trans_attachments($type, $trans_from, $trans_to)
+{
+	$sql = "UPDATE ".TB_PREF."attachments SET trans_no=".db_escape($trans_to)
+		." WHERE type_no=".db_escape($type)." AND trans_no=".db_escape($trans_from);
+	db_query($sql, 'cannot move atachments');
+}
+
 

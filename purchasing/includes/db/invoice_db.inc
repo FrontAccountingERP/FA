@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/purchasing/includes/db/invoice_items_db.inc");
+include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 //--------------------------------------------------------------------------------------------------
 
@@ -175,6 +176,8 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included,
 		$supp_trans->tax_algorithm);
 
+	if ($trans_no)
+		move_trans_attachments($trans_type, $trans_no, $invoice_id);
 
 	$supp_trans->trans_no = $invoice_id;
 
