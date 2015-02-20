@@ -30,9 +30,8 @@ print_aged_customer_analysis();
 function get_invoices($customer_id, $to, $all=true)
 {
 	$todate = date2sql($to);
-	$current = 1;
-	$PastDueDays1 = get_company_pref('past_due_days') + $current;
-	$PastDueDays2 = 2 * $PastDueDays1 + $current;
+	$PastDueDays1 = get_company_pref('past_due_days');
+	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
 	if ($all)
@@ -47,9 +46,9 @@ function get_invoices($customer_id, $to, $all=true)
 	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
 		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $current,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
 			".TB_PREF."debtor_trans

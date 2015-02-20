@@ -68,9 +68,8 @@ function get_customer_details($customer_id, $to=null, $all=true)
 		$todate = date("Y-m-d");
 	else
 		$todate = date2sql($to);
-		$current = 1;
-	$past1 = get_company_pref('past_due_days') + $current;
-	$past2 = 2 * $past1 + $current;
+	$past1 = get_company_pref('past_due_days');
+	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
 	if ($all)
     	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
@@ -84,9 +83,9 @@ function get_customer_details($customer_id, $to=null, $all=true)
 		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
 
 		Sum(IFNULL($value,0)) AS Balance,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $current,$value,0)) AS Due,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0)) AS Due,
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past1,$value,0)) AS Overdue1,
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past2,$value,0)) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master
 			 LEFT JOIN ".TB_PREF."debtor_trans trans ON 
