@@ -314,3 +314,39 @@ function get_access_extensions($id) {
 	return array($security_areas, $security_sections);
 }
 */
+
+function check_edit_access($name)
+{
+	global $input_security;
+
+	$access = @$input_security[$name];
+
+	if (!$access)
+		$access = @$input_security['']; // default access level
+
+	if (!$access)
+		return true; // if constraint is not defined edit access is allowed
+
+	return  user_check_access($access);
+}
+/*
+	Returns POST value or null if edit access to $name control is forbidden.
+*/
+function access_post($name, $dflt=null)
+{
+	if (!check_edit_access($name))
+		return $dflt;
+	else
+		return get_post($name, $dflt);
+}
+
+/*
+	Returns numeric input value or null if edit access to $name control is forbidden.
+*/
+function access_num($name, $dflt=null)
+{
+	if (!check_edit_access($name))
+		return $dflt;
+	else
+		return input_num($name, $dflt);
+}
