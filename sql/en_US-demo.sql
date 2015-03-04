@@ -833,7 +833,7 @@ DROP TABLE IF EXISTS `0_gl_trans`;
 CREATE TABLE IF NOT EXISTS `0_gl_trans` (
   `counter` int(11) NOT NULL auto_increment,
   `type` smallint(6) NOT NULL default '0',
-  `type_no` `type_no` int(11) NOT NULL default '0',
+  `type_no` int(11) NOT NULL default '0',
   `tran_date` date NOT NULL default '0000-00-00',
   `account` varchar(15) NOT NULL default '',
   `memo_` tinytext NOT NULL,
