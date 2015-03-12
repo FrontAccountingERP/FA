@@ -98,7 +98,7 @@ if ($Mode == 'RESET')
 $result = get_all_sales_types(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=30%");
+start_table(TABLESTYLE, "width='30%'");
 
 $th = array (_('Type Name'), _('Factor'), _('Tax Incl'), '','');
 inactive_control_column($th);

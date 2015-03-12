@@ -227,10 +227,10 @@ function display_credit_items()
     start_form();
 	hidden('cart_id');
 
-	start_table(TABLESTYLE2, "width=80%", 5);
+	start_table(TABLESTYLE2, "width='80%'", 5);
 	echo "<tr><td>"; // outer table
 
-    start_table(TABLESTYLE, "width=100%");
+    start_table(TABLESTYLE, "width='100%'");
     start_row();
     label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -263,7 +263,7 @@ function display_credit_items()
 
     echo "</td><td>";// outer table
 
-    start_table(TABLESTYLE, "width=100%");
+    start_table(TABLESTYLE, "width='100%'");
 
     label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
@@ -276,7 +276,7 @@ function display_credit_items()
 	end_table(1); // outer table
 
 	div_start('credit_items');
-    start_table(TABLESTYLE, "width=80%");
+    start_table(TABLESTYLE, "width='80%'");
     $th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
     	_("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
     table_header($th);

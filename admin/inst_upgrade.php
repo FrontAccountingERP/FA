@@ -157,7 +157,7 @@ foreach($installers as $i => $inst)
 		if (!$check)
 			check_cells(null,'install_'.$i, 0);
 		else {
-			label_cell("<span class=redfg>"
+			label_cell("<span class='redfg'>"
 				. sprintf(_("Partially installed (%s)"), $check) . "</span>");
 			$partial++;
 		}

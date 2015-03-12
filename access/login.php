@@ -36,7 +36,7 @@ function defaultCompany()
 
 	if (check_faillog())
 	{
-		$blocked_msg = '<span class=redfg>'._('Too many failed login attempts.<br>Please wait a while or try later.').'</span>';
+		$blocked_msg = '<span class="redfg">'._('Too many failed login attempts.<br>Please wait a while or try later.').'</span>';
 
 	    $js .= "<script>setTimeout(function() {
 	    	document.getElementsByName('SubmitUser')[0].disabled=0;
@@ -57,7 +57,7 @@ function defaultCompany()
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head profile=\"http://www.w3.org/2005/10/profile\"><title>$title</title>\n";
-   	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
+   	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' >\n";
 	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
  	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
 	send_scripts();
@@ -78,14 +78,14 @@ function defaultCompany()
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
-    	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+    	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' ></a>";
 	} else { 
 		echo "<font size=5>"._('Authorization timeout')."</font>";
 	} 
 	echo "</td>\n";
 	end_row();
 
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' >\n";
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build $build_version - "._("Login"));
 	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser":"");
@@ -119,7 +119,7 @@ function defaultCompany()
 	}; 
 	end_table(1);
 	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
-		.($login_timeout ? '':" onclick='set_fullmode();'").(isset($blocked_msg) ? " disabled" : '')." /></center>\n";
+		.($login_timeout ? '':" onclick='set_fullmode();'").(isset($blocked_msg) ? " disabled" : '')." ></center>\n";
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data

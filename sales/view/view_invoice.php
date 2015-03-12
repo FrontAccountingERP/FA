@@ -43,11 +43,11 @@ $sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
-start_table(TABLESTYLE2, "width=95%");
+start_table(TABLESTYLE2, "width='95%'");
 echo "<tr valign=top><td>"; // outer table
 
 /*Now the customer charged to details in a sub table*/
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Charge To"));
 table_header($th);
 
@@ -61,7 +61,7 @@ echo "</td><td>"; // outer table
 
 /*end of the main table showing the company name and charge to details */
 
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Charge Branch"));
 table_header($th);
 
@@ -70,7 +70,7 @@ end_table();
 
 echo "</td><td>"; // outer table
 
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Payment Terms"));
 table_header($th); 
 $paym = get_payment_terms($myrow['payment_terms']);
@@ -79,7 +79,7 @@ end_table();
 
 echo "</td><td>"; // outer table
 
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
@@ -106,7 +106,7 @@ end_table(1); // outer table
 
 $result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
-start_table(TABLESTYLE, "width=95%");
+start_table(TABLESTYLE, "width='95%'");
 
 if (db_num_rows($result) > 0)
 {
@@ -146,7 +146,7 @@ if (db_num_rows($result) > 0)
 
 	$display_sub_tot = price_format($sub_total);
 	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
-		"nowrap align=right width=15%");
+		"nowrap align=right width='15%'");
 }
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);

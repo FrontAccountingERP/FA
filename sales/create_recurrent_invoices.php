@@ -130,7 +130,7 @@ date_cells(_("Invoice date:"), 'date', '');
 end_row();
 end_table();
 
-start_table(TABLESTYLE, "width=70%");
+start_table(TABLESTYLE, "width='70%'");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
 table_header($th);
 $k = 0;

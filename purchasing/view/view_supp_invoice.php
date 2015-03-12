@@ -40,7 +40,7 @@ $supplier_curr_code = get_supplier_currency($supp_trans->supplier_id);
 display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 echo "<br>";
 
-start_table(TABLESTYLE, "width=95%");   
+start_table(TABLESTYLE, "width='95%'");
 start_row();
 label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -61,8 +61,8 @@ $total_grn = display_grn_items($supp_trans, 2);
 
 $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 
-start_table(TABLESTYLE, "width=95%");
-label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
+start_table(TABLESTYLE, "width='95%'");
+label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width='15%'");
 
 $tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);

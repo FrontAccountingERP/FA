@@ -197,7 +197,7 @@ start_table(TABLESTYLE2);
 	record_status_list_row(_("Current status:"), 'inactive');
 end_table(1);
 
-	start_table(TABLESTYLE, "width=40%");
+	start_table(TABLESTYLE, "width='40%'");
 
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;

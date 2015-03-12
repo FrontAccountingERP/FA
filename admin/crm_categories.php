@@ -92,7 +92,7 @@ if ($Mode == 'RESET')
 $result = get_crm_categories(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=70%");
+start_table(TABLESTYLE, "width='70%'");
 
 $th = array(_("Category Type"), _("Category Subtype"), _("Short Name"), _("Description"),  "", "&nbsp;");
 inactive_control_column($th);

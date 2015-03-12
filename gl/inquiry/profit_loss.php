@@ -229,7 +229,7 @@ function display_profit_and_loss()
 	
 	div_start('pl_tbl');
 
-	start_table(TABLESTYLE, "width=50%");
+	start_table(TABLESTYLE, "width='50%'");
 
 	$tableheader =  "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>

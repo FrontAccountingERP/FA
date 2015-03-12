@@ -328,7 +328,7 @@ start_form();
 	hidden('trans_no');
 	hidden('old_ref', $old_ref);
 
-	start_outer_table(TABLESTYLE2, "width=60%", 5);
+	start_outer_table(TABLESTYLE2, "width='60%'", 5);
 
 	table_section(1);
 
@@ -388,7 +388,7 @@ start_form();
 	show_allocatable(false);
 	div_end();
 
-	start_table(TABLESTYLE, "width=60%");
+	start_table(TABLESTYLE, "width='60%'");
 
 	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 

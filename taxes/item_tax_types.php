@@ -113,7 +113,7 @@ if ($Mode == 'RESET')
 $result2 = $result = get_all_item_tax_types(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=30%");
+start_table(TABLESTYLE, "width='30%'");
 $th = array(_("Name"), _("Tax exempt"),'','');
 inactive_control_column($th);
 table_header($th);

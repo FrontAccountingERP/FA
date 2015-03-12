@@ -142,7 +142,7 @@ else
     }
     else
     {
-        start_table(TABLESTYLE, "width=65%");
+        start_table(TABLESTYLE, "width='65%'");
 
 		$th = array(_("Supplier"), _("Price"), _("Currency"),
 			_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");

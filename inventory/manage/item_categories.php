@@ -94,7 +94,7 @@ if (list_updated('mb_flag')) {
 $result = get_item_categories(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=80%");
+start_table(TABLESTYLE, "width='80%'");
 $th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 _("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 _("Assembly Account"), "", "");

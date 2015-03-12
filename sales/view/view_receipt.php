@@ -33,7 +33,7 @@ $receipt = get_customer_trans($trans_id, ST_CUSTPAYMENT);
 display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
 
 echo "<br>";
-start_table(TABLESTYLE, "width=80%");
+start_table(TABLESTYLE, "width='80%'");
 start_row();
 label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'");

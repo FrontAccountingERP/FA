@@ -51,8 +51,8 @@
 				$local_path_to_root = $path_to_root;
 
 				$sel_app = $_SESSION['sel_app'];
-				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
-				echo "<div class=tabs>";
+				echo "<table cellpadding='0' cellspacing='0' width='100%'><tr><td>";
+				echo "<div class='tabs'>";
 				foreach($applications as $app)
 				{
                     if ($_SESSION["wa_current_user"]->check_application_access($app))
@@ -70,10 +70,10 @@
 				$img = "<img src='$local_path_to_root/themes/aqua/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
 				$himg = "<img src='$local_path_to_root/themes/aqua/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 
-				echo "<table class=logoutBar>";
-				echo "<tr><td class=headingtext3>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
+				echo "<table class='logoutBar'>";
+				echo "<tr><td class='headingtext3'>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
-				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></td>";
+				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='middle' style='visibility:hidden;'></td>";
 				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
@@ -109,17 +109,17 @@
 			if ($no_menu == false)	// bottom status line
 			{
 				if ($is_index)
-					echo "<table class=bottomBar>\n";
+					echo "<table class='bottomBar'>\n";
 				else
-					echo "<table class=bottomBar2>\n";
+					echo "<table class='bottomBar2'>\n";
 				echo "<tr>";
 				if (isset($_SESSION['wa_current_user'])) {
 					$phelp = implode('; ', $Pagehelp);
-					echo "<td class=bottomBarCell>" . Today() . " | " . Now() . "</td>\n";
+					echo "<td class='bottomBarCell'>" . Today() . " | " . Now() . "</td>\n";
 					$Ajax->addUpdate(true, 'hotkeyshelp', $phelp);
 					echo "<td id='hotkeyshelp'>".$phelp."</td>";
 				}
-				echo "</td></tr></table>\n";
+				echo "</tr></table>\n";
 			}
 			echo "</td></tr> </table>\n"; // 'callout_main'
 			if ($no_menu == false)
@@ -134,7 +134,7 @@
 				if ($allow_demo_mode==true)
 				{
 					echo "<tr>\n";
-					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='middle' /></a></div></td>\n";
+					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='center' /></a></div></td>\n";
 					echo "</tr>\n";
 				}
 				echo "</table><br><br>\n";
@@ -155,7 +155,7 @@
 				return;
 			}
 
-			echo "<table width=100% cellpadding='0' cellspacing='0'>";
+			echo "<table width='100%' cellpadding='0' cellspacing='0'>";
 			foreach ($selected_app->modules as $module)
 			{
         		if (!$_SESSION["wa_current_user"]->check_module_access($module))

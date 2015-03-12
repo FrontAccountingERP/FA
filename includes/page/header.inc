@@ -40,9 +40,9 @@ function help_url($context=null)
 	if ($clean)
 		$help_page_url = access_string($help_page_url, true);
 
-	return $help_base_url
+	return htmlspecialchars($help_base_url
 		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
-		.'&ctxhelp=1&lang='.$country;
+		.'&ctxhelp=1&lang='.$country);
 }
 
 function send_scripts()
@@ -121,7 +121,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){
-		header("Content-type: text/html; charset='$encoding'");
+		header("Content-type: text/html; charset=$encoding");
 	}
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";

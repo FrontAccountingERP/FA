@@ -214,11 +214,15 @@ $opts = array(		// default options
 			}
 			$cat = $contact_row[$opts['category']];
 			if ($opts['category'] !== false && $cat != $lastcat){
+				if ($lastcat!==null)
+					$selector .= "</optgroup>";
 				$selector .= "<optgroup label='".$cat."'>\n";
 				$lastcat = $cat;
 			}
 			$selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
 		}
+		if ($lastcat!==null)
+			$selector .= "</optgroup>";
 		db_free_result($result);
 	}
 
@@ -368,7 +372,6 @@ $opts = array(		// default options
 
 	if ($first_id!==false) {
 		$sel = ($found===$first_id) || ($found===false && ($spec_option===false)) ? "selected='selected'" : '';
-		$selector = sprintf($first_opt, $sel).$selector;
 	}
 	// Prepend special option.
 	if ($spec_option !== false) { // if special option used - add it

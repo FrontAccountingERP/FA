@@ -36,7 +36,7 @@ function defaultCompany()
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head profile=\"http://www.w3.org/2005/10/profile\"><title>$title</title>\n";
-   	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
+   	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' >\n";
 	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
  	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
 	send_scripts();
@@ -53,11 +53,11 @@ function defaultCompany()
 	start_table(false, "class='login'");
 	start_row();
 	echo "<td align='center' colspan=2>";
-  echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+  echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' ></a>";
 	echo "</td>\n";
 	end_row();
 
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' >\n";
 	table_section_title(_("Version")." $version   Build $build_version - "._("Password reset"));
 
 	text_row(_("Email"), "email_entry_field", "", 20, 30);
@@ -81,7 +81,7 @@ function defaultCompany()
   end_row();
 	end_table(1);
 	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Send password -->")."&nbsp;&nbsp;' name='SubmitReset'
-		 onclick='set_fullmode();' /></center>\n";
+		 onclick='set_fullmode();'></center>\n";
 
 	end_form(1);
 	$Ajax->addScript(true, "document.forms[0].password.focus();");

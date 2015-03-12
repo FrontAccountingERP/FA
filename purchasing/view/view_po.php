@@ -35,12 +35,12 @@ read_po($_GET['trans_no'], $purchase_order);
 echo "<br>";
 display_po_summary($purchase_order, true);
 
-start_table(TABLESTYLE, "width=90%", 6);
+start_table(TABLESTYLE, "width='90%'", 6);
 echo "<tr><td valign=top>"; // outer table
 
 display_heading2(_("Line Details"));
 
-start_table(TABLESTYLE, "colspan=9 width=100%");
+start_table(TABLESTYLE, "width='100%'");
 
 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),
 	_("Requested By"), _("Line Total"), _("Quantity Received"), _("Quantity Invoiced"));

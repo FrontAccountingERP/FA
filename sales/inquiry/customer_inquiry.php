@@ -76,7 +76,7 @@ function display_customer_summary($customer_record)
 	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 
-    start_table(TABLESTYLE, "width=80%");
+    start_table(TABLESTYLE, "width='80%'");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
     table_header($th);

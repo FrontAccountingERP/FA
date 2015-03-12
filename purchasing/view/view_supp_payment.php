@@ -47,7 +47,7 @@ echo "<center>";
 display_heading(_("Payment to Supplier") . " #$trans_no");
 
 echo "<br>";
-start_table(TABLESTYLE2, "width=80%");
+start_table(TABLESTYLE2, "width='80%'");
 
 start_row();
 label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");

@@ -401,7 +401,7 @@ start_form();
 
 display_bank_header($_SESSION['pay_items']);
 
-start_table(TABLESTYLE2, "width=90%", 10);
+start_table(TABLESTYLE2, "width='90%'", 10);
 start_row();
 echo "<td>";
 display_gl_items($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?

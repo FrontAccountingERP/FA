@@ -31,7 +31,7 @@ function display_gl_heading($myrow)
 {
 	global $systypes_array;
 	$trans_name = $systypes_array[$_GET['type_id']];
-    start_table(TABLESTYLE, "width=95%");
+    start_table(TABLESTYLE, "width='95%'");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
     	_("Date"), _("Person/Item"));
     table_header($th);	
@@ -78,7 +78,7 @@ while ($myrow = db_fetch($result))
 	if (!$heading_shown)
 	{
 		display_gl_heading($myrow);
-		start_table(TABLESTYLE, "width=95%");
+		start_table(TABLESTYLE, "width='95%'");
 		table_header($th);
 		$heading_shown = true;
 	}	

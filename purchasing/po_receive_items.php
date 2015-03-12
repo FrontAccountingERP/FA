@@ -58,7 +58,7 @@ if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['P
 function display_po_receive_items()
 {
 	div_start('grn_items');
-    start_table(TABLESTYLE, "colspan=7 width=90%");
+    start_table(TABLESTYLE, "colspan=7 width='90%'");
     $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
     	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
     table_header($th);

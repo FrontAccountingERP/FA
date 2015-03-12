@@ -29,7 +29,7 @@ function display_issue_items($title, &$order)
 
 	display_heading($title);
     div_start('items_table');
-	start_table(TABLESTYLE, "width=80% colspan=7");
+	start_table(TABLESTYLE, "width='80%'");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), '');
 	if ( count($order->line_items)) $th[] = '';

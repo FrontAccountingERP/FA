@@ -337,7 +337,7 @@ function is_voided_display($type, $id, $label)
 	if ($void_entry == null)
 		return false;
 
-	start_table(TABLESTYLE, "width=50%");
+	start_table(TABLESTYLE, "width='50%'");
 	echo "<tr><td align=center><font color=red>$label</font><br>";
 	echo "<font color=red>" . _("Date Voided:") . " " . sql2date($void_entry["date_"]) . "</font><br>";
 	if (strlen($void_entry["memo_"]) > 0)
@@ -542,7 +542,7 @@ function display_allocations($alloc_result, $total, $payments=false)
 
     display_heading2(($payments ? _("Payments") : _("Allocations")));
 
-    start_table(TABLESTYLE, "width=80%");
+    start_table(TABLESTYLE, "width='80%'");
 
     $th = array( _("Type"), _("Number"), _("Date"), _("Total Amount"),
     	_("Left to Allocate"), _("This Allocation"));

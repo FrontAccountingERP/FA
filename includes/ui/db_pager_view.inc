@@ -61,7 +61,7 @@ function display_db_pager(&$pager) {
  		}
 	}
     /* show a table of records returned by the sql */
-    start_table(TABLESTYLE, "width=$pager->width");
+    start_table(TABLESTYLE, "width='$pager->width'");
     table_header($headers);
 
 	if($pager->header_fun) {	// if set header handler
@@ -103,7 +103,7 @@ function display_db_pager(&$pager) {
 		   }
 		   switch($coltype) { // format column
 		    case 'time':
-		  	  label_cell($cell, "width=40"); break;
+		  	  label_cell($cell, "width='40'"); break;
 		    case 'date':
 		  	  label_cell(sql2date($cell), "align='center' nowrap"); break;
 		    case 'dstamp':	// time stamp displayed as date
