@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
 	class renderer
 	{
 		function get_icon($category)
@@ -20,7 +19,7 @@
 				$img = $category == '' ? 'right.gif' : $category.'.png';
 			else	
 				$img = 'right.gif';
-			return "<img src='$path_to_root/themes/default/images/$img' style='vertical-align:middle;' border='0' ".basename($img).">&nbsp;&nbsp;";
+			return "<img src='$path_to_root/themes/default/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
 		}
 
 		function wa_header()
@@ -65,14 +64,14 @@
 				}
 				echo "</div>";
 				echo "</td></tr></table>";
-
 				// top status bar
 				$img = "<img src='$local_path_to_root/themes/default/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
 				$himg = "<img src='$local_path_to_root/themes/default/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
+
 				echo "<table class='logoutBar'>";
 				echo "<tr><td class='headingtext3'>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
-				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='middle' style='visibility:hidden;' alt='ajaxmark'></td>";
+				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td>";
 				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
@@ -85,7 +84,6 @@
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
-
 			if ($no_menu)
 				echo "<br>";
 			elseif ($title && !$is_index)
@@ -100,7 +98,7 @@
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url, 
+			global $version, $allow_demo_mode, $app_title, $power_url,
 				$power_by, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
@@ -125,7 +123,7 @@
 			{
 				echo "<table align='center' id='footer'>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() . " - ".show_users_online()."</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online()."</font></a></td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
 				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffff00'>$power_by</font></a></td>\n";
@@ -133,7 +131,7 @@
 				if ($allow_demo_mode==true)
 				{
 					echo "<tr>\n";
-					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='middle' /></a></div></td>\n";
+					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='center' /></a></div></td>\n";
 					echo "</tr>\n";
 				}
 				echo "</table><br><br>\n";
@@ -211,6 +209,6 @@
 				echo "</tr></table></td></tr>";
 			}
 			echo "</table>";
-  	}
-}
+		}
+	}
 ?>

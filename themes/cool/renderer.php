@@ -36,7 +36,7 @@
 		{
 			global $path_to_root, $help_base_url, $db_connections;
 			echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
-			echo "<tr>";
+			echo "<tr>\n";
 			echo "<td colspan='2' rowspan='2'>\n";
 
 			echo "<table class='main_page' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -49,7 +49,6 @@
 			{
 				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
-
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding='0' cellspacing='0' width='100%'><tr><td>";
 				echo "<div class='tabs'>";
@@ -57,23 +56,22 @@
 				{
                     if ($_SESSION["wa_current_user"]->check_application_access($app))
                     {
-						$acc = access_string($app->name);
-						echo "<a class='".($sel_app == $app->id ? 'selected' : 'menu_tab')
-							."' href='$local_path_to_root/index.php?application=".$app->id
-							."'$acc[1]>" .$acc[0] . "</a>";
-					}
+                        $acc = access_string($app->name);
+                        echo "<a class='".($sel_app == $app->id ? 'selected' : 'menu_tab')
+                            ."' href='$local_path_to_root/index.php?application=".$app->id
+                            ."'$acc[1]>" .$acc[0] . "</a>";
+                    }
 				}
 				echo "</div>";
-
 				echo "</td></tr></table>";
 				// top status bar
-				$img = "<img src='$local_path_to_root/themes/aqua/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
-				$himg = "<img src='$local_path_to_root/themes/aqua/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
+				$img = "<img src='$local_path_to_root/themes/cool/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$local_path_to_root/themes/cool/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 
 				echo "<table class='logoutBar'>";
 				echo "<tr><td class='headingtext3'>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
-				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='middle' style='visibility:hidden;'></td>";
+				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td>";
 				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
@@ -85,7 +83,6 @@
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
-
 			if ($no_menu)
 				echo "<br>";
 			elseif ($title && !$is_index)
@@ -96,17 +93,16 @@
 				."</td>"
 				."</tr></table></center>";
 			}
-
 		}
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url, 
+			global $version, $allow_demo_mode, $app_title, $power_url,
 				$power_by, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			echo "</td></tr></table>\n"; // 'main_page'
-			if ($no_menu == false)	// bottom status line
+			if ($no_menu == false) // bottom status line
 			{
 				if ($is_index)
 					echo "<table class='bottomBar'>\n";
@@ -126,10 +122,10 @@
 			{
 				echo "<table align='center' id='footer'>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online(). "</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online()."</font></a></td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffff00'>$power_by</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffff00'>$power_by</font></a></td>\n";
 				echo "</tr>\n";
 				if ($allow_demo_mode==true)
 				{
@@ -212,7 +208,6 @@
 				echo "</tr></table></td></tr>";
 			}
 			echo "</table>";
-    	}
+		}
 	}
-
 ?>
