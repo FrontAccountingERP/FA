@@ -26,7 +26,6 @@ function copy_from_cart()
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
-    $_POST['tax_algorithm'] = $cart->tax_algorithm;
 	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	$_POST['_ex_rate'] = $cart->ex_rate;
 	$_POST['cash_account'] = $cart->cash_account;
@@ -54,8 +53,6 @@ function copy_to_cart()
 	$cart->delivery_address = $_POST['delivery_address'];
    	$cart->dimension = @$_POST['dimension'];
 	$cart->dimension2 =  @$_POST['dimension2'];
-	if (isset($_POST['tax_algorithm']))
-	    $cart->tax_algorithm = $_POST['tax_algorithm'];
 	$cart->prep_amount = input_num('prep_amount', 0);
 	$cart->ex_rate = input_num('_ex_rate', null);
 
@@ -120,7 +117,6 @@ function display_po_header(&$order)
 		get_supplier_details_to_order($order, $_POST['supplier_id']); 
 	    get_duedate_from_terms($order);
 		$_POST['due_date'] = $order->due_date;
-		$_POST['tax_algorithm'] = $order->tax_algorithm;
 
 		// supplier default price update
 		foreach ($order->line_items as $line_no=>$item) {
@@ -132,7 +128,6 @@ function display_po_header(&$order)
 		}
 	    $Ajax->activate('items_table');
 	    $Ajax->activate('due_date');
-	    $Ajax->activate('tax_algorithm');
 	}
 	set_global_supplier($_POST['supplier_id']);
 
@@ -453,13 +448,7 @@ function display_po_footer(&$trans)
 
 start_table(TABLESTYLE2);
 
-if (list_updated('tax_algorithm')) {
-	$trans->tax_algorithm = $_POST['tax_algorithm'];
-    $Ajax->activate('items_table');
-}
-
 if ($trans->trans_type == ST_SUPPINVOICE) {
-	tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
 	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
 } elseif ($trans->trans_type == ST_PURCHORDER)
 	amount_row(_("Pre-Payment Required:"), 'prep_amount');

@@ -189,8 +189,6 @@ function add_direct_supp_trans($cart)
 	$inv->reference = $ref;
 	$inv->supp_reference = $cart->supp_ref;
 	$inv->tax_included = $cart->tax_included;
-	$inv->tax_algorithm = $cart->tax_algorithm;
-	$inv->stored_algorithm = $cart->stored_algorithm;
 	$supp = get_supplier($cart->supplier_id);
 	$inv->tax_group_id = $supp['tax_group_id'];
 	$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
@@ -203,7 +201,7 @@ function add_direct_supp_trans($cart)
 	}
 	$inv->tax_overrides = $cart->tax_overrides;
 	if (!$inv->tax_included) {
-		$taxes = $inv->get_taxes($inv->tax_group_id, 0, false, $inv->tax_algorithm);
+		$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
 		foreach( $taxes as $taxitem) {
 			$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
 		}
@@ -211,10 +209,6 @@ function add_direct_supp_trans($cart)
 	$inv->ex_rate = $cart->ex_rate;
 
 	$inv_no = add_supp_invoice($inv);
-
-	// presume supplier data need correction
-	if ($inv->stored_algorithm != $inv->tax_algorithm)
-		update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
 
 	if ($cart->cash_account) {
 		$pmt_no = write_supp_payment(0, $inv->supplier_id, $cart->cash_account,	$inv->tran_date, $Refs->get_next(ST_SUPPAYMENT), 

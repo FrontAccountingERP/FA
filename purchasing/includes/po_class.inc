@@ -32,8 +32,6 @@ class purch_order
 	var $tax_group_id;
 	var $tax_group_array = null; // saves db queries
 	var $tax_included; // type of prices
-	var $tax_algorithm;
-	var $stored_algorithm; // copy to find the change after invoice in processed
 	var $terms;
 	var $ex_rate;
 	var $cash_account;
@@ -54,14 +52,13 @@ class purch_order
 		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 	}
 	
-	function set_supplier($supplier_id, $supplier_name, $curr_code, $tax_group_id, $tax_included, $tax_algorithm)
+	function set_supplier($supplier_id, $supplier_name, $curr_code, $tax_group_id, $tax_included)
 	{
 		$this->supplier_id = $supplier_id;
 		$this->supplier_name = $supplier_name;
 		$this->curr_code = $curr_code;
 		$this->tax_group_id = $tax_group_id;
 		$this->tax_included = $tax_included;
-		$this->stored_algorithm = $this->tax_algorithm = $tax_algorithm;
 		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 	}
 	
@@ -153,7 +150,7 @@ class purch_order
 			$prices[] = round($ln_itm->price * ($receival ? $ln_itm->receive_qty : $ln_itm->quantity),  user_price_dec());
 		}
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
-		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array, $this->tax_algorithm);
+		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
 
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 	    if ($this->curr_code == 'CHF') {
@@ -185,7 +182,7 @@ class purch_order
 
 		if (!$this->tax_included ) {
 			$taxes = get_tax_for_items($items, $prices, 0, $this->tax_group_id,
-			$this->tax_included,  $this->tax_group_array, $this->tax_algorithm);
+			$this->tax_included,  $this->tax_group_array);
 
 			foreach($taxes as $tax)
 				$total += round($tax['Value'], $dec);

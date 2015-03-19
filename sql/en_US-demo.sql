@@ -1907,7 +1907,6 @@ CREATE TABLE IF NOT EXISTS `0_suppliers` (
   `curr_code` char(3) default NULL,
   `payment_terms` int(11) default NULL,
   `tax_included` tinyint(1) NOT NULL default '0',
-  `tax_algorithm` tinyint(1) NOT NULL default '1',
   `dimension_id` int(11) default '0',
   `dimension2_id` int(11) default '0',
   `tax_group_id` int(11) default NULL,
@@ -1925,9 +1924,9 @@ CREATE TABLE IF NOT EXISTS `0_suppliers` (
 -- Dumping data for table `0_suppliers`
 --
 
-INSERT INTO `0_suppliers` VALUES(1, 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '123456', 'Contact', '111', '', '', 'DKK', 3, 0, 1, 1, 0, 2, 1000, '', '2100', '5060', 'A supplier with junk beers.', 0);
-INSERT INTO `0_suppliers` VALUES(2, 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '654321', 'Luke', '333', '', '', 'USD', 3, 0, 1, 0, 0, 1, 500, '', '2100', '5060', '', 0);
-INSERT INTO `0_suppliers` VALUES(3, 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '987654', 'Makers', '222', '', '', 'GBP', 3, 0, 1, 0, 0, 2, 300, '', '2100', '5060', '', 0);
+INSERT INTO `0_suppliers` VALUES(1, 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '123456', 'Contact', '111', '', '', 'DKK', 3, 0, 1, 0, 2, 1000, '', '2100', '5060', 'A supplier with junk beers.', 0);
+INSERT INTO `0_suppliers` VALUES(2, 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '654321', 'Luke', '333', '', '', 'USD', 3, 0, 0, 0, 1, 500, '', '2100', '5060', '', 0);
+INSERT INTO `0_suppliers` VALUES(3, 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '987654', 'Makers', '222', '', '', 'GBP', 3, 0, 0, 0, 2, 300, '', '2100', '5060', '', 0);
 
 -- --------------------------------------------------------
 
@@ -2014,7 +2013,6 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
   `tax_included` tinyint(1) NOT NULL default '0',
-  `tax_algorithm` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
@@ -2026,9 +2024,9 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
 -- Dumping data for table `0_supp_trans`
 --
 
-INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2014-06-21', '2014-07-01', 3300, 0, 165, 1, 3465, 0, 1);
-INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2014-06-21', '2014-07-01', 20, 0, 0, 1, 0, 0, 1);
-INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2014-06-21', '2014-06-21', -3465, 0, 0, 1, 3465, 0, 1);
+INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2014-06-21', '2014-07-01', 3300, 0, 165, 1, 3465, 0);
+INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2014-06-21', '2014-07-01', 20, 0, 0, 1, 0, 0);
+INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2014-06-21', '2014-06-21', -3465, 0, 0, 1, 3465, 0);
 
 -- --------------------------------------------------------
 

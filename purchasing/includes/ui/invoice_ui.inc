@@ -19,7 +19,6 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
-	$_POST['tax_algorithm'] = $supp_trans->tax_algorithm;
     $_POST['dimension'] = $supp_trans->dimension;
     $_POST['dimension2'] = $supp_trans->dimension2;
 
@@ -38,8 +37,6 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
- 	if (isset($_POST['tax_algorithm']))
- 	    $supp_trans->tax_algorithm = $_POST['tax_algorithm'];
    	$supp_trans->dimension = @$_POST['dimension'];
 	$supp_trans->dimension2 =  @$_POST['dimension2'];
 
@@ -197,11 +194,6 @@ function invoice_totals(&$supp_trans)
 
     end_table(1);
     start_table(TABLESTYLE2);
-    tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
-	if (list_updated('tax_algorithm')) {
-		$supp_trans->tax_algorithm = $_POST['tax_algorithm'];
-	    $Ajax->activate('tax_table');
-	}
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
     end_table(1);
 	div_end();

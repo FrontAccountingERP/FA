@@ -238,10 +238,6 @@ function handle_commit_invoice()
 	$inv = $_SESSION['supp_trans'];
 	$invoice_no = add_supp_invoice($inv);
 
-	// presume supplier data need correction
-	if ($inv->stored_algorithm != $inv->tax_algorithm)
-		update_supp_tax_algorithm($inv->supplier_id, $inv->tax_algorithm);
-
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);
 

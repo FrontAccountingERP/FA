@@ -61,7 +61,6 @@ function supplier_settings(&$supplier_id)
 		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
 		$_POST['tax_group_id'] = $myrow["tax_group_id"];
 		$_POST['tax_included'] = $myrow["tax_included"];
-		$_POST['tax_algorithm'] = $myrow["tax_algorithm"];
 		$_POST['payable_account']  = $myrow["payable_account"];
 		$_POST['purchase_account']  = $myrow["purchase_account"];
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
@@ -75,7 +74,6 @@ function supplier_settings(&$supplier_id)
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
 		$_POST['tax_included'] = 0;
-		$_POST['tax_algorithm'] = 1;
 		$_POST['sales_type'] = -1;
 		$_POST['gst_no'] = $_POST['bank_account'] = '';
 		$_POST['payment_terms']  = '';
@@ -122,7 +120,6 @@ function supplier_settings(&$supplier_id)
 		hidden('tax_included');
 		label_row(_("Prices contain tax included:"), $_POST['tax_included'] ? _('Yes') : _('No'));
 	}
-	tax_algorithm_list_row(_("Tax Calculation Algorithm:"), 'tax_algorithm', null);
 
 	if (!$supplier_id) table_section(2);
 
@@ -220,7 +217,7 @@ if (isset($_POST['submit']))
 				$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-				$_POST['notes'], $_POST['tax_group_id'], get_post('tax_included', 0), get_post('tax_algorithm'));
+				$_POST['notes'], $_POST['tax_group_id'], get_post('tax_included', 0));
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
@@ -233,7 +230,7 @@ if (isset($_POST['submit']))
 				$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
 				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'), get_post('tax_algorithm'));
+				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 
 			$supplier_id = $_POST['supplier_id'] = db_insert_id();
 

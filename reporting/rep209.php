@@ -34,7 +34,7 @@ print_po();
 function get_po($order_no)
 {
    	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  "
-   		.TB_PREF."suppliers.supp_account_no,".TB_PREF."suppliers.tax_included,".TB_PREF."suppliers.tax_algorithm,".TB_PREF."suppliers.gst_no AS tax_id,
+   		.TB_PREF."suppliers.supp_account_no,".TB_PREF."suppliers.tax_included,".TB_PREF."suppliers.gst_no AS tax_id,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
    		".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact, ".TB_PREF."suppliers.tax_group_id
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
@@ -167,7 +167,7 @@ function print_po()
 		$rep->NewLine();
 
 		$tax_items = get_tax_for_items($items, $prices, 0,
-		  $myrow['tax_group_id'], $myrow['tax_included'],  null, $myrow['tax_algorithm']);
+		  $myrow['tax_group_id'], $myrow['tax_included'],  null, TCA_LINES);
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{

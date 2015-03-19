@@ -472,13 +472,8 @@ display_po_items($_SESSION['PO']);
 
 start_table(TABLESTYLE2);
 
-if (list_updated('tax_algorithm')) {
-	$_SESSION['PO']->tax_algorithm = $_POST['tax_algorithm'];
-    $Ajax->activate('items_table');
-}
 
 if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE) {
-	tax_algorithm_list_row(_("Tax algorithm:"), 'tax_algorithm', null, true);
 	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
 }
 

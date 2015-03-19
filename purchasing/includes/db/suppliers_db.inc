@@ -13,12 +13,12 @@
 function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
-	$notes, $tax_group_id, $tax_included, $tax_algorithm)
+	$notes, $tax_group_id, $tax_included)
 {
 	$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, gst_no, website,
 		supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 		payment_terms, payable_account, purchase_account, payment_discount_account, notes, 
-		tax_group_id, tax_included, tax_algorithm)
+		tax_group_id, tax_included)
 		VALUES (".db_escape($supp_name). ", "
 		.db_escape($supp_ref). ", "
 		.db_escape($address) . ", "
@@ -37,8 +37,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 		.db_escape($payment_discount_account). ", "
 		.db_escape($notes). ", "
 		.db_escape($tax_group_id). ", "
-		.db_escape($tax_included). ", "
-		.db_escape($tax_algorithm). ")";
+		.db_escape($tax_included). ")";
 
 	db_query($sql,"The supplier could not be added");
 }
@@ -46,7 +45,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_address, $gst_no, 
 	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
-	$notes, $tax_group_id, $tax_included, $tax_algorithm)
+	$notes, $tax_group_id, $tax_included)
 {
 	$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($supp_name) . ",
 		supp_ref=".db_escape($supp_ref) . ",
@@ -66,8 +65,7 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 		payment_discount_account=".db_escape($payment_discount_account) . ",
 		notes=".db_escape($notes) . ",
 		tax_group_id=".db_escape($tax_group_id). ",
-		tax_included=".db_escape($tax_included).",
-		tax_algorithm=".db_escape($tax_algorithm)
+		tax_included=".db_escape($tax_included)
 		." WHERE supplier_id = ".db_escape($supplier_id);
 
 	db_query($sql,"The supplier could not be updated");
@@ -180,13 +178,6 @@ function is_new_supplier($id)
 	$tables = array('supp_trans', 'grn_batch', 'purch_orders', 'purch_data');
 
 	return !key_in_foreign_table($id, $tables, 'supplier_id');
-}
-
-function update_supp_tax_algorithm($supplier_id, $tax_algorithm)
-{
-	$sql = "UPDATE ".TB_PREF."suppliers SET tax_algorithm=".db_escape($tax_algorithm)
-		. " WHERE supplier_id=".db_escape($supplier_id);
-	return db_query($sql, "cannot update supplier's tax calculation algorithm");
 }
 
 function get_supplier_currency($supplier_id)
