@@ -277,6 +277,11 @@ function void_sales_invoice($type, $type_no)
 	commit_transaction();
 }
 
+function is_cust_invoice_credited($trans_no)
+{
+	return db_num_rows(get_sales_child_lines(ST_SALESINVOICE, $trans_no));
+}
+
 function get_cust_prepayment_invoice_factor($trans_no)
 {
 	$sql = "SELECT IF(dt.prep_amount>0, dt.prep_amount/so.total ,0) 
