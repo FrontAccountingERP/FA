@@ -2447,3 +2447,24 @@ function accounts_type_list_row($label, $name, $selected_id=null)
 	echo "</td></tr>\n";
 }
 
+function users_list_cells($label, $name, $selected_id=null, $submit_on_change=false, $spec_opt=true)
+{
+    $where = false;
+    $sql = " SELECT user_id, real_name FROM ".TB_PREF."users";
+
+    if ($label != null)
+        echo "<td>$label</td>\n";
+    echo "<td>";
+
+    echo combo_input($name, $selected_id, $sql, 'user_id', 'real_name',
+        array(
+            'spec_option' => $spec_opt===true ?_("All users") : $spec_opt,
+            'spec_id' => '',
+            'order' => 'real_name',
+            'select_submit'=> $submit_on_change,
+            'async' => false
+        ) );
+    echo "</td>";
+
+}
+

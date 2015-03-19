@@ -29,27 +29,54 @@ if (!isset($_GET['type_id']) || !isset($_GET['trans_no']))
 
 function display_gl_heading($myrow)
 {
-	global $systypes_array;
+	global $systypes_array, $type_shortcuts;
+
 	$trans_name = $systypes_array[$_GET['type_id']];
+	$journal = $_GET['type_id'] == ST_JOURNAL;
+
     start_table(TABLESTYLE, "width='95%'");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
-    	_("Date"));
+    	_("Transaction Date"), _("Journal #"));
 
- 	if ($_GET['type_id'] != ST_JOURNAL)
-		$th[] = _("Counterparty");
-
-    table_header($th);
-    start_row();
+	if ($_GET['type_id'] == ST_JOURNAL)
+		array_insert($th, 3, array(_("Document Date"), _("Event Date")));
+	else
+		array_insert($th, 3, array(_("Counterparty")));
+	
+	if($myrow['supp_reference'])
+	{
+		array_insert($th, 2, array(_("Supplier Reference")));
+	}
+    table_header($th);	
+    start_row();	
     label_cell("$trans_name #" . $_GET['trans_no']);
-    label_cell($myrow["reference"]);
-	label_cell(sql2date($myrow["tran_date"]));
- 	if ($_GET['type_id'] != ST_JOURNAL)
+    label_cell($type_shortcuts[$myrow['type']].' '.$myrow["reference"], "align='center'");
+	if($myrow['supp_reference'])
+	{
+	label_cell($myrow["supp_reference"], "align='center'");
+	}
+	label_cell(sql2date($myrow["doc_date"]), "align='center'");
+	if ($journal)
+	{
+		$header = get_journal($myrow['type'], $_GET['trans_no']);
+		label_cell(sql2date($header["doc_date"]), "align='center'");
+		label_cell(sql2date($header["event_date"]), "align='center'");
+	} else
 		label_cell(get_counterparty_name($_GET['type_id'],$_GET['trans_no']));
-
+	label_cell( get_journal_number($myrow['type'], $_GET['trans_no']), "align='center'");
 	end_row();
 
+	start_row();
+	label_cells(_('Entered By'), $myrow["real_name"], "class='tableheader2'", "colspan=" .
+		 ($journal ? ($header['rate']==1 ? '3':'1'):'6'));
+	if ($journal)
+	{
+		if ($header['rate'] != 1)
+			label_cells(_('Exchange rate'), $header["rate"].' ', "class='tableheader2'");
+		label_cells(_('Source document'), $header["source_ref"], "class='tableheader2'");
+	}
+	end_row();
 	comments_display_row($_GET['type_id'], $_GET['trans_no']);
-
     end_table(1);
 }
 $result = get_gl_trans($_GET['type_id'], $_GET['trans_no']);
@@ -65,13 +92,13 @@ if (db_num_rows($result) == 0)
 $dim = get_company_pref('use_dimension');
 
 if ($dim == 2)
-	$th = array(_("Account Code"), _("Account Name"), _("Dimension")." 1", _("Dimension")." 2",
+	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"), _("Dimension")." 1", _("Dimension")." 2",
 		_("Debit"), _("Credit"), _("Memo"));
 else if ($dim == 1)
-	$th = array(_("Account Code"), _("Account Name"), _("Dimension"),
+	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"), _("Dimension"),
 		_("Debit"), _("Credit"), _("Memo"));
 else		
-	$th = array(_("Account Code"), _("Account Name"),
+	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"),
 		_("Debit"), _("Credit"), _("Memo"));
 
 $k = 0; //row colour counter
@@ -94,6 +121,7 @@ while ($myrow = db_fetch($result))
 	$counterpartyname = get_subaccount_name($myrow["account"], $myrow["person_id"]);
 	$counterparty_id = $counterpartyname ? sprintf(' %05d', $myrow["person_id"]) : '';
 
+    label_cell(sql2date($myrow['tran_date']));
     label_cell($myrow['account'].$counterparty_id);
 	label_cell($myrow['account_name'] . ($counterpartyname ? ': '.$counterpartyname : ''));
 	if ($dim >= 1)
@@ -109,10 +137,11 @@ while ($myrow = db_fetch($result))
     else 
     	$credit += $myrow['amount'];
 }
+
 if ($heading_shown)
 {
     start_row("class='inquirybg' style='font-weight:bold'");
-    label_cell(_("Total"), "colspan=2");
+    label_cell(_("Total"), "colspan=3");
     if ($dim >= 1)
         label_cell('');
     if ($dim > 1)
@@ -129,4 +158,3 @@ if ($heading_shown)
 is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 
 end_page(true, false, false, $_GET['type_id'], $_GET['trans_no']);
-

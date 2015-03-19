@@ -107,25 +107,33 @@ function close_transactions($todate) {
 	return $errors;
 }
 
-/*
-	Closed transactions have gl_seq number assigned.
-*/
-function is_closed_trans($type, $trans_no) {
+function get_journal_number($type, $trans_no) {
 
 	$cdate = get_company_pref('gl_closing_date');
 	if (!$cdate)
 		return false;
 
 // FIXME: gl_date can be badly entered for some transactions due to bug in previous FA versions 
-	$sql = "SELECT	gl_seq  FROM ".TB_PREF."audit_trail"
+	$sql = "SELECT	MAX(gl_seq) as gl_seq  FROM ".TB_PREF."audit_trail"
 		. " WHERE type=".db_escape($type)
 		." AND trans_no=".db_escape($trans_no)
 		." AND gl_date<='$cdate'"; // date is stored in sql format
 //		." AND (gl_date<='$cdate'" // some transaction can be not sequenced due to 0 amount, however after edition this could change
 //		." OR gl_seq>0)";
-
 	$res = db_query($sql, "Cannot check transaction");
+	if (db_num_rows($res))
+	{
+		$myrow =db_fetch($res);
+		return $myrow['gl_seq'] ? $myrow['gl_seq'] : _('None');
+	}
+	return "-";
+}
 
-	return db_num_rows($res);
+/*
+	Closed transactions have gl_seq number assigned.
+*/
+function is_closed_trans($type, $trans_no) {
+
+	return get_journal_number($type, $trans_no) > 0;
 }
 

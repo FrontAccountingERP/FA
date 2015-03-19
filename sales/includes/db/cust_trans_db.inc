@@ -111,13 +111,14 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
-	add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
+	if ($trans_type != ST_JOURNAL) // skip for journal entries
+		add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
 
 	return $trans_no;
 }
 //----------------------------------------------------------------------------------------
 
-function get_customer_trans($trans_id, $trans_type)
+function get_customer_trans($trans_id, $trans_type, $customer_id=null)
 {
 	global $SysPrefs;
 
@@ -131,7 +132,6 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
-		// Chaitanya : Added bank_act to support Customer Payment Edit
 		$sql .= ",bank_act,".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType,
 			".TB_PREF."bank_accounts.bank_curr_code,
@@ -147,6 +147,10 @@ function get_customer_trans($trans_id, $trans_type)
 		."cust.discount, "
 		.TB_PREF."tax_groups.name AS tax_group_name, "
 		.TB_PREF."tax_groups.id AS tax_group_id ";
+	}
+
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= ", branch.*";
 	}
 
 	$sql .= " FROM ".TB_PREF."debtor_trans trans
@@ -166,9 +170,16 @@ function get_customer_trans($trans_id, $trans_type)
 		.TB_PREF."tax_groups ";
 	}
 
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= ", ".TB_PREF."cust_branch branch ";
+	}
+
 	$sql .= " WHERE trans.trans_no=".db_escape($trans_id)."
 		AND trans.type=".db_escape($trans_type)."
 		AND trans.debtor_no=cust.debtor_no";
+
+	if (isset($customer_id))
+		$sql .= " AND trans.debtor_no=".db_escape($customer_id);
 
 	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
@@ -182,6 +193,9 @@ function get_customer_trans($trans_id, $trans_type)
 		$sql .= " AND ".TB_PREF."sales_types.id = trans.tpe
 			AND branch.branch_code = trans.branch_code
 			AND branch.tax_group_id = ".TB_PREF."tax_groups.id ";
+	}
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= " AND branch.branch_code = trans.branch_code ";
 	}
 
 	$result = db_query($sql, "Cannot retreive a debtor transaction");

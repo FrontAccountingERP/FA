@@ -51,7 +51,7 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 
 //-------------------------------------------------------------------------------------------------------------
 
-function get_supp_trans($trans_no, $trans_type=-1)
+function get_supp_trans($trans_no, $trans_type=-1, $supplier_id=null)
 {
 	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
 		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS curr_code ";
@@ -75,7 +75,10 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	$sql .= " WHERE ".TB_PREF."supp_trans.trans_no=".db_escape($trans_no)."
 		AND ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id";
 
-	if ($trans_type > 0)
+	if (isset($supplier_id))
+		$sql .= " AND ".TB_PREF."supp_trans.supplier_id=".db_escape($supplier_id);
+
+	if ($trans_type > -1)
 		$sql .= " AND ".TB_PREF."supp_trans.type=".db_escape($trans_type);
 
 	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
@@ -101,9 +104,9 @@ function get_supp_trans($trans_no, $trans_type=-1)
        display_db_error("duplicate supplier transactions found for given params", $sql, true);
        exit;
     }
-
     return db_fetch($result);
 }
+
 
 //----------------------------------------------------------------------------------------
 

@@ -199,8 +199,8 @@ function write_sales_invoice(&$invoice)
 				_('Cash invoice').' '.$invoice_no);
 			add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no, $invoice->customer_id, $date_);
 
-			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no);
-			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno);
+			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $invoice->customer_id);
+			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $invoice->customer_id);
 		}
 	}
 //_vd($allocs);

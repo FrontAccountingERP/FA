@@ -48,12 +48,15 @@ journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 date_cells(_("To:"), 'ToDate');
 
-check_cells( _("Show closed:"), 'AlsoClosed', null);
-
 submit_cells('Search', _("Search"), '', '', 'default');
 end_row();
 start_row();
 ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
+users_list_cells(_("User:"), 'userid', null, false);
+if (get_company_pref('use_dimension') && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
+	dimensions_list_cells(_('Dimension:'), 'dimension', null, true, null, true);
+users_list_cells(_("User:"), 'userid', null, false);
+check_cells( _("Show closed:"), 'AlsoClosed', null);
 end_row();
 end_table();
 
@@ -71,25 +74,25 @@ function systype_name($dummy, $type)
 
 function view_link($row) 
 {
-	return get_trans_view_str($row["type"], $row["type_no"]);
+	return get_trans_view_str($row["trans_type"], $row["trans_no"]);
 }
 
 function gl_link($row) 
 {
-	return get_gl_view_str($row["type"], $row["type_no"]);
+	return get_gl_view_str($row["trans_type"], $row["trans_no"]);
 }
 
 function edit_link($row)
 {
 
 	$ok = true;
-	if ($row['type'] == ST_SALESINVOICE)
+	if ($row['trans_type'] == ST_SALESINVOICE)
 	{
-		$myrow = get_customer_trans($row["type_no"], $row["type"]);
-		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["type_no"]) !== false)
+		$myrow = get_customer_trans($row["trans_no"], $row["trans_type"]);
+		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
 			$ok = false;
 	}
-	return $ok ? trans_editor_link($row["type"], $row["type_no"]) : '';
+	return $ok ? trans_editor_link($row["trans_type"], $row["trans_type"]) : '';
 }
 
 $sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),
@@ -100,6 +103,7 @@ $cols = array(
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
+ 	_("Counterparty") => array('ord' => ''),
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),
 	_("Memo"),

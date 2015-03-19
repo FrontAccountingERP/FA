@@ -101,8 +101,10 @@ function alloc_link($row)
 	{
 		/*its a credit note which could have an allocation */
 		return $link;
-	}
-	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
+	} elseif ($row["type"] == ST_JOURNAL && $row['TotalAmount'] < 0)
+	{
+		return $link;
+	} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
 		(floatcmp($row['TotalAmount'], $row['Allocated']) >= 0))
 	{
 		/*its a receipt  which could have an allocation*/
@@ -112,7 +114,7 @@ function alloc_link($row)
 	{
 		/*its a negative receipt */
 		return '';
-	} elseif ($row["type"] == ST_SALESINVOICE && ($row['TotalAmount'] - $row['Allocated']) > 0)
+	} elseif (($row["type"] == ST_SALESINVOICE && ($row['TotalAmount'] - $row['Allocated']) > 0) || $row["type"] == ST_BANKPAYMENT)
 		return pager_link(_("Payment"),
 			"/sales/customer_payments.php?customer_id=".$row["debtor_no"]."&SInvoice=" . $row["trans_no"], ICON_MONEY);
 

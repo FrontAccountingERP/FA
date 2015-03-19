@@ -42,13 +42,14 @@ function get_invoices($customer_id, $to, $all=true)
     	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
 			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
 			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
 	$due = "IF (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE.",".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
 	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
-		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
+		$sign*$value as Balance,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$sign*$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$sign*$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$sign*$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
 			".TB_PREF."debtor_trans
@@ -57,9 +58,13 @@ function get_invoices($customer_id, $to, $all=true)
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > ".FLOAT_COMP_DELTA." ";
+			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+			.TB_PREF."debtor_trans.ov_discount) > " . FLOAT_COMP_DELTA;
 	if (!$all)
-		$sql .= "AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) > ".FLOAT_COMP_DELTA." ";  
+		$sql .= "AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) > " . FLOAT_COMP_DELTA;
 	$sql .= "ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
 	return db_query($sql, "The customer details could not be retrieved");
@@ -175,7 +180,7 @@ function print_aged_customer_analysis()
 		if ($no_zeros && floatcmp(array_sum($str), 0) == 0) continue;
 
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow["name"]);
 		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
 		$total[0] += ($custrec["Balance"] - $custrec["Due"]);
@@ -198,6 +203,7 @@ function print_aged_customer_analysis()
         		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
+
 				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
 				{
 					$trans['Balance'] *= -1;
@@ -205,6 +211,7 @@ function print_aged_customer_analysis()
 					$trans['Overdue1'] *= -1;
 					$trans['Overdue2'] *= -1;
 				}
+
 				foreach ($trans as $i => $value)
 					$trans[$i] *= $rate;
 				$str = array($trans["Balance"] - $trans["Due"],
@@ -260,4 +267,3 @@ function print_aged_customer_analysis()
 	$rep->NewLine();
     $rep->End();
 }
-

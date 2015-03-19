@@ -138,7 +138,7 @@ function gl_view($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -147,10 +147,11 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
+
 
 function credit_link($row)
 {
