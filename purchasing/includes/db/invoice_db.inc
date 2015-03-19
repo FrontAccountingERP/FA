@@ -119,7 +119,7 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 }
 //----------------------------------------------------------------------------------------
 
-function add_supp_invoice(&$supp_trans) // do not receive as ref because we change locally
+function add_supp_invoice(&$supp_trans)
 {
 	global $Refs;
 
@@ -308,7 +308,7 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 				$currency = get_supplier_currency($supp_trans->supplier_id);
 
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-					$dim, $dim2, $entered_grn->this_quantity_inv * $old_price, $supp_trans->supplier_id, "", $ex_rate);
+					$dim, $dim2, $old_value, $supp_trans->supplier_id, "", $ex_rate);
 				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_value, 
 					$taxfree_line);
 
