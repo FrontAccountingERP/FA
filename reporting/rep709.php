@@ -53,7 +53,7 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
 		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
-			AND taxrec.trans_type <> ".ST_CUSTDELIVERY."
+			AND !ISNULL(taxrec.reg_type)
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.trans_type, taxrec.tran_date, taxrec.trans_no, taxrec.ex_rate";
@@ -161,18 +161,18 @@ function print_tax_report()
 				$rep->NewPage();
 			}
 		}
-		if ($trans['trans_type']==ST_JOURNAL && $trans['amount']<0) {
+		if ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_INPUT) {
 			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
 		}
-		elseif ($trans['trans_type']==ST_JOURNAL && $trans['amount']>=0) {
+		elseif ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_OUTPUT) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		}
 		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
-		} else {
+		} elseif ($trans['reg_type'] !== NULL) {
 			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
 		}

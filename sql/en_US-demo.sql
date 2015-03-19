@@ -2284,6 +2284,7 @@ CREATE TABLE IF NOT EXISTS `0_trans_tax_details` (
   `net_amount` double NOT NULL default '0',
   `amount` double NOT NULL default '0',
   `memo` tinytext,
+  `reg_type` tinyint(1) default NULL,
   PRIMARY KEY  (`id`),
   KEY `Type_and_Number` (`trans_type`,`trans_no`),
   KEY `tran_date` (`tran_date`)
@@ -2293,17 +2294,17 @@ CREATE TABLE IF NOT EXISTS `0_trans_tax_details` (
 -- Dumping data for table `0_trans_tax_details`
 --
 
-INSERT INTO `0_trans_tax_details` VALUES(1, 20, 7, '2014-06-21', 1, 5, 1, 0, 3300, 165, '5t');
-INSERT INTO `0_trans_tax_details` VALUES(2, 13, 3, '2014-06-21', 1, 5, 1, 0, 50, 2.5, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(3, 10, 17, '2014-06-21', 1, 5, 1, 0, 50, 2.5, '1');
-INSERT INTO `0_trans_tax_details` VALUES(4, 13, 4, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(5, 10, 18, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '2');
-INSERT INTO `0_trans_tax_details` VALUES(6, 2, 5, '2014-06-21', 1, 5, 1, 0, 95.2, 4.76, '');
-INSERT INTO `0_trans_tax_details` VALUES(7, 1, 8, '2014-06-21', 1, 5, 1, 0, -47.6, -2.38, '');
-INSERT INTO `0_trans_tax_details` VALUES(8, 20, 8, '2014-06-21', 1, 5, 1, 0, -19, -0.95, 'cc');
-INSERT INTO `0_trans_tax_details` VALUES(9, 13, 5, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, 'auto');
-INSERT INTO `0_trans_tax_details` VALUES(10, 10, 19, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, '3');
-INSERT INTO `0_trans_tax_details` VALUES(11, 11, 3, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '1');
+INSERT INTO `0_trans_tax_details` VALUES(1, 20, 7, '2014-06-21', 1, 5, 1, 0, 3300, 165, '5t', 1);
+INSERT INTO `0_trans_tax_details` VALUES(2, 13, 3, '2014-06-21', 1, 5, 1, 0, 50, 2.5, 'auto', NULL);
+INSERT INTO `0_trans_tax_details` VALUES(3, 10, 17, '2014-06-21', 1, 5, 1, 0, 50, 2.5, '1', 0);
+INSERT INTO `0_trans_tax_details` VALUES(4, 13, 4, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, 'auto', NULL);
+INSERT INTO `0_trans_tax_details` VALUES(5, 10, 18, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '2', 0);
+INSERT INTO `0_trans_tax_details` VALUES(6, 2, 5, '2014-06-21', 1, 5, 1, 0, 95.2, 4.76, '', NULL);
+INSERT INTO `0_trans_tax_details` VALUES(7, 1, 8, '2014-06-21', 1, 5, 1, 0, -47.6, -2.38, '', NULL);
+INSERT INTO `0_trans_tax_details` VALUES(8, 20, 8, '2014-06-21', 1, 5, 1, 0, -19, -0.95, 'cc', 1);
+INSERT INTO `0_trans_tax_details` VALUES(9, 13, 5, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, 'auto', NULL);
+INSERT INTO `0_trans_tax_details` VALUES(10, 10, 19, '2014-06-21', 1, 5, 1, 1, 47.619047619048, 2.3809523809524, '3', 0);
+INSERT INTO `0_trans_tax_details` VALUES(11, 11, 3, '2014-06-21', 1, 5, 1.3932, 0, 35.89, 1.7945, '1', 0);
 
 -- --------------------------------------------------------
 

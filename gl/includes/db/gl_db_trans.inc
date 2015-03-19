@@ -407,7 +407,7 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 		}
 	}
 	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
-		$amount, $net_amount, $ex_rate, $date, $memo);
+		$amount, $net_amount, $ex_rate, $date, $memo, null);
 
 }
 
@@ -417,17 +417,21 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 //	actual tax type rate.
 //
 function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
-	$amount, $net_amount, $ex_rate, $tran_date, $memo)
+	$amount, $net_amount, $ex_rate, $tran_date, $memo, $reg_type=null)
 {
+	// guess tax register if not set
+	if (!isset($reg_type))
+		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_OUTPUT
+				: in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_INPUT : null;
 
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
-			included_in_price, net_amount, amount, memo)
+			included_in_price, net_amount, amount, memo, reg_type)
 		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
 				.date2sql($tran_date)."',".db_escape($tax_id).","
 				.db_escape($rate).",".db_escape($ex_rate).",".($included ? 1:0).","
 				.db_escape($net_amount).","
-				.db_escape($amount).",".db_escape($memo).")";
+				.db_escape($amount).",".db_escape($memo).",".db_escape($reg_type, true).")";
 
 	db_query($sql, "Cannot save trans tax details");
 
@@ -471,47 +475,46 @@ function clear_trans_tax_details($type, $type_no)
 	db_query($sql, "The transaction tax details could not be cleared");
 }
 
-function get_tax_summary($from, $to)
+function get_tax_summary($from, $to, $also_zero_purchases=false)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE
-					." || trans_type=".ST_JOURNAL.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE 
-					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
-					." || trans_type=".ST_CUSTCREDIT.", net_amount*ex_rate,0)) net_output,
+				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*IF(taxrec.amount, taxrec.effective_amount/taxrec.amount, 1)*
+				IF((reg_type=".TR_OUTPUT.")"
+					." || ((trans_type IN(".ST_SUPPINVOICE.",".ST_SUPPCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					), net_amount*ex_rate,0)
+				) net_output,
 
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE
-					." || trans_type=".ST_JOURNAL.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
-					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
-					." || trans_type=".ST_CUSTCREDIT.", amount*ex_rate,0)) payable,
+				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*
+				IF((reg_type=".TR_OUTPUT.")"
+					." || ((trans_type IN(".ST_SUPPINVOICE.",".ST_SUPPCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					), amount*ex_rate,0)) payable,
 
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE." || trans_type=".ST_JOURNAL.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
-					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
-					." || trans_type=".ST_CUSTCREDIT.", 0, net_amount*ex_rate)) net_input,
+				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
+				IF(reg_type=".TR_INPUT
+					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate")
+					.", net_amount*ex_rate, 0)) net_input,
 
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE." || trans_type=".ST_JOURNAL.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
-					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
-					." || trans_type=".ST_CUSTCREDIT.", 0, amount*ex_rate)) collectible,
+				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
+				IF(reg_type=".TR_INPUT
+					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate ") 
+					.", amount*ex_rate, 0)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
-		FROM ".TB_PREF."tax_types ttype,
-			 ".TB_PREF."trans_tax_details taxrec
-		WHERE taxrec.tax_type_id=ttype.id
-			AND taxrec.trans_type != ".ST_CUSTDELIVERY."
+		FROM ".TB_PREF."trans_tax_details taxrec LEFT JOIN ".TB_PREF."tax_types ttype ON taxrec.tax_type_id=ttype.id
+			LEFT JOIN ".TB_PREF."tax_groups tgroup ON taxrec.tax_group_id=tgroup.id
+		WHERE taxrec.trans_type IN (".implode(',',
+			array(ST_SALESINVOICE, ST_CUSTCREDIT, ST_SUPPINVOICE, ST_SUPPCREDIT, ST_JOURNAL)).")
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
-//display_error($sql);
+
+		// display_error($sql);
     return db_query($sql,"Cannot retrieve tax summary");
 }
-
 //--------------------------------------------------------------------------------------------------
 
 function exists_gl_trans($type, $trans_id)
@@ -563,7 +566,7 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 		gl.tran_date,
 		gl.type as trans_type,
 		gl.type_no as trans_no,
-		IFNULL(max(supp.supp_name), max(cust.name)) as name,
+		IFNULL(MAX(supp.supp_name), MAX(cust.name)) as name,
 		IF(ISNULL(st.supp_reference), '', st.supp_reference) AS supp_reference,
 		refs.reference,"
 		.($dimension ? " -SUM(IF(dim.dimension in(gl.dimension_id,gl.dimension2_id), gl.amount, 0)) as amount,":" SUM(IF(gl.amount>0, gl.amount,0)) as amount,")

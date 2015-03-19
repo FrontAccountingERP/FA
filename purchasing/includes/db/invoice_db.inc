@@ -200,7 +200,7 @@ function add_supp_invoice(&$supp_trans) // do not receive as ref because we chan
 			}
 			add_trans_tax_details($trans_type, $invoice_id, 
 				$taxitem['tax_type_id'], $taxitem['rate'], $supp_trans->tax_included, $taxitem['Value'],
-				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
+				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference, TR_INPUT);
 
 			if (isset($taxitem['purchasing_gl_code']))
 			{

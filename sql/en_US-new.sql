@@ -2044,6 +2044,7 @@ CREATE TABLE IF NOT EXISTS `0_trans_tax_details` (
   `net_amount` double NOT NULL default '0',
   `amount` double NOT NULL default '0',
   `memo` tinytext,
+  `reg_type` tinyint(1) default NULL,
   PRIMARY KEY  (`id`),
   KEY `Type_and_Number` (`trans_type`,`trans_no`),
   KEY `tran_date` (`tran_date`)

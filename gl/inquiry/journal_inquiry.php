@@ -92,7 +92,12 @@ function edit_link($row)
 		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
 			$ok = false;
 	}
-	return $ok ? trans_editor_link($row["trans_type"], $row["trans_type"]) : '';
+	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '';
+}
+
+function invoice_supp_reference($row)
+{
+	return $row['supp_reference'];
 }
 
 $sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),
@@ -104,6 +109,7 @@ $cols = array(
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
  	_("Counterparty") => array('ord' => ''),
+	_("Supplier's Reference") => 'skip',
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),
 	_("Memo"),
@@ -114,6 +120,11 @@ $cols = array(
 
 if (!check_value('AlsoClosed')) {
 	$cols[_("#")] = 'skip';
+}
+
+if($_POST['filterType'] == ST_SUPPINVOICE) //add the payment column if shown supplier invoices only
+{
+	$cols[_("Supplier's Reference")] = array('fun'=>'invoice_supp_reference', 'align'=>'center');
 }
 
 $table =& new_db_pager('journal_tbl', $sql, $cols);

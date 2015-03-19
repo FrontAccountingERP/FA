@@ -169,8 +169,8 @@ function write_sales_invoice(&$invoice)
 		if ($taxitem['Net'] != 0) {
 			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($invoice->customer_id), $date_);
 			add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
-				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, $date_, $prepaid_factor*$taxitem['Value']);
+				$taxitem['rate'], $invoice->tax_included, $prepaid_factor*$taxitem['Value'],
+				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT);
 			if (isset($taxitem['sales_gl_code']))
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id,

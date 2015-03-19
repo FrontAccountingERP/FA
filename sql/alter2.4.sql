@@ -200,3 +200,13 @@ ALTER TABLE `0_debtor_trans` ADD  PRIMARY KEY (`type`,`trans_no`, `debtor_no`);
 ALTER TABLE `0_supp_trans` DROP PRIMARY KEY;
 ALTER TABLE `0_supp_trans` ADD  PRIMARY KEY (`type`,`trans_no`, `supplier_id`);
 
+ALTER TABLE  `0_trans_tax_details` ADD COLUMN `reg_type` tinyint(1) DEFAULT NULL AFTER `memo`;
+
+UPDATE `0_trans_tax_details` reg
+	SET reg.reg_type=1
+	WHERE reg.trans_type IN(20, 21);
+
+UPDATE `0_trans_tax_details` reg
+	SET reg.reg_type=0
+	WHERE reg.trans_type IN(10, 11);
+
