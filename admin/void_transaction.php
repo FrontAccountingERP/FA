@@ -283,10 +283,10 @@ function handle_void_transaction()
 			return;
 		}
 
-		$ret = void_transaction($_POST['filterType'], $_POST['trans_no'],
+		$msg = void_transaction($_POST['filterType'], $_POST['trans_no'],
 			$_POST['date_'], $_POST['memo_']);
 
-		if ($ret) 
+		if (!$msg) 
 		{
 			display_notification_centered(_("Selected transaction has been voided."));
 			unset($_POST['trans_no']);
@@ -294,7 +294,7 @@ function handle_void_transaction()
 			unset($_POST['date_']);
 		}
 		else {
-			display_error(_("The entered transaction does not exist or cannot be voided."));
+			display_error($msg);
 			set_focus('trans_no');
 
 		}
