@@ -140,7 +140,7 @@ if (get_post('restore')) {
 	if ($backup_name) {
 		if (db_import($backup_path, $conn))
 			display_notification(_("Restore backup completed."));
-		refresh_sys_prefs(); // re-read system setup
+		$SysPrefs->refesh(); // re-read system setup
 	} else
 		display_error(_("Select backup file first."));
 }

@@ -207,6 +207,8 @@ class fa_patch {
 */
 function get_site_status($connections)
 {
+		global $SysPrefs;
+
 		$info = array();
 
 		foreach($connections as $i => $conn)
@@ -221,7 +223,7 @@ function get_site_status($connections)
 			}
 		}
 		set_global_connection();
-		refresh_sys_prefs();
+		$SysPrefs->refresh();
 
 		return $info;
 }

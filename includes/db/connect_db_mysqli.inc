@@ -16,7 +16,7 @@ $db_last_inserted_id = 0;
 
 function set_global_connection($company=-1)
 {
-	global $db, $path_to_root, $db_connections;
+	global $db, $path_to_root, $db_connections, $SysPrefs;
 
 	include ($path_to_root . "/config_db.php");
 	if ($company == -1) 
@@ -37,7 +37,7 @@ function set_global_connection($company=-1)
 	///// We are, however, investigating the existing code to be compatible in the future.
 		db_query("SET sql_mode = '".SQL_MODE."'");
 	/////
-	refresh_sys_prefs();
+	$SysPrefs->refresh();
 	return $db;
 }
 

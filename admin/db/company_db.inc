@@ -35,7 +35,7 @@ function get_company_pref($prefs = null)
 	global $SysPrefs, $db_version;
 
 	if (!isset($SysPrefs->prefs))	 // just after first login or reset
-		$SysPrefs->refresh_company_prefs();
+		$SysPrefs->refresh();
 
 	$all = $SysPrefs->prefs;
 
@@ -61,17 +61,6 @@ function set_company_pref($pref, $category, $type, $length, $value)
 	$sql = "REPLACE `".TB_PREF."sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
 		.", `type`=".db_escape($type).", `length`=".db_escape($length).", `value`=".db_escape($value);
 	return db_query($sql, "cannot set company pref");
-}
-
-function refresh_sys_prefs()
-{
-	global $SysPrefs;
-
-//	flush_dir(user_js_cache()); // clear cache
-	unset($_SESSION['SysPrefs']);
-	$_SESSION['SysPrefs'] = new sys_prefs();
-	$SysPrefs = &$_SESSION['SysPrefs'];
-	$SysPrefs->refresh_company_prefs();
 }
 
 function get_base_sales_type()

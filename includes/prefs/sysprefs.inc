@@ -14,7 +14,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 /*
 	System and per company prefferences.
 	Object is created only with site wide preffernces.
-	After user login refresh_company_prefs method have to be called to initialize company specific settings.
+	After user login refresh method have to be called to re-initialize company specific settings.
 */
 class sys_prefs 
 {
@@ -23,7 +23,7 @@ class sys_prefs
 
 	function sys_prefs()
 	{
-		global $path_to_root, $db_version;
+		global $path_to_root;
 
 		// retrieve set system wide preferences
 		include $path_to_root.'/config.default.php';
@@ -43,9 +43,9 @@ class sys_prefs
 	}
 
 	/*
-		Initialize company specific preferrencies.
+		Re-initialize company preferrencies.
 	*/
-	function refresh_company_prefs()
+	function refresh()
 	{
 		global $db_version;
 

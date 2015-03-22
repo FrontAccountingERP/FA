@@ -117,20 +117,6 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 	$Ajax->activate('_page_body');
 } /* end of if submit */
 
-//---------------------------------------------------------------------------------------------
-if (get_company_pref('bcc_email') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
-	set_company_pref('bcc_email', 'setup.company', 'varchar', 100, '');
-	refresh_sys_prefs();
-}
-if (get_company_pref('alternative_tax_include_on_docs') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
-	set_company_pref('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-if (get_company_pref('suppress_tax_rates') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
-	set_company_pref('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
 start_form(true);
 
 $myrow = get_company_prefs();

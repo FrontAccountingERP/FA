@@ -94,55 +94,6 @@ start_outer_table(TABLESTYLE2);
 
 table_section(1);
 
-if (get_company_pref('grn_clearing_act') === null) { // available from 2.3.1, can be not defined on pre-2.4 installations
-	set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
-	refresh_sys_prefs();
-}
-if (get_company_pref('default_receival_required') === null) { // new in 2.4 installations
-	set_company_pref('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('default_quote_valid_days') === null) { // available from 2.3.23, can be not defined on pre-2.4 installations
-	set_company_pref('default_quote_valid_days', 'glsetup.sales', 'smallint', 6, 30);
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('no_zero_lines_amount') === null) { // new in 2.4 installations
-	set_company_pref('no_zero_lines_amount', 'glsetup.sales', 'tinyint', 1, '1');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('show_po_item_codes') === null) { // new in 2.4 installations
-	set_company_pref('show_po_item_codes', 'glsetup.purchase', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('accounts_alpha') === null) { // new in 2.4 installations
-	set_company_pref('accounts_alpha', 'glsetup.general', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('loc_notification') === null) { // new in 2.4 installations
-	set_company_pref('loc_notification', 'glsetup.inventory', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('print_invoice_no') === null) { // new in 2.4 installations
-	set_company_pref('print_invoice_no', 'glsetup.sales', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('allow_negative_prices') === null) { // new in 2.4 installations
-	set_company_pref('allow_negative_prices', 'glsetup.inventory', 'tinyint', 1, '1');
-	refresh_sys_prefs();
-}
-
-if (get_company_pref('print_item_images_on_quote') === null) { // new in 2.4 installations
-	set_company_pref('print_item_images_on_quote', 'glsetup.inventory', 'tinyint', 1, '0');
-	refresh_sys_prefs();
-}
-
 $myrow = get_company_prefs();
 
 $_POST['retained_earnings_act']  = $myrow["retained_earnings_act"];

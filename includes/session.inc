@@ -559,7 +559,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		if (db_fixed())
 			db_set_encoding($_SESSION['language']->encoding);
 
-		$SysPrefs->refresh_company_prefs();
+		$SysPrefs->refresh();
 	}
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
