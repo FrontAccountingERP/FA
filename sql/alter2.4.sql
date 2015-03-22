@@ -148,7 +148,7 @@ ALTER TABLE `0_supp_invoice_items` ADD COLUMN `dimension2_id` int(11) NOT NULL D
 UPDATE `0_supp_invoice_items` si
 	LEFT JOIN `0_gl_trans` gl ON si.supp_trans_type=gl.`type` AND si.supp_trans_no=gl.type_no AND si.gl_code=gl.account
 	SET si.dimension_id=gl.dimension_id, si.dimension2_id=gl.dimension2_id
-WHERE si.grn_item_id=-1 AND (gl.dimension_id OR gl.dimension2_id)
+WHERE si.grn_item_id=-1 AND (gl.dimension_id OR gl.dimension2_id);
 
 ALTER TABLE `0_quick_entries` ADD COLUMN `usage` varchar(120) NULL AFTER `description`;
 ALTER TABLE `0_quick_entry_lines` ADD COLUMN `memo` tinytext NOT NULL AFTER `amount`;
@@ -185,8 +185,8 @@ CREATE TABLE `0_journal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 INSERT INTO `0_journal` (`type`, `trans_no`, `tran_date`, `reference`, `event_date`,`doc_date`,`currency`,`amount`)
- SELECT `gl`.`type`, `gl`.`type_no`, `gl`.`tran_date`, `ref`.`reference`, `gl`.`event_date`,
- 		`gl`.`doc_date`, `sys_curr`.`value`, SUM(IF(`gl`.`amount`>0,`gl`.`amount`,0))
+ SELECT `gl`.`type`, `gl`.`type_no`, `gl`.`tran_date`, `ref`.`reference`, `gl`.`tran_date`,
+ 		`gl`.`tran_date`, `sys_curr`.`value`, SUM(IF(`gl`.`amount`>0,`gl`.`amount`,0))
  FROM `0_gl_trans` gl LEFT JOIN `0_refs` ref ON gl.type = ref.type AND gl.type_no=ref.id
  LEFT JOIN `0_sys_prefs` sys_curr ON `sys_curr`.`name`='curr_default'
  WHERE `gl`.`type` IN(0, 35)
