@@ -129,7 +129,7 @@
 				echo "<td align='center' class='footer'><a target='_blank' href='".$SysPrefs->power_url."'><font color='#ffff00'>"
 					.$SysPrefs->power_by."</font></a></td>\n";
 				echo "</tr>\n";
-				if ($SysPrefs->allow_demo_mode==true)
+				if ($SysPrefs->allow_demo_mode)
 				{
 					echo "<tr>\n";
 					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='center' /></a></div></td>\n";
