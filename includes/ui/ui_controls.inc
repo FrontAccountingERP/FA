@@ -53,6 +53,16 @@ function start_form($multi=false, $dummy=false, $action="", $name="")
 
 }
 
+/*
+	Flush hidden fields buffer.
+*/
+function output_hidden()
+{
+	global $hidden_fields;
+
+	echo implode('', $hidden_fields);
+	$hidden_fields = array();
+}
 //---------------------------------------------------------------------------------
 
 function end_form($breaks=0)
@@ -69,7 +79,8 @@ function end_form($breaks=0)
 	hidden('_confirmed'); // helper for final form confirmation
 	hidden('_token', $_SESSION['csrf_token']);
 
-	echo implode('', $hidden_fields)."</form>\n";
+	output_hidden();
+	echo "</form>\n";
 	$Ajax->activate('_token');
 	$Ajax->activate('_confirmed');
 }
@@ -102,6 +113,7 @@ function start_table($class=false, $extra="", $padding='2', $spacing='0')
 function end_table($breaks=0)
 {
 	echo "</table></center>\n";
+	output_hidden();
 	if ($breaks)
 		br($breaks);
 }
