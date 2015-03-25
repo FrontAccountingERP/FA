@@ -297,7 +297,7 @@ function void_work_order($woid)
 	commit_transaction();
 }
 
-function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_TEXT, $order = '', $overdue = false)
+function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_TEXT, $oredr_no='', $order_ref = '', $overdue = false)
 {
 	$sql = "SELECT
 		workorder.id,
@@ -332,9 +332,14 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 		$sql .= " AND workorder.loc_code=".db_escape($location);
 	}
 
-	if ($order != '')
+	if ($order_no != '')
 	{
-		$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$order.'%');
+		$sql .= " AND workorder.id LIKE ".db_escape('%'.$order_no.'%');
+	}
+
+	if ($order_ref != '')
+	{
+		$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$order_ref.'%');
 	}
 
 	if ($stock_id != ALL_TEXT)

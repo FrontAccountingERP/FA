@@ -95,6 +95,9 @@ function print_statements()
 
 	while ($myrow=db_fetch($result))
 	{
+		if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+			continue;
+		}	
 		$date = date('Y-m-d');
 
 		$myrow['order_'] = "";

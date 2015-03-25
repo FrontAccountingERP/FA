@@ -20,17 +20,15 @@ function display_order_header(&$Order)
 
 	$qes = has_quick_entries(QE_JOURNAL);
 	$new = $Order->order_id==0;
-	start_outer_table(TABLESTYLE2, "width=90%");
+
+	hidden('ref_original');
+	start_outer_table(TABLESTYLE2, "width='90%'");
 	table_section(1, $qes ? "20%" : "");
 
-	start_row();
-    date_cells(_("Date:"), 'date_', '', $new);
+    date_row(_("Date:"), 'date_', '', $new);
 
 	table_section(2, $qes ? "20%" : "50%");
-	ref_cells(_("Reference:"), 'ref', '');
-	hidden('ref_original');
-	end_row();
-
+	ref_row(_("Reference:"), 'ref', '');
 
  	if ($new) {
 		table_section(3, "20%");
@@ -81,7 +79,7 @@ function display_gl_items($title, &$order)
 	$has_subaccounts = $order->has_sub_accounts();
 
     div_start('items_table');
-	start_table(TABLESTYLE, "colspan=7 width=95%");
+	start_table(TABLESTYLE, "width='95%'");
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
 			_("Dimension")." 2", _("Debit"), _("Credit"), _("Memo"), "");
@@ -243,6 +241,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		if ($dim > 1)
 			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
 	}
+
 	if ($dim < 1)
 		hidden('dimension_id', 0);
 	if ($dim < 2)

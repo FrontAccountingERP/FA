@@ -156,7 +156,7 @@ function display_balance_sheet()
 
 	div_start('balance_tbl');
 	
-	start_table(TABLESTYLE, "width=30%");			
+	start_table(TABLESTYLE, "width='30%'");
 		
 	if (!$drilldown) //Root Level
 	{		
@@ -172,7 +172,7 @@ function display_balance_sheet()
 		while ($class = db_fetch($classresult))
 		{	
 			$classclose = 0.0;
-			$convert = get_class_type_convert($class["ctype"]); 		
+			$convert = get_class_type_convert($class["ctype"]);
 			$ctype = $class["ctype"];
 			$classname = $class["class_name"];	
 

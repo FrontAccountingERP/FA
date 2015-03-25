@@ -17,7 +17,7 @@ function display_credit_header(&$order)
 {
 	global $Ajax, $Refs;
 
-	start_outer_table(TABLESTYLE, "width=80%");
+	start_outer_table(TABLESTYLE, "width='80%'");
 	table_section(1);
 
 	$customer_error = "";
@@ -163,7 +163,7 @@ function display_credit_items($title, &$order)
 
     display_heading($title);
     div_start('items_table');
-    start_table(TABLESTYLE, "width=90%");
+    start_table(TABLESTYLE, "width='90%'");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 	_("Price"), _("Discount %"), _("Total"),'');
 

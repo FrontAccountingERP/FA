@@ -31,7 +31,7 @@ function subpage_title($txt)
 {
 	global $path_to_root;
 	
-	echo '<center><img src="'.$path_to_root.'/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
+	echo '<center><img src="'.$path_to_root.'/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" >
 		</center>';
 
 	$page = @$_POST['Page'] ? $_POST['Page'] : 1;

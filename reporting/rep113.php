@@ -74,6 +74,9 @@ function print_credits()
 				continue;
 			$sign = -1;
 			$myrow = get_customer_trans($i, ST_CUSTCREDIT);
+			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+				continue;
+			}
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 

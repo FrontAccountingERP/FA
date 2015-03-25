@@ -726,7 +726,7 @@ hidden('cart_id');
 $customer_error = display_order_header($_SESSION['Items'], !$_SESSION['Items']->is_started(), $idate);
 
 if ($customer_error == "") {
-	start_table(TABLESTYLE, "width=80%", 10);
+	start_table(TABLESTYLE, "width='80%'", 10);
 	echo "<tr><td>";
 	display_order_summary($orderitems, $_SESSION['Items'], true);
 	echo "</td></tr>";

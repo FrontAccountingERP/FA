@@ -46,9 +46,9 @@ function get_invoices($customer_id, $to, $all=true)
 	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
 		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
 			".TB_PREF."debtor_trans

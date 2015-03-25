@@ -79,7 +79,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
     else
     {
 
-        start_table(TABLESTYLE, "width=80%");
+        start_table(TABLESTYLE, "width='80%'");
         $th = array(_("Component"), _("From Location"), _("Work Centre"),
         	_("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand"));
 
@@ -270,7 +270,7 @@ function display_wo_details($woid, $suppress_view_link=false)
     	exit;
     }
 
-   	start_table(TABLESTYLE, "width=80%");
+   	start_table(TABLESTYLE, "width='80%'");
 
 	if ($myrow["released"] == true)
 		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
@@ -326,7 +326,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
     	exit;
     }
 
-   	start_table(TABLESTYLE, "width=80%");
+   	start_table(TABLESTYLE, "width='80%'");
 
 	$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 		_("Into Location"), _("Date"), _("Quantity"));

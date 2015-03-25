@@ -23,7 +23,7 @@ function page_footer($no_menu=false, $is_index=false)
 	$edits = "editors = ".$Ajax->php2js($Editors).";";
 	$Ajax->addScript('editors', $edits);
 
-	echo "<script>
+	echo "<script type='text/javascript'>
 		_focus = '" . get_post('_focus') . "';
 		_validate = " . $Ajax->php2js($Validate).";
 		var $edits

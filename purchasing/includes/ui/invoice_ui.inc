@@ -83,7 +83,7 @@ function invoice_header(&$supp_trans)
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
 
-	start_outer_table(TABLESTYLE2, "width=95%");
+	start_outer_table(TABLESTYLE2, "width='95%'");
 
 	table_section(1);
 
@@ -180,7 +180,7 @@ function invoice_totals(&$supp_trans)
 	$dim = get_company_pref('use_dimension');
  	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
  	div_start('tax_table');
-   	start_table(TABLESTYLE, "width=95%");
+   	start_table(TABLESTYLE, "width='95%'");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
@@ -253,7 +253,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	else
 		$heading = _("GL Items for this Credit Note");
 
-	start_outer_table(TABLESTYLE, "width=95%");
+	start_outer_table(TABLESTYLE, "width='95%'");
 
 	if ($mode == 1)
 	{
@@ -283,7 +283,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	end_outer_table(0, false);
 
 	div_start('gl_items');
-	start_table(TABLESTYLE, "width=95%");
+	start_table(TABLESTYLE, "width='95%'");
 
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
@@ -464,7 +464,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     if (($mode == 2  || $mode == 3) && count($supp_trans->grn_items) == 0)
     	return 0;
 
-	start_outer_table("style='border:1px solid #cccccc;' width=95%");
+	start_outer_table("style='border:1px solid #cccccc;' width='95%'");
 
 	$heading2 = "";
 	if ($mode == 1)
@@ -504,14 +504,14 @@ function display_grn_items(&$supp_trans, $mode=0)
 		{
 			display_note($heading2, 0, 0, "class='overduefg'");
 		}
-		echo "</td><td width=10% align='right'>";
+		echo "</td><td width='10%' align='right'>";
 		submit('InvGRNAll', _("Add All Items"), true, false,true);
 	}
 
 	end_outer_table(0, false);
 
   	div_start('grn_items');
-	start_table(TABLESTYLE, "width=95%");
+	start_table(TABLESTYLE, "width='95%'");
 	if ($mode == 1)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),

@@ -66,7 +66,7 @@ function display_bom_items($selected_parent)
 {
 	$result = get_bom($selected_parent);
 	div_start('bom');
-	start_table(TABLESTYLE, "width=60%");
+	start_table(TABLESTYLE, "width='60%'");
 	$th = array(_("Code"), _("Description"), _("Location"),
 		_("Work Centre"), _("Quantity"), _("Units"),'','');
 	table_header($th);

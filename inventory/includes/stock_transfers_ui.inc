@@ -28,7 +28,7 @@ function display_order_header(&$order)
 {
 	global $Refs;
 
-	start_outer_table(TABLESTYLE, "width=70%");
+	start_outer_table(TABLESTYLE, "width='70%'");
 
 	table_section(1);
 	
@@ -56,7 +56,7 @@ function display_transfer_items($title, &$order)
 
 	display_heading($title);
     div_start('items_table');
-	start_table(TABLESTYLE, "width=80%");
+	start_table(TABLESTYLE, "width='80%'");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
 	if ( count($order->line_items)) $th[] = '';
 	table_header($th);

@@ -36,7 +36,7 @@ class contacts extends simple_crud {
 
 			$contacts = get_crm_persons($this->class, $this->subclass, $this->entity);
 //				check_value('show_inactive'));
-			start_table(TABLESTYLE, "width=80%");
+			start_table(TABLESTYLE, "width='80%'");
 
 			$th = array(_('Assignment'), _("Reference"), _("Full Name"), _("Phone"), _("Sec Phone"), _("Fax"),
 				_("email"),  '',

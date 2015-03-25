@@ -36,7 +36,7 @@ function display_kit_items($selected_kit)
 {
 	$result = get_item_kit($selected_kit);
 	div_start('bom');
-	start_table(TABLESTYLE, "width=60%");
+	start_table(TABLESTYLE, "width='60%'");
 	$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
 		'','');
 	table_header($th);

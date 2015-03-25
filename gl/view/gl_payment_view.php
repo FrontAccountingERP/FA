@@ -46,7 +46,7 @@ if ($from_trans['bank_curr_code'] != $from_trans['settle_curr'])
 display_heading(_("GL Payment") . " #$trans_no");
 
 echo "<br>";
-start_table(TABLESTYLE, "width=80%");
+start_table(TABLESTYLE, "width='80%'");
 
 if ($show_currencies)
 {
@@ -97,7 +97,7 @@ else
 		display_heading2(_("Item Amounts are Shown in:") . " " . $company_currency);
 
     echo "<br>";
-    start_table(TABLESTYLE, "width=80%");
+    start_table(TABLESTYLE, "width='80%'");
     $dim = get_company_pref('use_dimension');
     if ($dim == 2)
         $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",

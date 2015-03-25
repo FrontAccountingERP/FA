@@ -28,7 +28,7 @@ function display_order_header(&$order)
 {
 	global $Refs;
 
-	start_outer_table(TABLESTYLE2, "width=70%"); // outer table
+	start_outer_table(TABLESTYLE2, "width='70%'"); // outer table
 	table_section(1);
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
@@ -58,7 +58,7 @@ function display_adjustment_items($title, &$order)
 
 	display_heading($title);
     div_start('items_table');
-	start_table(TABLESTYLE, "width=80%");
+	start_table(TABLESTYLE, "width='80%'");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Total"), "");
 	if ( count($order->line_items)) $th[] = '';

@@ -81,7 +81,7 @@ if ($Mode == 'RESET')
 $result = get_sales_groups(check_value('show_inactive'));
 
 start_form();
-start_table(TABLESTYLE, "width=30%");
+start_table(TABLESTYLE, "width='30%'");
 $th = array(_("ID"), _("Group Name"), "", "");
 inactive_control_column($th);
 

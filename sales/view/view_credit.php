@@ -39,11 +39,11 @@ $branch = get_branch($myrow["branch_code"]);
 display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id). "</font>");
 echo "<br>";
 
-start_table(TABLESTYLE2, "width=95%");
+start_table(TABLESTYLE2, "width='95%'");
 echo "<tr valign=top><td>"; // outer table
 
 /*Now the customer charged to details in a sub table*/
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Customer"));
 table_header($th);
 
@@ -54,7 +54,7 @@ end_table();
 
 echo "</td><td>"; // outer table
 
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Branch"));
 table_header($th);
 
@@ -63,7 +63,7 @@ end_table();
 
 echo "</td><td>"; // outer table
 
-start_table(TABLESTYLE, "width=100%");
+start_table(TABLESTYLE, "width='100%'");
 start_row();
 label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Date"), sql2date($myrow["tran_date"]), "class='tableheader2'");
@@ -83,7 +83,7 @@ $sub_total = 0;
 
 $result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
 
-start_table(TABLESTYLE, "width=95%");
+start_table(TABLESTYLE, "width='95%'");
 
 if (db_num_rows($result) > 0)
 {
@@ -134,7 +134,7 @@ $display_total = price_format($credit_total);
 /*Print out the invoice text entered */
 if ($sub_total != 0)
 	label_row(_("Sub Total"), $display_sub_tot, "colspan=6 align=right",
-		"nowrap align=right width=15%");
+		"nowrap align=right width='15%'");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 $tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);

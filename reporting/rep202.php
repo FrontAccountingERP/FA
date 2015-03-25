@@ -47,9 +47,9 @@ function get_invoices($supplier_id, $to, $all=true)
 		".TB_PREF."supp_trans.reference,
 		".TB_PREF."supp_trans.tran_date,
 		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."suppliers,
 			".TB_PREF."payment_terms,

@@ -17,7 +17,7 @@ function display_bank_header(&$order)
 	$customer_error = false;
 	div_start('pmt_header');
 
-	start_outer_table(TABLESTYLE2, "width=90%"); // outer table
+	start_outer_table(TABLESTYLE2, "width='90%'"); // outer table
 
 	table_section(1);
 	
@@ -146,7 +146,7 @@ function display_gl_items($title, &$order)
 	display_heading($title);
 
     div_start('items_table');
-	start_table(TABLESTYLE, "colspan=7 width=95%");
+	start_table(TABLESTYLE, "width='95%'");
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",

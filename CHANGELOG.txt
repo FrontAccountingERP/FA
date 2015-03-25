@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2011 FrontAccounting, LLC
+* @copyright (C) 2005 - 2014 FrontAccounting, LLC
 * @license http://www.gnu.org/copyleft/gpl-3.0.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -9,6 +9,260 @@
 1. Changelog
 ------------
 This is a changelog for FrontAccounting All releases.
+
+2015-03-23 16:27 +0100 Joe
+(3456) Release 2.3.23
+ version.php
+
+2015-03-14 16:05 +0100 Janusz Dobrowolski
+(3455) Additional cleanups in standard themes.
+ themes/aqua/renderer.php
+ themes/cool/renderer.php
+ themes/default/renderer.php
+
+2015-03-12 13:00 +0100 Janusz Dobrowolski
+(3454) Fixed many issues in output HTML code according to HTML 4.01 Transitional format.
+ access/login.php
+ access/logout.php
+ access/password_reset.php
+ admin/create_coy.php
+ admin/crm_categories.php
+ admin/db/attachments_db.inc
+ admin/inst_upgrade.php
+ admin/security_roles.php
+ gl/gl_bank.php
+ gl/gl_journal.php
+ gl/includes/ui/gl_bank_ui.inc
+ gl/includes/ui/gl_journal_ui.inc
+ gl/inquiry/balance_sheet.php
+ gl/inquiry/profit_loss.php
+ gl/view/bank_transfer_view.php
+ gl/view/gl_deposit_view.php
+ gl/view/gl_payment_view.php
+ gl/view/gl_trans_view.php
+ includes/page/footer.inc
+ includes/page/header.inc
+ includes/system_tests.inc
+ includes/ui/allocation_cart.inc
+ includes/ui/contacts_view.inc
+ includes/ui/db_pager_view.inc
+ includes/ui/ui_controls.inc
+ includes/ui/ui_input.inc
+ includes/ui/ui_lists.inc
+ includes/ui/ui_msgs.inc
+ includes/ui/ui_view.inc
+ includes/ui/view_package.php
+ install/index.php
+ inventory/adjustments.php
+ inventory/includes/item_adjustments_ui.inc
+ inventory/includes/stock_transfers_ui.inc
+ inventory/manage/item_categories.php
+ inventory/manage/item_codes.php
+ inventory/manage/item_units.php
+ inventory/manage/movement_types.php
+ inventory/manage/sales_kits.php
+ inventory/prices.php
+ inventory/purchasing_data.php
+ inventory/reorder_level.php
+ inventory/transfers.php
+ inventory/view/view_adjustment.php
+ inventory/view/view_transfer.php
+ manufacturing/includes/manufacturing_ui.inc
+ manufacturing/includes/work_order_issue_ui.inc
+ manufacturing/manage/bom_edit.php
+ manufacturing/manage/work_centres.php
+ manufacturing/work_order_issue.php
+ purchasing/includes/ui/grn_ui.inc
+ purchasing/includes/ui/invoice_ui.inc
+ purchasing/includes/ui/po_ui.inc
+ purchasing/inquiry/supplier_inquiry.php
+ purchasing/po_receive_items.php
+ purchasing/supplier_payment.php
+ purchasing/view/view_grn.php
+ purchasing/view/view_po.php
+ purchasing/view/view_supp_credit.php
+ purchasing/view/view_supp_invoice.php
+ purchasing/view/view_supp_payment.php
+ reporting/includes/reports_classes.inc
+ sales/create_recurrent_invoices.php
+ sales/credit_note_entry.php
+ sales/customer_credit_invoice.php
+ sales/customer_delivery.php
+ sales/customer_invoice.php
+ sales/customer_payments.php
+ sales/includes/ui/sales_credit_ui.inc
+ sales/includes/ui/sales_order_ui.inc
+ sales/inquiry/customer_inquiry.php
+ sales/manage/sales_areas.php
+ sales/manage/sales_groups.php
+ sales/manage/sales_people.php
+ sales/manage/sales_types.php
+ sales/sales_order_entry.php
+ sales/view/view_credit.php
+ sales/view/view_dispatch.php
+ sales/view/view_invoice.php
+ sales/view/view_receipt.php
+ sales/view/view_sales_order.php
+ taxes/item_tax_types.php
+ themes/aqua/renderer.php
+ themes/cool/renderer.php
+ themes/default/renderer.php
+
+2015-02-20 01:44 +0100 Joe
+(3453) Rerun. The aging reports / inquiries had a 1 day error in presentation. Fixed.
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep102.php
+ reporting/rep202.php
+ sales/includes/db/customers_db.inc
+ sales/inquiry/customer_inquiry.php
+
+2015-02-19 17:48 +0100 Joe
+(3452) The aging reports / inquiries had a 1 day error in presentation. Fixed.
+ purchasing/includes/db/suppliers_db.inc
+ reporting/rep102.php
+ reporting/rep202.php
+ sales/includes/db/customers_db.inc
+
+2015-02-19 10:17 +0100 Joe
+(3451) Allow search by Id in search work orders.
+ manufacturing/includes/db/work_orders_db.inc
+ manufacturing/search_work_orders.php
+
+2015-02-13 22:46 +0100 Joe
+(3450) Rerun of rep107. Currency filter not working in documents.
+ reporting/rep107.php
+
+2015-02-12 21:50 +0100 Joe
+(3449) Currency filter not working in documents.
+ reporting/rep107.php
+ reporting/rep108.php
+ reporting/rep109.php
+ reporting/rep111.php
+ reporting/rep112.php
+ reporting/rep113.php
+ reporting/rep209.php
+ reporting/rep210.php
+
+2015-02-10 08:33 +0100 Joe
+(3448) Moved page number, when more than 1 page, on documents down 2 lines.
+ reporting/includes/header2.inc
+
+2015-01-24 10:25 +0100 Joe
+(3447) Fixed Delivery note bug : Parent constraints not working if sales order line deleted after delivery
+ sales/includes/cart_class.inc
+
+2015-01-17 08:50 +0100 Joe
+(3446) Missing update of shipping tax when crediting an invoice.
+ sales/customer_credit_invoice.php
+
+2014-12-31 12:55 +0100 Janusz Dobrowolski
+(3445) Fixed error handling (logged in debug instead of production mode).
+ includes/errors.inc
+
+2014-12-31 12:55 +0100 Janusz Dobrowolski
+(3444) Purchase order reference was not restored after last PO cancelation.
+ purchasing/includes/db/po_db.inc
+
+2014-12-22 19:11 +0100 Janusz Dobrowolski
+(3443) Reverting last last two commits mistakenly pushed to stable branch.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2014-12-21 17:32 +0100 Janusz Dobrowolski
+(3442) Removed redundant index on supp_trans.type.
+ sql/en_US-new.sql
+
+2014-12-20 17:16 +0100 Janusz Dobrowolski
+(3441) Removed redundant indexes on cust_branch & supp_trans tables
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2014-12-19 00:22 +0100 Joe
+(3440) Extended email entries.
+ admin/company_preferences.php
+ inventory/manage/locations.php
+
+2014-12-17 15:33 +0100 Joe
+(3439) Fixed Quote Valid Days in System and GL Setup, Setup tab.
+ admin/gl_setup.php
+ includes/prefs/sysprefs.inc
+ sales/includes/ui/sales_order_ui.inc
+
+2014-12-08 20:14 +0100 Janusz Dobrowolski
+(3438) Fixed problems with latin2 encoding due to changes in htmlspecialchars() behaviour in newer php versions.
+ includes/db/connect_db.inc
+ includes/session.inc
+
+2014-11-22 11:54 +0100 Cambell
+(3437) Further fixes to javascript multiple class handling.
+ js/inserts.js
+ js/utils.js
+
+2014-11-21 10:18 +0100 Janusz Dobrowolski
+(3436) [0002950] Fixed false quantity on hand errors on sales delivery.
+ sales/customer_delivery.php
+ sales/includes/cart_class.inc
+
+2014-11-21 10:17 +0100 Janusz Dobrowolski
+(3435) Fixed warning during database restore.
+ admin/db/maintenance_db.inc
+
+2014-11-17 10:21 +0100 Janusz Dobrowolski
+(3434) Fixed warning about non-existing HTTP_USER_AGENT session variable on some Plesk configurations.
+ includes/session.inc
+
+2014-11-19 00:07 +0100 Joe
+(3433) Fixed better CSS combobox select.
+ themes/aqua/default.css
+ themes/cool/default.css
+ themes/default/default.css
+
+2014-11-17 11:04 +0100 Joe
+(3432) Fixed ECB URLs moved permanently.
+ gl/includes/db/gl_db_rates.inc
+
+2014-11-13 21:25 +0700 Cambell
+(3431) Javascript now works with multiple classes on elements.
+ js/inserts.js
+ js/utils.js
+
+2014-11-07 07:50 +0100 Joe
+(3430) Fixed deprecated preg_replace in php >= 5.3.0 with the /e flag in utf8 reports.
+ reporting/includes/html_entity_decode_php4.php
+
+2014-10-27 21:34 +0100 Joe
+(3429) Improved calculation of standard cost in advanced manufacturing even if qoh = 0.
+ manufacturing/includes/db/work_orders_db.inc
+
+2014-10-27 18:26 +0100 Janusz Dobrowolski
+(3428) Fixed 'C' english language display on Install/Update Languages page, to allow its selection on first page.
+ admin/inst_lang.php
+
+2014-10-15 00:53 +0200 Janusz Dobrowolski
+(3427) Restoring compressed sql files sometimes failed due to nasty bug in php gzfile function.
+ admin/db/maintenance_db.inc
+
+2014-10-08 20:50 +0200 Janusz Dobrowolski
+(3426) Fixed contact record creation when new customer is added (reference/name were superseded).
+ sales/manage/customers.php
+
+2014-10-01 23:08 +0200 Joe
+(3425) Improved layout Reports Customer / Supplier Balances.
+ reporting/rep101.php
+ reporting/rep201.php
+
+2014-10-01 13:32 +0200 Joe
+(3424) Wrong domestic open balance in Report Supplier Balance for currency suppliers.
+ reporting/rep201.php
+
+2014-09-29 16:32 +0200 Joe
+(3423) Clean up. Standard COAs.
+ sql/en_US-demo.sql
+ sql/en_US-new.sql
+
+2014-09-29 16:06 +0200 Joe
+(3422) Changelog change
+ CHANGELOG.txt
 
 2014-09-29 16:04 +0200 Joe
 (3421) Changelog change

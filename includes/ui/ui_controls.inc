@@ -58,7 +58,7 @@ function start_form($multi=false, $dummy=false, $action="", $name="")
 
 function end_form($breaks=0)
 {
-	global $Ajax, $form_nested;
+	global $Ajax, $form_nested, $hidden_fields;
 
 	if ($form_nested-- > 0) return;
 
@@ -68,7 +68,8 @@ function end_form($breaks=0)
 	hidden('_focus');
 	hidden('_modified', get_post('_modified', 0));
 	hidden('_token', $_SESSION['csrf_token']);
-	echo "</form>\n";
+
+	echo implode('', $hidden_fields)."</form>\n";
 	$Ajax->activate('_token');
 }
 
@@ -94,7 +95,7 @@ function start_table($class=false, $extra="", $padding='2', $spacing='0')
 		echo " class='tablestyle'";
 	if ($extra != "")
 		echo " $extra";
-	echo " cellpadding=$padding cellspacing=$spacing>\n";
+	echo " cellpadding='$padding' cellspacing='$spacing'>\n";
 }
 
 function end_table($breaks=0)
@@ -117,7 +118,7 @@ function table_section($number=1, $width=false)
 	if ($number > 1)
 	{
 		echo "</table>\n";
-		$width = ($width ? "width=$width" : "");
+		$width = ($width ? "width='$width'" : "");
 		//echo "</td><td class='tableseparator' $width>\n"; // outer table
 		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
 	}
@@ -188,7 +189,7 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0, $f
     	echo $attach;	
     }
 	$width = ($id != 0 ? "30%" : "20%");	
-	start_table(false, "width=$width");
+	start_table(false, "width='$width'");
 	start_row();
 	if ($no_menu)
 	{

@@ -142,7 +142,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 	display_heading($title);
 
     div_start('items_table');
-	start_table(TABLESTYLE, "colspan=7 width=90%");
+	start_table(TABLESTYLE, "width='90%'");
+
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Delivered"),
 		_("Unit"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Discount %"), _("Total"), "");
@@ -245,7 +246,7 @@ function display_order_header(&$order, $editable, $date_text)
 {
 	global $Ajax, $SysPrefs;
 
-	start_outer_table(TABLESTYLE2, "width=80%");
+	start_outer_table(TABLESTYLE2, "width='80%'");
 
 	table_section(1);
 	
@@ -377,6 +378,7 @@ function display_order_header(&$order, $editable, $date_text)
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 
 	table_section(3);
+	start_row();
 	if (($order->pos['cash_sale'] || $order->pos['credit_sale']) 
 		&& !$order->is_started()) {
 		 // editable payment type 
@@ -399,6 +401,7 @@ function display_order_header(&$order, $editable, $date_text)
 	} else {
 		label_cells(_('Payment:'), $order->payment_terms['terms'], "class='label'");
 	}
+	end_row();
 
 	if($editable) {
 		$str = sales_types_list_row(_("Price List:"), 'sales_type', null, true);
@@ -571,7 +574,7 @@ function display_delivery_details(&$order)
 	if ($order->payment_terms['cash_sale']) {	// Direct payment sale
 		$Ajax->activate('items_table');
 		display_heading(_('Cash payment'));
-		start_table(TABLESTYLE2, "width=60%");
+		start_table(TABLESTYLE2, "width='60%'");
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
  		if (list_updated('Location'))
@@ -602,7 +605,7 @@ function display_delivery_details(&$order)
 			$delname = _("Required Delivery Date").':';
 		}
 		display_heading($title);
-		start_outer_table(TABLESTYLE2, "width=90%");
+		start_outer_table(TABLESTYLE2, "width='90%'");
 		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);

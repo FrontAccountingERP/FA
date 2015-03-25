@@ -43,7 +43,7 @@ $pkg = get_package_info($_GET['id'], null, $filter);
 
 display_heading(sprintf(_("Content information for package '%s'"), $_GET['id']));
 br();
-start_table(TABLESTYLE2, "width=80%");
+start_table(TABLESTYLE2, "width='80%'");
 $th = array(_("Property"), _("Value"));
 table_header($th);
 
