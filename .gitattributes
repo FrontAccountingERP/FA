@@ -1,0 +1,17 @@
+# prevent eol hell
+* text=auto !eol
+*.php	text
+*.inc	text
+*.sql	text
+*.js	text
+*.css	text
+*.po	text
+*.png	binary
+*.gif	binary
+*.jpg	binary
+*.ico	binary
+*.mo	binary
+
+# improve diff chunks headers
+*.php	diff=php
+*.inc	diff=php
