@@ -139,18 +139,18 @@ class current_user
 
 		set_global_connection();
 
-		$myrow = get_user_by_email($email);
+		$user = get_user_by_email($email);
 
-		if ($myrow['id'] != "") {
+		if ($user != false) {
 
 			$bytes = openssl_random_pseudo_bytes(8, $cstrong);
 			$password   = base64_encode($bytes);
 
 			$hash = md5($password);
 
-			update_user_password($myrow['id'], $myrow['user_id'], $hash);
+			update_user_password($user['id'], $user['user_id'], $hash);
 
-			mail($myrow['email'], _("New password for")." ".$app_title, $password);
+			mail($user['email'], _("New password for")." ".$app_title, $password);
 
 			return true;
 		}

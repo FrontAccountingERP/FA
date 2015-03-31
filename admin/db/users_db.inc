@@ -107,6 +107,9 @@ function get_user_by_email($email)
 
 	$result = db_query($sql, "could not get user for email $email");
 
+	if (db_num_rows($result) != 1)
+		return false;
+
 	return db_fetch($result);
 }
 

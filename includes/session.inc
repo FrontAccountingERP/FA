@@ -149,9 +149,9 @@ function password_reset_fail()
 	global $path_to_root;
 	
   echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
-  echo "<b>" . _("The email address does not exist in the system.") . "<b><br><br>";
+  echo "<b>" . _("The email address does not exist in the system, or is used by more than one user.") . "<b><br><br>";
 
-  echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
+  echo _("Plase try again or contact your system administrator to obtain new password.");
   echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
   echo "</center>";
 
