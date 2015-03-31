@@ -64,6 +64,15 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		mkdir($filename);
 	}	
 	$filename .= "/".item_img_name($stock_id).".jpg";
+
+  if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
+    display_error(_('The file size is over the maximum allowed.'));
+		$upload_file ='No';
+  }
+  elseif ($_FILES['pic']['error'] > 0) {
+		display_error(_('Error uploading file.'));
+		$upload_file ='No';
+  }
 	
 	//But check for the worst 
 	if ((list($width, $height, $type, $attr) = getimagesize($_FILES['pic']['tmp_name'])) !== false)

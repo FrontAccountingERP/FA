@@ -84,8 +84,14 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
-	elseif ($Mode == 'ADD_ITEM' && (!isset($_FILES['filename']) || $_FILES['filename']['size'] == 0))
+	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
 		display_error(_("Select attachment file."));
+	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
+    if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
+		  display_error(_("The file size is over the maximum allowed."));
+    else
+		  display_error(_("Select attachment file."));
+  }
 	else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];

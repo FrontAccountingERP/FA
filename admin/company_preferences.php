@@ -38,6 +38,14 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 	}
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
+    if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
+			display_error(_('The file size is over the maximum allowed.'));
+			$input_error = 1;
+    }
+    elseif ($_FILES['pic']['error'] > 0) {
+			display_error(_('Error uploading logo file.'));
+			$input_error = 1;
+    }
 		$result = $_FILES['pic']['error'];
 		$filename = company_path()."/images";
 		if (!file_exists($filename))
