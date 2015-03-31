@@ -109,7 +109,8 @@ function handle_submit($selected_id)
 	if ($new) {
 		$db_connections[$selected_id]['host'] = $_POST['host'];
 		$db_connections[$selected_id]['dbuser'] = $_POST['dbuser'];
-		$db_connections[$selected_id]['dbpassword'] = $_POST['dbpassword'];
+		$db_connections[$selected_id]['dbpassword'] = html_entity_decode($_POST['dbpassword'], ENT_QUOTES, 
+			$_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
 		$db_connections[$selected_id]['dbname'] = $_POST['dbname'];
 		if (is_numeric($_POST['tbpref']))
 		{
