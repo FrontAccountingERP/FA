@@ -85,7 +85,12 @@ function input_num($postname=null, $dflt=0)
 }
 
 //---------------------------------------------------------------------------------
-$hidden_fields = array();	// store for hiddn fields attached just before form end (for proper html validation)
+//
+//	Thanks to hidden fields buffering hidden() helper can be used in arbitrary places and 
+//  proper html structure is still preserved. Buffered hidden fields are output on the nearest 
+//  table or form closing tag (see output_hidden()).
+//
+$hidden_fields = array();
 
 function hidden($name, $value=null, $echo=true)
 {
