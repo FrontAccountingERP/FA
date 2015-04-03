@@ -761,8 +761,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES(1, '2013-01-01', '2013-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(2, '2014-01-01', '2014-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(1, '2015-01-01', '2015-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`
@@ -955,7 +954,7 @@ CREATE TABLE IF NOT EXISTS `0_item_units` (
 INSERT INTO `0_item_units` VALUES('each', 'Each', 0, 0);
 INSERT INTO `0_item_units` VALUES('hr', 'Hours', 0, 0);
 
---- Structure of table `0_journal`
+-- Table structure for table `0_journal`
 
 DROP TABLE IF EXISTS `0_journal`;
 CREATE TABLE `0_journal` (
@@ -973,7 +972,7 @@ CREATE TABLE `0_journal` (
   KEY `tran_date` (`tran_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
---- Data of table `0_journal`
+-- Data of table `0_journal`
 
 
 -- --------------------------------------------------------
@@ -1801,7 +1800,7 @@ CREATE TABLE IF NOT EXISTS `0_sys_prefs` (
   `category` varchar(30) default NULL,
   `type` varchar(20) NOT NULL default '',
   `length` smallint(6) default NULL,
-  `value` text NOT NULL,
+  `value` TEXT NOT NULL DEFAULT '',
   PRIMARY KEY  (`name`),
   KEY `category` (`category`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1823,7 +1822,7 @@ INSERT INTO `0_sys_prefs` VALUES('coy_logo', 'setup.company', 'varchar', 100, ''
 INSERT INTO `0_sys_prefs` VALUES('domicile', 'setup.company', 'varchar', 55, '');
 INSERT INTO `0_sys_prefs` VALUES('curr_default', 'setup.company', 'char', 3, 'USD');
 INSERT INTO `0_sys_prefs` VALUES('use_dimension', 'setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '2');
+INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '1');
 INSERT INTO `0_sys_prefs` VALUES('no_item_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_customer_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_supplier_list', 'setup.company', 'tinyint', 1, '0');
