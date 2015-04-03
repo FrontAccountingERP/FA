@@ -9,7 +9,7 @@ $db_version = "2.3rc";
 
 // application version - can be overriden in config.php
 if (!isset($version))
-	$version 		= "2.3.23";
+	$version 		= "2.3.24";
 
 //======================================================================
 // Extension packages repository settings 
