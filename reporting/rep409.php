@@ -90,28 +90,7 @@ function print_workorders()
 		$has_marked = false;
 		while ($myrow2=db_fetch($result))
 		{
-			$qoh = 0;
-			$show_qoh = true;
-			// if it's a non-stock item (eg. service) don't show qoh
-			if (!has_stock_holding($myrow2["mb_flag"]))
-				$show_qoh = false;
-
-			if ($show_qoh)
-				$qoh = get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
-
-			if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) &&
-				!$SysPrefs->allow_negative_stock())
-			{
-				// oops, we don't have enough of one of the component items
-				$has_marked = true;
-			}
-			else
-				$has_marked = false;
-			if ($has_marked)
-				$str = $myrow2['stock_id']." ***";
-			else
-				$str = $myrow2['stock_id'];
-			$rep->TextCol(0, 1,	$str, -2);
+			$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
 			$rep->TextCol(1, 2, $myrow2['description'], -2);
 
 			$rep->TextCol(2, 3,	$myrow2['location_name'], -2);
@@ -125,9 +104,6 @@ function print_workorders()
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();
 		}
-		$rep->NewLine(1);
-		$rep->TextCol(0, 5," *** = "._("Insufficient stock"), -2);
-
 		$memo = get_comments_string(ST_WORKORDER, $i);
 		if ($memo != "")
 		{
