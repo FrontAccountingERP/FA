@@ -33,55 +33,55 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description AS cat_description,
-			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
-			".TB_PREF."stock_moves.loc_code,
-			".TB_PREF."suppliers.supplier_id,
-			".TB_PREF."suppliers.supp_name AS supplier_name,
-			".TB_PREF."stock_moves.tran_date,
-			".TB_PREF."stock_moves.qty AS qty,
-			".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent) AS price
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."suppliers,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND ".TB_PREF."stock_moves.person_id=".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."stock_moves.tran_date>='$from'
-		AND ".TB_PREF."stock_moves.tran_date<='$to'
-		AND (".TB_PREF."stock_moves.type=".ST_SUPPRECEIVE." OR ".TB_PREF."stock_moves.type=".ST_SUPPCREDIT.")
-		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
+	$sql = "SELECT item.category_id,
+			category.description AS cat_description,
+			item.stock_id,
+			item.description, item.inactive,
+			move.loc_code,
+			supplier.supplier_id,
+			supplier.supp_name AS supplier_name,
+			move.tran_date,
+			move.qty AS qty,
+			move.price
+		FROM ".TB_PREF."stock_master item,
+			".TB_PREF."stock_category category,
+			".TB_PREF."suppliers supplier,
+			".TB_PREF."stock_moves move
+		WHERE item.stock_id=move.stock_id
+		AND item.category_id=category.category_id
+		AND move.person_id=supplier.supplier_id
+		AND move.tran_date>='$from'
+		AND move.tran_date<='$to'
+		AND (move.type=".ST_SUPPRECEIVE." OR move.type=".ST_SUPPCREDIT.")
+		AND (item.mb_flag='B' OR item.mb_flag='M')";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
+			$sql .= " AND item.category_id = ".db_escape($category);
 		if ($location != '')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
+			$sql .= " AND move.loc_code = ".db_escape($location);
 		if ($fromsupp != '')
-			$sql .= " AND ".TB_PREF."suppliers.supplier_id = ".db_escape($fromsupp);
+			$sql .= " AND supplier.supplier_id = ".db_escape($fromsupp);
 		if ($item != '')
-			$sql .= " AND ".TB_PREF."stock_master.stock_id = ".db_escape($item);
-		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."suppliers.supp_name, ".TB_PREF."stock_master.stock_id, ".TB_PREF."stock_moves.tran_date";
+			$sql .= " AND item.stock_id = ".db_escape($item);
+		$sql .= " ORDER BY item.category_id,
+			supplier.supp_name, item.stock_id, move.tran_date";
     return db_query($sql,"No transactions were returned");
 
 }
 
 function get_supp_inv_reference($supplier_id, $stock_id, $date)
 {
-	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference
-		FROM ".TB_PREF."supp_trans,
-			".TB_PREF."supp_invoice_items,
-			".TB_PREF."grn_batch,
-			".TB_PREF."grn_items
-		WHERE ".TB_PREF."supp_trans.type=".TB_PREF."supp_invoice_items.supp_trans_type
-		AND ".TB_PREF."supp_trans.trans_no=".TB_PREF."supp_invoice_items.supp_trans_no
-		AND ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
-		AND ".TB_PREF."grn_items.item_code=".TB_PREF."supp_invoice_items.stock_id
-		AND ".TB_PREF."supp_trans.supplier_id=".db_escape($supplier_id)."
-		AND ".TB_PREF."supp_invoice_items.stock_id=".db_escape($stock_id)."
-		AND ".TB_PREF."supp_trans.tran_date=".db_escape($date);
+	$sql = "SELECT trans.supp_reference
+		FROM ".TB_PREF."supp_trans trans,
+			".TB_PREF."supp_invoice_items line,
+			".TB_PREF."grn_batch batch,
+			".TB_PREF."grn_items item
+		WHERE trans.type=line.supp_trans_type
+		AND trans.trans_no=line.supp_trans_no
+		AND item.grn_batch_id=batch.id
+		AND item.item_code=line.stock_id
+		AND trans.supplier_id=".db_escape($supplier_id)."
+		AND line.stock_id=".db_escape($stock_id)."
+		AND trans.tran_date=".db_escape($date);
     $result = db_query($sql,"No transactions were returned");
     $row = db_fetch_row($result);
     if (isset($row[0]))

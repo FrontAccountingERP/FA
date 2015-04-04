@@ -1644,7 +1644,6 @@ CREATE TABLE `0_stock_moves` (
   `price` double NOT NULL DEFAULT '0',
   `reference` char(40) NOT NULL DEFAULT '',
   `qty` double NOT NULL DEFAULT '1',
-  `discount_percent` double NOT NULL DEFAULT '0',
   `standard_cost` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`trans_id`),
   KEY `type` (`type`,`trans_no`),

@@ -357,24 +357,18 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 // $price - in $person_id's currency
 
 function add_stock_move($type, $stock_id, $trans_no, $location,
-    $date_, $reference, $quantity, $std_cost, $person_id=0,
-    $price=0, $discount_percent=0, $error_msg="")
+    $date_, $reference, $quantity, $std_cost, $person_id=0, $price=0)
 {
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
-		tran_date, person_id, reference, qty, standard_cost, price,
-		discount_percent) VALUES (".db_escape($stock_id)
-		.", ".db_escape($trans_no).", ".db_escape($type)
-		.",	".db_escape($location).", '$date', "
+		tran_date, person_id, reference, qty, standard_cost, price) VALUES ("
+		.db_escape($stock_id).", ".db_escape($trans_no).", "
+		.db_escape($type).", ".db_escape($location).", '$date', "
 		.db_escape($person_id).", ".db_escape($reference).", "
-		.db_escape($quantity).", ".db_escape($std_cost).","
-		.db_escape($price).", ".db_escape($discount_percent).")";
+		.db_escape($quantity).", ".db_escape($std_cost)."," .db_escape($price).")";
 
-	if ($error_msg == "")
-		$error_msg = "The stock movement record cannot be inserted";
-
-	db_query($sql, $error_msg);
+	db_query($sql, "The stock movement record cannot be inserted");
 
 	return db_insert_id();
 }
@@ -428,7 +422,6 @@ function void_stock_move($type, $type_no)
 			update_average_material_cost($row["person_id"], $row["stock_id"],
 				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));
 		}
-
     }
 	$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)
 		."	AND trans_no=".db_escape($type_no);

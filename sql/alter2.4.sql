@@ -231,3 +231,8 @@ DELETE moves
 	WHERE moves.`type`=11;
 
 ALTER TABLE `0_stock_moves` DROP COLUMN `visible`;
+# stock_moves.discount_percent field are obsolete
+
+UPDATE `0_stock_moves` SET
+	price = price*(1-discount_percent);
+ALTER TABLE `0_stock_moves` DROP COLUMN `discount_percent`;

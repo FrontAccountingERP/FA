@@ -33,39 +33,39 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description AS cat_description,
-			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
-			".TB_PREF."stock_moves.loc_code,
-			".TB_PREF."debtor_trans.debtor_no,
-			".TB_PREF."debtors_master.name AS debtor_name,
-			".TB_PREF."stock_moves.tran_date,
-			SUM(-".TB_PREF."stock_moves.qty) AS qty,
-			SUM(-".TB_PREF."stock_moves.qty*".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent)) AS amt,
-			SUM(-IF(".TB_PREF."stock_moves.standard_cost <> 0, ".TB_PREF."stock_moves.qty * ".TB_PREF."stock_moves.standard_cost, ".TB_PREF."stock_moves.qty *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost))) AS cost
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."debtor_trans,
-			".TB_PREF."debtors_master,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no
-		AND ".TB_PREF."stock_moves.type=".TB_PREF."debtor_trans.type
-		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."debtor_trans.trans_no
-		AND ".TB_PREF."stock_moves.tran_date>='$from'
-		AND ".TB_PREF."stock_moves.tran_date<='$to'
-		AND (".TB_PREF."debtor_trans.type=".ST_CUSTDELIVERY." OR ".TB_PREF."stock_moves.type=".ST_CUSTCREDIT.")
-		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
+	$sql = "SELECT item.category_id,
+			category.description AS cat_description,
+			item.stock_id,
+			item.description, item.inactive,
+			move.loc_code,
+			trans.debtor_no,
+			debtor.name AS debtor_name,
+			move.tran_date,
+			SUM(-move.qty) AS qty,
+			SUM(-move.qty*move.price) AS amt,
+			SUM(-IF(move.standard_cost <> 0, move.qty * move.standard_cost, move.qty *(item.material_cost + item.labour_cost + item.overhead_cost))) AS cost
+		FROM ".TB_PREF."stock_master item,
+			".TB_PREF."stock_category category,
+			".TB_PREF."debtor_trans trans,
+			".TB_PREF."debtors_master debtor,
+			".TB_PREF."stock_moves move
+		WHERE item.stock_id=move.stock_id
+		AND item.category_id=category.category_id
+		AND trans.debtor_no=debtor.debtor_no
+		AND move.type=trans.type
+		AND move.trans_no=trans.trans_no
+		AND move.tran_date>='$from'
+		AND move.tran_date<='$to'
+		AND (trans.type=".ST_CUSTDELIVERY." OR move.type=".ST_CUSTCREDIT.")
+		AND (item.mb_flag='B' OR item.mb_flag='M')";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
+			$sql .= " AND item.category_id = ".db_escape($category);
 		if ($location != '')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
+			$sql .= " AND move.loc_code = ".db_escape($location);
 		if ($fromcust != '')
-			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($fromcust);
-		$sql .= " GROUP BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name ORDER BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name";
+			$sql .= " AND debtor.debtor_no = ".db_escape($fromcust);
+		$sql .= " GROUP BY item.stock_id, debtor.name ORDER BY item.category_id,
+			item.stock_id, debtor.name";
     return db_query($sql,"No transactions were returned");
 
 }
