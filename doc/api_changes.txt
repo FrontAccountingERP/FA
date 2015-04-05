@@ -20,6 +20,8 @@ Changed functions:
 	add_stock_move_customer() removed
  items_transfer_db.inc:
  	add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
+ items_adjust_db.inc:
+    add_stock_adjustment($items, $location, $date_, $increase, $reference, $memo_)
 
 Before 2.4:
 	get_tax_type_default_rate($type_id)
@@ -105,5 +107,12 @@ Before 2.4:
 	add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
 Now:
 	add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
+Description:
+	Removed obsolete $type argument.
+
+Before 2.4:
+	add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_)
+Now:
+	 add_stock_adjustment($items, $location, $date_, $increase, $reference, $memo_)
 Description:
 	Removed obsolete $type argument.

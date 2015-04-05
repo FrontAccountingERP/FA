@@ -32,15 +32,10 @@ function display_order_header(&$order)
 	table_section(1);
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST));
-
-	table_section(2, "33%");
-
     date_row(_("Date:"), 'AdjDate', '', true);
 
-	table_section(3, "33%");
-
-    movement_types_list_row(_("Detail:"), 'type', null);
+	table_section(2, "50%");
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST));
 
     if (!isset($_POST['Increase']))
     	$_POST['Increase'] = 1;

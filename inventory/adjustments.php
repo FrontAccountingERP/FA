@@ -31,8 +31,6 @@ page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
 
 check_db_has_costable_items(_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."));
 
-check_db_has_movement_types(_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
@@ -134,7 +132,7 @@ function can_process()
 if (isset($_POST['Process']) && can_process()){
 
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
-		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['type'], $_POST['Increase'],
+		$_POST['StockLocation'], $_POST['AdjDate'], $_POST['Increase'],
 		$_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
@@ -148,7 +146,7 @@ if (isset($_POST['Process']) && can_process()){
 
 function check_item_data()
 {
-	if (!check_num('qty',0))
+	if (!check_num('qty',0) || input_num('qty') == 0)
 	{
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
@@ -169,12 +167,9 @@ function check_item_data()
 
 function handle_update_item()
 {
-    if($_POST['UpdateItem'] != "" && check_item_data())
-    {
-		$id = $_POST['LineNo'];
-    	$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), 
-			input_num('std_cost'));
-    }
+	$id = $_POST['LineNo'];
+   	$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), 
+		input_num('std_cost'));
 	line_start_focus();
 }
 
@@ -190,9 +185,6 @@ function handle_delete_item($id)
 
 function handle_new_item()
 {
-	if (!check_item_data())
-		return;
-
 	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
 	  input_num('qty'), input_num('std_cost'));
 	line_start_focus();
@@ -203,10 +195,10 @@ $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
 
-if (isset($_POST['AddItem']))
+if (isset($_POST['AddItem']) && check_item_data())
 	handle_new_item();
 
-if (isset($_POST['UpdateItem']))
+if (isset($_POST['UpdateItem']) && check_item_data())
 	handle_update_item();
 
 if (isset($_POST['CancelItemChanges'])) {

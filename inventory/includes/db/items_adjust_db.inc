@@ -9,15 +9,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//-------------------------------------------------------------------------------------------------------------
 
-function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_)
+function add_stock_adjustment($items, $location, $date_, $increase, $reference, $memo_)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
-	$args = (object)array_combine(array('items', 'location', 'date_', 'type', 'increase',
+	$args = (object)array_combine(array('items', 'location', 'date_', 'increase',
 		'reference', 'memo_'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_INVADJUST);
@@ -41,7 +40,7 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 		if (!$increase)
 			$line_item->quantity = -$line_item->quantity;
 
-		add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
+		add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $reference,
 			$line_item->quantity, $line_item->standard_cost, $memo_);
 	}
 
@@ -84,7 +83,7 @@ function get_stock_adjustment_items($trans_no)
 
 //--------------------------------------------------------------------------------------------------
 
-function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type, $reference,
+function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $reference,
 	$quantity, $standard_cost, $memo_)
 {
 	$mb_flag = get_mb_flag($stock_id);
@@ -93,39 +92,6 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
     {
     	display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
     }
-
-	/* Logic shifted to function update_average_material_cost
-	//Chaitanya : If negative adjustment result in negative or zero inventory 
-	//then difference should be adjusted
-	$qoh = get_qoh_on_date($stock_id);
-	if ($qoh + $quantity <= 0 && $qoh > 0) //Positive inventory turning zero/negative
-	{
-		global $Refs;
-
-		$id = get_next_trans_no(ST_JOURNAL);
-		$ref = $Refs->get_next(ST_JOURNAL);
-		$diff = get_standard_cost($stock_id) - $standard_cost;
-		
-		if ($diff !=0)
-		{
-			$stock_gl_code = get_stock_gl_code($stock_id);
-			$memo = _("For zero inventory of ").$stock_id." INVADJ REF: ".$reference;
-			//Reverse the inventory effect if $qoh <=0
-			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["inventory_account"],
-				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo, 
-				-$qoh * $diff);
-			//GL Posting to inventory adjustment account
-			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["adjustment_account"],
-				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
-				$qoh * $diff);
-				
-			add_audit_trail(ST_JOURNAL, $id, $date_);
-			add_comments(ST_JOURNAL, $id, $date_, $memo);
-			$Refs->save(ST_JOURNAL, $id, $ref);	
-		}		
-	}*/
 
 	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 
@@ -143,6 +109,3 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 	}
 }
-
-//-------------------------------------------------------------------------------------------------------------
-
