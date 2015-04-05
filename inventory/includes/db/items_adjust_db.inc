@@ -10,20 +10,19 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function add_stock_adjustment($items, $location, $date_, $increase, $reference, $memo_)
+function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
-	$args = (object)array_combine(array('items', 'location', 'date_', 'increase',
-		'reference', 'memo_'), $args);
+	$args = (object)array_combine(array('items', 'location', 'date_', 'reference', 'memo_'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_INVADJUST);
 
 	$adj_id = get_next_trans_no(ST_INVADJUST);
 
-	if ($SysPrefs->loc_notification() == 1 && !$increase)
+	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
@@ -34,11 +33,11 @@ function add_stock_adjustment($items, $location, $date_, $increase, $reference, 
 	foreach ($items as $line_item)
 	{
 
-		if ($SysPrefs->loc_notification() == 1 && !$increase)
+		if ($SysPrefs->loc_notification() == 1 && $line_item->qty < 0)
+		{
+			$chg = $line; $chg->qty = -$chg->qty;	// calculate_reorder_level expect positive qty
 			$loc = calculate_reorder_level($location, $line_item, $st_ids, $st_names, $st_num, $st_reorder); 
-
-		if (!$increase)
-			$line_item->quantity = -$line_item->quantity;
+		}
 
 		add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $reference,
 			$line_item->quantity, $line_item->standard_cost, $memo_);
@@ -52,7 +51,7 @@ function add_stock_adjustment($items, $location, $date_, $increase, $reference, 
 	$args->trans_no = $adj_id;
 	hook_db_postwrite($args, ST_INVADJUST);
 	commit_transaction();
-	if ($SysPrefs->loc_notification() == 1 && !$increase && count($st_ids) > 0)
+	if ($SysPrefs->loc_notification() == 1 && count($st_ids) > 0)
 		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 
 	return $adj_id;

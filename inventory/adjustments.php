@@ -115,7 +115,7 @@ function can_process()
 	}
 	elseif (!$SysPrefs->allow_negative_stock())
 	{
-		$low_stock = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
+		$low_stock = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate']);
 
 		if ($low_stock)
 		{
@@ -132,8 +132,7 @@ function can_process()
 if (isset($_POST['Process']) && can_process()){
 
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
-		$_POST['StockLocation'], $_POST['AdjDate'], $_POST['Increase'],
-		$_POST['ref'], $_POST['memo_']);
+		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
@@ -146,9 +145,9 @@ if (isset($_POST['Process']) && can_process()){
 
 function check_item_data()
 {
-	if (!check_num('qty',0) || input_num('qty') == 0)
+	if (input_num('qty') == 0)
 	{
-		display_error(_("The quantity entered is negative or invalid."));
+		display_error(_("The quantity entered is invalid."));
 		set_focus('qty');
 		return false;
 	}
