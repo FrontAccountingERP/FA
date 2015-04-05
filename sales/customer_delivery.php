@@ -203,7 +203,7 @@ function check_data()
 
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
-		display_error(_("This document cannot be processed because there is insufficient quantity for: ").implode(',', $low_stock));
+		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
 

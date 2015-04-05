@@ -95,13 +95,27 @@ class items_cart
 
 	function check_qoh($location, $date_, $reverse=false)
 	{
-		foreach ($this->line_items as $line_no => $line_item)
-		{
-			$item_ret = $line_item->check_qoh($location, $date_, $reverse);
-			if ($item_ret != null)
-				return $line_no;
+		global $SysPrefs;
+
+		$low_stock = array();
+
+    	if (!$SysPrefs->allow_negative_stock())
+    	{
+			foreach ($this->line_items as $line_no => $line_item)
+				if (has_stock_holding($line_item->mb_flag))
+				{
+					$quantity = $line_item->quantity;
+					if ($reverse)
+						$quantity = -$line_item->quantity;
+
+					if ($quantity >= 0)
+						continue;
+
+					if (check_negative_stock($line_item->stock_id, $quantity, $location, $date_))
+						$low_stock[] = $line_no;
+    			}
 		}
-		return -1;
+		return $low_stock;
 	}
 
 	// ----------- GL item functions
@@ -471,32 +485,6 @@ class line_item
 		$this->quantity = $qty;
 		//$this->price = $price;
 		$this->price = 0;
-	}
-
-	function check_qoh($location, $date_, $reverse)
-	{
-		global $SysPrefs;
-		
-    	if (!$SysPrefs->allow_negative_stock())
-    	{
-			if (has_stock_holding($this->mb_flag))
-			{
-				$quantity = $this->quantity;
-				if ($reverse)
-					$quantity = -$this->quantity;
-
-				if ($quantity >= 0)
-					return null;
-
-				$qoh = get_qoh_on_date($this->stock_id, $location, $date_);
-        		if ($quantity + $qoh < 0)
-        		{
-        			return $this;
-        		}
-    		}
-    	}
-
-    	return null;
 	}
 }
 
