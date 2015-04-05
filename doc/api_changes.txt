@@ -1,6 +1,6 @@
 Changes in framework API introduced in FrontAccounting 2.4
 ----------------------------------------------------------
-The list does not contain changes made in user interface files.
+The list does not contain changes made in user interface files or local functions.
 
 Changed functions:
  company_db_inc: 
@@ -18,6 +18,8 @@ Changed functions:
 	add_stock_move($type, $stock_id, $trans_no, $location, $date_, $reference, $quantity, $std_cost, $person_id=0, $price=0)
  sales_db.inc:
 	add_stock_move_customer() removed
+ items_transfer_db.inc:
+ 	add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
 
 Before 2.4:
 	get_tax_type_default_rate($type_id)
@@ -98,3 +100,10 @@ Now:
 	None
 Description:
 	Obsolete and removed.
+
+Before 2.4:
+	add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
+Now:
+	add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
+Description:
+	Removed obsolete $type argument.

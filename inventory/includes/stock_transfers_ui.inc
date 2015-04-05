@@ -35,15 +35,11 @@ function display_order_header(&$order)
 	locations_list_row(_("From Location:"), 'FromStockLocation', null);
 	locations_list_row(_("To Location:"), 'ToStockLocation', null);
 
-	table_section(2, "33%");
-
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER));
+	table_section(2, "50%");
 
     date_row(_("Date:"), 'AdjDate', '', true);
 
-	table_section(3, "33%");
-
-    movement_types_list_row(_("Transfer Type:"), 'type', null);
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER));
 
 	end_outer_table(1); // outer table
 }

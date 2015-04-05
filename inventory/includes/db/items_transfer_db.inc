@@ -11,14 +11,14 @@
 ***********************************************************************/
 //-------------------------------------------------------------------------------------------------------------
 
-function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
+function add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
 	$args = (object)array_combine(array('Items', 'location_from', 'location_to', 
-	'date_', 'type', 'reference', 'memo_'), $args);
+	'date_', 'reference', 'memo_'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_LOCTRANSFER);
 
@@ -37,7 +37,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 		if ($SysPrefs->loc_notification() == 1)
 			$loc = calculate_reorder_level($location_from, $line_item, $st_ids, $st_names, $st_num, $st_reorder); 
 		add_stock_transfer_item($transfer_id, $line_item->stock_id, $location_from,
-			$location_to, $date_, $type, $reference, $line_item->quantity);
+			$location_to, $date_, $reference, $line_item->quantity);
 	}
 
 	add_comments(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
@@ -64,7 +64,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 // it seems the standard_cost field is not used at all
 
 function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $location_to,
-	$date_, $type, $reference, $quantity)
+	$date_, $reference, $quantity)
 {
 	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from,
        	$date_, $reference, -$quantity, 0);

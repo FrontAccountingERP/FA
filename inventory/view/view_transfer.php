@@ -42,8 +42,6 @@ label_cells(_("To Location"), $to_trans['location_name'], "class='tableheader2'"
 end_row();
 start_row();
 label_cells(_("Reference"), $from_trans['reference'], "class='tableheader2'");
-$adjustment_type = get_movement_type($from_trans['person_id']) ;
-label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 label_cells(_("Date"), sql2date($from_trans['tran_date']), "class='tableheader2'");
 end_row();
 

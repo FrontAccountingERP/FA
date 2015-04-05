@@ -31,8 +31,6 @@ page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 
-check_db_has_movement_types(_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
@@ -137,7 +135,7 @@ if (isset($_POST['Process']))
 
 	$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 		$_POST['FromStockLocation'], $_POST['ToStockLocation'],
-		$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
+		$_POST['AdjDate'], $_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['transfer_items']->clear_items();
 	unset($_SESSION['transfer_items']);
@@ -149,7 +147,7 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!check_num('qty', 0))
+	if (!check_num('qty', 0) || input_num('qty') == 0)
 	{
 		display_error(_("The quantity entered must be a positive number."));
 		set_focus('qty');
@@ -162,13 +160,10 @@ function check_item_data()
 
 function handle_update_item()
 {
-    if($_POST['UpdateItem'] != "" && check_item_data())
-    {
-		$id = $_POST['LineNo'];
-    	if (!isset($_POST['std_cost']))
-    		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
-    	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
-    }
+	$id = $_POST['LineNo'];
+   	if (!isset($_POST['std_cost']))
+   		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
+   	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
 	line_start_focus();
 }
 
@@ -184,8 +179,6 @@ function handle_delete_item($id)
 
 function handle_new_item()
 {
-	if (!check_item_data())
-		return;
 	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = 0;
 	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
@@ -197,10 +190,10 @@ $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
 	
-if (isset($_POST['AddItem']))
+if (isset($_POST['AddItem']) && check_item_data())
 	handle_new_item();
 
-if (isset($_POST['UpdateItem']))
+if (isset($_POST['UpdateItem']) && check_item_data())
 	handle_update_item();
 
 if (isset($_POST['CancelItemChanges'])) {
