@@ -1312,29 +1312,6 @@ function sales_types_list_row($label, $name, $selected_id=null, $submit_on_chang
 
 //-----------------------------------------------------------------------------------------------
 
-function movement_types_list($name, $selected_id=null)
-{
-	$sql = "SELECT id, name FROM ".TB_PREF."movement_types";
-	return combo_input($name, $selected_id, $sql, 'id', 'name', array());
-}
-
-function movement_types_list_cells($label, $name, $selected_id=null)
-{
-	if ($label != null)
-		echo "<td>$label</td>\n";
-	echo "<td>";
-	echo movement_types_list($name, $selected_id);
-	echo "</td>\n";
-}
-
-function movement_types_list_row($label, $name, $selected_id=null)
-{
-	echo "<tr><td class='label'>$label</td>";
-	movement_types_list_cells(null, $name, $selected_id);
-	echo "</tr>\n";
-}
-
-//-----------------------------------------------------------------------------------------------
 function _format_date($row)
 {
 	return sql2date($row['reconciled']);

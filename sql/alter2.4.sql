@@ -115,7 +115,6 @@ ALTER TABLE `0_groups` ENGINE=InnoDB;
 ALTER TABLE `0_item_codes` ENGINE=InnoDB;
 ALTER TABLE `0_item_units` ENGINE=InnoDB;
 ALTER TABLE `0_locations` ENGINE=InnoDB;
-ALTER TABLE `0_movement_types` ENGINE=InnoDB;
 ALTER TABLE `0_payment_terms` ENGINE=InnoDB;
 ALTER TABLE `0_prices` ENGINE=InnoDB;
 ALTER TABLE `0_printers` ENGINE=InnoDB;
@@ -236,3 +235,5 @@ ALTER TABLE `0_stock_moves` DROP COLUMN `visible`;
 UPDATE `0_stock_moves` SET
 	price = price*(1-discount_percent);
 ALTER TABLE `0_stock_moves` DROP COLUMN `discount_percent`;
+
+DROP TABLE IF EXISTS `0_movement_types`;

@@ -20,7 +20,6 @@ include_once($path_to_root . "/inventory/includes/db/items_purchases_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
-include_once($path_to_root . "/inventory/includes/db/movement_types_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_adjust_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_transfer_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");

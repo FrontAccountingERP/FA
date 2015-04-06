@@ -118,22 +118,6 @@ function check_db_has_tax_groups($msg)
     }	
 }
 
-function db_has_movement_types()
-{
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."movement_types");
-}
-
-function check_db_has_movement_types($msg)
-{
-	global $path_to_root;
-    if (!db_has_movement_types()) 
-    {
-    	display_error($msg, true);
-    	end_page();
-    	exit;	
-    }	
-}
-
 function db_customer_has_branches($customer_id)
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch "

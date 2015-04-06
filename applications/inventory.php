@@ -38,10 +38,8 @@ class inventory_app extends application
 			"inventory/manage/sales_kits.php?", 'SA_SALESKIT', MENU_MAINTENANCE);
 		$this->add_lapp_function(2, _("Item &Categories"),
 			"inventory/manage/item_categories.php?", 'SA_ITEMCATEGORY', MENU_MAINTENANCE);
-		$this->add_lapp_function(2, _("Inventory &Locations"),
+		$this->add_rapp_function(2, _("Inventory &Locations"),
 			"inventory/manage/locations.php?", 'SA_INVENTORYLOCATION', MENU_MAINTENANCE);
-		$this->add_rapp_function(2, _("Inventory &Movement Types"),
-			"inventory/manage/movement_types.php?", 'SA_INVENTORYMOVETYPE', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("&Units of Measure"),
 			"inventory/manage/item_units.php?", 'SA_UOM', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("&Reorder Levels"),
