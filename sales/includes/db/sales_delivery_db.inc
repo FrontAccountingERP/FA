@@ -96,7 +96,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		if ($delivery_line->qty_dispatched != 0) {
 			add_stock_move(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no,
 				$delivery->Location, $delivery->document_date, $delivery->reference,
-				-$delivery_line->qty_dispatched, $delivery_line->standard_cost, 0,
+				-$delivery_line->qty_dispatched, $delivery_line->standard_cost,
 				 $line_price*(1-$delivery_line->discount_percent));
 
 			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);

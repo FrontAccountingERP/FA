@@ -354,18 +354,18 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 // $date_ - display / non-sql date
 // $std_cost - in HOME currency
-// $price - in $person_id's currency
+// $price - in transaction currency
 
 function add_stock_move($type, $stock_id, $trans_no, $location,
-    $date_, $reference, $quantity, $std_cost, $person_id=0, $price=0)
+    $date_, $reference, $quantity, $std_cost, $price=0)
 {
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
-		tran_date, person_id, reference, qty, standard_cost, price) VALUES ("
+		tran_date, reference, qty, standard_cost, price) VALUES ("
 		.db_escape($stock_id).", ".db_escape($trans_no).", "
 		.db_escape($type).", ".db_escape($location).", '$date', "
-		.db_escape($person_id).", ".db_escape($reference).", "
+		.db_escape($reference).", "
 		.db_escape($quantity).", ".db_escape($std_cost)."," .db_escape($price).")";
 
 	db_query($sql, "The stock movement record cannot be inserted");
@@ -403,7 +403,11 @@ function get_stock_moves($type, $type_no)
 
 function void_stock_move($type, $type_no)
 {
-    $sql = "SELECT * from ".TB_PREF."stock_moves WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+    $sql = "SELECT move.*, supplier.supplier_id from ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
+				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
+				LEFT JOIN ".TB_PREF."suppliers supplier ON IFNULL(grn.supplier_id, credit.supplier_id)=supplier.supplier_id
+     WHERE move.type=".db_escape($type)." AND move.trans_no=".db_escape($type_no);
 
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
@@ -419,7 +423,7 @@ function void_stock_move($type, $type_no)
 			else
 				$unit_cost = $row["standard_cost"];
 
-			update_average_material_cost($row["person_id"], $row["stock_id"],
+			update_average_material_cost($row["supplier_id"], $row["stock_id"],
 				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));
 		}
     }

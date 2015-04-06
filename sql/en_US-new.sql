@@ -1618,7 +1618,6 @@ CREATE TABLE `0_stock_moves` (
   `type` smallint(6) NOT NULL DEFAULT '0',
   `loc_code` char(5) NOT NULL DEFAULT '',
   `tran_date` date NOT NULL DEFAULT '0000-00-00',
-  `person_id` int(11) DEFAULT NULL,
   `price` double NOT NULL DEFAULT '0',
   `reference` char(40) NOT NULL DEFAULT '',
   `qty` double NOT NULL DEFAULT '1',

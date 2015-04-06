@@ -193,7 +193,7 @@ function add_credit_movements_item(&$credit_note, &$credit_line,
 	    add_stock_move(ST_CUSTCREDIT,  $credit_line->stock_id,
    		    key($credit_note->trans_no), $credit_note->Location,
        		$credit_note->document_date, $reference, $credit_line->qty_dispatched,
-	        $curr_std_cost, 0, $price);
+	        $curr_std_cost, $price);
 	}
 }
 
