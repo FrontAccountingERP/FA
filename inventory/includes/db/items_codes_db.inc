@@ -113,7 +113,7 @@ function get_item_code_dflts($stock_id)
 function check_item_in_kit($old_id, $kit_code, $item_code, $recurse=false)
 {
 	$result = get_item_kit($kit_code);
-	if ($result != 0)
+	if ($result)
 	{
 		while ($myrow = db_fetch($result))
 		{

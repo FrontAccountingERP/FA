@@ -283,7 +283,7 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	$sql = "SELECT component FROM ".TB_PREF."bom WHERE parent=".db_escape($component_to_check);
 	$result = db_query($sql,"could not check recursive bom");
 
-	if ($result != 0)
+	if ($result)
 	{
 		while ($myrow = db_fetch_row($result))
 		{
@@ -296,9 +296,9 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 			{
 				return 1;
 			}
-		} //(while loop)
-	} //end if $result is true
+		}
+	}
 
 	return 0;
-} //end of function check_for_recursive_bom
+}
 
