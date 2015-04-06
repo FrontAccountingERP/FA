@@ -12,10 +12,10 @@
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 
-include_once($path_to_root . "/includes/db/inventory_db.inc");
 include_once($path_to_root . "/includes/db/allocations_db.inc");
 
 include_once($path_to_root . "/purchasing/includes/db/supp_trans_db.inc");

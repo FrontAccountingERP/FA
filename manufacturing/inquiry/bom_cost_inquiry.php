@@ -16,7 +16,6 @@ include_once($path_to_root . "/includes/session.inc");
 page(_($help_context = "Costed Bill Of Material Inquiry"));
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");

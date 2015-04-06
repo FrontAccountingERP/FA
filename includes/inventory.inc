@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-include_once($path_to_root . "/includes/db/manufacturing_db.inc");
+include_once($path_to_root . "/includes/db/inventory_db.inc");
 
 
 function is_manufactured($mb_flag)
@@ -31,6 +31,3 @@ function has_stock_holding($mb_flag)
 {
 	return is_purchased($mb_flag) || is_manufactured($mb_flag);
 }
-
-//--------------------------------------------------------------------------------------
-

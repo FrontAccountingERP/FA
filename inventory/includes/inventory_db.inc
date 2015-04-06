@@ -11,7 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_trans_db.inc");

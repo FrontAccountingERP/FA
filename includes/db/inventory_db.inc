@@ -445,3 +445,17 @@ function get_location_name($loc_code)
 
 	display_db_error("could not retreive the location name for $loc_code", $sql, true);
 }
+
+function get_mb_flag($stock_id)
+{
+	$sql = "SELECT mb_flag FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
+	$result = db_query($sql, "retreive mb_flag from item");
+	
+	if (db_num_rows($result) == 0)
+		return -1;
+
+	$myrow = db_fetch_row($result);
+	return $myrow[0];
+}
+

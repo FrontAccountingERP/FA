@@ -20,7 +20,6 @@ if ($SysPrefs->use_popup_windows)
 page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");

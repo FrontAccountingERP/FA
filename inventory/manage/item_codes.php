@@ -17,7 +17,6 @@ page(_($help_context = "Foreign Item Codes"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_purchasable_items(_("There are no inventory items defined in the system."));

@@ -10,7 +10,6 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/sales/includes/cart_class.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
 function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description='')

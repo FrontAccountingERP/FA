@@ -20,10 +20,10 @@ if (isset($_GET['stock_id']))
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 
 if (list_updated('stock_id')) 
 	$Ajax->activate('status_tbl');
