@@ -63,9 +63,9 @@ div_end();
 
 //--------------------------------------------------------------------------------------------------
 
-function update_component($kit_code, $selected_item, $selected_kit)
+function update_component($kit_code, $selected_item)
 {
-	global $Mode, $Ajax;
+	global $Mode, $Ajax, $selected_kit;
 	
 	if (!check_num('quantity', 0))
 	{
@@ -73,7 +73,7 @@ function update_component($kit_code, $selected_item, $selected_kit)
 		set_focus('quantity');
 		return;
 	}
-   	elseif ($_POST['description'] == '')
+   	elseif (get_post('description') == '')
    	{
       	display_error( _("Item code description cannot be empty."));
 		set_focus('description');
@@ -82,14 +82,14 @@ function update_component($kit_code, $selected_item, $selected_kit)
 	elseif ($selected_item == -1)	// adding new item or new alias/kit
 	{
 		if (get_post('item_code') == '') { // New kit/alias definition
-			$kit = get_item_kit($_POST['kit_code']);
+			$kit = get_item_kit($kit_code);
     		if (db_num_rows($kit)) {
 			  	$input_error = 1;
     	  		display_error( _("This item code is already assigned to stock item or sale kit."));
 				set_focus('kit_code');
 				return;
 			}
-			if (get_post('kit_code') == '') {
+			if ($kit_code == '') {
 	    	  	display_error( _("Kit/alias code cannot be empty."));
 				set_focus('kit_code');
 				return;
@@ -97,21 +97,20 @@ function update_component($kit_code, $selected_item, $selected_kit)
 		}
    	}
 
-	if (check_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
+	if (check_item_in_kit($selected_item, $kit_code, get_post('component'), true)) {
 		display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
 		set_focus('component');
 		return;
 	}
 
 		/*Now check to see that the component is not already in the kit */
-	if (check_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
+	if (check_item_in_kit($selected_item, $kit_code, get_post('component'))) {
 		display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
 		set_focus('component');
 		return;
 	}
 	if ($selected_item == -1) { // new item alias/kit
-		if ($_POST['item_code']=='') {
-			$kit_code = $_POST['kit_code'];
+		if (get_post('item_code') == '') {
 			$selected_kit = $_POST['item_code'] = $kit_code;
 			$msg = _("New alias code has been created.");
 		} 
@@ -123,7 +122,7 @@ function update_component($kit_code, $selected_item, $selected_kit)
 		display_notification($msg);
 
 	} else {
-		$props = get_kit_props($_POST['item_code']);
+		$props = get_kit_props(get_post('item_code'));
 		update_item_code($selected_item, $kit_code, get_post('component'),
 			$props['description'], $props['category_id'], input_num('quantity'), 0);
 		display_notification(_("Component of selected kit has been updated."));
@@ -141,7 +140,7 @@ if (get_post('update_name')) {
 }
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
-	update_component($_POST['item_code'], $selected_id, $selected_kit);
+	update_component($_POST['item_code'], $selected_id);
 
 if ($Mode == 'Delete')
 {
