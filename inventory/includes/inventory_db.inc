@@ -31,6 +31,34 @@ function item_img_name($stock_id)
 	return clean_file_name($stock_id);
 }
 
+function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
+{
+	$before_date = date2sql($BeforeDate);
+	$after_date = date2sql($AfterDate);
+  $sql = "SELECT move.*, IF(ISNULL(supplier.supplier_id), debtor.name, supplier.supp_name) name";
+
+	if(!$StockLocation) {
+		 $sql .= ", move.loc_code";
+	}
+  $sql.=    " FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
+				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
+				LEFT JOIN ".TB_PREF."suppliers supplier ON IFNULL(grn.supplier_id, credit.supplier_id)=supplier.supplier_id
+				LEFT JOIN ".TB_PREF."debtor_trans cust_trans ON cust_trans.trans_no=move.trans_no AND cust_trans.type=move.type
+				LEFT JOIN ".TB_PREF."debtors_master debtor ON cust_trans.debtor_no=debtor.debtor_no
+		WHERE";
+
+  if ($StockLocation) {
+    $sql.= " move.loc_code=".db_escape($StockLocation)." AND";
+	}
+
+	$sql.= " move.tran_date >= '". $after_date . "'
+	AND move.tran_date <= '" . $before_date . "'
+	AND move.stock_id = ".db_escape($stock_id) . " ORDER BY move.tran_date, move.trans_id";
+
+  return db_query($sql, "could not query stock moves");
+}
+
 function calculate_reorder_level($location, $line, &$st_ids, &$st_names, &$st_num, &$st_reorder)
 {
 	$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email

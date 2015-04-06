@@ -38,7 +38,8 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
 
-start_form();
+if (!@$_GET['popup'])
+	start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
@@ -76,14 +77,16 @@ $result = get_stock_movements($_POST['stock_id'], $_POST['StockLocation'],
 div_start('doc_tbl');
 start_table(TABLESTYLE);
 $th = array(_("Type"), _("#"), _("Reference"));
-if($display_location) array_push($th, _("Location"));
-array_push($th, _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
 
+if ($display_location)
+	array_push($th, _("Location"));
+
+array_push($th, _("Date"), _("Detail"), _("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
 
 table_header($th);
 
-$before_qty = get_stock_movements_before($_POST['stock_id'], $_POST['StockLocation'], $_POST['AfterDate']);
-	
+$before_qty = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], add_days($_POST['AfterDate'], -1));
+
 $after_qty = $before_qty;
 
 /*
@@ -132,57 +135,28 @@ while ($myrow = db_fetch($result))
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+
 	if($display_location) {
 		label_cell($myrow['loc_code']);
 	}
 	label_cell($trandate);
 
-	$person = $myrow["person_id"];
 	$gl_posting = "";
 
-	if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT))
-	{
-		$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
-
-		if (strlen($cust_row['name']) > 0)
-			$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
-
-	}
-	elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
-	{
-		// get the supplier name
-		$supp_name = get_supplier_name($myrow["person_id"]);
-
-		if (strlen($supp_name) > 0)
-			$person = $supp_name;
-	}
-	elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
-	{
-		// get the adjustment type
-		$movement_type = get_movement_type($myrow["person_id"]);
-		$person = $movement_type["name"];
-	}
-	elseif ($myrow["type"]==ST_WORKORDER || $myrow["type"] == ST_MANUISSUE  ||
-		$myrow["type"] == ST_MANURECEIVE)
-	{
-		$person = "";
-	}
-
-	label_cell($person);
+	label_cell($myrow['name']);
 
 	label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap align=right");
 	label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap align=right");
 	qty_cell($after_qty, false, $dec);
 	end_row();
+
 	$j++;
-	If ($j == 12)
+	if ($j == 12)
 	{
 		$j = 1;
 		table_header($th);
 	}
-//end of page full new headings if
 }
-//end of while loop
 
 start_row("class='inquirybg'");
 label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=$header_span");
