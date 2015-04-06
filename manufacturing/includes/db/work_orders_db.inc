@@ -297,7 +297,7 @@ function void_work_order($woid)
 	commit_transaction();
 }
 
-function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_TEXT, $oredr_no='', $order_ref = '', $overdue = false)
+function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_TEXT, $order_no='', $order_ref = '', $overdue = false)
 {
 	$sql = "SELECT
 		workorder.id,
