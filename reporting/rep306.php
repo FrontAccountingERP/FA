@@ -43,13 +43,14 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 			move.tran_date,
 			move.qty AS qty,
 			move.price
-		FROM ".TB_PREF."stock_master item,
-			".TB_PREF."stock_category category,
-			".TB_PREF."suppliers supplier,
-			".TB_PREF."stock_moves move
+		FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
+				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
+				LEFT JOIN ".TB_PREF."suppliers supplier ON IFNULL(grn.supplier_id, credit.supplier_id)=supplier.supplier_id,
+			".TB_PREF."stock_master item,
+			".TB_PREF."stock_category category
 		WHERE item.stock_id=move.stock_id
 		AND item.category_id=category.category_id
-		AND move.person_id=supplier.supplier_id
 		AND move.tran_date>='$from'
 		AND move.tran_date<='$to'
 		AND (move.type=".ST_SUPPRECEIVE." OR move.type=".ST_SUPPCREDIT.")
@@ -88,9 +89,8 @@ function get_supp_inv_reference($supplier_id, $stock_id, $date)
     	return $row[0];
     else
     	return '';
-}    
-    
-	
+}
+
 //----------------------------------------------------------------------------------------------------
 
 function print_inventory_purchase()

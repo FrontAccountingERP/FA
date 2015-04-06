@@ -115,7 +115,7 @@ function avg_unit_cost($stock_id, $location=null, $to_date)
 
 	$to_date = date2sql($to_date);
 
-	$sql = "SELECT standard_cost, price, tran_date, type, trans_no, qty, person_id  FROM ".TB_PREF."stock_moves
+	$sql = "SELECT standard_cost, qty FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."
 		AND tran_date < '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND type <> ".ST_LOCTRANSFER;
 
@@ -157,7 +157,7 @@ function trans_qty_unit_cost($stock_id, $location=null, $from_date, $to_date, $i
 
 	$to_date = date2sql($to_date);
 
-	$sql = "SELECT standard_cost, price, tran_date, type, trans_no, qty, person_id FROM ".TB_PREF."stock_moves
+	$sql = "SELECT standard_cost, tran_date, qty FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."
 		AND tran_date <= '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND type <> ".ST_LOCTRANSFER;
 

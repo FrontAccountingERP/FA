@@ -66,7 +66,7 @@ function getAverageCost($stock_id, $to_date)
 
 	$to_date = date2sql($to_date);
 
-	$sql = "SELECT standard_cost, price, tran_date, type, trans_no, qty, person_id FROM ".TB_PREF."stock_moves
+	$sql = "SELECT standard_cost, qty FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)."
 		AND tran_date <= '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND type <> ".ST_LOCTRANSFER;
 
