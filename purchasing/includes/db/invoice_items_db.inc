@@ -40,7 +40,6 @@ function add_supp_invoice_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $a
 function get_supp_invoice_items($supp_trans_type, $supp_trans_no)
 {
 	$sql = "SELECT inv.*, grn.*, unit_price AS FullUnitPrice, 
-		stock.parallel_qe, 
 		stock.units,
 		tax_type.exempt,
 		tax_type.name as tax_type_name
