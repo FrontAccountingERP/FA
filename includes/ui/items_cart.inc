@@ -112,7 +112,7 @@ class items_cart
 						continue;
 
 					if (check_negative_stock($line_item->stock_id, $quantity, $location, $date_))
-						$low_stock[] = $line_no;
+						$low_stock[] = $line_item->stock_id;
     			}
 		}
 		return $low_stock;
