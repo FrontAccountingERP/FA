@@ -25,10 +25,7 @@ if (isset($_GET["trans_no"]))
 	$trans_no = $_GET["trans_no"];
 }
 
-$transfer_items = get_stock_transfer($trans_no);
-
-$from_trans = $transfer_items[0];
-$to_trans = $transfer_items[1];
+$trans = get_stock_transfer($trans_no);
 
 display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
@@ -36,13 +33,12 @@ echo "<br>";
 start_table(TABLESTYLE2, "width='90%'");
 
 start_row();
-label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
-label_cells(_("From Location"), $from_trans['location_name'], "class='tableheader2'");
-label_cells(_("To Location"), $to_trans['location_name'], "class='tableheader2'");
+label_cells(_("Reference"), $trans['reference'], "class='tableheader2'");
+label_cells(_("Date"), sql2date($trans['tran_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Reference"), $from_trans['reference'], "class='tableheader2'");
-label_cells(_("Date"), sql2date($from_trans['tran_date']), "class='tableheader2'");
+label_cells(_("From Location"), $trans['from_name'], "class='tableheader2'");
+label_cells(_("To Location"), $trans['to_name'], "class='tableheader2'");
 end_row();
 
 comments_display_row(ST_LOCTRANSFER, $trans_no);
@@ -57,7 +53,7 @@ $transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 $k = 0;
 while ($item = db_fetch($transfer_items))
 {
-	if ($item['loc_code'] == $to_trans['loc_code'])
+	if ($item['loc_code'] == $trans['to_loc'])
 	{
         alt_table_row_color($k);
 

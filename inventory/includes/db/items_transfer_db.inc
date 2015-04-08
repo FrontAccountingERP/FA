@@ -75,26 +75,29 @@ function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $locat
 }
 
 //-------------------------------------------------------------------------------------------------------------
-
+//
+//	Get inventory transfer common data (currently this is still stored in stock_moves table).
+//
 function get_stock_transfer($trans_no)
 {
-	$result = get_stock_transfer_items($trans_no);
-	if (db_num_rows($result) < 2)
-	{
-		display_db_error("transfer with less than 2 items : $trans_no", "");
-	}
+	// retrieve common data from any two from/to move records
+	$sql = "SELECT loc_from.*, loc_to.*
+		FROM
+			(SELECT trans_no, type, tran_date, reference, move.loc_code as from_loc, loc.location_name as from_name
+			FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."locations loc ON loc.loc_code=move.loc_code
+			WHERE type=".ST_LOCTRANSFER." AND trans_no=".db_escape($trans_no). " AND qty<0 LIMIT 1) loc_from,
 
-	// this function is very bad that it assumes that 1st record and 2nd record contain the
-	// from and to locations - if get_stock_moves uses a different ordering than trans_no then
-	// it will bomb
-	$move1 = db_fetch($result);
-	$move2 = db_fetch($result);
+			(SELECT move.loc_code as to_loc, loc.location_name as to_name
+			FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."locations loc ON loc.loc_code=move.loc_code
+			WHERE type=".ST_LOCTRANSFER." AND trans_no=".db_escape($trans_no). " AND qty>0 LIMIT 1) loc_to";
 
-	// return an array of (From, To)
-	if ($move1['qty'] < 0)
-		return array($move1, $move2);
-	else
-		return array($move2, $move1);
+	$result = db_query($sql, "Could not get transfer common data");
+
+	$data = db_fetch($result);
+
+	return $data;
 }
 
 //-------------------------------------------------------------------------------------------------------------
