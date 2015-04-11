@@ -235,6 +235,7 @@ $reports->addReport(RC_INVENTORY, 304, _('Inventory &Sales Report'),
 			_('Inventory Category') => 'CATEGORIES',
 			_('Location') => 'LOCATIONS',
 			_('Customer') => 'CUSTOMERS_NO_FILTER',
+			_('Show Service Items') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
