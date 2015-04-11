@@ -605,7 +605,7 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $alsoclosed=false)
 {
 
-	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+	$sql = "SELECT	IFNULL(a.gl_seq,0) as gl_seq,
 		gl.tran_date,
 		gl.type,
 		gl.type_no,
