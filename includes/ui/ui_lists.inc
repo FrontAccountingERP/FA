@@ -678,7 +678,7 @@ return combo_input($name, $selected_id, $sql, 'id', '',
 function _format_fiscalyears($row)
 {
 	return sql2date($row[1]) . "&nbsp;-&nbsp;" . sql2date($row[2])
-	. "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+	. "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active'));
 }
 
 function fiscalyears_list_cells($label, $name, $selected_id=null)
