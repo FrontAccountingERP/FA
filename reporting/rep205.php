@@ -176,7 +176,7 @@ function print_supplier_details_listing()
 			{
 				$oldrow = $rep->row;
 				$rep->NewLine();
-				$rep->TextColLines(1, 2, _("Gereral Notes:")." ".$myrow['notes'], -2);
+				$rep->TextColLines(1, 2, _("General Notes:")." ".$myrow['notes'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
 			}	
