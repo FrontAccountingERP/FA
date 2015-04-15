@@ -278,6 +278,8 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 		"drop table if exists" => 'drop_queries',
 		"drop function if exists" => 'drop_queries',
 		"drop trigger if exists" => 'drop_queries',
+		"select" => 'data_queries', 
+		"delete" => 'data_queries', 
 		);
 
 	$protected = array(
@@ -305,7 +307,8 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
 	$check_line_len = false;
-	// uncrompress gziped backup files
+
+	// uncompress gziped backup files
 	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
 	{	$lines = db_ungzip("lines", $filename);
 		$check_line_len = true;
