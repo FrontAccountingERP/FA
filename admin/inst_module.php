@@ -212,6 +212,12 @@ if (get_post('Refresh')) {
 	$result = true;
 	foreach($exts as $i => $ext) {
 		if ($ext['package'] && ($ext['active'] ^ check_value('Active'.$i))) {
+			if (check_value('Active'.$i) && !check_src_ext_version($ext['version']))
+			{
+				display_warning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
+					. _("Check Install/Activate page for newer package version."), $ext['name']));
+				continue;
+			}
 			if (!$ext['active'])
 				$activated = activate_hooks($ext['package'], $comp);
 			else

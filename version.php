@@ -4,12 +4,13 @@
 // Settings in this file can be automatically updated at any time during software update.
 //
 
-// Internal database version compatibility check. Do not change.
+// Versions used by source/database version compatibility checks. Do not change.
 $db_version = "2.4.0";
+$src_version = "2.4.0";
 
 // application version - can be overriden in config.php
 if (!isset($version))
-	$version 		= "2.4 alpha";
+	$version = $src_version;
 
 //======================================================================
 // Extension packages repository settings 

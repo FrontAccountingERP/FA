@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
+include($path_to_root."/includes/packages.inc");
 //
 //	Utility class contains basic database upgrade routines.
 //
@@ -49,6 +49,30 @@ class fa_patch {
 	}
 
 	/*
+		Check and disable incompatible extensions.
+	*/
+	function update_extensions()
+	{
+		global $version;
+
+		$mods = get_company_extensions();
+		$exts = get_company_extensions($this->cur_company);
+
+		$fixed = false;
+		foreach($mods as $key => $ins) {
+			foreach($exts as $ext)
+				if ($ext['name'] == $ins['name'] && (!check_src_ext_version($ins['version']))) {
+					$mods[$key]['active'] = false;
+					$this->log_error(sprintf(_("Uncompatible extension '%s' disabled for company %d."), $ins['name'], $this->cur_company));
+					$fixed = true;
+					continue 2;
+				}
+		}
+		if ($fixed)
+			write_extensions($mods, $this->cur_company);
+	}
+
+	/*
 		Pre-install maintenance: login to company, open upgrade log, make a backup
 	*/
 	function pre_install($company)
@@ -69,6 +93,8 @@ class fa_patch {
 		if ($cur_ver != $this->previous)
 			return $this->log_error(sprintf(_("Cannot upgrade company %s: database version is incompatible ('%s' instead of '%s')."),
 				$this->cur_company, $cur_ver, $this->previous));
+
+		$this->update_extensions();	// disable uncompatible extensions
 
 		if (!$this->prepare())	// fetch params, perform additional checks (if any)
 		  return false;
