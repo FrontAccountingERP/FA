@@ -45,7 +45,7 @@ function get_all_tax_types($all=false)
 
 function get_all_tax_types_simple()
 {
-	$sql = "SELECT * FROM ".TB_PREF."tax_types";
+	$sql = "SELECT * FROM ".TB_PREF."tax_types WHERE !inactive";
 
 	return db_query($sql, "could not get all tax types");
 }

@@ -42,10 +42,12 @@ function update_item_tax_type($id, $name, $exempt, $exempt_from)
 	commit_transaction();	
 }
 
-function get_all_item_tax_types()
+function get_all_item_tax_types($also_inactive=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."item_tax_types";
-	
+	if (!$also_inactive)
+		$sql .= " WHERE !inactive";
+
 	return db_query($sql, "could not get all item tax type");
 } 
 
