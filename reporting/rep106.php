@@ -40,7 +40,6 @@ function GetSalesmanTrans($from, $to)
 			cust.name AS DebtorName,
 			cust.curr_code,
 			branch.br_name,
-			branch.contact_name,
 			sorder.customer_ref,
 			salesman.*
 		FROM ".TB_PREF."debtor_trans trans,
@@ -144,10 +143,14 @@ function print_salesman_list()
 		}
 		$rate = $myrow['rate'];
 		$amt = $myrow['InvoiceTotal'] * $rate;
-		if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0)
-			$prov = $myrow['provision2'] * $amt / 100;
-		else
+		if ($myrow['provision2'] == 0)
 			$prov = $myrow['provision'] * $amt / 100;
+		else {
+			$amt1 = min($amt, max(0, $myrow['break_pt']-$subtotal));
+			$amt2 = $amt - $amt1;
+
+			$prov = $amt1*$myrow['provision']/100 + $amt2*$myrow['provision2']/100;
+		}
 		if (!$summary)
 		{
 			$rep->TextCol(0, 1,	$myrow['trans_no']);

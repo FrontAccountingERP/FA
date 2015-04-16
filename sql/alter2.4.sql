@@ -239,3 +239,9 @@ ALTER TABLE `0_stock_moves` DROP COLUMN `discount_percent`;
 ALTER TABLE `0_stock_moves` DROP COLUMN `person_id`;
 
 DROP TABLE IF EXISTS `0_movement_types`;
+
+# change salesman breakpoint meaning to turnover level
+UPDATE `0_salesman`
+	SET `break_pt` = `break_pt`*100.0/`provision`
+WHERE `provision` != 0;
+

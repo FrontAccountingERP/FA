@@ -157,7 +157,7 @@ text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 text_row_ex(_("Fax number:"), 'salesman_fax', 20);
 email_row_ex(_("E-mail:"), 'salesman_email', 40);
 percent_row(_("Provision").':', 'provision');
-amount_row(_("Break Pt.:"), 'break_pt');
+amount_row(_("Turnover Break Pt Level:"), 'break_pt');
 percent_row(_("Provision")." 2:", 'provision2');
 end_table(1);
 
