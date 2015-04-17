@@ -504,6 +504,16 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0, $id=nul
 	echo "</tr>\n";
 }
 
+function text_input($name, $value=null, $size='', $max='', $title='', $params='')
+{
+	if ($value === null)
+		$value = get_post($name);
+
+	return "<input $params type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
+	    .($title ? " title='$title'" : '')
+	    .">";
+}
+
 //-----------------------------------------------------------------------------------
 
 function text_cells($label, $name, $value=null, $size="", $max="", $title=false, 
@@ -516,11 +526,7 @@ function text_cells($label, $name, $value=null, $size="", $max="", $title=false,
 		label_cell($label, $labparams);
 	echo "<td>";
 
-	if ($value === null)
-		$value = get_post($name);
-	echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
-	    .($title ? " title='$title'" : '')
-	    .">";
+	echo text_input($name, $value, $size, $max, $title, $inparams);
 
 	if ($post_label != "")
 		echo " " . $post_label;
