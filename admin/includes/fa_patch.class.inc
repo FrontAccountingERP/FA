@@ -24,7 +24,7 @@ class fa_patch {
 	var $backup;				// pre-upgrade backup filename
 
 	var $errors = array();
-	var	$ma_upgrade_time = 300;
+	var	$max_upgrade_time = 300;
 
 	function fa_patch()
 	{
@@ -63,7 +63,7 @@ class fa_patch {
 			foreach($exts as $ext)
 				if ($ext['name'] == $ins['name'] && (!check_src_ext_version($ins['version']))) {
 					$mods[$key]['active'] = false;
-					$this->log_error(sprintf(_("Uncompatible extension '%s' disabled for company %d."), $ins['name'], $this->cur_company));
+					$this->log_error(sprintf(_("Uncompatible extension '%s' disabled for company %d."), $ins['name'], $this->cur_company), 'Notice');
 					$fixed = true;
 					continue 2;
 				}

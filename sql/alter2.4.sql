@@ -234,9 +234,6 @@ ALTER TABLE `0_stock_moves` DROP COLUMN `visible`;
 
 UPDATE `0_stock_moves` SET
 	price = price*(1-discount_percent);
-ALTER TABLE `0_stock_moves` DROP COLUMN `discount_percent`;
-
-ALTER TABLE `0_stock_moves` DROP COLUMN `person_id`;
 
 DROP TABLE IF EXISTS `0_movement_types`;
 
