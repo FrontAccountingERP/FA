@@ -112,7 +112,7 @@ if ($uptodate)
 else {
 	if (get_post('select_comp') === '')
 		display_note(_("Select company for incremental upgrade."), 0, 1, "class='stockmankofg'");
-	submit_center('Upgrade', _('Upgrade'), true, _('Save database and perform upgrade'), 'process');
+	submit_center('Upgrade', _('Upgrade'), true, _('Save database and perform upgrade'), 'nonajax');
 }
 end_form();
 

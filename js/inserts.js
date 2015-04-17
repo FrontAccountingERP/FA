@@ -310,7 +310,7 @@ var inserts = {
 		e.onclick = function(){
 			if (validate(e)) {
 				setTimeout(function() {	var asp = e.getAttribute('aspect');
-					set_mark((asp && (asp.indexOf('process') !== -1)) ? 'progressbar.gif' : 'ajax-loader.gif');
+					set_mark((asp && ((asp.indexOf('process') !== -1) || (asp.indexOf('nonajax') !== -1))) ? 'progressbar.gif' : 'ajax-loader.gif');
 				}, 100);
 				return true;
 			}
