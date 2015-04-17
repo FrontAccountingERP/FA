@@ -1611,6 +1611,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
 -- Table structure for table `0_stock_moves`
 --
 
+DROP TABLE IF EXISTS `0_stock_moves`;
 CREATE TABLE `0_stock_moves` (
   `trans_id` int(11) NOT NULL AUTO_INCREMENT,
   `trans_no` int(11) NOT NULL DEFAULT '0',

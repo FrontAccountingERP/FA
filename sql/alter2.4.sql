@@ -32,7 +32,6 @@ UPDATE `0_tax_group_items` tgi
 	SET tgi.tax_shipping=1
 	WHERE tgi.rate=(SELECT 0_tax_types.rate FROM 0_tax_types, 0_tax_groups 
 		WHERE tax_shipping=1 AND tgi.tax_group_id=0_tax_groups.id AND tgi.tax_type_id=0_tax_types.id);
-ALTER TABLE `0_tax_groups` DROP COLUMN `tax_shipping`;
 
 ALTER TABLE `0_sales_order_details` ADD KEY `stkcode` (`stk_code`);
 ALTER TABLE `0_purch_order_details` ADD KEY `itemcode` (`item_code`);
@@ -229,7 +228,6 @@ DELETE moves
 	INNER JOIN (SELECT * FROM `0_stock_moves` WHERE `type`=11 AND `qty`<0) writeoffs ON writeoffs.`trans_no`=moves.`trans_no` AND writeoffs.`type`=11
 	WHERE moves.`type`=11;
 
-ALTER TABLE `0_stock_moves` DROP COLUMN `visible`;
 # stock_moves.discount_percent field are obsolete
 
 UPDATE `0_stock_moves` SET

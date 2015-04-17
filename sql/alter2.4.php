@@ -249,10 +249,11 @@ class fa2_4 extends fa_patch {
 		//remove obsolete and temporary columns.
 		// this have to be done here as db_import rearranges alter query order
 		$dropcol = array(
+				'tax_groups' => array('tax_shipping'),
 				'tax_group_items' => array('rate'),
 				'budget_trans' => array('type', 'type_no', 'person_id', 'person_type_id', 'memo_'),
 				'cust_branch' => array('contact_name', 'disable_trans'),
-				'stock_moves' => array('discount_percent',  'person_id'),
+				'stock_moves' => array('discount_percent', 'visible', 'person_id'),
 		);
 
 		foreach($dropcol as $table => $columns)
