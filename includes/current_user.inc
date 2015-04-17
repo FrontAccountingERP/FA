@@ -450,21 +450,21 @@ function user_price_dec()
 {
 	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->price_dec() : $SysPrefs->prices_dec;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->price_dec() : 2;
 }
 
 function user_exrate_dec()
 {
 	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->exrate_dec() : $SysPrefs->rates_dec;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->exrate_dec() : 4;
 }
 
 function user_percent_dec()
 {
 	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->percent_dec() : $SysPrefs->percent_dec;
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->percent_dec() : 1;
 }
 
 function user_show_gl_info()

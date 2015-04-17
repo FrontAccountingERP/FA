@@ -2445,3 +2445,16 @@ function users_list_cells($label, $name, $selected_id=null, $submit_on_change=fa
 
 }
 
+function collations_list_row($label, $name, $selected_id=null)
+{
+	global $supported_collations;
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td class='label'>$label</td>\n";
+	echo "<td>";
+
+	echo array_selector($name, $selected_id, $supported_collations, 
+		array('select_submit'=> false) );
+	echo "</td></tr>\n";
+}

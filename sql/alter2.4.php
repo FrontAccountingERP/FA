@@ -9,40 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function collations_list_row($label, $name, $selected_id=null)
-{
-
-$mysql_collations = array(
-  'xx' => 'Unicode (multilanguage)',
-  'is' => 'Icelandic',
-  'lv' => 'Latvian',
-  'ro' => 'Romanian',
-  'sl' => 'Slovenian',
-  'pl' => 'Polish',
-  'et' => 'Estonian',
-  'es' => 'Spanish', // or 'spanish2',
-  'sw' => 'Swedish',
-  'tr' => 'Turkish',
-  'cs' => 'Czech',
-  'da' => 'Danish',
-  'lt' => 'Lithuanian',
-  'sk' => 'Slovak',
-  'sp' => 'Spanish (alternative)',
-  'fa' => 'Persian',
-  'hu' => 'Hungarian',
-  'fr' => 'French',
-  'it' => 'Italian',
-);
-
-	echo "<tr>";
-	if ($label != null)
-		echo "<td class='label'>$label</td>\n";
-	echo "<td>";
-
-	echo array_selector($name, $selected_id, $mysql_collations, 
-		array('select_submit'=> false) );
-	echo "</td></tr>\n";
-}
 
 class fa2_4 extends fa_patch {
 	var $previous = '2.3rc';		// applicable database version

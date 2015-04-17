@@ -62,35 +62,35 @@ function get_mysql_encoding_name($encoding)
 }
 
 /*
-	Returns 'best' collation for various locale language codes
+	Returns 'best' mysql collation for various FA backend language codes.
 */
 function get_mysql_collation($lang=null)
 {
 	if (!$lang)
-		$lang = substr($_SESSION['language']->code, 0, 2);
+		$lang = 'utf8_'.substr($_SESSION['language']->code, 0, 2);
 
 	$db_collation = array(
-		'is' => 'icelandic',
-		'lv' => 'latvian',
-		'ro' => 'romanian',
-		'sl' => 'slovenian',
-		'pl' => 'polish',
-		'et' => 'estonian',
-		'es' => 'spanish', // or 'spanish2',
-		'sw' => 'swedish',
-		'tr' => 'turkish',
-		'cs' => 'czech',
-		'da' => 'danish',
-		'lt' => 'lithuanian',
-		'sk' => 'slovak',
-		'sp' => 'spanish2',
-		'fa' => 'persian',
-		'hu' => 'hungarian',
-		'fr' => 'roman',
-		'it' => 'roman',
+		'utf8_is' => 'utf8_icelandic_ci',
+		'utf8_lv' => 'utf8_latvian_ci',
+		'utf8_ro' => 'utf8_romanian_ci',
+		'utf8_sl' => 'utf8_slovenian_ci',
+		'utf8_pl' => 'utf8_polish_ci',
+		'utf8_et' => 'utf8_estonian_ci',
+		'utf8_es' => 'utf8_spanish_ci', // or 'spanish2',
+		'utf8_sw' => 'utf8_swedish_ci',
+		'utf8_tr' => 'utf8_turkish_ci',
+		'utf8_cs' => 'utf8_czech_ci',
+		'utf8_da' => 'utf8_danish_ci',
+		'utf8_lt' => 'utf8_lithuanian_ci',
+		'utf8_sk' => 'utf8_slovak_ci',
+		'utf8_sp' => 'utf8_spanish2_ci',
+		'utf8_fa' => 'utf8_persian_ci',
+		'utf8_hu' => 'utf8_hungarian_ci',
+		'utf8_fr' => 'utf8_roman_ci',
+		'utf8_it' => 'utf8_roman_ci',
 	);
 
-	return 'utf8_'.(isset($db_collation[$lang]) ? $db_collation[$lang] : 'unicode').'_ci';
+	return isset($db_collation[$lang]) ? $db_collation[$lang] : 'utf8_unicode_ci';
 }
 
 /*

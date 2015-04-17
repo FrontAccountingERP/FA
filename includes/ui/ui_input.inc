@@ -202,6 +202,7 @@ function submit_center_last($name, $value, $title=false, $async=false, $icon=fal
 /*
 	For following controls:
 	'both' - use both Ctrl-Enter and Escape hotkeys 
+	'upgrade' - use Ctrl-Enter with progress ajax indicator and Escape hotkeys. Nonajax request for OK option is performed.
 	'cancel' - apply to 'RESET' button
 */
 function submit_add_or_update($add=true, $title=false, $async=false, $clone=false)
@@ -210,7 +211,10 @@ function submit_add_or_update($add=true, $title=false, $async=false, $clone=fals
 
 	if ($async === 'both') {
 		$async = 'default'; $cancel = 'cancel';
-	} 
+	}
+	elseif ($async === 'upgrade') {
+		$async = 'default nonajax process'; $cancel = 'cancel';
+	}
 	else if ($async === 'default')
 		$cancel = true;
 	else if ($async === 'cancel')

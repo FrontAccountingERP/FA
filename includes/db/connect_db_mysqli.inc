@@ -19,6 +19,7 @@ function set_global_connection($company=-1)
 	global $db, $path_to_root, $db_connections, $SysPrefs;
 
 	include ($path_to_root . "/config_db.php");
+
 	if ($company == -1) 
 		$company = user_company();
 
@@ -186,15 +187,33 @@ function db_field_name($result, $n)
     return $fieldinfo->name;
 }
 
+function db_set_collation($db, $fa_collation)
+{
+	return mysqli_query($db, "ALTER DATABASE COLLATE ".get_mysql_collation($fa_collation));
+}
+
+/*
+	Create database for FA company. If database already exists,
+	just set collation to be sure nothing weird will happen later.
+*/
 function db_create_db($connection)
 {
+	global $db;
+
 	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 
 	if (!mysqli_select_db($db, $connection["dbname"]))
 	{
-		$sql = "CREATE DATABASE IF NOT EXISTS `" . $connection["dbname"] . "`";
+		$sql = "CREATE DATABASE IF NOT EXISTS `" . $connection["dbname"] . "`"
+			. " DEFAULT COLLATE '" . get_mysql_collation($connection["collation"]) . "'";
+
 		if (!mysqli_query($db, $sql) || !mysqli_select_db($db, $connection["dbname"]))
 			return 0;
+	} else {
+		if (!db_set_collation($db, $connection["collation"]))
+		{
+			return 0;
+		}
 	}
 	return $db;
 }

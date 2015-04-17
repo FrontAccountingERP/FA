@@ -304,8 +304,12 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 
 	$old_encoding = db_get_charset($db);
 
-	ini_set("max_execution_time", "180");
+	ini_set("max_execution_time", max("180", ini_get("max_execution_time")));
 	db_query("SET foreign_key_checks=0");
+
+	if (isset($connection['collation']))
+		db_set_collation($db, $connection['collation']);
+
 	$check_line_len = false;
 
 	// uncompress gziped backup files

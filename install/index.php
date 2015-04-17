@@ -144,10 +144,11 @@ function do_install() {
 		$db_connections = array (0=> array (
 		 'name' => $con['name'],
 		 'host' => $con['host'],
+		 'dbname' => $con['dbname'],
+		 'collation' => $con['collation'],
+		 'tbpref' => $table_prefix,
 		 'dbuser' => $con['dbuser'],
 		 'dbpassword' => $con['dbpassword'],
-		 'dbname' => $con['dbname'],
-		 'tbpref' => $table_prefix
 		));
 
 		$_SESSION['wa_current_user']->cur_con = 0;
@@ -194,7 +195,8 @@ if (!isset($_SESSION['inst_set']))  // default settings
 		'username' => 'admin',
 		'tbpref' => '0_',
 		'admin' => 'admin',
-		'inst_lang' => 'C'
+		'inst_lang' => 'C',
+		'collation' => 'xx',
 	);
 
 if (!@$_POST['Tests'])
@@ -231,6 +233,7 @@ elseif (isset($_POST['db_test'])) {
 			'tbpref' => $_POST['tbpref'] ? '0_' : '',
 			'sel_langs' => check_value('sel_langs'),
 			'sel_coas' => check_value('sel_coas'),
+			'collation' => $_POST['collation'],
 		));
 		if (install_connect_db()) {
 			$_POST['Page'] = check_value('sel_langs') ? 3 :
@@ -342,14 +345,16 @@ start_form();
 			subpage_title(_('Database Server Settings'));
 			start_table(TABLESTYLE);
 			text_row_ex(_("Server Host:"), 'host', 30, 60);
+			text_row_ex(_("Database Name:"), 'dbname', 30);
 			text_row_ex(_("Database User:"), 'dbuser', 30);
 			text_row_ex(_("Database Password:"), 'dbpassword', 30);
-			text_row_ex(_("Database Name:"), 'dbname', 30);
+			collations_list_row(_("Database Collation:"), 'collation');
 			yesno_list_row(_("Use '0_' Table Prefix:"), 'tbpref', 1, _('Yes'), _('No'), false);
 			check_row(_("Install Additional Language Packs from FA Repository:"), 'sel_langs');
 			check_row(_("Install Additional COAs from FA Repository:"), 'sel_coas');
 			end_table(1);
-			display_note(_('Use table prefix if you share selected database for more than one FA company.'));
+			display_note(_("Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."));
+			display_note(_("Use table prefix if you share selected database for more than one FA company suing the same collation."));
 			display_note(_("Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."));
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('db_test', _('Continue >>'));
@@ -390,7 +395,7 @@ start_form();
 			languages_list_row(_("Select Default Language:"), 'lang');
 			end_table(1);
 			submit_center_first('back', _('<< Back'));
-			submit_center_last('set_admin', _('Continue >>'));
+			submit_center_last('set_admin', _('Install'), _('Start installation process'), 'default nonajax');
 			break;
 
 		case '6': // final screen

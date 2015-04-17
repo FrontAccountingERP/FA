@@ -199,3 +199,28 @@ $bank_owner_types = array(
 // This month array is for use with the last 3 dateformats. 
 $tmonths = array("", _("Jan"),_("Feb"),_("Mar"),_("Apr"),_("May"),_("Jun"),_("Jul"),_("Aug"),_("Sep"),_("Oct"),_("Nov"),_("Dec"));
 
+//
+//	FA supported db backend language settings.
+//
+$supported_collations = array(
+  'utf8_xx' => _('Unicode (multilanguage)'),
+  'utf8_is' => _('Icelandic'),
+  'utf8_lv' => _('Latvian'),
+  'utf8_ro' => _('Romanian'),
+  'utf8_sl' => _('Slovenian'),
+  'utf8_pl' => _('Polish'),
+  'utf8_et' => _('Estonian'),
+  'utf8_es' => _('Spanish'), // or 'spanish2',
+  'utf8_sw' => _('Swedish'),
+  'utf8_tr' => _('Turkish'),
+  'utf8_cs' => _('Czech'),
+  'utf8_da' => _('Danish'),
+  'utf8_lt' => _('Lithuanian'),
+  'utf8_sk' => _('Slovak'),
+  'utf8_sp' => _('Spanish (alternative)'),
+  'utf8_fa' => _('Persian'),
+  'utf8_hu' => _('Hungarian'),
+  'utf8_fr' => _('French'),
+  'utf8_it' => _('Italian'),
+);
+

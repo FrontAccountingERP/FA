@@ -186,6 +186,15 @@ function db_field_name($result, $n)
 	return mysql_field_name($result, $n);
 }
 
+function db_set_collation($db, $fa_collation)
+{
+	return mysql_query("ALTER DATABASE COLLATE ".get_mysql_collation($fa_collation), $db);
+}
+
+/*
+	Create database for FA company. If database already exists,
+	just set collation to be sure nothing weird will happen later.
+*/
 function db_create_db($connection)
 {
 	$db = mysql_connect($connection["host"] ,
@@ -193,10 +202,15 @@ function db_create_db($connection)
 
 	if (!mysql_select_db($connection["dbname"], $db))
 	{
-		$sql = "CREATE DATABASE IF NOT EXISTS " . $connection["dbname"] . "";
+		$sql = "CREATE DATABASE IF NOT EXISTS `" . $connection["dbname"] . "`"
+			. " DEFAULT COLLATE '" . get_mysql_collation($connection["collation"]) . "'";
+
 		if (!mysql_query($sql) || !mysql_select_db($connection["dbname"], $db))
+				return 0;
+	} else
+		if (!db_set_collation($connection["collation"], $db))
 			return 0;
-	}
+
 	return $db;
 }
 

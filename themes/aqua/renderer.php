@@ -45,6 +45,8 @@
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<td class='quick_menu'>\n"; // tabs
+
+			$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
 			if (!$no_menu)
 			{
 				$applications = $_SESSION['App']->applications;
@@ -70,7 +72,6 @@
 
 				echo "<table class='logoutBar'>";
 				echo "<tr><td class='headingtext3'>" . $db_connections[user_company()]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
-				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
 				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td>";
 				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
@@ -84,8 +85,11 @@
 			}
 			echo "</td></tr></table>";
 			if ($no_menu)
-				echo "<br>";
-			elseif ($title && !$is_index)
+			{
+				echo "<center><table class='tablestyle_noborder'>"
+					."<tr><td><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td></tr>"
+					."</table></center>";
+			} elseif ($title && !$is_index)
 			{
 				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"
 				."<td align=right>"
