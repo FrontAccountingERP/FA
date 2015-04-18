@@ -29,14 +29,16 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 print_inventory_sales();
 
-function getTransactions($category, $location, $fromcust, $from, $to)
+function getTransactions($category, $location, $fromcust, $from, $to, $show_service)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
+<<<<<<< HEAD
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
 			item.description, item.inactive,
+			item.mb_flag,
 			move.loc_code,
 			trans.debtor_no,
 			debtor.name AS debtor_name,
@@ -56,16 +58,23 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 		AND move.trans_no=trans.trans_no
 		AND move.tran_date>='$from'
 		AND move.tran_date<='$to'
-		AND (trans.type=".ST_CUSTDELIVERY." OR move.type=".ST_CUSTCREDIT.")
-		AND (item.mb_flag='B' OR item.mb_flag='M')";
-		if ($category != 0)
-			$sql .= " AND item.category_id = ".db_escape($category);
-		if ($location != '')
-			$sql .= " AND move.loc_code = ".db_escape($location);
-		if ($fromcust != '')
-			$sql .= " AND debtor.debtor_no = ".db_escape($fromcust);
-		$sql .= " GROUP BY item.stock_id, debtor.name ORDER BY item.category_id,
-			item.stock_id, debtor.name";
+		AND (trans.type=".ST_CUSTDELIVERY." OR move.type=".ST_CUSTCREDIT.")";
+
+	if (!$show_service)
+		$sql .= " AND (item.mb_flag='B' OR item.mb_flag='M')";
+
+	if ($category != 0)
+		$sql .= " AND item.category_id = ".db_escape($category);
+
+	if ($location != '')
+		$sql .= " AND move.loc_code = ".db_escape($location);
+
+	if ($fromcust != '')
+		$sql .= " AND debtor.debtor_no = ".db_escape($fromcust);
+
+	$sql .= " GROUP BY item.stock_id, debtor.name ORDER BY item.category_id,
+		item.stock_id, debtor.name";
+
     return db_query($sql,"No transactions were returned");
 
 }
@@ -81,9 +90,10 @@ function print_inventory_sales()
     $category = $_POST['PARAM_2'];
     $location = $_POST['PARAM_3'];
     $fromcust = $_POST['PARAM_4'];
-	$comments = $_POST['PARAM_5'];
-	$orientation = $_POST['PARAM_6'];
-	$destination = $_POST['PARAM_7'];
+	$show_service = $_POST['PARAM_5'];
+	$comments = $_POST['PARAM_6'];
+	$orientation = $_POST['PARAM_7'];
+	$destination = $_POST['PARAM_8'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -108,6 +118,8 @@ function print_inventory_sales()
 		$fromc = _('All');
 	else
 		$fromc = get_customer_name($fromcust);
+	if ($show_service) $show_service_items = _('Yes');
+	else $show_service_items = _('No');
 
 	$cols = array(0, 75, 175, 250, 300, 375, 450,	515);
 
@@ -121,7 +133,8 @@ function print_inventory_sales()
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
     				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-    				    4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => ''));
+    				    4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => ''),
+    				    5 => array('text' => _('Show Service Items'), 'from' => $show_service_items, 'to' => ''));
 
     $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
@@ -131,7 +144,7 @@ function print_inventory_sales()
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
 
-	$res = getTransactions($category, $location, $fromcust, $from, $to);
+	$res = getTransactions($category, $location, $fromcust, $from, $to, $show_service);
 	$total = $grandtotal = 0.0;
 	$total1 = $grandtotal1 = 0.0;
 	$total2 = $grandtotal2 = 0.0;
@@ -174,7 +187,10 @@ function print_inventory_sales()
 			$rep->TextCol(1, 3, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
 		$rep->AmountCol(4, 5, $trans['amt'], $dec);
-		$rep->AmountCol(5, 6, $trans['cost'], $dec);
+		if (is_service($trans['mb_flag']))
+			$rep->TextCol(5, 6, "---");
+		else	
+			$rep->AmountCol(5, 6, $trans['cost'], $dec);
 		$rep->AmountCol(6, 7, $cb, $dec);
 		$rep->fontSize += 2;
 		$total += $trans['amt'];

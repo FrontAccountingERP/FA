@@ -303,7 +303,7 @@ class db_pager {
 		if ($count) {
 			$group = $group == '' ? "*" : "DISTINCT $group";
 
-			return "SELECT COUNT($group) FROM $from $where";
+			return "SELECT COUNT(*) FROM (SELECT $group FROM $from $where) tmp_count";
 		}
 
 		$sql = "$select FROM $from $where";

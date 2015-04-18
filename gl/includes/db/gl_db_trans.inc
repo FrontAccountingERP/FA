@@ -562,7 +562,7 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 		 $user_id=null, $contractor_id=null, $dimension=null)
 {
 
-	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+	$sql = "SELECT	IFNULL(a.gl_seq,0) as gl_seq,
 		gl.tran_date,
 		gl.type as trans_type,
 		gl.type_no as trans_no,

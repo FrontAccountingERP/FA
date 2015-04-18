@@ -60,7 +60,8 @@ function output_hidden()
 {
 	global $hidden_fields;
 
-	echo implode('', $hidden_fields);
+	if (is_array($hidden_fields))
+		echo implode('', $hidden_fields);
 	$hidden_fields = array();
 }
 //---------------------------------------------------------------------------------
@@ -131,6 +132,7 @@ function table_section($number=1, $width=false)
 	if ($number > 1)
 	{
 		echo "</table>\n";
+		output_hidden();
 		$width = ($width ? "width='$width'" : "");
 		//echo "</td><td class='tableseparator' $width>\n"; // outer table
 		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
@@ -141,7 +143,10 @@ function table_section($number=1, $width=false)
 function end_outer_table($breaks=0, $close_table=true)
 {
 	if ($close_table)
+	{
 		echo "</table>\n";
+		output_hidden();
+	}
 	echo "</td></tr>\n";
 	end_table($breaks);
 }
@@ -394,13 +399,14 @@ function div_end()
 {
     global $ajax_divs, $Ajax;
 
+	output_hidden();
     if (count($ajax_divs))
     {
 		$div = array_pop($ajax_divs);
 		if ($div[1] !== null)
 			$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
-		echo "</div>";
     }
+	echo "</div>";
 }
 
 //-----------------------------------------------------------------------------
@@ -448,6 +454,7 @@ function tabbed_content_start($name, $tabs, $dft='') {
 }
 
 function tabbed_content_end() {
+	output_hidden();
 	echo "</div>"; // content box (don't change to div_end() unless div_start() is used above)
 	div_end(); // tabs widget
 }
