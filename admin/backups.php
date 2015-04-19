@@ -20,13 +20,13 @@ if (get_post('view')) {
 	if (!get_post('backups')) {
 		display_error(_('Select backup file first.'));
 	} else {
-		$filename = $SysPrefs->backup_dir().clean_file_name(get_post('backups'));
+		$filename = $SysPrefs->backup_dir() . clean_file_name(get_post('backups'));
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
 		    header('Content-type: text/plain');
     		header('Content-Length: '.filesize($filename));
-			header("Content-Disposition: inline");
+			header("Content-Disposition: inline; filename=".basename($filename));
     		readfile($filename);
 			exit();
 		}
@@ -67,7 +67,7 @@ function generate_backup($conn, $ext='no', $comm='')
 			. _("Filename") . ": " . $filename);
 	else
 		display_error(_("Database backup failed."));
-	
+
 	return $filename;
 }
 
@@ -138,7 +138,7 @@ if (get_post('creat')) {
 
 if (get_post('restore')) {
 	if ($backup_name) {
-		if (db_import($backup_path, $conn))
+		if (db_import($backup_path, $conn, true, false, check_value('protected')))
 			display_notification(_("Restore backup completed."));
 		$SysPrefs->refresh(); // re-read system setup
 	} else
@@ -166,6 +166,8 @@ if (get_post('upload'))
 	if ($fname) {
 		if (!preg_match("/\.sql(\.zip|\.gz)?$/", $fname))
 			display_error(_("You can only upload *.sql backup files"));
+		elseif ($fname != clean_file_name($fname))
+			display_error(_("Filename contains forbidden chars. Please rename file and try again."));
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, $SysPrefs->backup_dir() . $fname);
 			display_notification(_("File uploaded to backup directory"));
@@ -204,7 +206,12 @@ table_section_title(_("Backup scripts maintenance"));
 	echo "</td>";
 	end_row();
 start_row();
-echo "<td style='padding-left:20px' align='left'><input name='uploadfile' type='file'></td>";
+	echo "<td style='padding-left:20px'  cspan=2>"
+	. radio(_('Update security settings'), 'protect', 0) . '<br>'
+	. radio(_('Protect security settings'), 'protect', 1, true) . "</td>";
+end_row();
+start_row();
+	echo "<td style='padding-left:20px' align='left'><input name='uploadfile' type='file'></td>";
 	submit_cells('upload',_("Upload file"),"style='padding-left:20px'", '', true);
 end_row();
 end_outer_table();
