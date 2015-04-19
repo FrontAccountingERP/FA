@@ -48,15 +48,14 @@ journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 date_cells(_("To:"), 'ToDate');
 
-submit_cells('Search', _("Search"), '', '', 'default');
 end_row();
 start_row();
 ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 users_list_cells(_("User:"), 'userid', null, false);
 if (get_company_pref('use_dimension') && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
 	dimensions_list_cells(_('Dimension:'), 'dimension', null, true, null, true);
-users_list_cells(_("User:"), 'userid', null, false);
 check_cells( _("Show closed:"), 'AlsoClosed', null);
+submit_cells('Search', _("Search"), '', '', 'default');
 end_row();
 end_table();
 

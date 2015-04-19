@@ -29,7 +29,7 @@ if (!isset($_GET['type_id']) || !isset($_GET['trans_no']))
 
 function display_gl_heading($myrow)
 {
-	global $systypes_array, $type_shortcuts;
+	global $systypes_array;
 
 	$trans_name = $systypes_array[$_GET['type_id']];
 	$journal = $_GET['type_id'] == ST_JOURNAL;
@@ -50,7 +50,7 @@ function display_gl_heading($myrow)
     table_header($th);	
     start_row();	
     label_cell("$trans_name #" . $_GET['trans_no']);
-    label_cell($type_shortcuts[$myrow['type']].' '.$myrow["reference"], "align='center'");
+    label_cell($myrow["reference"], "align='center'");
 	if($myrow['supp_reference'])
 	{
 	label_cell($myrow["supp_reference"], "align='center'");
