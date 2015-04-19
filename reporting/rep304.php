@@ -33,7 +33,7 @@ function getTransactions($category, $location, $fromcust, $from, $to, $show_serv
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-<<<<<<< HEAD
+
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
