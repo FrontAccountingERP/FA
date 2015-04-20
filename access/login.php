@@ -86,7 +86,6 @@ function defaultCompany()
 	echo "</td>\n";
 	end_row();
 
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".fallback_mode()."' >\n";
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build ".$SysPrefs->build_version." - "._("Login"));
 	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($SysPrefs->allow_demo_mode ? "demouser":"");
@@ -118,8 +117,9 @@ function defaultCompany()
 		end_row();
 	}; 
 	end_table(1);
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".fallback_mode()."' >\n";
 	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
-		.($login_timeout ? '':" onclick='set_fullmode();'").(isset($blocked_msg) ? " disabled" : '')." ></center>\n";
+		." onclick='set_fullmode();'".(isset($blocked_msg) ? " disabled" : '')." ></center>\n";
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data

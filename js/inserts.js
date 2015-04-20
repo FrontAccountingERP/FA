@@ -29,6 +29,12 @@ function validate(e) {
 	return true;
 }
 
+function set_fullmode() {
+	document.getElementById('ui_mode').value = 1;
+	document.loginform.submit();
+	return true;
+}
+
 function save_focus(e) {
   _focus = e.name||e.id;
   var h = document.getElementById('hints');
