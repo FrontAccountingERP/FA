@@ -154,14 +154,12 @@ class current_user
 
 		if ($user != false) {
 
-			$bytes = openssl_random_pseudo_bytes(8, $cstrong);
-			$password   = base64_encode($bytes);
-
+			$password = generate_password();
 			$hash = md5($password);
 
 			update_user_password($user['id'], $user['user_id'], $hash);
 
-			mail($myrow['email'], _("New password for")." ".$SysPrefs->app_title, $password);
+			mail($email, _("New password for")." ".$SysPrefs->app_title, $password);
 
 			return true;
 		}

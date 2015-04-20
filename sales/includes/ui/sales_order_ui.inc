@@ -295,7 +295,7 @@ function display_order_header(&$order, $editable, $date_text)
 			else
 			{
 
-				$old_order = (PHP_VERSION<5) ? $order : clone( $order );
+				$old_order = (PHP_VERSION<5) ? $order : clone $order;
 
 				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 				$_POST['Location'] = $order->Location;

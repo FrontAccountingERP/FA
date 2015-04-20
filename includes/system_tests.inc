@@ -43,11 +43,11 @@ function tst_phpmysql()
 
 function tst_php() 
 {
-	$test['descr'] = _('PHP version').' >=4.3.3';
+	$test['descr'] = _('PHP version').' >=5.0.0';
 	$test['type'] = 3;
 	$test['test'] = phpversion();
-	$test['result'] = $test['test']>='4.3.3';
-	$test['comments'] = _('Upgrade PHP to version at least 4.3.3');
+	$test['result'] = $test['test']>='5.0.0';
+	$test['comments'] = _('Upgrade PHP to version at least 5.0.0');
 
 	return $test;
 }

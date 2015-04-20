@@ -383,3 +383,23 @@ function clean_file_name($filename) {
     return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
 }
 
+/*
+	Simple random password generator.
+*/
+function generate_password()
+{
+	if (PHP_VERSION >= '5.3')
+		$bytes = openssl_random_pseudo_bytes(8, $cstrong);
+	else
+		$bytes = sprintf("08%x", mt_rand(0,0xffffffff));
+
+	return  base64_encode($bytes);
+}
+
+if (!function_exists('array_fill_keys')) // since 5.2
+{
+	function array_fill_keys($keys, $value)
+	{
+		return array_combine($keys, array_fill(count($keys), $value));
+	}
+}
