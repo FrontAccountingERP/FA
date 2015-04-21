@@ -257,3 +257,7 @@ CREATE TABLE `0_reflines` (
 INSERT INTO `0_reflines` (`trans_type`, `pattern`, `default`) SELECT `type_id`, `next_reference`, 1 FROM `0_sys_types`;
 
 DROP TABLE `0_sys_types`;
+
+ALTER TABLE `0_cust_branch` DROP KEY `branch_code`;
+ALTER TABLE `0_supp_trans` DROP KEY `SupplierID_2`;
+ALTER TABLE `0_supp_trans` DROP KEY `type`;
