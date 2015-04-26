@@ -274,7 +274,8 @@ function display_po_items(&$order, $editable=true)
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
-	$order->order_no ? submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true)
+	$order->trans_type == ST_SUPPINVOICE
+	 ? submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true)
 		: label_cell('', "colspan=2");
 	end_row();
 

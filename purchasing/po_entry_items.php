@@ -429,6 +429,11 @@ function handle_commit_order()
 	}
 }
 //---------------------------------------------------------------------------------------------------
+if (isset($_POST['update'])) {
+	copy_to_cart();
+	$Ajax->activate('items_table');
+}
+
 $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
