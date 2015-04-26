@@ -37,7 +37,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	elseif (!input_num('quantity'))
    	{
       	$input_error = 1;
-      	display_error( _("The price entered was not positive number."));
+      	display_error( _("The qunatity entered was not positive number."));
 		set_focus('quantity');
    	}
    	elseif ($_POST['description'] == '')
