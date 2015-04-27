@@ -360,7 +360,7 @@ function can_commit()
     	}
 	}
 
-	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && empty(trim(get_post('supp_ref'))))
+	if ($_SESSION['PO']->trans_type == ST_SUPPINVOICE && trim(get_post('supp_ref')) == false)
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_ref');
