@@ -91,7 +91,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$help_base_url = null;
 
 	/* per user data/cache directory */
-	$comp_path = dirname(__FILE__).'/company';
+	$comp_path = $path_to_root.'/company';
 
 	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
 	2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
