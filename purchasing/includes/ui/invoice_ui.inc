@@ -489,7 +489,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		$th[] = "";
 		if ($supp_trans->trans_type == ST_SUPPCREDIT)
 		{
-			$th[8] = _("Qty Yet To Credit");
+			$th[7] = _("Qty Yet To Credit");
 		}
     }
     else
