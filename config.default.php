@@ -56,7 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* No check on edit conflicts. Maybe needed to be set to 1 in certains Windows Servers */
 	$no_check_edit_conflicts = 0;
 	
-	/* Use icon for editkey (=true) right of combobox. 1 = use, 0 = do not use */
+	/* Use additional icon for supplier/customer edition right of combobox. 1 = use, 0 = do not use */
 	$use_icon_for_editkey = 0;
 
 	/* Creates automatic a default branch with contact. Value 0 do not create auto branch */
@@ -86,14 +86,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	// 	context help feed from frontaccounting.com
-	// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
-	// 	not used
-	$help_base_url = null;
+	$help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
+	// 	set to null if not used:
+	//	$help_base_url = null;
 
 	/* per user data/cache directory */
 	$comp_path = $path_to_root.'/company';
 
-	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
+	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, Afghanistan and some other Central Asian nations,
 	2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
 	$date_system = 0;
 
@@ -123,7 +123,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	   If this parameter is checked the proportion by which the purchase invoice is an overcharge
 	   referred to before reporting an error */
 
-	$check_price_charged_vs_order_price = True;
+	$check_price_charged_vs_order_price = true;
 
 	$config_allocation_settled_allowance = 0.005;
 
