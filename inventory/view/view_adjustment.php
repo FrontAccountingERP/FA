@@ -51,7 +51,7 @@ while ($adjustment = db_fetch($adjustment_items))
 		echo "<br>";
 		start_table(TABLESTYLE, "width='90%'");
 
-    	$th = array(_("Item"), _("Description"), _("Quantity"),
+    	$th = array(_("Item Code"), _("Description"), _("Quantity"),
     		_("Units"), _("Unit Cost"));
     	table_header($th);
 	}

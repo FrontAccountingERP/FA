@@ -22,7 +22,7 @@ class suppliers_app extends application
 			"purchasing/inquiry/po_search.php?", 'SA_GRN', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("Direct &GRN"),
 			"purchasing/po_entry_items.php?NewGRN=Yes", 'SA_GRN', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Direct &Invoice"),
+		$this->add_lapp_function(0, _("Direct Supplier &Invoice"),
 			"purchasing/po_entry_items.php?NewInvoice=Yes", 'SA_SUPPLIERINVOICE', MENU_TRANSACTION);
 
 		$this->add_rapp_function(0, _("&Payments to Suppliers"),

@@ -7,72 +7,76 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-27 18:01+0100\n"
+"POT-Creation-Date: 2015-05-06 14:45+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Janusz Dobrowolski <janusz@iron.from.pl>\n"
+"Last-Translator: Janusz Dobrowolski <janusz@frontaccounting.eu>\n"
 "Language-Team: \n"
-"Language: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:20
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:41
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:20
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:41
 msgid "FrontAccouting ERP Installation Wizard"
 msgstr "Instalator FrontAccounting ERP"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:42
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:42
 #, php-format
 msgid "Step %d: %s"
 msgstr "Krok %d: %s"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:49
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:49
 msgid "Chart of accounts"
 msgstr "Plan kont"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:49
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:76
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:49
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:76
 msgid "Encoding"
 msgstr "Kodowanie"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:49
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:76
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:49
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:76
 msgid "Description"
 msgstr "Opis"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:49
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:76
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:49
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:76
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:398
 msgid "Install"
 msgstr "Zainstaluj"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:66
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:94
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:66
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:94
 msgid "Installed"
 msgstr "Zainstalowany"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:76
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:76
 msgid "Language"
 msgstr "Jêzyk"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:124
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:124
 msgid ""
 "Cannot connect to database. User or password is invalid or you have no "
 "permittions to create database."
 msgstr ""
+"Nie mo¿na siê po³±czyæ z baz± danych. Podany u¿ytkownik lub has³o s± "
+"nieprawid³owe lub u¿ytkownik nie posiada uprawnieñ do tworzenia baz danych."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:160
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:164
 msgid "Cannot save system configuration file 'config.php'."
 msgstr "Nie mo¿na zapisaæ pliku konfiguracyjnego 'config.php'."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:167
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:171
 msgid "Cannot open 'config_db.php' configuration file."
 msgstr "Nie mo¿na utworzyæ pliku konfiguracji 'config_db.php'."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:170
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:174
 msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "Nie mo¿na zapisaæ pliku konfiguracji  'config_db.php'."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:173
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:177
 msgid ""
 "Configuration file 'config_db.php' is not writable. Change its permissions "
 "so it is, then re-run installation step."
@@ -80,43 +84,43 @@ msgstr ""
 "Plik konfiguracji 'config_db.php' jest zabezpieczony przed zapisem. Zmieñ "
 "prawa dostêpu i powtórz krok instalacji."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:211
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:216
 msgid "Host name cannot be empty."
 msgstr "Adres serwera nie mo¿e byæ pusty."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:215
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:220
 msgid "Database user name cannot be empty."
 msgstr "Nazwa u¿ytkownika nie mo¿e by pusta."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:219
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:224
 msgid "Database name cannot be empty."
 msgstr "Nazwa bazy danych nie mo¿e byæ pusta."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:272
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:278
 msgid "Company name cannot be empty."
 msgstr "Nazwa firmy nie mo¿e by pusta."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:276
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:282
 msgid "Company admin name cannot be empty."
 msgstr "Nazwa administratora nie mo¿e byæ pusta."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:280
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:286
 msgid "Company admin password cannot be empty."
 msgstr "Has³o administratora nie mo¿e by puste."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:284
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:290
 msgid "Company admin passwords differ."
 msgstr "Wprowadzone has³a ró¿ni± siê."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:316
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:323
 msgid "System Diagnostics"
 msgstr "Diagnostyka Systemu"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:318
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:325
 msgid "Select install wizard language:"
 msgstr "Wybierz jêzyk u¿ywany przy instalacji:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:324
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:331
 msgid ""
 "All application preliminary requirements seems to be correct. Please press "
 "Continue button below."
@@ -124,15 +128,14 @@ msgstr ""
 "Wszystkie wymagania systemu wydaj± siê byæ spe³nione. Kliknij klawisz "
 "poni¿ej aby rozpocz±æ instalacjê."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:325
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:351
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:358
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:365
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:389
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:332
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:360
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:367
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:374
 msgid "Continue >>"
 msgstr "Kontynuuj >>"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:327
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:334
 msgid ""
 "Application cannot be installed. Please fix problems listed below in red, "
 "and press Refresh button."
@@ -140,62 +143,78 @@ msgstr ""
 "Aplikacja nie mo¿e byæ zainstalowana. Usuñ wskazane problemy i kliknij "
 "klawisz 'Od¶wie¿'."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:328
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:335
 msgid "Refresh"
 msgstr "Od¶wierz"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:338
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:345
 msgid "Database Server Settings"
 msgstr "Ustawienia Serwera Bazy Danych"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:340
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:347
 msgid "Server Host:"
 msgstr "Adres Serwera:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:341
-msgid "Database User:"
-msgstr "Nazwa U¿ytkownika:"
-
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:342
-msgid "Database Password:"
-msgstr "Has³o:"
-
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:343
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:348
 msgid "Database Name:"
 msgstr "Nazwa Bazy Danych:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:344
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:349
+msgid "Database User:"
+msgstr "Nazwa U¿ytkownika:"
+
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:350
+msgid "Database Password:"
+msgstr "Has³o:"
+
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:351
+msgid "Database Collation:"
+msgstr "Porz±dkowanie alfabetyczne danych:"
+
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:352
 msgid "Use '0_' Table Prefix:"
 msgstr "Prefiks '0_' dla Nazw Tablic:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:344
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:38
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:113
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:126
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:352
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:38
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:113
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Tak"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:344
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:38
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:113
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:126
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:352
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:38
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:113
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:126
 msgid "No"
 msgstr "Nie"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:345
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:353
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Instalacja Dodatkowych Jêzyków z Repozytorium FA:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:346
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:354
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Instalacja Dodatkowych Planów Kont z Repozytorium FA:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:348
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:356
 msgid ""
-"Use table prefix if you share selected database for more than one FA company."
-msgstr "U¿yj prefiksu je¶li ta sama baza danych bêdzie u¿ywana dla kilku firm."
+"Select collation you want to use. If you are unsure or you will use various "
+"languages, select unicode collation."
+msgstr ""
+"Wybierz porz±dkowanie alfabetyczne bazy danych. Je¶li nie jeste¶ pewien "
+"jakiego porz±dkowania chcesz u¿ywaæ, lub zamierzasz u¿ywaæ danych w wiêcej "
+"ni¿ jednym jêzyku, wybierz porz±dkowanie Unicode."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:349
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:357
+msgid ""
+"Use table prefix if you share selected database for more than one FA company "
+"using the same collation."
+msgstr ""
+"U¿yj prefiksu dla tabel je¶li ta sama baza danych bêdzie u¿ywana dla kilku "
+"firm z tym samym porz±dkowaniem alfabetycznym."
+
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:358
 msgid ""
 "Do not select additional langs nor COAs if you have no working internet "
 "connection right now. You can install them later."
@@ -203,246 +222,250 @@ msgstr ""
 "Nie zaznaczaj wyboru dodatkowych jêzyków ani planów kont je¶li w tej chwili "
 "nie masz dostêpu do internetu. Bêdziesz je móg³ zainstalowaæ równie¿ pó¼niej."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:350
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:357
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:364
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:388
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:359
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:366
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:373
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:397
 msgid "<< Back"
 msgstr "<< Wróæ"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:355
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:364
 msgid "User Interface Languages Selection"
 msgstr "Wybór Jêzyków Interfejsu U¿ytkownika"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:362
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:371
 msgid "Charts of Accounts Selection"
 msgstr "Wybór Planów Kont"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:379
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:388
 msgid "Company Settings"
 msgstr "Ustawienia Firmy"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:381
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:390
 msgid "Company Name:"
 msgstr "Nazwa Firmy:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:382
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:391
 msgid "Admin Login:"
 msgstr "Login Administratora:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:383
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:392
 msgid "Admin Password:"
 msgstr "Has³o Administratora:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:384
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:393
 msgid "Reenter Password:"
 msgstr "Powtórz Has³o:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:385
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:394
 msgid "Select Chart of Accounts:"
 msgstr "Wybierz Planów Kont:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:386
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:395
 msgid "Select Default Language:"
 msgstr "Wybierz Jêzyk Domy¶lny:"
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:393
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:398
+msgid "Start installation process"
+msgstr "Rozpocznij instalacjê"
+
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:402
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "Aplikacja FrontAccounting ERP zosta³a zainstalowana pomy¶lnie."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:394
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:403
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Nie zapomnij usun±æ folderu instalatora."
 
-#: /home/janusz/FA/fa_unstable/devel/../install/index.php:397
+#: /home/janusz/FA/fa_unstable-git/_devel/../install/index.php:406
 msgid "Click here to start."
 msgstr "Kliknij tutaj, aby rozpocz±æ pracê."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:15
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:15
 msgid "Info"
 msgstr "Informacja"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:16
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:16
 msgid "Optional"
 msgstr "Opcjonalne"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:17
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:17
 msgid "Recommended"
 msgstr "Zalecane"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:18
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:18
 msgid "Required "
 msgstr "Wymagane"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:24
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:24
 msgid "MySQL version"
 msgstr "Wersja MySQL"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:28
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
 msgstr "U¿yj wersji serwera MySQL minimum 4.1"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:35
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:35
 msgid "PHP MySQL extension"
 msgstr "Rozszerzenie PHP MySQL"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:40
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:40
 msgid "Your PHP has to have MySQL extension enabled."
 msgstr "PHP musi mieæ w³±czone rozszerzenie MySQL."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:46
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:46
 msgid "PHP version"
 msgstr "Wersja PHP"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:50
-msgid "Upgrade PHP to version at least 4.3.3"
-msgstr "Zainstaluj PHP w wersji co najmniej 4.3.3"
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:50
+msgid "Upgrade PHP to version at least 5.0.0"
+msgstr "Zainstaluj PHP w wersji co najmniej 5.0.0"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:57
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:57
 msgid "Server system"
 msgstr "System serwera"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:67
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:67
 msgid "Session save path"
 msgstr "Katalog zapisu pliku sesji"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:79
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:79
 msgid "Removed install wizard folder"
 msgstr "Folder instalatora usuniêty"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:82
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:82
 msgid "Not removed"
 msgstr "Nie usuniêty"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:83
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:83
 msgid "Remove or rename install wizard folder for security reasons."
 msgstr "Ze wzglêdów bezpieczeñstwa usuñ lub zmieñ nazwê folderu instalatora."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:90
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:90
 msgid "Browser type"
 msgstr "Typ przegl±darki"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:94
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:94
 msgid "Any browser is supported"
 msgstr "Mo¿e byæ u¿yty dowolny typ przegl±darki"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:101
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:101
 msgid "Http server type"
 msgstr "Serwer http"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:105
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:105
 msgid "Any server is supported"
 msgstr "Dowolny"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:112
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:112
 msgid "Native gettext"
 msgstr "Biblioteka Gettext "
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:116
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:116
 msgid "In case of no gettext support, php emulation is used"
 msgstr "W przypadku braku wsparcia systemu,  gettext jest emulowany."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:124
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:124
 msgid "Debugging mode"
 msgstr "Tryb debug"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:128
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:128
 msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr "Aby w³±czyæ tryb debug ustaw $go_debug>0 in config.php file"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:137
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:138
 msgid "Error logging"
 msgstr "Logowanie b³êdów"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:145
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:146
 msgid "Disabled"
 msgstr "Wy³±czony"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:148
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:149
 msgid "To switch error logging set $error_logging in config.php file"
 msgstr ""
 "Aby w³±czyæ logowanie b³êdów ustaw zmienn± $error_logging w pliku config.php"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:151
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:152
 msgid "Log file is not writeable"
 msgstr "Logfile jest niezapisywalny"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:161
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:162
 msgid "Current database version"
 msgstr "Aktualna wersja bazy danych"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:165
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:166
 msgid "Database structure seems to be not upgraded to current version"
 msgstr "Struktura bazy danych nie jest zaktualizowana do bie¿±cej wersji"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:180
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:181
 msgid "Company subdirectories consistency"
 msgstr "Prawid³owa struktura folderów firmowych"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:193
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:200
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:208
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:225
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:340
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:349
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:358
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:366
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:194
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:201
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:209
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:226
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:341
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:350
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:359
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:367
 #, php-format
 msgid "'%s' is not writeable"
 msgstr "'%s' jest niezapisywalny"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:221
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:222
 msgid "Temporary directory"
 msgstr "Katalog plików tymczasowych"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:233
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:234
 msgid "Language configuration consistency"
 msgstr "Konfiguracja jêzykowa"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:242
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:243
 msgid "Languages folder should be writeable."
 msgstr "Folder jêzyków musi byæ zapisywalny"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:251
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:252
 msgid "Languages configuration file should be writeable."
 msgstr "Pliki konfiguracyjny jêzyków musi byæ zapisywalny."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:270
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:271
 #, php-format
 msgid "Missing %s translation file."
 msgstr "Brak pliku t³umaczeñ %s"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:275
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:276
 #, php-format
 msgid "Missing system locale: %s"
 msgstr "Lokalizacja '%s' nie jest zainstalowana w systemie"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:288
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:289
 msgid "Main config file"
 msgstr "G³ówny plik konfiguracyjny "
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:295
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:317
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:296
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:318
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
 msgstr "Nie mo¿na zapisaæ pliku '%s'. Sprawd¼ prawa zapisu do foderu FA."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:296
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:318
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:297
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:319
 #, php-format
 msgid "'%s' file exists."
 msgstr "Plik '%s' istnieje."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:300
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:301
 #, php-format
 msgid "'%s' file should be read-only"
 msgstr "Plik '%s powinien byæ zabezpieczony przed zapisem"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:309
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:310
 msgid "Database auth file"
 msgstr "Pik configuracyjny bazy danych"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:322
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:323
 #, php-format
 msgid ""
 "'%s' file should be read-only if you do not plan to add or change companies"
@@ -450,25 +473,25 @@ msgstr ""
 "Plik '%s' powinien byæ zabezpieczony przed zapisem je¶li nie planujesz "
 "dodawania ani zmiany firm"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:333
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:334
 msgid "Extensions system"
 msgstr "System rozszerzeñ"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:371
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:372
 msgid "Extensions configuration files and directories should be writeable"
 msgstr "Pliki konfiguracyjne i foldery rozszerzeñ powinny byæ zapisywalne"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:384
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:385
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
 msgstr "Niestandardowy folder tematu '%s' jest zazpieczony przed zapisem"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:394
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:395
 msgid ""
 "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr "System pakietów wymaga zaisnatlowanego rozszerzenia PHP OpenSSL."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:397
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:398
 msgid ""
 "OpenSSL have to be available on your server to use extension repository "
 "system."
@@ -476,57 +499,57 @@ msgstr ""
 "Serwer musi mieæ zainstalowane OpenSSL ¿eby mo¿na by³o korzystaæ z "
 "repozytorium pakietów rozszerzeñ FA."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:420
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:421
 msgid "Test"
 msgstr "Test"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:420
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:421
 msgid "Test type"
 msgstr "Typ testu"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:420
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:421
 msgid "Value"
 msgstr "Warto¶æ"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:420
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:421
 msgid "Comments"
 msgstr "Komentarz"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/system_tests.inc:444
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/system_tests.inc:445
 msgid "Ok"
 msgstr "Ok"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:189
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:189
 #, php-format
 msgid "No key field '%s' in file '%s'"
-msgstr ""
+msgstr "Brak pola kluczowego '%s' w  pliku '%s"
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:294
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:294
 msgid "Cannot download repo index file."
-msgstr ""
+msgstr "Nie mo¿na wczytaæ pliku indeksu repozytorium."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:306
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:343
-#, fuzzy, php-format
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:306
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:343
+#, php-format
 msgid "Cannot delete outdated '%s' file."
-msgstr "Nie mo¿na usun±æ pliku."
+msgstr "Nie mo¿na usun±æ zbêdnego pliku '%s'."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:310
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:310
 msgid "Release file in repository is invalid, or public key is outdated."
 msgstr ""
 "Plik kontrolny wydania jest uszkodzony, lub klucz publiczny jest nieaktualny."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:327
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:327
 msgid "Repository version does not match application version."
 msgstr "Wersja repozytorium nie zgadza siê z wersj± aplikacji."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:335
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:377
-#, fuzzy, php-format
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:335
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:377
+#, php-format
 msgid "Cannot download '%s' file."
-msgstr "Nie mo¿na usun±æ pliku."
+msgstr "Nie mo¿na odczytaæ pliku '%s'."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:347
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:347
 #, php-format
 msgid ""
 "Security alert: broken index file in repository '%s'. Please inform "
@@ -535,7 +558,7 @@ msgstr ""
 "Alarm bezpieczeñstwa: uszkodzony plik indeksu repozytorium '%s'. Poinformuj "
 "administratora repozytorium o tym problemie."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:383
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:383
 #, php-format
 msgid ""
 "Security alert: broken package '%s' in repository. Please inform repository "
@@ -544,8 +567,11 @@ msgstr ""
 "Alarm bezpieczeñstwa: uszkodzony plik '%s' w repozytorium. Poinformuj "
 "administratora repozytorium o tym problemie."
 
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:638
-#: /home/janusz/FA/fa_unstable/devel/../includes/packages.inc:699
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:641
+#: /home/janusz/FA/fa_unstable-git/_devel/../includes/packages.inc:702
 #, php-format
 msgid "Package '%s' not found."
 msgstr "Pakiet '%s' nie zosta³ znaleziony."
+
+#~ msgid "Upgrade PHP to version at least 4.3.3"
+#~ msgstr "Zainstaluj PHP w wersji co najmniej 4.3.3"

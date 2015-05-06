@@ -271,7 +271,7 @@ function item_settings(&$stock_id, $new_item)
 
 	table_section(1);
 
-	table_section_title(_("Item"));
+	table_section_title(_("General Settings"));
 
 	//------------------------------------------------------------------------------------
 	if ($new_item) 

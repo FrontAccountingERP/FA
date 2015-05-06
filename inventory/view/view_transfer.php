@@ -47,7 +47,7 @@ end_table(2);
 
 start_table(TABLESTYLE, "width='90%'");
 
-$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
+$th = array(_("Item Code"), _("Description"), _("Quantity"), _("Units"));
 table_header($th);
 $transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 $k = 0;
