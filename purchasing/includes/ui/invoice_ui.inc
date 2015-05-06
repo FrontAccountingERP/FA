@@ -395,14 +395,13 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 
 			$n = $myrow["id"];
     		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
-        	label_cell($myrow["id"].
-            	hidden('qty_recd'.$n, $myrow["qty_recd"], false).
-            	hidden('item_code'.$n, $myrow["item_code"], false).
-            	hidden('item_description'.$n, $myrow["description"], false).
-            	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv'], false).
-            	hidden('order_price'.$n, $myrow['unit_price'], false).
-            	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
-            	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
+           	hidden('qty_recd'.$n, $myrow["qty_recd"], false);
+           	hidden('item_code'.$n, $myrow["item_code"], false);
+           	hidden('item_description'.$n, $myrow["description"], false);
+           	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv'], false);
+           	hidden('order_price'.$n, $myrow['unit_price'], false);
+           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false);
+           	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false);
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
@@ -508,7 +507,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	start_table(TABLESTYLE, "width='95%'");
 	if ($mode == 1)
 	{
-    	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
+    	$th = array(_("Delivery"), _("P.O."), _("Item"), _("Description"),
     		_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
     		_("Qty Yet To Invoice"), $supp_trans->tax_included ? _("Price after Tax") : _("Price before Tax"), 
     		_("Total"), "");
@@ -539,7 +538,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
     		if ($mode == 1)
     		{
-				label_cell($entered_grn->id);
+//				label_cell($entered_grn->id);
  				$row = get_grn_batch($grn_batch);
 				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"])); // PO
 			}	
