@@ -94,7 +94,7 @@ function fmt_titles($defs)
 //
 // Display list of all extensions - installed and available from repository
 //
-function display_extensions()
+function display_extensions($mods)
 {
 	global $installed_extensions;
 	
@@ -106,7 +106,6 @@ function display_extensions()
 	table_header($th);
 
 	$k = 0;
-	$mods = get_extensions_list('extension');
 
 	foreach($mods as $pkg_name => $ext)
 	{
@@ -264,8 +263,13 @@ echo extset_list('extset', null, true);
 echo "</center><br>";
 
 if ($set == -1) 
-	display_extensions();
-else 
+{
+	$mods = get_extensions_list('extension');
+	if (!$mods)
+		display_note(_("No optional extension module is currently available."));
+	else
+		display_extensions($mods);
+} else 
 	company_extensions($set);
 
 //---------------------------------------------------------------------------------------------

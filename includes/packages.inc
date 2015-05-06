@@ -468,7 +468,8 @@ function get_languages_list()
 		else
 			$pkgs[$l['package']] = array_merge($pkgs[$l['package']], $l);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------
@@ -531,7 +532,8 @@ function get_extensions_list($type = null)
 //		else
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //
@@ -558,8 +560,8 @@ function get_themes_list()
 		}
 	}
 	// TODO: Add other themes from themes directory
-	
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------
@@ -592,7 +594,8 @@ function get_charts_list()
 		else
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------------

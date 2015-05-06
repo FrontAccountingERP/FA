@@ -9,16 +9,15 @@ $db_version = "2.4.0";
 $src_version = "2.4.0";
 
 // application version - can be overriden in config.php
-if (!isset($version))
-	$version = $src_version;
+$version = isset($SysPrefs->version) ? $SysPrefs->version : $src_version;
 
 //======================================================================
 // Extension packages repository settings 
 //
 // Extensions repository. Can be overriden in config.php
 
-if (!isset($repo_auth))
-	$repo_auth = array(
+$repo_auth = isset($SysPrefs->repo_auth) ? $SysPrefs->repo_auth :
+array(
 		 'login' => 'anonymous',
 		 'pass' => 'password',
 		 'host' => 'repo.frontaccounting.eu', // repo server address
