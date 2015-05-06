@@ -354,7 +354,7 @@ start_form();
 			check_row(_("Install Additional COAs from FA Repository:"), 'sel_coas');
 			end_table(1);
 			display_note(_("Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."));
-			display_note(_("Use table prefix if you share selected database for more than one FA company suing the same collation."));
+			display_note(_("Use table prefix if you share selected database for more than one FA company using the same collation."));
 			display_note(_("Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."));
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('db_test', _('Continue >>'));
