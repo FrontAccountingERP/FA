@@ -10,8 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /*
-	item_codes table is used to store both multiply foreign codes and 
-	sale kits definition.
+	item_codes table is used to store both multiply foreign codes (aliases) and 
+	sales kits definition.
 */
 function update_item_code($id, $item_code, $stock_id, $description, $category, $qty, $foreign=0)
 {
