@@ -287,11 +287,8 @@ class db_pager {
 		}
 		if ($where) $where = " WHERE ($where)";
 
-		if ($count) {
-			$group = $group == '' ? "*" : "DISTINCT $group";
-
-			return "SELECT COUNT(*) FROM (SELECT $group FROM $from $where) tmp_count";
-		}
+		if ($count)
+			return "SELECT COUNT(*) FROM ($this->sql) tmp_count";
 
 		$sql = "$select FROM $from $where";
 		if ($group) $sql.= " GROUP BY $group";
@@ -303,8 +300,8 @@ class db_pager {
 					if(isset($col['ord_priority'])) {
 						$columns[$col['ord_priority']] = $col;
 					}
-			}
-			krsort($columns);
+		}
+		krsort($columns);
 
 	    foreach ($columns as $col) {
 	       	if (isset($col['ord'])) {
@@ -313,7 +310,7 @@ class db_pager {
 			    }
 			}
 	    }
-				
+
 	    if (count($ord)) {
 			$ord = array_map(function_exists('mysql_real_escape_string') ? 
 				'mysql_real_escape_string': 'mysql_escape_string', $ord);

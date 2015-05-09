@@ -23,7 +23,7 @@ include_once($path_to_root . "/admin/db/users_db.inc");
 simple_page_mode(true);
 //-------------------------------------------------------------------------------------------------
 
-function can_process() 
+function can_process($new) 
 {
 
 	if (strlen($_POST['user_id']) < 4)
@@ -33,7 +33,7 @@ function can_process()
 		return false;
 	}
 
-	if ($_POST['password'] != "") 
+	if (!$new && ($_POST['password'] != ""))
 	{
     	if (strlen($_POST['password']) < 4)
     	{
@@ -58,7 +58,7 @@ function can_process()
 if (($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') && check_csrf_token())
 {
 
-	if (can_process())
+	if (can_process($Mode == 'ADD_ITEM'))
 	{
     	if ($selected_id != -1) 
     	{
