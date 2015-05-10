@@ -21,5 +21,5 @@ array(
 		 'login' => 'anonymous',
 		 'pass' => 'password',
 		 'host' => 'repo.frontaccounting.eu', // repo server address
-		 'branch' => '2.3'	// Repository branch for current sources version
+		 'branch' => '2.4'	// Repository branch for current sources version
 );
