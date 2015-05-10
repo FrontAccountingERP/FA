@@ -26,13 +26,15 @@ include_once($path_to_root . "/includes/ui.inc");
 
 //---------------------------------------------------------------------------------------------
 
-if (($id = find_submit('Delete', false))
+if (($id = find_submit('Delete', false)) && isset($installed_extensions[$id])
 	&& clean_user_themes($installed_extensions[$id]['package']))
 {
 	$extensions = get_company_extensions();
 	$theme = $extensions[$id]['package'];
+	$path = $extensions[$id]['path'];
+
 	if (uninstall_package($theme)) {
-		$dirname = $path_to_root.'/themes/'.$theme;
+		$dirname = $path_to_root.'/'.$path;
 		flush_dir($dirname, true);
 		rmdir($dirname);
 		unset($extensions[$id]);
@@ -54,6 +56,7 @@ start_form(true);
 
 	$th = array(_("Theme"),  _("Installed"), _("Available"), "", "");
 	$k = 0;
+
 	$mods = get_themes_list();
 
 	if (!$mods)
@@ -79,7 +82,7 @@ start_form(true);
 
 			if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
 				button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
-					_('Upload and install latest extension package'), ICON_DOWN);
+					_('Upload and install latest extension package'), ICON_DOWN, 'process');
 			else
 				label_cell('');
 
