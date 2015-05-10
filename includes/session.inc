@@ -476,7 +476,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 	login_timeout();
 
 	if (!$_SESSION["wa_current_user"]->old_db)
-		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+		include($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	install_hooks();
 

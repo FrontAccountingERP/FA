@@ -43,7 +43,6 @@ function url_get_contents($url, $timeout=10)
 	}
 
 	$response = '';
-
 	// connect to the remote server
 	$fp = @fsockopen($host, $port, $errno, $errstr, $timeout );
 	if( !$fp ) {
@@ -67,7 +66,7 @@ function url_get_contents($url, $timeout=10)
 
 		while ($line = fread($fp, 4096)) {
 			$response .= $line;
-			if ($host=='localhost' && !$unblocked++)
+			if (strpos($host,'localhost') !== false && !$unblocked++)
 				stream_set_blocking($fp, 0); // just after connection switch to nonblocking mode
 			usleep(10);
 		}
