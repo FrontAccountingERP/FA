@@ -23,6 +23,9 @@ if (user_use_date_picker())
 
 page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
 
+check_db_has_template_orders(_("There is no template order in database.
+	You have to create at least one sales order marked as template to be able to define recurrent invoices."));
+
 simple_page_mode(true);
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
@@ -30,11 +33,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	$input_error = 0;
 
-	if (strlen($_POST['order_no']) == 0) 
+	if (!get_post('group_no'))
 	{
 		$input_error = 1;
-		display_error(_("No order has been selected as a template for recurrent invoicing."));
-		set_focus('order_no');
+		if (get_post('debtor_no'))
+			display_error(_("This customer has no branches. Please define at least one branch for this customer first."));
+		else
+			display_error(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+		set_focus('debtor_no');
 	}
 	if (strlen($_POST['description']) == 0) 
 	{
@@ -42,12 +48,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The invoice description cannot be empty."));
 		set_focus('description');
 	}
-	if (!is_date($_POST['begin'])) {
+	if (!check_recurrent_invoice_description($_POST['description'], $selected_id))
+	{
+		$input_error = 1;
+		display_error(_("This recurrent invoice description is already in use."));
+		set_focus('description');
+	}
+	if (!is_date($_POST['begin']))
+	{
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('begin');
 	}
-	if (!is_date($_POST['end'])) {
+	if (!is_date($_POST['end']))
+	{
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('end');
@@ -56,6 +70,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		$input_error = 1;
 		display_error(_("The entered date is invalid."));
 		set_focus('last_sent');
+	}
+	if (!$_POST['days'] && !$_POST['monthly'])
+	{
+		$input_error = 1;
+		display_error(_("No recurence interval has been entered."));
+		set_focus('days');
 	}
 
 	if ($input_error != 1)
@@ -75,7 +95,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			$note = _('New recurrent invoice has been added');
     	}
     
-		display_notification($note);    	
+		display_notification($note);
 		$Mode = 'RESET';
 	}
 } 
@@ -177,7 +197,7 @@ customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
 if ($_POST['debtor_no'] > 0)
 	customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
 else	
-	sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
+	sales_groups_list_row(_("Sales Group:"), 'group_no', null);
 
 small_amount_row(_("Days:"), 'days', 0, null, null, 0);
 
@@ -187,7 +207,7 @@ date_row(_("Begin:"), 'begin');
 
 date_row(_("End:"), 'end', null, null, 0, 0, 5);
 
-if ($selected_id != -1 && $_POST['last_sent'] != "")
+if ($selected_id != -1 && @$_POST['last_sent'] != "")
 	date_row(_("Last Created"), 'last_sent');
 
 end_table(1);
@@ -197,3 +217,4 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 end_form();
 
 end_page();
+?>

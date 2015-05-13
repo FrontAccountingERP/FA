@@ -149,7 +149,8 @@ function order_link($row)
 function tmpl_checkbox($row)
 {
 	global $trans_type, $page_nested;
-	if ($trans_type == ST_SALESQUOTE)
+
+	if ($trans_type == ST_SALESQUOTE || !check_sales_order_type($row['order_no']))
 		return '';
 
 	if ($page_nested)

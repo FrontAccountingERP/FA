@@ -495,6 +495,22 @@ function check_is_closed($type, $type_no, $msg=null)
 	}
 }
 
+function check_db_has_template_orders($msg)
+{
+ 	$sql  = "SELECT sorder.order_no 
+ 		FROM ".TB_PREF."sales_orders as sorder,"
+ 			.TB_PREF."sales_order_details as line
+		WHERE sorder.order_no = line.order_no AND sorder.type = 1
+		GROUP BY line.order_no";
+
+    if (!check_empty_result($sql))
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}
+
 function check_deferred_income_act($msg)
 {
 	global $path_to_root;
