@@ -336,7 +336,7 @@ if ($_SESSION['Items']->trans_no==0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTDELIVERY,
 	array('customer' => $_SESSION['Items']->customer_id,
 			'branch' => $_SESSION['Items']->Branch,
-			'date' => get_post('DispatchDate'));
+			'date' => get_post('DispatchDate')));
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
