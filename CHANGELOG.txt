@@ -1,3 +1,91 @@
+2015-05-14 10:16:15 +0200 Janusz Dobrowolski 
+Gettext templates updated, version 2.4 beta.
+M	install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
+M	install/lang/ar_EG/LC_MESSAGES/ar_EG.po
+M	install/lang/da_DK/LC_MESSAGES/da_DK.mo
+M	install/lang/da_DK/LC_MESSAGES/da_DK.po
+M	install/lang/de_DE/LC_MESSAGES/de_DE.mo
+M	install/lang/de_DE/LC_MESSAGES/de_DE.po
+M	install/lang/el_GR/LC_MESSAGES/el_GR.mo
+M	install/lang/el_GR/LC_MESSAGES/el_GR.po
+M	install/lang/es_MX/LC_MESSAGES/es_MX.mo
+M	install/lang/es_MX/LC_MESSAGES/es_MX.po
+M	install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
+M	install/lang/fr_FR/LC_MESSAGES/fr_FR.po
+M	install/lang/id_ID/LC_MESSAGES/id_ID.mo
+M	install/lang/id_ID/LC_MESSAGES/id_ID.po
+M	install/lang/it_IT/LC_MESSAGES/it_IT.mo
+M	install/lang/it_IT/LC_MESSAGES/it_IT.po
+M	install/lang/ka_GE/LC_MESSAGES/ka_GE.mo
+M	install/lang/ka_GE/LC_MESSAGES/ka_GE.po
+M	install/lang/new_language_template/LC_MESSAGES/empty.po
+M	install/lang/nl_BE/LC_MESSAGES/nl_BE.mo
+M	install/lang/nl_BE/LC_MESSAGES/nl_BE.po
+M	install/lang/pl_PL/LC_MESSAGES/pl_PL.mo
+M	install/lang/pl_PL/LC_MESSAGES/pl_PL.po
+M	install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
+M	install/lang/pt_BR/LC_MESSAGES/pt_BR.po
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.mo
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.po
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.mo
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.po
+M	install/lang/zh_CN/LC_MESSAGES/zh_CN.mo
+M	install/lang/zh_CN/LC_MESSAGES/zh_CN.po
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
+2015-05-13 18:06:15 +0200 Janusz Dobrowolski 
+Updated en_US demo init file.
+M	sql/en_US-demo.sql
+
+2015-05-13 14:28:16 +0200 Janusz Dobrowolski 
+Improved recurrent orders feature: added invoice date and memo edition, additional checks for proper nvoice generation.
+M	includes/data_checks.inc
+M	sales/create_recurrent_invoices.php
+M	sales/includes/db/recurrent_invoices_db.inc
+M	sales/inquiry/sales_orders_view.php
+M	sales/manage/recurrent_invoices.php
+
+2015-05-13 12:58:18 +0200 Janusz Dobrowolski 
+Fixed check_value helper to treat empty input as unset checkbox.
+M	includes/ui/ui_input.inc
+
+2015-05-13 12:26:27 +0200 Janusz Dobrowolski 
+Customer Delivery: fixed regression after last commit.
+M	sales/customer_delivery.php
+
+2015-05-10 19:39:04 +0200 Janusz Dobrowolski 
+Merged changes from master branch up to current state.
+2015-05-10 19:24:43 +0200 Janusz Dobrowolski 
+Added branch 2.4 in extensions repository.
+M	FA.pem
+M	version.php
+
+2015-05-10 19:20:38 +0200 Janusz Dobrowolski 
+Prevent empty log lines and a couple of include cleanups.
+M	admin/includes/fa_patch.class.inc
+M	includes/errors.inc
+M	includes/references.inc
+M	includes/remote_url.inc
+M	includes/session.inc
+
+2015-05-10 19:14:11 +0200 Janusz Dobrowolski 
+Install/Activate Themes: fixed hangups during theme removal.
+M	admin/db/company_db.inc
+M	admin/inst_theme.php
+
+2015-05-09 23:18:51 +0200 Joe Hunt 
+New CHANGELOG.txt format.
+M	CHANGELOG.txt
+M	doc/CHANGELOG.old.txt
+
+2015-05-09 23:07:36 +0200 Joe Hunt 
+Merge branch 'master' of ssh://git.code.sf.net/p/frontaccounting/git
+2015-05-09 23:06:09 +0200 Joe Hunt 
+New CHANGELOG.txt format.
+M	CHANGELOG.txt
+M	doc/CHANGELOG.old.txt
+
 2015-05-07 15:11:14 +0200 Joe Hunt 
 Finished Swedish and Danish translations for install wizard.
 M	install/lang/da_DK/LC_MESSAGES/da_DK.mo
@@ -57,6 +145,18 @@ M	inventory/view/view_adjustment.php
 M	inventory/view/view_transfer.php
 M	lang/new_language_template/LC_MESSAGES/empty.po
 
+2015-05-06 22:30:47 +0200 Janusz Dobrowolski 
+Fixed regression in db_pager.
+M	includes/db_pager.inc
+
+2015-04-13 19:03:26 +0200 Janusz Dobrowolski 
+Empty password is forbidden when creating new user account.
+M	admin/users.php
+
+2015-04-12 00:58:31 +0200 Janusz Dobrowolski 
+HTML cleanup in fiscal years selector helper.
+M	includes/ui/ui_lists.inc
+
 2015-05-06 17:27:15 +0200 Janusz Dobrowolski 
 Fixed text typos in installer and item codes editor.
 M	install/index.php
@@ -91,6 +191,18 @@ M	purchasing/po_entry_items.php
 2015-04-26 23:02:33 +0200 Janusz Dobrowolski 
 Foreign Item Codes: fixed message displayed for invalid quantity entered.
 M	inventory/manage/item_codes.php
+
+2015-04-29 16:39:48 +0200 Joe Hunt 
+Only first item in Supplier Credit Notes had tax added. Fixed.
+M	purchasing/supplier_credit.php
+
+2015-04-29 14:18:44 +0200 Joe Hunt 
+Fixed wrong headers in Supplier Credit Note.
+M	purchasing/includes/ui/invoice_ui.inc
+
+2015-04-28 16:20:06 +0200 Joe Hunt 
+IE 11 doesn't work with input file type in forms. Fixed.
+M	includes/page/header.inc
 
 2015-04-27 10:04:03 +0200 Joe Hunt 
 Fixed empty(trim)) error in versions prior to php 5.5
