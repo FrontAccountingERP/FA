@@ -105,6 +105,7 @@ function write_config_db($new = false)
 			}
 			// Close file
 			fclose($zp);
+			cache_invalidate($filename);
 		}
 	}
 	else
@@ -164,6 +165,7 @@ function write_extensions($extensions=null, $company = -1)
 		}
 		// Close file
 		fclose($zp);
+		cache_invalidate($filename);
 	}
 	return true;
 }
@@ -243,6 +245,7 @@ function write_lang()
 			}
 			// Close file
 			fclose($zp);
+			cache_invalidate($filename);
 		}
 	}
 	else

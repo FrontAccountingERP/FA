@@ -403,3 +403,4 @@ if (!function_exists('array_fill_keys')) // since 5.2
 		return array_combine($keys, array_fill(count($keys), $value));
 	}
 }
+

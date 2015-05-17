@@ -184,6 +184,16 @@ function check_faillog()
 
 	return false;
 }
+
+/*
+	Ensure file is re-read on next request if php caching is active
+*/
+function cache_invalidate($filename)
+{
+	if (function_exists('opcache_invalidate'))	// OpCode extension
+		opcache_invalidate($filename);
+}
+
 /*
 	Simple brute force attack detection is performed before connection to company database is open. Therefore access counters have to be stored in file.
 	Login attempts counter is created for every new user IP, which partialy prevent DOS attacks.
@@ -222,6 +232,7 @@ function write_login_filelog($login, $result)
 	if ((!file_exists($filename) && is_writable($path_to_root.'/tmp')) || is_writable($filename))
 	{
 		file_put_contents($filename, $msg);
+		cache_invalidate($filename);
 	}
 }
 
@@ -407,7 +418,6 @@ if ($SysPrefs->error_logfile != '') {
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 }
-
 
 /*
 	Uncomment the setting below when using FA on shared hosting
