@@ -57,20 +57,12 @@ function url_get_contents($url, $timeout=10)
 			"Accept: */*\r\n" .
 			"Accept-Language: en-us,en;q=0.5\r\n" .
 			"Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n" .
-			"Keep-Alive: 300\r\n" .
-			"Connection: keep-alive\r\n" .
+			"Connection: close\r\n" .
 			"Referer: http://$host\r\n\r\n");
 
 		// retrieve the response from the remote server
-		$unblocked=0;
 
-		while ($line = fread($fp, 4096)) {
-			$response .= $line;
-			if (strpos($host,'localhost') !== false && !$unblocked++)
-				stream_set_blocking($fp, 0); // just after connection switch to nonblocking mode
-			usleep(10);
-		}
-		fclose( $fp );
+		$response = stream_get_contents($fp);
 
 		if (!strpos($response, "200 OK\r\n"))
 			return null;
