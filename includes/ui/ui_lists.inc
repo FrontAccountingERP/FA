@@ -60,7 +60,8 @@ $opts = array(		// default options
 	'box_hint' => null, // box/selectors hints; null = std see below
 	'category' => false, // category column name or false
 	'show_inactive' => false, // show inactive records. 
-	'editable' => false // false, or length of editable entry field
+	'editable' => false, // false, or length of editable entry field
+	'editlink' => false	// link to entity entry/edit page (optional)
 );
 // ------ merge options with defaults ----------
 	if($options != null)
@@ -290,6 +291,9 @@ $opts = array(		// default options
 	}
 	default_focus(($search_box && $by_id) ? $search_box : $name);
 
+	if ($opts['editlink'])
+		$selector .= ' '.$opts['editlink'];
+
 	if ($search_box && $opts['cells'])
 		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
 	else
@@ -454,10 +458,9 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'async' => false,
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
 		_('Select supplier'),
-		'show_inactive'=>$all
+		'show_inactive'=>$all,
+		'editlink' => $editkey ? add_edit_combo('supplier') : false
 		));
-	if ($editkey)
-		$ret .= add_edit_combo('supplier');		
 	return $ret;
 }
 
@@ -506,10 +509,9 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'async' => false,
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') :
 		_('Select customer'),
-		'show_inactive' => $show_inactive
+		'show_inactive' => $show_inactive,
+		'editlink' => $editkey ? add_edit_combo('customer') : false
 	) );
-	if ($editkey)
-		$ret .= add_edit_combo('customer');
 	return $ret;
 }
 
@@ -554,12 +556,9 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		'spec_option' => $spec_option === true ? _('All branches') : $spec_option,
 		'spec_id' => ALL_TEXT,
 		'select_submit'=> $submit_on_change,
-		'sel_hint' => _('Select customer branch')
+		'sel_hint' => _('Select customer branch'),
+		'editlink' => $editkey ? add_edit_combo('branch') : false
 	) );
-	if ($editkey)
-	{
-		$ret .= add_edit_combo('branch');
-	}
 	return $ret;
 }
 //------------------------------------------------------------------------------------------------
@@ -752,10 +751,9 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'size'=>10,
 		'select_submit'=> $submit_on_change,
 		'category' => 2,
-		'order' => array('c.description','stock_id')
+		'order' => array('c.description','stock_id'),
+		'editlink' => $editkey ? add_edit_combo('item') : false
 	  ), $opts) );
-	if ($editkey)
-		$ret .= add_edit_combo('item');
 	return $ret;
 }
 
