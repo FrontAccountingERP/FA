@@ -2097,7 +2097,7 @@ CREATE TABLE IF NOT EXISTS `0_users` (
 -- Dumping data for table `0_users`
 --
 
-INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2008-04-04 12:34:29', 10, 1, 1, '1', 1, 0, 'orders', 30, 0, 1, 0, 0, 0);
+INSERT INTO `0_users` VALUES(1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@example.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2008-04-04 12:34:29', 10, 1, 1, '1', 1, 0, 'orders', 30, 0, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
