@@ -68,7 +68,7 @@ label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), 
 label_cells(_("Date"), sql2date($to_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("From"), get_counterparty_name(BT_BANKDEPOSIT, $to_trans['trans_no']), "class='tableheader2'", "colspan=$colspan1");
+label_cells(_("From"), get_counterparty_name(ST_BANKDEPOSIT, $to_trans['trans_no']), "class='tableheader2'", "colspan=$colspan1");
 if ($show_currencies)
 {
 	label_cells(_("Settle currency"), $to_trans['settle_curr'], "class='tableheader2'");
