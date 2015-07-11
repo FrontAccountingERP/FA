@@ -43,7 +43,7 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."tax_types tt
 			ON taxrec.tax_type_id=tt.id
 		LEFT JOIN ".TB_PREF."gl_trans gl 
-			ON taxrec.trans_type=gl.type AND taxrec.trans_no=gl.type_no AND 
+			ON taxrec.trans_type=gl.type AND taxrec.trans_no=gl.type_no AND gl.amount<>0 AND
 			(tt.purchasing_gl_code=gl.account OR tt.sales_gl_code=gl.account)
 		LEFT JOIN ".TB_PREF."supp_trans strans
 			ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
@@ -57,7 +57,7 @@ function getTaxTransactions($from, $to)
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.trans_type, taxrec.tran_date, taxrec.trans_no, taxrec.ex_rate";
-//display_error($sql);
+
     return db_query($sql,"No transactions were returned");
 }
 
