@@ -1,3 +1,22 @@
+2015-05-09 23:07:36 +0200 Joe Hunt 
+Merge branch 'master' of ssh://git.code.sf.net/p/frontaccounting/git
+2015-05-09 23:06:09 +0200 Joe Hunt 
+New CHANGELOG.txt format.
+M	CHANGELOG.txt
+M	doc/CHANGELOG.old.txt
+
+2015-05-06 22:30:47 +0200 Janusz Dobrowolski 
+Fixed regression in db_pager.
+M	includes/db_pager.inc
+
+2015-04-13 19:03:26 +0200 Janusz Dobrowolski 
+Empty password is forbidden when creating new user account.
+M	admin/users.php
+
+2015-04-12 00:58:31 +0200 Janusz Dobrowolski 
+HTML cleanup in fiscal years selector helper.
+M	includes/ui/ui_lists.inc
+
 2015-04-29 16:39:48 +0200 Joe Hunt 
 Only first item in Supplier Credit Notes had tax added. Fixed.
 M	purchasing/supplier_credit.php
