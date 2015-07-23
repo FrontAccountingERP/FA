@@ -127,9 +127,9 @@ function payment_person_name($type, $person_id, $full=true) {
 			global $wo_cost_types;
 			return $wo_cost_types[$person_id];
 		case PT_CUSTOMER :
-			return ($full ?$payment_person_types[$type] . " ":"") . get_customer_name($person_id);
+			return ($full ?$payment_person_types[$type] . " ":"") . sprintf("[%05s] %s", $person_id, get_customer_name($person_id));
 		case PT_SUPPLIER :
-			return ($full ? $payment_person_types[$type] . " ":"") . get_supplier_name($person_id);
+			return ($full ? $payment_person_types[$type] . " ":"") . sprintf("[%05s] %s", $person_id, get_supplier_name($person_id));
 		default :
 			//DisplayDBerror("Invalid type sent to person_name");
 			//return;
