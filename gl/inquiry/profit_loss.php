@@ -26,6 +26,11 @@ if (user_use_date_picker())
 
 page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
 
+$compare_types = array(
+	_("Accumulated"),
+	_("Period Y-1"),
+	_("Budget")
+);
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 
@@ -63,7 +68,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 	
 	//Get Accounts directly under this group/type
 	$result = get_gl_accounts(null, null, $type);	
-		
+
 	while ($account=db_fetch($result))
 	{
 		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -157,6 +162,8 @@ function Achieve($d1, $d2)
 
 function inquiry_controls()
 {  
+	global $compare_types;
+
 	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
@@ -168,11 +175,11 @@ function inquiry_controls()
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	
-	$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));	
 	echo "<td>"._("Compare to").":</td>\n";
 	echo "<td>";
-	echo array_selector('Compare', null, $sel);
+	echo array_selector('Compare', null, $compare_types);
 	echo "</td>\n";	
+
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
@@ -182,15 +189,13 @@ function inquiry_controls()
     end_table();
 
 	hidden('AccGrp');
-
-	return $sel[get_post('Compare')];
 }
 
 //----------------------------------------------------------------------------------------------------
 
 function display_profit_and_loss($compare)
 {
-	global $path_to_root;
+	global $path_to_root, $compare_types;
 
 	if (!isset($_POST['Dimension']))
 		$_POST['Dimension'] = 0;
@@ -233,7 +238,7 @@ function display_profit_and_loss($compare)
 	$tableheader =  "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>
         <td class='tableheader'>" . _("Period") . "</td>
-		<td class='tableheader'>" . $compare . "</td>
+		<td class='tableheader'>" . $compare_types[$compare] . "</td>
 		<td class='tableheader'>" . _("Achieved %") . "</td>
         </tr>";	
 	
@@ -331,9 +336,9 @@ function display_profit_and_loss($compare)
 
 start_form();
 
-$sel = inquiry_controls();
+inquiry_controls();
 
-display_profit_and_loss($sel);
+display_profit_and_loss(get_post('Compare'));
 
 end_form();
 
