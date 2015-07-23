@@ -53,7 +53,7 @@ function print_sales_orders()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments);
+	$params = array('comments' => $comments, 'print_quote' => $print_as_quote);
 
 	$cur = get_company_Pref('curr_default');
 

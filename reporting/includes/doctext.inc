@@ -61,7 +61,7 @@
 			break;
 
 		case ST_SALESORDER:
-			$this->title = ($print_as_quote==1 ? _("QUOTE") : ($this->formData['prepaid'] ? _("PREPAYMENT ORDER") : _("SALES ORDER")));
+			$this->title = ($this->params['print_quote'] ? _("QUOTE") : ($this->formData['prepaid'] ? _("PREPAYMENT ORDER") : _("SALES ORDER")));
 			$this->formData['document_name'] =_("Order No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
 			$this->formData['document_number'] = $SysPrefs->print_invoice_no() == 0 && isset($this->formData['reference'])
