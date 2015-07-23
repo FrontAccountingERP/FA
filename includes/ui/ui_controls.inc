@@ -265,8 +265,15 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 
 function menu_link($url, $label, $id=null)
 {
+	global $path_to_root;
+
 	$id = default_focus($id);
 	$pars = access_string($label);
+
+	if ($url[0] != '/')
+		$url = '/'.$url;
+	$url = $path_to_root.$url;
+
 	return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 }
 
