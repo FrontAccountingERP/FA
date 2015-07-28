@@ -58,6 +58,15 @@ function html_cleanup(&$parms)
 function check_page_security($page_security)
 {
 }
+
+/*
+ Ensure file is re-read on next request if php caching is active
+*/
+function cache_invalidate($filename)
+{
+    if (function_exists('opcache_invalidate')) // OpCode extension
+        opcache_invalidate($filename);
+}
 //============================================================================
 if (!isset($path_to_root))
 {
