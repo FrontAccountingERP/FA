@@ -183,7 +183,7 @@
 				_("Customer's Reference") => $this->formData['supp_account_no'],
 				_("Sales Person") => $this->formData['contact'],
 				_("Your VAT no.") => $this->formData['tax_id'],
-				_("Supplier's Reference") => $this->formData['requisition_no'],
+				_("Supplier's Reference") => @$this->formData['requisition_no'],
 				_("Order Date") => sql2date($this->formData['document_date']),
 			);
 
