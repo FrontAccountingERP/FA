@@ -969,10 +969,10 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-			if ($email == 1)
-				$fname = $dir.'/'.$this->filename;
-			else	
-				$fname = $dir.'/'.uniqid('').'.pdf';
+//			if ($email == 1)
+//				$fname = $dir.'/'.$this->filename;
+//			else	
+			$fname = $dir.'/'.uniqid('').'.pdf';
 			$this->Output($fname, 'F');
 
 			if ($email == 1)
@@ -1026,7 +1026,7 @@ class FrontReport extends Cpdf
     					$mail->to($to); $try++;
     					$mail->subject($subject);
     					$mail->text($msg . $sender);
-    					$mail->attachment($fname);
+    					$mail->attachment($fname, $this->filename);
     					$emails .= " " . $contact['email'];
     					if ($mail->send()) $sent++;
 					} // foreach contact

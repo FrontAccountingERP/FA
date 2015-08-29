@@ -65,9 +65,11 @@ class email
     	$this->bcc[] = $mail;
     }
 
-    function attachment($file)
+    function attachment($file, $filename=null)
     {
-		$this->attachment[] = $file;
+    	if (!isset($filename))
+    		$filename = basename($file);
+			$this->attachment[$filename] = $file;
     }
 
     function subject($subject)
@@ -130,12 +132,13 @@ class email
         if ($max > 0)
         {
             for ($i = 0; $i < $max; $i++)
+            foreach ($this->attachment as $filename => $file)
             {
-                $file = fread(fopen($this->attachment[$i], "r"), filesize($this->attachment[$i]));
+                $file = fread(fopen($file, "r"), filesize($file));
 				$this->body .= "--".$this->boundary."\n";
-				$this->body .= "Content-Type: " .$this->mime_type(basename($this->attachment[$i])). "; name=\"".basename($this->attachment[$i])."\"\n";
+				$this->body .= "Content-Type: " .$this->mime_type($file). "; name=\"".$filename."\"\n";
 				$this->body .= "Content-Transfer-Encoding: base64\n";
-				$this->body .= "Content-Disposition: attachment; filename=\"".basename($this->attachment[$i])."\"\n\n";
+				$this->body .= "Content-Disposition: attachment; filename=\"".$filename."\"\n\n";
 				$this->body .= chunk_split(base64_encode($file),"72","\n");
                 $file = "";
             }
