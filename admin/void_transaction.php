@@ -73,7 +73,7 @@ function exist_transaction($type, $type_no)
 			return false;
 
 		case ST_SUPPRECEIVE : // it's a GRN
-			if (exists_grn_on_invoices($type_no))
+			if (exists_grn($type_no))
 				return false;
 			break;
 

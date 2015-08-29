@@ -77,6 +77,10 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case ST_SUPPRECEIVE : // it's a GRN
 			if (exists_grn_on_invoices($type_no))
 				return _('This GRN cannot be voided because it was already invoiced.');
+			if (!post_void_supp_trans($type, $type_no))
+				return _('Error encountered when voiding transaction.');
+			break;
+
 		case ST_SUPPINVOICE : // it's a suppler invoice
 		case ST_SUPPCREDIT : // it's a supplier credit note
 		case ST_SUPPAYMENT : // it's a supplier payment
