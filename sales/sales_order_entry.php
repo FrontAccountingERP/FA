@@ -624,7 +624,6 @@ function  handle_cancel_order()
 			meta_forward($path_to_root.'/index.php','application=orders');
 		}
 	}
-	$Ajax->activate('_page_body');
 	processing_end();
 	display_footer_exit();
 }
@@ -740,13 +739,13 @@ if ($customer_error == "") {
 		submit_center_first('ProcessOrder', $porder,
 		    _('Check entered data and save document'), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'), true);
+	   		_('Cancels document entry or removes sales order when editing an old document'));
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	} else {
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'), true);
+	   		_('Cancels document entry or removes sales order when editing an old document'));
 		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
 			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
 		else
