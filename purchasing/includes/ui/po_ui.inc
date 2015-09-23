@@ -385,7 +385,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 //		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
 		//Chaitanya : Manufcatured item can be purchased
-		stock_items_list_cells(null, 'stock_id', null, false, true, false, true);
+		stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30));
 		//stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');

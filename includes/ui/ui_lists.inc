@@ -752,7 +752,9 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'select_submit'=> $submit_on_change,
 		'category' => 2,
 		'order' => array('c.description','stock_id'),
-		'editlink' => $editkey ? add_edit_combo('item') : false
+		'editlink' => $editkey ? add_edit_combo('item') : false,
+		'editable' => false,
+		'max' => 255
 	  ), $opts) );
 	return $ret;
 }
@@ -763,12 +765,12 @@ function _format_stock_items($row)
 }
 
 function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, 
-	$submit_on_change=false, $all=false, $editkey = false)
+	$submit_on_change=false, $all=false, $editkey = false, $opts= array())
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('cells'=>true, 'show_inactive'=>$all), $editkey);
+		array_merge(array('cells'=>true, 'show_inactive'=>$all), $opts), $editkey);
 }
 /*
 function stock_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
