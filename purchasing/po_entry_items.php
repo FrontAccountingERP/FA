@@ -133,6 +133,9 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Invoice")), 1);
 
+	hyperlink_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"),
+		"trans_type=$trans_type&PInvoice=".$trans_no);
+
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), 
 		"filterType=$trans_type&trans_no=$trans_no");
 
