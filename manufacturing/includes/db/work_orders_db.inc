@@ -45,7 +45,7 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false)
 	if ($qoh + $qty != 0)
 	{
 		if ($qoh == 0) // 27.10.2014 apmuthu and dz.
-			$material_cost += $m_cost;
+			$material_cost = $m_cost;
 		else	
 			$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
 	}
@@ -443,7 +443,6 @@ function void_work_order($woid)
 		$date = sql2date($work_order['date_']);
 		
 		$result = get_work_order_productions($woid); // check the produced quantity
-		$qty = 0;
 		while ($row = db_fetch($result))
 		{
 			void_work_order_produce($row['id']);
@@ -459,7 +458,6 @@ function void_work_order($woid)
 
 		$result = get_work_order_issues($woid);
 		$cost = 0;
-		$issue_no = 0;
 		while ($row = db_fetch($result))
 		{
 			void_work_order_issue($row['issue_no']);
@@ -555,6 +553,7 @@ function get_sql_for_work_orders($outstanding_only, $all_items)
 
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}
+	$sql .= " ORDER BY workorder.id DESC";
 	return $sql;
 }
 
