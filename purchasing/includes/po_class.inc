@@ -236,10 +236,20 @@ class po_line_details
 		$this->standard_cost =0;
 		$this->grn_item_id = $grn_item_id;
 	}
-	
+
+	// Deprecated, use with care. If you need line value as it is calculated in invoice, use taxfree_charge_value below.
 	function taxfree_charge_price($po)
 	{
-		return get_tax_free_price_for_item($this->stock_id, $this->price, 
+		return get_tax_free_price_for_item($this->stock_id, $this->price,
+		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
+	}
+
+	//
+	// GRN line tax free value.
+	//
+	function taxfree_charge_value($po)
+	{
+		return get_tax_free_price_for_item($this->stock_id, $this->receive_qty*$this->price,
 		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
 	}
 }
