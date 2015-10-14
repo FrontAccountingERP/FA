@@ -144,7 +144,8 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		if (!is_service($bom_accounts["mb_flag"]))
 			$ivaccount = $bom_accounts["inventory_account"];
 		else
-			$ivaccount = $bom_accounts["cogs_account"];
+			// $ivaccount = $bom_accounts["cogs_account"];
+			$ivaccount = $bom_accounts["assembly_account"]; // changed 2015.10.14 by Petros .		
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
 			$memo, -$bom_cost);
 		$total_material_cost += $bom_cost;
@@ -154,7 +155,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		//Chaitanya: Material cost added at time of production as per BOM at the time and in adjustment mode.
 		add_material_cost($stock_id, $units_reqd, $date_, true);	
 	
-		$wo = get_work_order($woid);
+		// $wo = get_work_order($woid);
 		// also take the additional issues
 		// moved to work_order_issues_db.inc
 		/*

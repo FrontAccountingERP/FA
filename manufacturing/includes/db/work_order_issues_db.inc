@@ -75,7 +75,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			$ivaccount = $issue["cogs_account"];		
+			// $ivaccount = $issue["cogs_account"];		
+			 $ivaccount = $issue["assembly_account"]; // changed 2015.10.14 by Petros .		
 		
         $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
                 $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
@@ -200,7 +201,8 @@ function void_work_order_issue($type_no)
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			$ivaccount = $issue["cogs_account"];		
+			// $ivaccount = $issue["cogs_account"];		
+			 $ivaccount = $issue["assembly_account"]; // changed 2015.10.14 by Petros .		
 		
 		if ($issue_cost != 0)
 		{
