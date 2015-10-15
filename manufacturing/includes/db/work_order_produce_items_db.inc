@@ -53,12 +53,25 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	// Chaitanya: stamp BOM cost to finished item
 	$m_cost = 0;
-    $result = get_bom($details["stock_id"]);
+	$result = get_bom($details["stock_id"]);
 	while ($bom_item = db_fetch($result))
 	{
 		$standard_cost = get_standard_cost($bom_item['component']);
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
-	}	
+	}
+	// new Joe Hunt 2015.10.15	
+	// additilnal costs.
+	if (work_order_has_issues($woid))
+	{
+		$res = get_additional_issues($woid);
+		while ($issue = db_fetch($res))
+		{
+			$standard_cost = get_standard_cost($issue['stock_id']);
+			$m_cost += ($issue['qty_issued'] * $standard_cost);
+		}
+	}
+	$m_cost += get_gl_wo_cost($woid, WO_LABOUR);
+	$m_cost += get_gl_wo_cost($woid, WO_OVERHEAD);
 
 	// insert a +ve stock move for the item being manufactured
 	// negative means "unproduce" or unassemble
