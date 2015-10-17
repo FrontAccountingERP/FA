@@ -11,7 +11,7 @@
 ***********************************************************************/
 //--------------------------------------------------------------------------------------
 
-function add_material_cost($stock_id, $qty, $date_, $advanced=false)
+function add_material_cost($stock_id, $qty, $date_, $advanced=false, $woid=0)
 {
 	$m_cost = 0;
     $result = get_bom($stock_id);
@@ -21,19 +21,29 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false)
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
 	$bom_cost = $m_cost;
-	
+	// new Joe Hunt 2015.10.15	
+	// additilnal costs.
+	if ($woid != 0 && work_order_has_issues($woid))
+	{
+		$res = get_additional_issues($woid);
+		while ($issue = db_fetch($res))
+		{
+			$standard_cost = get_standard_cost($issue['stock_id']);
+			$m_cost += ($issue['qty_issued'] * $standard_cost);
+		}
+	}
 	$sql = "SELECT material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
 		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
-	
+	/* no, why will we do that?? Joe Hunt 2015.10.17
 	if ($advanced)
 	{
 		//reduce overhead_cost and labour_cost from price as those will remain as is
 		$m_cost = $m_cost - $myrow['labour_cost'] - $myrow['overhead_cost'];
 	}
-	
+	*/
 	$qoh = get_qoh_on_date($stock_id);
 	$cost_adjust = false;
 	if ($qoh < 0)
@@ -107,7 +117,7 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		if ($qoh + $qty != 0)	
 			$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
 	}
-	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
+	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=overhead_cost+".db_escape($overhead_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
@@ -162,7 +172,7 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		if ($qoh + $qty != 0)	
 			$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
 	}	
-	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
+	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=labour_cost+".db_escape($labour_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }

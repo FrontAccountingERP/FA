@@ -70,8 +70,8 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 			$m_cost += ($issue['qty_issued'] * $standard_cost);
 		}
 	}
-	$m_cost += get_gl_wo_cost($woid, WO_LABOUR);
-	$m_cost += get_gl_wo_cost($woid, WO_OVERHEAD);
+	$m_cost += (get_gl_wo_cost($woid, WO_LABOUR) / $quantity);
+	$m_cost += (get_gl_wo_cost($woid, WO_OVERHEAD) / $quantity);
 
 	// insert a +ve stock move for the item being manufactured
 	// negative means "unproduce" or unassemble

@@ -123,12 +123,11 @@ if (isset($_POST['process']) && can_process() == true)
 	//Chaitanya : Apply the costs to manfuctured stock item as adjustement
 	$wo = get_work_order($_POST['selected_id']);
 	if ($_POST['PaymentType'] == 0)
-		add_labour_cost($wo['stock_id'], 0, $_POST['date_'], input_num('costs'), true);
+		add_labour_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
 	else
-		add_overhead_cost($wo['stock_id'], 0, $_POST['date_'], input_num('costs'), true);
+		add_overhead_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
 			
 	commit_transaction();	
-
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);
 }
 

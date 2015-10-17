@@ -153,7 +153,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	if ($advanced)
 	{
 		//Chaitanya: Material cost added at time of production as per BOM at the time and in adjustment mode.
-		add_material_cost($stock_id, $units_reqd, $date_, true);	
+		add_material_cost($stock_id, $units_reqd, $date_, true, $woid);	
 	
 		// $wo = get_work_order($woid);
 		// also take the additional issues
