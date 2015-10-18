@@ -23,20 +23,22 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false, $woid=0)
 	$bom_cost = $m_cost;
 	// new Joe Hunt 2015.10.15	
 	// additilnal costs.
+	$i_cost = 0;
 	if ($woid != 0 && work_order_has_issues($woid))
 	{
 		$res = get_additional_issues($woid);
 		while ($issue = db_fetch($res))
 		{
 			$standard_cost = get_standard_cost($issue['stock_id']);
-			$m_cost += ($issue['qty_issued'] * $standard_cost);
+			$i_cost += ($issue['qty_issued'] * $standard_cost) / $qty;
 		}
 	}
 	$sql = "SELECT material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
 		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
-	$material_cost =  $myrow['material_cost'];
+	$material_cost =  $myrow['material_cost'] - $i_cost; // $i_cost was already added to material cost
+	$m_cost += $i_cost;
 	/* no, why will we do that?? Joe Hunt 2015.10.17
 	if ($advanced)
 	{
@@ -81,10 +83,13 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		$qoh = 0;
 	if ($adj_only)
 	{
-		if ($qty != 0)
-			$costs = $qty * $costs;
 		if ($qoh>0)
-			$overhead_cost = ($qoh * $overhead_cost + $costs) / $qoh;
+		{
+			if ($qoh + $qty != 0)	
+				$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
+			elseif ($qty == 0)
+				$overhead_cost = ($qoh * $overhead_cost + $costs) / $qoh;
+		}			
 		else // Journal Entry if QOH is 0/negative 
 		{
 			global $Refs;
@@ -117,7 +122,7 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		if ($qoh + $qty != 0)	
 			$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
 	}
-	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=overhead_cost+".db_escape($overhead_cost)."
+	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
@@ -136,10 +141,13 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		$qoh = 0;
 	if ($adj_only)
 	{
-		if ($qty != 0)
-			$costs = $qty * $costs;
 		if ($qoh>0)
-			$labour_cost = ($qoh * $labour_cost + $costs) / $qoh;	
+		{
+			if ($qoh + $qty != 0)	
+				$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
+			elseif ($qty == 0)
+				$labour_cost = ($qoh * $labour_cost + $costs) / $qoh;
+		}		
 		else // Journal Entry if QOH is 0/negative 
 		{
 			global $Refs;
@@ -172,7 +180,7 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		if ($qoh + $qty != 0)	
 			$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
 	}	
-	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=labour_cost+".db_escape($labour_cost)."
+	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
@@ -191,10 +199,8 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 		$qoh = 0;
 	if ($adj_only)
 	{
-		if ($qty != 0)
-			$costs = $qty * $costs;
 		if ($qoh>0)
-			$material_cost = $costs / $qoh;
+			$material_cost = ($qoh * $material_cost + $costs) / $qoh;
 		else // Journal Entry if QOH is 0/negative
 		{
 			global $Refs;
@@ -225,9 +231,9 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 	else
 	{
 		if ($qoh + $qty != 0)	
-			$material_cost = ($qty * $costs) /	($qoh + $qty);
+			$material_cost = ($qoh * $material_cost + $qty * $costs) /	($qoh + $qty);
 	}	
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost="
 		.db_escape($material_cost)
 		." WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");

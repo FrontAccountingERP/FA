@@ -67,7 +67,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 		while ($issue = db_fetch($res))
 		{
 			$standard_cost = get_standard_cost($issue['stock_id']);
-			$m_cost += ($issue['qty_issued'] * $standard_cost);
+			$m_cost += ($issue['qty_issued'] * $standard_cost) / $quantity;
 		}
 	}
 	$m_cost += (get_gl_wo_cost($woid, WO_LABOUR) / $quantity);
