@@ -31,17 +31,15 @@ function get_open_balance($supplier_id, $to)
 {
 	$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.", 
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS charges,
-    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE." AND ".TB_PREF."supp_trans.type <> ".ST_BANKDEPOSIT.", 
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount), 0)) AS credits,
-		SUM(".TB_PREF."supp_trans.alloc) AS Allocated,
-		SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type = ".ST_BANKDEPOSIT.",
-		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc),
-		(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))) AS OutStanding
+    $sql = "SELECT
+    	SUM(IF(type IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount), 0)) AS charges,
+    	SUM(IF(type NOT IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount), 0)) AS credits,
+		SUM(alloc) AS Allocated,
+		SUM(IF(type IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount - alloc),
+				(ov_amount + ov_gst + ov_discount + alloc))) AS OutStanding
 		FROM ".TB_PREF."supp_trans
-    	WHERE ".TB_PREF."supp_trans.tran_date < '$to'
-		AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
+    	WHERE tran_date < '$to'
+		AND supplier_id = '$supplier_id' GROUP BY supplier_id";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -52,15 +50,14 @@ function getTransactions($supplier_id, $from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 
-    $sql = "SELECT ".TB_PREF."supp_trans.*,
-				(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)
-				AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
-				((".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE.")
-					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
-    			FROM ".TB_PREF."supp_trans
-    			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
-    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' AND ".TB_PREF."supp_trans.ov_amount!=0
-    				ORDER BY ".TB_PREF."supp_trans.tran_date";
+    $sql = "SELECT *,
+				(ov_amount + ov_gst + ov_discount) AS TotalAmount,
+				alloc AS Allocated,
+				((type = ".ST_SUPPINVOICE.") AND due_date < '$to') AS OverDue
+   			FROM ".TB_PREF."supp_trans
+   			WHERE tran_date >= '$from' AND tran_date <= '$to' 
+    			AND supplier_id = '$supplier_id' AND ov_amount!=0
+    				ORDER BY tran_date";
 
     $TransResult = db_query($sql,"No transactions were returned");
 

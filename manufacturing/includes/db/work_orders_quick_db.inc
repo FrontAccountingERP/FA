@@ -36,7 +36,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	if (!isset($labour) || ($labour == ""))
 		$labour = 0;
 	add_labour_cost($stock_id, $units_reqd, $date_, $labour);
-		
+
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
     	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", ".db_escape($units_reqd)
@@ -70,7 +70,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
 			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, $UnitCost);
 	}
-	
+
 	// -------------------------------------------------------------------------
 	//Negative Stock Handling
 	$qoh = get_qoh_on_date($stock_id);
@@ -124,7 +124,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		$bom_accounts = get_stock_gl_code($bom_item["component"]);
 
 		$bom_cost = $bom_item["ComponentCost"] * $units_reqd;
-		
+
 		$memo = $bom_item["quantity"] ." * ".$bom_item["description"];
 		if ($advanced)
 		{
@@ -187,6 +187,4 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
     add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
         0, 0, $memo, -$total_cost);
 }
-
-//--------------------------------------------------------------------------------------
 

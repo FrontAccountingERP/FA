@@ -21,10 +21,10 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	// We have to calculate all the currency accounts belonging to the GL account
 	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
 	// 2010-02-23 Joe Hunt with help of Ary Wibowo
-	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
+	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = ".db_escape($account)." AND bt.trans_date<='".date2sql($date_)."'
-		GROUP BY ba.bank_curr_code";	
+		GROUP BY ba.bank_curr_code";
 	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
 	while ($row = db_fetch($result))
 	{
@@ -92,7 +92,7 @@ function get_cust_account_curr_balances($date)
 {
 	$to = date2sql($date);
 
-    $sql = "SELECT SUM(IF(t.type =".ST_CUSTCREDIT." OR t.type = ".ST_CUSTPAYMENT." OR t.type = ".ST_BANKDEPOSIT." OR t.type = ".ST_JOURNAL.",
+    $sql = "SELECT SUM(IF(t.type IN(". implode(',', array(ST_CUSTCREDIT, ST_CUSTPAYMENT, ST_BANKDEPOSIT, ST_JOURNAL))."),
 			-(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 
 	    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount))) AS amount,
 	    	dt.debtor_no, dt.name, dt.curr_code, b.receivables_account

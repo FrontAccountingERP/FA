@@ -29,30 +29,30 @@ print_outstanding_GRN();
 
 function getTransactions($fromsupp)
 {
-	$sql = "SELECT ".TB_PREF."grn_batch.id,
+	$sql = "SELECT grn.id,
 			order_no,
-			".TB_PREF."grn_batch.supplier_id,
-			".TB_PREF."suppliers.supp_name,
-			".TB_PREF."grn_items.item_code,
-			".TB_PREF."grn_items.description,
+			grn.supplier_id,
+			supplier.supp_name,
+			item.item_code,
+			item.description,
 			qty_recd,
 			quantity_inv,
 			std_cost_unit,
 			act_price,
 			unit_price
-		FROM ".TB_PREF."grn_items,
-			".TB_PREF."grn_batch,
-			".TB_PREF."purch_order_details,
-			".TB_PREF."suppliers
-		WHERE ".TB_PREF."grn_batch.supplier_id=".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id
-		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
-		AND qty_recd-quantity_inv <>0 ";
+		FROM ".TB_PREF."grn_items item,
+			".TB_PREF."grn_batch grn,
+			".TB_PREF."purch_order_details poline,
+			".TB_PREF."suppliers supplier
+		WHERE grn.supplier_id=supplier.supplier_id
+		AND grn.id = item.grn_batch_id
+		AND item.po_detail_item = poline.po_detail_item
+		AND qty_recd-quantity_inv!=0";
 
 	if ($fromsupp != ALL_TEXT)
-		$sql .= "AND ".TB_PREF."grn_batch.supplier_id =".db_escape($fromsupp)." ";
-	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id,
-			".TB_PREF."grn_batch.id";
+		$sql .= " AND grn.supplier_id =".db_escape($fromsupp);
+
+	$sql .= " ORDER BY grn.supplier_id,	grn.id";
 
     return db_query($sql, "No transactions were returned");
 }

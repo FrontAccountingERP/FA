@@ -81,13 +81,15 @@ function branch_in_foreign_table($customer_id, $branch_code, $table)
 
 function get_branch($branch_id)
 {
-	$sql = "SELECT ".TB_PREF."cust_branch.*,".TB_PREF."salesman.salesman_name 
-		FROM ".TB_PREF."cust_branch, ".TB_PREF."salesman 
-		WHERE ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code 
-		AND branch_code=".db_escape($branch_id);
-	
+	$sql = "SELECT branch.*, salesman.salesman_name 
+		FROM "
+			.TB_PREF."cust_branch branch,"
+			.TB_PREF."salesman salesman
+		WHERE branch.salesman=salesman.salesman_code 
+			AND branch_code=".db_escape($branch_id);
+
 	$result = db_query($sql, "Cannot retreive a customer branch");
-	
+
 	return db_fetch($result);
 }
 
@@ -184,8 +186,10 @@ function get_branch_contacts($branch_code, $action=null, $customer_id=null, $def
 				'customer.general');
 
 	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
-		FROM ".TB_PREF."crm_persons p,"
-		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND ((r.type='cust_branch' 
+		FROM "
+			.TB_PREF."crm_persons p,"
+			.TB_PREF."crm_contacts r
+		WHERE r.person_id=p.id AND ((r.type='cust_branch' 
 			AND r.entity_id=".db_escape($branch_code).')';
 	if($customer_id) {
 		$sql .= " OR (r.type='customer' AND r.entity_id=".db_escape($customer_id).")";
@@ -216,7 +220,8 @@ function _get_branch_contacts($branch_code, $action=null, $customer_id=null, $de
 {
 	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
 		FROM ".TB_PREF."crm_persons p,"
-		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='cust_branch' 
+			.TB_PREF."crm_contacts r
+		WHERE r.person_id=p.id AND r.type='cust_branch' 
 			AND r.entity_id=".db_escape($branch_code);
 
 	if ($action)
@@ -225,13 +230,14 @@ function _get_branch_contacts($branch_code, $action=null, $customer_id=null, $de
 	if($customer_id) {
 		$sql = "($sql) UNION (SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type
 		FROM ".TB_PREF."crm_persons p,"
-		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='customer' 
+			.TB_PREF."crm_contacts r 
+		WHERE r.person_id=p.id AND r.type='customer' 
 			AND r.entity_id=".db_escape($customer_id);
 		if ($action) 
 			$sql .= ' AND (r.action='.db_escape($action).($default ? " OR r.action='general'":'').')';
 		$sql .= ')';
 	}
-	
+
 	$res = db_query($sql, "can't retrieve branch contacts");
 	$results = array();
 	$type = '';

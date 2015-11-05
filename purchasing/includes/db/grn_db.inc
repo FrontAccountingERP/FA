@@ -232,11 +232,13 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	$mcost = update_average_material_cost($supplier, $entered_grn->item_code,
 		$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
 
- 	$sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*
-    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items
-    	WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
-		AND ".TB_PREF."grn_items.id=".db_escape($entered_grn->id)."
-    	AND ".TB_PREF."grn_items.item_code=".db_escape($entered_grn->item_code);
+ 	$sql = "SELECT grn.*, item.*
+    	FROM ".TB_PREF."grn_batch grn,"
+    		.TB_PREF."grn_items item
+    	WHERE item.grn_batch_id=grn.id
+		AND item.id=".db_escape($entered_grn->id)."
+    	AND item.item_code=".db_escape($entered_grn->item_code);
+
 	$result = db_query($sql, "Could not retreive GRNS");
 	$myrow = db_fetch($result);
 
@@ -318,13 +320,14 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 
 function get_grn_item_detail($grn_item_no)
 {
-	$sql = "SELECT ".TB_PREF."grn_items.*, ".TB_PREF."purch_order_details.unit_price,
-    	".TB_PREF."grn_items.qty_recd - ".TB_PREF."grn_items.quantity_inv AS QtyOstdg,
-    	".TB_PREF."purch_order_details.std_cost_unit
-		FROM ".TB_PREF."grn_items, ".TB_PREF."purch_order_details, ".TB_PREF."stock_master
-		WHERE ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item
- 			AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code
-			AND ".TB_PREF."grn_items.id=".db_escape($grn_item_no);
+	$sql = "SELECT grn.*, po.unit_price, grn.qty_recd - grn.quantity_inv AS QtyOstdg,
+    		po.std_cost_unit
+		FROM ".TB_PREF."grn_items grn,"
+			.TB_PREF."purch_order_details po,"
+			.TB_PREF."stock_master item
+		WHERE grn.po_detail_item=po.po_detail_item
+ 			AND item.stock_id=grn.item_code
+			AND grn.id=".db_escape($grn_item_no);
 
 	$result = db_query($sql, "could not retreive grn item details");
 	return db_fetch($result);
@@ -415,8 +418,10 @@ function exists_grn($grn_batch)
 
 function exists_grn_on_invoices($grn_batch)
 {
-	$sql = "SELECT ".TB_PREF."supp_invoice_items.id FROM ".TB_PREF."supp_invoice_items,".TB_PREF."grn_items
-		WHERE ".TB_PREF."supp_invoice_items.grn_item_id=".TB_PREF."grn_items.id
+	$sql = "SELECT inv.id
+		FROM ".TB_PREF."supp_invoice_items inv,"
+			.TB_PREF."grn_items grn
+		WHERE inv.grn_item_id=grn.id
 		AND quantity != 0
 		AND grn_batch_id=".db_escape($grn_batch);
 	$result = db_query($sql, "Cannot query GRNs");

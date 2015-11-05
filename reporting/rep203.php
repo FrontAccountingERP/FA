@@ -32,21 +32,16 @@ function getTransactions($supplier, $date)
 	$date = date2sql($date);
 	$dec = user_price_dec();
 
-	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
-			".TB_PREF."supp_trans.tran_date,
-			".TB_PREF."supp_trans.due_date,
-			".TB_PREF."supp_trans.trans_no,
-			".TB_PREF."supp_trans.type,
-			".TB_PREF."supp_trans.rate,
-			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc) AS Balance,
-			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
+	$sql = "SELECT  supp_reference, tran_date, due_date, trans_no, type, rate,
+			(ABS( ov_amount) + ABS( ov_gst) -  alloc) AS Balance,
+			(ABS( ov_amount) + ABS( ov_gst) ) AS TranTotal
 		FROM ".TB_PREF."supp_trans
-		WHERE ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
-		AND ROUND(ABS(".TB_PREF."supp_trans.ov_amount),$dec) + ROUND(ABS(".TB_PREF."supp_trans.ov_gst),$dec) - 
-		ROUND(".TB_PREF."supp_trans.alloc,$dec) != 0
-		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
-		ORDER BY ".TB_PREF."supp_trans.type,
-			".TB_PREF."supp_trans.trans_no";
+		WHERE  supplier_id = '$supplier'
+		AND ROUND(ABS( ov_amount),$dec) + ROUND(ABS( ov_gst),$dec) - 
+		ROUND( alloc,$dec) != 0
+		AND  tran_date <='$date'
+		ORDER BY  type,
+			 trans_no";
 
     return db_query($sql, "No transactions were returned");
 }

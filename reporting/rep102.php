@@ -35,39 +35,30 @@ function get_invoices($customer_id, $to, $all=true)
 
 	// Revomed allocated from sql
 	if ($all)
-    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount)";
-	else		
-    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount)";
+	else
+    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc)";
 	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
-	$due = "IF (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE.",".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
-		".TB_PREF."debtor_trans.tran_date,
+	$due = "IF (type=".ST_SALESINVOICE.", due_date, tran_date)";
+
+	$sql = "SELECT type, reference, tran_date,
 		$sign*$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$sign*$value,0) AS Due,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$sign*$value,0) AS Overdue1,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$sign*$value,0) AS Overdue2
 
-		FROM ".TB_PREF."debtors_master,
-			".TB_PREF."debtor_trans
+		FROM ".TB_PREF."debtor_trans trans
 
-		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
-			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount) > " . FLOAT_COMP_DELTA;
+		WHERE type <> ".ST_CUSTDELIVERY."
+			AND debtor_no = $customer_id 
+			AND tran_date <= '$todate'
+			AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > " . FLOAT_COMP_DELTA;
+
 	if (!$all)
-		$sql .= "AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) > " . FLOAT_COMP_DELTA;
-	$sql .= "ORDER BY ".TB_PREF."debtor_trans.tran_date";
+		$sql .= "AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc) > " . FLOAT_COMP_DELTA;
+	$sql .= "ORDER BY tran_date";
 
-	return db_query($sql, "The customer details could not be retrieved");
+	return db_query($sql, "The customer transactions could not be retrieved");
 }
 
 //----------------------------------------------------------------------------------------------------

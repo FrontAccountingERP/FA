@@ -75,9 +75,11 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 
 		$unit_price = $row[1]; //Added by Rasmus
 
-		$sql = "SELECT delivery_date FROM ".TB_PREF."grn_batch,".TB_PREF."grn_items WHERE
-			".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id AND "
-			.TB_PREF."grn_items.id=".db_escape($id);
+		$sql = "SELECT delivery_date 
+			FROM ".TB_PREF."grn_batch grn,"
+				.TB_PREF."grn_items line
+			WHERE
+				grn.id = line.grn_batch_id AND line.id=".db_escape($id);
 		$result = db_query($sql, "The old delivery date from the received record cout not be retrieved");
 		$row = db_fetch_row($result);
 		$date = $row[0];
@@ -408,17 +410,18 @@ function add_supp_invoice(&$supp_trans)
 
 function get_po_invoices_credits($po_number)
 {
-	$sql = "SELECT DISTINCT ".TB_PREF."supp_trans.trans_no, ".TB_PREF."supp_trans.type,
-		ov_amount+ov_discount+ov_gst AS Total,
-		".TB_PREF."supp_trans.tran_date
-		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, "
-		.TB_PREF."purch_order_details, ".TB_PREF."purch_orders
-		WHERE ".TB_PREF."supp_invoice_items.supp_trans_no = ".TB_PREF."supp_trans.trans_no
-		AND ".TB_PREF."supp_invoice_items.supp_trans_type = ".TB_PREF."supp_trans.type
-		AND ".TB_PREF."supp_invoice_items.po_detail_item_id = ".TB_PREF."purch_order_details.po_detail_item
-		AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."supp_trans.supplier_id
-		AND ".TB_PREF."purch_orders.order_no = ".TB_PREF."purch_order_details.order_no
-		AND ".TB_PREF."purch_order_details.order_no = ".db_escape($po_number);
+	$sql = "SELECT DISTINCT trans.trans_no, trans.type,	ov_amount+ov_discount+ov_gst AS Total,
+				trans.tran_date
+			FROM ".TB_PREF."supp_trans trans,"
+				.TB_PREF."supp_invoice_items line,"
+				.TB_PREF."purch_order_details poline,"
+				.TB_PREF."purch_orders po
+		WHERE line.supp_trans_no = trans.trans_no
+			AND line.supp_trans_type = trans.type
+			AND line.po_detail_item_id = poline.po_detail_item
+			AND po.supplier_id = trans.supplier_id
+			AND po.order_no = poline.order_no
+			AND poline.order_no = ".db_escape($po_number);
 
 	return db_query($sql, "The invoices/credits for the po $po_number could not be retreived");
 }
@@ -447,10 +450,11 @@ function get_tax_overrides($trans_type, $trans_no)
 
 function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 {
-	$sql = "SELECT ".TB_PREF."supp_trans.*, supp_name 
-		FROM ".TB_PREF."supp_trans,".TB_PREF."suppliers
+	$sql = "SELECT trans.*, supp_name 
+		FROM ".TB_PREF."supp_trans trans,"
+			.TB_PREF."suppliers sup
 		WHERE trans_no = ".db_escape($trans_no)." AND type = ".db_escape($trans_type)."
-		AND ".TB_PREF."suppliers.supplier_id=".TB_PREF."supp_trans.supplier_id";
+		AND sup.supplier_id=trans.supplier_id";
 
 	$result = db_query($sql, "Cannot retreive a supplier transaction");
 
@@ -513,7 +517,9 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 
 function get_matching_invoice_item($stock_id, $po_item_id)
 {
-	$sql = "SELECT *, tran_date FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_trans
+	$sql = "SELECT *, tran_date
+		FROM ".TB_PREF."supp_invoice_items,"
+			.TB_PREF."supp_trans
 		WHERE supp_trans_type = ".ST_SUPPINVOICE." AND stock_id = "
 		.db_escape($stock_id)." AND po_detail_item_id = ".db_escape($po_item_id)."
 		AND supp_trans_no = trans_no";
@@ -669,14 +675,14 @@ function remove_not_invoice_item($id)
 
     update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
         $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
-        
+
     $price = $myrow['unit_price'];
     if ($supp['tax_included'])
         $price = get_tax_free_price_for_item($myrow['item_code'], $myrow['unit_price'], $supp['tax_group_id'], $supp['tax_included']);        
 
     add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
         -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $price);
-        
+
     $clearing_act = get_company_pref('grn_clearing_act');
     if ($clearing_act) {    // otherwise GRN clearing account is not used
         if (is_inventory_item($myrow['item_code']))
@@ -689,7 +695,7 @@ function remove_not_invoice_item($id)
                 -$myrow['QtyOstdg'] * $price, $grn["supplier_id"], "", 0, _("GRN Removal"));
             $total += add_gl_trans_supplier(ST_SUPPRECEIVE, $myrow['grn_batch_id'], $date, $clearing_act,
                 0, 0, -$total, null, "", 0, _("GRN Removal"));
-        }    
+        }
     }
 
     commit_transaction();

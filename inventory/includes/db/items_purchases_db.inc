@@ -44,10 +44,9 @@ function delete_item_purchasing_data($selected_id, $stock_id)
 
 function get_items_purchasing_data($stock_id)
 {
-    $sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name,"
-    	.TB_PREF."suppliers.curr_code
-		FROM ".TB_PREF."purch_data INNER JOIN ".TB_PREF."suppliers
-		ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
+    $sql = "SELECT pdata.*, supplier.supp_name,	supplier.curr_code
+		FROM ".TB_PREF."purch_data pdata
+			INNER JOIN ".TB_PREF."suppliers supplier ON pdata.supplier_id=supplier.supplier_id
 		WHERE stock_id = ".db_escape($stock_id);
 
     return db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
@@ -55,14 +54,13 @@ function get_items_purchasing_data($stock_id)
 
 function get_item_purchasing_data($selected_id, $stock_id)
 {
-	$sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name FROM ".TB_PREF."purch_data
-		INNER JOIN ".TB_PREF."suppliers ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE ".TB_PREF."purch_data.supplier_id=".db_escape($selected_id)."
-		AND ".TB_PREF."purch_data.stock_id=".db_escape($stock_id);
+	$sql = "SELECT pdata.*, supplier.supp_name
+		FROM ".TB_PREF."purch_data pdata
+			INNER JOIN ".TB_PREF."suppliers supplier ON pdata.supplier_id=supplier.supplier_id
+		WHERE pata.supplier_id=".db_escape($selected_id)."
+			AND pdata.stock_id=".db_escape($stock_id);
 
 	$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 
 	return db_fetch($result);
 }
-
-

@@ -44,14 +44,14 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.*, ".TB_PREF."comments.memo_
-			FROM ".TB_PREF."bank_trans LEFT JOIN ".TB_PREF."comments ON 
-			(".TB_PREF."bank_trans.type = ".TB_PREF."comments.type
-			AND ".TB_PREF."bank_trans.trans_no = ".TB_PREF."comments.id)
-		WHERE ".TB_PREF."bank_trans.bank_act = '$account'
+	$sql = "SELECT trans.*, com.memo_
+			FROM "
+				.TB_PREF."bank_trans trans
+				LEFT JOIN ".TB_PREF."comments com ON trans.type = com.type AND trans.trans_no = com.id
+		WHERE trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date,trans.id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
 }

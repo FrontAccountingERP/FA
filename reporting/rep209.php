@@ -33,24 +33,25 @@ print_po();
 //----------------------------------------------------------------------------------------------------
 function get_po($order_no)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  "
-   		.TB_PREF."suppliers.supp_account_no,".TB_PREF."suppliers.tax_included,".TB_PREF."suppliers.gst_no AS tax_id,
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
-   		".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact, ".TB_PREF."suppliers.tax_group_id
-		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
-		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."locations.loc_code = into_stock_location
-		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
+   	$sql = "SELECT po.*, supplier.supp_name, supplier.supp_account_no,supplier.tax_included,
+   		supplier.gst_no AS tax_id,
+   		supplier.curr_code, supplier.payment_terms, loc.location_name,
+   		supplier.address, supplier.contact, supplier.tax_group_id
+		FROM ".TB_PREF."purch_orders po,"
+			.TB_PREF."suppliers supplier,"
+			.TB_PREF."locations loc
+		WHERE po.supplier_id = supplier.supplier_id
+		AND loc.loc_code = into_stock_location
+		AND po.order_no = ".db_escape($order_no);
    	$result = db_query($sql, "The order cannot be retrieved");
     return db_fetch($result);
 }
 
 function get_po_details($order_no)
 {
-	$sql = "SELECT ".TB_PREF."purch_order_details.*, units
-		FROM ".TB_PREF."purch_order_details
-		LEFT JOIN ".TB_PREF."stock_master
-		ON ".TB_PREF."purch_order_details.item_code=".TB_PREF."stock_master.stock_id
+	$sql = "SELECT poline.*, units
+		FROM ".TB_PREF."purch_order_details poline
+			LEFT JOIN ".TB_PREF."stock_master item ON poline.item_code=item.stock_id
 		WHERE order_no =".db_escape($order_no)." ";
 	$sql .= " ORDER BY po_detail_item";
 	return db_query($sql, "Retreive order Line Items");

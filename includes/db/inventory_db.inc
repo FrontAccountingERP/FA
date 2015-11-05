@@ -143,10 +143,10 @@ function last_negative_stock_begin_date($stock_id, $to)
 
 function get_already_delivered($stock_id, $location, $trans_no)
 {
-	$sql = "SELECT ".TB_PREF."stock_moves.qty
+	$sql = "SELECT qty
 		FROM ".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_moves.stock_id = ".db_escape($stock_id)."
-		AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location)."
+		WHERE stock_id = ".db_escape($stock_id)."
+		AND loc_code = ".db_escape($location)."
 		AND type=".ST_CUSTDELIVERY." AND trans_no=".db_escape($trans_no);
 	$result = db_query($sql, "Could not get stock moves");
 	$row = db_fetch_row($result);
@@ -216,7 +216,8 @@ function get_deliveries_from_trans($stock_id, $from)
     $cost = db_fetch_row($result);
 
 	// Adjusting QOH valuation 
-	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+	$sql = "SELECT SUM(qty)
+		FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND
 			trans_id<'$from' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
@@ -231,7 +232,8 @@ function get_deliveries_from_trans($stock_id, $from)
 function get_purchases_from_trans($stock_id, $from)
 {
 	// Calculate All inward stock moves i.e. qty > 0
-	$sql = "SELECT SUM(qty), SUM(qty*standard_cost) FROM ".TB_PREF."stock_moves
+	$sql = "SELECT SUM(qty), SUM(qty*standard_cost)
+		FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND qty > 0 AND 
 			trans_id>'$from' GROUP BY stock_id";
 	$result = db_query($sql, "Could not get get_purchases_from_trans");
@@ -386,15 +388,16 @@ function update_stock_move($type, $trans_no, $stock_id, $cost)
 
 function get_stock_moves($type, $type_no)
 {
-	$sql = "SELECT ".TB_PREF."stock_moves.*, ".TB_PREF."stock_master.description, "
-		.TB_PREF."stock_master.units,".TB_PREF."locations.location_name,"
-		.TB_PREF."stock_master.material_cost + "
-			.TB_PREF."stock_master.labour_cost + "
-			.TB_PREF."stock_master.overhead_cost AS FixedStandardCost
-		FROM ".TB_PREF."stock_moves,".TB_PREF."locations,".TB_PREF."stock_master
-		WHERE ".TB_PREF."stock_moves.stock_id = ".TB_PREF."stock_master.stock_id
-		AND ".TB_PREF."locations.loc_code=".TB_PREF."stock_moves.loc_code
-		AND type=".db_escape($type)." AND trans_no=".db_escape($type_no)." ORDER BY trans_id";
+	$sql = "SELECT move.*, item.description, item.units, stock.location_name,
+		item.material_cost + item.labour_cost + item.overhead_cost AS FixedStandardCost
+		FROM ".TB_PREF."stock_moves move,"
+			.TB_PREF."locations stock,"
+			.TB_PREF."stock_master item
+		WHERE move.stock_id = item.stock_id
+		AND stock.loc_code=move.loc_code
+		AND type=".db_escape($type)
+		." AND trans_no=".db_escape($type_no)
+		." ORDER BY trans_id";
 
 	return db_query($sql, "Could not get stock moves");
 }
@@ -403,11 +406,12 @@ function get_stock_moves($type, $type_no)
 
 function void_stock_move($type, $type_no)
 {
-    $sql = "SELECT move.*, supplier.supplier_id from ".TB_PREF."stock_moves move
+    $sql = "SELECT move.*, supplier.supplier_id
+    		FROM ".TB_PREF."stock_moves move
 				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
 				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
 				LEFT JOIN ".TB_PREF."suppliers supplier ON IFNULL(grn.supplier_id, credit.supplier_id)=supplier.supplier_id
-     WHERE move.type=".db_escape($type)." AND move.trans_no=".db_escape($type_no);
+			WHERE move.type=".db_escape($type)." AND move.trans_no=".db_escape($type_no);
 
     $result = db_query($sql, "Could not void stock moves");
     while ($row = db_fetch($result))
@@ -427,8 +431,9 @@ function void_stock_move($type, $type_no)
 				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));
 		}
     }
-	$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE type=".db_escape($type)
-		."	AND trans_no=".db_escape($type_no);
+	$sql = "DELETE FROM ".TB_PREF."stock_moves
+			WHERE type=".db_escape($type)
+			."	AND trans_no=".db_escape($type_no);
 	db_query($sql, "The stock movement cannot be delated");
 }
 
@@ -436,8 +441,8 @@ function void_stock_move($type, $type_no)
 
 function get_location_name($loc_code)
 {
-	$sql = "SELECT location_name FROM ".TB_PREF."locations WHERE loc_code="
-		.db_escape($loc_code);
+	$sql = "SELECT location_name FROM ".TB_PREF."locations
+		WHERE loc_code=".db_escape($loc_code);
 
 	$result = db_query($sql, "could not retreive the location name for $loc_code");
 
@@ -452,8 +457,8 @@ function get_location_name($loc_code)
 
 function get_mb_flag($stock_id)
 {
-	$sql = "SELECT mb_flag FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
+	$sql = "SELECT mb_flag FROM ".TB_PREF."stock_master
+		WHERE stock_id = ".db_escape($stock_id);
 	$result = db_query($sql, "retreive mb_flag from item");
 	
 	if (db_num_rows($result) == 0)

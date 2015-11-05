@@ -108,13 +108,15 @@ function recurrent_invoice_ready($selected_id, $date)
 function recurrent_invoice_count($id)
 {
 
-	$sql1 = "SELECT branch.* FROM ".TB_PREF."recurrent_invoices rec
-		LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.group_no AND NOT branch.inactive
+	$sql1 = "SELECT branch.*
+		FROM ".TB_PREF."recurrent_invoices rec
+			LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.group_no AND NOT branch.inactive
 			LEFT JOIN ".TB_PREF."debtors_master debtor ON debtor.debtor_no = branch.debtor_no AND NOT debtor.inactive
 		WHERE rec.debtor_no=0 AND !ISNULL(debtor.debtor_no) AND rec.id=".db_escape($id);
 
-	$sql2 = "SELECT branch.* FROM ".TB_PREF."recurrent_invoices rec 
-		LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.branch_code AND NOT branch.inactive
+	$sql2 = "SELECT branch.*
+		FROM ".TB_PREF."recurrent_invoices rec 
+			LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.branch_code AND NOT branch.inactive
 			LEFT JOIN ".TB_PREF."debtors_master debtor ON rec.debtor_no = debtor.debtor_no AND NOT debtor.inactive
 		WHERE rec.debtor_no!=0 AND !ISNULL(debtor.debtor_no) AND rec.id=".db_escape($id);
 
@@ -129,13 +131,15 @@ function check_recurrent_invoice_prices($id)
 	$errors = 0;
 	$inv = get_recurrent_invoice($id);
 
-	$sql1 = "SELECT debtor.curr_code FROM ".TB_PREF."recurrent_invoices rec
-		LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.group_no AND NOT branch.inactive
+	$sql1 = "SELECT debtor.curr_code
+		FROM ".TB_PREF."recurrent_invoices rec
+			LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.group_no AND NOT branch.inactive
 			LEFT JOIN ".TB_PREF."debtors_master debtor ON debtor.debtor_no = branch.debtor_no AND NOT debtor.inactive
 		WHERE rec.debtor_no=0 AND !ISNULL(debtor.debtor_no) AND rec.id=".db_escape($id);
 
-	$sql2 = "SELECT debtor.curr_code FROM ".TB_PREF."recurrent_invoices rec 
-		LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.branch_code AND NOT branch.inactive
+	$sql2 = "SELECT debtor.curr_code
+		FROM ".TB_PREF."recurrent_invoices rec 
+			LEFT JOIN ".TB_PREF."cust_branch branch ON rec.group_no = branch.branch_code AND NOT branch.inactive
 			LEFT JOIN ".TB_PREF."debtors_master debtor ON rec.debtor_no = debtor.debtor_no AND NOT debtor.inactive
 		WHERE rec.debtor_no!=0 AND !ISNULL(debtor.debtor_no) AND rec.id=".db_escape($id);
 

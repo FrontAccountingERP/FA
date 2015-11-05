@@ -30,21 +30,21 @@ print_bill_of_material();
 
 function getTransactions($from, $to)
 {
-	$sql = "SELECT ".TB_PREF."bom.parent,
-			".TB_PREF."bom.component,
-			".TB_PREF."stock_master.description as CompDescription,
-			".TB_PREF."bom.quantity,
-			".TB_PREF."bom.loc_code,
-			".TB_PREF."bom.workcentre_added
-		FROM
-			".TB_PREF."stock_master,
-			".TB_PREF."bom
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component
-		AND ".TB_PREF."bom.parent >= ".db_escape($from)."
-		AND ".TB_PREF."bom.parent <= ".db_escape($to)."
+	$sql = "SELECT bom.parent,
+			bom.component,
+			item.description as CompDescription,
+			bom.quantity,
+			bom.loc_code,
+			bom.workcentre_added
+		FROM "
+			.TB_PREF."stock_master item,"
+			.TB_PREF."bom bom
+		WHERE item.stock_id=bom.component
+		AND bom.parent >= ".db_escape($from)."
+		AND bom.parent <= ".db_escape($to)."
 		ORDER BY
-			".TB_PREF."bom.parent,
-			".TB_PREF."bom.component";
+			bom.parent,
+			bom.component";
 
     return db_query($sql,"No transactions were returned");
 }

@@ -52,40 +52,43 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 
 function get_supp_trans($trans_no, $trans_type=-1, $supplier_id=null)
 {
-	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
-		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS curr_code ";
+	$sql = "SELECT trans.*, (trans.ov_amount+trans.ov_gst+trans.ov_discount) AS Total,
+		supplier.supp_name AS supplier_name, supplier.curr_code AS curr_code ";
 
 	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
-		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name, ".TB_PREF."bank_accounts.bank_curr_code,
-			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS bank_amount,
-			".TB_PREF."bank_trans.ref ";
+		$sql .= ", account.bank_name, account.bank_account_name, account.bank_curr_code,
+			account.account_type AS BankTransType, bank_trans.amount AS bank_amount,
+			bank_trans.ref ";
 	}
 
-	$sql .= " FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers ";
+	$sql .= " FROM ".TB_PREF."supp_trans trans,"
+			.TB_PREF."suppliers supplier";
 
 	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
-		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
+		$sql .= ", "
+			.TB_PREF."bank_trans bank_trans,"
+			.TB_PREF."bank_accounts account";
 	}
 
-	$sql .= " WHERE ".TB_PREF."supp_trans.trans_no=".db_escape($trans_no)."
-		AND ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id";
+	$sql .= " WHERE trans.trans_no=".db_escape($trans_no)."
+		AND trans.supplier_id=supplier.supplier_id";
 
 	if (isset($supplier_id))
-		$sql .= " AND ".TB_PREF."supp_trans.supplier_id=".db_escape($supplier_id);
+		$sql .= " AND trans.supplier_id=".db_escape($supplier_id);
 
 	if ($trans_type > -1)
-		$sql .= " AND ".TB_PREF."supp_trans.type=".db_escape($trans_type);
+		$sql .= " AND trans.type=".db_escape($trans_type);
 
 	if ($trans_type == ST_SUPPAYMENT || $trans_type == ST_BANKPAYMENT)
 	{
 		// it's a payment so also get the bank account
-		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_no)."
-			AND ".TB_PREF."bank_trans.type=".db_escape($trans_type)."
-			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
+		$sql .= " AND bank_trans.trans_no =".db_escape($trans_no)."
+			AND bank_trans.type=".db_escape($trans_type)."
+			AND account.id=bank_trans.bank_act ";
 	}
 
 	$result = db_query($sql, "Cannot retreive a supplier transaction");

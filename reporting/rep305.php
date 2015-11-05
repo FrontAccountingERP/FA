@@ -34,25 +34,26 @@ function getTransactions($from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 
-	$sql = "SELECT ".TB_PREF."grn_batch.id batch_no,
-			".TB_PREF."grn_batch.supplier_id, 
-            ".TB_PREF."purch_order_details.*,
-            ".TB_PREF."stock_master.description,
-			".TB_PREF."grn_items.qty_recd,
-			".TB_PREF."grn_items.quantity_inv,
-			".TB_PREF."grn_items.id grn_item_id
-        FROM ".TB_PREF."stock_master,
-            ".TB_PREF."purch_order_details,
-            ".TB_PREF."grn_batch,
-			".TB_PREF."grn_items 
-        WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."purch_order_details.item_code
-        AND ".TB_PREF."grn_batch.purch_order_no=".TB_PREF."purch_order_details.order_no
-		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id 
-		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
-        AND ".TB_PREF."grn_items.qty_recd>0
-        AND ".TB_PREF."grn_batch.delivery_date>='$from'
-        AND ".TB_PREF."grn_batch.delivery_date<='$to'
-        ORDER BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."grn_batch.delivery_date"; 	
+	$sql = "SELECT grn.id batch_no,
+			grn.supplier_id, 
+            poline.*,
+            item.description,
+			grn_line.qty_recd,
+			grn_line.quantity_inv,
+			grn_line.id grn_item_id
+        FROM "
+        	.TB_PREF."stock_master item,"
+        	.TB_PREF."purch_order_details poline,"
+        	.TB_PREF."grn_batch grn,"
+        	.TB_PREF."grn_items grn_line
+        WHERE item.stock_id=poline.item_code
+        AND grn.purch_order_no=poline.order_no
+		AND grn.id = grn_line.grn_batch_id 
+		AND grn_line.po_detail_item = poline.po_detail_item
+        AND grn_line.qty_recd>0
+        AND grn.delivery_date>='$from'
+        AND grn.delivery_date<='$to'
+        ORDER BY item.stock_id, grn.delivery_date";
 
     return db_query($sql,"No transactions were returned");
 
@@ -61,19 +62,22 @@ function getTransactions($from, $to)
 function getSuppInvDetails($grn_item_id)
 {
 	$sql = "SELECT
-			".TB_PREF."supp_invoice_items.supp_trans_no inv_no,
-			".TB_PREF."supp_invoice_items.quantity inv_qty,
-			".TB_PREF."supp_trans.rate,
-			IF (".TB_PREF."supp_trans.tax_included = 1, ".TB_PREF."supp_invoice_items.unit_price - ".TB_PREF."supp_invoice_items.unit_tax, ".TB_PREF."supp_invoice_items.unit_price) inv_price
-			FROM ".TB_PREF."grn_items, ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items
-			WHERE ".TB_PREF."grn_items.id = ".TB_PREF."supp_invoice_items.grn_item_id
-			AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."supp_invoice_items.po_detail_item_id
-			AND ".TB_PREF."grn_items.item_code = ".TB_PREF."supp_invoice_items.stock_id
-			AND ".TB_PREF."supp_trans.type = ".TB_PREF."supp_invoice_items.supp_trans_type
-			AND ".TB_PREF."supp_trans.trans_no = ".TB_PREF."supp_invoice_items.supp_trans_no
-			AND ".TB_PREF."supp_invoice_items.supp_trans_type = 20
-			AND ".TB_PREF."supp_invoice_items.grn_item_id = ".$grn_item_id."
-			ORDER BY ".TB_PREF."supp_invoice_items.id asc";
+			inv_line.supp_trans_no inv_no,
+			inv_line.quantity inv_qty,
+			inv.rate,
+			IF (inv.tax_included = 1, inv_line.unit_price - inv_line.unit_tax, inv_line.unit_price) inv_price
+			FROM "
+				.TB_PREF."grn_items grn_line,"
+				.TB_PREF."supp_trans inv,"
+				.TB_PREF."supp_invoice_items inv_line
+			WHERE grn_line.id = inv_line.grn_item_id
+			AND grn_line.po_detail_item = inv_line.po_detail_item_id
+			AND grn_line.item_code = inv_line.stock_id
+			AND inv.type = inv_line.supp_trans_type
+			AND inv.trans_no = inv_line.supp_trans_no
+			AND inv_line.supp_trans_type = 20
+			AND inv_line.grn_item_id = ".$grn_item_id."
+			ORDER BY inv_line.id asc";
 
 	return db_query($sql,"No transactions were returned");
 }

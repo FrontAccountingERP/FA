@@ -250,11 +250,14 @@ function get_customer_trans_order($type, $type_no)
 
 function get_customer_details_from_trans($type, $type_no)
 {
-	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name
-		FROM ".TB_PREF."debtors_master,".TB_PREF."cust_branch,".TB_PREF."debtor_trans
-		WHERE ".TB_PREF."debtor_trans.type=".db_escape($type)." AND ".TB_PREF."debtor_trans.trans_no=".db_escape($type_no)."
-		AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-		AND	".TB_PREF."cust_branch.branch_code = ".TB_PREF."debtor_trans.branch_code";
+	$sql = "SELECT debtor.name, debtor.curr_code, branch.br_name
+		FROM "
+			.TB_PREF."debtors_master debtor,"
+			.TB_PREF."cust_branch branch,"
+			.TB_PREF."debtor_trans trans
+		WHERE trans.type=".db_escape($type)." AND trans.trans_no=".db_escape($type_no)."
+		AND debtor.debtor_no = trans.debtor_no
+		AND	branch.branch_code = trans.branch_code";
 
 	$result = db_query($sql, "could not get customer details from trans");
 	return db_fetch($result);

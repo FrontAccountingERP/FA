@@ -81,12 +81,13 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 function get_work_order_produce($id)
 {
-	$sql = "SELECT ".TB_PREF."wo_manufacture.*,".TB_PREF."workorders.stock_id, "
-		.TB_PREF."stock_master.description AS StockDescription
-		FROM ".TB_PREF."wo_manufacture, ".TB_PREF."workorders, ".TB_PREF."stock_master
-		WHERE ".TB_PREF."wo_manufacture.workorder_id=".TB_PREF."workorders.id
-		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
-		AND ".TB_PREF."wo_manufacture.id=".db_escape($id);
+	$sql = "SELECT prod.*, wo.stock_id, item.description AS StockDescription
+			FROM ".TB_PREF."wo_manufacture prod,"
+				.TB_PREF."workorders wo,"
+				.TB_PREF."stock_master item
+		WHERE prod.workorder_id=wo.id
+		AND item.stock_id=wo.stock_id
+		AND prod.id=".db_escape($id);
     $result = db_query($sql, "The work order production could not be retrieved");
 
     return db_fetch($result);

@@ -15,25 +15,24 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	$last_cost)
 {
 	$mb_flag = get_mb_flag($stock_id);
-    
+
 	$update_no = -1;
 
     if (is_service($mb_flag))
     {
     	//display_db_error("Cannot do cost update for Service item : $stock_id", "");	
-		
+
 		//Chaitanya
 		$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
-		
+
 		db_query($sql,"The cost details for the inventory item could not be updated");
-		
+
 		return $update_no;
-		
-    }		
-	
+    }
+
 	begin_transaction();
-	
+
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost).", 
 		labour_cost=".db_escape($labour_cost).", 
 		overhead_cost=".db_escape($overhead_cost).", 
@@ -42,7 +41,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	db_query($sql,"The cost details for the inventory item could not be updated");
 
 	$qoh = get_qoh_on_date($stock_id);
-	
+
    	$date_ = Today();
 	if (!is_date_in_fiscalyear($date_))
 		$date_ = end_fiscalyear();

@@ -14,7 +14,7 @@ include_once($path_to_root . "/includes/remote_url.inc");
 function get_exchange_rate($rate_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
-	$result = db_query($sql, "could not get exchange rate for $rate_id");	
+	$result = db_query($sql, "could not get exchange rate for $rate_id");
 
 	return db_fetch($result);
 }
@@ -23,9 +23,11 @@ function get_exchange_rate($rate_id)
 function get_date_exchange_rate($curr_code, $date_)
 {
 	$date = date2sql($date_);
-	$sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code=".db_escape($curr_code)
-	." AND date_='$date'";
-	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");	
+	$sql = "SELECT rate_buy
+			FROM ".TB_PREF."exchange_rates
+			WHERE curr_code=".db_escape($curr_code)
+				." AND date_='$date'";
+	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");
 
 	if(db_num_rows($result) == 0) 
 		return 0;
@@ -40,7 +42,9 @@ function get_last_exchange_rate($curr_code, $date_)
 {
 	$date = date2sql($date_);
 
-	$sql = "SELECT rate_buy, max(date_) as date_ FROM ".TB_PREF."exchange_rates WHERE curr_code = ".db_escape($curr_code)."
+	$sql = "SELECT rate_buy, max(date_) as date_
+			FROM ".TB_PREF."exchange_rates
+			WHERE curr_code = ".db_escape($curr_code)."
 				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
 
 	$result = db_query($sql, "could not query exchange rates");
@@ -58,12 +62,12 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 {
 	if (is_company_currency($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
-			
+
 	$date = date2sql($date_);
-		
+
 	$sql = "UPDATE ".TB_PREF."exchange_rates SET rate_buy=$buy_rate, rate_sell=".db_escape($sell_rate)
 	." WHERE curr_code=".db_escape($curr_code)." AND date_='$date'";
-				
+
 	db_query($sql, "could not add exchange rate for $curr_code");
 }
 
@@ -75,7 +79,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 
 	$date = date2sql($date_);
-		
+
 	$sql = "INSERT INTO ".TB_PREF."exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (".db_escape($curr_code).", '$date', ".db_escape($buy_rate)
 		.", ".db_escape($sell_rate).")";
@@ -241,9 +245,9 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 
 function get_sql_for_exchange_rates($curr)
 {
-	$sql = "SELECT date_, rate_buy, id FROM "
-		.TB_PREF."exchange_rates "
+	$sql = "SELECT date_, rate_buy, id
+		FROM ".TB_PREF."exchange_rates "
 		."WHERE curr_code=".db_escape($curr)."
 		 ORDER BY date_ DESC";
-	return $sql;	 
+	return $sql;
 }

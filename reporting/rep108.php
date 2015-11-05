@@ -32,21 +32,17 @@ print_statements();
 
 function getTransactions($debtorno, $date, $show_also_allocated)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
-				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
-				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
-				AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
-				FROM ".TB_PREF."debtor_trans
-				WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
-    				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-					AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > 1e-6";
+    $sql = "SELECT *,
+    			(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
+				((type = ".ST_SALESINVOICE.") AND due_date < '$date') AS OverDue
+			FROM ".TB_PREF."debtor_trans
+			WHERE tran_date <= '$date' AND debtor_no = ".db_escape($debtorno)."
+   				AND type <> ".ST_CUSTDELIVERY."
+				AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > ". FLOAT_COMP_DELTA;
+
 	if (!$show_also_allocated)
-		$sql .= " AND ABS(ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) - alloc) > 1e-6";
-	$sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
+		$sql .= " AND ABS(ABS(ov_amount + ov_gst + ov_freight +	ov_freight_tax + ov_discount) - alloc) > ". FLOAT_COMP_DELTA;
+	$sql .= " ORDER BY tran_date";
 
     return db_query($sql,"No transactions were returned");
 }

@@ -31,18 +31,20 @@ print_receipts();
 //----------------------------------------------------------------------------------------------------
 function get_receipt($type, $trans_no)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-				".TB_PREF."debtor_trans.ov_freight_tax) AS Total,
-				".TB_PREF."debtor_trans.ov_discount,
-   				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
-   				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
-   				.TB_PREF."debtors_master.tax_id AS tax_id,
-   				".TB_PREF."debtors_master.address
-    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
-				WHERE ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
-				AND ".TB_PREF."debtor_trans.type = ".db_escape($type)."
-				AND ".TB_PREF."debtor_trans.trans_no = ".db_escape($trans_no);
+    $sql = "SELECT trans.*,
+				(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax) AS Total,
+				trans.ov_discount, 
+				debtor.name AS DebtorName,
+				debtor.debtor_ref,
+   				debtor.curr_code,
+   				debtor.payment_terms,
+   				debtor.tax_id AS tax_id,
+   				debtor.address
+    			FROM ".TB_PREF."debtor_trans trans,"
+    				.TB_PREF."debtors_master debtor
+				WHERE trans.debtor_no = debtor.debtor_no
+				AND trans.type = ".db_escape($type)."
+				AND trans.trans_no = ".db_escape($trans_no);
    	$result = db_query($sql, "The remittance cannot be retrieved");
    	if (db_num_rows($result) == 0)
    		return false;

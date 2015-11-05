@@ -169,13 +169,13 @@ function update_po(&$po_obj)
 
 function read_po_header($order_no, &$order)
 {
-    	$sql = "SELECT ".TB_PREF."purch_orders.*, "
- 		.TB_PREF."suppliers.*, "
-		.TB_PREF."locations.location_name 
-		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
-		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."locations.loc_code = into_stock_location
-		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
+    	$sql = "SELECT po.*, supplier.*, loc.location_name 
+		FROM ".TB_PREF."purch_orders po,"
+			.TB_PREF."suppliers supplier,"
+			.TB_PREF."locations loc
+		WHERE po.supplier_id = supplier.supplier_id
+		AND loc.loc_code = into_stock_location
+		AND po.order_no = ".db_escape($order_no);
 
    	$result = db_query($sql, "The order cannot be retrieved");
 
@@ -215,14 +215,13 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 {
 	/*now populate the line po array with the purchase order details records */
 
-	$sql = "SELECT ".TB_PREF."purch_order_details.*, units
-		FROM ".TB_PREF."purch_order_details
-		LEFT JOIN ".TB_PREF."stock_master
-		ON ".TB_PREF."purch_order_details.item_code=".TB_PREF."stock_master.stock_id
+	$sql = "SELECT poline.*, units
+		FROM ".TB_PREF."purch_order_details poline
+			LEFT JOIN ".TB_PREF."stock_master item	ON poline.item_code=item.stock_id
 		WHERE order_no =".db_escape($order_no);
 
     if ($open_items_only)
- 		$sql .= " AND (".TB_PREF."purch_order_details.quantity_ordered > ".TB_PREF."purch_order_details.quantity_received) ";
+ 		$sql .= " AND (poline.quantity_ordered > poline.quantity_received) ";
 
 	$sql .= " ORDER BY po_detail_item";
 

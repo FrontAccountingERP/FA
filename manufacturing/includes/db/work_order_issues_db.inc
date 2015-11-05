@@ -111,27 +111,30 @@ function get_work_order_issues($woid)
 
 function get_additional_issues($woid)
 {
-	$sql = "SELECT ".TB_PREF."wo_issues.*, ".TB_PREF."wo_issue_items.*
-		FROM ".TB_PREF."wo_issues, ".TB_PREF."wo_issue_items
-		WHERE ".TB_PREF."wo_issues.issue_no=".TB_PREF."wo_issue_items.issue_id
-		AND ".TB_PREF."wo_issues.workorder_id=".db_escape($woid)
-		." ORDER BY ".TB_PREF."wo_issue_items.id";
+	$sql = "SELECT issue.*, item.*
+		FROM ".TB_PREF."wo_issues issue, "
+			.TB_PREF."wo_issue_items item
+		WHERE issue.issue_no=item.issue_id
+		AND issue.workorder_id=".db_escape($woid)
+		." ORDER BY item.id";
     return db_query($sql, "The work order issues could not be retrieved");
 }
 //--------------------------------------------------------------------------------------
 
 function get_work_order_issue($issue_no)
 {
-	$sql = "SELECT DISTINCT ".TB_PREF."wo_issues.*, ".TB_PREF."workorders.stock_id,
-		".TB_PREF."stock_master.description, ".TB_PREF."locations.location_name, "
-		.TB_PREF."workcentres.name AS WorkCentreName
-		FROM ".TB_PREF."wo_issues, ".TB_PREF."workorders, ".TB_PREF."stock_master, "
-		.TB_PREF."locations, ".TB_PREF."workcentres
+	$sql = "SELECT DISTINCT issue.*, wo.stock_id,
+		item.description, loc.location_name, center.name AS WorkCentreName
+		FROM ".TB_PREF."wo_issues issue,"
+			.TB_PREF."workorders wo,"
+			.TB_PREF."stock_master item,"
+			.TB_PREF."locations loc,"
+			.TB_PREF."workcentres center
 		WHERE issue_no=".db_escape($issue_no)."
-		AND ".TB_PREF."workorders.id = ".TB_PREF."wo_issues.workorder_id
-		AND ".TB_PREF."locations.loc_code = ".TB_PREF."wo_issues.loc_code
-		AND ".TB_PREF."workcentres.id = ".TB_PREF."wo_issues.workcentre_id
-		AND ".TB_PREF."stock_master.stock_id = ".TB_PREF."workorders.stock_id";
+		AND wo.id = issue.workorder_id
+		AND loc.loc_code = issue.loc_code
+		AND center.id = issue.workcentre_id
+		AND item.stock_id = wo.stock_id";
     $result = db_query($sql, "A work order issue could not be retrieved");
 
     return db_fetch($result);
@@ -141,12 +144,12 @@ function get_work_order_issue($issue_no)
 
 function get_work_order_issue_details($issue_no)
 {
-	$sql = "SELECT ".TB_PREF."wo_issue_items.*,"
-	.TB_PREF."stock_master.description, ".TB_PREF."stock_master.units
-		FROM ".TB_PREF."wo_issue_items, ".TB_PREF."stock_master
+	$sql = "SELECT issue.*, item.description, item.units
+		FROM ".TB_PREF."wo_issue_items issue,"
+			.TB_PREF."stock_master item
 		WHERE issue_id=".db_escape($issue_no)."
-		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."wo_issue_items.stock_id
-		ORDER BY ".TB_PREF."wo_issue_items.id";
+		AND item.stock_id=issue.stock_id
+		ORDER BY issue.id";
     return db_query($sql, "The work order issue items could not be retrieved");
 }
 
@@ -218,7 +221,7 @@ function void_work_order_issue($type_no)
 	if ($total_cost != 0)
 		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"],
 			0, 0, $date_.": "._("Reversed the issue to")." ".$stockitem["description"], 
-			-$total_cost);	
+			-$total_cost);
 
 	//Chaitanya : Shifted below void all related stock moves
 	void_stock_move(ST_MANUISSUE, $type_no);

@@ -36,7 +36,9 @@ function get_domestic_price($myrow, $stock_id, $qty, $old_std_cost, $old_qty)
 		if ($myrow['type'] == ST_SUPPRECEIVE)
 		{
 			// Has the supplier invoice increased the receival price?
-			$sql = "SELECT DISTINCT act_price FROM ".TB_PREF."purch_order_details pod INNER JOIN ".TB_PREF."grn_batch grn ON pod.order_no =
+			$sql = "SELECT DISTINCT act_price 
+				FROM ".TB_PREF."purch_order_details pod
+					INNER JOIN ".TB_PREF."grn_batch grn ON pod.order_no =
 				grn.purch_order_no WHERE grn.id = ".$myrow['trans_no']." AND pod.item_code = '$stock_id'";
 			$result = db_query($sql, "Could not retrieve act_price from purch_order_details");
 			$row = db_fetch_row($result);
@@ -91,40 +93,41 @@ function getAverageCost($stock_id, $to_date)
 		return 0;
 	return $tot_cost / $count;
 }
-    
+
 function getTransactions($category, $location, $date)
 {
 	$date = date2sql($date);
-	
-	$sql = "SELECT ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description AS cat_description,
-			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.units,
-			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
-			".TB_PREF."stock_moves.loc_code,
-			SUM(".TB_PREF."stock_moves.qty) AS QtyOnHand, 
-			".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS UnitCost,
-			SUM(".TB_PREF."stock_moves.qty) *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost) AS ItemTotal 
-			FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND ".TB_PREF."stock_master.mb_flag<>'D' 
-		AND ".TB_PREF."stock_moves.tran_date <= '$date'
-		GROUP BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description, ";
+
+	$sql = "SELECT item.category_id,
+			category.description AS cat_description,
+			item.stock_id,
+			item.units,
+			item.description, item.inactive,
+			move.loc_code,
+			SUM(move.qty) AS QtyOnHand, 
+			item.material_cost + item.labour_cost + item.overhead_cost AS UnitCost,
+			SUM(move.qty) *(item.material_cost + item.labour_cost + item.overhead_cost) AS ItemTotal 
+			FROM "
+			.TB_PREF."stock_master item,"
+			.TB_PREF."stock_category category,"
+			.TB_PREF."stock_moves move
+		WHERE item.stock_id=move.stock_id
+		AND item.category_id=category.category_id
+		AND item.mb_flag<>'D' 
+		AND move.tran_date <= '$date'
+		GROUP BY item.category_id,
+			category.description, ";
 		if ($location != 'all')
-			$sql .= TB_PREF."stock_moves.loc_code, ";
-		$sql .= TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description
-		HAVING SUM(".TB_PREF."stock_moves.qty) != 0";
+			$sql .= "move.loc_code, ";
+		$sql .= "item.stock_id,
+			item.description
+		HAVING SUM(move.qty) != 0";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
+			$sql .= " AND item.category_id = ".db_escape($category);
 		if ($location != 'all')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
-		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_master.stock_id";
+			$sql .= " AND move.loc_code = ".db_escape($location);
+		$sql .= " ORDER BY item.category_id,
+			item.stock_id";
 
     return db_query($sql,"No transactions were returned");
 }

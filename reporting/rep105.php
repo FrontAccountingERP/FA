@@ -35,34 +35,34 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql= "SELECT ".TB_PREF."sales_orders.order_no,
-				".TB_PREF."sales_orders.debtor_no,
-                ".TB_PREF."sales_orders.branch_code,
-                ".TB_PREF."sales_orders.customer_ref,
-                ".TB_PREF."sales_orders.ord_date,
-                ".TB_PREF."sales_orders.from_stk_loc,
-                ".TB_PREF."sales_orders.delivery_date,
-                ".TB_PREF."sales_order_details.stk_code,
-                ".TB_PREF."stock_master.description,
-                ".TB_PREF."stock_master.units,
-                ".TB_PREF."sales_order_details.quantity,
-                ".TB_PREF."sales_order_details.qty_sent
-            FROM ".TB_PREF."sales_orders
-            	INNER JOIN ".TB_PREF."sales_order_details
-            	    ON (".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
-            	    AND ".TB_PREF."sales_orders.trans_type = ".TB_PREF."sales_order_details.trans_type
-            	    AND ".TB_PREF."sales_orders.trans_type = ".ST_SALESORDER.")
-            	INNER JOIN ".TB_PREF."stock_master
-            	    ON ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id
-            WHERE ".TB_PREF."sales_orders.ord_date >='$fromdate'
-                AND ".TB_PREF."sales_orders.ord_date <='$todate'";
+	$sql= "SELECT sorder.order_no,
+				sorder.debtor_no,
+                sorder.branch_code,
+                sorder.customer_ref,
+                sorder.ord_date,
+                sorder.from_stk_loc,
+                sorder.delivery_date,
+                line.stk_code,
+                item.description,
+                item.units,
+                line.quantity,
+                line.qty_sent
+            FROM ".TB_PREF."sales_orders sorder
+	           	INNER JOIN ".TB_PREF."sales_order_details line
+            	    ON sorder.order_no = line.order_no
+            	    AND sorder.trans_type = line.trans_type
+            	    AND sorder.trans_type = ".ST_SALESORDER."
+            	INNER JOIN ".TB_PREF."stock_master item
+            	    ON line.stk_code = item.stock_id
+            WHERE sorder.ord_date >='$fromdate'
+                AND sorder.ord_date <='$todate'";
 	if ($category > 0)
-		$sql .= " AND ".TB_PREF."stock_master.category_id=".db_escape($category);
+		$sql .= " AND item.category_id=".db_escape($category);
 	if ($location != null)
-		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc=".db_escape($location);
+		$sql .= " AND sorder.from_stk_loc=".db_escape($location);
 	if ($backorder)
-		$sql .= " AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent > 0";
-	$sql .= " ORDER BY ".TB_PREF."sales_orders.order_no";
+		$sql .= " AND line.quantity - line.qty_sent > 0";
+	$sql .= " ORDER BY sorder.order_no";
 
 	return db_query($sql, "Error getting order details");
 }

@@ -213,13 +213,10 @@ function get_quick_entry($selected_id)
 
 function get_quick_entry_lines($qid)
 {
-	$sql = "SELECT ".TB_PREF."quick_entry_lines.*, ".TB_PREF."chart_master.account_name,
-			".TB_PREF."tax_types.name as tax_name
-		FROM ".TB_PREF."quick_entry_lines
-		LEFT JOIN ".TB_PREF."chart_master ON
-			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."chart_master.account_code
-		LEFT JOIN ".TB_PREF."tax_types ON
-			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."tax_types.id
+	$sql = "SELECT line.*, coa.account_name, taxtype.name as tax_name
+		FROM ".TB_PREF."quick_entry_lines line
+			LEFT JOIN ".TB_PREF."chart_master coa ON line.dest_id = coa.account_code
+			LEFT JOIN ".TB_PREF."tax_types taxtype ON line.dest_id = taxtype.id
 		WHERE 
 			qid=".db_escape($qid)." ORDER by id";
 
@@ -283,10 +280,9 @@ function get_sql_for_bank_account_reconcile($bank_account, $date)
 	$sql = "SELECT	type, trans_no, ref, trans_date, 
 				amount,	person_id, person_type_id, reconciled, id
 		FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
+		WHERE bank_act = ".db_escape($bank_account) . "
 			AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
-// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date, id";
 	return $sql;
 }
 

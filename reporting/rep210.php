@@ -32,16 +32,18 @@ print_remittances();
 //----------------------------------------------------------------------------------------------------
 function get_remittance($type, $trans_no)
 {
-   	$sql = "SELECT ".TB_PREF."supp_trans.*, 
-   		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst) AS Total,
-   		".TB_PREF."supp_trans.ov_discount,
-   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, 
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."suppliers.gst_no AS tax_id, 
-   		".TB_PREF."suppliers.address
-		FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
-		WHERE ".TB_PREF."supp_trans.supplier_id = ".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."supp_trans.type = ".db_escape($type)."
-		AND ".TB_PREF."supp_trans.trans_no = ".db_escape($trans_no);
+   	$sql = "SELECT trans.*, 
+   		(trans.ov_amount+trans.ov_gst) AS Total,
+   		trans.ov_discount,
+   		supplier.supp_name,  supplier.supp_account_no, 
+   		supplier.curr_code, supplier.payment_terms, supplier.gst_no AS tax_id, 
+   		supplier.address
+		FROM "
+			.TB_PREF."supp_trans trans,"
+			.TB_PREF."suppliers supplier
+		WHERE trans.supplier_id = supplier.supplier_id
+		AND trans.type = ".db_escape($type)."
+		AND trans.trans_no = ".db_escape($trans_no);
    	$result = db_query($sql, "The remittance cannot be retrieved");
    	if (db_num_rows($result) == 0)
    		return false;

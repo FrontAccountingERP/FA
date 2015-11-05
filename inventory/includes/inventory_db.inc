@@ -60,11 +60,12 @@ function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
 
 function calculate_reorder_level($location, $line, &$st_ids, &$st_names, &$st_num, &$st_reorder)
 {
-	$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
-		FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-		WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-		AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
-		AND ".TB_PREF."loc_stock.loc_code = '" . $location . "'";
+	$sql = "SELECT stock.*, loc.location_name, loc.email
+		FROM ".TB_PREF."loc_stock stock,"
+			.TB_PREF."locations loc
+		WHERE stock.loc_code=loc.loc_code
+		AND stock.stock_id = '" . $line->stock_id . "'
+		AND stock.loc_code = '" . $location . "'";
 	$res = db_query($sql,"a location could not be retreived");
 	$loc = db_fetch($res);
 	if ($loc['email'] != "")
@@ -87,7 +88,7 @@ function calculate_reorder_level($location, $line, &$st_ids, &$st_names, &$st_nu
 function send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder)
 {
 	global $path_to_root;
-	
+
 	require_once($path_to_root . "/reporting/includes/class.mail.inc");
 	$company = get_company_prefs();
 	$mail = new email($company['coy_name'], $company['email']);
