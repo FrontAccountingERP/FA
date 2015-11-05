@@ -164,7 +164,7 @@ function issue_options_controls()
  	locations_list_row(_("From Location:"), 'Location');
  	workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_MANUISSUE, null, array('date'=> get_post('date_'), 'location' => get_post('Location'));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_MANUISSUE, null, array('date'=> get_post('date_'), 'location' => get_post('Location'))));
  
  	if (!isset($_POST['IssueType']))
  		$_POST['IssueType'] = 0;
