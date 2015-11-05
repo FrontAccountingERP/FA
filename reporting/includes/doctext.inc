@@ -78,7 +78,7 @@
 			break;
 
 		case ST_CUSTDELIVERY:
-			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
+			$this->title = ($this->params['packing_slip'] ? _("PACKING SLIP") : _("DELIVERY NOTE"));
 			$this->formData['document_name'] = _("Delivery Note No.");
 			if (@$packing_slip)
 				$Payment_Terms = '';

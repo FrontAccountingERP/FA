@@ -16,7 +16,6 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // Creator:	Janusz Dobrwolski
 // date_:	2008-01-14
 // Title:	Print Delivery Notes
-// draft version!
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -59,7 +58,7 @@ function print_deliveries()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments);
+	$params = array('comments' => $comments, 'packing_slip' => $packing_slip);
 
 	$cur = get_company_Pref('curr_default');
 
