@@ -274,7 +274,7 @@ if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']
 	create_new_po(ST_PURCHORDER, $_GET['PONumber']);
 	$_SESSION['PO']->trans_type = ST_SUPPRECEIVE;
 	$_SESSION['PO']->reference = $Refs->get_next(ST_SUPPRECEIVE, 
-		array('date' => $_SESSION['PO']->tran_date, 'supplier' => $_SESSION['PO']->supplier_id));
+		array('date' => Today(), 'supplier' => $_SESSION['PO']->supplier_id));
 	copy_from_cart();
 }
 
