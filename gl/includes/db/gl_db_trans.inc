@@ -481,7 +481,7 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*IF(taxrec.amount, taxrec.effective_amount/taxrec.amount, 1)*
+				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
 					." || ((trans_type IN(".ST_SUPPINVOICE.",".ST_SUPPCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
 					), net_amount*ex_rate,0)
@@ -505,7 +505,6 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 				ttype.id,
 				ttype.name
 		FROM ".TB_PREF."trans_tax_details taxrec LEFT JOIN ".TB_PREF."tax_types ttype ON taxrec.tax_type_id=ttype.id
-			LEFT JOIN ".TB_PREF."tax_groups tgroup ON taxrec.tax_group_id=tgroup.id
 		WHERE taxrec.trans_type IN (".implode(',',
 			array(ST_SALESINVOICE, ST_CUSTCREDIT, ST_SUPPINVOICE, ST_SUPPCREDIT, ST_JOURNAL)).")
 			AND taxrec.tran_date >= '$fromdate'
