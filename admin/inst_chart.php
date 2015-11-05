@@ -66,7 +66,6 @@ start_form(true);
 
 			alt_table_row_color($k);
 
-//		label_cell(is_array($ext['Descr']) ? $ext['Descr'][0] : $ext['Descr']);
 			label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
 			label_cell($id === null ? _("None") :

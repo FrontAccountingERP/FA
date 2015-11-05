@@ -63,6 +63,7 @@ start_form();
 $th = array(_("Company"), _("Table set"), _("Current version"), _("Last log"), _('Upgrade'));
 start_table(TABLESTYLE);
 table_header($th);
+$k = 0; //row colour counter
 
 $uptodate = true;
 foreach($site_status as $i => $comp)

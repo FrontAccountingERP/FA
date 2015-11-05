@@ -104,7 +104,6 @@ function exist_transaction($type, $type_no)
 			return false;
 		case ST_COSTUPDATE : // it's a stock cost update
 			return false;
-			break;
 	}
 
 	return true;
@@ -241,7 +240,7 @@ function check_valid_entries()
 	{
 		display_error(_("The selected transaction was closed for edition and cannot be voided."));
 		set_focus('trans_no');
-		return;
+		return false;
 	}
 	if (!is_date($_POST['date_']))
 	{

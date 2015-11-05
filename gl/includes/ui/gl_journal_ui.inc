@@ -101,7 +101,7 @@ function display_gl_items($title, &$order)
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
 			_("Dimension")." 2", _("Debit"), _("Credit"), _("Memo"), "");
-	else if ($dim == 1)
+	elseif ($dim == 1)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
 			_("Debit"), _("Credit"), _("Memo"), "");
 	else

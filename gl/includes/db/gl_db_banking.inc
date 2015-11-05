@@ -20,11 +20,10 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 
 	// We have to calculate all the currency accounts belonging to the GL account
 	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
-	// 2010-02-23 Joe Hunt with help of Ary Wibowo
-	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
+	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
 		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = ".db_escape($account)." AND bt.trans_date<='".date2sql($date_)."'
-		GROUP BY ba.bank_curr_code";
+		GROUP BY ba.bank_curr_code";	
 	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
 	while ($row = db_fetch($result))
 	{
@@ -44,19 +43,15 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 		$trans_no = get_next_trans_no(ST_JOURNAL);
 		$ref = $Refs->get_next(ST_JOURNAL);
 
-		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , $currency, $ref, '', $rate, $date_, $date_);
+		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , get_company_currency(), $ref, '', 1, $date_, $date_);
 		$Refs->save(ST_JOURNAL, $trans_no, $ref);
 		add_audit_trail(ST_JOURNAL, $trans_no, $date_);
-		add_comments(ST_JOURNAL, $trans_no, $date_, $memo);
 
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
 		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
     		$diff, null, $person_type_id, $person_id);
 
-		// positive change in value is positive variance for AR and bank accounts, and negative for AP
-    	$variance_act = ($diff < 0 && $person_id==PT_SUPPLIER) || ($diff > 0 && $person_id != PT_SUPPLIER)
-    		 ? 'exchange_diff_act' : 'exchange_diff_neg_act';
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
     		_("Exchange Variance"),	-$diff, null, $person_type_id, $person_id);
 		commit_transaction();
@@ -65,7 +60,6 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	return false;
 }
 
-//------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
 function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person_type_id, $person_id, $memo)
 {
 	global $Refs;
@@ -76,7 +70,7 @@ function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$ref = $Refs->get_next(ST_JOURNAL);
 
-	add_journal(ST_JOURNAL, $trans_no, $amount, $date, $currency, $ref, '', $rate, $date, $date);
+	add_journal(ST_JOURNAL, $trans_no, $amount, $date, get_company_currency(), $ref, '', 1, $date, $date);
 	$Refs->save(ST_JOURNAL, $trans_no, $ref);
 	add_audit_trail(ST_JOURNAL, $trans_no, $date);
 
@@ -309,9 +303,6 @@ function check_bank_transfer(
     $amount, $target_amount=0)
 {
 	$dbResult = get_bank_trans(ST_BANKTRANSFER, $trans_no);
-	if (2 != db_num_rows($dbResult)) {
-		// How are errors handled? Throw an exception would be nice. CP 2014-10
-	}
 
 	$old_from = db_fetch($dbResult);
 	$old_to = db_fetch($dbResult);

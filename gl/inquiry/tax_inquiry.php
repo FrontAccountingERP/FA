@@ -73,8 +73,6 @@ function tax_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root;
-
     /*Now get the transactions  */
 	div_start('trans_tbl');
 	start_table(TABLESTYLE);
@@ -83,8 +81,6 @@ function show_results()
 	table_header($th);
 	$k = 0;
 	$total = 0;
-	$bdate = date2sql($_POST['TransFromDate']);
-	$edate  = date2sql($_POST['TransToDate']);
 
 	$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 

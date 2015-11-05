@@ -71,7 +71,6 @@ function write_config_db($new = false)
 
 	if ($new)
 		$tb_pref_counter++;
-	$n = count($db_connections);
 	$msg = "<?php\n\n";
 	$msg .= "/*Connection Information for the database\n";
 	$msg .= "\$def_coy - the default company that is pre-selected on login\n\n";
@@ -209,7 +208,6 @@ function write_lang()
 	global $path_to_root, $installed_languages, $dflt_lang;
 
 	$installed_languages = array_natsort($installed_languages, 'code', 'code');
-	$n = count($installed_languages);
 	$msg = "<?php\n\n";
 
 	$msg .= "/* How to make new entries here for non-packaged languages:\n\n";
@@ -599,8 +597,6 @@ function db_export($conn, $filename, $zip='no', $comment='')
 		$out.="\n";
 	}
 
-    //$out.="use ".$db.";\n"; we don't use this option.
-
 	if (db_fixed())
 	{
 		db_set_encoding();
@@ -658,9 +654,6 @@ function db_export($conn, $filename, $zip='no', $comment='')
 			$out.="DROP TABLE IF EXISTS `".$tablename."`;\n\n";
 			$out.=$table_sql[$tablename];
 
-			// add auto_increment value
-//			if ($auto_incr[$tablename])
-//				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
 			$out.=" ;";
 			$out.="\n\n";
 
@@ -752,8 +745,6 @@ function db_export($conn, $filename, $zip='no', $comment='')
 		return false;
 	}
 
-	//if ($zip == "zip")
-	//	$zip = $time;
 	if (save_to_file($backupfile, $zip, $out))
 	{
 		$out = "";

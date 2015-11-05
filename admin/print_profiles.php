@@ -25,39 +25,38 @@ $selected_id = get_post('profile_id','');
 function get_reports() {
 	global $path_to_root, $SysPrefs;
 
-if ($SysPrefs->go_debug || !isset($_SESSION['reports'])) {	
+	if ($SysPrefs->go_debug || !isset($_SESSION['reports'])) {	
 	// to save time, store in session.
 		$paths = array (
 			$path_to_root.'/reporting/',
 			company_path(). '/reporting/');
 		$reports = array( '' => _('Default printing destination'));
 
-	foreach($paths as $dirno => $path) {
-		$repdir = opendir($path);
-		while(false !== ($fname = readdir($repdir)))
-		{
-		// reports have filenames in form rep(repid).php 
-		// where repid must contain at least one digit (reports_main.php is not ;)
-			if (is_file($path.$fname) 
-//				&& preg_match('/.*[^0-9]([0-9]+)[.]php/', $fname, $match))
-				&& preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match))
+		foreach($paths as $dirno => $path) {
+			$repdir = opendir($path);
+			while(false !== ($fname = readdir($repdir)))
 			{
-				$repno = $match[1];
-				$title = '';
+				// reports have filenames in form rep(repid).php 
+				// where repid must contain at least one digit (reports_main.php is not ;)
+				if (is_file($path.$fname) 
+					&& preg_match('/rep(.*[0-9]+.*)[.]php/', $fname, $match))
+				{
+					$repno = $match[1];
+					$title = '';
 
-				$line = file_get_contents($path.$fname);
-				if (preg_match('/.*(FrontReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
-					$title = trim($match[2]);
-				}
-				else // for any 3rd party printouts without FrontReport() class use
+					$line = file_get_contents($path.$fname);
+					if (preg_match('/.*(FrontReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
+						$title = trim($match[2]);
+					}
+					else // for any 3rd party printouts without FrontReport() class use
 					if (preg_match('/.*(\$Title).*[\'"](.*)[\'"].+/', $line, $match)) {
 						$title = trim($match[2]);
 					}
-				$reports[$repno] = $title;
+					$reports[$repno] = $title;
+				}
 			}
+			closedir();
 		}
-	closedir();
-	}
 		ksort($reports);
 		$_SESSION['reports'] = $reports;
 	}
@@ -75,7 +74,7 @@ function clear_form()
 
 function check_delete($name)
 {
-// check if selected profile is used by any user
+	// check if selected profile is used by any user
 	if ($name=='') return 0; // cannot delete system default profile
 	return key_in_foreign_table($name, 'users', 'print_profile');
 }
@@ -100,7 +99,7 @@ if ( get_post('submit'))
 			$prof[$rep] = $val;
 		}
 		if ($_POST['profile_id']=='')
-		$_POST['profile_id'] = get_post('name');
+			$_POST['profile_id'] = get_post('name');
 		
 		update_printer_profile($_POST['profile_id'], $prof);
 		if ($selected_id == '') {
@@ -114,11 +113,11 @@ if ( get_post('submit'))
 
 if(get_post('delete'))
 {
- if (!check_delete(get_post('name'))) {
-	delete_printer_profile($selected_id);
-	display_notification(_('Selected printing profile has been deleted'));
-	clear_form();
- }
+ 	if (!check_delete(get_post('name'))) {
+		delete_printer_profile($selected_id);
+		display_notification(_('Selected printing profile has been deleted'));
+		clear_form();
+ 	}
 }
 
 if(get_post('_profile_id_update')) {

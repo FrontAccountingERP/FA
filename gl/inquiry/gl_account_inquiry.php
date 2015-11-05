@@ -132,7 +132,7 @@ function show_results()
 	
 	if ($dim == 2)
 		$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
-	else if ($dim == 1)
+	elseif ($dim == 1)
 		$dim_cols = array(_("Dimension"));
 	else
 		$dim_cols = array();

@@ -50,7 +50,6 @@ if (get_post('SearchOrders'))
 	$Ajax->addDisable(true, 'OpenOnly', $disable);
 
 	if ($disable) {
-//		$Ajax->addFocus(true, 'OrderNumber');
 		set_focus('OrderNumber');
 	} else
 		set_focus('type_');
@@ -114,9 +113,6 @@ function is_overdue($row)
 
 function edit_link($row)
 {
-	//return $row["closed"] ?  '' :
-	//	pager_link(_("Edit"),
-	//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 	return pager_link(_("Edit"),
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }

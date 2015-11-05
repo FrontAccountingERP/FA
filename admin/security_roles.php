@@ -147,9 +147,6 @@ if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 		$row = get_security_role($id);
 		$_POST['description'] = $row['description'];
 		$_POST['name'] = $row['role'];
-//	if ($row['inactive']
-//		$_POST['inactive'] = 1;
-	
 		$_POST['inactive'] = $row['inactive'];
 		$access = $row['areas'];
 		$sections = $row['sections'];
@@ -214,8 +211,6 @@ end_table(1);
 			$ext = $newext; 
 			$sec = $newsec;
 			$m = $parms[0] & ~0xff;
-//			if(!isset($security_sections[$m]))
-//			 display_error(sprintf("Bad section %X:", $m));
 			label_row($security_sections[$m].':', 
 				checkbox( null, 'Section'.$m, null, true, 
 					_("On/off set of features")),

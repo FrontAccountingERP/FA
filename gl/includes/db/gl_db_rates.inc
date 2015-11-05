@@ -62,12 +62,12 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 {
 	if (is_company_currency($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
-
+			
 	$date = date2sql($date_);
-
+		
 	$sql = "UPDATE ".TB_PREF."exchange_rates SET rate_buy=$buy_rate, rate_sell=".db_escape($sell_rate)
 	." WHERE curr_code=".db_escape($curr_code)." AND date_='$date'";
-
+				
 	db_query($sql, "could not add exchange rate for $curr_code");
 }
 
@@ -79,7 +79,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 
 	$date = date2sql($date_);
-
+		
 	$sql = "INSERT INTO ".TB_PREF."exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (".db_escape($curr_code).", '$date', ".db_escape($buy_rate)
 		.", ".db_escape($sell_rate).")";
@@ -143,8 +143,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/d/quotes.csv?s={$curr_a}{$curr_b}=X&f=sl1d1t1ba&e=.csv"; // new URL's for YAHOO
 		$site = "download.finance.yahoo.com";
-        //$filename = "/q?s={$curr_a}{$curr_b}=X"; // Let old code be here for a while, Joe.
- 		//$site = "finance.yahoo.com";
 	}
 	elseif ($provider == 'GOOGLE')
 	{
@@ -161,21 +159,21 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{	// first check with curl as we can set short timeout;
 		$retry = 1;
 	 	do {
-	       $ch = curl_init();
-    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
-	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
-    	   curl_setopt ($ch, CURLOPT_HEADER, 0);
-	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	       // prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
-		   if (!ini_get('safe_mode') && !ini_get('open_basedir'))
-    	   	curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
-    	   $contents = curl_exec ($ch);
-	       curl_close($ch);
+	       	$ch = curl_init();
+    	   	curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
+	       	curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
+    	   	curl_setopt ($ch, CURLOPT_HEADER, 0);
+	       	curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+	       	// prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
+		   	if (!ini_get('safe_mode') && !ini_get('open_basedir'))
+    	   		curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       	curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
+    	   	$contents = curl_exec ($ch);
+	       	curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
-		   $site="172.230.157.137";
-	   } while( ($contents == '') && $retry--);
+		   	$site="172.230.157.137";
+	   	} while( ($contents == '') && $retry--);
 	   
 	} else {
 		$contents = url_get_contents("http://".$site.$filename);
@@ -207,14 +205,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$val = $array[1];
 		if ($val != 0)
 			$val = 1 / $val;
-		/* Let old code be here for a while, Joe.
-		//if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
-			$val = strip_tags($matches[1]);
-			$val = str_replace(',', '', $val);
-			if ($val != 0)
-				$val = 1 / $val;
-		}
-		*/
 	}
 	elseif ($provider == 'GOOGLE')
 	{
@@ -249,5 +239,5 @@ function get_sql_for_exchange_rates($curr)
 		FROM ".TB_PREF."exchange_rates "
 		."WHERE curr_code=".db_escape($curr)."
 		 ORDER BY date_ DESC";
-	return $sql;
+	return $sql;	 
 }

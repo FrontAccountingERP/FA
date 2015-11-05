@@ -55,7 +55,7 @@ if (isset($_GET["AccGrp"]))
 //----------------------------------------------------------------------------------------------------
 
 function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert,
-	&$dec, &$pdec, &$rep, $dimension=0, $dimension2=0, $drilldown, $path_to_root)
+	$dimension=0, $dimension2=0, $drilldown, $path_to_root)
 {
 	global $levelptr, $k;
 		
@@ -106,7 +106,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 	while ($accounttype=db_fetch($result))
 	{	
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, 
-			$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+			$compare, $convert, $dimension, $dimension2, $drilldown, $path_to_root);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
@@ -212,9 +212,6 @@ function display_profit_and_loss($compare)
 	else
 		$drilldown = 0; // Root level
 	
-	$dec = 0;
-	$pdec = user_percent_dec();
-
 	if ($compare == 0 || $compare == 2)
 	{
 		$end = $to;
@@ -244,9 +241,6 @@ function display_profit_and_loss($compare)
 	
 	if (!$drilldown) //Root Level
 	{
-		$parent = -1;
-		$classper = 0.0;
-		$classacc = 0.0;
 		$salesper = 0.0;
 		$salesacc = 0.0;	
 	
@@ -264,10 +258,11 @@ function display_profit_and_loss($compare)
 			
 			//Get Account groups/types under this group/type
 			$typeresult = get_account_types(false, $class['cid'], -1);
+			$k = 0; // row color
 			while ($accounttype=db_fetch($typeresult))
 			{
 				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
-					$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+					$dimension, $dimension2, $drilldown, $path_to_root);
 				$class_per_total += $TypeTotal[0];
 				$class_acc_total += $TypeTotal[1];	
 
@@ -323,7 +318,7 @@ function display_profit_and_loss($compare)
 		echo $tableheader;
 		
 		$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
-			$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+			$dimension, $dimension2, $drilldown, $path_to_root);
 		
 	}
 		

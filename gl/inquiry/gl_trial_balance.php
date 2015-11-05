@@ -214,9 +214,6 @@ while ($class = db_fetch($classresult))
 	}
 }
 
-	//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
-	//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-	//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
 	if (!check_value('Balance'))
 	{
 		start_row("class='inquirybg' style='font-weight:bold'");

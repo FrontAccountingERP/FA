@@ -11,7 +11,7 @@
 ***********************************************************************/
 function display_bank_header(&$order)
 {
-	global $Ajax, $Refs;
+	global $Ajax;
 	$payment = $order->trans_type == ST_BANKPAYMENT;
 
 	$customer_error = false;
@@ -57,9 +57,6 @@ function display_bank_header(&$order)
     		text_row_ex($payment ?_("To the Order of:"):_("Name:"),
 				 'person_id', 40, 50);
     		break;
-		//case PT_WORKORDER :
-    	//	workorders_list_row(_("Work Order:"), 'person_id', null);
-    	//	break;
 		case PT_SUPPLIER :
     		supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
     		break;
@@ -100,9 +97,6 @@ function display_bank_header(&$order)
 			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
 				 null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
 			break;	
-		//case payment_person_types::Project() :
-    	//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
-    	//	break;
     }
 
 	table_section(3, "33%");
@@ -151,7 +145,7 @@ function display_gl_items($title, &$order)
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
 			_("Dimension")." 2", _("Amount"), _("Memo"), "");
-	else if ($dim == 1)
+	elseif ($dim == 1)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
 			_("Amount"), _("Memo"), "");
 	else
@@ -176,7 +170,6 @@ function display_gl_items($title, &$order)
 				label_cell(get_dimension_string($item->dimension_id, true));
     		if ($dim > 1)
 				label_cell(get_dimension_string($item->dimension2_id, true));
-			//amount_cell(abs($item->amount));
 			if ($order->trans_type == ST_BANKDEPOSIT)
 				amount_cell(-$item->amount);
 			else		
@@ -237,7 +230,6 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['amount'] = price_format(0);
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
-		//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
 		if(isset($_POST['_code_id_update'])) {
 			    $Ajax->activate('code_id');
 		}
@@ -252,8 +244,6 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$acc = get_supplier_accounts($_POST['person_id']);
 			$_POST['code_id'] = $acc['payable_account'];
 		}
-		//elseif ($_POST['PayType'] == PT_WORKORDER)
-		//	$_POST['code_id'] = get_company_pref('default_assembly_act');
 		else {
 			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');

@@ -163,7 +163,7 @@ class fa_patch {
 				if ($result)
 					$this->log_error(_("Upgrade failed. Original database content restored successfully."), 'Info');
 				else
-					$thi->log_error(sprintf(_("Database restore operation failed. Original database content is in %s file."), $this->backup));
+					$this->log_error(sprintf(_("Database restore operation failed. Original database content is in %s file."), $this->backup));
 				$this->post_fail($this->cur_company);
 			}
 		} else {

@@ -151,14 +151,9 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 	$sql = "UPDATE ".TB_PREF."journal SET amount=0
 		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
-	$result = db_query($sql, "could not void journal transaction for type=$type and trans_no=$type_no");
+	db_query($sql, "could not void journal transaction for type=$type and trans_no=$type_no");
 
 	void_bank_trans($type, $type_no, true);
-
-//	void_gl_trans($type, $type_no, true);	 // this is done above
-//	void_trans_tax_details($type, $type_no); // ditto
-//	void_supp_allocations($type, $type_no); // ditto
-//	void_cust_allocations($type, $type_no); // ditto
 
 	if ($use_transaction)
 		commit_transaction();

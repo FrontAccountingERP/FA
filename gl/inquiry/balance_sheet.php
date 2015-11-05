@@ -104,7 +104,6 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 		$parent1 = $acctype1["parent"];
 		if ($drilldown && $parent1 == $_POST["AccGrp"])
 		//END Patch#2		
-		//elseif ($drilldown && $type != $_POST["AccGrp"])
 		{
 			$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
@@ -164,8 +163,6 @@ function display_balance_sheet()
 		$lclose = 0.0; 
 		$calculateclose = 0.0;		
 
-		$parent = -1;
-
 		//Get classes for BS
 		$classresult = get_account_classes(false, 1);
 	
@@ -174,14 +171,14 @@ function display_balance_sheet()
 			$classclose = 0.0;
 			$convert = get_class_type_convert($class["ctype"]);
 			$ctype = $class["ctype"];
-			$classname = $class["class_name"];	
 
 			//Print Class Name	
 			table_section_title($class["class_name"]);
 			
 			//Get Account groups/types under this group/type
 			$typeresult = get_account_types(false, $class['cid'], -1);
-				
+			
+			$k = 0;
 			while ($accounttype=db_fetch($typeresult))
 			{
 				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, 

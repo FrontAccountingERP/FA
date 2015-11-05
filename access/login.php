@@ -29,9 +29,9 @@ function defaultCompany()
 	else
 	{
 		$demo_text = _("Please login here");
-    if (@$SysPrefs->allow_password_reset) {
-      $demo_text .= " "._("or")." <a href='$path_to_root/index.php?reset=1'>"._("request new password")."</a>";
-    }
+    	if (@$SysPrefs->allow_password_reset) {
+      		$demo_text .= " "._("or")." <a href='$path_to_root/index.php?reset=1'>"._("request new password")."</a>";
+    	}
 	}
 
 	if (check_faillog())
@@ -109,7 +109,6 @@ function defaultCompany()
 			echo "</select>\n";
 			echo "</td></tr>";
 		} else {
-//			$coy = $def_coy;
 			text_row(_("Company"), "company_login_nickname", "", 20, 50);
 		}
 		start_row();

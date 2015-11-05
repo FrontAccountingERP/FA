@@ -34,9 +34,6 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 		$amount_bank = $amount;
 	$amount_bank = round2($amount_bank, user_price_dec());	
 
-	// Also store the rate to the home
-	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
-
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id) ";
 
@@ -152,7 +149,7 @@ function void_bank_trans($type, $type_no, $nested=false)
 			SET amount=0
 			WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
-	$result = db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
+	db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 
 	void_gl_trans($type, $type_no, true);
 

@@ -199,7 +199,7 @@ function handle_delete($id)
 	}
 	$err = remove_connection($id);
 	if ($err == 0)
-		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manually"));
+		display_error(_("Error removing Database: ") . $id . _(", please remove it manually"));
 
 	if ($def_coy == $id)
 		$def_coy = 0;
