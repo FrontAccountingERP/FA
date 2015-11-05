@@ -670,7 +670,7 @@ function page_processing($msg = false)
 	global $Ajax;
 
 	if ($msg === true)
-		$msg = _('Entered data has not been saved yet.\nDo you want to abandon changes?');
+		$msg = _("Entered data has not been saved yet.\nDo you want to abandon changes?");
 
 	$js = "_validate._processing=" . (
 		$msg ? '\''.strtr($msg, array("\n"=>'\\n')) . '\';' : 'null;');
