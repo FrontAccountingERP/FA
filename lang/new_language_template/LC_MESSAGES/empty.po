@@ -8396,7 +8396,7 @@ msgid "Items"
 msgstr ""
 
 #: /includes/ui/ui_controls.inc:666
-msgid "Entered data has not been saved yet.\\nDo you want to abandon changes?"
+msgid "Entered data has not been saved yet.\nDo you want to abandon changes?"
 msgstr ""
 
 #: /includes/ui/ui_input.inc:656
