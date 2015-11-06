@@ -132,7 +132,6 @@ function display_db_pager(&$pager) {
 				if(get_post('show_inactive'))
 					$pager->inactive_control_cell($row); break;
 		    default:
-//		    case 'text':
 			  if (isset( $col['align']))
 			  	  label_cell($cell, "align='" . $col['align'] . "'");
 			  else
@@ -188,7 +187,7 @@ function display_db_pager(&$pager) {
 		echo $inact;
 		echo "</td>";
 	} else {
-	  label_cell( _('No records') . $inact, "colspan=$colspan class='navibar'");
+	  	label_cell( _('No records') . $inact, "colspan=$colspan class='navibar'");
 	}
 
 	end_row();

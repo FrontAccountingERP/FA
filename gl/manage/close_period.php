@@ -27,7 +27,7 @@ page(_($help_context = "Closing GL Transactions"), false, false, "", $js);
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
-	global $Refs, $SysPrefs;
+	global $SysPrefs;
 	
 	if (!is_date($_POST['date']) || date1_greater_date2($_POST['date'], Today()))
 	{

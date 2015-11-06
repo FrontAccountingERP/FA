@@ -50,7 +50,7 @@ function load_stock_levels($location)
 	return $qoh_stock;
 }
 
-// recursion fixed by Tom Moulton. Max 10 recursion levels.
+// recursion fixed. Max 10 recursion levels.
 function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level=0) 
 {
 	global $bom_list, $qoh_stock;

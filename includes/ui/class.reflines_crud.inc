@@ -30,7 +30,7 @@ class fa_reflines extends simple_crud_view {
 
 	function list_view($Mode)
 	{
-		global $Ajax, $systypes_array;
+		global $systypes_array;
 
 		start_table(TABLESTYLE);
 

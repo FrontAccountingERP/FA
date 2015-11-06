@@ -116,7 +116,6 @@ table_header($th);
 $k = 0;
 while ($myrow = db_fetch($result)) 
 {
-
 	alt_table_row_color($k);
 
 	label_cell($myrow["cid"]);

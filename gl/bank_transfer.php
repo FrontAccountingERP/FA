@@ -94,7 +94,6 @@ function gl_payment_controls($trans_no)
 			$_POST['amount'] = 0;
 		}
 	}
-	$home_currency = get_company_currency();
 
 	start_form();
 

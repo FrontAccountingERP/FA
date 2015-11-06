@@ -53,26 +53,26 @@ define('SS_GL',		62<<8);
 define('SS_GL_A',	63<<8);
 
 $security_sections = array(
- SS_SADMIN => _("System administration"),
- SS_SETUP => _("Company setup"),
- SS_SPEC => _("Special maintenance"),
- SS_SALES_C => _("Sales configuration"),
- SS_SALES => _("Sales transactions"),
- SS_SALES_A => _("Sales related reports"),
- SS_PURCH_C => _("Purchase configuration"),
- SS_PURCH => _("Purchase transactions"),
- SS_PURCH_A => _("Purchase analytics"),
- SS_ITEMS_C => _("Inventory configuration"),
- SS_ITEMS => _("Inventory operations"),
- SS_ITEMS_A => _("Inventory analytics"),
- SS_MANUF_C => _("Manufacturing configuration"),
- SS_MANUF => _("Manufacturing transactions"),
- SS_MANUF_A => _("Manufacturing analytics"),
- SS_DIM_C => _("Dimensions configuration"),
- SS_DIM => _("Dimensions"),
- SS_GL_C => _("Banking & GL configuration"),
- SS_GL => _("Banking & GL transactions"),
- SS_GL_A => _("Banking & GL analytics")
+ 	SS_SADMIN => _("System administration"),
+ 	SS_SETUP => _("Company setup"),
+ 	SS_SPEC => _("Special maintenance"),
+ 	SS_SALES_C => _("Sales configuration"),
+ 	SS_SALES => _("Sales transactions"),
+ 	SS_SALES_A => _("Sales related reports"),
+ 	SS_PURCH_C => _("Purchase configuration"),
+ 	SS_PURCH => _("Purchase transactions"),
+ 	SS_PURCH_A => _("Purchase analytics"),
+ 	SS_ITEMS_C => _("Inventory configuration"),
+ 	SS_ITEMS => _("Inventory operations"),
+ 	SS_ITEMS_A => _("Inventory analytics"),
+ 	SS_MANUF_C => _("Manufacturing configuration"),
+ 	SS_MANUF => _("Manufacturing transactions"),
+ 	SS_MANUF_A => _("Manufacturing analytics"),
+ 	SS_DIM_C => _("Dimensions configuration"),
+ 	SS_DIM => _("Dimensions"),
+ 	SS_GL_C => _("Banking & GL configuration"),
+ 	SS_GL => _("Banking & GL transactions"),
+ 	SS_GL_A => _("Banking & GL analytics")
 );
 
 /*
@@ -297,23 +297,6 @@ function add_access_extensions()
 		}
 	}
 }
-/*
-	Helper function to retrieve extension access definitions in isolated environment.
-*/
-/*
-function get_access_extensions($id) {
-	global $path_to_root, $installed_extensions;
-	
-	$ext = $installed_extensions[$id];
-	
-	$security_sections = $security_areas = array();
-	
-	if (isset($ext['acc_file']))
-		include_once($path_to_root.'/'.$ext['path'].'/'.$ext['acc_file']);
-
-	return array($security_areas, $security_sections);
-}
-*/
 
 function check_edit_access($name)
 {

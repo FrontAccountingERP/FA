@@ -35,13 +35,11 @@ class contacts extends simple_crud {
 		br();
 
 			$contacts = get_crm_persons($this->class, $this->subclass, $this->entity);
-//				check_value('show_inactive'));
 			start_table(TABLESTYLE, "width='80%'");
 
 			$th = array(_('Assignment'), _("Reference"), _("Full Name"), _("Phone"), _("Sec Phone"), _("Fax"),
 				_("email"),  '',
 				"&nbsp;");
-		//	inactive_control_column($th);
 
 			table_header($th);
 			$k = 0; 
@@ -59,11 +57,10 @@ class contacts extends simple_crud {
 					label_cell($last["phone2"]);
 					label_cell($last["fax"]);
 					email_cell($last["email"]);
-		//	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_contacts', 'id');
 
 				 	edit_button_cell("{$this->name}Edit[{$last['id']}]", _("Edit"));
 
-			// delete button removes only category unless this is the last contact for this person
+					// delete button removes only category unless this is the last contact for this person
 					delete_button_cell("{$this->name}Delete[{$last['id']}]", _("Delete"));
 					end_row();
 					$description = array();
@@ -76,7 +73,7 @@ class contacts extends simple_crud {
 				}
 			}
 
-//inactive_control_row($th);
+			//inactive_control_row($th);
 			end_table(1);
 	}
 	

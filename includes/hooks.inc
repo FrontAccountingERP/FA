@@ -203,9 +203,9 @@ class hooks {
 	 * more than one in  the cart.
 	 */
 	/* Default behavior check if there is enough quantity on hand and change the css
- * class if needed */
+ 	 * class if needed */
 	static function  default_get_dispatchable_quantity($line_item, $location, $date, $qoh) {
-    global $SysPrefs;
+    	global $SysPrefs;
 
 		if ($SysPrefs->allow_negative_stock() || ($line_item->qty_dispatched <= $qoh)) {
 			return true;
@@ -237,10 +237,10 @@ function install_hooks()
 	}
 	// install hooks provided by active extensions
 	foreach($installed_extensions as $ext) {
-			$hook_class = 'hooks_'.$ext['package'];
-			if ($ext['active'] && class_exists($hook_class)) {
-				$Hooks[$ext['package']] = new $hook_class;
-			}
+		$hook_class = 'hooks_'.$ext['package'];
+		if ($ext['active'] && class_exists($hook_class)) {
+			$Hooks[$ext['package']] = new $hook_class;
+		}
 	}
 }
 /*

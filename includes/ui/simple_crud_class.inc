@@ -106,8 +106,6 @@ class simple_crud {
 	{
 		global $Ajax;
 
-		$sel_name = $this->name.'_id';
-
 		// list controls lookup
 		foreach (array_keys($this->pre_handlers) as $m) {
 			if (isset($_POST[$this->name.$m])) {
@@ -211,9 +209,9 @@ class simple_crud {
 		if ($async === 'both') {
 			$async = 'default'; $cancel = 'cancel';
 		} 
-		else if ($async === 'default')
+		elseif ($async === 'default')
 			$cancel = true;
-		else if ($async === 'cancel')
+		elseif ($async === 'cancel')
 			$async = true;
 		echo "<center>";
 

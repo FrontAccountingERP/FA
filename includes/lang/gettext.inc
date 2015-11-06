@@ -20,8 +20,6 @@
 //  Authors: Laurent Bedubourg <laurent.bedubourg@free.fr>
 //  
 
-//require_once "PEAR.php";
-
 define('GETTEXT_NATIVE', 1);
 define('GETTEXT_PHP', 2);
 
@@ -72,9 +70,6 @@ class gettext_native_support
         putenv("LC_ALL=$lang_code");
         putenv("LANGUAGE=$lang_code");
 
-        //$set = setlocale(LC_ALL, "$lang_code");
-        //$set = setlocale(LC_ALL, "$encoding");
-
 		// cover a couple of country/encoding variants 
 		$up = strtoupper($encoding);
 		$low = strtolower($encoding);
@@ -95,11 +90,8 @@ class gettext_native_support
 				return 0;
             $str = sprintf('language code "%s", encoding "%s" not supported by your system',
                 $lang_code, $encoding);
-            //$err = new GetText_Error($str);
-            //return PEAR::raise_error($err);
 			return raise_error("1 " . $str);
         }
-		//return 0;
     }
     /**
 	 *	Check system support for given language nedded for gettext.
@@ -193,8 +185,6 @@ class gettext_native_support
     	$value = $this->_get_translation($key);
         if ($value === false) {
             $str = sprintf('Unable to locate gettext key "%s"', $key);
-            //$err = new GetText_Error($str);
-            //return PEAR::raise_error($err);
 			return raise_error("2 " . $str);
         }
         
@@ -276,9 +266,6 @@ class gettext_php_support extends gettext_native_support
             list($domain, $path) = array_shift($this->_jobs);
             $err = $this->add_domain($domain, $path);
             // error raised, break jobs
-            /*if (PEAR::is_error($err)) {
-                return $err;
-            }*/
 			if (is_error($err)) 
 			{
                 return $err;
@@ -352,8 +339,6 @@ class gettext_php_support extends gettext_native_support
         if (!file_exists($src_domain)) 
         {
             $str = sprintf('Domain file "%s" not found.', $src_domain);
-            //$err = new GetText_Error($str);
-            //return PEAR::raise_error($err);
 			return raise_error("4 " . $str);
         }
         
@@ -370,9 +355,6 @@ class gettext_php_support extends gettext_native_support
             {
                 $comp = new gettext_php_support_compiler();
                 $err  = $comp->compile($hash, $src_domain);
-                /*if (PEAR::is_error($err)) { 
-                    return $err; 
-                }*/
     			if (is_error($err)) 
     			{
                     return $err;
@@ -454,8 +436,6 @@ class gettext_php_support_parser
         if (!file_exists($file)) 
         {
             $str = sprintf('Unable to locate file "%s"', $file);
-            //$err = new GetText_Error($str);
-            //return PEAR::raise_error($err);
 			return raise_error($str);
         }
         $i = 0;
@@ -530,8 +510,6 @@ class gettext_php_support_compiler
         if (!$fp) 
         {
             $str = sprintf('Unable to open "%s" in write mode.', $dest_path);
-            //$err = new GetText_Error($str);
-            //return PEAR::raise_error($err);
 			return raise_error($str);
         }
         fwrite($fp, '<?php' . "\n");

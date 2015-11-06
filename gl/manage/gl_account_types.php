@@ -44,7 +44,6 @@ function can_process($selected_id)
 		return false;
 	}
 
-	//if (strcmp($_POST['id'], $_POST['parent']) == 0) 
 	if ($_POST['id'] === $_POST['parent']) 
 	{
 		display_error(_("You cannot set an account group to be a subgroup of itself."));

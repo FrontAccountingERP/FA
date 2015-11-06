@@ -46,7 +46,6 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 	else
 		display_notification_centered(_("The Budget has been deleted."));
 
-	//meta_forward($_SERVER['PHP_SELF']);
 	$Ajax->activate('budget_tbl');
 }
 if (isset($_POST['submit']) || isset($_POST['update']))
@@ -71,7 +70,7 @@ if (db_has_gl_accounts())
 		dimensions_list_row(_("Dimension")." 1", 'dim1', $_POST['dim1'], true, null, false, 1);
 		dimensions_list_row(_("Dimension")." 2", 'dim2', $_POST['dim2'], true, null, false, 2);
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
 		hidden('dim2', 0);

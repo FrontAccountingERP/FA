@@ -278,15 +278,14 @@ function show_allocatable($show_totals) {
 
 	global $systypes_array;
 	
-    $k = $counter = $total_allocated = 0;
+    $k = $total_allocated = 0;
 
 	$cart = $_SESSION['alloc'];
 	$supp_ref = in_array($cart->type, array(ST_SUPPCREDIT, ST_SUPPAYMENT, ST_BANKPAYMENT));
 
 	if (count($cart->allocs)) 
 	{
-//		if ($cart->currency != $cart->person_curr)
-			display_heading(sprintf(_("Allocated amounts in %s:"), $cart->person_curr));
+		display_heading(sprintf(_("Allocated amounts in %s:"), $cart->person_curr));
 		start_table(TABLESTYLE, "width='60%'");
    		$th = array(_("Transaction Type"), _("#"), $supp_ref ? _("Supplier Ref"): _("Ref"), _("Date"), _("Due Date"), _("Amount"),
    			_("Other Allocations"), _("Left to Allocate"), _("This Allocation"),'','');
@@ -324,15 +323,7 @@ function show_allocatable($show_totals) {
 		if ($show_totals) {
     	   	label_row(_("Total Allocated"), price_format($total_allocated),
 	    		"colspan=8 align=right", "align=right id='total_allocated'", 3);
-/*
-			$amount = $_SESSION['alloc']->amount;
 
-			if ($_SESSION['alloc']->type == ST_SUPPCREDIT
-				|| $_SESSION['alloc']->type == ST_SUPPAYMENT
-				||  $_SESSION['alloc']->type == ST_BANKPAYMENT || 
-				($_SESSION['alloc']->type == ST_JOURNAL && $_SESSION['alloc']->person_type == PT_SUPPLIER))
-				$amount = -$amount;
-*/
 			$amount = abs($cart->amount);
 
 			if (floatcmp($amount, $total_allocated) < 0)
@@ -384,13 +375,7 @@ function check_allocations()
 
 		 $total_allocated += input_num('amount' . $counter);
 	}
-/*
-	$amount = $_SESSION['alloc']->amount;
 
-	if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT)) || 
-		($_SESSION['alloc']->type==ST_JOURNAL && $_SESSION['alloc']->person_type == PT_SUPPLIER))
-		$amount = -$amount;
-*/
 	$amount = abs($_SESSION['alloc']->amount);
 
 	if ($total_allocated - ($amount + input_num('discount'))  > $SysPrefs->allocation_settled_allowance())

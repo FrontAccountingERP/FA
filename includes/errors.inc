@@ -93,46 +93,45 @@ function error_handler($errno, $errstr, $file, $line) {
 function fmt_errors($center=false) {
     global $messages, $path_to_root, $SysPrefs;
 
-  $msg_class = array(
-  	E_USER_ERROR => 'err_msg',
-  	E_USER_WARNING =>'warn_msg', 
-	E_USER_NOTICE => 'note_msg');
+  	$msg_class = array(
+  		E_USER_ERROR => 'err_msg',
+  		E_USER_WARNING =>'warn_msg', 
+		E_USER_NOTICE => 'note_msg');
 
-  $type = E_USER_NOTICE;
-  $content = '';
-//  $class = 'no_msg';
-  if (count($messages)) {
-	foreach($messages as $cnt=>$msg) {
-		if ($SysPrefs->go_debug && $msg[0]>E_USER_NOTICE)
-		 	$msg[0] = E_ERROR;
+  	$type = E_USER_NOTICE;
+  	$content = '';
 
-		if ($msg[0]>$type) continue;
+  	if (count($messages)) {
+		foreach($messages as $cnt=>$msg) {
+			if ($SysPrefs->go_debug && $msg[0]>E_USER_NOTICE)
+		 		$msg[0] = E_ERROR;
 
-		if ($msg[0]<$type) { 
-			if ($msg[0] == E_USER_WARNING) {
-				$type = E_USER_WARNING; // user warnings 
-				$content = ''; 			// clean notices when we have errors
-			} else  {
-				$type = E_USER_ERROR; 	// php or user errors 
-				if($type == E_USER_WARNING)
-					$content = ''; 			// clean other messages
+			if ($msg[0]>$type) continue;
+
+			if ($msg[0]<$type) { 
+				if ($msg[0] == E_USER_WARNING) {
+					$type = E_USER_WARNING; // user warnings 
+					$content = ''; 			// clean notices when we have errors
+				} else  {
+					$type = E_USER_ERROR; 	// php or user errors 
+					if($type == E_USER_WARNING)
+						$content = ''; 			// clean other messages
+				}
 			}
+
+	    	$str = $msg[1];
+			if (!in_array($msg[0], array(E_USER_NOTICE, E_USER_ERROR, E_USER_WARNING)) && $msg[2] != null)
+		  		$str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
+
+			if ($SysPrefs->go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
+		  		$str .= '<br>'.$msg[4];
+			$content .= ($cnt ? '<hr>' : '').$str;
 		}
-
-	    $str = $msg[1];
-		if (!in_array($msg[0], array(E_USER_NOTICE, E_USER_ERROR, E_USER_WARNING)) && $msg[2] != null)
-		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
-
-		if ($SysPrefs->go_debug>1 && $type!=E_USER_NOTICE && $type!=E_USER_WARNING)
-		  $str .= '<br>'.$msg[4];
-		$content .= ($cnt ? '<hr>' : '').$str;
-	}
-	$class = $msg_class[$type];
-    $content = "<div class='$class'>$content</div>";
-  } else
-  if ($path_to_root=='.')
-	return '';
-  return $content;
+		$class = $msg_class[$type];
+    	$content = "<div class='$class'>$content</div>";
+  	} elseif ($path_to_root=='.')
+		return '';
+  	return $content;
 }
 //-----------------------------------------------------------------------------
 // Error box <div> element.
@@ -142,7 +141,7 @@ function error_box() {
     
     echo "<div id='msgbox'>";
 
-// Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
+	// Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
 	$before_box = ob_get_clean(); // save html content before error box 
     ob_start('output_html');
     echo "</div>";
@@ -173,7 +172,6 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	$warning = $msg==null;
 	$db_error = db_error_no();
 	
-//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
 	if($warning)
 		$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
 	else
@@ -190,7 +188,6 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 		$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
 
 		$str .= "sql that failed was : ".str_replace(TB_PREF, $cur_prefix, $sql_statement)."<br>";
-//		if ($SysPrefs->go_debug > 1) display_backtrace();
 	}
 	
 	$str .= "<br><br>";
@@ -226,12 +223,12 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 	{
 		
 		if ($SysPrefs->go_debug || !frindly_db_error($db_error)) {
-				display_db_error($msg, $sql_statement, false);
+			display_db_error($msg, $sql_statement, false);
 		}
 		
 		if ($rollback_if_error) 
 		{
-		  $rollback_result = db_query("rollback");
+		  	$rollback_result = db_query("rollback");
 		}
 		
 		if ($exit_if_error) 

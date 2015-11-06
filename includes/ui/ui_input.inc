@@ -215,9 +215,9 @@ function submit_add_or_update($add=true, $title=false, $async=false, $clone=fals
 	elseif ($async === 'upgrade') {
 		$async = 'default nonajax process'; $cancel = 'cancel';
 	}
-	else if ($async === 'default')
+	elseif ($async === 'default')
 		$cancel = true;
-	else if ($async === 'cancel')
+	elseif ($async === 'cancel')
 		$async = true;
 	
 	if ($add)
@@ -928,26 +928,6 @@ function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params=
 	echo "</tr>\n";
 }
 
-//-----------------------------------------------------------------------------------
-/*
-function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $input_value)
-{
-  	global $Ajax;
-
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\">   ";
-
-	submit($input_name, $input_value);
-
-	echo "</td></tr>\n";
-	$Ajax->addUpdate($name, $name, $value);
-}
-*/
 //-----------------------------------------------------------------------------------
 //
 //	When show_inactive page option is set 

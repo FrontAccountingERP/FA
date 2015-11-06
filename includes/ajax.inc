@@ -98,52 +98,37 @@ class Ajax extends JsHttpRequest {
 	//
 	function _addCommand($trigger, $aAttributes, $mData)
 	{
-	  if ($this->isActive() && ($trigger !== false)) {
-//		display_error('adding '.$trigger.':'.htmlentities($mData));
+	  	if ($this->isActive() && ($trigger !== false)) {
 
-		$aAttributes['why'] = $trigger;
-		$aAttributes['data'] = $mData;
-		$this->aCommands[] = $aAttributes;
-	  }
+			$aAttributes['why'] = $trigger;
+			$aAttributes['data'] = $mData;
+			$this->aCommands[] = $aAttributes;
+	  	}
 	}
-	/*
-	* Register binds function with ajax call parameter
-	
-	function register($trigger, $function) 
+
+	function run() 
 	{
-	    if (isset($_REQUEST[$trigger])) {
-		$function(&$this);
-	    }
-	}
-	*/
-	function run() {
-	    
 	    if (!$this->isActive()) return;
 
 		// remove not active commands
 		foreach ($this->aCommands as $idx => $com) {
 // If we should reload whole page content ignore all commands but the update.
 // This is page repost equivalent, although header and footer are not reloaded.
-		  if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
-			unset($this->aCommands[$idx]);
-//			display_error('unset '.$com['t']);
-		  }
-		  else
-		  if($com['n'] == 'up' && $com['t'] == '_page_body') {
-		  	  $cmds = array($com);
-		  	  foreach( $this->aCommands as $k=> $cmd) {
-			  	if ($cmd['n'] == 'fc' || $cmd['n'] == 'js') {	// save focus
-					$cmds[] = $cmd; //break;
-			  	}
-			  }
-			  $this->aCommands = $cmds;
-			  break;
-		  }
+		  	if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
+				unset($this->aCommands[$idx]);
+			}
+			elseif($com['n'] == 'up' && $com['t'] == '_page_body') {
+			  	$cmds = array($com);
+			  	foreach( $this->aCommands as $k=> $cmd) {
+				  	if ($cmd['n'] == 'fc' || $cmd['n'] == 'js') {	// save focus
+						$cmds[] = $cmd; //break;
+			  		}
+				}
+				$this->aCommands = $cmds;
+				break;
+			}
 		}
-//		display_error('Activate:'.htmlentities(print_r($this->triggers, true)));
-//		display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 	    $GLOBALS['_RESULT'] = $this->aCommands;
-//	    exit();
 	}
 }
 

@@ -671,12 +671,6 @@ function install_extension($pkg_name)
 				'active' => @$pkg['DefaultStatus'] == 'active' ? true : false,
 				'path' => $pkg['InstallPath'],
 			);
-//			if (isset($pkg['MenuTabs']))
-//				$ext['tabs'] = $pkg['MenuTabs'];
-//			if (isset($pkg['MenuEntries']))
-//				$ext['entries'] = $pkg['MenuEntries'];
-//			if (isset($pkg['AccessExtensions']))
-//				$ext['acc_file'] = $pkg['AccessExtensions'];
 			if (isset($pkg['SqlScript']))
 				$ext['sql'] = $pkg['SqlScript'];
 

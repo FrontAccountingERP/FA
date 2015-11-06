@@ -379,8 +379,7 @@ class items_cart
 				// do not post exchange variations to AR/AP (journal in not customer/supplier currency)
 	    		if ($gl->person_type_id==PT_SUPPLIER && (get_supplier_currency($gl->person_id) == $this->currency || $this->currency != $home_currency))
 	   				$supp_trans[$gl->person_id] = @$supp_trans[$gl->person_id] + $gl->amount;
-    			else
-    			if ($gl->person_type_id==PT_CUSTOMER && (get_customer_currency(null, $gl->branch_id) == $this->currency || $this->currency != $home_currency))
+    			elseif ($gl->person_type_id==PT_CUSTOMER && (get_customer_currency(null, $gl->branch_id) == $this->currency || $this->currency != $home_currency))
 	   				$cust_trans[$gl->branch_id] = @$cust_trans[$gl->branch_id] + $gl->amount;
     		}
 

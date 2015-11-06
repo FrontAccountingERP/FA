@@ -185,7 +185,6 @@ function create_cart($type, $trans_no)
 					// so we have to restore it from original gl amounts
 					$ex_rate = $bank_trans['amount']/$row['amount'];
 				} else {
-					$date = $row['tran_date'];
 					$cart->add_gl_item( $row['account'], $row['dimension_id'],
 						$row['dimension2_id'], $row['amount'], $row['memo_']);
 				}

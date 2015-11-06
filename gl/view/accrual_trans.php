@@ -52,7 +52,7 @@ $dim = get_company_pref('use_dimension');
 $first_cols = array(_("Type"), "#", _("Date"));
 if ($dim == 2)
 	$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
-else if ($dim == 1)
+elseif ($dim == 1)
 	$dim_cols = array(_("Dimension"));
 else
 	$dim_cols = array();

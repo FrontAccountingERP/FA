@@ -33,7 +33,7 @@ function set_global_connection($company=-1)
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
 	///// our sessions.
 	///// We are, however, investigating the existing code to be compatible in the future.
-		db_query("SET sql_mode = '".SQL_MODE."'");
+	db_query("SET sql_mode = '".SQL_MODE."'");
 	/////
 	$SysPrefs->refresh();
 	return $db;

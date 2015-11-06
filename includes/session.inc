@@ -148,12 +148,12 @@ function password_reset_fail()
 {
 	global $path_to_root;
 	
-  echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
-  echo "<b>" . _("The email address does not exist in the system, or is used by more than one user.") . "<b><br><br>";
+  	echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
+  	echo "<b>" . _("The email address does not exist in the system, or is used by more than one user.") . "<b><br><br>";
 
-  echo _("Plase try again or contact your system administrator to obtain new password.");
-  echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
-  echo "</center>";
+  	echo _("Plase try again or contact your system administrator to obtain new password.");
+  	echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
+  	echo "</center>";
 
 	kill_login();
 	die();
@@ -163,11 +163,11 @@ function password_reset_success()
 {
 	global $path_to_root;
 
-  echo "<center><br><br><font size='5' color='green'><b>" . _("New password sent") . "<b></font><br><br>";
-  echo "<b>" . _("A new password has been sent to your mailbox.") . "<b><br><br>";
+  	echo "<center><br><br><font size='5' color='green'><b>" . _("New password sent") . "<b></font><br><br>";
+  	echo "<b>" . _("A new password has been sent to your mailbox.") . "<b><br><br>";
 
-  echo "<br><a href='$path_to_root/index.php'>" . _("Login here") . "</a>";
-  echo "</center>";
+  	echo "<br><a href='$path_to_root/index.php'>" . _("Login here") . "</a>";
+  	echo "</center>";
 	
 	kill_login();
 	die();

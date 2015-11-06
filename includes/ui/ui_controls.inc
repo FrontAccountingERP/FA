@@ -134,7 +134,6 @@ function table_section($number=1, $width=false)
 		echo "</table>\n";
 		output_hidden();
 		$width = ($width ? "width='$width'" : "");
-		//echo "</td><td class='tableseparator' $width>\n"; // outer table
 		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
 	}
 	echo "<table class='tablestyle_inner'>\n";

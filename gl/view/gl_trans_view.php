@@ -94,7 +94,7 @@ $dim = get_company_pref('use_dimension');
 if ($dim == 2)
 	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"), _("Dimension")." 1", _("Dimension")." 2",
 		_("Debit"), _("Credit"), _("Memo"));
-else if ($dim == 1)
+elseif ($dim == 1)
 	$th = array(_("Journal Date"), _("Account Code"), _("Account Name"), _("Dimension"),
 		_("Debit"), _("Credit"), _("Memo"));
 else		

@@ -46,8 +46,6 @@ if (isset($_GET['AddedID']))
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
-	global $Refs;
-	
 	if (!is_date($_POST['date']))
 	{
 		display_error( _("The entered date is invalid."));

@@ -119,11 +119,6 @@ class db_pager {
 					}
 			}
 		}
-		//_vd($this->select);
-		//_vd($this->from);
-		//_vd($this->where);
-		//_vd($this->group);
-		//_vd($this->order);
 	}
 	//
 	//	Set additional constraint on record set
@@ -193,22 +188,22 @@ class db_pager {
 	    if ($result) {
 		// setting field names for subsequent queries
 			$c = 0;
-		  // add result field names to column defs for 
-		  // col value retrieve and sort purposes 
-		   $cnt = min(db_num_fields($result), count($this->columns));
+		  	// add result field names to column defs for 
+		  	// col value retrieve and sort purposes 
+		   	$cnt = min(db_num_fields($result), count($this->columns));
 			for ($c = $i = 0; $c < $cnt; $c++) {
 				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 //					if (!@($this->columns[$c]['type']=='skip'))
 			 			$this->columns[$c]['name']= db_field_name($result, $i);
 					if (!@($this->columns[$c]['type']=='insert'))
-			 		$i++;
-			 		}
+			 			$i++;
+			 	}
 		  	}
 		  	while ($row = db_fetch_assoc($result)) {
 				$this->data[] = $row;
 		  	}
 		} else 
-		  return false;
+		  	return false;
 		return true;
 	}
 	//
@@ -217,29 +212,29 @@ class db_pager {
 	function set_page($to) 
 	{
 	    switch($to) {
-		case 'next':
-		    $page = $this->curr_page+1; break;
-		case 'prev':
-		    $page = $this->curr_page-1; break;
-		case 'last':
-		    $page = $this->last_page; break;
-		default:
-		    if (is_numeric($to)) {
-			 $page = $to; break;
-		    }
-		case 'first':
-		    $page = 1; break;
+			case 'next':
+			    $page = $this->curr_page+1; break;
+			case 'prev':
+			    $page = $this->curr_page-1; break;
+			case 'last':
+			    $page = $this->last_page; break;
+			default:
+			    if (is_numeric($to)) {
+				 	$page = $to; break;
+			    }
+			case 'first':
+			    $page = 1; break;
 	    }
-	  if ($page < 1) 
-	    $page = 1;
-	  $max = $this->max_page;
-	  if ($page > $max) 
-	    $page = $max;
-	  $this->curr_page = $page;
-	  $this->next_page = ($page < $max) ? $page+1 : null;
-	  $this->prev_page = ($page > 1) ? ($page-1) : null;
-	  $this->last_page = ($page < $max) ? $max : null;
-	  $this->first_page = ($page != 1) ? 1: null;
+	  	if ($page < 1) 
+	    	$page = 1;
+	  	$max = $this->max_page;
+	  	if ($page > $max) 
+	    	$page = $max;
+	  	$this->curr_page = $page;
+	  	$this->next_page = ($page < $max) ? $page+1 : null;
+	  	$this->prev_page = ($page > 1) ? ($page-1) : null;
+	  	$this->last_page = ($page < $max) ? $max : null;
+	  	$this->first_page = ($page != 1) ? 1: null;
 	}
 	//
 	//	Set column definitions
@@ -252,8 +247,8 @@ class db_pager {
 		}
 		foreach ($flds as $colnum=>$coldef) {
 			if (is_string($colnum)) {	// 'colname'=>params
-			  $h = $colnum;
-			  $c = $coldef;
+			  	$h = $colnum;
+			  	$c = $coldef;
 			} else {			//  n=>params
 				if (is_array($coldef)) {
 					$h = '';
@@ -264,10 +259,10 @@ class db_pager {
 				}
 			}
 			if (is_string($c)) 			// params is simple column type
-			  $c = array('type'=>$c);
+			  	$c = array('type'=>$c);
 
 			if (!isset($c['type']))
-			  $c['type'] = 'text';
+			  	$c['type'] = 'text';
 
 			switch($c['type']) {
 				case 'inactive': 
@@ -307,12 +302,12 @@ class db_pager {
 		if ($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
-			// sort order column by priority instead of table order.
-			$columns = array();
+		// sort order column by priority instead of table order.
+		$columns = array();
 	    foreach ($this->columns as $col) {
-					if(isset($col['ord_priority'])) {
-						$columns[$col['ord_priority']] = $col;
-					}
+			if(isset($col['ord_priority'])) {
+				$columns[$col['ord_priority']] = $col;
+			}
 		}
 		krsort($columns);
 
@@ -435,9 +430,6 @@ class db_pager {
 	function inactive_control_cell(&$row)
 	{
 		if ($this->inactive_ctrl) {
-//			return inactive_control_cell($row[$this->inactive_ctrl['key']],
-//				 $row['inactive'], $this->inactive_ctrl['table'], 
-//				 $this->inactive_ctrl['key']);
 				 
 			global	$Ajax;
 

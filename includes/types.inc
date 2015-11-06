@@ -131,8 +131,6 @@ function payment_person_name($type, $person_id, $full=true) {
 		case PT_SUPPLIER :
 			return ($full ? $payment_person_types[$type] . " ":"") . sprintf("[%05s] %s", $person_id, get_supplier_name($person_id));
 		default :
-			//DisplayDBerror("Invalid type sent to person_name");
-			//return;
 			return '';
 	}
 }

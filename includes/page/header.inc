@@ -78,11 +78,6 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (in_ajax())
 		return; // just for speed up
 
-//	$jsext = substr_replace($_SERVER['PHP_SELF'], '.js', -4);
-
-//	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
-//		add_js_ufile($jsext);
-
 	$theme = user_theme();
 
 	if ($SysPrefs->help_base_url != null && $SysPrefs->use_popup_windows && $js == '')
@@ -94,7 +89,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		add_js_source(get_js_open_window(900, 500));
 	}
 	if ($js!='')
-	  add_js_source($js);
+	  	add_js_source($js);
 
 	if (!isset($no_menu))
 	{

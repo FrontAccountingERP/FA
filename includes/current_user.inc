@@ -304,7 +304,7 @@ function number_format2($number, $decimals=0)
 	global $SysPrefs;
 	$tsep = $SysPrefs->thoseps[user_dec_sep()];
 	$dsep = $SysPrefs->decseps[user_dec_sep()];
-	//return number_format($number, $decimals, $dsep,	$tsep);
+
 	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
 	else {
@@ -414,12 +414,12 @@ function user_numeric($input) {
     	$num = str_replace( $sep, '.', $num);
 
     if (!is_numeric($num))
-	  return false;
+	  	return false;
     $num = (float)$num;
     if ($num == (int)$num)
-	  return (int)$num;
+	  	return (int)$num;
     else
-	  return $num;
+	  	return $num;
 }
 
 function user_company()
