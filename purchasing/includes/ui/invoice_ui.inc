@@ -63,7 +63,6 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->gl_codes as $gl_line)
 		{
-			////////// 2009-08-18 Joe Hunt
 			if (!is_tax_account($gl_line->gl_code) || $supp_trans->tax_included)
 				$supp_trans->ov_amount += $gl_line->amount;
 		}
@@ -86,11 +85,6 @@ function invoice_header(&$supp_trans)
 
 	if ($supp_trans->trans_type == ST_SUPPCREDIT && $supp_trans->src_docs)
 	{
-//		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
-//		$trans = get_supp_trans($supp_trans->supplier_id, ST_SUPPINVOICE);
-//		$_POST['supplier_id'] = $trans['supplier_id'];
-//		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
-
 		$_POST['supplier_id'] = $supp_trans->supplier_id;
 		$supp = $supp_trans->supplier_name." - ".$supp_trans->currency;
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
@@ -218,7 +212,7 @@ function display_gl_controls(&$supp_trans, $k)
 	amount_cells(null, 'amount');
 	if ($dim < 1)	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension_id', 0, false).hidden('dimension2_id', 0, false));
-	else if ($dim < 2)	
+	elseif ($dim < 2)	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension2_id', 0, false));
 	else	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null);
@@ -282,7 +276,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
     	$th = array(_("Account"), _("Name"), _("Dimension")." 1", _("Dimension")." 2", _("Amount"), _("Memo"));
-	else if ($dim == 1)
+	elseif ($dim == 1)
     	$th = array(_("Account"), _("Name"), _("Dimension"), _("Amount"), _("Memo"));
     else
     	$th = array(_("Account"), _("Name"), _("Amount"), _("Memo"));
@@ -325,7 +319,6 @@ function display_gl_items(&$supp_trans, $mode=0)
 				label_cell("");
 			}	
 			end_row();
-			/////////// 2009-08-18 Joe Hunt
 			if ($mode > 1) {
 				if ($supp_trans->tax_included || !is_tax_account($entered_gl_code->gl_code))
 					$total_gl_value += $entered_gl_code->amount;
@@ -364,7 +357,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 	{ // only invoiced
 		if (isset($_POST['receive_begin']) && isset($_POST['receive_end']))
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
-		else if ($supp_trans->src_docs)
+		elseif ($supp_trans->src_docs)
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, array_keys($supp_trans->src_docs));
 		else	
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);

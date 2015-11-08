@@ -113,7 +113,6 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
 {
-	global $wo_cost_types;
 	$result = get_bom($stock_id);
 
 	// credit all the components
@@ -142,24 +141,6 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	if ($advanced)
 	{
 		$wo = get_work_order($woid);
-		// also take the additional issues
-		// moved to work_order_issues_db.inc
-		/*
-		$res = get_additional_issues($woid);
-		$issue_total = 0;
-		while ($item = db_fetch($res))
-		{
-			$standard_cost = get_standard_cost($item['stock_id']);
-			$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
-			$issue = get_stock_gl_code($item['stock_id']);
-            $stockitem = get_item($item['stock_id']);
-            $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
-                $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
-			$issue_total += $issue_cost;
-		}
-		if ($issue_total != 0)
-			add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
-		*/	
 		$lcost = get_gl_wo_cost($woid, WO_LABOUR);
 		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
 		$ocost = get_gl_wo_cost($woid, WO_OVERHEAD);

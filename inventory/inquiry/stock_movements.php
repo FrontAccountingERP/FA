@@ -89,12 +89,6 @@ $before_qty = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], add_d
 
 $after_qty = $before_qty;
 
-/*
-if (!isset($before_qty_row[0]))
-{
-	$after_qty = $before_qty = 0;
-}
-*/
 start_row("class='inquirybg'");
 $header_span = $display_location ? 6 : 5;
 label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=$header_span");

@@ -139,8 +139,6 @@ function _set_combo_select(e) {
 		e.setAttribute('_last', e.selectedIndex);
 		e.onblur = function() {
 		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
-//			if(string_contains(this.className, 'combo'))
-//			    _update_box(this);
 			if ((this.selectedIndex != this.getAttribute('_last'))
 				||((string_contains(this.className, 'combo') || string_contains(this.className, 'combo3')) && _update_box(this))
 				)
@@ -469,8 +467,6 @@ var inserts = {
 	    var ulist=ul.getElementsByTagName("li");
 	    for (var x=0; x<ulist.length; x++){ //loop through each LI e
 		var tab=ulist[x].getElementsByTagName("button")[0];
-//		if(tab.onclick==undefined) {
-// ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
 		    var url = tab.form.action
 		    tab.onclick=function(){
 		    if (!_hotkeys.alt && !tab.disabled)
@@ -487,24 +483,7 @@ var inserts = {
 			};
 		}
 	}
-/*	'tr.editrow': function(e) {
-		  	e.onkeydown = function(ev) {
-	  		ev = ev||window.event;
-	  		key = ev.keyCode||ev.which;
-	  		if(key == 13) {
-			  // Find & click additem/update button
-
-	  		} else	if(key == 27) {
-	  		  return false;
-			}
-		}
-
-	},
-*//*	'#msgbox': function(e) {
-	// this is to avoid changing div height after ajax update in IE7
-	  e.style.display = e.innerHTML.length ? 'block' : 'none';
-	}
-*//* TODO
+/* TODO
 	'a.date_picker':  function(e) {
 	    // this un-hides data picker for js enabled browsers
 	    e.href = date_picker(this.getAttribute('rel'));

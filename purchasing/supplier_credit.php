@@ -53,7 +53,6 @@ if (isset($_GET['New']))
 		$_SESSION['supp_trans']->trans_type = ST_SUPPCREDIT;
 		$_SESSION['supp_trans']->trans_no = 0;
 		$_SESSION['supp_trans']->supp_reference = '';
-		//		$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
 		$help_context = "Supplier Credit Note";
 		$_SESSION['page_title'] = _("Supplier Credit Note");
 
@@ -161,7 +160,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 
 function check_data()
 {
-	global $Refs, $SysPrefs;
+	global $SysPrefs;
 
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{

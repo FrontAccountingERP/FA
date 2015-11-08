@@ -27,36 +27,11 @@ simple_page_mode(true);
 $selected_component = $selected_id;
 //--------------------------------------------------------------------------------------------------
 
-//if (isset($_GET["NewItem"]))
-//{
-//	$_POST['stock_id'] = $_GET["NewItem"];
-//}
 if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $_GET['stock_id'];
 	$selected_parent =  $_GET['stock_id'];
 }
-
-/* selected_parent could come from a post or a get */
-/*if (isset($_GET["selected_parent"]))
-{
-	$selected_parent = $_GET["selected_parent"];
-}
-else if (isset($_POST["selected_parent"]))
-{
-	$selected_parent = $_POST["selected_parent"];
-}
-*/
-/* selected_component could also come from a post or a get */
-/*if (isset($_GET["selected_component"]))
-{
-	$selected_component = $_GET["selected_component"];
-}
-else
-{
-	$selected_component = get_post("selected_component", -1);
-}
-*/
 
 //--------------------------------------------------------------------------------------------------
 

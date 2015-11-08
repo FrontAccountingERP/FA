@@ -44,8 +44,6 @@ function display_issue_items($title, &$order)
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
-//		$total += ($stock_item->standard_cost * $stock_item->quantity);
-
 		if ($id != $line_no)
 		{
 			if (in_array($stock_item->stock_id, $low_stock))
@@ -75,8 +73,6 @@ function display_issue_items($title, &$order)
 	if ($id == -1)
 		issue_edit_item_controls($order);
 
-//	label_row(_("Total"), number_format2($total,user_price_dec()), "colspan=5", "align=right");
-
     end_table();
 	if (@$low_stock)
 		display_note(_("Marked items have insufficient quantities in stock as on day of issue."), 0, 1, "class='stockmankofg'");
@@ -96,7 +92,6 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, 
 			$order->line_items[$id]->stock_id, $dec);
-		//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
 		$std_cost = $order->line_items[$id]->standard_cost;
 		$_POST['units'] = $order->line_items[$id]->units;
 
@@ -121,7 +116,6 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(0, $dec);
-		//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 		$std_cost = $item_info["standard_cost"];
 		$_POST['units'] = $item_info["units"];
 	}
@@ -172,8 +166,6 @@ function issue_options_controls()
  	yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'],
  		_("Return Items to Location"), _("Issue Items to Work order"));
  
- 
-
 	textarea_row(_("Memo"), 'memo_', null, 50, 3);
 
 	end_table(1);

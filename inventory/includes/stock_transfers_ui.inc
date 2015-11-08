@@ -57,7 +57,6 @@ function display_transfer_items($title, &$order)
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
 	if ( count($order->line_items)) $th[] = '';
 	table_header($th);
-	$subtotal = 0;
 	$k = 0;  //row colour counter
 
 	$low_stock = $order->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);

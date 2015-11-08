@@ -20,9 +20,6 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
     if (is_service($mb_flag))
     {
-    	//display_db_error("Cannot do cost update for Service item : $stock_id", "");	
-
-		//Chaitanya
 		$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 
@@ -54,6 +51,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
 		if ($value_of_change != 0)
 		{
+			global $Refs;
 			$stock_gl_code = get_stock_gl_code($stock_id);
 
 			$cart = new items_cart(ST_COSTUPDATE);

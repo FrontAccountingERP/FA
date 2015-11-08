@@ -102,8 +102,6 @@ function add_po(&$po_obj)
 
 	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 
-	//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
-
 	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
 	commit_transaction();
@@ -150,13 +148,7 @@ function update_po(&$po_obj)
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
-//_vd($po_obj->prepayments);
 	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->orig_order_date, $po_obj->get_trans_total(), $po_obj->prepayments);
-//_vd($p = get_payments_for($po_obj->order_no, ST_PURCHORDER));
-//_vd(get_supp_trans($p[0]['trans_no_from'], $p[0]['trans_type_from']));
-//exit;
-
-	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
 	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
@@ -236,8 +228,6 @@ function read_po_items($order_no, &$order, $open_items_only=false)
         	{
         		if ($data['supplier_description'] != "")
         			$myrow['description'] = $data['supplier_description'];
-        		//if ($data['suppliers_uom'] != "")
-        		//	$myrow['units'] = $data['suppliers_uom'];
         	}		
             if (is_null($myrow["units"]))
             {
@@ -252,11 +242,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
             	$myrow["quantity_ordered"],$myrow["description"],
             	$myrow["unit_price"],$units, sql2date($myrow["delivery_date"]),
             	$myrow["qty_invoiced"], $myrow["quantity_received"])) {
-            		$newline = &$order->line_items[$order->lines_on_order-1];
-					$newline->po_detail_rec = $myrow["po_detail_item"];
-					$newline->standard_cost = $myrow["std_cost_unit"];  /*Needed for receiving goods and GL interface */
-				// set for later GRN edition
-//	   	    	$newline->receive_qty = $newline->quantity - $newline->qty_dispatched;
+				$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
 			}
         } /* line po from purchase order details */
     } //end of checks on returned data set

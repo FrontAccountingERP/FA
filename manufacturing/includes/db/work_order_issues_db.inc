@@ -55,7 +55,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		if ($to_work_order)
 			$item->quantity = -$item->quantity;
 
-		//Chaitanya: Stamp the standard_cost
+		// Stamp the standard_cost
 		$standard_cost = get_standard_cost($item->stock_id);
 		// insert a -ve stock move for each item
 		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
@@ -71,7 +71,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		$issue = get_stock_gl_code($item->stock_id);
         $stockitem = get_item($item->stock_id);
 
-		//Chaitanya : Compatibility for Service Items
+		// Compatibility for Service Items
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
@@ -82,7 +82,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		$issue_total += $issue_cost;
 	}	
 	if ($issue_total != 0)
-		//Chaitanya : Apply cost to QOH as adjustment only
+		// Apply cost to QOH as adjustment only
 		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total, true);
 	$issue = get_stock_gl_code($details['stock_id']);
     $stockitem = get_item($details['stock_id']);
@@ -180,11 +180,7 @@ function void_work_order_issue($type_no)
 		.db_escape($type_no);
 	db_query($sql,"A work order issue item could not be voided");
 
-	// void any related gl trans
-	//Chaitanya : Nothing happens due to next statement as all gl postings are done against WO
-	//void_gl_trans(ST_MANUISSUE, $type_no, true);
-	
-	//Chaitanya : Reverse the gl posting
+	// Reverse the gl posting
 	$issue = get_work_order_issue($type_no);
 	$manf_stock_id = $issue["stock_id"];
 	$date_ = sql2date($issue["issue_date"]);
@@ -199,7 +195,7 @@ function void_work_order_issue($type_no)
 		$issue = get_stock_gl_code($myrow["stock_id"]);
         $stockitem = get_item($myrow["stock_id"]);
 
-		//Chaitanya : Compatibility for Service Items
+		// Compatibility for Service Items
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
@@ -214,7 +210,7 @@ function void_work_order_issue($type_no)
 		}
 	}
 	if ($issue_total != 0)
-		//Chaitanya : Revese cost effect on manfactured stock item as adjustment only
+		// Revese cost effect on manfactured stock item as adjustment only
 		add_issue_cost($manf_stock_id, 0, $date_, $issue_total, true);
 	$issue = get_stock_gl_code($manf_stock_id);
     $stockitem = get_item($manf_stock_id);
@@ -223,7 +219,7 @@ function void_work_order_issue($type_no)
 			0, 0, $date_.": "._("Reversed the issue to")." ".$stockitem["description"], 
 			-$total_cost);
 
-	//Chaitanya : Shifted below void all related stock moves
+	// Shifted below void all related stock moves
 	void_stock_move(ST_MANUISSUE, $type_no);
 
 	commit_transaction();

@@ -315,9 +315,6 @@ if (list_updated('inst_lang')) {
 start_form();
 	switch(@$_POST['Page']) {
 		default:
-//			include ('../install.html');
-//			submit_center('continue', _('Continue >>'));
-//			break;
 		case '1':
 			div_start('welcome');
 			subpage_title(_('System Diagnostics'));

@@ -130,7 +130,7 @@ function get_po_prepayments($supp_trans)
 		FROM ".TB_PREF."supp_allocations allocs 
 			LEFT JOIN ".TB_PREF."purch_order_details line ON line.order_no=allocs.trans_no_to AND trans_type_to=".ST_PURCHORDER."
 		WHERE line.po_detail_item IN(".implode(',', array_values($line_ids)).")";
-//_vd($sql);
+
 	$result = db_query($sql, "Cannot retrieve po prepayments");
 
 	while($dat = db_fetch($result))

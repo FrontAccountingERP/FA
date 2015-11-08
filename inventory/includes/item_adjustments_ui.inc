@@ -146,7 +146,6 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 	label_cell($_POST['units'], '', 'units');
 
-	//amount_cells(null, 'std_cost', $_POST['std_cost']);
 	amount_cells(null, 'std_cost', null, null, null, $dec2);
 	label_cell("&nbsp;");
 

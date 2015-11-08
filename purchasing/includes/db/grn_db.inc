@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+//------------------- update average material cost ---------------------------------------------- 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
 	// probably this function should be optimized
@@ -36,8 +36,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 	$price_in_home_currency_ = $price_in_home_currency;
 
-	//Handle if inventory will become negative
-    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
+	// Handle if inventory will become negative
+    // Skip negative inventory adjustment for case of adjust_only
     if (is_inventory_item($stock_id) && !$adj_only) 
         handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
 	
@@ -49,15 +49,10 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	//Price adjustment for manufactured item
 	if (!$adj_only && $myrow['mb_flag'] == 'M') 
 	{
-		$standard_cost = get_standard_cost($stock_id);
 		//reduce overhead_cost and labour_cost from price as those will remain as is
 		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
 	}
 
-	if ($adj_only)
-		$exclude = ST_CUSTDELIVERY;
-	else
-		$exclude = 0;
 	$cost_adjust = false;
 
 	$qoh = get_qoh_on_date($stock_id);
@@ -79,7 +74,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}
 
-	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
+	if ($cost_adjust) // Material_cost replaced with price
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
@@ -120,25 +115,27 @@ function add_grn(&$po)
 		{
 			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
-			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
-			//------------------- update average material cost and clearing account ----- Joe Hunt Mar-03-2008
+			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL 
+			  and recorded in the stock movements for FIFO/LIFO stocks valuations*/
+			//------------------- update average material cost and clearing account --------------------------------
 			if (is_inventory_item($order_line->stock_id))
 			{
 				if ($clearing_act)
 					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id, '', 0, $order_line->stock_id);
+						$order_line->receive_qty * $order_line->taxfree_charge_price($po), $po->supplier_id, '', 0, 
+						$order_line->stock_id);
 				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->receive_qty, $date_);
 			}
-			//----------------------------------------------------------------------------------------------------------------
+			//------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
 				/*This must be the first receipt of goods against this line */
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
 			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
 			}
-			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			// Update the purchase data table
 			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
 				$order_line->item_description); 
 
@@ -198,7 +195,6 @@ function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $descri
         quantity_ordered=".db_escape($quantity).",
         act_price=".db_escape($price)."
         WHERE po_detail_item = ".db_escape($po_detail_item);
-
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
 	$sql = "INSERT INTO ".TB_PREF."grn_items (grn_batch_id, po_detail_item, item_code, description, qty_recd)
@@ -345,7 +341,7 @@ function read_grn_items_to_order($grn_batch, &$order)
 	 	while ($myrow = db_fetch($result))
 	 	{
 	 		if ($myrow['qty_recd'] == 0 && $myrow['quantity_inv'] == 0)
-				continue; // 2011-01-18 Joe Hunt. We will not have empty credited rows.
+				continue; // We will not have empty credited rows.
 		 	if (is_null($myrow["units"]))
 		 	{
 				$units = "";

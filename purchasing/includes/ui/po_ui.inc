@@ -353,12 +353,10 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	$id = find_submit('Edit');
 	if (($id != -1) && $line_no == $id)
 	{
-//		hidden('line_no', $id);
 
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-		//$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['price'] = price_decimal_format($order->line_items[$id]->price, $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
 			$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
@@ -373,7 +371,6 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 			text_cells(null,'item_description', null, 45, 150);
 		else {
 			hidden('item_description', $_POST['item_description']);
-//			label_cell($_POST['item_description']);
 			label_cell($order->line_items[$id]->item_description); 
 		}
 
@@ -382,11 +379,9 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-//		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		//Chaitanya : Manufcatured item can be purchased
+		// Manufcatured item can be purchased
 		stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30));
-		//stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -399,7 +394,6 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
-		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
 			$_POST['req_del_date'] = add_days(Today(), $SysPrefs->default_receival_required_by());
@@ -420,7 +414,6 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    	else	
 		amount_cells(null, 'price', null, null, null, $dec2);
 
-	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
 	amount_cell($line_total, false, '','line_total');
 

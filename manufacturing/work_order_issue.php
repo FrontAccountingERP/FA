@@ -71,8 +71,6 @@ function handle_new_order()
 //-----------------------------------------------------------------------------------------------
 function can_process()
 {
-	global $Refs;
-
 	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the issue is invalid."));

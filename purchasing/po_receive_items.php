@@ -131,7 +131,7 @@ function check_po_changed()
 {
 	/*Now need to check that the order details are the same as they were when they were read
 	into the Items array. If they've changed then someone else must have altered them */
-	// Sherifoz 22.06.03 Compare against COMPLETED items only !!
+	// Compare against COMPLETED items only !!
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$result = get_po_items($_SESSION['PO']->order_no);
 
@@ -161,7 +161,7 @@ function check_po_changed()
 
 function can_process()
 {
-	global $SysPrefs, $Refs;
+	global $SysPrefs;
 	
 	if (count($_SESSION['PO']->line_items) <= 0)
 	{

@@ -115,9 +115,8 @@ if (!isset($_POST['stock_id']))
 if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
-	//Chaitanya : All items can be purchased
+	// All items can be purchased
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-	//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
 }
 else

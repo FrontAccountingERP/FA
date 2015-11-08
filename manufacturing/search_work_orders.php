@@ -135,12 +135,6 @@ function produce_link($row)
 
 function costs_link($row)
 {
-/*
-	return $row["closed"] || !$row["released"] ? '' :
-		pager_link(_('Costs'),
-			"/gl/gl_bank.php?NewPayment=1&PayType=" 
-			.PT_WORKORDER. "&PayPerson=" .$row["id"]);
-*/			
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/manufacturing/work_order_costs.php?trans_no=" .$row["id"]);
@@ -148,8 +142,6 @@ function costs_link($row)
 
 function view_gl_link($row)
 {
-	//if ($row['closed'] == 0)
-	//	return '';
 	return get_gl_view_str(ST_WORKORDER, $row['id']);
 }
 

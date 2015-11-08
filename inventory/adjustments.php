@@ -78,7 +78,7 @@ function handle_new_order()
 
 function can_process()
 {
-	global $Refs, $SysPrefs;
+	global $SysPrefs;
 
 	$adj = &$_SESSION['adj_items'];
 
@@ -178,7 +178,7 @@ function handle_delete_item($id)
 function handle_new_item()
 {
 	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
-	  input_num('qty'), input_num('std_cost'));
+	input_num('qty'), input_num('std_cost'));
 	line_start_focus();
 }
 

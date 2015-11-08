@@ -79,7 +79,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		$imagetype = $type;
 	else
 		$imagetype = false;
-	//$imagetype = exif_imagetype($_FILES['pic']['tmp_name']);
+
 	if ($imagetype != IMAGETYPE_GIF && $imagetype != IMAGETYPE_JPEG && $imagetype != IMAGETYPE_PNG)
 	{	//File type Check
 		display_warning( _('Only graphics files can be uploaded'));
@@ -98,7 +98,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
 	{  //File type Check
 		display_warning( _('Only graphics files can be uploaded'));
-         	$upload_file ='No';
+        $upload_file ='No';
 	} 
 	elseif (file_exists($filename))
 	{
@@ -402,7 +402,7 @@ function item_settings(&$stock_id, $new_item)
 	if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
 		.item_img_name($_POST['NewStockID']).".jpg")) 
 	{
-	 // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	 // 31/08/08 - rand() call is necessary here to avoid caching problems.
 		$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
 			"]' src='".company_path().'/images/'.item_img_name($_POST['NewStockID']).
 			".jpg?nocache=".rand()."'"." height='".$SysPrefs->pic_height."' border='0'>";

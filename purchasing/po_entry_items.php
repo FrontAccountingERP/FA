@@ -106,8 +106,6 @@ if (isset($_GET['AddedID']))
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act)	
 		display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Delivery")), 1);
-// not yet
-//	display_note(print_document_link($trans_no, _("&Print This GRN"), true, $trans_type), 0, 1);
 
 	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php",
 		_("Entry purchase &invoice for this receival"), "New=1");
@@ -127,9 +125,6 @@ if (isset($_GET['AddedID']))
 	display_notification_centered(_("Direct Purchase Invoice has been entered"));
 
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this Invoice")), 0);
-
-// not yet
-//	display_note(print_document_link($trans_no, _("&Print This Invoice"), true, $trans_type), 0, 1);
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Invoice")), 1);
 
@@ -302,7 +297,6 @@ function handle_add_new_item()
 
 			if ($allow_update)
 			{
-				$myrow = db_fetch($result);
 				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], input_num('qty'), 
 					get_post('stock_id_text'), //$myrow["description"], 
 					input_num('price'), '', // $myrow["units"], (retrived in cart)
@@ -325,8 +319,6 @@ function handle_add_new_item()
 
 function can_commit()
 {
-	global $Refs;
-
 	if (!get_post('supplier_id')) 
 	{
 		display_error(_("There is no supplier selected."));
@@ -358,6 +350,8 @@ function can_commit()
 	{
     	if (!check_reference(get_post('ref'), $_SESSION['PO']->trans_type))
     	{
+    		_vd("bad reference");
+    		exit;
 			set_focus('ref');
     		return false;
     	}
@@ -388,7 +382,7 @@ function can_commit()
 		set_focus('StkLocation');
 		return false;
 	} 
-	if (!db_has_currency_rates($_SESSION['PO']->curr_code, $_POST['OrderDate']))
+	if (!db_has_currency_rates($_SESSION['PO']->curr_code, $_POST['OrderDate'], true))
 		return false;
 	if ($_SESSION['PO']->order_has_items() == false)
 	{

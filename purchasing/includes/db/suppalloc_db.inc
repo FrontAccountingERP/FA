@@ -97,10 +97,6 @@ function clear_supp_alloctions($type, $type_no, $person_id=null, $date="")
 		$sql .= " AND person_id=".db_escape($person_id);
 
 	db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
-// is this necessary?
-//	if ($date != "")
-//		exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
-//			$row['amt'], PT_SUPPLIER, true);
 }
 //-------------------------------------------------------------------------------------------------------------
 
@@ -168,8 +164,6 @@ function get_allocatable_purch_orders($supplier_id = null, $trans_no=null, $type
 	}
 	else
 	{
-// 	FIXME: change to form below when prepayments terms finally can be selected in PO entry form:
-//		$sql .= " AND round(prep_amount) > 0 AND ISNULL(grn.purch_order_no)"; // only sales orders with prepayment level set and no yet received
 		$sql .= " AND ISNULL(grn.purch_order_no)"; // only sales orders no yet received
 	}
 	if ($supplier_id)
@@ -261,7 +255,6 @@ function get_allocatable_from_supp_transactions($supplier_id, $trans_no=null, $t
 			AND trans.type NOT IN (".implode(',',array(ST_SUPPAYMENT,ST_BANKPAYMENT)).")";
 		$sql .= " GROUP BY type, trans_no";
 	}
-//_vd($sql);
 	return db_query($sql." ORDER BY due_date", "Cannot retreive alloc to transactions");
 }
 

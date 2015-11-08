@@ -69,7 +69,7 @@ if (strlen($wo_details[0]) == 0)
 
 function can_process($wo_details)
 {
-	global $SysPrefs, $Refs;
+	global $SysPrefs;
 
 	if (!check_reference($_POST['ref'], ST_MANURECEIVE))
 	{
@@ -174,7 +174,6 @@ display_wo_details($_POST['selected_id']);
 start_form();
 
 hidden('selected_id', $_POST['selected_id']);
-//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
 $dec = get_qty_dec($wo_details["stock_id"]);
 if (!isset($_POST['quantity']) || $_POST['quantity'] == '')

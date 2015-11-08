@@ -122,7 +122,7 @@ if (!isset($_POST['date_']))
 
 function can_process()
 {
-	global $selected_id, $SysPrefs, $Refs;
+	global $selected_id, $SysPrefs;
 
 	if (!isset($selected_id))
 	{
@@ -223,15 +223,8 @@ function can_process()
     		display_error( _("The date entered is in an invalid format."));
     		return false;
 		}
-		//elseif (!is_date_in_fiscalyear($_POST['RequDate']))
-		//{
-		//  display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
-		//	return false;
-		//}
     	if (isset($selected_id))
     	{
-    		$myrow = get_work_order($selected_id, true);
-
     		if ($_POST['units_issued'] > input_num('quantity'))
     		{
 				set_focus('quantity');

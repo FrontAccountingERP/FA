@@ -154,7 +154,7 @@ if (db_num_rows($invoice_result) > 0)
 echo "</td></tr>";
 
 end_table(1); // outer table
-//_vd($purchase_order);
+
 display_allocations_to(PT_SUPPLIER, $purchase_order->supplier_id, ST_PURCHORDER, $purchase_order->order_no, $total + $tax_total);
 
 //----------------------------------------------------------------------------------------------------
