@@ -121,7 +121,8 @@ function get_po_prepayments($supp_trans)
 	$allocations = array();
 	$line_ids = array();
 	foreach($supp_trans->grn_items as $item)
-		$line_ids[] = $item->po_detail_item;
+		if ($item->po_detail_item)
+			$line_ids[] = $item->po_detail_item;
 
 	if (!count($line_ids))
 		return $allocations;

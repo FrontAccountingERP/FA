@@ -47,7 +47,7 @@ if (isset($_GET['New']))
 	if (isset($_GET['invoice_no']))
 	{
 		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['invoice_no']);
-		$_SESSION['supp_trans']->src_doc = $_GET['invoice_no'];
+		$_SESSION['supp_trans']->src_docs = array( $_GET['invoice_no'] => $_SESSION['supp_trans']->supp_reference);
 
 
 		$_SESSION['supp_trans']->trans_type = ST_SUPPCREDIT;

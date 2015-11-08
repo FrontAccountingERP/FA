@@ -359,16 +359,15 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
 		elseif ($supp_trans->src_docs)
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, array_keys($supp_trans->src_docs));
-		else	
+		else
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
 	}
     if (db_num_rows($result) == 0)
     {
     	return false;
     }
-    
-    /*Set up a table to show the outstanding GRN items for selection */
 
+    /*Set up a table to show the outstanding GRN items for selection */
     while ($myrow = db_fetch($result))
     {
 		$grn_already_on_invoice = false;
@@ -383,18 +382,17 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 
     	if ($grn_already_on_invoice == false)
     	{
-
 			alt_table_row_color($k);
 
 			$n = $myrow["id"];
-    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
-           	hidden('qty_recd'.$n, $myrow["qty_recd"], false);
-           	hidden('item_code'.$n, $myrow["item_code"], false);
-           	hidden('item_description'.$n, $myrow["description"], false);
-           	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv'], false);
-           	hidden('order_price'.$n, $myrow['unit_price'], false);
-           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false);
-           	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false);
+			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
+		   	hidden('qty_recd'.$n, $myrow["qty_recd"]);
+           	hidden('item_code'.$n, $myrow["item_code"]);
+           	hidden('item_description'.$n, $myrow["description"]);
+           	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv']);
+           	hidden('order_price'.$n, $myrow['unit_price']);
+           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit']);
+           	hidden('po_detail_item'.$n, $myrow['po_detail_item']);
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
