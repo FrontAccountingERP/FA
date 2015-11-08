@@ -22,8 +22,12 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Inventory Item Sales prices"));
+if (!@$_GET['popup']) {
+  $js = "";
+	if ($use_popup_windows)
+		$js .= get_js_open_window(900, 500);
+	page(_($help_context = "Inventory Item Sales prices"), false, false, "", $js);
+}
 
 //---------------------------------------------------------------------------------------------------
 
