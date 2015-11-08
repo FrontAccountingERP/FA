@@ -267,4 +267,5 @@ defined('ICON_VIEW') || define('ICON_VIEW', 'view.gif');
 defined('ICON_SUBMIT') || define('ICON_SUBMIT', 'ok.gif');
 defined('ICON_ESCAPE') || define('ICON_ESCAPE', 'escape.png');
 defined('ICON_ALLOC') || define('ICON_ALLOC', 'alloc.png');
+defined('ICON_CLOSED') || define('ICON_CLOSED', 'closed.png');
 
