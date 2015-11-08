@@ -27,9 +27,9 @@ $all_items = ALL_TEXT;
 //	Options are merged with defaults.
 
 function combo_input($name, $selected_id, $sql, $valfield, $namefield,
-	$options=null)
+	$options=null, $type=null)
 {
-global $Ajax;
+global $Ajax, $path_to_root;
 
 $opts = array(		// default options
 	'where'=> array(),		// additional constraints
@@ -244,7 +244,7 @@ $opts = array(		// default options
 	
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 
-	$selector = "<select autocomplete='off' ".($multi ? "multiple" : '')
+	$selector = "<select id='cbo_".$name."' autocomplete='off' ".($multi ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
@@ -294,10 +294,58 @@ $opts = array(		// default options
 	}
 	default_focus(($search_box && $by_id) ? $search_box : $name);
 
+	$img = "";
+  $img_title = "";
+  $link = "";
+  $id = "cbo_" . $name;
+  switch (strtolower($type)) {
+    case "stock":
+      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
+      $img_title = _("Search items");
+      break;
+    case "stock_manufactured":
+      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
+      $img_title = _("Search items");
+      break;
+    case "stock_purchasable":
+      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
+      $img_title = _("Search items");
+      break;
+    case "stock_sales":
+      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
+      $img_title = _("Search items");
+      break;
+    case "stock_costable":
+      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+      $img_title = _("Search items");
+      break;
+    case "customer":
+      $link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
+      $img_title = _("Search customers");
+      break;
+    case "branch":
+      $link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#cbo_customer_id";
+      $img_title = _("Search branches");
+      break;
+    case "supplier":
+      $link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
+      $img_title = _("Search suppliers");
+      break;
+    case "account":
+      $link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+      $img_title = _("Search GL accounts");
+      break;
+  }
+
+  if ($link !=="") {
+    $theme = user_theme();
+    $img = '<img src="' . $path_to_root . '/themes/' . $theme .  '/images/view.gif" onclick="javascript:lookupWindow(&quot;' . $link . '&quot;, &quot;&quot;);" title="' . $img_title . '" style="cursor:pointer;" />';
+  }
+
 	if ($search_box && $opts['cells'])
-		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
+		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
 	else
-		$str = $edit_entry.$selector;
+		$str = $edit_entry.$selector.$img;
 	return $str;
 }
 
@@ -514,7 +562,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') :
 		_('Select customer'),
 		'show_inactive' => $show_inactive
-	) );
+	), "customer" );
 	if ($editkey)
 		$ret .= add_edit_combo('customer');
 	return $ret;
@@ -741,7 +789,7 @@ function dimensions_list_row($label, $name, $selected_id=null, $no_option=false,
 //---------------------------------------------------------------------------------------------------
 
 function stock_items_list($name, $selected_id=null, $all_option=false, 
-	$submit_on_change=false, $opts=array(), $editkey = false)
+	$submit_on_change=false, $opts=array(), $editkey = false, $type = "stock")
 {
 	global $all_items;
 
@@ -764,7 +812,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 		'select_submit'=> $submit_on_change,
 		'category' => 2,
 		'order' => array('c.description','stock_id')
-	  ), $opts) );
+	  ), $opts), $type );
 	if ($editkey)
 		$ret .= add_edit_combo('item');		
 	return $ret;
@@ -835,7 +883,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'order' => array('c.description','i.item_code'),
 		'editable' => 30,
 		'max' => 255
-	  ), $opts) );
+	  ), $opts), "stock_sales" );
 }
 
 function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false, $editkey=false)
@@ -871,7 +919,7 @@ function stock_manufactured_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag= 'M'")));
+		array('where'=>array("mb_flag= 'M'")), false, "stock_manufactured");
 }
 
 function stock_manufactured_items_list_cells($label, $name, $selected_id=null,
@@ -915,7 +963,7 @@ function stock_costable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!='D'")));
+		array('where'=>array("mb_flag!='D'")), false, "stock_manufactured");
 }
 
 function stock_costable_items_list_cells($label, $name, $selected_id=null, 
@@ -933,7 +981,7 @@ function stock_purchasable_items_list($name, $selected_id=null,
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("mb_flag!= 'M'"), 
-			'show_inactive'=>$all), $editkey);
+			'show_inactive'=>$all), $editkey, "stock_purchased");
 }
 //
 //	This helper is used in PO/GRN/PI entry and supports editable descriptions.
@@ -1644,7 +1692,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		'async' => false,
 		'category' => 2,
 		'show_inactive' => $all
-	) );
+	), "account" );
 
 }
 
@@ -2374,5 +2422,3 @@ function payment_services($name)
 			'spec_id' => '',
 		));
 }
-
-?>
