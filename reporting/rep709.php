@@ -102,7 +102,7 @@ function print_tax_report()
 
 	$res = getTaxTypes();
 
-	$taxes = array();
+	$taxes[0] = array('in'=>0, 'out'=>0, 'taxin'=>0, 'taxout'=>0);
 	while ($tax=db_fetch($res))
 		$taxes[$tax['id']] = array('in'=>0, 'out'=>0, 'taxin'=>0, 'taxout'=>0);
 
@@ -160,20 +160,21 @@ function print_tax_report()
 				$rep->NewPage();
 			}
 		}
+		$tax_type = $trans['tax_type_id'];
 		if ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_INPUT) {
-			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
+			$taxes[$tax_type]['taxin'] += $trans['amount'];
+			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}
 		elseif ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_OUTPUT) {
-			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
+			$taxes[$tax_type]['taxout'] += $trans['amount'];
+			$taxes[$tax_type]['out'] += $trans['net_amount'];
 		}
 		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
-			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
+			$taxes[$tax_type]['taxout'] += $trans['amount'];
+			$taxes[$tax_type]['out'] += $trans['net_amount'];
 		} elseif ($trans['reg_type'] !== NULL) {
-			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
+			$taxes[$tax_type]['taxin'] += $trans['amount'];
+			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}
 		$totalnet += $trans['net_amount'];
 		$totaltax += $trans['amount'];
@@ -200,9 +201,13 @@ function print_tax_report()
 	$taxtotal = 0;
 	foreach( $taxes as $id=>$sum)
 	{
-		$tx = getTaxInfo($id);
-		
-		$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+		if ($id)
+		{
+			$tx = getTaxInfo($id);
+			$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+		} else {
+			$rep->TextCol(0, 1, _('Exempt'));
+		}
 		$rep->AmountCol(1, 2, $sum['out'], $dec);
 		$rep->AmountCol(2, 3, $sum['taxout'], $dec);
 		$rep->AmountCol(3, 4, $sum['in'], $dec);
