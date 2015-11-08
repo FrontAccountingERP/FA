@@ -302,7 +302,7 @@ function round2($number, $decimals=0)
 function number_format2($number, $decimals=0)
 {
 	global $SysPrefs;
-	$tsep = $SysPrefs->thoseps[user_dec_sep()];
+	$tsep = $SysPrefs->thoseps[user_tho_sep()];
 	$dsep = $SysPrefs->decseps[user_dec_sep()];
 
 	if($decimals==='max')
