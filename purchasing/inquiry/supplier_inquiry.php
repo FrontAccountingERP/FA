@@ -27,6 +27,7 @@ page(_($help_context = "Supplier Inquiry"), isset($_GET['supplier_id']), false, 
 if (isset($_GET['supplier_id'])){
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
+
 if (isset($_GET['FromDate'])){
 	$_POST['TransAfterDate'] = $_GET['FromDate'];
 }
@@ -106,7 +107,6 @@ function systype_name($dummy, $type)
 	global $systypes_array;
 	return $systypes_array[$type];
 }
-div_end();
 
 function trans_view($trans)
 {
@@ -163,6 +163,10 @@ function check_overdue($row)
 
 function edit_link($row)
 {
+	global $page_nested;
+
+	if ($page_nested)
+		return '';
 	return trans_editor_link($row['type'], $row['trans_no']);
 }
 //------------------------------------------------------------------------------------------------

@@ -19,7 +19,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = "Suppliers"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
@@ -322,19 +322,15 @@ tabbed_content_start('tabs', array(
 			break;
 		case 'transactions':
 			$_GET['supplier_id'] = $supplier_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
 			break;
 		case 'orders':
 			$_GET['supplier_id'] = $supplier_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
 			break;
 	};
 br();
 tabbed_content_end();
-hidden('popup', @$_REQUEST['popup']);
 end_form();
-
-end_page(@$_REQUEST['popup']);
+end_page();
 
