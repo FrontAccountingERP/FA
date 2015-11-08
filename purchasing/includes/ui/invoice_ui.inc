@@ -122,12 +122,6 @@ function invoice_header(&$supp_trans)
 	}
 		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 60);
 
-	if (get_company_pref('use_dimension'))
-		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
-
-	if (get_company_pref('use_dimension') == 2)
-		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
-
 	table_section(2, "33%");
 
 	if (isset($_POST['_tran_date_changed'])) {
@@ -141,6 +135,12 @@ function invoice_header(&$supp_trans)
     date_row(_("Due Date") . ":", 'due_date');
 
     label_row(_("Terms:"), $supp_trans->terms['description']);
+
+	if (get_company_pref('use_dimension'))
+		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
+
+	if (get_company_pref('use_dimension') == 2)
+		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
 
 	table_section(3, "33%");
 
