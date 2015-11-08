@@ -29,7 +29,7 @@ $all_items = ALL_TEXT;
 function combo_input($name, $selected_id, $sql, $valfield, $namefield,
 	$options=null, $type=null)
 {
-global $Ajax, $path_to_root;
+global $Ajax, $path_to_root, $use_popup_windows;
 
 $opts = array(		// default options
 	'where'=> array(),		// additional constraints
@@ -298,43 +298,45 @@ $opts = array(		// default options
   $img_title = "";
   $link = "";
   $id = "cbo_" . $name;
-  switch (strtolower($type)) {
-    case "stock":
-      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
-      $img_title = _("Search items");
-      break;
-    case "stock_manufactured":
-      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
-      $img_title = _("Search items");
-      break;
-    case "stock_purchasable":
-      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
-      $img_title = _("Search items");
-      break;
-    case "stock_sales":
-      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
-      $img_title = _("Search items");
-      break;
-    case "stock_costable":
-      $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
-      $img_title = _("Search items");
-      break;
-    case "customer":
-      $link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
-      $img_title = _("Search customers");
-      break;
-    case "branch":
-      $link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#cbo_customer_id";
-      $img_title = _("Search branches");
-      break;
-    case "supplier":
-      $link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
-      $img_title = _("Search suppliers");
-      break;
-    case "account":
-      $link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
-      $img_title = _("Search GL accounts");
-      break;
+  if ($use_popup_windows) {
+    switch (strtolower($type)) {
+      case "stock":
+        $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
+        $img_title = _("Search items");
+        break;
+      case "stock_manufactured":
+        $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
+        $img_title = _("Search items");
+        break;
+      case "stock_purchasable":
+        $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
+        $img_title = _("Search items");
+        break;
+      case "stock_sales":
+        $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
+        $img_title = _("Search items");
+        break;
+      case "stock_costable":
+        $link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+        $img_title = _("Search items");
+        break;
+      case "customer":
+        $link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
+        $img_title = _("Search customers");
+        break;
+      case "branch":
+        $link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#cbo_customer_id";
+        $img_title = _("Search branches");
+        break;
+      case "supplier":
+        $link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
+        $img_title = _("Search suppliers");
+        break;
+      case "account":
+        $link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+        $img_title = _("Search GL accounts");
+        break;
+    }
   }
 
   if ($link !=="") {
@@ -509,7 +511,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
 		_('Select supplier'),
 		'show_inactive'=>$all
-		));
+		), "supplier");
 	if ($editkey)
 		$ret .= add_edit_combo('supplier');		
 	return $ret;
@@ -612,7 +614,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
 		'sel_hint' => _('Select customer branch')
-	) );
+	), "branch" );
 	if ($editkey)
 	{
 		$ret .= add_edit_combo('branch');
@@ -963,7 +965,7 @@ function stock_costable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!='D'")), false, "stock_manufactured");
+		array('where'=>array("mb_flag!='D'")), false, "stock_costable");
 }
 
 function stock_costable_items_list_cells($label, $name, $selected_id=null, 
