@@ -10,10 +10,11 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_REORDER';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -71,11 +72,6 @@ $j = 1;
 $k=0; //row colour counter
 
 $result = get_loc_details($_POST['stock_id']);
-
-if ($page_nested)
-{
-	hidden('popup', @$_GET['popup']);
-}
 
 while ($myrow = db_fetch($result))
 {

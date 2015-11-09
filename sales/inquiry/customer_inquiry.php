@@ -41,7 +41,7 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 if (!$page_nested)
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, !@$_GET['popup']);
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, true);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'TransToDate', '', null);

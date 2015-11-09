@@ -35,7 +35,8 @@ $supplier_id = get_post('supplier_id');
 //--------------------------------------------------------------------------------------------
 function supplier_settings(&$supplier_id)
 {
-
+	global $page_nested;
+	
 	start_outer_table(TABLESTYLE2);
 
 	table_section(1);
@@ -169,7 +170,7 @@ function supplier_settings(&$supplier_id)
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
-		  _('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
+		  _('Update supplier data'), $page_nested ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);

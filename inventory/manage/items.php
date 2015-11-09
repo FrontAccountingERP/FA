@@ -19,7 +19,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = "Items"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -265,7 +265,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 function item_settings(&$stock_id, $new_item) 
 {
-	global $SysPrefs, $path_to_root;
+	global $SysPrefs, $path_to_root, $page_nested;
 
 	start_outer_table(TABLESTYLE2);
 
@@ -428,7 +428,7 @@ function item_settings(&$stock_id, $new_item)
 	else 
 	{
 		submit_center_first('addupdate', _("Update Item"), '', 
-			@$_REQUEST['popup'] ? true : 'default');
+			$page_nested ? true : 'default');
 		submit_return('select', get_post('stock_id'), 
 			_("Select this items and return to document entry."), 'default');
 		submit('clone', _("Clone This Item"), true, '', true);
@@ -487,17 +487,17 @@ tabbed_content_start('tabs', array(
 			break;
 		case 'sales_pricing':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/prices.php");
 			break;
 		case 'purchase_pricing':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/purchasing_data.php");
 			break;
 		case 'standard_cost':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/cost_update.php");
 			break;
 		case 'reorder_level':
@@ -505,18 +505,16 @@ tabbed_content_start('tabs', array(
 			{
 				break;
 			}	
+			$_GET['page_level'] = 1;
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");
 			break;
 		case 'status':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
 	};
@@ -525,9 +523,8 @@ tabbed_content_end();
 
 div_end();
 
-hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 //------------------------------------------------------------------------------------
 
-end_page(@$_REQUEST['popup']);
+end_page();

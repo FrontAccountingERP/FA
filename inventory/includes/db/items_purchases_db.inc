@@ -57,7 +57,7 @@ function get_item_purchasing_data($selected_id, $stock_id)
 	$sql = "SELECT pdata.*, supplier.supp_name
 		FROM ".TB_PREF."purch_data pdata
 			INNER JOIN ".TB_PREF."suppliers supplier ON pdata.supplier_id=supplier.supplier_id
-		WHERE pata.supplier_id=".db_escape($selected_id)."
+		WHERE pdata.supplier_id=".db_escape($selected_id)."
 			AND pdata.stock_id=".db_escape($stock_id);
 
 	$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");

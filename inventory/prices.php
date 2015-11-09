@@ -10,10 +10,11 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_SALESPRICE';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
@@ -182,10 +183,7 @@ if ($Mode == 'Edit')
 }
 
 hidden('selected_id', $selected_id);
-if ($page_nested)
-{
-	hidden('popup', @$_GET['popup']);
-}
+
 div_start('price_details');
 start_table(TABLESTYLE2);
 

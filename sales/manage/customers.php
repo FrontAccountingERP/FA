@@ -20,7 +20,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 	
-page(_($help_context = "Customers"), @$_REQUEST['popup'], false, "", $js); 
+page(_($help_context = "Customers"), false, false, "", $js); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -187,7 +187,7 @@ if (isset($_POST['delete']))
 
 function customer_settings($selected_id) 
 {
-	global $SysPrefs, $path_to_root;
+	global $SysPrefs, $path_to_root, $page_nested;
 	
 	if (!$selected_id) 
 	{
@@ -284,8 +284,8 @@ function customer_settings($selected_id)
 		start_row();
 		echo '<td class="label">'._('Customer branches').':</td>';
 	  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
-			'<b>'. (@$_REQUEST['popup'] ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
-			"debtor_no=".$selected_id.(@$_REQUEST['popup'] ? '&popup=1':''));
+			'<b>'. ($page_nested ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+			"debtor_no=".$selected_id.($page_nested ? '&popup=1':''));
 		end_row();
 	}
 
@@ -308,7 +308,7 @@ function customer_settings($selected_id)
 	else 
 	{
 		submit_center_first('submit', _("Update Customer"), 
-		  _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
+		  _('Update customer data'), $page_nested ? true : 'default');
 		submit_return('select', $selected_id, _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), 
 		  _('Delete customer data if have been never used'), true);
@@ -374,7 +374,6 @@ tabbed_content_start('tabs', array(
 br();
 tabbed_content_end();
 
-hidden('popup', @$_REQUEST['popup']);
 end_form();
-end_page(@$_REQUEST['popup']);
+end_page();
 
