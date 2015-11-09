@@ -195,7 +195,6 @@ function print_invoices()
 			if (isset($prepayments))
 			{
 				// Partial invoices table
-				//$rep->NewLine();
 				$rep->TextCol(0, 3,_("Prepayments invoiced to this order up to day:"));
 				$rep->TextCol(0, 3,	str_pad('', 150, '_'));
 				$rep->cols[2] -= 20;

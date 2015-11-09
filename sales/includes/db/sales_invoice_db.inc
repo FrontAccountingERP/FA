@@ -86,7 +86,6 @@ function write_sales_invoice(&$invoice)
 		$invoice->sales_type, $sales_order, $invoice->ship_via, 
 		$invoice->due_date, 0, 0, $invoice->dimension_id, 
 		$invoice->dimension2_id, $invoice->payment, $invoice->tax_included, $invoice->prep_amount); 
-		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
@@ -127,11 +126,11 @@ function write_sales_invoice(&$invoice)
 			if ($invoice_line->line_price() != 0) {
 				//Post sales transaction to GL credit sales
 
-				// 2008-06-14. If there is a Branch Sales Account, then override with this,
+				// If there is a Branch Sales Account, then override with this,
 				// else take the Item Sales Account
 				if (!$invoice->is_prepaid())
 					$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
-				// 2008-08-01. If there is a Customer Dimension, then override with this,
+				// If there is a Customer Dimension, then override with this,
 				// else take the Item Dimension (if any)
 				$dim = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id : 
 					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
@@ -205,18 +204,9 @@ function write_sales_invoice(&$invoice)
 			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $invoice->customer_id);
 		}
 	}
-//_vd($allocs);
 	reallocate_payments($invoice_no, ST_SALESINVOICE, $date_, $to_allocate, $allocs);
-//_vd(get_payments_for($sales_order, ST_SALESORDER));
-//_vd(get_payments_for($invoice_no, ST_SALESINVOICE));
-//_vd(get_gl(ST_SALESINVOICE, $invoice_no));
-//_vd(get_customer_trans($invoice_no, ST_SALESINVOICE));
-//_vd(get_sales_order_header($sales_order, ST_SALESORDER));
 	hook_db_postwrite($invoice, ST_SALESINVOICE);
-//$result = get_trans_tax_details(ST_SALESINVOICE, $invoice_no);
-//while($row=db_fetch($result))
-//	_vd($row);
-//exit;
+
 	commit_transaction();
 
 	return $invoice_no;

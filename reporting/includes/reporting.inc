@@ -118,7 +118,6 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			break;
 		default:
 			return null;
-//		default: $ar = array();
 	}
 
 	return print_link($link_text, $rep, $ar, "", $icon, $class, $id);

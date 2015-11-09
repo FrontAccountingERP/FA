@@ -43,27 +43,27 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $des
 		}
 		$item_price = round($item_price, user_price_dec());
 
-	 if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
-	 {	// this is sales kit - recurse 
-		add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
-			$item_price, $discount);
-	 }
-	 else
-	 {	// stock item record eventually with foreign code
-
-		// check duplicate stock item
-		foreach ($order->line_items as $order_item)
-		{
-			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
-			{
-				display_warning(_("For Part :").$item['stock_id']. " " 
-					. _("This item is already on this document. You have been warned."));
-				break;
-			}
+		if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
+		{	// this is sales kit - recurse 
+			add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
+				$item_price, $discount);
 		}
-		$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
-			$new_item_qty*$item['quantity'], $item_price, $discount, 0,0, $description);
-	 }
+		else
+		{	// stock item record eventually with foreign code
+
+			// check duplicate stock item
+			foreach ($order->line_items as $order_item)
+			{
+				if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
+				{
+					display_warning(_("For Part :").$item['stock_id']. " " 
+						. _("This item is already on this document. You have been warned."));
+					break;
+				}
+			}
+			$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
+				$new_item_qty*$item['quantity'], $item_price, $discount, 0,0, $description);
+		}
 	}
 
 }
@@ -178,7 +178,6 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			view_stock_status_cell($stock_item->stock_id);
 
-			//label_cell($stock_item->item_description, "nowrap" );
 			label_cell($stock_item->item_description );
 			$dec = get_qty_dec($stock_item->stock_id);
 			qty_cell($stock_item->qty_dispatched, false, $dec);
@@ -254,8 +253,6 @@ function display_order_header(&$order, $editable, $date_text)
 
 	if (isset($order) && !$editable)
 	{
-		// can't change the customer/branch if items already received on this order
-		//echo $order->customer_name . " - " . $order->deliver_to;
 		label_row(null, $order->customer_name . " - " . $order->deliver_to);
 		hidden('customer_id', $order->customer_id);
 		hidden('branch_id', $order->Branch);
@@ -465,7 +462,6 @@ function display_order_header(&$order, $editable, $date_text)
 			$line = &$order->line_items[$line_no];
 			$line->price = get_kit_price($line->stock_id, $order->customer_currency,
 				$order->sales_type, $order->price_factor, get_post('OrderDate'));
-		//		$line->discount_percent = $order->default_discount;
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -499,10 +495,6 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 			hidden('item_description', $_POST['item_description']);
 			label_cell($_POST['item_description']);
 		}
-//		} else {
-//			sales_items_list_cells(null,'item_description', null, false, true);
-//		}
-		//label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	    $Ajax->activate('items_table');
 	}
 	else	// prepare new line

@@ -169,7 +169,7 @@ function print_profit_and_loss_statement()
 		$orientation = $_POST['PARAM_9'];
 		$destination = $_POST['PARAM_10'];
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_3'];
 		$tags = (isset($_POST['PARAM_4']) ? $_POST['PARAM_4'] : -1);
@@ -221,7 +221,7 @@ function print_profit_and_loss_statement()
                             'from' => get_dimension_string($dimension2), 'to' => ''),
                         4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),

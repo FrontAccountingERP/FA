@@ -67,14 +67,14 @@ function print_aged_customer_analysis()
 {
     global $path_to_root, $systypes_array, $SysPrefs;
 
-    	$to = $_POST['PARAM_0'];
-    	$fromcust = $_POST['PARAM_1'];
-    	$currency = $_POST['PARAM_2'];
-    	$show_all = $_POST['PARAM_3'];
+    $to = $_POST['PARAM_0'];
+    $fromcust = $_POST['PARAM_1'];
+    $currency = $_POST['PARAM_2'];
+    $show_all = $_POST['PARAM_3'];
 	$summaryOnly = $_POST['PARAM_4'];
-    	$no_zeros = $_POST['PARAM_5'];
-    	$graphics = $_POST['PARAM_6'];
-    	$comments = $_POST['PARAM_7'];
+    $no_zeros = $_POST['PARAM_5'];
+    $graphics = $_POST['PARAM_6'];
+    $comments = $_POST['PARAM_7'];
 	$orientation = $_POST['PARAM_8'];
 	$destination = $_POST['PARAM_9'];
 	if ($destination)

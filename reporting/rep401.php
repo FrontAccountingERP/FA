@@ -105,8 +105,6 @@ function print_bill_of_material()
 		$dec = get_qty_dec($trans['component']);
 		$rep->TextCol(0, 1, $trans['component']);
 		$rep->TextCol(1, 2, $trans['CompDescription']);
-		//$rep->TextCol(2, 3, $trans['loc_code']);
-		//$rep->TextCol(3, 4, $trans['workcentre_added']);
 		$wc = get_work_centre($trans['workcentre_added']);
 		$rep->TextCol(2, 3, get_location_name($trans['loc_code']));
 		$rep->TextCol(3, 4, $wc['name']);

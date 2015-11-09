@@ -28,7 +28,7 @@ print_workorders();
 
 function print_workorders()
 {
-	global $path_to_root, $SysPrefs, $dflt_lang;
+	global $path_to_root, $dflt_lang;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -65,7 +65,6 @@ function print_workorders()
 		$myrow = get_work_order($i);
 		if ($myrow === false)
 			continue;
-		$date_ = sql2date($myrow["date_"]);
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
@@ -86,7 +85,6 @@ function print_workorders()
 		$result = get_wo_requirements($i);
 		$rep->TextCol(0, 5,_("Work Order Requirements"), -2);
 		$rep->NewLine(2);
-		$has_marked = false;
 		while ($myrow2=db_fetch($result))
 		{
 			$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);

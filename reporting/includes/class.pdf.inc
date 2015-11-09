@@ -120,7 +120,6 @@ class Cpdf extends FPDI {
 		$this->FontFamily = 'helvetica';
 		$this->FontStyle = '';
 		$this->FontSizePt = 12;
-//		$this->utf8Bidi(array(""));
 	}
 
 

@@ -309,9 +309,6 @@ if ($dim > 0)
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
-	//$reports->addReport(_('Dimensions'),502, _('Dimension Details'),
-	//array(	_('Dimension'),'DIMENSIONS'),
-	//		_('Comments'),'TEXTBOX')));
 }
 $reports->addReportClass(_('Banking'), RC_BANKING);
 	$reports->addReport(RC_BANKING,  601, _('Bank &Statement'),
@@ -342,8 +339,6 @@ $reports->addReport(RC_GL, 702, _('List of &Journal Entries'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
-//$reports->addReport(RC_GL, 703, _('GL Account Group Summary'),
-//	array(	_('Comments'),'TEXTBOX')));
 
 if ($dim == 2)
 {
@@ -399,7 +394,7 @@ if ($dim == 2)
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
 }
-else if ($dim == 1)
+elseif ($dim == 1)
 {
 	$reports->addReport(RC_GL, 704, _('GL Account &Transactions'),
 	array(	_('Start Date') => 'DATEBEGINM',

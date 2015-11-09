@@ -376,8 +376,6 @@ class FrontReport extends Cpdf
 	*/
 	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype, $contacts)
 	{
-//		$this->formData = array_merge($myrow, $branch, $sales_order, 
-//			$bank_account, array('doctype' => $doctype));
 
 		$this->formData = array();
 		$datnames = array( 
@@ -471,16 +469,6 @@ class FrontReport extends Cpdf
 		$footerCol = $this->leftMargin + PAGE_NUM_WIDTH; 
 		$footerRow = $this->bottomMargin - FOOTER_MARGIN;
 
-		// Calling this function generates a new PDF page after the first instance
-//		{
-//			// TODO: experimenting with line drawing to highlight current period
-//			$this->SetLineWidth(1);
-//			$this->LineTo($this->cols[3], 33, $this->cols[3], 534);
-//			$this->LineTo($this->cols[4], 33, $this->cols[4], 534);
-//			$this->SetLineWidth(0.1);
-			
-//			$this->newPage();
-//		}
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		// Set the color of dividing lines we'll draw
@@ -969,9 +957,6 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-//			if ($email == 1)
-//				$fname = $dir.'/'.$this->filename;
-//			else	
 			$fname = $dir.'/'.uniqid('').'.pdf';
 			$this->Output($fname, 'F');
 
@@ -1059,7 +1044,6 @@ class FrontReport extends Cpdf
 						header('Expires: 0');
 						header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 						header('Pragma: public');
-//						$this->Stream(basename($fname));
 						$this->Stream($this->filename);
 					}
 				} else { // send report to network printer

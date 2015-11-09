@@ -117,20 +117,6 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}
-/*
-	if (isset($prices[$sales_type_id][$home_curr])) 
-	{
-	    $price = $prices[$sales_type_id][$home_curr] / $rate;
-	}
-	elseif (isset($prices[$base_id][$currency])) 
-	{
-	    $price = $prices[$base_id][$currency] * $factor;
-	}
-	elseif (isset($prices[$base_id][$home_curr])) 
-	{
-	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
-	}
-*/	
 	elseif ($num_rows == 0 && $add_pct != -1)
 	{
 		$price = get_calculated_price($stock_id, $add_pct);
@@ -189,7 +175,6 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 
         $qty_dispatched = (float)$qty_dispatched;
 
-//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 	if ($doc_type == 0)
 		return false;
 	else {
@@ -237,7 +222,7 @@ function get_location(&$cart)
 function read_sales_trans($doc_type, $trans_no, &$cart)
 {
 	if (!is_array($trans_no) && $trans_no)
-			$trans_no = array($trans_no);
+		$trans_no = array($trans_no);
 
 	$cart->trans_type = $doc_type;
 	if (!$trans_no) { // new document

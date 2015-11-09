@@ -33,8 +33,6 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
 	else
 		$ret_tax_array = get_tax_group_items_as_array($tax_group);
 	
-	//print_r($ret_tax_array);
-
 	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
 
 	// if no exemptions or taxgroup is empty, then no included/excluded taxes
@@ -149,9 +147,9 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 		$tax_algorithm = get_company_pref('tax_algorithm');
 	// first create and set an array with all the tax types of the tax group
 	if($tax_items_array!=null)
-	  $ret_tax_array = $tax_items_array;
+	  	$ret_tax_array = $tax_items_array;
 	else
-	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
+	  	$ret_tax_array = get_tax_group_items_as_array($tax_group);
 
 	$dec = user_price_dec();
 
@@ -186,11 +184,11 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 				if ($item_tax['rate'] !== null) {
 					$index = $item_tax['tax_type_id'];
 					if ($tax_included == 1) {
-					  $ret_tax_array[$index]['Value'] += round2($prices[$i]*$item_tax['rate']/(100+$tax_multiplier), $dec);
-					  $ret_tax_array[$index]['Net'] += round2($prices[$i]*100/(100+$tax_multiplier), $dec);
+					  	$ret_tax_array[$index]['Value'] += round2($prices[$i]*$item_tax['rate']/(100+$tax_multiplier), $dec);
+					  	$ret_tax_array[$index]['Net'] += round2($prices[$i]*100/(100+$tax_multiplier), $dec);
 					} else {
-					  $ret_tax_array[$index]['Value'] += round2($prices[$i] * $item_tax['rate'] / 100, $dec);
-					  $ret_tax_array[$index]['Net'] += $prices[$i];
+					  	$ret_tax_array[$index]['Value'] += round2($prices[$i] * $item_tax['rate'] / 100, $dec);
+					  	$ret_tax_array[$index]['Net'] += $prices[$i];
 					}
 				}
 			}
@@ -218,13 +216,13 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if ($item_tax['rate'] !== null && $ret_tax_array[$index]['rate'] !== null) {
-					  if($tax_included==1) {
-					    $ret_tax_array[$index]['Value'] += round2($shipping_cost*$item_tax['rate']/(100+$tax_rate), $dec);
-					    $ret_tax_array[$index]['Net'] += $shipping_net;
-					  } else {
+					if($tax_included==1) {
+					   	$ret_tax_array[$index]['Value'] += round2($shipping_cost*$item_tax['rate']/(100+$tax_rate), $dec);
+					   	$ret_tax_array[$index]['Net'] += $shipping_net;
+					} else {
 						$ret_tax_array[$index]['Value'] += round2($shipping_cost * $item_tax['rate'] / 100, $dec);
-					    $ret_tax_array[$index]['Net'] += $shipping_cost;
-					  }
+					   	$ret_tax_array[$index]['Net'] += $shipping_cost;
+					}
 				}
 			}
 		}

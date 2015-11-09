@@ -138,7 +138,6 @@ function print_sales_orders()
 				$rep->TextCol(6, 7,	$DisplayNet, -2);
 			}
 			$rep->row = $newrow;
-			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();
 		}

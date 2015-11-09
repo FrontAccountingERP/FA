@@ -145,9 +145,9 @@ if ($selected_id != -1)
 	}
 	hidden('selected_id', $selected_id);
 } elseif ($Mode != 'ADD_ITEM') {
-		$_POST['provision'] = percent_format(0);
-		$_POST['break_pt'] = price_format(0);
-		$_POST['provision2'] = percent_format(0);	
+	$_POST['provision'] = percent_format(0);
+	$_POST['break_pt'] = price_format(0);
+	$_POST['provision2'] = percent_format(0);	
 }
 
 start_table(TABLESTYLE2);

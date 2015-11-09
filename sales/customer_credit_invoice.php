@@ -237,9 +237,6 @@ function display_credit_items()
     end_row();
     start_row();
 
-//	if (!isset($_POST['ref']))
-//		$_POST['ref'] = $Refs->get_next(11);
-
     if ($_SESSION['Items']->trans_no==0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTCREDIT,
 		array('customer' => $_SESSION['Items']->customer_id,
@@ -255,10 +252,6 @@ function display_credit_items()
 	}
 	label_cell(_("Shipping Company"), "class='tableheader2'");
 	shippers_list_cells(null, 'ShipperID', $_POST['ShipperID']);
-//	if (!isset($_POST['sales_type_id']))
-//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
-//	label_cell(_("Sales Type"), "class='tableheader2'");
-//	sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
 
 	end_row();
 	end_table();

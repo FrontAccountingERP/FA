@@ -184,13 +184,6 @@ function can_process()
 		}	
 	}
 
-//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-//	{
-//		display_error(_("The exchange rate must be numeric and greater than zero."));
-//		set_focus('_ex_rate');
-//		return false;
-//	}
-
 	if (@$_POST['discount'] == "") 
 	{
 		$_POST['discount'] = 0;
@@ -202,7 +195,6 @@ function can_process()
 		return false;
 	}
 
-	//if ((input_num('amount') - input_num('discount') <= 0)) {
 	if (input_num('amount') <= 0) {
 		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
@@ -263,8 +255,8 @@ function read_customer_data()
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	//If page is called first time and New entry fetch the nex reference number
+	// To support Edit feature
+	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
 		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT, null, array(
 			'customer' => get_post('customer_id'), 'date' => get_post('DateBanked')));
@@ -273,7 +265,7 @@ function read_customer_data()
 //----------------------------------------------------------------------------------------------
 $new = 1;
 
-//Chaitanya : 13-OCT-2011 - To support Edit feature
+// To support Edit feature
 if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 {
 	$_POST['trans_no'] = $_GET['trans_no'];
@@ -307,91 +299,91 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 $new = !$_SESSION['alloc']->trans_no;
 start_form();
 
-	hidden('trans_no');
+hidden('trans_no');
 
-	start_outer_table(TABLESTYLE2, "width='60%'", 5);
+start_outer_table(TABLESTYLE2, "width='60%'", 5);
 
-	table_section(1);
+table_section(1);
 
-	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
-	if ($new)
-		customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
-	else {
-		label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
-		hidden('customer_id', $_POST['customer_id']);
-	}
+if ($new)
+	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
+else {
+	label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
+	hidden('customer_id', $_POST['customer_id']);
+}
 
-	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-		$_SESSION['alloc']->read();
-		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-		$Ajax->activate('alloc_tbl');
-	}
+if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+	$_SESSION['alloc']->read();
+	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+	$Ajax->activate('alloc_tbl');
+}
 
-	if (db_customer_has_branches($_POST['customer_id'])) {
-		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	} else {
-		hidden('BranchID', ANY_NUMERIC);
-	}
+if (db_customer_has_branches($_POST['customer_id'])) {
+	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+} else {
+	hidden('BranchID', ANY_NUMERIC);
+}
 
-	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-		$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
-		$_SESSION['alloc']->read();
-		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-		$Ajax->activate('alloc_tbl');
-	}
+if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+	$_SESSION['alloc']->read();
+	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+	$Ajax->activate('alloc_tbl');
+}
 
-	read_customer_data();
+read_customer_data();
 
-	set_global_customer($_POST['customer_id']);
-	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
-		display_warning(_("This customer account is on hold."));
-	$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
+set_global_customer($_POST['customer_id']);
+if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
+	display_warning(_("This customer account is on hold."));
+$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
-	table_section(2);
+table_section(2);
 
-	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-	ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
+ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
 
-	table_section(3);
+table_section(3);
 
-	$comp_currency = get_company_currency();
-	$cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
-	if (!$cust_currency)
-		$cust_currency = $comp_currency;
-	$_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST['bank_account']);
+$comp_currency = get_company_currency();
+$cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+if (!$cust_currency)
+	$cust_currency = $comp_currency;
+$_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	if ($cust_currency != $bank_currency)
-	{
-		amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
-	}
+if ($cust_currency != $bank_currency)
+{
+	amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
+}
 
-	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
+amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
-	end_outer_table(1);
+end_outer_table(1);
 
-	div_start('alloc_tbl');
-	show_allocatable(false);
-	div_end();
+div_start('alloc_tbl');
+show_allocatable(false);
+div_end();
 
-	start_table(TABLESTYLE, "width='60%'");
+start_table(TABLESTYLE, "width='60%'");
 
-	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
+label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-	amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
 
-	amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
+amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
 
-	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-	end_table(1);
+textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+end_table(1);
 
-	if ($new)
-		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
-	else
-		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
+if ($new)
+	submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+else
+	submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
 
-	br();
+br();
 
 end_form();
 end_page();

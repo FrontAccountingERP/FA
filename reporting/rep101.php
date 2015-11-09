@@ -27,7 +27,6 @@ include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_customer_balances();
 
 function get_open_balance($debtorno, $to)

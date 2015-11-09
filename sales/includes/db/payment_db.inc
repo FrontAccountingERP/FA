@@ -34,10 +34,10 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	$company_record = get_company_prefs();
 
 	if ($trans_no != 0) {
-	  delete_comments(ST_CUSTPAYMENT, $trans_no);
-	  void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
-	  void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
-	  void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
+	  	delete_comments(ST_CUSTPAYMENT, $trans_no);
+	  	void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  	void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  	void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 	}
 
 	$bank = get_bank_account($bank_account);

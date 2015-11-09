@@ -78,8 +78,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$line_tax = get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
 			0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
-		//if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt. This condition is removed after experience by Chaitanya
-			$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
+		$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
 
 		/* add delivery details for all lines */
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
@@ -101,7 +100,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);
 
-			// 2008-08-01. If there is a Customer Dimension, then override with this,
+			// If there is a Customer Dimension, then override with this,
 			// else take the Item Dimension (if any)
 			$dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : 
 				($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
@@ -166,8 +165,6 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if ($trans_no == 0) {
 			$Refs->save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 	}
-//_vd(get_gl(ST_CUSTDELIVERY, $delivery_no));
-//exit;
 	hook_db_postwrite($delivery, ST_CUSTDELIVERY);
 	commit_transaction();
 

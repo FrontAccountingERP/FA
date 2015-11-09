@@ -108,7 +108,7 @@ if (isset($_GET['AddedID'])) {
 //-----------------------------------------------------------------------------
 
 if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
-|| isset($_GET['BatchInvoice'])) {
+	|| isset($_GET['BatchInvoice'])) {
 
 	processing_start();
 
@@ -134,14 +134,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
 	check_is_editable(ST_SALESINVOICE, $_GET['ModifyInvoice']);
-/*
-	if ( get_sales_parent_numbers(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
-		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
-		Most likely this invoice was created in Front Accounting version prior to 2.0
-		and therefore can not be modified.") . "</b></center>";
-		display_footer_exit();
-	}
-*/
+
 	processing_start();
 	$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 
@@ -152,44 +145,36 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	copy_from_cart();
 } elseif (isset($_GET['AllocationNumber']) || isset($_GET['InvoicePrepayments'])) {
 
-		check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
+	check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
 
-		if (isset($_GET['AllocationNumber']))
+	if (isset($_GET['AllocationNumber']))
+	{
+		$payments = array(get_cust_allocation($_GET['AllocationNumber']));
+
+		if (!$payments || ($payments[0]['trans_type_to'] != ST_SALESORDER))
 		{
-			$payments = array(get_cust_allocation($_GET['AllocationNumber']));
-
-			if (!$payments || ($payments[0]['trans_type_to'] != ST_SALESORDER))
-			{
-				display_error(_("Please select correct Sales Order Prepayment to be invoiced and try again."));
-				display_footer_exit();
-			}
-			$order_no = $payments[0]['trans_no_to'];
+			display_error(_("Please select correct Sales Order Prepayment to be invoiced and try again."));
+			display_footer_exit();
 		}
-		else {
-			$order_no = $_GET['InvoicePrepayments'];
-			$payments =  get_payments_for($_GET['InvoicePrepayments'], ST_SALESORDER);
-		}
-		processing_start();
+		$order_no = $payments[0]['trans_no_to'];
+	}
+	else {
+		$order_no = $_GET['InvoicePrepayments'];
+		$payments =  get_payments_for($_GET['InvoicePrepayments'], ST_SALESORDER);
+	}
+	processing_start();
 
-		$_SESSION['Items'] = new Cart(ST_SALESORDER, $order_no, ST_SALESINVOICE);
-		$_SESSION['Items']->order_no = $order_no;
-		$_SESSION['Items']->src_docs = array($order_no);
-		$_SESSION['Items']->trans_no = 0;
-		$_SESSION['Items']->trans_type = ST_SALESINVOICE;
-		$_SESSION['Items']->prepayments = $payments;
-		// prepayment invoice has all line quantities as stated on order.
-//		foreach($_SESSION['Items']->line_items as &$line)
-//		{
-//			$line->src_id = $line_id;
-//			$line->qty_dispatched = $line->quantity;
-//		}
-//		unset($line);
-		$_SESSION['Items']->update_payments();
+	$_SESSION['Items'] = new Cart(ST_SALESORDER, $order_no, ST_SALESINVOICE);
+	$_SESSION['Items']->order_no = $order_no;
+	$_SESSION['Items']->src_docs = array($order_no);
+	$_SESSION['Items']->trans_no = 0;
+	$_SESSION['Items']->trans_type = ST_SALESINVOICE;
+	$_SESSION['Items']->prepayments = $payments;
+	$_SESSION['Items']->update_payments();
 
-//		$_SESSION['Items']->alloc = $this_amount;
-		copy_from_cart();
+	copy_from_cart();
 }
- elseif (!processing_active()) {
+elseif (!processing_active()) {
 	/* This page can only be called with a delivery for invoicing or invoice no for edit */
 	display_error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 
@@ -250,10 +235,7 @@ function set_delivery_shipping_sum($delivery_notes)
     foreach($delivery_notes as $delivery_num) 
     {
         $myrow = get_customer_trans($delivery_num, 13);
-        //$branch = get_branch($myrow["branch_code"]);
-        //$sales_order = get_sales_order_header($myrow["order_"]);
-        
-        //$shipping += $sales_order['freight_cost'];
+
         $shipping += $myrow['ov_freight'];
     }
     $_POST['ChargeFreightCost'] = price_format($shipping);
@@ -468,15 +450,9 @@ if ($_SESSION['Items']->trans_no == 0) {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-//label_cells(_("Delivery Notes:"),
-//get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
-
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 
 label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
-// 2010-09-03 Joe Hunt
-//if ($dim > 0) 
-//	label_cells(_("Dimension"), get_dimension_string($_SESSION['Items']->dimension_id), "class='tableheader2'");
 if ($dim > 0) {
 	label_cell(_("Dimension").":", "class='tableheader2'");
 	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
@@ -514,12 +490,6 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
-/*
-if ($dim > 1) 
-	label_cells(_("Dimension"). " 2", get_dimension_string($_SESSION['Items']->dimension2_id), "class='tableheader2'");
-else if ($dim > 0)
-	label_cell("&nbsp;", "colspan=2");
-*/
 if ($dim > 1) {
 	label_cell(_("Dimension")." 2:", "class='tableheader2'");
 	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;

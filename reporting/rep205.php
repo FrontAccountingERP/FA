@@ -124,7 +124,7 @@ function print_supplier_details_listing()
 		{
 			$newrow = 0;
 			$rep->NewLine();
-			// Here starts the new report lines 2013-01-28 Joe Hunt
+			// Here starts the new report lines
 			$contacts = get_supplier_contacts($myrow['supplier_id']);
 			$rep->TextCol(0, 1,	$myrow['supp_name']);
 			$rep->TextCol(1, 2,	_('Tax_Id') . ": " . $myrow['gst_no']);

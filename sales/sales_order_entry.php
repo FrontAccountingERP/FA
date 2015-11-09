@@ -332,10 +332,10 @@ function copy_from_cart()
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
-  global 	$Ajax;
+  	global 	$Ajax;
 
-  $Ajax->activate('items_table');
-  set_focus('_stock_id_edit');
+  	$Ajax->activate('items_table');
+  	set_focus('_stock_id_edit');
 }
 
 //--------------------------------------------------------------------------------
@@ -565,7 +565,7 @@ function handle_delete_item($line_no)
     if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 	    $_SESSION['Items']->remove_from_cart($line_no);
     } else {
-	display_error(_("This item cannot be deleted because some of it has already been delivered."));
+		display_error(_("This item cannot be deleted because some of it has already been delivered."));
     }
     line_start_focus();
 }

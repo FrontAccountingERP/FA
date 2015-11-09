@@ -181,7 +181,7 @@ class cart
 			$line = &$this->line_items[$line_no];
 			$src_docs[] = $src_type == ST_SALESORDER ?  $srcline['order_no'] : $srcline['debtor_trans_no'];
 			while($srcline['id'] != $line->src_id) // Logic : This will increment the line_items array till sales_order line is matched.
- 			{	// 0002259: Fixes Delivery note bug : Parent constraints not working if sales order line deleted after delivery 
+ 			{	// Fixes Delivery note bug : Parent constraints not working if sales order line deleted after delivery 
      			$line_no++;
      			$line = &$this->line_items[$line_no];
  			}
@@ -215,65 +215,64 @@ class cart
 			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 				read_sales_order($trans_no[0], $this, $type);
 			} else {	// other type of sales transaction
-					read_sales_trans($type, $trans_no, $this);
-					$this->prepayments = get_payments_for($trans_no[0], $type);
-					if ($this->order_no) { // free hand credit notes have no order_no
-						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
-						$this->cust_ref = $sodata["customer_ref"];
-					// currently currency is hard linked to debtor account
-					//	$this->customer_currency = $sodata["curr_code"];
-						$this->delivery_to = $sodata["deliver_to"];
-						$this->delivery_address = $sodata["delivery_address"];
-					// child transaction reedition - update with parent info unless it is freehand
-					if (!$this->is_prepaid() && !$prepare_child) // this is read for view/reedition
-						$this->set_parent_constraints($sodata, $trans_no[0]);
-					}
+				read_sales_trans($type, $trans_no, $this);
+				$this->prepayments = get_payments_for($trans_no[0], $type);
+				if ($this->order_no) { // free hand credit notes have no order_no
+					$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
+					$this->cust_ref = $sodata["customer_ref"];
+				// currently currency is hard linked to debtor account
+					$this->delivery_to = $sodata["deliver_to"];
+					$this->delivery_address = $sodata["delivery_address"];
+				// child transaction reedition - update with parent info unless it is freehand
+				if (!$this->is_prepaid() && !$prepare_child) // this is read for view/reedition
+					$this->set_parent_constraints($sodata, $trans_no[0]);
+				}
 			}
 			// convert document into child and prepare qtys for entry
 			if ($prepare_child)
 				$this->prepare_child($prepare_child);
 
 		} else { // new document
-				$this->trans_type = $type;
-				$this->trans_no = 0;
-				$this->customer_currency = get_company_currency();
-				// set new sales document defaults here
-				if (get_global_customer() != ALL_TEXT)
-				  $this->customer_id = get_global_customer();
-				else
-				  $this->customer_id = '';
-				$this->document_date = new_doc_date();
-				if (!is_date_in_fiscalyear($this->document_date))
-					$this->document_date = end_fiscalyear();
-				$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),
-					'customer' => $this->customer_id));
-				if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
+			$this->trans_type = $type;
+			$this->trans_no = 0;
+			$this->customer_currency = get_company_currency();
+			// set new sales document defaults here
+			if (get_global_customer() != ALL_TEXT)
+			  $this->customer_id = get_global_customer();
+			else
+			  $this->customer_id = '';
+			$this->document_date = new_doc_date();
+			if (!is_date_in_fiscalyear($this->document_date))
+				$this->document_date = end_fiscalyear();
+			$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today(),
+				'customer' => $this->customer_id));
+			if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
+			{
+				$dim = get_company_pref('use_dimension');
+				if ($dim > 0)
 				{
-					$dim = get_company_pref('use_dimension');
-					if ($dim > 0)
+					if ($this->customer_id == '')
+						$this->dimension_id = 0;
+					else
+					{
+						$cust = get_customer($this->customer_id);
+						$this->dimension_id = $cust['dimension_id'];
+					}	
+					if ($dim > 1)
 					{
 						if ($this->customer_id == '')
-							$this->dimension_id = 0;
+							$this->dimension2_id = 0;
 						else
-						{
-							$cust = get_customer($this->customer_id);
-							$this->dimension_id = $cust['dimension_id'];
-						}	
-						if ($dim > 1)
-						{
-							if ($this->customer_id == '')
-								$this->dimension2_id = 0;
-							else
-								$this->dimension2_id = $cust['dimension2_id'];
-						}		
+							$this->dimension2_id = $cust['dimension2_id'];
 					}		
-				}	
-				if ($type == ST_SALESINVOICE) {
-					$this->due_date =
-						get_invoice_duedate($this->payment, $this->document_date);
-				} else
-					$this->due_date =
-						add_days($this->document_date, $SysPrefs->default_delivery_required_by());
+				}		
+			}	
+			if ($type == ST_SALESINVOICE) {
+				$this->due_date =
+					get_invoice_duedate($this->payment, $this->document_date);
+			} else
+				$this->due_date =
+					add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 		}
 		$this->credit = get_current_cust_credit($this->customer_id);
 	}
@@ -509,7 +508,7 @@ class cart
 		}
 
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
-		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
+		  	$this->tax_group_id, $this->tax_included,  $this->tax_group_array);
 
     // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
     if ($this->customer_currency == 'CHF') {
@@ -604,7 +603,7 @@ class cart
 	*/
 	function is_prepaid()
 	{
-		return $this->prepaid; //floatcmp($this->prep_amount, 0) > 0;
+		return $this->prepaid; 
 	}
 	/*
 		Order is ready for delivery in prepament mode.
@@ -711,7 +710,6 @@ class line_details
 			$this->item_description = $item_row["description"];
 		else
 			$this->item_description = $description;
-		//$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];
 		$this->tax_type = $item_row["tax_type_id"];
 		$this->tax_type_name = $item_row["tax_type_name"];
 		$this->stock_id = $stock_id;

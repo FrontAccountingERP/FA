@@ -50,13 +50,13 @@ function getTransactions($supplier, $date)
 
 function print_payment_report()
 {
-    	global $path_to_root, $systypes_array;
+	global $path_to_root, $systypes_array;
 
-    	$to = $_POST['PARAM_0'];
-    	$fromsupp = $_POST['PARAM_1'];
-    	$currency = $_POST['PARAM_2'];
-    	$no_zeros = $_POST['PARAM_3'];
-    	$comments = $_POST['PARAM_4'];
+	$to = $_POST['PARAM_0'];
+	$fromsupp = $_POST['PARAM_1'];
+	$currency = $_POST['PARAM_2'];
+	$no_zeros = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
 	$orientation = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
@@ -94,7 +94,7 @@ function print_payment_report()
     			1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
     			2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
-			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')

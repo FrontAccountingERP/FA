@@ -35,48 +35,43 @@ function display_credit_header(&$order)
 	}
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 
-	  'branch_id', null, false, true, true, true);
+	  	'branch_id', null, false, true, true, true);
 
-	//if (($_SESSION['credit_items']->order_no == 0) ||
-	//	($order->customer_id != $_POST['customer_id']) ||
-	//	($order->Branch != $_POST['branch_id']))
-	//	$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 	if (($order->customer_id != $_POST['customer_id']) ||
 		($order->Branch != $_POST['branch_id']))
-	  {
+	{
 
-				$old_order = (PHP_VERSION<5) ? $order : clone $order;
-				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+		$old_order = (PHP_VERSION<5) ? $order : clone $order;
+		$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 
-				$_POST['Location'] = $order->Location;
-				$_POST['deliver_to'] = $order->deliver_to;
-				$_POST['delivery_address'] = $order->delivery_address;
-				$_POST['phone'] = $order->phone;
-				$Ajax->activate('Location');
-				$Ajax->activate('deliver_to');
-				$Ajax->activate('phone');
-				$Ajax->activate('delivery_address');
-				// change prices if necessary
-				// what about discount in template case?
-				if ($old_order->customer_currency != $order->customer_currency) {
-				    $change_prices = 1;
-				}
-				if ($old_order->sales_type != $order->sales_type) {
-				//  || $old_order->default_discount!=$order->default_discount
-					$_POST['sales_type_id'] = $order->sales_type;
-				    $Ajax->activate('sales_type_id');
-				    $change_prices = 1;
-				}
-				if ($old_order->dimension_id != $order->dimension_id) {
-					$_POST['dimension_id'] = $order->dimension_id;
-				    $Ajax->activate('dimension_id');
-				}
-				if ($old_order->dimension2_id != $order->dimension2_id) {
-					$_POST['dimension2_id'] = $order->dimension2_id;
-				    $Ajax->activate('dimension2_id');
-				}
-				unset($old_order);
-	  }
+		$_POST['Location'] = $order->Location;
+		$_POST['deliver_to'] = $order->deliver_to;
+		$_POST['delivery_address'] = $order->delivery_address;
+		$_POST['phone'] = $order->phone;
+		$Ajax->activate('Location');
+		$Ajax->activate('deliver_to');
+		$Ajax->activate('phone');
+		$Ajax->activate('delivery_address');
+		// change prices if necessary
+		// what about discount in template case?
+		if ($old_order->customer_currency != $order->customer_currency) {
+			$change_prices = 1;
+		}
+		if ($old_order->sales_type != $order->sales_type) {
+			$_POST['sales_type_id'] = $order->sales_type;
+			$Ajax->activate('sales_type_id');
+			$change_prices = 1;
+		}
+		if ($old_order->dimension_id != $order->dimension_id) {
+			$_POST['dimension_id'] = $order->dimension_id;
+			$Ajax->activate('dimension_id');
+		}
+		if ($old_order->dimension2_id != $order->dimension2_id) {
+			$_POST['dimension2_id'] = $order->dimension2_id;
+			$Ajax->activate('dimension2_id');
+		}
+		unset($old_order);
+	}
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
@@ -127,7 +122,7 @@ function display_credit_header(&$order)
 		}
 		$Ajax->activate('_ex_rate');
 	}
-	// 2008-11-12 Joe Hunt added dimensions
+	// added dimensions
 	$dim = get_company_pref('use_dimension');
 	if ($dim > 0)
 		dimensions_list_row(_("Dimension").":", 'dimension_id', 
@@ -147,7 +142,6 @@ function display_credit_header(&$order)
 			$line = &$order->line_items[$line_no];
 			$line->price = get_price($line->stock_id, $order->customer_currency,
 				$order->sales_type, $order->price_factor, get_post('OrderDate'));
-		//		$line->discount_percent = $order->default_discount;
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -166,7 +160,7 @@ function display_credit_items($title, &$order)
     div_start('items_table');
     start_table(TABLESTYLE, "width='90%'");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
-	_("Price"), _("Discount %"), _("Total"),'');
+		_("Price"), _("Discount %"), _("Total"),'');
 
     if (count($order->line_items)) $th[]= '';
 

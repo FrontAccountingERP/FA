@@ -248,13 +248,13 @@ function check_quantities()
 	// Update cart delivery quantities/descriptions
 	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
 		if (isset($_POST['Line'.$line])) {
-		if($_SESSION['Items']->trans_no) {
-			$min = $itm->qty_done;
-			$max = $itm->quantity;
-		} else {
-			$min = 0;
-			$max = $itm->quantity - $itm->qty_done;
-		}
+			if($_SESSION['Items']->trans_no) {
+				$min = $itm->qty_done;
+				$max = $itm->quantity;
+			} else {
+				$min = 0;
+				$max = $itm->quantity - $itm->qty_done;
+			}
 
 			if (check_num('Line'.$line, $min, $max)) {
 				$_SESSION['Items']->line_items[$line]->qty_dispatched =
@@ -329,9 +329,6 @@ label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableh
 end_row();
 start_row();
 
-//if (!isset($_POST['ref']))
-//	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
-
 if ($_SESSION['Items']->trans_no==0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTDELIVERY,
 	array('customer' => $_SESSION['Items']->customer_id,
@@ -379,7 +376,7 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['DispatchDate']);
 }
 customer_credit_row($_SESSION['Items']->customer_id, $_SESSION['Items']->credit, "class='tableheader2'");
-// 2010-09-03 Joe Hunt
+
 $dim = get_company_pref('use_dimension');
 if ($dim > 0) {
 	start_row();

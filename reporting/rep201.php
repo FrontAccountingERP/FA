@@ -68,15 +68,15 @@ function getTransactions($supplier_id, $from, $to)
 
 function print_supplier_balances()
 {
-    	global $path_to_root, $systypes_array;
+	global $path_to_root, $systypes_array;
 
-    	$from = $_POST['PARAM_0'];
-    	$to = $_POST['PARAM_1'];
-    	$fromsupp = $_POST['PARAM_2'];
-    	$show_balance = $_POST['PARAM_3'];
-    	$currency = $_POST['PARAM_4'];
-    	$no_zeros = $_POST['PARAM_5'];
-    	$comments = $_POST['PARAM_6'];
+	$from = $_POST['PARAM_0'];
+	$to = $_POST['PARAM_1'];
+	$fromsupp = $_POST['PARAM_2'];
+	$show_balance = $_POST['PARAM_3'];
+	$currency = $_POST['PARAM_4'];
+	$no_zeros = $_POST['PARAM_5'];
+	$comments = $_POST['PARAM_6'];
 	$orientation = $_POST['PARAM_7'];
 	$destination = $_POST['PARAM_8'];
 	if ($destination)
@@ -115,7 +115,7 @@ function print_supplier_balances()
     			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
     			2 => array('text' => _('Supplier'), 'from' => $supp, 'to' => ''),
     			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
-			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')

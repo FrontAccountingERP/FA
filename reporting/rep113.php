@@ -70,141 +70,140 @@ function print_credits()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-			if (!exists_customer_trans(ST_CUSTCREDIT, $i))
+		if (!exists_customer_trans(ST_CUSTCREDIT, $i))
+			continue;
+		$sign = -1;
+		$myrow = get_customer_trans($i, ST_CUSTCREDIT);
+		if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+			continue;
+		}
+		$baccount = get_default_bank_account($myrow['curr_code']);
+		$params['bankaccount'] = $baccount['id'];
+
+		$branch = get_branch($myrow["branch_code"]);
+		$branch['disable_branch'] = $paylink; // helper
+		$sales_order = null;
+		if ($email == 1)
+		{
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+			$rep->title = _('CREDIT NOTE');
+			$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
+		}
+		$rep->currency = $cur;
+		$rep->Font();
+		$rep->Info($params, $cols, null, $aligns);
+
+		$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], true);
+		$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
+		$rep->SetHeaderType('Header2');
+		$rep->NewPage();
+
+		$result = get_customer_trans_details(ST_CUSTCREDIT, $i);
+		$SubTotal = 0;
+		while ($myrow2=db_fetch($result))
+		{
+			if ($myrow2["quantity"] == 0)
 				continue;
-			$sign = -1;
-			$myrow = get_customer_trans($i, ST_CUSTCREDIT);
-			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+
+			$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
+			   user_price_dec());
+			$SubTotal += $Net;
+			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
+			$DisplayQty = number_format2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
+			$DisplayNet = number_format2($Net,$dec);
+			if ($myrow2["discount_percent"]==0)
+				$DisplayDiscount ="";
+			else
+				$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+			$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
+			$oldrow = $rep->row;
+			$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
+			$newrow = $rep->row;
+			$rep->row = $oldrow;
+			$rep->TextCol(2, 3,	$DisplayQty, -2);
+			$rep->TextCol(3, 4,	$myrow2['units'], -2);
+			$rep->TextCol(4, 5,	$DisplayPrice, -2);
+			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
+			$rep->TextCol(6, 7,	$DisplayNet, -2);
+			$rep->row = $newrow;
+			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+				$rep->NewPage();
+		}
+
+		$memo = get_comments_string(ST_CUSTCREDIT, $i);
+		if ($memo != "")
+		{
+			$rep->NewLine();
+			$rep->TextColLines(1, 5, $memo, -2);
+		}
+
+		$DisplaySubTot = number_format2($SubTotal,$dec);
+		$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
+
+		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+		$doctype = ST_CUSTCREDIT;
+
+		$rep->TextCol(3, 6, _("Sub-total"), -2);
+		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
+		$rep->NewLine();
+		$rep->TextCol(3, 6, _("Shipping"), -2);
+		$rep->TextCol(6, 7,	$DisplayFreight, -2);
+		$rep->NewLine();
+		$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $i);
+		$first = true;
+		while ($tax_item = db_fetch($tax_items))
+		{
+			if ($tax_item['amount'] == 0)
 				continue;
-			}
-			$baccount = get_default_bank_account($myrow['curr_code']);
-			$params['bankaccount'] = $baccount['id'];
+			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
 
-			$branch = get_branch($myrow["branch_code"]);
-			$branch['disable_branch'] = $paylink; // helper
-			$sales_order = null;
-			if ($email == 1)
+			if ($SysPrefs->suppress_tax_rates() == 1)
+				$tax_type_name = $tax_item['tax_type_name'];
+			else
+				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
+
+			if ($myrow['tax_included'])
 			{
-				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
-				$rep->title = _('CREDIT NOTE');
-				$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
-			}
-			$rep->currency = $cur;
-			$rep->Font();
-			$rep->Info($params, $cols, null, $aligns);
-
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no'], true);
-			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, ST_CUSTCREDIT, $contacts);
-		    $rep->SetHeaderType('Header2');
-			$rep->NewPage();
-
-   			$result = get_customer_trans_details(ST_CUSTCREDIT, $i);
-			$SubTotal = 0;
-			while ($myrow2=db_fetch($result))
-			{
-				if ($myrow2["quantity"] == 0)
-					continue;
-					
-				$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-				   user_price_dec());
-				$SubTotal += $Net;
-	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
-	    		$DisplayQty = number_format2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
-	    		$DisplayNet = number_format2($Net,$dec);
-	    		if ($myrow2["discount_percent"]==0)
-		  			$DisplayDiscount ="";
-	    		else
-		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
-				$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
-				$oldrow = $rep->row;
-				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
-				$newrow = $rep->row;
-				$rep->row = $oldrow;
-				$rep->TextCol(2, 3,	$DisplayQty, -2);
-				$rep->TextCol(3, 4,	$myrow2['units'], -2);
-				$rep->TextCol(4, 5,	$DisplayPrice, -2);
-				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-				$rep->TextCol(6, 7,	$DisplayNet, -2);
-				$rep->row = $newrow;
-				//$rep->NewLine(1);
-				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-					$rep->NewPage();
-			}
-
-			$memo = get_comments_string(ST_CUSTCREDIT, $i);
-			if ($memo != "")
-			{
-				$rep->NewLine();
-				$rep->TextColLines(1, 5, $memo, -2);
-			}
-
-   			$DisplaySubTot = number_format2($SubTotal,$dec);
-   			$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
-
-    		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-			$doctype = ST_CUSTCREDIT;
-
-			$rep->TextCol(3, 6, _("Sub-total"), -2);
-			$rep->TextCol(6, 7,	$DisplaySubTot, -2);
-			$rep->NewLine();
-			$rep->TextCol(3, 6, _("Shipping"), -2);
-			$rep->TextCol(6, 7,	$DisplayFreight, -2);
-			$rep->NewLine();
-			$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $i);
-			$first = true;
-    		while ($tax_item = db_fetch($tax_items))
-    		{
-    			if ($tax_item['amount'] == 0)
-    				continue;
-    			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
-    			
-    			if ($SysPrefs->suppress_tax_rates() == 1)
-    				$tax_type_name = $tax_item['tax_type_name'];
-    			else
-    				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
-
-    			if ($myrow['tax_included'])
-    			{
-    				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
-    				{
-    					if ($first)
-    					{
-							$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-							$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
-							$rep->NewLine();
-    					}
-						$rep->TextCol(3, 6, $tax_type_name, -2);
-						$rep->TextCol(6, 7,	$DisplayTax, -2);
-						$first = false;
-    				}
-    				else
-						$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
-				}
-    			else
-    			{
+				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
+				{
+					if ($first)
+					{
+						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
+						$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+						$rep->NewLine();
+					}
 					$rep->TextCol(3, 6, $tax_type_name, -2);
 					$rep->TextCol(6, 7,	$DisplayTax, -2);
+					$first = false;
 				}
-				$rep->NewLine();
-    		}
-    		$rep->NewLine();
-			$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
-				$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
-			$rep->Font('bold');
-			$rep->TextCol(3, 6, _("TOTAL CREDIT"), - 2);
-			$rep->TextCol(6, 7, $DisplayTotal, -2);
-			$words = price_in_words($myrow['Total'], ST_CUSTCREDIT);
-			if ($words != "")
-			{
-				$rep->NewLine(1);
-				$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
-			}	
-			$rep->Font();
-			if ($email == 1)
-			{
-				$myrow['dimension_id'] = $paylink; // helper for pmt link
-				$rep->End($email);
+				else
+					$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 			}
+			else
+			{
+				$rep->TextCol(3, 6, $tax_type_name, -2);
+				$rep->TextCol(6, 7,	$DisplayTax, -2);
+			}
+			$rep->NewLine();
+		}
+		$rep->NewLine();
+		$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
+			$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
+		$rep->Font('bold');
+		$rep->TextCol(3, 6, _("TOTAL CREDIT"), - 2);
+		$rep->TextCol(6, 7, $DisplayTotal, -2);
+		$words = price_in_words($myrow['Total'], ST_CUSTCREDIT);
+		if ($words != "")
+		{
+			$rep->NewLine(1);
+			$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
+		}	
+		$rep->Font();
+		if ($email == 1)
+		{
+			$myrow['dimension_id'] = $paylink; // helper for pmt link
+			$rep->End($email);
+		}
 	}
 	if ($email == 0)
 		$rep->End();

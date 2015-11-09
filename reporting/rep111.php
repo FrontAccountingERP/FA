@@ -128,7 +128,6 @@ function print_sales_quotations()
 				$image = company_path(). "/images/" . item_img_name($myrow2['stk_code']) . ".jpg";
 				if (file_exists($image))
 				{
-					//$rep->NewLine();
 					if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 						$rep->NewPage();
 					$rep->AddImage($image, $rep->cols[1], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
@@ -136,7 +135,6 @@ function print_sales_quotations()
 					$rep->NewLine();
 				}
 			}
-			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();
 		}

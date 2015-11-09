@@ -145,7 +145,7 @@ function print_balance_sheet()
 		$orientation = $_POST['PARAM_8'];
 		$destination = $_POST['PARAM_9'];
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_2'];
 		$tags = (isset($_POST['PARAM_3']) ? $_POST['PARAM_3'] : -1);
@@ -197,7 +197,7 @@ function print_balance_sheet()
                             'from' => get_dimension_string($dimension2), 'to' => ''),
                         4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),

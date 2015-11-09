@@ -175,17 +175,17 @@ if ($id != -1)
 
 		$_POST['trans_date'] = $to;
 		start_form();
-			start_table(TABLESTYLE, "width=50%");
-			label_row(_('Description:'), $myrow["description"]);
-			label_row(_('Template:'), get_customer_trans_view_str(30, $myrow["order_no"]));
-			label_row(_('Number of invoices:'), $count);
-			date_row(_('Invoice date:'), 'trans_date');
-			text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1)),
-				100, 100);
-			end_table();
-			hidden('from', $from, true);
-			hidden('to', $to, true);
-			br();
+		start_table(TABLESTYLE, "width=50%");
+		label_row(_('Description:'), $myrow["description"]);
+		label_row(_('Template:'), get_customer_trans_view_str(30, $myrow["order_no"]));
+		label_row(_('Number of invoices:'), $count);
+		date_row(_('Invoice date:'), 'trans_date');
+		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1)),
+			100, 100);
+		end_table();
+		hidden('from', $from, true);
+		hidden('to', $to, true);
+		br();
 		submit_center_first('confirmed'.$id, _('Create'), _('Create recurrent invoices'), false, ICON_OK);
 		submit_center_last('cancel', _('Cancel'), _('Return to recurrent invoices'), false, ICON_ESCAPE);
 		submit_js_confirm("do_create".$id, sprintf(_("You are about to issue %s invoices.\n Do you want to continue?"), $count));

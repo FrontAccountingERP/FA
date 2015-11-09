@@ -211,7 +211,7 @@ class BoxReports
 							}
 						}
 					}
-					else // saved parameters 2010-10-16 Joe Hunt
+					else // saved parameters
 						$date = $_POST[$name];
 					$st = "<input type='text' name='$name' value='$date'>";
 					if (user_use_date_picker())
@@ -423,7 +423,6 @@ class BoxReports
 						$tag_type = TAG_ACCOUNT;
 					else
 						$tag_type = TAG_DIMENSION;
-					//return tag_list($name, 5, $tag_type, true, false, _("No tags"));
 					return tag_list($name, 5, $tag_type, true);
 
 			}

@@ -77,7 +77,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $Hooks, $systypes_array;
+	global $path_to_root, $systypes_array;
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -190,9 +190,6 @@ function print_tax_report()
 	$aligns2 = array('left', 'right', 'right', 'right',	'right', 'right', 'right');
 
 	$rep->Info($params, $cols2, $headers2, $aligns2);
-
-	//for ($i = 0; $i < count($cols2); $i++)
-	//	$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
 
 	$rep->headers = $headers2;
 	$rep->aligns = $aligns2;

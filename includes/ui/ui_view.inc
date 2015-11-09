@@ -716,7 +716,7 @@ function quickentry_calculate($base, $id, $taxgroup=null, $date=null)
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
 					if (substr($row['action'], 0, 1) != 'T') 
-						$totrate += get_tax_type_default_rate($row['dest_id']);
+						$totrate += get_tax_type_rate($row['dest_id']);
 			}
 		}
 		$first = true;

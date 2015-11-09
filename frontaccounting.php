@@ -22,7 +22,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	include_once($path_to_root . '/installed_extensions.php');
 
 	class front_accounting
-		{
+	{
 		var $user;
 		var $settings;
 		var $applications;
@@ -34,16 +34,16 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		{
 		}
 		function add_application(&$app)
-				{	
-					if ($app->enabled) // skip inactive modules
-						$this->applications[$app->id] = &$app;
-				}
+		{	
+			if ($app->enabled) // skip inactive modules
+				$this->applications[$app->id] = &$app;
+		}
 		function get_application($id)
-				{
-				 if (isset($this->applications[$id]))
-					return $this->applications[$id];
-				 return null;
-				}
+		{
+			 if (isset($this->applications[$id]))
+				return $this->applications[$id];
+			 return null;
+		}
 		function get_selected_application()
 		{
 			if (isset($this->selected_application))
@@ -85,4 +85,4 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 			$this->add_application(new setup_app());
 		}
-}
+	}

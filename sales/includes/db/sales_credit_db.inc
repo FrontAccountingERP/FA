@@ -61,15 +61,13 @@ function write_credit_note(&$credit_note, $write_off_acc)
 	    $items_added_tax = 0;
 	    $freight_added_tax = 0;
 	}
-	// 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
+	// If the Customer Branch AR Account is set to a Bank Account,
 	// the transaction will be settled at once.
 	if (is_bank_account($branch_data['receivables_account']))
 		$alloc = $credit_note_total + $items_added_tax + $credit_note->freight_cost + $freight_added_tax;
 	else
 		$alloc = 0;
 
-//	$sales_order=$invoice->order_no;	//?
-//    if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
 	if (!isset($credit_note->order_no))
 		$credit_note->order_no = 0;
 
@@ -82,7 +80,6 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		$credit_note->sales_type, $credit_note->order_no, $credit_note->ship_via,
 		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id,
 		$credit_note->payment, $credit_note->tax_included); 
-		// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
 
 	if ($trans_no==0) {
 		$credit_note->trans_no = array($credit_no=>0);
@@ -204,7 +201,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 {
 	$stock_gl_codes = get_stock_gl_code($order_line->stock_id);
 	$customer = get_customer($order->customer_id);
-	// 2008-08-01. If there is a Customer Dimension, then override with this,
+	// If there is a Customer Dimension, then override with this,
 	// else take the Item Dimension (if any)
 	$dim = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id : 
 		($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
@@ -249,7 +246,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		//Post sales transaction to GL credit sales
 
-		// 2008-06-14. If there is a Branch Sales Account, then override with this,
+		// If there is a Branch Sales Account, then override with this,
 		// else take the Item Sales Account
 		if ($branch_data['sales_account'] != "")
 			$sales_account = $branch_data['sales_account'];

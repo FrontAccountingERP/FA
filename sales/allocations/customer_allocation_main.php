@@ -24,37 +24,31 @@ page(_($help_context = "Customer Allocations"), false, false, "", $js);
 //--------------------------------------------------------------------------------
 
 start_form();
-	/* show all outstanding receipts and credits to be allocated */
+/* show all outstanding receipts and credits to be allocated */
 
-	if (!isset($_POST['customer_id']))
-    	$_POST['customer_id'] = get_global_customer();
+if (!isset($_POST['customer_id']))
+	$_POST['customer_id'] = get_global_customer();
 
-    echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	echo customer_list('customer_id', $_POST['customer_id'], true, true);
-    echo "<br>";
-    check(_("Show Settled Items:"), 'ShowSettled', null, true);
-	echo "</center><br><br>";
+echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
+echo customer_list('customer_id', $_POST['customer_id'], true, true);
+echo "<br>";
+check(_("Show Settled Items:"), 'ShowSettled', null, true);
+echo "</center><br><br>";
 
-	set_global_customer($_POST['customer_id']);
+set_global_customer($_POST['customer_id']);
 
-	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT))
-	{
-		unset($_POST['customer_id']);
-	}
+if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT))
+{
+	unset($_POST['customer_id']);
+}
 
-	/*if (isset($_POST['customer_id'])) {
-		$custCurr = get_customer_currency($_POST['customer_id']);
-		if (!is_company_currency($custCurr))
-			echo _("Customer Currency:") . $custCurr;
-	}*/
+$settled = false;
+if (check_value('ShowSettled'))
+	$settled = true;
 
-	$settled = false;
-	if (check_value('ShowSettled'))
-		$settled = true;
-
-	$customer_id = null;
-	if (isset($_POST['customer_id']))
-		$customer_id = $_POST['customer_id'];
+$customer_id = null;
+if (isset($_POST['customer_id']))
+	$customer_id = $_POST['customer_id'];
 
 //--------------------------------------------------------------------------------
 function systype_name($dummy, $type)

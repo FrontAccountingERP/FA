@@ -72,14 +72,14 @@ function print_stock_check()
 {
     global $path_to_root, $SysPrefs;
 
-    	$category = $_POST['PARAM_0'];
-    	$location = $_POST['PARAM_1'];
-    	$pictures = $_POST['PARAM_2'];
-    	$check    = $_POST['PARAM_3'];
-    	$shortage = $_POST['PARAM_4'];
-    	$no_zeros = $_POST['PARAM_5'];
-    	$like     = $_POST['PARAM_6']; 
-    	$comments = $_POST['PARAM_7'];
+   	$category = $_POST['PARAM_0'];
+   	$location = $_POST['PARAM_1'];
+   	$pictures = $_POST['PARAM_2'];
+   	$check    = $_POST['PARAM_3'];
+   	$shortage = $_POST['PARAM_4'];
+   	$no_zeros = $_POST['PARAM_5'];
+   	$like     = $_POST['PARAM_6']; 
+   	$comments = $_POST['PARAM_7'];
 	$orientation = $_POST['PARAM_8'];
 	$destination = $_POST['PARAM_9'];
 
@@ -132,12 +132,7 @@ function print_stock_check()
     				1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
     				3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''),
-				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
-
-	if ($pictures)
-		$user_comp = user_company();
-	else
-		$user_comp = "";
+					4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
    	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')

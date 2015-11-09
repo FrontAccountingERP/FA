@@ -43,11 +43,11 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = '$account'
+	$sql = "SELECT * FROM ".TB_PREF."bank_trans
+		WHERE bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date, id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
 }

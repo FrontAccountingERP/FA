@@ -104,14 +104,11 @@ function inventory_movements()
 	else
 		$cat = get_category_name($category);
 
-//	if ($location == ALL_TEXT)
-//		$location = '';
 	if ($location == '')
 		$loc = _('All');
 	else
 		$loc = get_location_name($location);
 
-	//$cols = array(0, 100, 300, 365, 440, 540, 640, 715);
 	$cols = array(0, 60, 220, 240, 310, 380, 450, 520);
 
 	$headers = array(_('Category'), _('Description'),	_('UOM'),	_('Opening'), _('Quantity In'), _('Quantity Out'), _('Balance'));

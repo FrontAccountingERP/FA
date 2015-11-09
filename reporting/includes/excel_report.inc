@@ -84,7 +84,6 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->unique_name = uniqid('').".xls";
 		$this->path = company_path(). '/pdf_files';
 		$this->Spreadsheet_Excel_Writer_Workbook($this->path."/".$this->unique_name);
-		//$this->setCountry(48);
 		if ($this->code != "iso-8859-1")
 			$this->setVersion(8); // set biff version to 8 (0x0006 internal)
 		$this->sheet =& $this->addWorksheet($this->worksheetNameGenerator($this->title));
@@ -198,10 +197,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		if (!isset($this->formatAmount[$dec]))
 		{
-			//global $thoseps,$decseps;
 			$dec = (int)$dec;
-			//$tsep = $thoseps[user_tho_sep()];
-			//$dsep = $decseps[user_dec_sep()];
 			$tsep = ',';
 			$dsep = '.';
 			$format = "###{$tsep}###{$tsep}###{$tsep}##0";

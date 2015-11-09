@@ -49,7 +49,7 @@ function print_GL_transactions()
 		$orientation = $_POST['PARAM_7'];
 		$destination = $_POST['PARAM_8'];
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
@@ -71,7 +71,6 @@ function print_GL_transactions()
 	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
-  //$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
 	$cols = array(0, 65, 105, 125, 175, 230, 290, 345, 405, 465, 525);
 	//------------0--1---2---3----4----5----6----7----8----9----10-------
 	//-----------------------dim1-dim2-----------------------------------
@@ -99,7 +98,7 @@ function print_GL_transactions()
                     	4 => array('text' => _('Dimension')." 2", 'from' => get_dimension_string($dimension2),
                             'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),

@@ -104,7 +104,6 @@ function print_Chart_of_Accounts()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = 0;
 
 	$cols = array(0, 50, 300, 425, 500);
 

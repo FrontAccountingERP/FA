@@ -196,8 +196,8 @@ if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // 
 	$disable = get_post('OrderNumber') !== '' || get_post('OrderReference') !== '';
 
   	if ($show_dates) {
-			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
-			$Ajax->addDisable(true, 'OrdersToDate', $disable);
+		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+		$Ajax->addDisable(true, 'OrdersToDate', $disable);
 	}
 
 	$Ajax->activate('orders_tbl');
@@ -273,7 +273,6 @@ else
 		_("Currency") => array('align'=>'center')
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-	//array_substitute($cols, 3, 1, _("Cust Order Ref"));
 	array_append($cols, array(
 		array('insert'=>true, 'fun'=>'dispatch_link'),
 		array('insert'=>true, 'fun'=>'edit_link')));
