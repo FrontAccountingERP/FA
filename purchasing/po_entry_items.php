@@ -350,8 +350,6 @@ function can_commit()
 	{
     	if (!check_reference(get_post('ref'), $_SESSION['PO']->trans_type))
     	{
-    		_vd("bad reference");
-    		exit;
 			set_focus('ref');
     		return false;
     	}
