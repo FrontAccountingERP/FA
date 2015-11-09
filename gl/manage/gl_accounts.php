@@ -17,7 +17,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-page(_($help_context = "Chart of Accounts"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = "Chart of Accounts"), false, false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");

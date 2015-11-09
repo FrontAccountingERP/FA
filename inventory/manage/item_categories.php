@@ -17,7 +17,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-page(_($help_context = "Item Categories"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = "Item Categories"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 
