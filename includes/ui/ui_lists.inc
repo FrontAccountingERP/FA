@@ -1367,7 +1367,7 @@ function workcenter_list_row($label, $name, $selected_id=null, $all_option=false
 
 function bank_accounts_list($name, $selected_id=null, $submit_on_change=false, $spec_option=false)
 {
-	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code, inactive
+	$sql = "SELECT id, bank_account_name, bank_curr_code, inactive
 		FROM ".TB_PREF."bank_accounts";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
@@ -1400,9 +1400,9 @@ function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false, $all_option=false)
 {
 
-	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code, inactive
+	$sql = "SELECT id, bank_account_name, bank_curr_code, inactive
 		FROM ".TB_PREF."bank_accounts
-		WHERE ".TB_PREF."bank_accounts.account_type=".BT_CASH;
+		WHERE account_type=".BT_CASH;
 
 	if ($label != null)
 		echo "<tr><td class='label'>$label</td>\n";

@@ -64,7 +64,7 @@ function add_item($stock_id, $description, $long_description, $category_id,
 	db_query($sql, "The item could not be added");
 
 	$sql = "INSERT INTO ".TB_PREF."loc_stock (loc_code, stock_id)
-		SELECT ".TB_PREF."locations.loc_code, ".db_escape($stock_id)
+		SELECT loc_code, ".db_escape($stock_id)
 		." FROM ".TB_PREF."locations";
 
 	db_query($sql, "The item locstock could not be added");
@@ -98,9 +98,10 @@ function delete_item($stock_id)
 
 function get_item($stock_id)
 {
-	$sql = "SELECT ".TB_PREF."stock_master.*,".TB_PREF."item_tax_types.name AS tax_type_name
-		FROM ".TB_PREF."stock_master,".TB_PREF."item_tax_types
-		WHERE ".TB_PREF."item_tax_types.id=".TB_PREF."stock_master.tax_type_id
+	$sql = "SELECT item.*, taxtype.name AS tax_type_name
+		FROM ".TB_PREF."stock_master item,"
+			.TB_PREF."item_tax_types taxtype
+		WHERE taxtype.id=item.tax_type_id
 		AND stock_id=".db_escape($stock_id);
 	$result = db_query($sql,"an item could not be retreived");
 

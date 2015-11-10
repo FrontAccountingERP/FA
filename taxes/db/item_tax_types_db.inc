@@ -62,9 +62,11 @@ function get_item_tax_type($id)
 
 function get_item_tax_type_for_item($stock_id)
 {
-	$sql = "SELECT ".TB_PREF."item_tax_types.* FROM ".TB_PREF."item_tax_types,".TB_PREF."stock_master WHERE 
-		".TB_PREF."stock_master.stock_id=".db_escape($stock_id)."
-		AND ".TB_PREF."item_tax_types.id=".TB_PREF."stock_master.tax_type_id";
+	$sql = "SELECT item_tax_type.*
+		FROM ".TB_PREF."item_tax_types item_tax_type,"
+			.TB_PREF."stock_master item
+		WHERE item.stock_id=".db_escape($stock_id)."
+		AND item_tax_type.id=item.tax_type_id";
 	
 	$result = db_query($sql, "could not get item tax type");
 	

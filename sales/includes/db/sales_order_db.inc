@@ -221,24 +221,24 @@ function update_sales_order($order)
 
 function get_sales_order_header($order_no, $trans_type)
 {
-	$sql = "SELECT sorder.*, "
-	  ."cust.name, "
-	  ."cust.curr_code, "
-	  ."cust.address, "
-	  ."loc.location_name, "
-	  ."cust.discount, "
-	  ."stype.sales_type, "
-	  ."stype.id AS sales_type_id, "
-	  ."stype.tax_included, "
-	  ."stype.factor, "
- 	  ."ship.shipper_name, "
-	  ."tax_group.name AS tax_group_name , "
-	  ."tax_group.id AS tax_group_id, "
-	  ."cust.tax_id,"
-	  ."sorder.alloc,"
-	  ."IFNULL(allocs.ord_allocs, 0)+IFNULL(inv.inv_allocs ,0) AS sum_paid,"
-	  ."sorder.prep_amount>0 as prepaid"
-	." FROM ".TB_PREF."sales_orders sorder
+	$sql = "SELECT sorder.*,
+	  cust.name,
+	  cust.curr_code,
+	  cust.address,
+	  loc.location_name,
+	  cust.discount,
+	  stype.sales_type,
+	  stype.id AS sales_type_id,
+	  stype.tax_included,
+	  stype.factor,
+ 	  ship.shipper_name,
+	  tax_group.name AS tax_group_name,
+	  tax_group.id AS tax_group_id,
+	  cust.tax_id,
+	  sorder.alloc,
+	  IFNULL(allocs.ord_allocs, 0)+IFNULL(inv.inv_allocs ,0) AS sum_paid,
+	  sorder.prep_amount>0 as prepaid
+	FROM ".TB_PREF."sales_orders sorder
 			LEFT JOIN (SELECT trans_no_to, sum(amt) ord_allocs FROM ".TB_PREF."cust_allocations
 				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no)." GROUP BY trans_no_to)
 				 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
@@ -278,20 +278,19 @@ function get_sales_order_header($order_no, $trans_type)
 //----------------------------------------------------------------------------------------
 
 function get_sales_order_details($order_no, $trans_type) {
-	$sql = "SELECT id, stk_code, unit_price, "
-		.TB_PREF."sales_order_details.description,"
-		.TB_PREF."sales_order_details.quantity,
-		  discount_percent,
-		  qty_sent as qty_done, "
-		.TB_PREF."stock_master.units,"
-		.TB_PREF."stock_master.mb_flag,"
-		.TB_PREF."stock_master.material_cost + "
-			.TB_PREF."stock_master.labour_cost + "
-			.TB_PREF."stock_master.overhead_cost AS standard_cost
-	FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master
-	WHERE ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id
-	AND order_no =" . db_escape($order_no) 
-		." AND trans_type = " . db_escape($trans_type) . " ORDER BY id";
+	$sql = "SELECT id, stk_code, unit_price,
+				line.description,
+				line.quantity,
+				discount_percent,
+				qty_sent as qty_done,
+				item.units,
+				item.mb_flag,
+				item.material_cost + item.labour_cost + item.overhead_cost AS standard_cost
+			FROM ".TB_PREF."sales_order_details line,"
+				.TB_PREF."stock_master item
+			WHERE line.stk_code = line.stock_id
+				AND order_no =".db_escape($order_no) 
+				." AND trans_type = ".db_escape($trans_type) . " ORDER BY id";
 
 	return db_query($sql, "Retreive order Line Items");
 }
@@ -407,8 +406,8 @@ function get_customer_to_order($customer_id) {
 
 	// Now check to ensure this account is not on hold */
 	$sql = "SELECT cust.name, 
-		  cust.address, "
-		  .TB_PREF."credit_status.dissallow_invoices, 
+		  cust.address,
+		  credit_status.dissallow_invoices, 
 		  cust.sales_type AS salestype,
 		  cust.dimension_id,
 		  cust.dimension2_id,
@@ -423,11 +422,11 @@ function get_customer_to_order($customer_id) {
 			-1, 1) * (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount),0)) as cur_credit
 		FROM ".TB_PREF."debtors_master cust
 		  LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.type!=".ST_CUSTDELIVERY." AND trans.debtor_no = cust.debtor_no,"
-		  .TB_PREF."credit_status, "
+		  .TB_PREF."credit_status credit_status,"
 		  .TB_PREF."sales_types stype
 		WHERE cust.sales_type=stype.id
-			AND cust.credit_status=".TB_PREF."credit_status.id
-			AND cust.debtor_no = ".db_escape($customer_id)
+			AND cust.credit_status=credit_status.id
+			AND cust.debtor_no=".db_escape($customer_id)
 		." GROUP by cust.debtor_no";
 
 	$result =db_query($sql,"Customer Record Retreive");
@@ -437,19 +436,19 @@ function get_customer_to_order($customer_id) {
 function get_branch_to_order($customer_id, $branch_id) {
 
     	// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
-	 	$sql = "SELECT ".TB_PREF."cust_branch.br_name, "
-			.TB_PREF."cust_branch.br_address, "
-			.TB_PREF."cust_branch.br_post_address, "
-			." default_location, location_name, default_ship_via, "
-			.TB_PREF."tax_groups.name AS tax_group_name, "
-			.TB_PREF."tax_groups.id AS tax_group_id
-			FROM ".TB_PREF."cust_branch, "
-			  .TB_PREF."tax_groups, "
-			  .TB_PREF."locations
-			WHERE ".TB_PREF."cust_branch.tax_group_id = ".TB_PREF."tax_groups.id
-				AND ".TB_PREF."locations.loc_code=default_location
-				AND ".TB_PREF."cust_branch.branch_code=".db_escape($branch_id)."
-				AND ".TB_PREF."cust_branch.debtor_no = ".db_escape($customer_id);
+	 	$sql = "SELECT branch.br_name,
+					branch.br_address,
+					branch.br_post_address,
+					default_location, location_name, default_ship_via,
+					tax_group.name AS tax_group_name,
+					tax_group.id AS tax_group_id
+				FROM ".TB_PREF."cust_branch branch,"
+			  		.TB_PREF."tax_groups tax_group,"
+			  		.TB_PREF."locations location
+			WHERE branch.tax_group_id = tax_group.id
+				AND location.loc_code=default_location
+				AND branch.branch_code=".db_escape($branch_id)."
+				AND branch.debtor_no=".db_escape($customer_id);
 
   	    return db_query($sql,"Customer Branch Record Retreive");
 }

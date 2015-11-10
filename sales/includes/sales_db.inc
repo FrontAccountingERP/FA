@@ -200,14 +200,15 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 //
 function get_location(&$cart)
 {
-	$sql = "SELECT ".TB_PREF."locations.* FROM ".TB_PREF."stock_moves,"
-		.TB_PREF."locations".
+	$sql = "SELECT location.*
+		FROM ".TB_PREF."stock_moves move,"
+			.TB_PREF."locations location".
 		" WHERE type=".db_escape($cart->trans_type).
 		" AND trans_no=".key($cart->trans_no).
 		" AND qty!=0 ".
-		" AND ".TB_PREF."locations.loc_code=".TB_PREF."stock_moves.loc_code";
-	$result = db_query($sql, 'Retreiving inventory location');
+		" AND location.loc_code=move.loc_code";
 
+	$result = db_query($sql, 'Retreiving inventory location');
 
 	if (db_num_rows($result)) {
 		return db_fetch($result);
