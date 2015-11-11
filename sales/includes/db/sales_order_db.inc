@@ -109,7 +109,7 @@ function update_sales_order_version($order)
 {
   foreach ($order as $so_num => $so_ver) {
   $sql= 'UPDATE '.TB_PREF.'sales_orders SET version=version+1 WHERE order_no='. db_escape($so_num).
-	' AND version='.$so_ver . " AND trans_type=30";
+	' AND version='.$so_ver . " AND trans_type=".ST_SALESORDER;
   db_query($sql, 'Concurrent editing conflict while sales order update');
   }
 }
@@ -418,7 +418,7 @@ function get_customer_to_order($customer_id) {
 		  cust.discount,
 		  cust.payment_terms,
 		  cust.pymt_discount,
-		  cust.credit_limit - Sum(IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2,
+		  cust.credit_limit - Sum(IFNULL(IF(trans.type IN(".implode(',', array(ST_CUSTCREDIT, ST_CUSTPAYMENT, ST_BANKDEPOSIT))."),
 			-1, 1) * (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount),0)) as cur_credit
 		FROM ".TB_PREF."debtors_master cust
 		  LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.type!=".ST_CUSTDELIVERY." AND trans.debtor_no = cust.debtor_no,"

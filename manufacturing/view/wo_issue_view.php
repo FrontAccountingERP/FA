@@ -53,11 +53,11 @@ function display_wo_issue($issue_no)
 	label_cell(sql2date($myrow["issue_date"]));
 	end_row();
 
-    comments_display_row(28, $issue_no);
+    comments_display_row(ST_MANUISSUE, $issue_no);
 
 	end_table(1);
 
-	is_voided_display(28, $issue_no, _("This issue has been voided."));
+	is_voided_display(ST_MANUISSUE, $issue_no, _("This issue has been voided."));
 }
 
 //-------------------------------------------------------------------------------------------------

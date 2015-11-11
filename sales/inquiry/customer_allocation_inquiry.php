@@ -82,7 +82,7 @@ function view_link($trans)
 
 function due_date($row)
 {
-	return $row["type"] == 10 ? $row["due_date"] : '';
+	return $row["type"] == ST_SALESINVOICE ? $row["due_date"] : '';
 }
 
 function fmt_balance($row)

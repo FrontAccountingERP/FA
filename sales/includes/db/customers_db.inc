@@ -76,7 +76,7 @@ function get_customer_details($customer_id, $to=null, $all=true)
     else		
     	$value = "IFNULL($sign*(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
     		trans.alloc),0)";
-	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
+	$due = "IF (trans.type=".ST_SALESINVOICE.", trans.due_date, trans.tran_date)";
     $sql = "SELECT debtor.name, debtor.curr_code, terms.terms, debtor.credit_limit,
     			credit_status.dissallow_invoices, credit_status.reason_description,
 				Sum(IFNULL($value,0)) AS Balance,
@@ -84,7 +84,7 @@ function get_customer_details($customer_id, $to=null, $all=true)
 				Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past1,$value,0)) AS Overdue1,
 				Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past2,$value,0)) AS Overdue2
 			FROM ".TB_PREF."debtors_master debtor
-				 LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.tran_date <= '$todate' AND debtor.debtor_no = trans.debtor_no AND trans.type <> 13,"
+				 LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.tran_date <= '$todate' AND debtor.debtor_no = trans.debtor_no AND trans.type <> ".ST_CUSTDELIVERY.","
 				 .TB_PREF."payment_terms terms,"
 				 .TB_PREF."credit_status credit_status
 			WHERE

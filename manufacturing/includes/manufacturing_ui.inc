@@ -168,7 +168,7 @@ function display_wo_productions($woid)
 
 			$total_qty += $myrow['quantity'];
 
-        	label_cell(get_trans_view_str(29, $myrow["id"]));
+        	label_cell(get_trans_view_str(ST_MANURECEIVE, $myrow["id"]));
 			label_cell($myrow['reference']);
 			label_cell(sql2date($myrow["date_"]));
 			qty_cell($myrow['quantity'], false, get_qty_dec($myrow['reference']));
@@ -208,7 +208,7 @@ function display_wo_issues($woid)
 
 			alt_table_row_color($k);
 
-        	label_cell(get_trans_view_str(28, $myrow["issue_no"]));
+        	label_cell(get_trans_view_str(ST_MANUISSUE, $myrow["issue_no"]));
 			label_cell($myrow['reference']);
 			label_cell(sql2date($myrow["issue_date"]));
 			end_row();

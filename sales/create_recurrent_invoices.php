@@ -177,7 +177,7 @@ if ($id != -1)
 		start_form();
 		start_table(TABLESTYLE, "width=50%");
 		label_row(_('Description:'), $myrow["description"]);
-		label_row(_('Template:'), get_customer_trans_view_str(30, $myrow["order_no"]));
+		label_row(_('Template:'), get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 		label_row(_('Number of invoices:'), $count);
 		date_row(_('Invoice date:'), 'trans_date');
 		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1)),
@@ -215,7 +215,7 @@ while ($myrow = db_fetch($result))
 		alt_table_row_color($k);
 
 	label_cell($myrow["description"]);
-	label_cell(get_customer_trans_view_str(30, $myrow["order_no"]));
+	label_cell(get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 	if ($myrow["debtor_no"] == 0)
 	{
 		label_cell("");

@@ -234,7 +234,7 @@ function set_delivery_shipping_sum($delivery_notes)
     
     foreach($delivery_notes as $delivery_num) 
     {
-        $myrow = get_customer_trans($delivery_num, 13);
+        $myrow = get_customer_trans($delivery_num, ST_CUSTDELIVERY);
 
         $shipping += $myrow['ov_freight'];
     }
