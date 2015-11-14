@@ -341,7 +341,7 @@ $opts = array(		// default options
 
   if ($link !=="") {
     $theme = user_theme();
-    $img = '<img src="' . $path_to_root . '/themes/' . $theme .  '/images/view.gif" onclick="javascript:lookupWindow(&quot;' . $link . '&quot;, &quot;&quot;);" title="' . $img_title . '" style="cursor:pointer;" />';
+    $img = '<img src="' . $path_to_root . '/themes/' . $theme .  '/images/view.gif" onclick="javascript:lookupWindow(&quot;' . $link . '&quot;, &quot;_blank&quot;);" title="' . $img_title . '" style="cursor:pointer;" />';
   }
 
 	if ($search_box && $opts['cells'])
