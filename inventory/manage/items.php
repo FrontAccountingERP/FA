@@ -398,6 +398,12 @@ function item_settings(&$stock_id)
 		check_row(_("Delete Image:"), 'del_image');
 
 	record_status_list_row(_("Item status:"), 'inactive');
+
+	// When editing manufactured item, provide the link to open popup window for managing its bill of materials.
+  if (is_manufactured($_POST['mb_flag'])){
+		label_row(_("Bill of Material:"), '<a href="' . $path_to_root .  '/manufacturing/manage/bom_edit.php?popup=1&stock_id=' . $_POST['NewStockID'] . '" onclick="openWindow(this.href, this.title); return false;" target="_blank">' . _("Update Bill of Material") . '</a>');
+	}
+
 	end_outer_table(1);
 
 	div_start('controls');
