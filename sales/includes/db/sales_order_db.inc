@@ -288,7 +288,7 @@ function get_sales_order_details($order_no, $trans_type) {
 				item.material_cost + item.labour_cost + item.overhead_cost AS standard_cost
 			FROM ".TB_PREF."sales_order_details line,"
 				.TB_PREF."stock_master item
-			WHERE line.stk_code = line.stock_id
+			WHERE line.stk_code = item.stock_id
 				AND order_no =".db_escape($order_no) 
 				." AND trans_type = ".db_escape($trans_type) . " ORDER BY id";
 
