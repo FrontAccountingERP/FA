@@ -144,7 +144,6 @@ function print_sales_orders()
 			$rep->TextColLines(1, 5, $myrow['comments'], -2);
 		}
 		$DisplaySubTot = number_format2($SubTotal,$dec);
-		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$doctype = ST_SALESORDER;
@@ -152,10 +151,13 @@ function print_sales_orders()
 		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
-		$rep->TextCol(3, 6, _("Shipping"), -2);
-		$rep->TextCol(6, 7,	$DisplayFreight, -2);
-		$rep->NewLine();
-
+		if ($myrow['freight_cost'] != 0.0)
+		{
+			$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
+			$rep->TextCol(3, 6, _("Shipping"), -2);
+			$rep->TextCol(6, 7,	$DisplayFreight, -2);
+			$rep->NewLine();
+		}
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		if ($myrow['tax_included'] == 0) {
 			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);

@@ -151,11 +151,13 @@ if (db_num_rows($result) > 0)
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);
 
-$display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the invoice text entered */
-label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
-
+if ($myrow['ov_freight'] != 0.0)
+{
+	$display_freight = price_format($myrow["ov_freight"]);
+	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
+}
 $tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
