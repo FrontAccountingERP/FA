@@ -391,7 +391,7 @@ msgstr "Falta archivo de traducción %s"
 #: includes/system_tests.inc:275
 #, php-format
 msgid "Missing system locale: %s"
-msgstr "Falta configuración regional del sistema:"
+msgstr "Falta configuración regional del sistema: %s"
 
 #: includes/system_tests.inc:288
 msgid "Main config file"
@@ -401,7 +401,7 @@ msgstr "Archivo de configuración principal"
 #: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
-msgstr "No se puede escribir el archivo '% s'. Compruebe que el sistema tiene permisos de escritura."
+msgstr "No se puede escribir el archivo '%s'. Compruebe que el sistema tiene permisos de escritura."
 
 #: includes/system_tests.inc:296
 #: includes/system_tests.inc:318
@@ -412,7 +412,7 @@ msgstr "Ya existe el archivo '%s'"
 #: includes/system_tests.inc:300
 #, php-format
 msgid "'%s' file should be read-only"
-msgstr "El archivo '% s' debe ser de sólo lectura"
+msgstr "El archivo '%s' debe ser de sólo lectura"
 
 #: includes/system_tests.inc:309
 msgid "Database auth file"
@@ -421,7 +421,7 @@ msgstr "Archivo de autenticación de base de datos"
 #: includes/system_tests.inc:322
 #, php-format
 msgid "'%s' file should be read-only if you do not plan to add or change companies"
-msgstr "El archivo '% s' debe ser de sólo lectura si no vas a agregar o cambiar empresa"
+msgstr "El archivo '%s' debe ser de sólo lectura si no vas a agregar o cambiar empresa"
 
 #: includes/system_tests.inc:333
 msgid "Extensions system"
@@ -434,7 +434,7 @@ msgstr "Los archivos y directorios de configuración de extensiones deben tener p
 #: includes/system_tests.inc:375
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
-msgstr "El directorio del tema '% S' no tiene permisos de escritura"
+msgstr "El directorio del tema '%s' no tiene permisos de escritura"
 
 #: includes/system_tests.inc:385
 msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
