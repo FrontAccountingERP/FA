@@ -23,10 +23,22 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Inventory Item Movement"), isset($_GET['stock_id']), false, "", $js);
+
+if (isset($_GET['FixedAsset'])) {
+	$page_security = 'SA_ASSETSTRANSVIEW';
+	$_POST['fixed_asset'] = 1;
+	$_SESSION['page_title'] = _($help_context = "FA Item Movement");
+} else {
+	$_SESSION['page_title'] = _($help_context = "Inventory Item Movement");
+}
+
+page($_SESSION['page_title'], isset($_GET['stock_id']), false, "", $js);
 //------------------------------------------------------------------------------------------------
 
-check_db_has_stock_items(_("There are no items defined in the system."));
+if (get_post('fixed_asset') == 1)
+	check_db_has_fixed_assets(_("There are no fixed asset defined in the system."));
+else
+	check_db_has_stock_items(_("There are no items defined in the system."));
 
 if(get_post('ShowMoves'))
 {
@@ -40,20 +52,35 @@ if (isset($_GET['stock_id']))
 
 start_form();
 
+hidden('fixed_asset');
+
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 if (!$page_nested)
-	stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+{
+	if (get_post('fixed_asset') == 1) {
+		stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id'],
+			false, false, check_value('show_inactive'), false, array('fixed_asset' => true));
+		check_cells(_("Show inactive:"), 'show_inactive', null, true);
+
+		if (get_post('_show_inactive_update')) {
+			$Ajax->activate('stock_id');
+			set_focus('stock_id');
+		}
+	} else
+		stock_costable_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+}
+
 end_row();
 end_table();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-locations_list_cells(_("From Location:"), 'StockLocation', null, true);
+locations_list_cells(_("From Location:"), 'StockLocation', null, true, false, (get_post('fixed_asset') == 1));
 
 date_cells(_("From:"), 'AfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'BeforeDate');
@@ -108,7 +135,10 @@ while ($myrow = db_fetch($result))
 
 	$trandate = sql2date($myrow["tran_date"]);
 
-	$type_name = $systypes_array[$myrow["type"]];
+	if (get_post('fixed_asset') == 1 && isset($fa_systypes_array[$myrow["type"]]))
+		$type_name = $fa_systypes_array[$myrow["type"]];
+	else
+		$type_name = $systypes_array[$myrow["type"]];
 
 	if ($myrow["qty"] > 0)
 	{

@@ -25,7 +25,17 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
+
+if (isset($_GET['NewTransfer'])) {
+	if (isset($_GET['FixedAsset'])) {
+		$page_security = 'SA_ASSETTRANSFER';
+		$_SESSION['page_title'] = _($help_context = "FA Location Transfers");
+	}
+	else {
+		$_SESSION['page_title'] = _($help_context = "Inventory Location Transfers");
+	}
+}
+page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -41,7 +51,12 @@ if (isset($_GET['AddedID']))
 	display_notification_centered(_("Inventory transfer has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
+  $itm = db_fetch(get_stock_transfer_items($_GET['AddedID']));
+
+  if (is_fixed_asset($itm['mb_flag']))
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another FA Item Transfer"), "NewTransfer=1&FixedAsset=1");
+  else
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"), "NewTransfer=1");
 
 	display_footer_exit();
 }
@@ -64,6 +79,7 @@ function handle_new_order()
 	}
 
 	$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
+  $_SESSION['transfer_items']->fixed_asset = isset($_GET['FixedAsset']);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -196,6 +212,11 @@ if (isset($_POST['CancelItemChanges'])) {
 
 if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 {
+	if (isset($_GET['fixed_asset']))
+		check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+	else
+		check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+
 	handle_new_order();
 }
 

@@ -66,12 +66,17 @@ function delete_item_category($id)
 	db_query($sql,"an item category could not be deleted");
 }
 
-function get_item_categories($show_inactive)
+function get_item_categories($show_inactive, $fixed_asset=false)
 {
 	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
 		.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
 	if (!$show_inactive)
 		$sql .= " AND !c.inactive";
+	if ($fixed_asset)
+		$sql .= " AND c.dflt_mb_flag='F'";
+	else
+		$sql .= " AND c.dflt_mb_flag!='F'";
+
 	$sql .= " ORDER by description";
 
 	return db_query($sql, "could not get stock categories");

@@ -183,7 +183,7 @@ function write_sales_invoice(&$invoice)
 	add_comments(ST_SALESINVOICE, $invoice_no, $date_, $invoice->Comments);
 
 	if ($trans_no == 0) {
-		$Refs->save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
+		$Refs->save(ST_SALESINVOICE, $invoice_no, $invoice->reference, null, $invoice->fixed_asset);
 		if ($invoice->payment_terms['cash_sale'] && $invoice->pos['pos_account']) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;

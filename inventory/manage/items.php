@@ -19,13 +19,27 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Items"), false, false, "", $js);
+if (isset($_GET['FixedAsset'])) {
+  $page_security = 'SA_ASSET';
+  $_SESSION['page_title'] = _($help_context = "FA Items");
+  $_POST['mb_flag'] = 'F';
+  $_POST['fixed_asset']  = 1;
+}
+else {
+  $_SESSION['page_title'] = _($help_context = "Items");
+	if (!get_post('fixed_asset'))
+		$_POST['fixed_asset']  = 0;
+}
+
+
+page($_SESSION['page_title'], false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 
 $user_comp = user_company();
 $new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
@@ -49,7 +63,7 @@ if (get_post('cancel')) {
 	set_focus('stock_id');
 	$Ajax->activate('_page_body');
 }
-if (list_updated('category_id') || list_updated('mb_flag')) {
+if (list_updated('category_id') || list_updated('mb_flag') || list_updated('fa_class_id') || list_updated('depreciation_method')) {
 	$Ajax->activate('details');
 }
 $upload_file = "";
@@ -118,7 +132,11 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
  /* EOF Add Image upload for New Item  - by Ori */
 }
 
-check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
+if (get_post('fixed_asset')) {
+	check_db_has_fixed_asset_categories(_("There are no fixed asset categories defined in the system. At least one fixed asset category is required to add a fixed asset."));
+	check_db_has_fixed_asset_classes(_("There are no fixed asset classes defined in the system. At least one fixed asset class is required to add a fixed asset."));
+} else
+	check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
 
 check_db_has_item_tax_types(_("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
 
@@ -135,6 +153,9 @@ function clear_data()
 	unset($_POST['dimension2_id']);
 	unset($_POST['no_sale']);
 	unset($_POST['no_purchase']);
+	unset($_POST['depreciation_method']);
+	unset($_POST['depreciation_rate']);
+	unset($_POST['depreciation_start']);
 }
 
 //------------------------------------------------------------------------------------
@@ -173,6 +194,19 @@ if (isset($_POST['addupdate']))
 			set_focus('NewStockID');
 	}
 	
+  if (get_post('fixed_asset')) {
+    if ($_POST['depreciation_rate'] > 100) {
+      $_POST['depreciation_rate'] = 100;
+    }
+    elseif ($_POST['depreciation_rate'] < 0) {
+      $_POST['depreciation_rate'] = 0;
+    }
+    $move_row = get_fixed_asset_move($_POST['NewStockID'], ST_SUPPRECEIVE);
+    if (isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
+      display_warning(_('The depracation cannot start before the fixed asset purchase date'));
+    }
+  }
+	
 	if ($input_error != 1)
 	{
 		if (check_value('del_image'))
@@ -187,11 +221,14 @@ if (isset($_POST['addupdate']))
 			update_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], 
 				$_POST['tax_type_id'], get_post('units'),
-				get_post('mb_flag'), $_POST['sales_account'],
+				get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'), check_value('no_purchase'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				get_post('depreciation_method'), get_post('depreciation_rate'), get_post('depreciation_start'),
+				get_post('fa_class_id'));
+
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -205,11 +242,13 @@ if (isset($_POST['addupdate']))
 
 			add_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
+				$_POST['units'], get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'), check_value('no_purchase'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				get_post('depreciation_method'), get_post('depreciation_rate'), get_post('depreciation_start'),
+				get_post('fa_class_id'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
@@ -265,7 +304,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 function item_settings(&$stock_id, $new_item) 
 {
-	global $SysPrefs, $path_to_root, $page_nested;
+	global $SysPrefs, $path_to_root, $page_nested, $depreciation_methods;
 
 	start_outer_table(TABLESTYLE2);
 
@@ -295,6 +334,13 @@ function item_settings(&$stock_id, $new_item)
 			$_POST['units']  = $myrow["units"];
 			$_POST['mb_flag']  = $myrow["mb_flag"];
 
+			$_POST['depreciation_method'] = $myrow['depreciation_method'];
+			$_POST['depreciation_rate'] = $myrow['depreciation_rate'];
+			$_POST['depreciation_start'] = sql2date($myrow['depreciation_start']);
+			$_POST['depreciation_date'] = sql2date($myrow['depreciation_date']);
+			$_POST['fa_class_id'] = $myrow['fa_class_id'];
+			$_POST['material_cost'] = $myrow['material_cost'];
+
 			$_POST['sales_account'] =  $myrow['sales_account'];
 			$_POST['inventory_account'] = $myrow['inventory_account'];
 			$_POST['cogs_account'] = $myrow['cogs_account'];
@@ -312,12 +358,13 @@ function item_settings(&$stock_id, $new_item)
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
 	}
+	$fixed_asset = get_post('fixed_asset');
 
 	text_row(_("Name:"), 'description', null, 52, 200);
 
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
+	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item, $fixed_asset);
 
 	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 
@@ -343,16 +390,64 @@ function item_settings(&$stock_id, $new_item)
 
 	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+	if (!get_post('fixed_asset'))
+		stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 	check_row(_("Editable description:"), 'editable');
 
-	check_row(_("Exclude from sales:"), 'no_sale');
+	if (get_post('fixed_asset'))
+		hidden('no_sale', 0);
+	else
+		check_row(_("Exclude from sales:"), 'no_sale');
 
 	check_row(_("Exclude from purchases:"), 'no_purchase');
 
+	if (get_post('fixed_asset')) {
+		table_section_title(_("Depreciation"));
+
+		fixed_asset_classes_list_row(_("Fixed Asset Class").':', 'fa_class_id', null, false, true);
+
+		array_selector_row(_("Depreciation Method").":", "depreciation_method", null, $depreciation_methods, array('select_submit'=> true));
+
+		if (!isset($_POST['depreciation_rate']) || (list_updated('fa_class_id') || list_updated('depreciation_method'))) {
+			$class_row = get_fixed_asset_class($_POST['fa_class_id']);
+
+			if ($_POST['depreciation_method'] == 'S')
+				$_POST['depreciation_rate'] = $class_row['depreciation_period'];
+			else
+				$_POST['depreciation_rate'] = $class_row['depreciation_rate'];
+			}
+
+			switch ($_POST['depreciation_method']) {
+				case 'D':
+					small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+					break;
+				case 'S':
+					text_row_ex(_("Depreciation Period").':', 'depreciation_rate', 3, 3, '', null, null, _("years"));
+					break;
+				case 'O':
+					hidden('depreciation_rate', 100);
+					label_row(_("Depreciation Rate").':', "100 %");
+					break;
+			}
+
+			// do not allow to change the depreciation start after this item has been depreciated
+			if ($new_item || $_POST['depreciation_start'] == $_POST['depreciation_date'])
+				date_row(_("Depreciation Start").':', 'depreciation_start', null, null, 1 - date('j'));
+			else {
+				hidden('depreciation_start');
+				label_row(_("Depreciation Start").':', $_POST['depreciation_start']);
+				label_row(_("Last Depreciation").':', $_POST['depreciation_date']);
+			}
+			hidden('depreciation_date');
+
+			if (!$new_item) {
+				hidden('material_cost');
+				label_row(_("Current Value").':', price_format($_POST['material_cost']));
+			}
+	}
 	table_section(2);
 
 	$dim = get_company_pref('use_dimension');
@@ -373,7 +468,12 @@ function item_settings(&$stock_id, $new_item)
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if (!is_service($_POST['mb_flag'])) 
+	if (get_post('fixed_asset')) {
+		gl_all_accounts_list_row(_("Asset account:"), 'inventory_account', $_POST['inventory_account']);
+		gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
+		gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
+	}
+	elseif (!is_service($_POST['mb_flag'])) 
 	{
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -448,7 +548,7 @@ if (db_has_stock_items())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true, check_value('show_inactive'));
+	  _('New item'), true, check_value('show_inactive'), false, array('fixed_asset' => get_post('fixed_asset')));
 	$new_item = get_post('stock_id')=='';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
@@ -470,16 +570,22 @@ $stock_id = get_post('stock_id');
 if (!$stock_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
-tabbed_content_start('tabs', array(
+$tabs = (get_post('fixed_asset'))
+	? array(
+		'settings' => array(_('&General settings'), $stock_id),
+		'movement' => array(_('&Transactions'), $stock_id) )
+	: array(
 		'settings' => array(_('&General settings'), $stock_id),
 		'sales_pricing' => array(_('S&ales Pricing'), $stock_id),
 		'purchase_pricing' => array(_('&Purchasing Pricing'), $stock_id),
 		'standard_cost' => array(_('Standard &Costs'), $stock_id),
 		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) ? $stock_id : null)),
 		'movement' => array(_('&Transactions'), $stock_id),
-		'status' => array(_('&Status'), $stock_id),
-	));
-	
+		'status' => array(_('&Status'), (is_inventory_item($stock_id) ? $stock_id : null)),
+	);
+
+tabbed_content_start('tabs', $tabs);
+
 	switch (get_post('_tabs_sel')) {
 		default:
 		case 'settings':
@@ -518,10 +624,16 @@ tabbed_content_start('tabs', array(
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
 	};
+
 br();
 tabbed_content_end();
 
 div_end();
+
+hidden('fixed_asset', get_post('fixed_asset'));
+
+if (get_post('fixed_asset'))
+	hidden('mb_flag', 'F');
 
 end_form();
 

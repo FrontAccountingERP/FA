@@ -401,7 +401,14 @@ $opts = array(		// default options
 	return $selector;
 }
 //----------------------------------------------------------------------------------------------
+function array_selector_row($label, $name, $selected_id, $items, $options=null)
+{
+	echo "<tr><td class='label'>$label</td>\n<td>";
+	echo array_selector($name, $selected_id, $items, $options);
+	echo "</td></tr>\n";
+}
 
+//----------------------------------------------------------------------------------------------
 function _format_add_curr($row)
 {
 	static $company_currency;
@@ -580,10 +587,10 @@ function customer_branches_list_row($label, $customer_id, $name, $selected_id=nu
 
 //------------------------------------------------------------------------------------------------
 
-function locations_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function locations_list($name, $selected_id=null, $all_option=false, $submit_on_change=false, $fixed_asset=false)
 {
 
-	$sql = "SELECT loc_code, location_name, inactive FROM ".TB_PREF."locations";
+	$sql = "SELECT loc_code, location_name, inactive FROM ".TB_PREF."locations WHERE fixed_asset=".(int)$fixed_asset;
 
 	return combo_input($name, $selected_id, $sql, 'loc_code', 'location_name',
 		array(
@@ -593,19 +600,19 @@ function locations_list($name, $selected_id=null, $all_option=false, $submit_on_
 		) );
 }
 
-function locations_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function locations_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false, $fixed_asset=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo locations_list($name, $selected_id, $all_option, $submit_on_change);
+	echo locations_list($name, $selected_id, $all_option, $submit_on_change, $fixed_asset);
 	echo "</td>\n";
 }
 
-function locations_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function locations_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false, $fixed_asset=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	locations_list_cells(null, $name, $selected_id, $all_option, $submit_on_change);
+	locations_list_cells(null, $name, $selected_id, $all_option, $submit_on_change, $fixed_asset);
 	echo "</tr>\n";
 }
 
@@ -731,6 +738,11 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 	$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable
 			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE s.category_id=c.category_id";
 
+	if (isset($opts['fixed_asset']) && $opts['fixed_asset'])
+		$sql .= " AND mb_flag='F'";
+	else
+		$sql .= " AND mb_flag!='F'";
+
 	if ($editkey)
 		set_editor('item', $name, $editkey);
 
@@ -762,10 +774,25 @@ function _format_stock_items($row)
 function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, 
 	$submit_on_change=false, $all=false, $editkey = false, $opts= array())
 {
+	if (isset($opts['fixed_asset']) && $opts['fixed_asset'])
+		$editor_item = 'fa_item';
+	else
+		$editor_item = 'item';
+
+// 	if ($editkey) ??
+//		set_editor($editor_item, $name, $editkey);
+
 	if ($label != null)
 		echo "<td>$label</td>\n";
+
+// ??
+//  $opts = array_merge($options, array('cells'=>true, 'show_inactive'=>$all, 'new_icon' => $editkey ? 'item' : false));
+//
+//	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, $opts);
+
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array_merge(array('cells'=>true, 'show_inactive'=>$all), $opts), $editkey);
+
 }
 /*
 function stock_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -791,7 +818,8 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 			LEFT JOIN
 			".TB_PREF."stock_category c
 			ON i.category_id=c.category_id
-			WHERE i.stock_id=s.stock_id";
+			WHERE i.stock_id=s.stock_id
+      AND mb_flag != 'F'";
 
 	
 	if ($type == 'local')	{ // exclude foreign codes
@@ -963,6 +991,90 @@ function stock_units_list_row($label, $name, $value=null, $enabled=true)
 	echo array_selector($name, $value, $units, array( 'disabled' => !$enabled) );
 
 	echo "</td></tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
+function stock_purchasable_fa_list_cells($label, $name, $selected_id=null, $all_option=false,
+	$submit_on_change=false, $all=false, $editkey = false, $exclude_items = array())
+{
+	// Check if a fixed asset has been bought.
+	$where_opts[] = "stock_id NOT IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )";
+
+	// exclude items currently on the order.
+  	foreach($exclude_items as $item) {
+    	$where_opts[] = "stock_id != ".db_escape($item->stock_id);
+  	}
+  	$where_opts[] = "mb_flag='F'";
+
+	echo stock_items_list_cells($label, $name, $selected_id, $all_option, $submit_on_change, $all, $editkey, 
+    array('fixed_asset' => true, 'where' => $where_opts));
+}
+
+function stock_disposable_fa_list($name, $selected_id=null,
+	$all_option=false, $submit_on_change=false)
+{
+	// Check if a fixed asset has been bought....
+	$where_opts[] = "stock_id IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )";
+	// ...but has not been disposed or sold already.
+  	$where_opts[] = "stock_id NOT IN
+		( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
+
+	$where_opts[] = "mb_flag='F'";
+
+	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+    array('fixed_asset' => true, 'where' => $where_opts));
+}
+
+function stock_disposable_fa_list_cells($label, $name, $selected_id=null,
+	$all_option=false, $submit_on_change=false, $exclude_items = array())
+{
+	// Check if a fixed asset has been bought....
+	$where_opts[] = "stock_id IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )";
+	// ...but has not been disposed or sold already.
+	$where_opts[] = "stock_id NOT IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
+
+	$where_opts[] = "mb_flag='F'";
+
+	foreach($exclude_items as $item) {
+    	$where_opts[] = "stock_id != ".db_escape($item->stock_id);
+	}
+
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, 
+    array('fixed_asset' => true, 'cells'=>true, 'where' => $where_opts));
+}
+
+function stock_depreciable_fa_list_cells($label, $name, $selected_id=null,
+	$all_option=false, $submit_on_change=false)
+{
+
+	// Check if a fixed asset has been bought....
+	$where_opts[] = "stock_id IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )";
+	// ...but has not been disposed or sold already.
+	$where_opts[] = "stock_id NOT IN
+    	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
+
+	$year = get_current_fiscalyear();
+	$y = date('Y', strtotime($year['end']));
+
+	// check if current fiscal year
+	$where_opts[] = "depreciation_date < '".$y."-12-01'";
+	$where_opts[] = "depreciation_date >= '".($y-1)."-12-01'";
+
+	$where_opts[] = "material_cost > 0";
+	$where_opts[] = "mb_flag='F'";
+
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		 array('fixed_asset' => true, 'where' => $where_opts, 'cells'=>true));
 }
 
 //------------------------------------------------------------------------------------
@@ -1503,32 +1615,69 @@ function class_list_row($label, $name, $selected_id=null, $submit_on_change=fals
 }
 
 //-----------------------------------------------------------------------------------------------
-function stock_categories_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+function stock_categories_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
 {
+	$where_opts = array();
+	if ($fixed_asset)
+		$where_opts[0] = "dflt_mb_flag='F'";
+	else
+		$where_opts[0] = "dflt_mb_flag!='F'";
+
 	$sql = "SELECT category_id, description, inactive FROM ".TB_PREF."stock_category";
 	return combo_input($name, $selected_id, $sql, 'category_id', 'description',
  		array('order'=>'category_id',
 			'spec_option' => $spec_opt,
 			'spec_id' => -1,
  			'select_submit'=> $submit_on_change,
- 			'async' => true
+ 			'async' => true,
+			'where' => $where_opts,
  		));
 }
 
-function stock_categories_list_cells($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+function stock_categories_list_cells($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo stock_categories_list($name, $selected_id, $spec_opt, $submit_on_change);
+	echo stock_categories_list($name, $selected_id, $spec_opt, $submit_on_change, $fixed_asset);
 	echo "</td>\n";
 }
 
-function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	stock_categories_list_cells(null, $name, $selected_id, $spec_opt, $submit_on_change);
+	stock_categories_list_cells(null, $name, $selected_id, $spec_opt, $submit_on_change, $fixed_asset);
 	echo "</tr>\n";
+}
+
+//-----------------------------------------------------------------------------------------------
+function fixed_asset_classes_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+{
+	$sql = "SELECT c.fa_class_id, CONCAT(c.fa_class_id,' - ',c.description) `desc`, CONCAT(p.fa_class_id,' - ',p.description), c.inactive FROM ".TB_PREF."stock_fa_class c, ".TB_PREF."stock_fa_class p WHERE c.parent_id=p.fa_class_id";
+
+	return combo_input($name, $selected_id, $sql, 'c.fa_class_id', 'desc',
+		array('order'=>'c.fa_class_id',
+			'spec_option' => $spec_opt,
+			'spec_id' => -1,
+ 			'select_submit'=> $submit_on_change,
+ 			'async' => true,
+			'search_box' => true,
+			'search' => array("c.fa_class_id"),
+		    'search_submit' => false,
+		    'spec_option' => '',
+		    'spec_id' => '',
+		    'size' => 3,
+		    'max' => 3,
+			'category' => 2,
+ 		));
+}
+
+function fixed_asset_classes_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+{
+	echo "<tr><td class='label'>$label</td>";
+	echo "<td>";
+	echo fixed_asset_classes_list($name, $selected_id, $spec_opt, $submit_on_change);
+	echo "</td></tr>\n";
 }
 
 //-----------------------------------------------------------------------------------------------

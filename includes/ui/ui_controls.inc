@@ -509,6 +509,8 @@ $popup_editors = array(
 	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
 		113, _("Suppliers"), 900, 700),
 	'item' => array('/inventory/manage/items.php?stock_id=', 
+		115, _("Items"), 800, 600),
+	'fa_item' => array('/inventory/manage/items.php?FixedAsset=1&stock_id=', 
 		115, _("Items"), 800, 600)
 );
 /*

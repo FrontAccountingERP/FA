@@ -153,7 +153,7 @@ function display_po_header(&$order)
 
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref');
+    	ref_row(_("Reference:"), 'ref', '', null, false, $order->trans_type, array('date'=> @$_POST['OrderDate']));
     }
     else
     {
@@ -172,7 +172,7 @@ function display_po_header(&$order)
 		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
 	if (get_company_pref('use_dimension') == 2)
 		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
-	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true); 
+	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true, $order->fixed_asset); 
 
 	table_section(3);
 
@@ -216,8 +216,9 @@ function display_po_items(&$order, $editable=true)
    		_("Required Delivery Date"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Line Total"), "");
 	if ($order->trans_type != ST_PURCHORDER)
 		array_remove($th, 5);
-		
+
 	if (count($order->line_items)) $th[] = '';
+
    	table_header($th);
 
 	$id = find_submit('Edit');
@@ -231,7 +232,11 @@ function display_po_items(&$order, $editable=true)
     		alt_table_row_color($k);
         	label_cell($po_line->stock_id);
     		label_cell($po_line->item_description);
-            qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+        	if ($order->fixed_asset)
+    		    label_cell(1);
+         	else
+            	qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+
             qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     		label_cell($po_line->units);
 			if ($order->trans_type == ST_PURCHORDER)
@@ -380,8 +385,12 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	else
 	{
 
-		// Manufcatured item can be purchased
-		stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30));
+		// Manufactured item can be purchased
+		if ($order->fixed_asset)
+			stock_purchasable_fa_list_cells(null, 'stock_id', null, false, true, false, true, $order->line_items);
+		else
+			stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30));
+
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -400,7 +409,12 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$qty_rcvd = '';
 	}
 
-	qty_cells(null, 'qty', null, null, null, $dec);
+	if ($order->fixed_asset) {
+		label_cell(1, '', 'qty');
+		hidden('qty', 1);
+	} else
+		qty_cells(null, 'qty', null, null, null, $dec);
+
 	qty_cell($qty_rcvd, false, $dec);
 
 	label_cell($_POST['units'], '', 'units');

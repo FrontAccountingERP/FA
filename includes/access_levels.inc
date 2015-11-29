@@ -40,6 +40,10 @@ define('SS_ITEMS_C',31<<8);
 define('SS_ITEMS',	32<<8);
 define('SS_ITEMS_A',33<<8);
 
+define('SS_ASSETS_C',36<<8);
+define('SS_ASSETS',	37<<8);
+define('SS_ASSETS_A',38<<8);
+
 define('SS_MANUF_C',41<<8);
 define('SS_MANUF',	42<<8);
 define('SS_MANUF_A',43<<8);
@@ -65,6 +69,9 @@ $security_sections = array(
  	SS_ITEMS_C => _("Inventory configuration"),
  	SS_ITEMS => _("Inventory operations"),
  	SS_ITEMS_A => _("Inventory analytics"),
+	SS_ASSETS_C => _("Fixed Assets configuration"),
+	SS_ASSETS => _("Fixed Assets operations"),
+	SS_ASSETS_A => _("Fixed Assets analytics"),
  	SS_MANUF_C => _("Manufacturing configuration"),
  	SS_MANUF => _("Manufacturing transactions"),
  	SS_MANUF_A => _("Manufacturing analytics"),
@@ -186,6 +193,20 @@ $security_areas =array(
 	'SA_REORDER' => array(SS_ITEMS_A|1, _("Reorder levels")),
 	'SA_ITEMSANALYTIC' => array(SS_ITEMS_A|2, _("Items analytical reports and inquiries")),
 	'SA_ITEMSVALREP' => array(SS_ITEMS_A|3, _("Inventory valuation report")),
+
+//
+// Fixed Assets
+//
+	'SA_ASSET' => array(SS_ASSETS_C|1, _("Fixed Asset items add/edit")),
+	'SA_ASSETCATEGORY' => array(SS_ASSETS_C|2, _("Fixed Asset categories")),
+	'SA_ASSETCLASS' => array(SS_ASSETS_C|4, _("Fixed Asset classes")),
+
+	'SA_ASSETSTRANSVIEW' => array(SS_ASSETS|1, _("Fixed Asset transactions view")),
+	'SA_ASSETTRANSFER' => array(SS_ASSETS|2, _("Fixed Asset location transfers")),
+	'SA_ASSETDISPOSAL' => array(SS_ASSETS|3, _("Fixed Asset disposals")),
+  'SA_DEPRECIATION' => array(SS_ASSETS|4, _("Depreciation")),
+
+	'SA_ASSETSANALYTIC' => array(SS_ASSETS_A|1, _("Fixed Asset analytical reports and inquiries")),
 
 //
 // Manufacturing module 

@@ -38,6 +38,8 @@ class items_cart
 
 	var $tax_info;	// tax info for the GL transaction
 
+	var $fixed_asset;
+
 	function items_cart($type, $trans_no=0)
 	{
 		$this->trans_type = $type;
@@ -99,10 +101,10 @@ class items_cart
 
 		$low_stock = array();
 
-    	if (!$SysPrefs->allow_negative_stock())
+    	if (!$SysPrefs->allow_negative_stock() || is_fixed_asset($line_item->mb_flag))
     	{
 			foreach ($this->line_items as $line_no => $line_item)
-				if (has_stock_holding($line_item->mb_flag))
+				if (has_stock_holding($line_item->mb_flag) || is_fixed_asset($line_item->mb_flag))
 				{
 					$quantity = $line_item->quantity;
 					if ($reverse)
@@ -120,12 +122,12 @@ class items_cart
 
 	// ----------- GL item functions
 
-	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $memo='', $act_descr=null, $person_id=null)
+	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $memo='', $act_descr=null, $person_id=null, $date=null)
 	{
 		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  &&
 			isset($dimension2_id))
 		{
-			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $memo, $act_descr, $person_id);
+			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $memo, $act_descr, $person_id, $date);
 			return true;
 		}
 		else
@@ -361,7 +363,10 @@ class items_cart
 		$total_gl = 0;
 		foreach($this->gl_items as $gl)
 		{
-			$total_gl += add_gl_trans($this->trans_type, $this->order_id, $this->tran_date, $gl->code_id, $gl->dimension_id, $gl->dimension2_id, 
+			if (!isset($gl->date))
+				$gl->date = $this->tran_date;
+
+			$total_gl += add_gl_trans($this->trans_type, $this->order_id, $gl->date, $gl->code_id, $gl->dimension_id, $gl->dimension2_id, 
 				$gl->reference,	$gl->amount, $this->currency, $gl->person_type_id, $gl->person_id, "", $this->rate);
 
 			// post to first found bank account using given gl acount code.
@@ -502,9 +507,10 @@ class gl_item
 	var $person_type_id;
 	var $person_name;
 	var $branch_id;
+	var $date;
 
 	function gl_item($code_id=null, $dimension_id=0, $dimension2_id=0, $amount=0, $memo='',
-		$act_descr=null, $person_id=null)
+		$act_descr=null, $person_id=null, $date=null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
 
@@ -527,5 +533,6 @@ class gl_item
 		$this->dimension2_id = $dimension2_id;
 		$this->amount = round($amount, 2);
 		$this->reference = $memo;
+		$this->date = $date;
 	}
 }

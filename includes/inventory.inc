@@ -27,6 +27,11 @@ function is_service($mb_flag)
 	return ($mb_flag == 'D');
 }
 
+function is_fixed_asset($mb_flag)
+{
+	return ($mb_flag == 'F');
+}
+
 function has_stock_holding($mb_flag)
 {
 	return is_purchased($mb_flag) || is_manufactured($mb_flag);

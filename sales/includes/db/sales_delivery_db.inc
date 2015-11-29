@@ -98,6 +98,14 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				-$delivery_line->qty_dispatched, $delivery_line->standard_cost,
 				 $line_price*(1-$delivery_line->discount_percent));
 
+			$mb_flag = get_mb_flag($delivery_line->stock_id);
+
+			if (is_fixed_asset($mb_flag)) {
+				$sql = "UPDATE ".TB_PREF."stock_master SET inactive=1
+					WHERE stock_id=".db_escape($delivery_line->stock_id);
+				db_query($sql,"The cost details for the fixed asset could not be updated");
+			}
+
 			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);
 
 			// If there is a Customer Dimension, then override with this,
@@ -119,8 +127,12 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 				/*first the cost of sales entry*/
 
+				$delivery_gl_code = $stock_gl_code["cogs_account"];
+				if ($delivery->fixed_asset)
+					$delivery_gl_code = $stock_gl_code["adjustment_account"];
+
 				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
-					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
+					$delivery->document_date, $delivery_gl_code, $dim, $dim2, "",
 					$delivery_line->standard_cost * $delivery_line->qty_dispatched,
 					PT_CUSTOMER, $delivery->customer_id,
 					"The cost of sales GL posting could not be inserted");
@@ -220,3 +232,4 @@ function void_sales_delivery($type, $type_no, $transactions=true)
 	if ($transactions)
 		commit_transaction();
 }
+

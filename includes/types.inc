@@ -36,6 +36,11 @@ define('ST_WORKORDER', 26);
 define('ST_MANUISSUE', 28);
 define('ST_MANURECEIVE', 29);
 
+//
+//	Depreciation period types
+//
+define('FA_MONTHLY', 0);
+define('FA_YEARLY', 1);
 
 define('ST_SALESORDER', 30);
 define('ST_SALESQUOTE', 32);

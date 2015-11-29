@@ -27,11 +27,21 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
+
+if (isset($_GET['FixedAsset'])) {
+	$_SESSION['page_title'] = _($help_context = "FA Revaluation");
+	$_POST['fixed_asset'] = 1;
+} else {
+	$_SESSION['page_title'] = _($help_context = "Inventory Item Cost Update");
+}
+page($_SESSION['page_title'], false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 
-check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
+if (get_post('fixed_asset') == 1)
+	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+else
+	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
 
 if (isset($_GET['stock_id']))
 {
@@ -39,6 +49,7 @@ if (isset($_GET['stock_id']))
 }
 
 //--------------------------------------------------------------------------------------
+$should_update = false;
 if (isset($_POST['UpdateData']))
 {
 
@@ -66,7 +77,8 @@ if (isset($_POST['UpdateData']))
    	{
 		$update_no = stock_cost_update($_POST['stock_id'],
 		    input_num('material_cost'), input_num('labour_cost'),
-		    input_num('overhead_cost'),	$old_cost);
+		    input_num('overhead_cost'),	$old_cost, 
+        $_POST['refline'], $_POST['memo_']);
 
         display_notification(_("Cost has been updated."));
 
@@ -78,8 +90,10 @@ if (isset($_POST['UpdateData']))
    	}
 }
 
-if (list_updated('stock_id'))
+if (list_updated('stock_id') || $should_update) {
+	unset($_POST['memo_']);
 	$Ajax->activate('cost_table');
+}
 //-----------------------------------------------------------------------------------------
 
 $action = $_SERVER['PHP_SELF'];
@@ -87,13 +101,18 @@ if ($page_nested)
 	$action .= "?stock_id=".get_post('stock_id');
 start_form(false, false, $action);
 
+hidden('fixed_asset');
+
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
-	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+	if (get_post('fixed_asset') == 1)
+		echo stock_disposable_fa_list('stock_id', $_POST['stock_id'], false, true);
+	else
+		echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 
 	echo "</center><hr>";
 }
@@ -124,6 +143,8 @@ else
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);
 }
+refline_list_row(_("Reference line:"), 'refline', ST_COSTUPDATE, null, false, get_post('fixed_asset'));
+textarea_row(_("Memo"), 'memo_', null, 40, 4);
 
 end_table(1);
 div_end();

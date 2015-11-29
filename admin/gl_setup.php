@@ -72,8 +72,8 @@ if (isset($_POST['submit']) && can_process())
 	update_company_prefs( get_post( array( 'retained_earnings_act', 'profit_loss_year_act',
 		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act', 'deferred_income_act',
 		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
-		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
-		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
+		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act', 'depreciation_period',
+		'default_loss_on_asset_disposal_act', 'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
 		'past_due_days', 'default_workorder_required', 'default_dim_required', 'default_receival_required',
 		'default_delivery_required', 'default_quote_valid_days', 'grn_clearing_act', 'tax_algorithm',
 		'no_zero_lines_amount', 'show_po_item_codes', 'accounts_alpha', 'loc_notification', 'print_invoice_no',
@@ -141,6 +141,8 @@ $_POST['loc_notification'] = $myrow['loc_notification'];
 $_POST['print_invoice_no'] = $myrow['print_invoice_no'];
 $_POST['allow_negative_prices'] = $myrow['allow_negative_prices'];
 $_POST['print_item_images_on_quote'] = $myrow['print_item_images_on_quote'];
+$_POST['default_loss_on_asset_disposal_act'] = $myrow['default_loss_on_asset_disposal_act'];
+$_POST['depreciation_period'] = $myrow['depreciation_period'];
 
 //---------------
 
@@ -246,6 +248,14 @@ gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['def
 gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
 
 gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
+
+//----------------
+
+table_section_title(_("Fixed Assets Defaults"));
+
+gl_all_accounts_list_row(_("Loss On Asset Disposal Account:"), 'default_loss_on_asset_disposal_act', $_POST['default_loss_on_asset_disposal_act']);
+
+array_selector_row (_("Depreciation Period:"), 'depreciation_period', $_POST['depreciation_period'], array(FA_MONTHLY => _("Monthly"), FA_YEARLY => _("Yearly")));
 
 //----------------
 

@@ -12,7 +12,9 @@
 function update_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
 	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
-	$dimension2_id, $no_sale, $editable, $no_purchase)
+	$dimension2_id, $no_sale, $editable, $no_purchase,
+	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_start=null,
+	$fa_class_id=null)
 {
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
@@ -27,13 +29,21 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		tax_type_id=".db_escape($tax_type_id).",
 		no_sale=".db_escape($no_sale).",
 		no_purchase=".db_escape($no_purchase).",
-		editable=".db_escape($editable);
+		editable=".db_escape($editable).",
+		depreciation_method=".db_escape($depreciation_method).",
+		depreciation_rate=".db_escape($depreciation_rate).",
+		fa_class_id=".db_escape($fa_class_id);
 
 	if ($units != '')
 		$sql .= ", units=".db_escape($units);
 
 	if ($mb_flag != '')
 		$sql .= ", mb_flag=".db_escape($mb_flag);
+
+	if ($depreciation_start != '') {
+		$sql .= ", depreciation_start='".date2sql($depreciation_start)."'"
+			.", depreciation_date='".date2sql($depreciation_start)."'";
+	}
 
 	$sql .= " WHERE stock_id=".db_escape($stock_id);
 
@@ -45,11 +55,14 @@ function update_item($stock_id, $description, $long_description, $category_id,
 function add_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
 	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
-	$dimension2_id, $no_sale, $editable, $no_purchase)
+	$dimension2_id, $no_sale, $editable, $no_purchase,
+	$depreciation_method='D', $depreciation_rate=100, $depreciation_start=null,
+	$fa_class_id=null)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
-		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale, no_purchase, editable)
+		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale, no_purchase, editable,
+		depreciation_method, depreciation_rate, depreciation_start, depreciation_date, fa_class_id)
 		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		".db_escape($category_id).", ".db_escape($tax_type_id).", "
 		.db_escape($units).", ".db_escape($mb_flag).",
@@ -59,7 +72,10 @@ function add_item($stock_id, $description, $long_description, $category_id,
 		.db_escape($dimension_id).", ".db_escape($dimension2_id).","
 		.db_escape($no_sale).","
 		.db_escape($no_purchase).","
-		.db_escape($editable).")";
+		.db_escape($editable).","
+		.db_escape($depreciation_method).",".db_escape($depreciation_rate).",'"
+		.date2sql($depreciation_start)."','".date2sql($depreciation_start)."',"
+		.db_escape($fa_class_id).")";
 
 	db_query($sql, "The item could not be added");
 
@@ -108,9 +124,9 @@ function get_item($stock_id)
 	return db_fetch($result);
 }
 
-function get_items()
+function get_items($fixed_asset = 0)
 {
-	$sql = "SELECT * FROM ".TB_PREF."stock_master";
+	$sql = "SELECT * FROM ".TB_PREF."stock_master WHERE fixed_asset=".db_escape($fixed_asset);
 	return db_query($sql,"items could not be retreived");
 }
 

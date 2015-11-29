@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
+include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 include_once($path_to_root . "/inventory/includes/item_adjustments_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
@@ -25,11 +26,15 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
-
-//-----------------------------------------------------------------------------------------------
-
-check_db_has_costable_items(_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."));
+if (isset($_GET['NewAdjustment'])) {
+	if (isset($_GET['FixedAsset'])) {
+		$page_security = 'SA_ASSETDISPOSAL';
+		$_SESSION['page_title'] = _($help_context = "FA Disposal");
+	} else {
+		$_SESSION['page_title'] = _($help_context = "Item Adjustments Note");
+	}
+}
+page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -38,12 +43,24 @@ if (isset($_GET['AddedID']))
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_INVADJUST;
 
-	display_notification_centered(_("Items adjustment has been processed"));
-	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+  $result = get_stock_adjustment_items($trans_no);
+  $row = db_fetch($result);
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+  if (is_fixed_asset($row['mb_flag'])) {
+    display_notification_centered(_("FA disposal has been processed"));
+    display_note(get_trans_view_str($trans_type, $trans_no, _("&View this disposal")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
+    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Disposal")), 1, 0);
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Disposal"), "NewAdjustment=1&FixedAsset=1");
+  }
+  else {
+    display_notification_centered(_("Items adjustment has been processed"));
+    display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+
+    display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"), "NewAdjustment=1");
+  }
 
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
 
@@ -68,6 +85,7 @@ function handle_new_order()
 	}
 
     $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
+    $_SESSION['adj_items']->fixed_asset = isset($_GET['FixedAsset']);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -124,12 +142,17 @@ function can_process()
 
 if (isset($_POST['Process']) && can_process()){
 
+  $fixed_asset = $_SESSION['adj_items']->fixed_asset; 
+
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
 		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
 
+  if ($fixed_asset)
+   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no&FixedAsset=1");
+  else
    	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 
 } /*end of process credit note */
@@ -200,23 +223,37 @@ if (isset($_POST['CancelItemChanges'])) {
 
 if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 {
+
+	if (isset($_GET['FixedAsset']))
+		check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+	else
+		check_db_has_costable_items(_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."));
+
 	handle_new_order();
 }
 
 //-----------------------------------------------------------------------------------------------
 start_form();
 
+if ($_SESSION['adj_items']->fixed_asset) {
+	$items_title = _("Disposal Items");
+	$button_title = _("Process Disposal");
+} else {
+	$items_title = _("Adjustment Items");
+	$button_title = _("Process Adjustment");
+}
+
 display_order_header($_SESSION['adj_items']);
 
 start_outer_table(TABLESTYLE, "width='70%'", 10);
 
-display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
+display_adjustment_items($items_title, $_SESSION['adj_items']);
 adjustment_options_controls();
 
 end_outer_table(1, false);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Adjustment"), '', 'default');
+submit_center_last('Process', $button_title, '', 'default');
 
 end_form();
 end_page();

@@ -81,6 +81,8 @@ class cart
 	var $prepayments = array(); // allocation records for this document
 	var $ex_rate;
 
+	var $fixed_asset = false;
+
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document

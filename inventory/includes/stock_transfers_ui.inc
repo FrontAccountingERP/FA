@@ -32,14 +32,14 @@ function display_order_header(&$order)
 
 	table_section(1);
 	
-	locations_list_row(_("From Location:"), 'FromStockLocation', null);
-	locations_list_row(_("To Location:"), 'ToStockLocation', null);
+	locations_list_row(_("From Location:"), 'FromStockLocation', null, false, false, $order->fixed_asset);
+	locations_list_row(_("To Location:"), 'ToStockLocation', null,false, false, $order->fixed_asset);
 
 	table_section(2, "50%");
 
     date_row(_("Date:"), 'AdjDate', '', true);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER, null, array('date'=>get_post('Adjdate'), 'location'=> get_post('FromStockLocation'))),
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER, null, array('date'=>get_post('AdjDate'), 'location'=> get_post('FromStockLocation'))),
 		 false, ST_LOCTRANSFER);
 
 	end_outer_table(1); // outer table
@@ -55,7 +55,7 @@ function display_transfer_items($title, &$order)
     div_start('items_table');
 	start_table(TABLESTYLE, "width='80%'");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
-	if ( count($order->line_items)) $th[] = '';
+	if (!$order->fixed_asset && count($order->line_items)) $th[] = '';
 	table_header($th);
 	$k = 0;  //row colour counter
 
@@ -71,15 +71,17 @@ function display_transfer_items($title, &$order)
 			else 
 				alt_table_row_color($k);
 
-			view_stock_status_cell($stock_item->stock_id);
+			if ($order->fixed_asset)
+				label_cell($stock_item->stock_id);
+			else
+				view_stock_status_cell($stock_item->stock_id);
     		label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
     		label_cell($stock_item->units);
 
-			edit_button_cell("Edit$line_no", _("Edit"),
-				_('Edit document line'));
-			delete_button_cell("Delete$line_no", _("Delete"),
-				_('Remove line from document'));
+	     	if (!$order->fixed_asset)
+				edit_button_cell("Edit$line_no", _("Edit"),	_('Edit document line'));
+			delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
     		end_row();
 		}
 		else
@@ -118,7 +120,11 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
 	}
 	else
 	{
-    	stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+		if ($order->fixed_asset)
+			stock_disposable_fa_list_cells(null, 'stock_id', null, false, true, $order->line_items);
+		else
+			stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');
@@ -131,7 +137,12 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
 		$_POST['units'] = $item_info["units"];
 	}
 
-	small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+	if ($order->fixed_asset) {
+		hidden('qty', 1);
+		qty_cell(1, false, 0);
+	} else
+		small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+
 	label_cell($_POST['units'], '', 'units');
 
 	if ($id != -1)

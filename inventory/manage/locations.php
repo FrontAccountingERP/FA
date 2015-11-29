@@ -13,11 +13,18 @@ $page_security = 'SA_INVENTORYLOCATION';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Inventory Locations"));
 
 include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+
+if (isset($_GET['FixedAsset'])) {
+	$help_context = "FA Locations";
+	$_POST['fixed_asset'] = 1;
+} else
+	$help_context = "Inventory Locations";
+
+page(_($help_context));
 
 simple_page_mode(true);
 
@@ -52,7 +59,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     
     		update_item_location($selected_id, $_POST['location_name'], $_POST['delivery_address'],
-    			$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);	
+    			$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], $_POST['fixed_asset']);	
 			display_notification(_('Selected location has been updated'));
     	} 
     	else 
@@ -61,7 +68,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
     	
     		add_item_location($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], 
-    		 	$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
+    		 	$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact'], $_POST['fixed_asset']);
 			display_notification(_('New location has been added'));
     	}
 		
@@ -135,11 +142,13 @@ if ($Mode == 'RESET')
 {
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
+	$sav2 = get_post('fixed_asset');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
+	$_POST['fixed_asset'] = $sav2;
 }
 
-$result = get_item_locations(check_value('show_inactive'));
+$result = get_item_locations(check_value('show_inactive'), get_post('fixed_asset', 0));
 
 start_form();
 start_table(TABLESTYLE);
@@ -169,6 +178,7 @@ end_table();
 echo '<br>';
 
 start_table(TABLESTYLE2);
+hidden("fixed_asset");
 
 $_POST['email'] = "";
 if ($selected_id != -1) 

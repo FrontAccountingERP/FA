@@ -388,7 +388,7 @@ function update_stock_move($type, $trans_no, $stock_id, $cost)
 
 function get_stock_moves($type, $type_no)
 {
-	$sql = "SELECT move.*, item.description, item.units, stock.location_name,
+	$sql = "SELECT move.*, item.description, item.mb_flag, item.units, stock.location_name,
 		item.material_cost + item.labour_cost + item.overhead_cost AS FixedStandardCost
 		FROM ".TB_PREF."stock_moves move,"
 			.TB_PREF."locations stock,"

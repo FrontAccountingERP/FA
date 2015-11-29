@@ -66,8 +66,13 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
-	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
+
+	if (isset($_GET['FixedAsset'])) {
+		$_SESSION['page_title'] = _($help_context = "FA Sale");
+		$_SESSION['Items']->fixed_asset = true;
+  	} else
+		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
@@ -688,7 +693,10 @@ if (isset($_POST['CancelItemChanges'])) {
 }
 
 //--------------------------------------------------------------------------------
-check_db_has_stock_items(_("There are no inventory items defined in the system."));
+if ($_SESSION['Items']->fixed_asset)
+	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+else
+	check_db_has_stock_items(_("There are no inventory items defined in the system."));
 
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 

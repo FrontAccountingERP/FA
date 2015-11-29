@@ -734,7 +734,7 @@ function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit
 			{
 				$_POST[$name] = $init;
 			} else {
-				$_POST[$name] = $Refs->get_next($type, $_POST[$name.'_list'], $context); // set default
+				$_POST[$name] = $Refs->get_next($type, $_POST[$name.'_list'], $context);
 			}
 			$Ajax->addUpdate(true, $name, $_POST[$name]);
 		}

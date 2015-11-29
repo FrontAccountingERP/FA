@@ -84,6 +84,7 @@ class fa_reflines extends simple_crud_view {
 		$fresh = $selected_id == $this->_none || !$this->data_set->is_used(get_post($this->name.'prefix'), get_post($this->name.'trans_type'));
 
 		start_table(TABLESTYLE2);
+
 		if ($fresh)
 		{
 			systypes_list_row(_("Transaction Type:"), $this->name.'trans_type');

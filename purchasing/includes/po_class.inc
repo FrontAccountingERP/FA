@@ -45,6 +45,8 @@ class purch_order
 	var $alloc; // sum of payments allocated
 	var $prepayments = array();
 
+	var $fixed_asset = false;
+
 	function purch_order()
 	{
 		/*Constructor function initialises a new purchase order object */

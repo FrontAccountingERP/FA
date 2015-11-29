@@ -40,7 +40,12 @@ $systypes_array = array (
 	ST_SALESORDER => _("Sales Order"),
 	ST_SALESQUOTE => _("Sales Quotation"),
 	ST_COSTUPDATE => _("Cost Update"),
-	ST_DIMENSION => _("Dimension")
+	ST_DIMENSION => _("Dimension"),
+	);
+
+$fa_systypes_array = array (
+	ST_INVADJUST => _("FA Disposal"),
+	ST_COSTUPDATE => _("FA Revaluation"),
 	);
 
 $type_shortcuts = array(
@@ -149,6 +154,14 @@ $quick_entry_types = array(
 	QE_PAYMENT => _("Bank Payment"),
 	QE_JOURNAL => _("Journal Entry"),
 	QE_SUPPINV => _("Supplier Invoice/Credit")
+);
+
+//----------------------------------------------------------------------------------
+// depreciation methods
+$depreciation_methods = array(
+  'D' => _("Declining balance"),
+  'S' => _("Straight line"),
+  'O' => _("One-time"),
 );
 
 //----------------------------------------------------------------------------------

@@ -53,9 +53,14 @@ if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber']))
 	copy_from_cart();
 } elseif (isset($_GET['NewInvoice'])) {
 
-	$_SESSION['page_title'] = _($help_context = "Direct Purchase Invoice Entry");
 	create_new_po(ST_SUPPINVOICE, 0);
 	copy_from_cart();
+
+	if (isset($_GET['FixedAsset'])) {
+		$_SESSION['page_title'] = _($help_context = "Fixed Asset Purchase Invoice Entry");
+		$_SESSION['PO']->fixed_asset = true;
+	} else
+		$_SESSION['page_title'] = _($help_context = "Direct Purchase Invoice Entry");
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
@@ -66,8 +71,6 @@ if (isset($_GET['ModifyOrderNumber']))
 //---------------------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
-
-check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -88,6 +91,7 @@ if (isset($_GET['AddedID']))
 
 	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 
+  // TODO, for fixed asset
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
 	
 	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
@@ -138,6 +142,11 @@ if (isset($_GET['AddedID']))
 	
 	display_footer_exit();	
 }
+
+if ($_SESSION['PO']->fixed_asset)
+  check_db_has_purchasable_fixed_assets(_("There are no purchasable fixed assets defined in the system."));
+else
+  check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 //--------------------------------------------------------------------------------------------------
 
 function line_start_focus() {
@@ -185,13 +194,18 @@ function handle_cancel_po()
 			. "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
 		return;
 	}
-	
+
+	$fixed_asset = $_SESSION['PO']->fixed_asset;
+
 	if($_SESSION['PO']->order_no != 0)
-	{
 		delete_po($_SESSION['PO']->order_no);
-	} else {
+	else {
 		unset($_SESSION['PO']);
-		meta_forward($path_to_root.'/index.php','application=AP');
+
+    	if ($fixed_asset)
+			meta_forward($path_to_root.'/index.php','application=assets');
+		else
+			meta_forward($path_to_root.'/index.php','application=AP');
 	}
 
 	$_SESSION['PO']->clear_items();

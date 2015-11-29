@@ -978,6 +978,7 @@ CREATE TABLE IF NOT EXISTS `0_locations` (
   `fax` varchar(30) NOT NULL default '',
   `email` varchar(100) NOT NULL default '',
   `contact` varchar(30) NOT NULL default '',
+  `fixed_asset` tinyint(1) NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY (`loc_code`)
 ) ENGINE=InnoDB;
@@ -986,7 +987,7 @@ CREATE TABLE IF NOT EXISTS `0_locations` (
 -- Dumping data for table `0_locations`
 --
 
-INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '', '', 0);
+INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1503,7 +1504,7 @@ CREATE TABLE IF NOT EXISTS `0_security_roles` (
 --
 
 INSERT INTO `0_security_roles` VALUES (1, 'Inquiries', 'Inquiries', '768;2816;3072;3328;5632;5888;8192;8448;10752;11008;13312;15872;16128', '257;258;259;260;513;514;515;516;517;518;519;520;521;522;523;524;525;773;774;2822;3073;3075;3076;3077;3329;3330;3331;3332;3333;3334;3335;5377;5633;5640;5889;5890;5891;7937;7938;7939;7940;8193;8194;8450;8451;10497;10753;11009;11010;11012;13313;13315;15617;15618;15619;15620;15621;15622;15623;15624;15625;15626;15873;15882;16129;16130;16131;16132;775', 0);
-INSERT INTO `0_security_roles` VALUES (2, 'System Administrator', 'System Administrator', '256;512;768;2816;3072;3328;5376;5632;5888;7936;8192;8448;10496;10752;11008;13056;13312;15616;15872;16128', '257;258;259;260;513;514;515;516;517;518;519;520;521;522;523;524;525;526;769;770;771;772;773;774;2817;2818;2819;2820;2821;2822;2823;3073;3074;3082;3075;3076;3077;3078;3079;3080;3081;3329;3330;3331;3332;3333;3334;3335;5377;5633;5634;5635;5636;5637;5641;5638;5639;5640;5889;5890;5891;7937;7938;7939;7940;8193;8194;8195;8196;8197;8449;8450;8451;10497;10753;10754;10755;10756;10757;11009;11010;11011;11012;13057;13313;13314;13315;15617;15618;15619;15620;15621;15622;15623;15624;15628;15625;15626;15627;15873;15874;15875;15876;15877;15878;15879;15880;15883;15881;15882;16129;16130;16131;16132;775', 0);
+INSERT INTO `0_security_roles` VALUES (2, 'System Administrator', 'System Administrator', '256;512;768;2816;3072;3328;5376;5632;5888;7936;8192;8448;9472;9728;10496;10752;11008;13056;13312;15616;15872;16128', '257;258;259;260;513;514;515;516;517;518;519;520;521;522;523;524;525;526;769;770;771;772;773;774;2817;2818;2819;2820;2821;2822;2823;3073;3074;3082;3075;3076;3077;3078;3079;3080;3081;3329;3330;3331;3332;3333;3334;3335;5377;5633;5634;5635;5636;5637;5641;5638;5639;5640;5889;5890;5891;7937;7938;7939;7940;8193;8194;8195;8196;8197;8449;8450;8451;9217;9218;9220;9473;9474;9475;9476;9729;10497;10753;10754;10755;10756;10757;11009;11010;11011;11012;13057;13313;13314;13315;15617;15618;15619;15620;15621;15622;15623;15624;15628;15625;15626;15627;15873;15874;15875;15876;15877;15878;15879;15880;15883;15881;15882;16129;16130;16131;16132;775', 0);
 INSERT INTO `0_security_roles` VALUES (3, 'Salesman', 'Salesman', '768;3072;5632;8192;15872', '773;774;3073;3075;3081;5633;8194;15873;775', 0);
 INSERT INTO `0_security_roles` VALUES (4, 'Stock Manager', 'Stock Manager', '768;2816;3072;3328;5632;5888;8192;8448;10752;11008;13312;15872;16128', '2818;2822;3073;3076;3077;3329;3330;3330;3330;3331;3331;3332;3333;3334;3335;5633;5640;5889;5890;5891;8193;8194;8450;8451;10753;11009;11010;11012;13313;13315;15882;16129;16130;16131;16132;775', 0);
 INSERT INTO `0_security_roles` VALUES (5, 'Production Manager', 'Production Manager', '512;768;2816;3072;3328;5632;5888;8192;8448;10752;11008;13312;15616;15872;16128', '521;523;524;2818;2819;2820;2821;2822;2823;3073;3074;3076;3077;3078;3079;3080;3081;3329;3330;3330;3330;3331;3331;3332;3333;3334;3335;5633;5640;5640;5889;5890;5891;8193;8194;8196;8197;8450;8451;10753;10755;11009;11010;11012;13313;13315;15617;15619;15620;15621;15624;15624;15876;15877;15880;15882;16129;16130;16131;16132;775', 0);
@@ -1592,6 +1593,26 @@ INSERT INTO `0_stock_category` VALUES (1, 'Components', 1, 'each', 'B', '4010', 
 INSERT INTO `0_stock_category` VALUES (2, 'Charges', 1, 'each', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES (3, 'Systems', 1, 'each', 'M', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
 INSERT INTO `0_stock_category` VALUES (4, 'Services', 1, 'hr', 'D', '4010', '5010', '1510', '5040', '1530', 0, 0, 0, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure of table `0_stock_fa_class` ###
+--
+
+DROP TABLE IF EXISTS `0_stock_fa_class`;
+CREATE TABLE `0_stock_fa_class` (
+  `fa_class_id` varchar(20) NOT NULL DEFAULT '',
+  `parent_id` varchar(20) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `long_description` tinytext NOT NULL,
+  `depreciation_method` char(1) NOT NULL DEFAULT 'D',
+  `depreciation_rate` double NOT NULL DEFAULT '0',
+  `depreciation_period` tinyint(1) NOT NULL DEFAULT '0',
+  `inactive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fa_class_id`)
+) ENGINE=InnoDB;
+
 -- --------------------------------------------------------
 
 --
@@ -1623,6 +1644,11 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
   `no_sale` tinyint(1) NOT NULL default '0',
   `no_purchase` tinyint(1) NOT NULL default '0',
   `editable` tinyint(1) NOT NULL default '0',
+  `depreciation_method` char(1) NOT NULL DEFAULT 'D',
+  `depreciation_rate` double NOT NULL DEFAULT '0',
+  `depreciation_start` date NOT NULL DEFAULT '0000-00-00',
+  `depreciation_date` date NOT NULL DEFAULT '0000-00-00',
+  `fa_class_id` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`stock_id`)
 ) ENGINE=InnoDB;
 
@@ -1868,6 +1894,8 @@ INSERT INTO `0_sys_prefs` VALUES ('print_invoice_no','glsetup.sales', 'tinyint',
 INSERT INTO `0_sys_prefs` VALUES ('allow_negative_prices','glsetup.inventory', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES ('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
+INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
 
 -- --------------------------------------------------------
 

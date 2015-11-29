@@ -139,6 +139,7 @@ class reflines_db extends data_set {
 	function count($type, $all=false)
 	{
 		$sql = "SELECT count(*) FROM ".TB_PREF."reflines WHERE trans_type=".db_escape($type);
+
 		if (!$all)
 			$sql .= " AND !inactive";
 		$result = db_query($sql, "cannot retreive refline count for transaction type $type");
@@ -149,7 +150,7 @@ class reflines_db extends data_set {
 	/*
 		Recognize refline by reference prefix
 	*/
-	function find_refline_id($reference, $type, $fallback = true)
+	function find_refline_id($reference, $type, $fallback=true)
 	{
 		$sql = "SELECT * FROM ".TB_PREF."reflines WHERE trans_type=".db_escape($type)
 			." AND CHAR_LENGTH(`prefix`) AND LEFT('$reference', CHAR_LENGTH(`prefix`)) = `prefix`";
@@ -167,7 +168,7 @@ class reflines_db extends data_set {
 	function save_next($type, $reference, $line=null)
 	{
 	    $sql = "UPDATE ".TB_PREF."reflines SET pattern=SUBSTRING(" . db_escape(trim($reference)) .", LENGTH(`prefix`)+1)"
-		. " WHERE trans_type = ".db_escape($type) . " AND ";
+		. " WHERE trans_type = ".db_escape($type)." AND ";
 
 		if (isset($line))
 			$sql .= "`id`=".db_escape($line);

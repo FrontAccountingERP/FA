@@ -13,7 +13,16 @@ $page_security = 'SA_ITEMCATEGORY';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Item Categories"));
+if (isset($_GET['FixedAsset'])) {
+  $page_security = 'SA_ASSETCATEGORY';
+  $help_context = "FA Item Categories";
+  $_POST['mb_flag'] = 'F';
+}
+else {
+  $help_context = "Item Categories";
+}
+
+page(_($help_context));
 
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -83,21 +92,32 @@ if ($Mode == 'RESET')
 {
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
+    $mb_flag = get_post('mb_flag');
 	unset($_POST);
 	$_POST['show_inactive'] = $sav;
+	if (is_fixed_asset($mb_flag))
+		$_POST['mb_flag'] = 'F';
 }
 if (list_updated('mb_flag')) {
 	$Ajax->activate('details');
 }
-//----------------------------------------------------------------------------------
 
-$result = get_item_categories(check_value('show_inactive'));
+//----------------------------------------------------------------------------------
+$fixed_asset = is_fixed_asset(get_post('mb_flag'));
+
+$result = get_item_categories(check_value('show_inactive'), $fixed_asset);
 
 start_form();
 start_table(TABLESTYLE, "width='80%'");
-$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
-_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
-_("Assembly Account"), "", "");
+if ($fixed_asset) {
+	$th = array(_("Name"), _("Tax type"), _("Units"), _("Sales Act"),
+		_("Asset Account"), _("Deprecation Cost Account"),
+		_("Depreciation/Disposal Account"), "", "");
+} else {
+	$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
+		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
+		_("Assembly Account"), "", "");
+}
 inactive_control_column($th);
 
 table_header($th);
@@ -111,12 +131,14 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["description"]);
 	label_cell($myrow["tax_name"]);
 	label_cell($myrow["dflt_units"], "align=center");
-	label_cell($stock_types[$myrow["dflt_mb_flag"]]);
+	if (!$fixed_asset)
+		label_cell($stock_types[$myrow["dflt_mb_flag"]]);
 	label_cell($myrow["dflt_sales_act"], "align=center");
 	label_cell($myrow["dflt_inventory_act"], "align=center");
 	label_cell($myrow["dflt_cogs_act"], "align=center");
 	label_cell($myrow["dflt_adjustment_act"], "align=center");
-	label_cell($myrow["dflt_assembly_act"], "align=center");
+	if (!$fixed_asset)
+		label_cell($myrow["dflt_assembly_act"], "align=center");
 	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
  	edit_button_cell("Edit".$myrow["category_id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["category_id"], _("Delete"));
@@ -185,11 +207,17 @@ table_section_title(_("Default values for new items"));
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
+if (is_fixed_asset(get_post('mb_flag')))
+	hidden('mb_flag', 'F');
+else
+	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 
 stock_units_list_row(_("Units of Measure:"), 'units', null);
 
-check_row(_("Exclude from sales:"), 'no_sale');
+if (is_fixed_asset($_POST['mb_flag'])) 
+	hidden('no_sale', 0);
+else
+	check_row(_("Exclude from sales:"), 'no_sale');
 
 check_row(_("Exclude from purchases:"), 'no_purchase');
 
@@ -200,6 +228,12 @@ if (is_service($_POST['mb_flag']))
 	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 	hidden('inventory_account', $_POST['inventory_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
+}
+elseif (is_fixed_asset($_POST['mb_flag'])) 
+{
+	gl_all_accounts_list_row(_("Asset account:"), 'inventory_account', $_POST['inventory_account']);
+	gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
+	gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
 }
 else
 {

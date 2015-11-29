@@ -499,7 +499,10 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else	// prepare new line
 	{
-		sales_items_list_cells(null,'stock_id', null, false, true, true);
+		if ($order->fixed_asset)
+			stock_disposable_fa_list_cells(null,'stock_id', null, _('[Select item]'), true, $order->line_items);
+		else
+			sales_items_list_cells(null,'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -519,7 +522,11 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
-	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+	if ($order->fixed_asset) {
+		label_cell(1, '', 'qty');
+		hidden('qty', 1);
+	} else 
+		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
 	if ($order->trans_no!=0) {
 		qty_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done, false, $dec);
@@ -599,7 +606,7 @@ function display_delivery_details(&$order)
 		start_outer_table(TABLESTYLE2, "width='90%'");
 		table_section(1);
 
-		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
+		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true, $order->fixed_asset);
 		if ($order->payment_terms['days_before_due'] < 0)
 		{
 			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update

@@ -31,7 +31,7 @@ function display_order_header(&$order)
 	start_outer_table(TABLESTYLE2, "width='70%'"); // outer table
 	table_section(1);
 
-	locations_list_row(_("Location:"), 'StockLocation', null);
+	locations_list_row(_("Location:"), 'StockLocation', null, false, false, $order->fixed_asset);
     date_row(_("Date:"), 'AdjDate', '', true);
 
 	table_section(2, "50%");
@@ -51,8 +51,15 @@ function display_adjustment_items($title, &$order)
 	display_heading($title);
     div_start('items_table');
 	start_table(TABLESTYLE, "width='80%'");
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+
+	if ($order->fixed_asset) {
+		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		_("Unit"), _("Unit Cost"), _("Initial Value"), "");
+	} else {
+		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Total"), "");
+		if ( count($order->line_items)) $th[] = '';
+	}
 	if ( count($order->line_items)) $th[] = '';
 
 	table_header($th);
@@ -73,17 +80,26 @@ function display_adjustment_items($title, &$order)
 			else 
 				alt_table_row_color($k);
 
-			view_stock_status_cell($stock_item->stock_id);
+    		if ($order->fixed_asset)
+				label_cell($stock_item->stock_id);
+      		else
+				view_stock_status_cell($stock_item->stock_id);
+
 			label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 			label_cell($stock_item->units);
 			amount_decimal_cell($stock_item->standard_cost);
-			amount_cell($stock_item->standard_cost * $stock_item->quantity);
 
-			edit_button_cell("Edit$line_no", _("Edit"),
-				_('Edit document line'));
-			delete_button_cell("Delete$line_no", _("Delete"),
-				_('Remove line from document'));
+			if ($order->fixed_asset) {
+    	   		$price = get_initial_price($stock_item->stock_id);
+				amount_cell($price);
+      		} else
+				amount_cell($stock_item->standard_cost * $stock_item->quantity);
+
+      		if (!$order->fixed_asset) {
+        		edit_button_cell("Edit$line_no", _("Edit"),	_('Edit document line'));
+      		}
+			delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 			end_row();
 		}
 		else
@@ -128,11 +144,17 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	}
 	else
 	{
-    	stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+		if ($order->fixed_asset)
+			stock_disposable_fa_list_cells(null, 'stock_id', null, false, true, $order->line_items);
+		else
+			stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');
 			    $Ajax->activate('std_cost');
+			    $Ajax->activate('std_cost_view');
+			    $Ajax->activate('initial_price');
 		}
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
@@ -143,11 +165,26 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 		$_POST['units'] = $item_info["units"];
 	}
 
-	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+	if ($order->fixed_asset) {
+		hidden('qty', 1);
+		qty_cell(1, false, 0);
+	} else
+		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+
 	label_cell($_POST['units'], '', 'units');
 
-	amount_cells(null, 'std_cost', null, null, null, $dec2);
-	label_cell("&nbsp;");
+	if ($order->fixed_asset) {
+		/* TODO: check if this is a correct way of creating a fixed item
+			that still has to be submitted in the form */ 
+		hidden('std_cost');
+		label_cell($_POST['std_cost'], "nowrap align=right ", 'std_cost_view');
+		$price = get_initial_price($_POST['stock_id']);
+		amount_cell($price, false, '', 'initial_price');
+	} else {
+		//amount_cells(null, 'std_cost', $_POST['std_cost']);
+		amount_cells(null, 'std_cost', null, null, null, $dec2);
+		label_cell("&nbsp;");
+	}
 
 	if ($id != -1)
 	{
