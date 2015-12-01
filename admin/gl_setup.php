@@ -165,6 +165,12 @@ tax_algorithm_list_row(_("Tax Algorithm:"), 'tax_algorithm', $_POST['tax_algorit
 
 //---------------
 
+table_section_title(_("Dimension Defaults"));
+
+text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
+
+//----------------
+
 table_section_title(_("Customers and Sales"));
 
 text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
@@ -202,12 +208,6 @@ text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['defaul
 //---------------
 
 table_section(2);
-
-table_section_title(_("Dimension Defaults"));
-
-text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
-
-//----------------
 
 table_section_title(_("Suppliers and Purchasing"));
 

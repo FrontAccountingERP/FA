@@ -340,7 +340,8 @@ function item_settings(&$stock_id, $new_item)
 			$_POST['depreciation_date'] = sql2date($myrow['depreciation_date']);
 			$_POST['fa_class_id'] = $myrow['fa_class_id'];
 			$_POST['material_cost'] = $myrow['material_cost'];
-
+			$_POST['last_cost'] = $myrow['last_cost'];
+			
 			$_POST['sales_account'] =  $myrow['sales_account'];
 			$_POST['inventory_account'] = $myrow['inventory_account'];
 			$_POST['cogs_account'] = $myrow['cogs_account'];
@@ -443,10 +444,6 @@ function item_settings(&$stock_id, $new_item)
 			}
 			hidden('depreciation_date');
 
-			if (!$new_item) {
-				hidden('material_cost');
-				label_row(_("Current Value").':', price_format($_POST['material_cost']));
-			}
 	}
 	table_section(2);
 
@@ -518,6 +515,16 @@ function item_settings(&$stock_id, $new_item)
 		check_row(_("Delete Image:"), 'del_image');
 
 	record_status_list_row(_("Item status:"), 'inactive');
+	if (get_post('fixed_asset')) {
+		table_section_title(_("Values"));
+		if (!$new_item) {
+			hidden('material_cost');
+			hidden('last_cost');
+			label_row(_("Amount").":", price_format($_POST['last_cost']), "", "align='right'");
+			label_row(_("Depreciations").":", price_format($_POST['last_cost'] - $_POST['material_cost']), "", "align='right'");
+			label_row(_("Current Value").':', price_format($_POST['material_cost']), "", "align='right'");
+		}
+	}
 	end_outer_table(1);
 
 	div_start('controls');

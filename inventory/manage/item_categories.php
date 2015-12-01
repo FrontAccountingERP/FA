@@ -15,7 +15,7 @@ include($path_to_root . "/includes/session.inc");
 
 if (isset($_GET['FixedAsset'])) {
   $page_security = 'SA_ASSETCATEGORY';
-  $help_context = "FA Item Categories";
+  $help_context = "Fixed Assets Categories";
   $_POST['mb_flag'] = 'F';
 }
 else {

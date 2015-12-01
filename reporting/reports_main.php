@@ -299,6 +299,15 @@ $reports->addReport(RC_MANUFACTURE, 409, _('Print &Work Orders'),
 			_('Email Locations') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
+$reports->addReportClass(_('Fixed Assets'), RC_FIXEDASSETS);
+$reports->addReport(RC_FIXEDASSETS, 451, _('&Fixed Assets Valuation'),
+	array(	_('End Date') => 'DATE',
+			_('Fixed Assets Class') => 'FCLASS',
+			_('Fixed Assets Location') => 'FLOCATIONS',
+			_('Summary Only') => 'YES_NO',
+			_('Comments') => 'TEXTBOX',
+			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));
 $reports->addReportClass(_('Dimensions'), RC_DIMENSIONS);
 if ($dim > 0)
 {

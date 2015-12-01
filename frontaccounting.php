@@ -78,8 +78,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->add_application(new customers_app());
 			$this->add_application(new suppliers_app());
 			$this->add_application(new inventory_app());
-		    $this->add_application(new assets_app());
 			$this->add_application(new manufacturing_app());
+		    $this->add_application(new assets_app());
 			$this->add_application(new dimensions_app());
 			$this->add_application(new general_ledger_app());
 

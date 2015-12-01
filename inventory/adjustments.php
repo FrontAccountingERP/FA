@@ -29,7 +29,7 @@ if (user_use_date_picker())
 if (isset($_GET['NewAdjustment'])) {
 	if (isset($_GET['FixedAsset'])) {
 		$page_security = 'SA_ASSETDISPOSAL';
-		$_SESSION['page_title'] = _($help_context = "FA Disposal");
+		$_SESSION['page_title'] = _($help_context = "Fixed Assets Disposal");
 	} else {
 		$_SESSION['page_title'] = _($help_context = "Item Adjustments Note");
 	}

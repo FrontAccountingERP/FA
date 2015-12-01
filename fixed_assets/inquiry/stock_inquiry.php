@@ -23,7 +23,7 @@ if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "FA Item Inquiry"), false, false, "", $js);
+page(_($help_context = "Fixed Assets Inquiry"), false, false, "", $js);
 
 if (isset($_GET['location'])) 
 {
@@ -112,6 +112,22 @@ function disposal_link($row)
   }
 }
 
+function amount_link($row)
+{
+    return price_format($row['last_cost']);
+}
+
+function depr_link($row)
+{
+    return price_format($row['last_cost'] - $row['material_cost']);
+}
+
+function balance_link($row)
+{
+    return price_format($row['material_cost']);
+}
+
+
 //------------------------------------------------------------------------------------------------
 
 $sql = get_sql_for_fixed_assets(get_post('show_inactive'));
@@ -119,14 +135,17 @@ $sql = get_sql_for_fixed_assets(get_post('show_inactive'));
 $cols = array(
 			//_("Type") => array('fun'=>'systype_name', 'ord'=>''), 
 			//_("#") => array('fun'=>'trans_view', 'ord'=>''), 
-			_("Item") => array('fun' => 'fa_link'), 
-			_("FA Class"), 
-			_("Units of Measure") => array('align' => 'center'), 
-			_("Long description"),
-			_("Depreciation Rate or Lifecycle") => array('fun' => 'depr_rate_title'), 
-			_("Depreciation Method") => array('fun' => 'depr_method_title'), 
+			_("#") => array('fun' => 'fa_link'), 
+			_("Class"), 
+			_("UOM") => array('align' => 'center'), 
+			_("Description"),
+			_("Rate or Lifecycle") => array('fun' => 'depr_rate_title'), 
+			_("Method") => array('fun' => 'depr_method_title'), 
 			_("Status") => array('fun' => 'status_title'), 
-			_("Purchase") => array('fun' => 'purchase_link'), 
+			_("Purchased") => array('fun' => 'purchase_link'),
+			_("Amount") => array('align'=>'right', 'fun' => 'amount_link'),
+			_("Depreciations") => array('align'=>'right', 'fun' => 'depr_link'),
+			_("Balance") => array('align'=>'right', 'fun' => 'balance_link'),
 			_("Liquidation or Sale") => array('align' => 'center', 'fun' => 'disposal_link'), 
 			//array('insert'=>true, 'fun'=>'gl_view'),
 			//array('insert'=>true, 'fun'=>'rm_link'),

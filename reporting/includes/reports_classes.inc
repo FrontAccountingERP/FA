@@ -18,6 +18,7 @@ define('RC_MANUFACTURE', 3);
 define('RC_DIMENSIONS', 4);
 define('RC_BANKING', 5);
 define('RC_GL', 6);
+define('RC_FIXEDASSETS', 7);
 
 class BoxReports
 {
@@ -416,10 +417,15 @@ class BoxReports
 
 				case 'LOCATIONS':
 					return  locations_list($name, null, _("No Location Filter"));
+				case 'FLOCATIONS':
+					return  locations_list($name, null, _("No Location Filter"), false, true);
 
 				case 'CATEGORIES':
 					return stock_categories_list($name, null, _("No Category Filter"));
-
+				case 'FCATEGORIES':
+					return stock_categories_list($name, null, _("No Category Filter"), false, true);
+				case 'FCLASS':
+					return fixed_asset_classes_list($name, null, _("No Class Filter"), false);
 				case 'SALESTYPES':
 					return sales_types_list($name);
 

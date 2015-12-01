@@ -138,9 +138,9 @@ function get_fixed_asset_class($id)
 
 function get_sql_for_fixed_assets($show_inactive = false)
 {
-  $sql = "SELECT s.stock_id, c.description, s.units, s.long_description,
+  $sql = "SELECT s.stock_id, c.description, s.units, s.description as name,
     s.depreciation_rate, s.depreciation_method, s.inactive, rcv.tran_date as purchase_date, rcv.trans_no as purchase_no,
-    adj.tran_date as disposal_date, adj.type as disposal_type, adj.trans_no as disposal_no
+    adj.tran_date as disposal_date, adj.type as disposal_type, adj.trans_no as disposal_no, s.material_cost, s.last_cost
     FROM ".TB_PREF."stock_master s"
     	." LEFT JOIN ".TB_PREF."stock_moves rcv ON rcv.stock_id=s.stock_id AND rcv.type=".ST_SUPPRECEIVE
     	." LEFT JOIN ".TB_PREF."stock_moves adj ON adj.stock_id=s.stock_id AND adj.type IN(".ST_INVADJUST.",".ST_CUSTDELIVERY.")"

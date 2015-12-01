@@ -19,7 +19,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 if (isset($_GET['FixedAsset'])) {
-	$help_context = "FA Locations";
+	$help_context = "Fixed Assets Locations";
 	$_POST['fixed_asset'] = 1;
 } else
 	$help_context = "Inventory Locations";
