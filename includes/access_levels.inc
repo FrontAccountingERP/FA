@@ -204,7 +204,7 @@ $security_areas =array(
 	'SA_ASSETSTRANSVIEW' => array(SS_ASSETS|1, _("Fixed Asset transactions view")),
 	'SA_ASSETTRANSFER' => array(SS_ASSETS|2, _("Fixed Asset location transfers")),
 	'SA_ASSETDISPOSAL' => array(SS_ASSETS|3, _("Fixed Asset disposals")),
-  'SA_DEPRECIATION' => array(SS_ASSETS|4, _("Depreciation")),
+    'SA_DEPRECIATION' => array(SS_ASSETS|4, _("Depreciation")),
 
 	'SA_ASSETSANALYTIC' => array(SS_ASSETS_A|1, _("Fixed Asset analytical reports and inquiries")),
 

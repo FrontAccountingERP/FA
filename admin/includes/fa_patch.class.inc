@@ -49,6 +49,38 @@ class fa_patch {
 	}
 
 	/*
+		Selectively extends access to selected security areas/sections.
+	*/
+	function update_security_roles($sec_updates)
+	{
+		global $security_areas, $security_sections;
+
+		$roles = db_query("SELECT * FROM ".TB_PREF."security_roles");
+
+		while($role = db_fetch($roles))
+		{
+			$role['areas'] = explode(';', $role['areas']);
+			$role['sections'] = explode(';', $role['sections']);
+			foreach($sec_updates as $has => $add)
+			{
+				if (in_array($security_areas[$has][0], $role['areas']))
+				{
+					$sections = array();
+					foreach($add as $area)
+					{
+						$role['areas'][] = $security_areas[$area][0];
+						$role['sections'][] = $security_areas[$area][0]&~0xff;
+					}
+					sort($role['areas']);
+					update_security_role($role['id'], $role['role'], $role['description'], 
+						array_values($role['sections']), array_values($role['areas']));
+				}
+			}
+		}
+		return true;
+	}
+
+	/*
 		Check and disable incompatible extensions.
 	*/
 	function update_extensions()
