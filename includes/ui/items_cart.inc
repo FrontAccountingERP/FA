@@ -481,7 +481,7 @@ class line_item
 			$this->item_description = $description;
 
 		if ($standard_cost == null)
-			$this->standard_cost = $item_row["actual_cost"];
+			$this->standard_cost = $item_row["purchase_cost"];
 		else
 			$this->standard_cost = $standard_cost;
 

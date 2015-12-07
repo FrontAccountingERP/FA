@@ -27,7 +27,7 @@ if (user_use_date_picker())
 if (isset($_GET['FixedAsset'])) {
 	$page_security = 'SA_ASSETSTRANSVIEW';
 	$_POST['fixed_asset'] = 1;
-	$_SESSION['page_title'] = _($help_context = "FA Item Movement");
+	$_SESSION['page_title'] = _($help_context = "Fixed Assets Movement");
 } else {
 	$_SESSION['page_title'] = _($help_context = "Inventory Item Movement");
 }

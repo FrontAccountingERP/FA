@@ -47,7 +47,7 @@ if (isset($_GET['AddedID']))
   $row = db_fetch($result);
 
   if (is_fixed_asset($row['mb_flag'])) {
-    display_notification_centered(_("FA disposal has been processed"));
+    display_notification_centered(_("Fixed Assets disposal has been processed"));
     display_note(get_trans_view_str($trans_type, $trans_no, _("&View this disposal")));
 
     display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Disposal")), 1, 0);

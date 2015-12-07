@@ -66,7 +66,7 @@ function print_fixed_assets_valuation_report()
 
 	$cols = array(0, 75, 225, 250, 350, 450,	515);
 
-	$headers = array(_('Class'), '', _('UOM'),  _('Amount'), _('Depreciations'), _('Balance'));
+	$headers = array(_('Class'), '', _('UOM'),  _('Initial'), _('Depreciations'), _('Current'));
 
 	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
 
@@ -113,8 +113,8 @@ function print_fixed_assets_valuation_report()
 			if ($detail)
 				$rep->NewLine();
 		}
-		$UnitCost = $trans['last_cost'];
-		$Depreciation = $trans['last_cost'] - $trans['material_cost'];;
+		$UnitCost = $trans['purchase_cost'];
+		$Depreciation = $trans['purchase_cost'] - $trans['material_cost'];;
 		$Balance = $trans['material_cost'];
 		if ($detail)
 		{

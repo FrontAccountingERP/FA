@@ -309,6 +309,23 @@ function get_stock_gl_code($stock_id)
 	return db_fetch($get);
 }
 
+function get_purchase_value($stock_id)
+{
+	$sql = "SELECT purchase_cost FROM
+		".TB_PREF."stock_master WHERE stock_id = ".db_escape($stock_id);
+
+	$result = db_query($sql,"retreive stock purchase price");
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+
+function update_purchase_value($stock_id, $price)
+{
+	$price = round2($price, user_price_dec());
+	$sql = "UPDATE ".TB_PREF."stock_master SET purchase_cost=".db_escape($price)
+			." WHERE stock_id=".db_escape($stock_id);
+	db_query($sql, "The stock master purchase_cost cannot be updated");
+}	
 //-----------------------------------------------------------------------------------------
 
 function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)

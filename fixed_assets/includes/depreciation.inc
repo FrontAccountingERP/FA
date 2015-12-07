@@ -63,20 +63,20 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
 
   switch ($item['depreciation_method']) {
 	case 'D':
-		$line_value = $item['actual_cost']*$item['depreciation_rate']/100/12;
+		$line_value = $item['purchase_cost']*$item['depreciation_rate']/100/12;
 		$value = $item['material_cost'] * $item['depreciation_rate'] * $item['depreciation_factor']/100/12;
 		if ($value < $line_value)
 			$value = $line_value;
 		break;
 
     case 'S':	// actual_cost stores start cost of item
-		$value = $item['actual_cost']*$item['depreciation_rate']/100/12;
+		$value = $item['purchase_cost']*$item['depreciation_rate']/100/12;
 		break;
 
 	case 'N':
 		$N = $item['depreciation_rate'];
 		$done_years = months_between_dates($item['depreciation_start'], $item['depreciation_date'])/12;
-		$value = $item['material_cost']* ($N-$done_years)/($N*($N+1)/2)/12;
+		$value = $item['purchase_cost']* ($N-$done_years)/($N*($N+1)/2)/12;
 		break;
 
     case 'O':

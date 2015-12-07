@@ -91,7 +91,7 @@ function display_adjustment_items($title, &$order)
 			amount_decimal_cell($stock_item->standard_cost);
 
 			if ($order->fixed_asset) {
-    	   		$price = get_initial_price($stock_item->stock_id);
+    	   		$price = get_purchase_value($stock_item->stock_id);
 				amount_cell($price);
       		} else
 				amount_cell($stock_item->standard_cost * $stock_item->quantity);
@@ -166,7 +166,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	}
 
 	if ($order->fixed_asset) {
-		hidden('qty', 1);
+		hidden('qty', -1);
 		qty_cell(1, false, 0);
 	} else
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -178,7 +178,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 			that still has to be submitted in the form */ 
 		hidden('std_cost');
 		label_cell($_POST['std_cost'], "nowrap align=right ", 'std_cost_view');
-		$price = get_initial_price($_POST['stock_id']);
+		$price = get_purchase_value($_POST['stock_id']);
 		amount_cell($price, false, '', 'initial_price');
 	} else {
 		//amount_cells(null, 'std_cost', $_POST['std_cost']);

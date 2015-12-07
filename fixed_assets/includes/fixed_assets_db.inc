@@ -45,7 +45,7 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
 
   if (empty($memo_))
     $cart->memo_ = sprintf(_("Fixed asset has been deprecated by the value of %s"),
-        number_format2($value_of_change, 2));
+        number_format2($value_of_change, user_price_dec()));
   else
     $cart->memo_ = $memo_;
 
@@ -118,13 +118,6 @@ function get_fixed_asset_purchase($stock_id) {
 
 //--------------------------------------------------------------------------------------------------
 
-function get_initial_price($stock_id) {
-  $row = get_fixed_asset_move($stock_id, ST_SUPPRECEIVE);
-  return $row['price'];
-}
-
-//--------------------------------------------------------------------------------------------------
-
 function get_fixed_asset_class($id)
 {
 	$sql="SELECT * FROM ".TB_PREF."stock_fa_class WHERE fa_class_id=".db_escape($id);
@@ -140,7 +133,7 @@ function get_sql_for_fixed_assets($show_inactive = false)
 {
   $sql = "SELECT s.stock_id, c.description, s.units, s.description as name,
     s.depreciation_rate, s.depreciation_method, s.inactive, rcv.tran_date as purchase_date, rcv.trans_no as purchase_no,
-    adj.tran_date as disposal_date, adj.type as disposal_type, adj.trans_no as disposal_no, s.material_cost, s.last_cost, s.depreciation_factor
+    adj.tran_date as disposal_date, adj.type as disposal_type, adj.trans_no as disposal_no, s.material_cost, s.purchase_cost, s.depreciation_factor
     FROM ".TB_PREF."stock_master s"
     	." LEFT JOIN ".TB_PREF."stock_moves rcv ON rcv.stock_id=s.stock_id AND rcv.type=".ST_SUPPRECEIVE
     	." LEFT JOIN ".TB_PREF."stock_moves adj ON adj.stock_id=s.stock_id AND adj.type IN(".ST_INVADJUST.",".ST_CUSTDELIVERY.")"

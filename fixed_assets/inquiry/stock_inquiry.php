@@ -117,12 +117,12 @@ function disposal_link($row)
 
 function amount_link($row)
 {
-    return price_format($row['last_cost']);
+    return price_format($row['purchase_cost']);
 }
 
 function depr_link($row)
 {
-    return price_format($row['last_cost'] - $row['material_cost']);
+    return price_format($row['purchase_cost'] - $row['material_cost']);
 }
 
 function balance_link($row)
@@ -146,9 +146,9 @@ $cols = array(
 			_("Method") => array('fun' => 'depr_method_title'), 
 			_("Status") => array('fun' => 'status_title'), 
 			_("Purchased") => array('fun' => 'purchase_link'),
-			_("Amount") => array('align'=>'right', 'fun' => 'amount_link'),
+			_("Initial") => array('align'=>'right', 'fun' => 'amount_link'),
 			_("Depreciations") => array('align'=>'right', 'fun' => 'depr_link'),
-			_("Balance") => array('align'=>'right', 'fun' => 'balance_link'),
+			_("Current") => array('align'=>'right', 'fun' => 'balance_link'),
 			_("Liquidation or Sale") => array('align' => 'center', 'fun' => 'disposal_link'), 
 			//array('insert'=>true, 'fun'=>'gl_view'),
 			//array('insert'=>true, 'fun'=>'rm_link'),

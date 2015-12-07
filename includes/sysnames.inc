@@ -44,8 +44,8 @@ $systypes_array = array (
 	);
 
 $fa_systypes_array = array (
-	ST_INVADJUST => _("FA Disposal"),
-	ST_COSTUPDATE => _("FA Revaluation"),
+	ST_INVADJUST => _("Fixed Assets Disposal"),
+	ST_COSTUPDATE => _("Fixed Assets Revaluation"),
 	);
 
 $type_shortcuts = array(

@@ -29,7 +29,7 @@ if (user_use_date_picker())
 if (isset($_GET['NewTransfer'])) {
 	if (isset($_GET['FixedAsset'])) {
 		$page_security = 'SA_ASSETTRANSFER';
-		$_SESSION['page_title'] = _($help_context = "FA Location Transfers");
+		$_SESSION['page_title'] = _($help_context = "Fixed Assets Location Transfers");
 	}
 	else {
 		$_SESSION['page_title'] = _($help_context = "Inventory Location Transfers");
@@ -54,7 +54,7 @@ if (isset($_GET['AddedID']))
   $itm = db_fetch(get_stock_transfer_items($_GET['AddedID']));
 
   if (is_fixed_asset($itm['mb_flag']))
-	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another FA Item Transfer"), "NewTransfer=1&FixedAsset=1");
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Fixed Assets Transfer"), "NewTransfer=1&FixedAsset=1");
   else
 	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"), "NewTransfer=1");
 

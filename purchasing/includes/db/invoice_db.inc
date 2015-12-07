@@ -354,7 +354,7 @@ function add_supp_invoice(&$supp_trans)
 			}
 			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
 		}
-
+		update_purchase_value($entered_grn->item_code, $entered_grn->chg_price * $ex_rate);
 		add_supp_invoice_item($trans_type, $invoice_id, $entered_grn->item_code,
 			$entered_grn->item_description, 0, 	$entered_grn->chg_price, $line_tax/$entered_grn->this_quantity_inv,
 			$entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "");

@@ -17,6 +17,7 @@ ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_factor` double NOT NULL DE
 ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_start` date NOT NULL DEFAULT '0000-00-00' AFTER `depreciation_factor`;
 ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_date` date NOT NULL DEFAULT '0000-00-00' AFTER `depreciation_start`;
 ALTER TABLE `0_stock_master` ADD COLUMN `fa_class_id` varchar(20) NOT NULL DEFAULT '' AFTER `depreciation_date`;
+ALTER TABLE `0_stock_master` CHANGE `actual_cost` `purchase_cost` double NOT NULL default 0;
 
 INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
 INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');

@@ -69,7 +69,7 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 
 	if (isset($_GET['FixedAsset'])) {
-		$_SESSION['page_title'] = _($help_context = "FA Sale");
+		$_SESSION['page_title'] = _($help_context = "Fixed Assets Sale");
 		$_SESSION['Items']->fixed_asset = true;
   	} else
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
