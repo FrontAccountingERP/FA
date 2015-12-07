@@ -1653,25 +1653,22 @@ function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=f
 //-----------------------------------------------------------------------------------------------
 function fixed_asset_classes_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
 {
-	$sql = "SELECT c.fa_class_id, CONCAT(c.fa_class_id,' - ',c.description) `desc`, CONCAT(p.fa_class_id,' - ',p.description), c.inactive FROM "
-		.TB_PREF."stock_fa_class c, "
-		.TB_PREF."stock_fa_class p 
-	WHERE c.parent_id=p.fa_class_id";
+	$sql = "SELECT c.fa_class_id, CONCAT(c.fa_class_id,' - ',c.description) `desc`, CONCAT(p.fa_class_id,' - ',p.description) `class`, c.inactive FROM "
+		.TB_PREF."stock_fa_class c LEFT JOIN ".TB_PREF."stock_fa_class p ON c.parent_id=p.fa_class_id";
 
 	return combo_input($name, $selected_id, $sql, 'c.fa_class_id', 'desc',
 		array('order'=>'c.fa_class_id',
 			'spec_option' => $spec_opt,
-			'spec_id' => -1,
+			'spec_id' => '-1',
  			'select_submit'=> $submit_on_change,
  			'async' => true,
 			'search_box' => true,
 			'search' => array("c.fa_class_id"),
 		    'search_submit' => false,
-		    'spec_option' => '',
 		    'spec_id' => '',
 		    'size' => 3,
 		    'max' => 3,
-			'category' => 2,
+			'category' => 'class',
  		));
 }
 

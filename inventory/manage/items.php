@@ -416,34 +416,36 @@ function item_settings(&$stock_id, $new_item)
 
 		if (!isset($_POST['depreciation_rate']) || (list_updated('fa_class_id') || list_updated('depreciation_method'))) {
 			$class_row = get_fixed_asset_class($_POST['fa_class_id']);
-
-			if ($_POST['depreciation_method'] == 'O')
-			{
-				hidden('depreciation_rate', 100);
-				label_row(_("Depreciation Rate").':', "100 %");
-			}
-			elseif ($_POST['depreciation_method'] == 'N')
-			{
-				small_amount_row(_("Depreciation Years").':', 'depreciation_rate', null, null, _('years'), 0);
-			}
-			elseif ($_POST['depreciation_method'] == 'D')
-				small_amount_row(_("Base Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
-			else
-				small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
-
-			if ($_POST['depreciation_method'] == 'D')
-				small_amount_row(_("Rate multiplier").':', 'depreciation_factor', null, null, '', 2);
-
-			// do not allow to change the depreciation start after this item has been depreciated
-			if ($new_item || $_POST['depreciation_start'] == $_POST['depreciation_date'])
-				date_row(_("Depreciation Start").':', 'depreciation_start', null, null, 1 - date('j'));
-			else {
-				hidden('depreciation_start');
-				label_row(_("Depreciation Start").':', $_POST['depreciation_start']);
-				label_row(_("Last Depreciation").':', $_POST['depreciation_date']);
-			}
-			hidden('depreciation_date');
+			$_POST['depreciation_rate'] = get_post('depreciation_method') == 'N' ? ceil(100/$class_row['depreciation_rate'])
+				: $class_row['depreciation_rate'];
 		}
+
+		if ($_POST['depreciation_method'] == 'O')
+		{
+			hidden('depreciation_rate', 100);
+			label_row(_("Depreciation Rate").':', "100 %");
+		}
+		elseif ($_POST['depreciation_method'] == 'N')
+		{
+			small_amount_row(_("Depreciation Years").':', 'depreciation_rate', null, null, _('years'), 0);
+		}
+		elseif ($_POST['depreciation_method'] == 'D')
+			small_amount_row(_("Base Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+		else
+			small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+
+		if ($_POST['depreciation_method'] == 'D')
+			small_amount_row(_("Rate multiplier").':', 'depreciation_factor', null, null, '', 2);
+
+		// do not allow to change the depreciation start after this item has been depreciated
+		if ($new_item || $_POST['depreciation_start'] == $_POST['depreciation_date'])
+			date_row(_("Depreciation Start").':', 'depreciation_start', null, null, 1 - date('j'));
+		else {
+			hidden('depreciation_start');
+			label_row(_("Depreciation Start").':', $_POST['depreciation_start']);
+			label_row(_("Last Depreciation").':', $_POST['depreciation_date']==$_POST['depreciation_start'] ? _("None") :  $_POST['depreciation_date']);
+		}
+		hidden('depreciation_date');
 	}
 	table_section(2);
 
