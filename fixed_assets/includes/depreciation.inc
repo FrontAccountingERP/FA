@@ -62,20 +62,26 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
   $y = date('Y', strtotime($year['end']));
 
   switch ($item['depreciation_method']) {
-    case 'D':
-      $value = $item['material_cost'] * $item['depreciation_rate'] / 100 / 12;
-      break;
+	case 'D':
+		$line_value = $item['actual_cost']*$item['depreciation_rate']/100/12;
+		$value = $item['material_cost'] * $item['depreciation_rate'] * $item['depreciation_factor']/100/12;
+		if ($value < $line_value)
+			$value = $line_value;
+		break;
 
-    case 'S':
-      // depreciation_rate is the period here.
-      $done_months = months_between_dates($item['depreciation_start'], $item['depreciation_date']);
-      $remaining_months = $item['depreciation_rate'] * 12 - $done_months;
-      $value = $item['material_cost'] / $remaining_months;
-      break;
+    case 'S':	// actual_cost stores start cost of item
+		$value = $item['actual_cost']*$item['depreciation_rate']/100/12;
+		break;
+
+	case 'N':
+		$N = $item['depreciation_rate'];
+		$done_years = months_between_dates($item['depreciation_start'], $item['depreciation_date'])/12;
+		$value = $item['material_cost']* ($N-$done_years)/($N*($N+1)/2)/12;
+		break;
 
     case 'O':
-      $value = $item['material_cost'];
-      break;
+		$value = $item['material_cost'];
+		break;
   }
 
   $next = next_depreciation_date($item['depreciation_date']);

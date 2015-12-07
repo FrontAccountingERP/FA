@@ -36,16 +36,16 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_fixed_asset_class($selected_id, $_POST['parent_id'], $_POST['description'], $_POST['long_description'],
-    			$_POST['depreciation_method'], $_POST['depreciation_rate'], $_POST['depreciation_period']);
+    			$_POST['depreciation_rate']);
 			  display_notification(_('Selected fixed asset class has been updated'));
     	} 
     	else 
     	{
     		add_fixed_asset_class($_POST['fa_class_id'], $_POST['parent_id'], $_POST['description'], $_POST['long_description'],
-    			$_POST['depreciation_method'], $_POST['depreciation_rate'], $_POST['depreciation_period']);
+    			$_POST['depreciation_rate']);
 			  display_notification(_('New fixed asset class has been added'));
     	}
-		
+
 		$Mode = 'RESET';
 	}
 } 
@@ -83,7 +83,7 @@ $result = get_fixed_asset_classes();
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Fixed asset class"), _("Description"), _("Depreciation method"), _("Depreciation rate"), _("Depreciation period"), "", "");
+$th = array(_("Fixed asset class"), _("Description"), _("Basic Depreciation Rate"), "", "");
 inactive_control_column($th);
 table_header($th);
 $k = 0; //row colour counter
@@ -93,9 +93,7 @@ while ($myrow = db_fetch($result))
 	
 	label_cell($myrow["fa_class_id"]);
 	label_cell($myrow["description"]);
-	label_cell($depreciation_methods[$myrow["depreciation_method"]]);
 	label_cell($myrow["depreciation_rate"].'%');
-	label_cell($myrow["depreciation_period"].' years');
 	inactive_control_cell($myrow["fa_class_id"], $myrow["inactive"], 'stock_fa_classes', 'fa_class_id');
  	edit_button_cell("Edit".$myrow["fa_class_id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["fa_class_id"], _("Delete"));
@@ -107,7 +105,7 @@ end_table(1);
 echo '<br>';
 
 start_form(true);
-
+div_start('par_tbl');
 start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
@@ -119,9 +117,7 @@ if ($selected_id != -1)
 		$_POST['parent_id'] = $myrow["parent_id"];
 		$_POST['description']  = $myrow["description"];
 		$_POST['long_description']  = $myrow["long_description"];
-		$_POST['depreciation_method'] = $myrow["depreciation_method"];
 		$_POST['depreciation_rate'] = $myrow["depreciation_rate"];
-		$_POST['depreciation_period'] = $myrow["depreciation_period"];
 	}
 	hidden("selected_id", $selected_id);
 	hidden("fa_class_id");
@@ -137,14 +133,11 @@ else
 
 text_row(_("Description:"), 'description', null, 42, 200);
 textarea_row(_('Long description:'), 'long_description', null, 42, 3);
-array_selector_row(_("Depreciation Method").":", "depreciation_method", null, $depreciation_methods, array('select_submit'=> true));
-small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
-text_row_ex(_("Depreciation Period").':', 'depreciation_period', 3, 3, '', null, null, _("years"));
-
+small_amount_row(_("Basic Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
 //text_row(_("Parent id:"), 'parent_id', null, 3, 3);
 
 end_table(1);
-
+div_end();
 //if ($selected_id != -1) 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 

@@ -161,6 +161,7 @@ $quick_entry_types = array(
 $depreciation_methods = array(
   'D' => _("Declining balance"),
   'S' => _("Straight line"),
+  'N' => _("Sum of the Year Digits"),
   'O' => _("One-time"),
 );
 

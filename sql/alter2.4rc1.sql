@@ -6,16 +6,15 @@ CREATE TABLE `0_stock_fa_class` (
   `parent_id` varchar(20) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `long_description` tinytext NOT NULL,
-  `depreciation_method` char(1) NOT NULL DEFAULT 'D',
   `depreciation_rate` double NOT NULL DEFAULT '0',
-  `depreciation_period` tinyint(1) NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fa_class_id`)
 ) ENGINE=InnoDB;
 
 ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_method` char(1) NOT NULL DEFAULT 'D' AFTER `editable`;
 ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_rate` double NOT NULL DEFAULT '0' AFTER `depreciation_method`;
-ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_start` date NOT NULL DEFAULT '0000-00-00' AFTER `depreciation_rate`;
+ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_factor` double NOT NULL DEFAULT '0' AFTER `depreciation_par`;
+ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_start` date NOT NULL DEFAULT '0000-00-00' AFTER `depreciation_factor`;
 ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_date` date NOT NULL DEFAULT '0000-00-00' AFTER `depreciation_start`;
 ALTER TABLE `0_stock_master` ADD COLUMN `fa_class_id` varchar(20) NOT NULL DEFAULT '' AFTER `depreciation_date`;
 

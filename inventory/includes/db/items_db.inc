@@ -13,8 +13,8 @@ function update_item($stock_id, $description, $long_description, $category_id,
 	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
 	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
 	$dimension2_id, $no_sale, $editable, $no_purchase,
-	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_start=null,
-	$fa_class_id=null)
+	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_factor=1,
+	$depreciation_start=null, $fa_class_id=null)
 {
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
@@ -32,6 +32,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		editable=".db_escape($editable).",
 		depreciation_method=".db_escape($depreciation_method).",
 		depreciation_rate=".db_escape($depreciation_rate).",
+		depreciation_factor=".db_escape($depreciation_factor).",
 		fa_class_id=".db_escape($fa_class_id);
 
 	if ($units != '')
@@ -56,13 +57,13 @@ function add_item($stock_id, $description, $long_description, $category_id,
 	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
 	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
 	$dimension2_id, $no_sale, $editable, $no_purchase,
-	$depreciation_method='D', $depreciation_rate=100, $depreciation_start=null,
+	$depreciation_method='D', $depreciation_rate=100,  $depreciation_factor=1, $depreciation_start=null,
 	$fa_class_id=null)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
 		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale, no_purchase, editable,
-		depreciation_method, depreciation_rate, depreciation_start, depreciation_date, fa_class_id)
+		depreciation_method, depreciation_rate, depreciation_factor, depreciation_start, depreciation_date, fa_class_id)
 		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		".db_escape($category_id).", ".db_escape($tax_type_id).", "
 		.db_escape($units).", ".db_escape($mb_flag).",
@@ -73,7 +74,7 @@ function add_item($stock_id, $description, $long_description, $category_id,
 		.db_escape($no_sale).","
 		.db_escape($no_purchase).","
 		.db_escape($editable).","
-		.db_escape($depreciation_method).",".db_escape($depreciation_rate).",'"
+		.db_escape($depreciation_method).",".db_escape($depreciation_rate).",".db_escape($depreciation_factor).",'"
 		.date2sql($depreciation_start)."','".date2sql($depreciation_start)."',"
 		.db_escape($fa_class_id).")";
 
