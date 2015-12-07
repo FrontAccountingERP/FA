@@ -19,6 +19,17 @@ function get_fixed_asset_classes()
 	return $result;
 }
 
+function get_fixed_asset_classname($class)
+{
+	$sql="SELECT description FROM ".TB_PREF."stock_fa_class WHERE fa_class_id = ".db_escape($class);;
+
+	$result = db_query($sql,"fixed asset class name could not be retrieved");
+
+	$row = db_fetch_row($result);
+	
+	return $row[0];
+}
+
 function update_fixed_asset_class($fa_class_id, $parent_id, $description, $long_description, $depreciation_rate)
 {
 	$sql = "UPDATE ".TB_PREF."stock_fa_class SET

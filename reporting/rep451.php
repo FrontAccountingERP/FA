@@ -24,6 +24,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
+include_once($path_to_root . "/fixed_assets/includes/fa_classes_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ function print_fixed_assets_valuation_report()
     global $path_to_root, $SysPrefs;
 
 	$date = $_POST['PARAM_0'];
-    $category = $_POST['PARAM_1'];
+    $class = $_POST['PARAM_1'];
     $location = $_POST['PARAM_2'];
     $detail = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
@@ -50,12 +51,12 @@ function print_fixed_assets_valuation_report()
     $dec = user_price_dec();
 
 	$orientation = ($orientation ? 'L' : 'P');
-	if ($category == ALL_NUMERIC)
-		$category = 0;
-	if ($category == 0)
-		$cat = _('All');
+	if ($class == ALL_NUMERIC)
+		$class = 0;
+	if ($class== 0)
+		$cln = _('All');
 	else
-		$cat = get_category_name($category);
+		$cln = get_fixed_asset_classname($class);
 
 	if ($location == ALL_TEXT)
 		$location = 'all';
@@ -72,7 +73,7 @@ function print_fixed_assets_valuation_report()
 
     $params =   array( 	0 => $comments,
     					1 => array('text' => _('End Date'), 'from' => $date, 		'to' => ''),
-    				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
+    				    2 => array('text' => _('Class'), 'from' => $cln, 'to' => ''),
     				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
     $rep = new FrontReport(_('Fixed Assets Valuation Report'), "FixedAssetsValReport", user_pagesize(), 9, $orientation);
@@ -90,6 +91,11 @@ function print_fixed_assets_valuation_report()
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
+		$d = sql2date($trans['purchase_date']);
+		if (date1_greater_date2($d, $date))
+			continue;
+		if ($class != 0 && $cln != $trans['description'])
+			continue;
 		if ($catt != $trans['description'])
 		{
 			if ($catt != '')
