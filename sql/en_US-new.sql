@@ -250,7 +250,7 @@ INSERT INTO `0_chart_master` VALUES ('1205', '', 'Allowance for doubtful account
 INSERT INTO `0_chart_master` VALUES ('1510', '', 'Inventory', '2', 0);
 INSERT INTO `0_chart_master` VALUES ('1520', '', 'Stocks of Raw Materials', '2', 0);
 INSERT INTO `0_chart_master` VALUES ('1530', '', 'Stocks of Work In Progress', '2', 0);
-INSERT INTO `0_chart_master` VALUES ('1540', '', 'Stocks of Finsihed Goods', '2', 0);
+INSERT INTO `0_chart_master` VALUES ('1540', '', 'Stocks of Finished Goods', '2', 0);
 INSERT INTO `0_chart_master` VALUES ('1550', '', 'Goods Received Clearing account', '2', 0);
 INSERT INTO `0_chart_master` VALUES ('1820', '', 'Office Furniture &amp; Equipment', '3', 0);
 INSERT INTO `0_chart_master` VALUES ('1825', '', 'Accum. Amort. -Furn. &amp; Equip.', '3', 0);
@@ -1895,6 +1895,8 @@ INSERT INTO `0_sys_prefs` VALUES ('print_item_images_on_quote','glsetup.inventor
 INSERT INTO `0_sys_prefs` VALUES ('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
 INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
+INSERT INTO `0_sys_prefs` VALUES ('use_manufacturing','setup.company', 'tinyint', 1, '1');
+INSERT INTO `0_sys_prefs` VALUES ('use_fixed_assets','setup.company', 'tinyint', 1, '1');
 
 -- --------------------------------------------------------
 
