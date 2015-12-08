@@ -1848,7 +1848,6 @@ CREATE TABLE `0_stock_fa_class` (
   `parent_id` varchar(20) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `long_description` tinytext NOT NULL,
-  `depreciation_method` char(1) NOT NULL DEFAULT 'D',
   `depreciation_rate` double NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fa_class_id`)
