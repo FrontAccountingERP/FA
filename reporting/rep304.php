@@ -62,7 +62,8 @@ function getTransactions($category, $location, $fromcust, $from, $to, $show_serv
 
 	if (!$show_service)
 		$sql .= " AND (item.mb_flag='B' OR item.mb_flag='M')";
-
+	else
+		$sql .= " AND item.mb_flag<>'F'";
 	if ($category != 0)
 		$sql .= " AND item.category_id = ".db_escape($category);
 

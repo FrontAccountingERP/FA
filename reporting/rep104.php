@@ -41,7 +41,7 @@ function fetch_items($category=0)
 			WHERE item.category_id=category.category_id AND NOT item.inactive";
 		if ($category != 0)
 			$sql .= " AND category.category_id = ".db_escape($category);
-		$sql .= " ORDER BY item.category_id,
+		$sql .= " AND item.mb_flag<> 'F' ORDER BY item.category_id,
 				item.stock_id";
 
     return db_query($sql,"No transactions were returned");

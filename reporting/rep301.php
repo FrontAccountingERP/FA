@@ -113,7 +113,7 @@ function getTransactions($category, $location, $date)
 			.TB_PREF."stock_moves move
 		WHERE item.stock_id=move.stock_id
 		AND item.category_id=category.category_id
-		AND item.mb_flag<>'D' 
+		AND item.mb_flag<>'D' AND mb_flag <> 'F' 
 		AND move.tran_date <= '$date'
 		GROUP BY item.category_id,
 			category.description, ";

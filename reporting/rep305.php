@@ -53,6 +53,7 @@ function getTransactions($from, $to)
         AND grn_line.qty_recd>0
         AND grn.delivery_date>='$from'
         AND grn.delivery_date<='$to'
+        AND item.mb_flag <>'F'
         ORDER BY item.stock_id, grn.delivery_date";
 
     return db_query($sql,"No transactions were returned");
