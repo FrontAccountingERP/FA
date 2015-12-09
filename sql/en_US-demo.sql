@@ -1875,7 +1875,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
   `assembly_account` varchar(15) NOT NULL DEFAULT '',
   `dimension_id` int(11) DEFAULT NULL,
   `dimension2_id` int(11) DEFAULT NULL,
-  `actual_cost` double NOT NULL DEFAULT '0',
+  `purchase_cost` double NOT NULL DEFAULT '0',
   `last_cost` double NOT NULL DEFAULT '0',
   `material_cost` double NOT NULL DEFAULT '0',
   `labour_cost` double NOT NULL DEFAULT '0',

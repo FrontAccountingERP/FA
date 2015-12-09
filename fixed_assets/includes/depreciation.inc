@@ -69,7 +69,7 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
 			$value = $line_value;
 		break;
 
-    case 'S':	// actual_cost stores start cost of item
+    case 'S':	// purchase_cost stores start cost of item
 		$value = $item['purchase_cost']*$item['depreciation_rate']/100/12;
 		break;
 
