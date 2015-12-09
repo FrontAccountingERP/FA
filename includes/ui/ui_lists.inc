@@ -299,7 +299,6 @@ $opts = array(		// default options
   		$link = "";
   		$id = $name;
   		if ($SysPrefs->use_popup_windows) {
-  			//_vd("type= $type");
     		switch (strtolower($type)) {
       			case "stock":
         			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
@@ -319,6 +318,11 @@ $opts = array(		// default options
         			break;
       			case "stock_costable":
         			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "component":
+      				$parent = $opts['parent'];
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=component&parent=".$parent."&client_id=" . $id;
         			$img_title = _("Search items");
         			break;
       			case "kits":
@@ -986,9 +990,11 @@ function stock_manufactured_items_list_row($label, $name, $selected_id=null,
 function stock_component_items_list($name, $parent_stock_id, $selected_id=null,
 	$all_option=false, $submit_on_change=false, $editkey = false)
 {
+	$parent = db_escape($parent_stock_id);
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("stock_id != ".db_escape($parent_stock_id))), $editkey);
+		array('where'=>array("stock_id != $parent"), 'parent'=> $parent_stock_id), $editkey, "component");
 }
+
 
 function stock_component_items_list_cells($label, $name, $parent_stock_id, 
 	$selected_id=null, $all_option=false, $submit_on_change=false, $editkey = false)
@@ -996,8 +1002,7 @@ function stock_component_items_list_cells($label, $name, $parent_stock_id,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("stock_id != ".db_escape($parent_stock_id)), 'cells'=>true),
-		$editkey);
+		array('where'=>array("stock_id != $parent"), 'cells'=>true, 'parent'=> $parent_stock_id), $editkey, "component");
 }
 //------------------------------------------------------------------------------------
 

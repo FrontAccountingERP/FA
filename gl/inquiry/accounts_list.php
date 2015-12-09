@@ -54,7 +54,6 @@ $sql = "SELECT chart.account_code, chart.account_name, type.name
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id
         AND (
-          chart.account_code LIKE " . db_escape("%" . get_post("description"). "%") . " OR
           chart.account_name LIKE " . db_escape("%" . get_post("description"). "%") . " OR
           chart.account_code LIKE " . db_escape("%" . get_post("description"). "%") . "
         ) 

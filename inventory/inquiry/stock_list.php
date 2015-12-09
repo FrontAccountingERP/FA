@@ -59,11 +59,8 @@ table_header($th);
 
 // Query based on function sales_items_list in includes/ui/ui_lists.inc.
 $sql = "SELECT COUNT(i.item_code) AS kit, i.item_code, i.description, c.description category
-  FROM
-    ".TB_PREF."stock_master s,
-    ".TB_PREF."item_codes i
-  LEFT JOIN
-    ".TB_PREF."stock_category c
+  FROM ".TB_PREF."stock_master s, ".TB_PREF."item_codes i
+  LEFT JOIN ".TB_PREF."stock_category c
     ON i.category_id=c.category_id
   WHERE i.stock_id=s.stock_id
     AND !i.inactive AND !s.inactive
@@ -75,7 +72,7 @@ $type = "";
 if (isset($_GET['type'])) {
   $type = $_GET['type'];
 }
-//_vd("type = $type");
+
 switch ($type) {
   case "sales":
     $sql .= " AND !s.no_sale AND mb_flag != 'F'";
@@ -88,6 +85,9 @@ switch ($type) {
     break;
   case "costable":
     $sql .= " AND mb_flag != 'D' AND mb_flag != 'F' AND  i.item_code=i.stock_id";
+    break;
+  case "component":
+    $sql .= " AND  i.item_code=i.stock_id AND i.stock_id != ".$_GET['parent']." AND mb_flag != 'F' ";
     break;
   case "assets":
     $sql .= " AND mb_flag = 'F'";
@@ -102,7 +102,7 @@ switch ($type) {
 }
 
 $sql .= " GROUP BY i.item_code ORDER BY i.description LIMIT 0, $limit"; // We only display 10 items.
-//_vd($sql);
+
 $result = db_query($sql, "Failed in retreiving item list.");
 
 $k = 0; //row colour counter
