@@ -87,7 +87,8 @@ switch ($type) {
     $sql .= " AND mb_flag != 'D' AND mb_flag != 'F' AND  i.item_code=i.stock_id";
     break;
   case "component":
-    $sql .= " AND  i.item_code=i.stock_id AND i.stock_id != ".$_GET['parent']." AND mb_flag != 'F' ";
+  	$parent = $_GET['parent'];
+    $sql .= " AND  i.item_code=i.stock_id AND i.stock_id <> '$parent' AND mb_flag != 'F' ";
     break;
   case "assets":
     $sql .= " AND mb_flag = 'F'";
