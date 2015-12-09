@@ -307,7 +307,7 @@ start_form();
 
 	if ($bank_currency != $supplier_currency) 
 	{
-		amount_row(_("Bank Amount:"), 'bank_amount', null, '', $bank_currency, 2);
+		amount_row(_("Bank Amount:"), 'bank_amount', null, '', $bank_currency);
 	}
 
 	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
