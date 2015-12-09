@@ -22,7 +22,11 @@ else {
   $help_context = "Item Categories";
 }
 
-page(_($help_context));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
+page(_($help_context), false, false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 

@@ -21,7 +21,10 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-page(_($help_context = "Supplier Purchasing Data"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Supplier Purchasing Data"), false, false, "", $js);
 
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));

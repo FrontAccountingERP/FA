@@ -287,7 +287,7 @@ function set_icon($icon, $title=false)
 	global $path_to_root;
 	if (basename($icon) === $icon) // standard icons does not contain path separator
 		$icon = "$path_to_root/themes/".user_theme()."/images/$icon";
-	return "<img src='$icon' width='12' height='12' border='0'".($title ? " title='$title'" : "")." >\n";	
+	return "<img src='$icon' style='vertical-align:middle;width:12px;height:12px;border:0;'".($title ? " title='$title'" : "")." >\n";	
 }
 
 function button($name, $value, $title=false, $icon=false,  $aspect='')
@@ -1012,3 +1012,12 @@ function bank_balance_row($bank_acc, $parms='')
 		."</a>", $parms);
 }
 
+function ahref($label, $href, $target="", $onclick="") {
+  echo "<a href='$href' target='$target' onclick='$onclick'>$label</a>";
+}
+
+function ahref_cell($label, $href, $target="", $onclick="") {
+  echo "<td align='center'>&nbsp;&nbsp;";
+  ahref($label, $href, $target, $onclick);
+  echo "&nbsp;&nbsp;</td>";
+}

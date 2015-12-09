@@ -888,6 +888,51 @@ function get_js_open_window($width, $height)
 		. " var top = (screen.height - $height) / 2;\n"
 		. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
 		. "}\n";
+  	$js .= get_js_lookup_window();
+	return $js;
+}
+
+function get_js_lookup_window() {
+  	$js = "function lookupWindow(url, title) {
+    	var u = url.split('#');
+    	if (u.length == 2) {
+      		var element = document.getElementById(u[1]);
+      		var options = element.options;
+      		url = u[0] + '&' + u[1] + '=' + options[element.selectedIndex].value;
+    	}
+    	openWindow(url, title);
+	}";
+	return $js;
+}
+
+function get_js_select_combo_item() {
+	$js = "function selectComboItem(doc, client_id, value){
+    	var element = doc.getElementById(client_id);
+		var options = element.options;
+		for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+			if (options[i].value == value) {
+				element.selectedIndex = i;
+        		element.onchange();
+			}
+		}
+		window.close();
+	}";
+	return $js;
+}
+/* for space search option */
+function get_js_set_combo_item() {
+	$js = "function setComboItem(doc, client_id, value, text){
+    	var element = doc.getElementById(client_id);
+ 		var options = element.options;
+ 		options.length = 0;
+ 		var option = doc.createElement('option');
+		option.value = value;
+		option.text = text;
+    	element.add(option, 0);
+		element.selectedIndex = 0;
+        element.onchange();
+		window.close();
+	}";
 	return $js;
 }
 

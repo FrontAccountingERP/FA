@@ -25,9 +25,9 @@ define('SELECT_BUTTON', "<input %s type='submit' class='combo_select' style='bor
 //	Options are merged with defaults.
 
 function combo_input($name, $selected_id, $sql, $valfield, $namefield,
-	$options=null)
+	$options=null, $type=null)
 {
-global $Ajax;
+global $Ajax, $path_to_root, $SysPrefs ;
 
 $opts = array(		// default options
 	'where'=> array(),		// additional constraints
@@ -239,11 +239,16 @@ $opts = array(		// default options
 	
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 
-	$selector = "<select autocomplete='off' ".($multi ? "multiple" : '')
+	if ($SysPrefs->use_popup_search)
+		$selector = "<select id='$name' autocomplete='off' ".($multi ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
-
+	else
+		$selector = "<select autocomplete='off' ".($multi ? "multiple" : '')
+		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
+		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
+		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 	if ($by_id && ($search_box != false || $opts['editable']) ) {
 		// on first display show selector list
 		if (isset($_POST[$search_box]) && $opts['editable'] && $edit) {
@@ -287,13 +292,87 @@ $opts = array(		// default options
 	}
 	default_focus(($search_box && $by_id) ? $search_box : $name);
 
+	if ($SysPrefs->use_popup_search)
+	{
+		$img = "";
+  		$img_title = "";
+  		$link = "";
+  		$id = $name;
+  		if ($SysPrefs->use_popup_windows) {
+  			//_vd("type= $type");
+    		switch (strtolower($type)) {
+      			case "stock":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "stock_manufactured":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "stock_purchased":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "stock_sales":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "stock_costable":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "kits":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "assets":
+        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=assets&client_id=" . $id;
+        			$img_title = _("Search items");
+        			break;
+      			case "customer":
+        			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
+        			$img_title = _("Search customers");
+        			break;
+      			case "branch":
+        			$link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#customer_id";
+        			$img_title = _("Search branches");
+        			break;
+      			case "supplier":
+        			$link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
+        			$img_title = _("Search suppliers");
+        			break;
+      			case "account":
+        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+        			$img_title = _("Search GL accounts");
+        			break;
+    		}
+  		}
+
+  		if ($link !=="") {
+    		$theme = user_theme();
+    		$img = '<img src="'.$path_to_root.'/themes/'.$theme.'/images/'.ICON_VIEW.
+    			'" style="vertical-align:middle;width:12px;height:12px;border:0;" onclick="javascript:lookupWindow(&quot;'.
+    			$link.'&quot;, &quot;&quot;);" title="' . $img_title . '" style="cursor:pointer;" />';
+  		}
+	}
+
 	if ($opts['editlink'])
 		$selector .= ' '.$opts['editlink'];
 
-	if ($search_box && $opts['cells'])
-		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
+	if ($SysPrefs->use_popup_search)
+	{
+		if ($search_box && $opts['cells'])
+			$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
+		else
+			$str = $edit_entry.$selector.$img;
+	}
 	else
-		$str = $edit_entry.$selector;
+	{
+		if ($search_box && $opts['cells'])
+			$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
+		else
+			$str = $edit_entry.$selector;
+	}		
 	return $str;
 }
 
@@ -462,7 +541,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select supplier'),
 		'show_inactive'=>$all,
 		'editlink' => $editkey ? add_edit_combo('supplier') : false
-		));
+		), "supplier");
 	return $ret;
 }
 
@@ -513,7 +592,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		_('Select customer'),
 		'show_inactive' => $show_inactive,
 		'editlink' => $editkey ? add_edit_combo('customer') : false
-	) );
+	), "customer" );
 	return $ret;
 }
 
@@ -560,7 +639,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 		'select_submit'=> $submit_on_change,
 		'sel_hint' => _('Select customer branch'),
 		'editlink' => $editkey ? add_edit_combo('branch') : false
-	) );
+	), "branch" );
 	return $ret;
 }
 //------------------------------------------------------------------------------------------------
@@ -732,9 +811,8 @@ function dimensions_list_row($label, $name, $selected_id=null, $no_option=false,
 //---------------------------------------------------------------------------------------------------
 
 function stock_items_list($name, $selected_id=null, $all_option=false, 
-	$submit_on_change=false, $opts=array(), $editkey = false)
+	$submit_on_change=false, $opts=array(), $editkey = false, $type = "stock")
 {
-
 	$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable
 			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE s.category_id=c.category_id";
 
@@ -746,6 +824,8 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 	if ($editkey)
 		set_editor('item', $name, $editkey);
 
+	if (isset($opts['fixed_asset']) && $opts['fixed_asset'])
+		$type = 'assets';
 	$ret = combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 		array_merge(
 		  array(
@@ -762,7 +842,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 			'editlink' => $editkey ? add_edit_combo('item') : false,
 			'editable' => false,
 			'max' => 255
-		  ), $opts) );
+		  ), $opts), $type );
 	return $ret;
 }
 
@@ -845,7 +925,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 			'order' => array('c.description','i.item_code'),
 			'editable' => 30,
 			'max' => 255
-		  ), $opts) );
+		  ), $opts), $type == 'kits' ? $type : "stock_sales" );
 }
 
 function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false, $editkey=false)
@@ -881,7 +961,7 @@ function stock_manufactured_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag= 'M'")));
+		array('where'=>array("mb_flag= 'M'")), false, "stock_manufactured");
 }
 
 function stock_manufactured_items_list_cells($label, $name, $selected_id=null,
@@ -925,7 +1005,7 @@ function stock_costable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!='D'")));
+		array('where'=>array("mb_flag!='D'")), false, "stock_costable");
 }
 
 function stock_costable_items_list_cells($label, $name, $selected_id=null, 
@@ -934,7 +1014,7 @@ function stock_costable_items_list_cells($label, $name, $selected_id=null,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!='D'"), 'cells'=>true));
+		array('where'=>array("mb_flag!='D'"), 'cells'=>true), false, "stock_costable");
 }
 
 //------------------------------------------------------------------------------------
@@ -943,7 +1023,7 @@ function stock_purchasable_items_list($name, $selected_id=null,
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("NOT no_purchase"), 
-			'show_inactive'=>$all), $editkey);
+			'show_inactive'=>$all), $editkey, "stock_purchased");
 }
 //
 //	This helper is used in PO/GRN/PI entry and supports editable descriptions.
@@ -1745,7 +1825,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'async' => false,
 			'category' => 2,
 			'show_inactive' => $all
-		) );
+		), "account" );
 }
 
 function _format_account($row)

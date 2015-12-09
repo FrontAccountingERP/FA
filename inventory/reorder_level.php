@@ -22,7 +22,10 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-page(_($help_context = "Reorder Levels"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Reorder Levels"), false, false, "", $js);
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 

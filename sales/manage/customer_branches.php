@@ -15,7 +15,11 @@ $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
+page(_($help_context = "Customer Branches"), @$_REQUEST['popup'], false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui/contacts_view.inc");

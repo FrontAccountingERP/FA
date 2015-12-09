@@ -13,10 +13,14 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Inventory Item Status"), isset($_GET['stock_id']));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
 
 if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
+
+page(_($help_context = "Inventory Item Status"), isset($_GET['stock_id']), false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

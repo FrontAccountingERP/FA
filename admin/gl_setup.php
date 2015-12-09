@@ -13,7 +13,11 @@ $page_security = 'SA_GLSETUP';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "System and General GL Setup"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
+page(_($help_context = "System and General GL Setup"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

@@ -205,3 +205,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	If not defined $comp_path/%s/backup/ is used.
 */
 //	$backup_path = dirname(__FILE__).'/company/%s/backup/';
+
+/*
+	Optional popup search enabled if this is true.
+	$max_rows_in_search = 10 is used for maximum rows in search
+*/
+	$use_popup_search = true;
+	$max_rows_in_search = 10;

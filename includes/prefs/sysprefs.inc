@@ -38,6 +38,9 @@ class sys_prefs
 
 		if (!$this->time_zone)
 			$this->time_zone = 'Europe/Berlin';
+			
+		if (!isset($this->use_popup_search))
+			$this->use_popup_search = false;
 
    	    ini_set('date.timezone', $this->time_zone);
 	}

@@ -18,6 +18,8 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reports_classes.inc");
 $js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
