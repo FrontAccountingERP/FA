@@ -280,36 +280,41 @@ $reports->addReport(RC_INVENTORY, 309,_('Item &Sales Summary Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));				
-
-$reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
-$reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
-	array(	_('From product') => 'ITEMS',
-			_('To product') => 'ITEMS',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_MANUFACTURE, 402, _('Work Order &Listing'),
-	array(	_('Items') => 'ITEMS_ALL',
-			_('Location') => 'LOCATIONS',
-			_('Outstanding Only') => 'YES_NO',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_MANUFACTURE, 409, _('Print &Work Orders'),
-	array(	_('From') => 'WORKORDER',
-			_('To') => 'WORKORDER',
-			_('Email Locations') => 'YES_NO',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION'));
-$reports->addReportClass(_('Fixed Assets'), RC_FIXEDASSETS);
-$reports->addReport(RC_FIXEDASSETS, 451, _('&Fixed Assets Valuation'),
-	array(	_('End Date') => 'DATE',
-			_('Fixed Assets Class') => 'FCLASS',
-			_('Fixed Assets Location') => 'FLOCATIONS',
-			_('Summary Only') => 'YES_NO',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));
+if (get_company_pref('use_manufacturing'))
+{
+	$reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
+	$reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
+		array(	_('From product') => 'ITEMS',
+				_('To product') => 'ITEMS',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_MANUFACTURE, 402, _('Work Order &Listing'),
+		array(	_('Items') => 'ITEMS_ALL',
+				_('Location') => 'LOCATIONS',
+				_('Outstanding Only') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_MANUFACTURE, 409, _('Print &Work Orders'),
+		array(	_('From') => 'WORKORDER',
+				_('To') => 'WORKORDER',
+				_('Email Locations') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION'));
+}
+if (get_company_pref('use_fixed_assets'))
+{
+	$reports->addReportClass(_('Fixed Assets'), RC_FIXEDASSETS);
+	$reports->addReport(RC_FIXEDASSETS, 451, _('&Fixed Assets Valuation'),
+		array(	_('End Date') => 'DATE',
+				_('Fixed Assets Class') => 'FCLASS',
+				_('Fixed Assets Location') => 'FLOCATIONS',
+				_('Summary Only') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+}				
 $reports->addReportClass(_('Dimensions'), RC_DIMENSIONS);
 if ($dim > 0)
 {
