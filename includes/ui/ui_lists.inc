@@ -292,11 +292,11 @@ $opts = array(		// default options
 	}
 	default_focus(($search_box && $by_id) ? $search_box : $name);
 
-	if ($SysPrefs->use_popup_search)
+	$img = "";
+	if ($SysPrefs->use_popup_search && !isset($opts['fixed_asset']))
 	{
-		$img = "";
-  		$img_title = "";
-  		$link = "";
+		$img_title = "";
+		$link = "";
   		$id = $name;
   		if ($SysPrefs->use_popup_windows) {
     		switch (strtolower($type)) {
@@ -329,10 +329,6 @@ $opts = array(		// default options
         			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
         			$img_title = _("Search items");
         			break;
-      			case "assets":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=assets&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
       			case "customer":
         			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
         			$img_title = _("Search customers");
@@ -363,20 +359,10 @@ $opts = array(		// default options
 	if ($opts['editlink'])
 		$selector .= ' '.$opts['editlink'];
 
-	if ($SysPrefs->use_popup_search)
-	{
-		if ($search_box && $opts['cells'])
-			$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
-		else
-			$str = $edit_entry.$selector.$img;
-	}
+	if ($search_box && $opts['cells'])
+		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
 	else
-	{
-		if ($search_box && $opts['cells'])
-			$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
-		else
-			$str = $edit_entry.$selector;
-	}		
+		$str = $edit_entry.$selector.$img;
 	return $str;
 }
 
@@ -828,8 +814,6 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 	if ($editkey)
 		set_editor('item', $name, $editkey);
 
-	if (isset($opts['fixed_asset']) && $opts['fixed_asset'])
-		$type = 'assets';
 	$ret = combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 		array_merge(
 		  array(
@@ -838,7 +822,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 			'spec_id' => ALL_TEXT,
 			'search_box' => true,
 			'search' => array("stock_id", "c.description","s.description"),
-			'search_submit' => get_company_pref('no_item_list')!=0,
+			'search_submit' => get_company_pref('no_item_list')!=0 && !isset($opts['fixed_asset']),
 			'size'=>10,
 			'select_submit'=> $submit_on_change,
 			'category' => 2,
