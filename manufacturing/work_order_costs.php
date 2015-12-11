@@ -43,6 +43,8 @@ if (isset($_GET['AddedID']))
 
     display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
 
+   	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+
 	hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
  
  	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
@@ -64,9 +66,10 @@ if (strlen($wo_details[0]) == 0)
 
 //--------------------------------------------------------------------------------------------------
 
-function can_process($wo_details)
+function can_process()
 {
-
+	global $wo_details;
+	
 	if (!check_num('costs', 0))
 	{
 		display_error(_("The amount entered is not a valid number or less then zero."));
@@ -98,15 +101,32 @@ function can_process($wo_details)
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['process']) && can_process($wo_details) == true)
+if (isset($_POST['process']) && can_process() == true)
 {
 	$date = $_POST['date_'];
-	$memo = $_POST['memo'];
-	$ref  = $_POST['ref'];
+	begin_transaction();
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
+		0, 0, $date.": ".$wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+	$is_bank_to = is_bank_account($_POST['cr_acc']);
+	if ($is_bank_to)
+	{
+		add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
+			$_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], get_company_currency(),
+			"Cannot insert a destination bank transaction");
+	}
 
-	add_wo_costs_journal($_POST['selected_id'], input_num('costs'), $_POST['PaymentType'], 
-		$_POST['cr_acc'], $_POST['db_acc'], $date, $_POST['dim1'], $_POST['dim2'], $memo, $ref);
-
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
+		$_POST['dim1'], $_POST['dim2'], $date.": ".$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
+			$_POST['PaymentType']);
+			
+	//Apply the costs to manfuctured stock item as adjustement
+	$wo = get_work_order($_POST['selected_id']);
+	if ($_POST['PaymentType'] == 0)
+		add_labour_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
+	else
+		add_overhead_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
+			
+	commit_transaction();	
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);
 }
 

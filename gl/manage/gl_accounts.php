@@ -63,7 +63,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
 		display_error( _("The account name cannot be empty."));
 		set_focus('account_name');
 	} 
-	elseif (!$SysPrefs->accounts_alpha() && !is_numeric($_POST['account_code'])) 
+	elseif (!$SysPrefs->accounts_alpha() && !preg_match("/^[0-9.]+$/",$_POST['account_code'])) // we only allow 0-9 and a dot
 	{
 	    $input_error = 1;
 	    display_error( _("The account code must be numeric."));

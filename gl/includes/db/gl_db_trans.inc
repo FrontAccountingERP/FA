@@ -42,9 +42,9 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		else
 			$memo_ = $_SESSION["wa_current_user"]->username . " - " . $memo_;
 	}
-	if (!is_subledger_account($account) || $account==get_company_pref('grn_clearing_act'))
+	if ($type != ST_WORKORDER && (!is_subledger_account($account) || $account==get_company_pref('grn_clearing_act')))
 		$person_id = $person_type_id = null;
-
+	
 	$sql = "INSERT INTO ".TB_PREF."gl_trans ( type, type_no, tran_date,
 		account, dimension_id, dimension2_id, memo_, amount";
 
@@ -206,17 +206,11 @@ function get_gl_trans($type, $trans_id)
 
 function get_gl_wo_cost_trans($trans_id, $cost_type=-1)
 {
-	$sql = "SELECT costing.*, gl.*, chart.account_name, com.memo_ FROM "
-		.TB_PREF."wo_costing costing, "
-		.TB_PREF."gl_trans gl LEFT JOIN ".TB_PREF."comments com ON gl.type=com.type	AND gl.type_no=com.id,"
-		.TB_PREF."chart_master chart
-		WHERE 
-			costing.workorder_id=".db_escape($trans_id)
-		."	AND chart.account_code=gl.account
-			AND gl.type=costing.trans_type
-			AND gl.type_no=costing.trans_no";
-	if ($cost_type != -1)
-		$sql .= " AND costing.cost_type=".db_escape($cost_type);
+	$sql = "SELECT gl.*, chart.account_name FROM ".TB_PREF."gl_trans gl, ".TB_PREF."chart_master chart
+		WHERE chart.account_code=gl.account AND gl.type=".ST_WORKORDER." AND gl.type_no=".db_escape($trans_id)."
+		AND gl.person_type_id=".PT_WORKORDER;
+	if ($cost_type!= -1)
+		$sql .= " AND gl.person_id=".db_escape($cost_type);
 	$sql .= " AND amount < 0";
 
 	return db_query($sql, "The gl transactions could not be retrieved");

@@ -52,8 +52,12 @@ msgid "Language"
 msgstr "Sprog"
 
 #: /install/index.php:124
-msgid "Cannot connect to database. User or password is invalid or you have no permittions to create database."
-msgstr "Kan ikke skabe forbindelse til databasen. Enten er brugernavnet eller adgangskoden forkert eller også har du ikke adgang til at skabe databasen"
+msgid ""
+"Cannot connect to database. User or password is invalid or you have no "
+"permittions to create database."
+msgstr ""
+"Kan ikke skabe forbindelse til databasen. Enten er brugernavnet eller "
+"adgangskoden forkert eller også har du ikke adgang til at skabe databasen"
 
 #: /install/index.php:164
 msgid "Cannot save system configuration file 'config.php'."
@@ -68,8 +72,12 @@ msgid "Cannot write to the 'config_db.php' configuration file."
 msgstr "Kan ikke skrive til 'config_db.php' konfigurationsfilen."
 
 #: /install/index.php:177
-msgid "Configuration file 'config_db.php' is not writable. Change its permissions so it is, then re-run installation step."
-msgstr "Konfigurationsfilen 'config_db.php' er ikke skrivbar. Ändre tilladelsen til det og kör installationenstrinet igen."
+msgid ""
+"Configuration file 'config_db.php' is not writable. Change its permissions "
+"so it is, then re-run installation step."
+msgstr ""
+"Konfigurationsfilen 'config_db.php' er ikke skrivbar. Ändre tilladelsen til "
+"det og kör installationenstrinet igen."
 
 #: /install/index.php:216
 msgid "Host name cannot be empty."
@@ -108,8 +116,12 @@ msgid "Select install wizard language:"
 msgstr "Vælg installationswizard sprog:"
 
 #: /install/index.php:328
-msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
-msgstr "Alle programmets behov ser ud til at være dækket. Venligst tryk 'Fortsæt' forneden."
+msgid ""
+"All application preliminary requirements seems to be correct. Please press "
+"Continue button below."
+msgstr ""
+"Alle programmets behov ser ud til at være dækket. Venligst tryk 'Fortsæt' "
+"forneden."
 
 #: /install/index.php:329 /install/index.php:357 /install/index.php:364
 #: /install/index.php:371
@@ -117,8 +129,12 @@ msgid "Continue >>"
 msgstr "Fortsæt >>"
 
 #: /install/index.php:331
-msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
-msgstr "Programmet kan ikke installeres. Venligst ordne problemerne beskrivet forneden i rødt, og tryk 'Genlæs' knappen."
+msgid ""
+"Application cannot be installed. Please fix problems listed below in red, "
+"and press Refresh button."
+msgstr ""
+"Programmet kan ikke installeres. Venligst ordne problemerne beskrivet "
+"forneden i rødt, og tryk 'Genlæs' knappen."
 
 #: /install/index.php:332
 msgid "Refresh"
@@ -146,7 +162,7 @@ msgstr "Database password:"
 
 #: /install/index.php:348
 msgid "Database Collation:"
-msgstr ""
+msgstr "Database sortering:"
 
 #: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
@@ -171,16 +187,28 @@ msgid "Install Additional COAs from FA Repository:"
 msgstr "Installer yderligere kontoplaner fra FA's lager (Repository):"
 
 #: /install/index.php:353
-msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
+msgid ""
+"Select collation you want to use. If you are unsure or you will use various "
+"languages, select unicode collation."
 msgstr ""
+"Vælg database sortering du wil bruge. Om du er usikker eller du vil bruge "
+"forskellige sprog, vælg da unicode sortering."
 
 #: /install/index.php:354
-msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
+msgid ""
+"Use table prefix if you share selected database for more than one FA company "
+"using the same collation."
 msgstr ""
+"Brug tabel prefix of du deler valgt database med mere end et firma som "
+"bruger samme sortering."
 
 #: /install/index.php:355
-msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
-msgstr "Vælg ikke yderligere sprog eller kontoplaner hvis du ikke har en fungerende internet forbindelse lige nu. Du kan installere dem senere."
+msgid ""
+"Do not select additional langs nor COAs if you have no working internet "
+"connection right now. You can install them later."
+msgstr ""
+"Vælg ikke yderligere sprog eller kontoplaner hvis du ikke har en fungerende "
+"internet forbindelse lige nu. Du kan installere dem senere."
 
 #: /install/index.php:356 /install/index.php:363 /install/index.php:370
 #: /install/index.php:394
@@ -225,7 +253,7 @@ msgstr "Vælg standard sprog:"
 
 #: /install/index.php:395
 msgid "Start installation process"
-msgstr ""
+msgstr "Påbegynd installationen"
 
 #: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
@@ -277,7 +305,7 @@ msgstr "PHP version"
 
 #: /includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 5.0.0"
-msgstr ""
+msgstr "Opgrader PHP til mindst version 5.0.0 "
 
 #: /includes/system_tests.inc:57
 msgid "Server system"
@@ -418,8 +446,11 @@ msgstr "Database Auth fil"
 
 #: /includes/system_tests.inc:323
 #, php-format
-msgid "'%s' file should be read-only if you do not plan to add or change companies"
-msgstr "'%s' filen må være 'read-only' hvis du ikke har planer om at lægge till eller ændre firmaer."
+msgid ""
+"'%s' file should be read-only if you do not plan to add or change companies"
+msgstr ""
+"'%s' filen må være 'read-only' hvis du ikke har planer om at lægge till "
+"eller ændre firmaer."
 
 #: /includes/system_tests.inc:334
 msgid "Extensions system"
@@ -435,12 +466,19 @@ msgid "Non-standard theme directory '%s' is not writable"
 msgstr "Ikke standard theme mappe '%s' er ikk skrivbar"
 
 #: /includes/system_tests.inc:395
-msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
-msgstr "OpenSSL PHP tillæg må være aktiv for at bruge tillægslagersystemet (FA Repository)"
+msgid ""
+"OpenSSL PHP extension have to be enabled to use extension repository system."
+msgstr ""
+"OpenSSL PHP tillæg må være aktiv for at bruge tillægslagersystemet (FA "
+"Repository)"
 
 #: /includes/system_tests.inc:398
-msgid "OpenSSL have to be available on your server to use extension repository system."
-msgstr "OpenSSL må findes på din server for at bruge tillægslagersystem (FA Repository)"
+msgid ""
+"OpenSSL have to be available on your server to use extension repository "
+"system."
+msgstr ""
+"OpenSSL må findes på din server for at bruge tillægslagersystem (FA "
+"Repository)"
 
 #: /includes/system_tests.inc:421
 msgid "Test"
@@ -469,16 +507,17 @@ msgstr "Intet nøglefelt '%s' i filen '%s'"
 
 #: /includes/packages.inc:294
 msgid "Cannot download repo index file."
-msgstr ""
+msgstr "Kan ikke downloade repo indeks fil."
 
 #: /includes/packages.inc:306 /includes/packages.inc:343
 #, php-format
 msgid "Cannot delete outdated '%s' file."
-msgstr ""
+msgstr "Kan ikke slette gammel '%s' fil."
 
 #: /includes/packages.inc:310
 msgid "Release file in repository is invalid, or public key is outdated."
-msgstr "Release felt i repository er ugyldig, eller også er public key for gammel."
+msgstr ""
+"Release felt i repository er ugyldig, eller også er public key for gammel."
 
 #: /includes/packages.inc:327
 msgid "Repository version does not match application version."
@@ -487,24 +526,34 @@ msgstr "Repository versionen matcher ikke program versionen."
 #: /includes/packages.inc:335 /includes/packages.inc:377
 #, php-format
 msgid "Cannot download '%s' file."
-msgstr ""
+msgstr "Kan ikke downloade '%s' fil."
 
 #: /includes/packages.inc:347
 #, php-format
-msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
-msgstr "Sikkerhedsadvarsel: Indeks feltet i repository '%s' er brudt. Informer venligst repository administratoren om dette."
+msgid ""
+"Security alert: broken index file in repository '%s'. Please inform "
+"repository administrator about this issue."
+msgstr ""
+"Sikkerhedsadvarsel: Indeks feltet i repository '%s' er brudt. Informer "
+"venligst repository administratoren om dette."
 
 #: /includes/packages.inc:383
 #, php-format
-msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
-msgstr "Sikkerhedsadvarsel: Brudt pakke '%s' i repository. Venligst informer repository administratoren om dette."
+msgid ""
+"Security alert: broken package '%s' in repository. Please inform repository "
+"administrator about this issue."
+msgstr ""
+"Sikkerhedsadvarsel: Brudt pakke '%s' i repository. Venligst informer "
+"repository administratoren om dette."
 
 #: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr "Pakke '%s' findes ikke."
 
-#~ msgid "Use table prefix if you share selected database for more than one FA company."
+#~ msgid ""
+#~ "Use table prefix if you share selected database for more than one FA "
+#~ "company."
 #~ msgstr "Brug tabel prefix hvis du deler databasen med flere FA firmaer."
 
 #~ msgid "Upgrade PHP to version at least 4.3.3"

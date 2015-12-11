@@ -58,6 +58,19 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 		$standard_cost = get_standard_cost($bom_item['component']);
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
+	// new 2015.10.15	
+	// additilnal costs.
+	if (work_order_has_issues($woid))
+	{
+		$res = get_additional_issues($woid);
+		while ($issue = db_fetch($res))
+		{
+			$standard_cost = get_standard_cost($issue['stock_id']);
+			$m_cost += ($issue['qty_issued'] * $standard_cost) / $quantity;
+		}
+	}
+	$m_cost += (get_gl_wo_cost($woid, WO_LABOUR) / $quantity);
+	$m_cost += (get_gl_wo_cost($woid, WO_OVERHEAD) / $quantity);
 
 	// insert a +ve stock move for the item being manufactured
 	// negative means "unproduce" or unassemble
@@ -145,7 +158,7 @@ function void_work_order_produce($type_no)
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			$ivaccount = $issue["cogs_account"];
+			$ivaccount = $issue["assembly_account"];
 
 		if ($issue_cost != 0)
 		{

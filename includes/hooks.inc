@@ -247,7 +247,7 @@ function install_hooks()
 	Non active hooks are not included in $Hooks array, so we can use special function to 
 	activate.
 */
-function activate_hooks($ext, $comp)
+function activate_hooks($ext, $comp, $on=true)
 {
 	global $Hooks;
 
@@ -261,8 +261,10 @@ function activate_hooks($ext, $comp)
 	}
 	if (!$hooks)
 		return false;
-	else
+	elseif ($on)
 		return $hooks->activate_extension($comp, false);
+	else
+		return $hooks->deactivate_extension($comp, false);
 }
 /*
 	Calls hook $method defined in extension $ext (if any)
