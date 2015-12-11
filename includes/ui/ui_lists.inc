@@ -293,7 +293,7 @@ $opts = array(		// default options
 	default_focus(($search_box && $by_id) ? $search_box : $name);
 
 	$img = "";
-	if ($SysPrefs->use_popup_search && !isset($opts['fixed_asset']))
+	if ($SysPrefs->use_popup_search && (!isset($opts['fixed_asset']) || !$opts['fixed_asset']))
 	{
 		$img_title = "";
 		$link = "";
@@ -822,7 +822,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 			'spec_id' => ALL_TEXT,
 			'search_box' => true,
 			'search' => array("stock_id", "c.description","s.description"),
-			'search_submit' => get_company_pref('no_item_list')!=0 && !isset($opts['fixed_asset']),
+			'search_submit' => get_company_pref('no_item_list')!=0 && (!isset($opts['fixed_asset']) || !$opts['fixed_asset']),
 			'size'=>10,
 			'select_submit'=> $submit_on_change,
 			'category' => 2,
