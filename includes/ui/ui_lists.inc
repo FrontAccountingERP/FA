@@ -687,16 +687,18 @@ function locations_list_row($label, $name, $selected_id=null, $all_option=false,
 
 //-----------------------------------------------------------------------------------------------
 
-function currencies_list($name, $selected_id=null, $submit_on_change=false)
+function currencies_list($name, $selected_id=null, $submit_on_change=false, $exclude_home_curr=false)
 {
 	$sql = "SELECT curr_abrev, currency, inactive FROM ".TB_PREF."currencies";
+	if ($exclude_home_curr)
+		$sql .= " WHERE curr_abrev!='".get_company_currency()."'";
 
 	// default to the company currency
 	return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency',
 		array(
 			'select_submit'=> $submit_on_change,
 			'default' => get_company_currency(),
-			'async' => false		
+			'async' => false
 		) );
 }
 

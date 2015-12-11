@@ -178,7 +178,7 @@ if (!isset($_POST['curr_abrev']))
 
 echo "<center>";
 echo _("Select a currency :") . "  ";
-echo currencies_list('curr_abrev', null, true);
+echo currencies_list('curr_abrev', null, true, true);
 echo "</center>";
 
 // if currency sel has changed, clear the form
