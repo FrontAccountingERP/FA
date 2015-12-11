@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting Install Wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 14:34+0200\n"
+"POT-Creation-Date: 2015-12-11 13:17+0100\n"
 "PO-Revision-Date: 2011-03-31 19:34+0100\n"
 "Last-Translator: Labyrinth <kt@labyrinthos.gr>\n"
 "Language-Team: Translation Team <info@frontaccounting.net>\n"
@@ -38,7 +38,7 @@ msgstr "Κωδικοποίηση"
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: /install/index.php:49 /install/index.php:76 /install/index.php:398
+#: /install/index.php:49 /install/index.php:76 /install/index.php:395
 msgid "Install"
 msgstr "Εγκατάσταση"
 
@@ -98,143 +98,143 @@ msgstr "Το συνθηματικό Διαχειριστή επιχείρηση�
 msgid "Company admin passwords differ."
 msgstr "Τα συνθηματικά Διαχειριστή επιχείρησης διαφέρουν."
 
-#: /install/index.php:323
+#: /install/index.php:320
 msgid "System Diagnostics"
 msgstr "Διαγνωστικά συστήματος"
 
-#: /install/index.php:325
+#: /install/index.php:322
 msgid "Select install wizard language:"
 msgstr "Επιλέξτε γλώσσα μάγου εγκατάστασης:"
 
-#: /install/index.php:331
+#: /install/index.php:328
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "Όλα τα προκαταρκτικά απαιτούμενα φαίνεται να είναι σωστά. Παρακαλώ πιέστε το κουμπί Συνέχεια χαμηλότερα."
 
-#: /install/index.php:332 /install/index.php:360 /install/index.php:367
-#: /install/index.php:374
+#: /install/index.php:329 /install/index.php:357 /install/index.php:364
+#: /install/index.php:371
 msgid "Continue >>"
 msgstr "Συνέχεια >>"
 
-#: /install/index.php:334
+#: /install/index.php:331
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "Η εφαρμογή δεν μπορεί να εγκατασταθεί. Παρακαλώ διορθώστε τα προβλήματα που απαριθμούνται παρακάτω με κόκκινο και πατήστε το κουμπί Ανανέωση."
 
-#: /install/index.php:335
+#: /install/index.php:332
 msgid "Refresh"
 msgstr "Ανανέωση"
 
-#: /install/index.php:345
+#: /install/index.php:342
 msgid "Database Server Settings"
 msgstr "Επιλογές Εξυπηρετητή βάσης δεδομένων"
 
-#: /install/index.php:347
+#: /install/index.php:344
 msgid "Server Host:"
 msgstr "Φιλοξενητής Εξυπηρετητή:"
 
-#: /install/index.php:348
+#: /install/index.php:345
 msgid "Database Name:"
 msgstr "Όνομα βάσης δεδομένων:"
 
-#: /install/index.php:349
+#: /install/index.php:346
 msgid "Database User:"
 msgstr "Χρήστης βάσης δεδομένων:"
 
-#: /install/index.php:350
+#: /install/index.php:347
 msgid "Database Password:"
 msgstr "Συνθηματικό βάσης δεδομένων:"
 
-#: /install/index.php:351
+#: /install/index.php:348
 msgid "Database Collation:"
 msgstr ""
 
-#: /install/index.php:352
+#: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
 msgstr "Χρήση '0_' προθέματος πίνακα:"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Ναι"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "No"
 msgstr "Όχι"
 
-#: /install/index.php:353
+#: /install/index.php:350
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Εγκατάσταση πρόσθετων πακέτων γλώσσας από την αποθήκη του FA:"
 
-#: /install/index.php:354
+#: /install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Εγκατάσταση Πρόσθετων ΔΑ από την Αποθήκη του FA:"
 
-#: /install/index.php:356
+#: /install/index.php:353
 msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
 msgstr ""
 
-#: /install/index.php:357
+#: /install/index.php:354
 msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
 msgstr ""
 
-#: /install/index.php:358
+#: /install/index.php:355
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "Μην επιλέξετε πρόσθετες γλώσσες ή ΔΑ αν δεν έχετε λειτουργική σύνδεση στο διαδίκτυο τώρα. Μπορείτε να τα εγκαταστήσετε αργότερα."
 
-#: /install/index.php:359 /install/index.php:366 /install/index.php:373
-#: /install/index.php:397
+#: /install/index.php:356 /install/index.php:363 /install/index.php:370
+#: /install/index.php:394
 msgid "<< Back"
 msgstr "<< Πίσω"
 
-#: /install/index.php:364
+#: /install/index.php:361
 msgid "User Interface Languages Selection"
 msgstr "Επιλογή γλωσσών της διεπαφής χρήστη"
 
-#: /install/index.php:371
+#: /install/index.php:368
 msgid "Charts of Accounts Selection"
 msgstr "Επιλογή διαγραμμάτων απολογισμών"
 
-#: /install/index.php:388
+#: /install/index.php:385
 msgid "Company Settings"
 msgstr "Επιλογές Επιχείρησης"
 
-#: /install/index.php:390
+#: /install/index.php:387
 msgid "Company Name:"
 msgstr "Όνομα Επιχείρησης:"
 
-#: /install/index.php:391
+#: /install/index.php:388
 msgid "Admin Login:"
 msgstr "Είσοδος Διαχειριστή:"
 
-#: /install/index.php:392
+#: /install/index.php:389
 msgid "Admin Password:"
 msgstr "Συνθηματικό Διαχειριστή:"
 
-#: /install/index.php:393
+#: /install/index.php:390
 msgid "Reenter Password:"
 msgstr "Εισάγετε ξανά το συνθηματικό:"
 
-#: /install/index.php:394
+#: /install/index.php:391
 msgid "Select Chart of Accounts:"
 msgstr "Επιλογή Διαγραμμάτων Απολογισμών:"
 
-#: /install/index.php:395
+#: /install/index.php:392
 msgid "Select Default Language:"
 msgstr "Επιλογή προκαθορισμένης Γλώσσας:"
 
-#: /install/index.php:398
+#: /install/index.php:395
 msgid "Start installation process"
 msgstr ""
 
-#: /install/index.php:402
+#: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "Το FrontAccounting ERP εγκαταστάθηκε επιτυχώς."
 
-#: /install/index.php:403
+#: /install/index.php:400
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Παρακαλώ μην ξεχάσετε να αφαιρέσετε το φάκελο του μάγου εγκατάστασης."
 
-#: /install/index.php:406
+#: /install/index.php:403
 msgid "Click here to start."
 msgstr "Κάντε κλικ εδώ για να αρχίσετε."
 
@@ -498,7 +498,7 @@ msgstr ""
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr ""
 
-#: /includes/packages.inc:641 /includes/packages.inc:702
+#: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""

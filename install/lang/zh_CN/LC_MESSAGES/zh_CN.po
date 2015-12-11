@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting Install Wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 14:34+0200\n"
+"POT-Creation-Date: 2015-12-11 13:17+0100\n"
 "PO-Revision-Date: 2011-03-31 22:46+0100\n"
 "Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: Language <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "编码"
 msgid "Description"
 msgstr "描述"
 
-#: /install/index.php:49 /install/index.php:76 /install/index.php:398
+#: /install/index.php:49 /install/index.php:76 /install/index.php:395
 msgid "Install"
 msgstr "安装"
 
@@ -98,143 +98,143 @@ msgstr "公司管理员密码不能为空。"
 msgid "Company admin passwords differ."
 msgstr "公司管理员密码不同。"
 
-#: /install/index.php:323
+#: /install/index.php:320
 msgid "System Diagnostics"
 msgstr "系统诊断"
 
-#: /install/index.php:325
+#: /install/index.php:322
 msgid "Select install wizard language:"
 msgstr "选择安装向导语言："
 
-#: /install/index.php:331
+#: /install/index.php:328
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "全部软件的初步要求看来正确。请按下面的\"继续\"按钮"
 
-#: /install/index.php:332 /install/index.php:360 /install/index.php:367
-#: /install/index.php:374
+#: /install/index.php:329 /install/index.php:357 /install/index.php:364
+#: /install/index.php:371
 msgid "Continue >>"
 msgstr "继续 >>"
 
-#: /install/index.php:334
+#: /install/index.php:331
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "不能安装软件。请修正红字所列的问题然后按刷新按钮。"
 
-#: /install/index.php:335
+#: /install/index.php:332
 msgid "Refresh"
 msgstr "刷新"
 
-#: /install/index.php:345
+#: /install/index.php:342
 msgid "Database Server Settings"
 msgstr "数据库服务器设置"
 
-#: /install/index.php:347
+#: /install/index.php:344
 msgid "Server Host:"
 msgstr "数据库主机："
 
-#: /install/index.php:348
+#: /install/index.php:345
 msgid "Database Name:"
 msgstr "数据库名："
 
-#: /install/index.php:349
+#: /install/index.php:346
 msgid "Database User:"
 msgstr "数据库用户名："
 
-#: /install/index.php:350
+#: /install/index.php:347
 msgid "Database Password:"
 msgstr "数据库密码："
 
-#: /install/index.php:351
+#: /install/index.php:348
 msgid "Database Collation:"
 msgstr ""
 
-#: /install/index.php:352
+#: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
 msgstr "使用 '0_' 表前缀："
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "Yes"
 msgstr "是"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "No"
 msgstr "不"
 
-#: /install/index.php:353
+#: /install/index.php:350
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "从FA库安装附加的语言包："
 
-#: /install/index.php:354
+#: /install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
 msgstr "从FA库安装附加账户图表："
 
-#: /install/index.php:356
+#: /install/index.php:353
 msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
 msgstr ""
 
-#: /install/index.php:357
+#: /install/index.php:354
 msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
 msgstr ""
 
-#: /install/index.php:358
+#: /install/index.php:355
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "如果您没有正确的连上internet，不要选择附加语言或者帐户表。您可以以后安装它们。"
 
-#: /install/index.php:359 /install/index.php:366 /install/index.php:373
-#: /install/index.php:397
+#: /install/index.php:356 /install/index.php:363 /install/index.php:370
+#: /install/index.php:394
 msgid "<< Back"
 msgstr "<< 返回"
 
-#: /install/index.php:364
+#: /install/index.php:361
 msgid "User Interface Languages Selection"
 msgstr "用户界面语言选择"
 
-#: /install/index.php:371
+#: /install/index.php:368
 msgid "Charts of Accounts Selection"
 msgstr "账户表选择"
 
-#: /install/index.php:388
+#: /install/index.php:385
 msgid "Company Settings"
 msgstr "公司设置"
 
-#: /install/index.php:390
+#: /install/index.php:387
 msgid "Company Name:"
 msgstr "公司名称："
 
-#: /install/index.php:391
+#: /install/index.php:388
 msgid "Admin Login:"
 msgstr "管理员登录："
 
-#: /install/index.php:392
+#: /install/index.php:389
 msgid "Admin Password:"
 msgstr "Admin管理员密码："
 
-#: /install/index.php:393
+#: /install/index.php:390
 msgid "Reenter Password:"
 msgstr "重新输入密码："
 
-#: /install/index.php:394
+#: /install/index.php:391
 msgid "Select Chart of Accounts:"
 msgstr "选择账户表："
 
-#: /install/index.php:395
+#: /install/index.php:392
 msgid "Select Default Language:"
 msgstr "选择默认语言："
 
-#: /install/index.php:398
+#: /install/index.php:395
 msgid "Start installation process"
 msgstr ""
 
-#: /install/index.php:402
+#: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "FrontAccounting ERP 安装成功。"
 
-#: /install/index.php:403
+#: /install/index.php:400
 msgid "Please do not forget to remove install wizard folder."
 msgstr "请不要忘记删除安装向导文件夹。"
 
-#: /install/index.php:406
+#: /install/index.php:403
 msgid "Click here to start."
 msgstr "点击这里开始"
 
@@ -498,7 +498,7 @@ msgstr ""
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr ""
 
-#: /includes/packages.inc:641 /includes/packages.inc:702
+#: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting Install Wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 14:34+0200\n"
+"POT-Creation-Date: 2015-12-11 13:17+0100\n"
 "PO-Revision-Date: 2010-08-13 09:13+0100\n"
 "Last-Translator: infotechaccountants.com <hameed@infotechaccountants.com>\n"
 "Language-Team: Translation Team <info@frontaccounting.net>\n"
@@ -37,7 +37,7 @@ msgstr "الترميز"
 msgid "Description"
 msgstr "الوصف"
 
-#: /install/index.php:49 /install/index.php:76 /install/index.php:398
+#: /install/index.php:49 /install/index.php:76 /install/index.php:395
 msgid "Install"
 msgstr "التثبيت"
 
@@ -97,143 +97,143 @@ msgstr "لا يمكن ترك كلمة مرور مدير النظام فارغا�
 msgid "Company admin passwords differ."
 msgstr "كلمات مرور مدير النظام مختلفة"
 
-#: /install/index.php:323
+#: /install/index.php:320
 msgid "System Diagnostics"
 msgstr "تشخيص النظام"
 
-#: /install/index.php:325
+#: /install/index.php:322
 msgid "Select install wizard language:"
 msgstr "أختيار لغة معالج التثبيت"
 
-#: /install/index.php:331
+#: /install/index.php:328
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "جميع المتطلبات التمهيدية الخاصة بالتطبيق تبدو صحيحة ، الرجاء الضغط على زر الأستمرار في الأسفل"
 
-#: /install/index.php:332 /install/index.php:360 /install/index.php:367
-#: /install/index.php:374
+#: /install/index.php:329 /install/index.php:357 /install/index.php:364
+#: /install/index.php:371
 msgid "Continue >>"
 msgstr "<< الاستمرار"
 
-#: /install/index.php:334
+#: /install/index.php:331
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "لا يمكن تثبيت التطبيق ، الرجاء إصلاح المشاكل الملونة باللون الأحمر و المدرجة بالأسف ثم الضغط على زر التنشيط"
 
-#: /install/index.php:335
+#: /install/index.php:332
 msgid "Refresh"
 msgstr "تنشيط"
 
-#: /install/index.php:345
+#: /install/index.php:342
 msgid "Database Server Settings"
 msgstr "إعدادات خادم قاعدة البيانات"
 
-#: /install/index.php:347
+#: /install/index.php:344
 msgid "Server Host:"
 msgstr "الخادم المستضيف :"
 
-#: /install/index.php:348
+#: /install/index.php:345
 msgid "Database Name:"
 msgstr "أسم قاعدة البيانات:"
 
-#: /install/index.php:349
+#: /install/index.php:346
 msgid "Database User:"
 msgstr "مستخدم قاعدة البيانات:"
 
-#: /install/index.php:350
+#: /install/index.php:347
 msgid "Database Password:"
 msgstr "كلمة مرور قاعدة البيانات:"
 
-#: /install/index.php:351
+#: /install/index.php:348
 msgid "Database Collation:"
 msgstr ""
 
-#: /install/index.php:352
+#: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
 msgstr "استخدام '0_' كبادئة جدول"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "Yes"
 msgstr "نعم"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "No"
 msgstr "لا"
 
-#: /install/index.php:353
+#: /install/index.php:350
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "تثبيت حزم لغات إضافية من مستودع التطبيق :"
 
-#: /install/index.php:354
+#: /install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
 msgstr "تثبيت خرائط حسابات أضافية من مستودع التطبيق :"
 
-#: /install/index.php:356
+#: /install/index.php:353
 msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
 msgstr ""
 
-#: /install/index.php:357
+#: /install/index.php:354
 msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
 msgstr ""
 
-#: /install/index.php:358
+#: /install/index.php:355
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "لا تختار لغات إضافية أو خرائط حسابات إضافية إذا لم يكن لديك الآن توصيلة أنترنت تعمل بكفاءة ، يمكنك أن تثبت اللغات و خرائط الحسابات في وقت لاحق"
 
-#: /install/index.php:359 /install/index.php:366 /install/index.php:373
-#: /install/index.php:397
+#: /install/index.php:356 /install/index.php:363 /install/index.php:370
+#: /install/index.php:394
 msgid "<< Back"
 msgstr "للخلف >>"
 
-#: /install/index.php:364
+#: /install/index.php:361
 msgid "User Interface Languages Selection"
 msgstr "اختيار لغات واجهة المستخدم"
 
-#: /install/index.php:371
+#: /install/index.php:368
 msgid "Charts of Accounts Selection"
 msgstr "أختيار خرائط الحسابات"
 
-#: /install/index.php:388
+#: /install/index.php:385
 msgid "Company Settings"
 msgstr "إعدادات الشركة"
 
-#: /install/index.php:390
+#: /install/index.php:387
 msgid "Company Name:"
 msgstr "أسم الشركة :"
 
-#: /install/index.php:391
+#: /install/index.php:388
 msgid "Admin Login:"
 msgstr "أسم الدخول لمدير النظام :"
 
-#: /install/index.php:392
+#: /install/index.php:389
 msgid "Admin Password:"
 msgstr "كلمة مرور مدير النظام :"
 
-#: /install/index.php:393
+#: /install/index.php:390
 msgid "Reenter Password:"
 msgstr "إعادة أدخال كلمة المرور :"
 
-#: /install/index.php:394
+#: /install/index.php:391
 msgid "Select Chart of Accounts:"
 msgstr "اختيار خريطة الحسابات :"
 
-#: /install/index.php:395
+#: /install/index.php:392
 msgid "Select Default Language:"
 msgstr "اختيار اللغة الأفتراضية :"
 
-#: /install/index.php:398
+#: /install/index.php:395
 msgid "Start installation process"
 msgstr ""
 
-#: /install/index.php:402
+#: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "تمت عملية تثبيت FrontAccounting ERP بنجاح"
 
-#: /install/index.php:403
+#: /install/index.php:400
 msgid "Please do not forget to remove install wizard folder."
 msgstr "الرجاء لا تنسى أن تزيل مجلد معالج التثبيت"
 
-#: /install/index.php:406
+#: /install/index.php:403
 msgid "Click here to start."
 msgstr "الضغط هنا للبدء"
 
@@ -497,7 +497,7 @@ msgstr ""
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr ""
 
-#: /includes/packages.inc:641 /includes/packages.inc:702
+#: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""

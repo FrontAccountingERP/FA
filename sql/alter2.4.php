@@ -12,7 +12,7 @@
 
 class fa2_4 extends fa_patch {
 	var $previous = '2.3rc';		// applicable database version
-	var $version = '2.4.0';	// version installed
+	var $version = '2.4.1';	// version installed
 	var $description;
 	var $sql = 'alter2.4.sql';
 	var $preconf = true;
@@ -86,6 +86,7 @@ class fa2_4 extends fa_patch {
 	{
 		$pref = $this->companies[$company]['tbpref'];
 		db_query("DROP TABLE IF EXISTS " . $pref . 'wo_costing');
+		db_query("DROP TABLE IF EXISTS " . $pref . 'stock_fa_class');
 	}
 
 	function update_workorders()

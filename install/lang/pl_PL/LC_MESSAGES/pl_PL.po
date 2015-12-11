@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting Install Wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 14:34+0200\n"
+"POT-Creation-Date: 2015-12-11 13:17+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Janusz Dobrowolski <janusz@frontaccounting.eu>\n"
 "Language-Team: \n"
@@ -38,7 +38,7 @@ msgstr "Kodowanie"
 msgid "Description"
 msgstr "Opis"
 
-#: /install/index.php:49 /install/index.php:76 /install/index.php:398
+#: /install/index.php:49 /install/index.php:76 /install/index.php:395
 msgid "Install"
 msgstr "Zainstaluj"
 
@@ -98,143 +98,143 @@ msgstr "Has³o administratora nie mo¿e by puste."
 msgid "Company admin passwords differ."
 msgstr "Wprowadzone has³a ró¿ni± siê."
 
-#: /install/index.php:323
+#: /install/index.php:320
 msgid "System Diagnostics"
 msgstr "Diagnostyka Systemu"
 
-#: /install/index.php:325
+#: /install/index.php:322
 msgid "Select install wizard language:"
 msgstr "Wybierz jêzyk u¿ywany przy instalacji:"
 
-#: /install/index.php:331
+#: /install/index.php:328
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "Wszystkie wymagania systemu wydaj± siê byæ spe³nione. Kliknij klawisz poni¿ej aby rozpocz±æ instalacjê."
 
-#: /install/index.php:332 /install/index.php:360 /install/index.php:367
-#: /install/index.php:374
+#: /install/index.php:329 /install/index.php:357 /install/index.php:364
+#: /install/index.php:371
 msgid "Continue >>"
 msgstr "Kontynuuj >>"
 
-#: /install/index.php:334
+#: /install/index.php:331
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "Aplikacja nie mo¿e byæ zainstalowana. Usuñ wskazane problemy i kliknij klawisz 'Od¶wie¿'."
 
-#: /install/index.php:335
+#: /install/index.php:332
 msgid "Refresh"
 msgstr "Od¶wierz"
 
-#: /install/index.php:345
+#: /install/index.php:342
 msgid "Database Server Settings"
 msgstr "Ustawienia Serwera Bazy Danych"
 
-#: /install/index.php:347
+#: /install/index.php:344
 msgid "Server Host:"
 msgstr "Adres Serwera:"
 
-#: /install/index.php:348
+#: /install/index.php:345
 msgid "Database Name:"
 msgstr "Nazwa Bazy Danych:"
 
-#: /install/index.php:349
+#: /install/index.php:346
 msgid "Database User:"
 msgstr "Nazwa U¿ytkownika:"
 
-#: /install/index.php:350
+#: /install/index.php:347
 msgid "Database Password:"
 msgstr "Has³o:"
 
-#: /install/index.php:351
+#: /install/index.php:348
 msgid "Database Collation:"
 msgstr "Porz±dkowanie alfabetyczne danych:"
 
-#: /install/index.php:352
+#: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
 msgstr "Prefiks '0_' dla Nazw Tablic:"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Tak"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "No"
 msgstr "Nie"
 
-#: /install/index.php:353
+#: /install/index.php:350
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Instalacja Dodatkowych Jêzyków z Repozytorium FA:"
 
-#: /install/index.php:354
+#: /install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Instalacja Dodatkowych Planów Kont z Repozytorium FA:"
 
-#: /install/index.php:356
+#: /install/index.php:353
 msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
 msgstr "Wybierz porz±dkowanie alfabetyczne bazy danych. Je¶li nie jeste¶ pewien jakiego porz±dkowania chcesz u¿ywaæ, lub zamierzasz u¿ywaæ danych w wiêcej ni¿ jednym jêzyku, wybierz porz±dkowanie Unicode."
 
-#: /install/index.php:357
+#: /install/index.php:354
 msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
 msgstr "U¿yj prefiksu dla tabel je¶li ta sama baza danych bêdzie u¿ywana dla kilku firm z tym samym porz±dkowaniem alfabetycznym."
 
-#: /install/index.php:358
+#: /install/index.php:355
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "Nie zaznaczaj wyboru dodatkowych jêzyków ani planów kont je¶li w tej chwili nie masz dostêpu do internetu. Bêdziesz je móg³ zainstalowaæ równie¿ pó¼niej."
 
-#: /install/index.php:359 /install/index.php:366 /install/index.php:373
-#: /install/index.php:397
+#: /install/index.php:356 /install/index.php:363 /install/index.php:370
+#: /install/index.php:394
 msgid "<< Back"
 msgstr "<< Wróæ"
 
-#: /install/index.php:364
+#: /install/index.php:361
 msgid "User Interface Languages Selection"
 msgstr "Wybór Jêzyków Interfejsu U¿ytkownika"
 
-#: /install/index.php:371
+#: /install/index.php:368
 msgid "Charts of Accounts Selection"
 msgstr "Wybór Planów Kont"
 
-#: /install/index.php:388
+#: /install/index.php:385
 msgid "Company Settings"
 msgstr "Ustawienia Firmy"
 
-#: /install/index.php:390
+#: /install/index.php:387
 msgid "Company Name:"
 msgstr "Nazwa Firmy:"
 
-#: /install/index.php:391
+#: /install/index.php:388
 msgid "Admin Login:"
 msgstr "Login Administratora:"
 
-#: /install/index.php:392
+#: /install/index.php:389
 msgid "Admin Password:"
 msgstr "Has³o Administratora:"
 
-#: /install/index.php:393
+#: /install/index.php:390
 msgid "Reenter Password:"
 msgstr "Powtórz Has³o:"
 
-#: /install/index.php:394
+#: /install/index.php:391
 msgid "Select Chart of Accounts:"
 msgstr "Wybierz Planów Kont:"
 
-#: /install/index.php:395
+#: /install/index.php:392
 msgid "Select Default Language:"
 msgstr "Wybierz Jêzyk Domy¶lny:"
 
-#: /install/index.php:398
+#: /install/index.php:395
 msgid "Start installation process"
 msgstr "Rozpocznij instalacjê"
 
-#: /install/index.php:402
+#: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "Aplikacja FrontAccounting ERP zosta³a zainstalowana pomy¶lnie."
 
-#: /install/index.php:403
+#: /install/index.php:400
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Nie zapomnij usun±æ folderu instalatora."
 
-#: /install/index.php:406
+#: /install/index.php:403
 msgid "Click here to start."
 msgstr "Kliknij tutaj, aby rozpocz±æ pracê."
 
@@ -498,7 +498,7 @@ msgstr "Alarm bezpieczeñstwa: uszkodzony plik indeksu repozytorium '%s'. Poinfor
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr "Alarm bezpieczeñstwa: uszkodzony plik '%s' w repozytorium. Poinformuj administratora repozytorium o tym problemie."
 
-#: /includes/packages.inc:641 /includes/packages.inc:702
+#: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr "Pakiet '%s' nie zosta³ znaleziony."

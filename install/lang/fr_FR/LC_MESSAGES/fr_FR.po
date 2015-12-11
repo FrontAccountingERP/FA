@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting Install Wizard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 14:34+0200\n"
+"POT-Creation-Date: 2015-12-11 13:17+0100\n"
 "PO-Revision-Date: 2010-08-08 12:48-0500\n"
 "Last-Translator: Gaston <gaston.huot@videotron.ca>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr "Codage des caractères"
 msgid "Description"
 msgstr "Description"
 
-#: /install/index.php:49 /install/index.php:76 /install/index.php:398
+#: /install/index.php:49 /install/index.php:76 /install/index.php:395
 msgid "Install"
 msgstr "Installer"
 
@@ -97,143 +97,143 @@ msgstr "SVP préciser le mot de passe de l'administrateur"
 msgid "Company admin passwords differ."
 msgstr "Les 2 entrées de mot de passe diffèrent."
 
-#: /install/index.php:323
+#: /install/index.php:320
 msgid "System Diagnostics"
 msgstr "Diagnostique du système"
 
-#: /install/index.php:325
+#: /install/index.php:322
 msgid "Select install wizard language:"
 msgstr "Svp choisir la langue d'installation."
 
-#: /install/index.php:331
+#: /install/index.php:328
 msgid "All application preliminary requirements seems to be correct. Please press Continue button below."
 msgstr "Tous les pré-requis semblent corrects. Svp appuyez sur le bouton Continuer situé ci-après"
 
-#: /install/index.php:332 /install/index.php:360 /install/index.php:367
-#: /install/index.php:374
+#: /install/index.php:329 /install/index.php:357 /install/index.php:364
+#: /install/index.php:371
 msgid "Continue >>"
 msgstr "Continuer >>"
 
-#: /install/index.php:334
+#: /install/index.php:331
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
 msgstr "L'application n'a pu être installée. Svp résoudre le problème libellé en rouge et appuyez sur le bouton Actualiser"
 
-#: /install/index.php:335
+#: /install/index.php:332
 msgid "Refresh"
 msgstr "Actualiser"
 
-#: /install/index.php:345
+#: /install/index.php:342
 msgid "Database Server Settings"
 msgstr "Réglages de la BD"
 
-#: /install/index.php:347
+#: /install/index.php:344
 msgid "Server Host:"
 msgstr "Nom du serveur:"
 
-#: /install/index.php:348
+#: /install/index.php:345
 msgid "Database Name:"
 msgstr "Nom de la BD:"
 
-#: /install/index.php:349
+#: /install/index.php:346
 msgid "Database User:"
 msgstr "ID de l'utilisateur de la BD:"
 
-#: /install/index.php:350
+#: /install/index.php:347
 msgid "Database Password:"
 msgstr "Mot de passe :"
 
-#: /install/index.php:351
+#: /install/index.php:348
 msgid "Database Collation:"
 msgstr ""
 
-#: /install/index.php:352
+#: /install/index.php:349
 msgid "Use '0_' Table Prefix:"
 msgstr "Utilisez le préfix de table '0_':"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "Yes"
 msgstr "Oui"
 
-#: /install/index.php:352 /includes/system_tests.inc:38
+#: /install/index.php:349 /includes/system_tests.inc:38
 #: /includes/system_tests.inc:113 /includes/system_tests.inc:126
 msgid "No"
 msgstr "Non"
 
-#: /install/index.php:353
+#: /install/index.php:350
 msgid "Install Additional Language Packs from FA Repository:"
 msgstr "Installer d'autres langues:"
 
-#: /install/index.php:354
+#: /install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
 msgstr "Installer d'autres COAs à partir du dépôt de FA:"
 
-#: /install/index.php:356
+#: /install/index.php:353
 msgid "Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."
 msgstr ""
 
-#: /install/index.php:357
+#: /install/index.php:354
 msgid "Use table prefix if you share selected database for more than one FA company using the same collation."
 msgstr ""
 
-#: /install/index.php:358
+#: /install/index.php:355
 msgid "Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."
 msgstr "Ne pas sélectionner d'autres langues (ni COA) si votre connection internet n'est pas active en ce moment. Vous pourrez le faire plus tard."
 
-#: /install/index.php:359 /install/index.php:366 /install/index.php:373
-#: /install/index.php:397
+#: /install/index.php:356 /install/index.php:363 /install/index.php:370
+#: /install/index.php:394
 msgid "<< Back"
 msgstr "<< Retour"
 
-#: /install/index.php:364
+#: /install/index.php:361
 msgid "User Interface Languages Selection"
 msgstr "Sélection de la langue :"
 
-#: /install/index.php:371
+#: /install/index.php:368
 msgid "Charts of Accounts Selection"
 msgstr "Sélection de la charte des postes comptables"
 
-#: /install/index.php:388
+#: /install/index.php:385
 msgid "Company Settings"
 msgstr "Réglages systèmes de la compagnie"
 
-#: /install/index.php:390
+#: /install/index.php:387
 msgid "Company Name:"
 msgstr "Nom de la compagnie:"
 
-#: /install/index.php:391
+#: /install/index.php:388
 msgid "Admin Login:"
 msgstr "Identifiant d'administrateur:"
 
-#: /install/index.php:392
+#: /install/index.php:389
 msgid "Admin Password:"
 msgstr "Mot de passe de l'administrateur:"
 
-#: /install/index.php:393
+#: /install/index.php:390
 msgid "Reenter Password:"
 msgstr "Saisir de nouveau le mot de passe:"
 
-#: /install/index.php:394
+#: /install/index.php:391
 msgid "Select Chart of Accounts:"
 msgstr "Sélectionner la charte de postes comptables:"
 
-#: /install/index.php:395
+#: /install/index.php:392
 msgid "Select Default Language:"
 msgstr "Sélectionner la langue par défaut:"
 
-#: /install/index.php:398
+#: /install/index.php:395
 msgid "Start installation process"
 msgstr ""
 
-#: /install/index.php:402
+#: /install/index.php:399
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr "L'installation de FrontAccounting est un succès."
 
-#: /install/index.php:403
+#: /install/index.php:400
 msgid "Please do not forget to remove install wizard folder."
 msgstr "Svp ne pas oublier de retirer le répertoire d'installation."
 
-#: /install/index.php:406
+#: /install/index.php:403
 msgid "Click here to start."
 msgstr "Appuyez ici pour démarrer."
 
@@ -497,7 +497,7 @@ msgstr ""
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
 msgstr ""
 
-#: /includes/packages.inc:641 /includes/packages.inc:702
+#: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""
