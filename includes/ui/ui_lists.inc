@@ -987,6 +987,7 @@ function stock_component_items_list_cells($label, $name, $parent_stock_id,
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
+	$parent = db_escape($parent_stock_id);
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("stock_id != $parent"), 'cells'=>true, 'parent'=> $parent_stock_id), $editkey, "component");
 }
