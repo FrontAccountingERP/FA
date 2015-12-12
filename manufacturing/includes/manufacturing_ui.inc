@@ -245,7 +245,7 @@ function display_wo_payments($woid)
 			alt_table_row_color($k);
 
         	label_cell(get_gl_view_str( $myrow["type"], $myrow["type_no"], $myrow["type_no"]));
-        	label_cell($wo_cost_types[$myrow['person_id']]);
+        	label_cell($wo_cost_types[$myrow['cost_type']]);
         	$date = sql2date($myrow["tran_date"]);
         	label_cell($date);
 			amount_cell(-($myrow['amount']));

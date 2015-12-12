@@ -112,7 +112,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
 {
-	global $wo_cost_types;
+	//global $wo_cost_types;
 	$result = get_bom($stock_id);
 
 	// credit all the components
@@ -155,35 +155,13 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	$item_accounts = get_stock_gl_code($stock_id);
 	if ($costs != 0.0)
 	{
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc,
-			0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
-		$is_bank_to = is_bank_account($cr_acc);
-    	if ($is_bank_to)
-    	{
-    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
-    			$date_, -$costs, PT_WORKORDER, WO_OVERHEAD, get_company_currency(),
-    			"Cannot insert a destination bank transaction");
-    	}
-			
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
-			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_OVERHEAD], $costs, 
-			PT_WORKORDER, WO_OVERHEAD);
+		add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $item_accounts["assembly_account"],
+			$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
 	}
 	if ($labour != 0.0) // only for quick
 	{
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc,
-			0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
-		$is_bank_to = is_bank_account($cr_lab_acc);
-    	if ($is_bank_to)
-    	{
-    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
-    			$date_, -$labour, PT_WORKORDER, WO_LABOUR, get_company_currency(),
-    			"Cannot insert a destination bank transaction");
-    	}
-			
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
-			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, 
-			PT_WORKORDER, WO_LABOUR);
+		add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $item_accounts["assembly_account"],
+			$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
 	}
 	// debit total components $total_cost
  	$stockitem = get_item($stock_id);
