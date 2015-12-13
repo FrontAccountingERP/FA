@@ -1,16 +1,17 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_BOM';
 $path_to_root = "../..";
+
 include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
@@ -24,6 +25,10 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/includes/manufacturing.inc");
+
+// Add inventory database library. We need this to load the item data.
+include_once($path_to_root . "/inventory/includes/db/items_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
 
 check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 
@@ -41,6 +46,13 @@ if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $_GET['stock_id'];
 	$selected_parent =  $_GET['stock_id'];
+}
+
+// Check if we should store BOM in session temporarily.
+// This is very usefull when adding new item and its BOM.
+if (isset($_GET['use_session']))
+{
+	$_SESSION['bom_session']['flag'] = 1;
 }
 
 /* selected_parent could come from a post or a get */
@@ -76,22 +88,44 @@ function display_bom_items($selected_parent)
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
-	{
 
-		alt_table_row_color($k);
+	// Check if we will read BOM from session or database.
+	if (isset($_SESSION['bom_session']['flag'])) {
+		if (isset($_SESSION['bom_session']['list'])) {
+			foreach ($_SESSION['bom_session']['list'] as $myrow)
+			{
+				alt_table_row_color($k);
 
-		label_cell($myrow["component"]);
-		label_cell($myrow["description"]);
-        label_cell($myrow["location_name"]);
-        label_cell($myrow["WorkCentreDescription"]);
-        qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
-        label_cell($myrow["units"]);
- 		edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 		delete_button_cell("Delete".$myrow['id'], _("Delete"));
-        end_row();
+				label_cell($myrow["component"]);
+				label_cell($myrow["description"]);
+				label_cell($myrow["location_name"]);
+				label_cell($myrow["WorkCentreDescription"]);
+				qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
+				label_cell($myrow["units"]);
+				edit_button_cell("Edit".$myrow['component'], _("Edit"));
+				delete_button_cell("Delete".$myrow['component'], _("Delete"));
+				end_row();
+			} // END FOREACH LOOP
+		}
+	}
+	else {
+		while ($myrow = db_fetch($result))
+		{
 
-	} //END WHILE LIST LOOP
+			alt_table_row_color($k);
+
+			label_cell($myrow["component"]);
+			label_cell($myrow["description"]);
+			label_cell($myrow["location_name"]);
+			label_cell($myrow["WorkCentreDescription"]);
+			qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
+			label_cell($myrow["units"]);
+			edit_button_cell("Edit".$myrow['id'], _("Edit"));
+			delete_button_cell("Delete".$myrow['id'], _("Delete"));
+			end_row();
+
+		} //END WHILE LIST LOOP
+	}
 	end_table();
 	div_end();
 }
@@ -109,8 +143,26 @@ function on_submit($selected_parent, $selected_component=-1)
 
 	if ($selected_component != -1)
 	{
-		update_bom($selected_parent, $selected_component, $_POST['workcentre_added'], $_POST['loc_code'],
-			input_num('quantity'));
+		// Check if we will update BOM in session or database.
+		if (isset($_SESSION['bom_session']['flag'])) {
+			$row1 = get_item($selected_component);
+			$row2 = get_work_centre($_POST['workcentre_added']);
+			$row3 = get_item_location($_POST['loc_code']);
+			$_SESSION['bom_session']['list'][$selected_component] = array(
+				'component' => $selected_component,
+				'description' => $row1['description'],
+				'workcentre_added' => $_POST['workcentre_added'],
+				'WorkCentreDescription' => $row2['name'],
+				'location' => $_POST['loc_code'],
+				'location_name' => $row3['location_name'],
+				'quantity' => input_num('quantity'),
+				'units' => $row1['units'],
+			);
+		}
+		else {
+			update_bom($selected_parent, $selected_component, $_POST['workcentre_added'], $_POST['loc_code'],
+				input_num('quantity'));
+		}
 		display_notification(_('Selected component has been updated'));
 		$Mode = 'RESET';
 	}
@@ -129,8 +181,26 @@ function on_submit($selected_parent, $selected_component=-1)
 			if (!is_component_already_on_bom($_POST['component'], $_POST['workcentre_added'],
 				$_POST['loc_code'], $selected_parent))
 			{
-				add_bom($selected_parent, $_POST['component'], $_POST['workcentre_added'],
-					$_POST['loc_code'], input_num('quantity'));
+				// Check if we will insert BOM in session or database.
+				if (isset($_SESSION['bom_session']['flag'])) {
+					$row1 = get_item($_POST['component']);
+					$row2 = get_work_centre($_POST['workcentre_added']);
+					$row3 = get_item_location($_POST['loc_code']);
+					$_SESSION['bom_session']['list'][$_POST['component']] = array(
+						'component' => $_POST['component'],
+						'description' => $row1['description'],
+						'workcentre_added' => $_POST['workcentre_added'],
+						'WorkCentreDescription' => $row2['name'],
+						'location' => $_POST['loc_code'],
+						'location_name' => $row3['location_name'],
+						'quantity' => input_num('quantity'),
+						'units' => $row1['units'],
+					);
+				}
+				else {
+					add_bom($selected_parent, $_POST['component'], $_POST['workcentre_added'],
+						$_POST['loc_code'], input_num('quantity'));
+				}
 				display_notification(_("A new component part has been added to the bill of material for this item."));
 				$Mode = 'RESET';
 			}
@@ -152,7 +222,13 @@ function on_submit($selected_parent, $selected_component=-1)
 
 if ($Mode == 'Delete')
 {
-	delete_bom($selected_id);
+	// Check if we will delete BOM from session or database.
+	if (isset($_SESSION['bom_session']['flag']) && isset($_SESSION['bom_session']['list'])) {
+		unset($_SESSION['bom_session']['list'][$selected_id]);
+	}
+	else {
+		delete_bom($selected_id);
+	}
 
 	display_notification(_("The component item has been deleted from this bom"));
 	$Mode = 'RESET';
@@ -171,7 +247,13 @@ start_form();
 start_form(false, true);
 start_table(TABLESTYLE_NOBORDER);
 start_row();
-stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+
+// If we use session for storing BOM, don't display the list for choosing manufacturable items.
+// Because that means the parent item is not existed yet.
+if (!isset($_SESSION['bom_session']['flag'])) {
+	stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+}
+
 end_row();
 if (list_updated('stock_id'))
 	$Ajax->activate('_page_body');
@@ -181,14 +263,14 @@ br();
 end_form();
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('stock_id') != '')
+if (get_post('stock_id') != '' || isset($_SESSION['bom_session']['flag']))
 { //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
 	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		on_submit($selected_parent, $selected_id);
 	//--------------------------------------------------------------------------------------
 
-start_form();
+	start_form();
 	display_bom_items($selected_parent);
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
@@ -199,7 +281,14 @@ start_form();
 	{
  		if ($Mode == 'Edit') {
 			//editing a selected component from the link to the line item
-			$myrow = get_component_from_bom($selected_id);
+
+			// Check if we will load the BOM from session or database.
+			if (isset($_SESSION['bom_session']['flag']) && isset($_SESSION['bom_session']['list'][$selected_id])) {
+				$myrow = $_SESSION['bom_session']['list'][$selected_id];
+			}
+			else {
+				$myrow = get_component_from_bom($selected_id);
+			}
 
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['component'] = $myrow["component"]; // by Tom Moulton
@@ -216,7 +305,7 @@ start_form();
 
 		echo "<td>";
 		echo stock_component_items_list('component', $selected_parent, null, false, true);
-		if (get_post('_component_update')) 
+		if (get_post('_component_update'))
 		{
 			$Ajax->activate('quantity');
 		}
@@ -238,5 +327,3 @@ start_form();
 // ----------------------------------------------------------------------------------
 
 end_page();
-
-?>

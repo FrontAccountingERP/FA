@@ -5,6 +5,7 @@
 ***********************************************************************/
 $page_security = "SA_GLACCOUNT";
 $path_to_root = "../..";
+
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -14,7 +15,7 @@ page(_($help_context = "GL Accounts"), @$_REQUEST["popup"], false, "", $js);
 
 // Activate Ajax on form submit
 if(get_post("search")) {
-  $Ajax->activate("account_tbl");
+	$Ajax->activate("account_tbl");
 }
 
 // BEGIN: Filter form. Use query string so the client_id will not disappear
@@ -46,24 +47,24 @@ table_header($th);
 
 // Query based on function gl_all_accounts_list in includes/ui/ui_lists.inc.
 $sql = "SELECT chart.account_code, chart.account_name, type.name
-			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
-			WHERE chart.account_type=type.id
-        AND (
-          chart.account_name LIKE " . db_escape("%" . get_post("description"). "%") . "
-          OR
-          chart.account_code = " . db_escape(get_post("description")) . "
-        ) 
-      ORDER BY chart.account_code LIMIT 0, 10"; // We only display 10 items.
+	FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
+	WHERE chart.account_type=type.id
+		AND (
+			chart.account_name LIKE " . db_escape("%" . get_post("description"). "%") . "
+			OR
+			chart.account_code = " . db_escape(get_post("description")) . "
+		) 
+	ORDER BY chart.account_code LIMIT 0, 10"; // We only display 10 items.
 $result = db_query($sql, "Failed in retreiving GL account list.");
 
 $k = 0; //row colour counter
 
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
-  ahref_cell(_("Select"), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, &quot;' . $_GET["client_id"] . '&quot;, &quot;' . $myrow["account_code"] . '&quot;)');
-  label_cell($myrow["account_code"]);
+	ahref_cell(_("Select"), 'javascript:void(0)', '', 'selectComboItem(window.opener.document, &quot;' . $_GET["client_id"] . '&quot;, &quot;' . $myrow["account_code"] . '&quot;)');
+	label_cell($myrow["account_code"]);
 	label_cell($myrow["account_name"]);
-  label_cell($myrow["name"]);
+	label_cell($myrow["name"]);
 	end_row();
 }
 

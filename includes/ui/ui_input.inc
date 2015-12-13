@@ -963,11 +963,11 @@ function bank_balance_row($bank_acc, $parms='')
 }
 
 function ahref($label, $href, $target="", $onclick="") {
-  echo "<a href='$href' target='$target' onclick='$onclick'>$label</a>";
+	echo "<a href='$href' target='$target' onclick='$onclick'>$label</a>";
 }
 
 function ahref_cell($label, $href, $target="", $onclick="") {
-  echo "<td align='center'>&nbsp;&nbsp;";
-  ahref($label, $href, $target, $onclick);
-  echo "&nbsp;&nbsp;</td>";
+	echo "<td align='center'>&nbsp;&nbsp;";
+	ahref($label, $href, $target, $onclick);
+	echo "&nbsp;&nbsp;</td>";
 }

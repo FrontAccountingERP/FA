@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 if (!@$_GET['popup']) {
-  $js = "";
+	$js = "";
 	if ($use_popup_windows)
 		$js .= get_js_open_window(900, 500);
 	page(_($help_context = "Supplier Purchasing Data"), false, false, "", $js);
@@ -236,4 +236,3 @@ if (!@$_GET['popup'])
 	end_form();
 	end_page(@$_GET['popup'], false, false);
 }
-?>
