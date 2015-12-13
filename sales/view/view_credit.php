@@ -126,7 +126,6 @@ else
 	display_note(_("There are no line items on this credit note."), 1, 2);
 
 $display_sub_tot = price_format($sub_total);
-$display_freight = price_format($myrow["ov_freight"]);
 
 $credit_total = $myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"];
 $display_total = price_format($credit_total);
@@ -135,8 +134,12 @@ $display_total = price_format($credit_total);
 if ($sub_total != 0)
 	label_row(_("Sub Total"), $display_sub_tot, "colspan=6 align=right",
 		"nowrap align=right width='15%'");
-label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
+if ($myrow["ov_freight"] != 0.0)
+{
+	$display_freight = price_format($myrow["ov_freight"]);
+	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
+}
 $tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 

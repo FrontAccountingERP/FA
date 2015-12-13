@@ -224,8 +224,9 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 	end_row();
 }
 
-label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
-	"align=right colspan=6", "nowrap align=right", 1);
+if ($_SESSION['View']->freight_cost != 0.0)
+	label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
+		"align=right colspan=6", "nowrap align=right", 1);
 
 $sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
 

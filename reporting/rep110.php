@@ -150,7 +150,6 @@ function print_deliveries()
 			}
 
    			$DisplaySubTot = number_format2($SubTotal,$dec);
-   			$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$doctype=ST_CUSTDELIVERY;
@@ -159,9 +158,13 @@ function print_deliveries()
 				$rep->TextCol(3, 6, _("Sub-total"), -2);
 				$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 				$rep->NewLine();
-				$rep->TextCol(3, 6, _("Shipping"), -2);
-				$rep->TextCol(6, 7,	$DisplayFreight, -2);
-				$rep->NewLine();
+				if ($myrow['ov_freight'] != 0.0)
+				{
+   					$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
+					$rep->TextCol(3, 6, _("Shipping"), -2);
+					$rep->TextCol(6, 7,	$DisplayFreight, -2);
+					$rep->NewLine();
+				}	
 				$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $i);
 				$first = true;
     			while ($tax_item = db_fetch($tax_items))
