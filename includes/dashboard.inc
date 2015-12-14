@@ -53,20 +53,10 @@ function dashboard($sel_app)
 		display_all();
 }
 
-function display_customer_topten()
+function display_title($title, $colspan=2)
 {
-	$pg = new graph();
-
-	echo "<table width='100%'>";
-	echo "<tr valign=top><td style='width:50%'>\n"; // outer table
-	$today = Today();
-	$title = customer_top($today, 10, 66, $pg);
-	customer_trans($today);
-	echo "</td><td style='width:50%'>\n";
-	source_graphic($today, $title, _("Customer"), $pg);
-	customer_recurrent_invoices($today);
-	echo "</td></tr></table>\n";
-}
+	echo "<tr><td colspan=$colspan class='headingtext' style='text-align:center;border:0;height:40px;'>$title</td></tr>\n";
+}	
 
 function table_one()
 {
@@ -82,6 +72,20 @@ function table_two()
 function table_end()
 {
 	echo "</td></tr></table>\n";
+}
+
+function display_customer_topten()
+{
+	$pg = new graph();
+
+	table_one();
+	$today = Today();
+	$title = customer_top($today, 10, 66, $pg);
+	customer_trans($today);
+	table_two();
+	source_graphic($today, $title, _("Customer"), $pg);
+	customer_recurrent_invoices($today);
+	table_end();
 }
 
 function display_supplier_topten()
@@ -160,11 +164,6 @@ function display_all()
 	stock_top($today, 3, 66, 1);
 	table_end();
 }
-
-function display_title($title, $colspan=2)
-{
-	echo "<tr><td colspan=$colspan class='headingtext' style='text-align:center;border:0;height:40px;'>$title</td></tr>\n";
-}	
 
 function customer_top($today, $limit=10, $width="33", &$pg=null)
 {
