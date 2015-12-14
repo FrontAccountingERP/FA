@@ -67,6 +67,7 @@
 				echo "</div>";
 				echo "</td></tr></table>";
 				// top status bar
+				$rimg = "<img src='$path_to_root/themes/".user_theme()."/images/report.png' width='14' height='14' border='0' alt='"._('Dashboard')."'>&nbsp;&nbsp;";
 				$pimg = "<img src='$local_path_to_root/themes/".user_theme()."/images/preferences.gif' width='14' height='14' border='0' alt='"._('Preferences')."'>&nbsp;&nbsp;";
 				$limg = "<img src='$local_path_to_root/themes/".user_theme()."/images/lock.gif' width='14' height='14' border='0' alt='"._('Change Password')."'>&nbsp;&nbsp;";
 				$img = "<img src='$local_path_to_root/themes/".user_theme()."/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
@@ -74,7 +75,9 @@
 				echo "<table class='logoutBar'>";
 				echo "<tr><td class='headingtext3'>" . $db_connections[user_company()]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td>";
-				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>$pimg" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				echo "<td class='logoutBarRight'><a href='$path_to_root/admin/dashboard.php?sel_app=$sel_app'>$rimg" . _("Dashboard") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				
+				echo "<a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>$pimg" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>$limg" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
 				if ($SysPrefs->help_base_url != null)
