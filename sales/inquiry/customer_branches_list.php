@@ -1,7 +1,18 @@
 <?php
 /**********************************************************************
-  Page for searching item list and select it to item selection
-  in sales order and purchase order.
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+/**********************************************************************
+  Page for searching customer branch list and select it to customer
+  branch selection in pages that have the customer branch dropdown lists.
+  Author: bogeyman2007 from Discussion Forum. Modified by Joe Hunt
 ***********************************************************************/
 $page_security = "SA_SALESORDER";
 $path_to_root = "../..";
