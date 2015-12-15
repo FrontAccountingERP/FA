@@ -212,7 +212,7 @@
 				echo $module->name;
 				echo "</td></tr><tr>";
 				echo "<td width='50%' class='menu_group_items'>";
-				$img = "<img src='$path_to_root/themes/elegant/images/".$imgs2[$i]."' width='14' height='14' border='0'>&nbsp;&nbsp;";
+				$img = "<img src='$path_to_root/themes/".user_theme()."/images/".$imgs2[$i]."' width='14' height='14' border='0'>&nbsp;&nbsp;";
 				if ($_SESSION["language"]->dir == "rtl")
 					$class = "right";
 				else
