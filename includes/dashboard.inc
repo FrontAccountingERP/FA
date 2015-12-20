@@ -413,8 +413,8 @@ function gl_performance($today, $width="33", $weeks=5)
 	while ($myrow = db_fetch($result))
 	{
 		$pg->x[$i] = $myrow['week_name']; 
-		$pg->y[$i] = abs($myrow['sales']);
-		$pg->z[$i] = abs($myrow['costs']);
+		$pg->y[$i] = $myrow['sales'];
+		$pg->z[$i] = $myrow['costs'];
 		$i++;
 	}	
 	$pg->x = array_reverse($pg->x);
