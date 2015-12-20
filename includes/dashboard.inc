@@ -83,7 +83,7 @@ function display_customer_topten()
 	$title = customer_top($today, 10, 66, $pg);
 	customer_trans($today);
 	table_two();
-	source_graphic($today, $title, _("Customer"), $pg);
+	source_graphic($today, $title, _("Customer"), $pg, _("Sales"));
 	customer_recurrent_invoices($today);
 	table_end();
 }
@@ -97,7 +97,7 @@ function display_supplier_topten()
 	$title = supplier_top($today, 10, 66, $pg);
 	supplier_trans($today);
 	table_two();
-	source_graphic($today, $title, _("Supplier"), $pg);
+	source_graphic($today, $title, _("Supplier"), $pg, _("Purchase"));
 	table_end();
 }
 
@@ -115,7 +115,7 @@ function display_stock_topten($type=0)
 		$source = _("Manufacturing");
 	else	
 		$source = _("Items");
-	source_graphic($today, $title, $source, $pg);
+	source_graphic($today, $title, $source, $pg, ($type == 0 ? _("Sales") : _("Value")));
 	table_end();
 }
 
@@ -127,7 +127,7 @@ function display_dimension_topten()
 	$today = Today();
 	$title = dimension_top($today, 10, 66, $pg);
 	table_two();
-	source_graphic($today, $title, _("Dimension"), $pg, 5);
+	source_graphic($today, $title, _("Dimension"), $pg, _("Performance"), null, 5);
 	table_end();
 }	
 
@@ -140,7 +140,8 @@ function display_gl_info()
 	$title = gl_top($today, 66, $pg);
 	bank_balance($today, 66);
 	table_two();
-	source_graphic($today, $title, _("Class"), $pg, 5);
+	source_graphic($today, $title, _("Class"), $pg, _("Amount"), null, 5);
+	gl_performance($today, 66, 5);
 	table_end();
 }	
 
@@ -151,15 +152,15 @@ function display_all()
 
 	table_one();
 	$title = customer_top($today, 3, 66, $pg);
-	source_graphic($today, $title, _("Customer"), $pg);
+	source_graphic($today, $title, _("Customer"), $pg, _("Sales"));
 	$title = supplier_top($today, 3, 66, $pg);
-	source_graphic($today, $title, _("Supplier"), $pg);
+	source_graphic($today, $title, _("Supplier"), $pg, _("Purchases"));
 	$title = stock_top($today, 3, 66, 0, $pg);
-	source_graphic($today, $title, _("Stock"), $pg);
+	source_graphic($today, $title, _("Stock"), $pg, _("Sales"));
 	table_two();
 	dimension_top($today, 3, 66);
 	$title = gl_top($today, 66, $pg);
-	source_graphic($today, $title, _("Class"), $pg, 5);
+	source_graphic($today, $title, _("Class"), $pg, _("Amount"), null, 5);
 	stock_top($today, 3, 66, 2);
 	stock_top($today, 3, 66, 1);
 	table_end();
@@ -300,6 +301,7 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		end_row();
 	}
 	end_table(2);
+	return $title;
 }
 
 function dimension_top($today, $limit=10, $width="33", &$pg=null)
@@ -336,6 +338,7 @@ function dimension_top($today, $limit=10, $width="33", &$pg=null)
 		end_row();
 	}
 	end_table(2);
+	return $title;
 }
 
 function gl_top($today, $width="33", &$pg=null)
@@ -382,14 +385,53 @@ function gl_top($today, $width="33", &$pg=null)
 		$pg->y[$i] = -$total;
 	}
 	end_table(2);
+	return $title;
 }
 
-function source_graphic($today, $title, $source, $pg, $type=2)
+function gl_performance($today, $width="33", $weeks=5)
 {
-	$pg->title     = $title;
-	$pg->axis_x    = $source;
+	$pg = new graph();
+
+	$begin = begin_fiscalyear();
+	$begin1 = date2sql($begin);
+	$today1 = date2sql($today);
+	$sql = "SELECT CONCAT(YEAR(tran_date), '/', WEEK(tran_date)) AS week_name, 
+			SUM(IF (c.ctype = 4, amount * -1, 0)) AS sales, 
+			SUM(IF (c.ctype = 6, amount, 0)) AS costs 
+		FROM
+			".TB_PREF."gl_trans, ".TB_PREF."chart_master AS a, ".TB_PREF."chart_types AS t, 
+			".TB_PREF."chart_class AS c WHERE (c.ctype = 4 OR c.ctype = 6)
+			AND account = a.account_code AND a.account_type = t.id AND t.class_id = c.cid
+			AND IF(c.ctype > 3, tran_date >= '$begin1', tran_date >= '0000-00-00') 
+			AND tran_date <= '$today1' 
+		GROUP BY week_name 
+		ORDER BY YEAR(tran_date) DESC, WEEK(tran_date) DESC limit 0, $weeks";
+	$result = db_query($sql, "Transactions could not be calculated");
+	$title = _("Last $weeks weeks Performance");
+	check_page_security('SA_GLANALYTIC');
+	$i = 0;
+	while ($myrow = db_fetch($result))
+	{
+		$pg->x[$i] = $myrow['week_name']; 
+		$pg->y[$i] = abs($myrow['sales']);
+		$pg->z[$i] = abs($myrow['costs']);
+		$i++;
+	}	
+	$pg->x = array_reverse($pg->x);
+	$pg->y = array_reverse($pg->y);
+	$pg->z = array_reverse($pg->z);
+	
+	source_graphic($today, $title, _("Week"), $pg, _("Sales"), _("Costs"), 1);
+}
+
+function source_graphic($today, $title, $x_axis, $pg, $graphic1, $graphic2=null, $type=2)
+{
+	$pg->title     = $title . " - " . $today;
+	$pg->axis_x    = $x_axis;
 	$pg->axis_y    = _("Amount");
-	$pg->graphic_1 = $today;
+	$pg->graphic_1 = $graphic1;
+	if ($graphic2 != null)
+		$pg->graphic_2 = $graphic2;
 	$pg->type      = $type;
 	$pg->skin      = 1;
 	$pg->built_in  = false;
