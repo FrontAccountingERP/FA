@@ -115,7 +115,8 @@ function display_stock_topten($type=0)
 		$source = _("Manufacturing");
 	else	
 		$source = _("Items");
-	source_graphic($today, $title, $source, $pg, ($type == 0 ? _("Sales") : _("Value")));
+	source_graphic($today, $title, $source, $pg, ($type == 0 ? _("Sales") : _("Amount")), 
+		($type == 0 ? _("Costs") : null));
 	table_end();
 }
 
@@ -254,7 +255,7 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 	if ($type == 0)
 	{
 		$sql = "SELECT SUM((trans.unit_price * trans.quantity) * d.rate) AS total, s.stock_id, s.description, 
-			SUM(trans.quantity) AS qty FROM
+			SUM(trans.quantity) AS qty, SUM((s.material_cost + s.overhead_cost + s.labour_cost) * trans.quantity) AS costs FROM
 			".TB_PREF."debtor_trans_details AS trans, ".TB_PREF."stock_master AS s, ".TB_PREF."debtor_trans AS d 
 			WHERE trans.stock_id=s.stock_id AND trans.debtor_trans_type=d.type AND trans.debtor_trans_no=d.trans_no
 			AND (d.type = ".ST_SALESINVOICE." OR d.type = ".ST_CUSTCREDIT.") ";
@@ -278,7 +279,10 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		$title = _("Top $limit Fixed Assets in fiscal year");
 	else	
 		$title = _("Top $limit Sold Items in fiscal year");
-	$th = array(_("Item"), _("Amount"), _("Quantity"));
+	if ($type == 0)	
+		$th = array(_("Item"), _("Sales"), _("Costs"), _("Quantity"));
+	else	
+		$th = array(_("Item"), _("Amount"), _("Quantity"));
 	start_table(TABLESTYLE, "width='$width%'");
 	display_title($title, count($th));	
 	table_header($th);
@@ -291,11 +295,15 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		$name = $myrow["description"];
 		label_cell($name);
 		amount_cell($myrow['total']);
+		if ($type == 0)
+			amount_cell($myrow['costs']);
 		qty_cell($myrow['qty']);
 		if ($pg != NULL)
 		{
 			$pg->x[$i] = $name; 
 			$pg->y[$i] = $myrow['total'];
+			if ($type == 0)
+				$pg->z[$i] = $myrow['costs'];
 		}	
 		$i++;
 		end_row();
@@ -426,6 +434,8 @@ function gl_performance($today, $width="33", $weeks=5)
 
 function source_graphic($today, $title, $x_axis, $pg, $graphic1, $graphic2=null, $type=2)
 {
+	if (count($pg->y) ==0 || (count($pg->y) == 1 && $pg->y[0] == 0))
+		return;
 	$pg->title     = $title . " - " . $today;
 	$pg->axis_x    = $x_axis;
 	$pg->axis_y    = _("Amount");
