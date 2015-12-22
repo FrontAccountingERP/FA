@@ -39,10 +39,10 @@
 			{
 				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
-				$img = "<img src='$path_to_root/themes/".user_theme()."/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
-				$pimg = "<img src='$local_path_to_root/themes/".user_theme()."/images/preferences.gif' width='14' height='14' border='0' alt='"._('Preferences')."'>&nbsp;&nbsp;";
-				$limg = "<img src='$local_path_to_root/themes/".user_theme()."/images/lock.gif' width='14' height='14' border='0' alt='"._('Change Password')."'>&nbsp;&nbsp;";
-				$himg = "<img src='$path_to_root/themes/".user_theme()."/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
+				$img = "<img src='$path_to_root/themes/".user_theme()."/images/login.gif' style='width:14px;height:14px;border:0;vertical-align:middle;padding-bottom:3px;' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$pimg = "<img src='$local_path_to_root/themes/".user_theme()."/images/preferences.gif' style='width:14px;height:14px;border:0;vertical-align:middle;padding-bottom:3px;' alt='"._('Preferences')."'>&nbsp;&nbsp;";
+				$limg = "<img src='$local_path_to_root/themes/".user_theme()."/images/lock.gif' style='width:14px;height:14px;border:0;vertical-align:middle;padding-bottom:3px;' alt='"._('Change Password')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$path_to_root/themes/".user_theme()."/images/help.gif' style='width:14px;height:14px;border:0;vertical-align:middle;padding-bottom:3px;' alt='"._('Help')."'>&nbsp;&nbsp;";
 				echo "<div id='header'>\n";
 				echo "<ul>\n";
 				echo "  <li><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>$pimg" . _("Preferences") . "</a></li>\n";
@@ -212,7 +212,7 @@
 				echo $module->name;
 				echo "</td></tr><tr>";
 				echo "<td width='50%' class='menu_group_items'>";
-				$img = "<img src='$path_to_root/themes/".user_theme()."/images/".$imgs2[$i]."' width='14' height='14' border='0'>&nbsp;&nbsp;";
+				$img = "<img src='$path_to_root/themes/".user_theme()."/images/".$imgs2[$i]."' style='width:14px;height:14px;border:0;vertical-align:middle;padding-bottom:3px;'>&nbsp;&nbsp;";
 				if ($_SESSION["language"]->dir == "rtl")
 					$class = "right";
 				else

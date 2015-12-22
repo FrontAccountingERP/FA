@@ -160,7 +160,7 @@ function display_all()
 	$title = supplier_top($today, 3, 66, $pg);
 	source_graphic($today, $title, _("Supplier"), $pg, _("Purchases"));
 	$title = stock_top($today, 3, 66, 0, $pg);
-	source_graphic($today, $title, _("Stock"), $pg, _("Sales"));
+	source_graphic($today, $title, _("Items"), $pg, _("Sales"), _("Costs"));
 	table_two();
 	dimension_top($today, 3, 66);
 	$title = gl_top($today, 66, $pg);
