@@ -53,9 +53,12 @@ function dashboard($sel_app)
 		display_all();
 }
 
-function display_title($title, $colspan=2)
+function display_title($title)
 {
-	echo "<tr><td colspan=$colspan class='headingtext' style='text-align:center;border:0;height:40px;'>$title</td></tr>\n";
+	br();
+	display_heading($title);
+	br();
+	//echo "<tr><td colspan=$colspan class='headingtext' style='background-color:#fff;text-align:center;border:0;height:40px;'>$title</td></tr>\n";
 }	
 
 function table_one()
@@ -179,9 +182,9 @@ function customer_top($today, $limit=10, $width="33", &$pg=null)
 		LIMIT $limit";
 	$result = db_query($sql);
 	$title = _("Top $limit customers in fiscal year");
+	display_title($title);
 	$th = array(_("Customer"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");
-	display_title($title, count($th));
 	table_header($th);
 	check_page_security('SA_SALESTRANSVIEW');
 	$k = 0; //row colour counter
@@ -216,9 +219,9 @@ function supplier_top($today, $limit=10, $width="33", &$pg=null)
 		LIMIT $limit";
 	$result = db_query($sql);
 	$title = _("Top $limit suppliers in fiscal year");
+	display_title($title);
 	$th = array(_("Supplier"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");
-	display_title($title, count($th));
 	table_header($th);
 	check_page_security('SA_SUPPTRANSVIEW');
 	$k = 0; //row colour counter
@@ -279,12 +282,12 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		$title = _("Top $limit Fixed Assets in fiscal year");
 	else	
 		$title = _("Top $limit Sold Items in fiscal year");
+	display_title($title);	
 	if ($type == 0)	
 		$th = array(_("Item"), _("Sales"), _("Costs"), _("Quantity"));
 	else	
 		$th = array(_("Item"), _("Amount"), _("Quantity"));
 	start_table(TABLESTYLE, "width='$width%'");
-	display_title($title, count($th));	
 	table_header($th);
 	check_page_security($sec);
 	$k = 0; //row colour counter
@@ -324,9 +327,9 @@ function dimension_top($today, $limit=10, $width="33", &$pg=null)
 		t.tran_date >= '$begin1' AND t.tran_date <= '$today1' GROUP BY d.id ORDER BY total DESC LIMIT $limit";
 	$result = db_query($sql, "Transactions could not be calculated");
 	$title = _("Top $limit Dimensions in fiscal year");
+	display_title($title);
 	$th = array(_("Dimension"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");
-	display_title($title, count($th));
 	table_header($th);
 	check_page_security('SA_DIMTRANSVIEW');
 	$k = 0; //row colour counter
@@ -362,8 +365,8 @@ function gl_top($today, $width="33", &$pg=null)
 		AND tran_date <= '$today1' GROUP BY c.cid ORDER BY c.cid"; 
 	$result = db_query($sql, "Transactions could not be calculated");
 	$title = _("Class Balances");
-	start_table(TABLESTYLE2, "width='$width%'");
 	display_title($title);
+	start_table(TABLESTYLE2, "width='$width%'");
 	check_page_security('SA_GLANALYTIC');
 	$i = 0;
 	$total = 0;
@@ -436,7 +439,8 @@ function source_graphic($today, $title, $x_axis, $pg, $graphic1, $graphic2=null,
 {
 	if (count($pg->y) ==0 || (count($pg->y) == 1 && $pg->y[0] == 0))
 		return;
-	$pg->title     = $title . " - " . $today;
+	display_title("$title ($today)");	
+	//$pg->title     = $title . " - " . $today;
 	$pg->axis_x    = $x_axis;
 	$pg->axis_y    = _("Amount");
 	$pg->graphic_1 = $graphic1;
@@ -475,14 +479,12 @@ function customer_trans($today)
 			AND DATEDIFF('$today', trans.due_date) > 0 ORDER BY days DESC";
 	$result = db_query($sql);
 	$title = db_num_rows($result) . _(" overdue Sales Invoices");
-	br(1);
-	display_heading($title);
-	br();
+  	display_title($title);
 	$th = array("#", _("Ref."), _("Date"), _("Due Date"), _("Customer"), _("Branch"), _("Currency"), 
 		_("Total"), _("Remainder"),	_("Days"));
 	start_table(TABLESTYLE);
 	table_header($th);
-	$k = 0; //row colour counter
+  	$k = 0; //row colour counter
 	while ($myrow = db_fetch($result))
 	{
 		alt_table_row_color($k);
@@ -517,12 +519,10 @@ function customer_recurrent_invoices($today)
 {
 	$result = get_recurrent_invoices($today);
 	$title = _("Overdue Recurrent Invoices");
-	br(1);
-	display_heading($title);
-	br();
+  	display_title($title);
 	$th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Next invoice"));
 	start_table(TABLESTYLE, "width=70%");
-	table_header($th);
+  	table_header($th);
 	$k = 0;
 	while ($myrow = db_fetch($result)) 
 	{
@@ -564,9 +564,7 @@ function supplier_trans($today)
 			AND DATEDIFF('$today', trans.due_date) > 0 ORDER BY days DESC";
 	$result = db_query($sql);
 	$title = db_num_rows($result) . _(" overdue Purchase Invoices");
-	br(1);
-	display_heading($title);
-	br();
+	display_title($title);
 	$th = array("#", _("Ref."), _("Date"), _("Due Date"), _("Supplier"), _("Currency"), _("Total"), 
 		_("Remainder"),	_("Days"));
 	start_table(TABLESTYLE);
@@ -601,9 +599,7 @@ function bank_balance($today, $width)
 				ORDER BY bank_account_name";
 	$result = db_query($sql);
 	$title = _("Bank Account Balances");
-	br(1);
-	display_heading($title);
-	br();
+	display_title($title);
 	$th = array(_("Account"), _("Balance"));
 	start_table(TABLESTYLE, "width='$width%'");
 	table_header($th);
