@@ -2521,6 +2521,7 @@ CREATE TABLE IF NOT EXISTS `0_wo_issue_items` (
   `stock_id` varchar(40) DEFAULT NULL,
   `issue_id` int(11) DEFAULT NULL,
   `qty_issued` double DEFAULT NULL,
+  `unit_cost` double NOT NULL default '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -2562,7 +2563,7 @@ CREATE TABLE IF NOT EXISTS `0_wo_requirements` (
   `stock_id` char(20) NOT NULL DEFAULT '',
   `workcentre` int(11) NOT NULL DEFAULT '0',
   `units_req` double NOT NULL DEFAULT '1',
-  `std_cost` double NOT NULL DEFAULT '0',
+  `unit_cost` double NOT NULL DEFAULT '0',
   `loc_code` char(5) NOT NULL DEFAULT '',
   `units_issued` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),

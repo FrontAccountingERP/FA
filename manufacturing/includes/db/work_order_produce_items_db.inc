@@ -14,26 +14,14 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	global $Refs;
 
 	begin_transaction();
+
 	$args = func_get_args();
 	$args = (object)array_combine(array('woid', 'ref', 'quantity', 'date_', 'memo_','close_wo'),
 		$args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_MANURECEIVE);
 
-	$details = get_work_order($woid);
-
-    if (strlen($details[0]) == 0)
-    {
-    	echo _("The order number sent is not valid.");
-    	exit;
-    }
-
-	if (work_order_is_closed($woid))
-	{
-		display_error("UNEXPECTED : Producing Items for a closed Work Order");
-		cancel_transaction();
-		exit;
-	}
+	$product = get_work_order($woid);
 
     $date = date2sql($date_);
 
@@ -46,38 +34,52 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	$id = db_insert_id();
 
 	// -------------------------------------------------------------------------
+	// insert -ve and update averaged component unit cost for BOM usage (in wo_requirements)
+	work_order_receive_costs($woid, $product["stock_id"], $quantity, $date_, $id);
 
-	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, $id);
-	// -------------------------------------------------------------------------
+	// update wo quantity and close wo if requested (or finished)
+	$closed = work_order_update_finished_quantity($woid, $quantity, $date_, $close_wo);
 
-	// Stamp BOM cost to finished item
-	$m_cost = 0;
-    $result = get_bom($details["stock_id"]);
-	while ($bom_item = db_fetch($result))
+	// unit_cost is known when WO is finished, then generate +ve for all items
+	if ($closed)
 	{
-		$standard_cost = get_standard_cost($bom_item['component']);
-		$m_cost += ($bom_item['quantity'] * $standard_cost);
-	}
-	// new 2015.10.15	
-	// additilnal costs.
-	if (work_order_has_issues($woid))
-	{
-		$res = get_additional_issues($woid);
-		while ($issue = db_fetch($res))
+		// 1. calculate sums of material/labour/overhead costs
+
+		// sum collected BOM material & labour costs (no way for separate overhead here for now - needs flag in bom or stock_master)
+		$bom = get_wo_requirements($woid);
+		$m_cost = $l_cost = 0;
+		while ($component = db_fetch($bom))
 		{
-			$standard_cost = get_standard_cost($issue['stock_id']);
-			$m_cost += ($issue['qty_issued'] * $standard_cost) / $quantity;
+			if (!is_service($component["mb_flag"]))
+				$m_cost += $component['unit_cost']*$component['units_issued'];
+			else
+				$l_cost += $component['unit_cost']*$component['units_issued'];
 		}
-	}
-	$m_cost += (get_gl_wo_cost($woid, WO_LABOUR) / $quantity);
-	$m_cost += (get_gl_wo_cost($woid, WO_OVERHEAD) / $quantity);
 
-	// insert a +ve stock move for the item being manufactured
-	// negative means "unproduce" or unassemble
-	add_stock_move(ST_MANURECEIVE, $details["stock_id"], $id,
-		$details["loc_code"], $date_, $ref, $quantity, $m_cost);
-	// update wo quantity and close wo if requested
-	work_order_update_finished_quantity($woid, $quantity, $close_wo);
+		// add additional material issues
+		$issues = get_additional_issues($woid);
+		while ($issue = db_fetch($issues))
+		{
+			if (!is_service($issue["mb_flag"]))
+				$m_cost += $issue['unit_cost']*$issue['qty_issued'];
+			else
+				$l_cost += $issue['unit_cost']*$issue['qty_issued'];
+		}
+
+		// and additional costs
+		$o_cost = get_gl_wo_cost($woid, WO_OVERHEAD);
+		$l_cost += get_gl_wo_cost($woid, WO_LABOUR);
+
+		$unit_cost = ($o_cost+$m_cost+$l_cost)/($product['units_issued']+$quantity);
+
+		update_material_cost($product['stock_id'], $product['units_issued']+$quantity, $unit_cost, $date_);
+		// FIXME: ?
+//		update_labour_cost(stock_id, qty, unit_cost);
+//		update_overheads_cost(stock_id, qty, unit_cost);
+
+		add_stock_move(ST_WORKORDER, $product["stock_id"], $woid,
+			$product["loc_code"], $date_, $ref, $product['units_issued']+$quantity, $unit_cost);
+	}
 
 	if ($memo_)
 		add_comments(ST_MANURECEIVE, $id, $date_, $memo_);
@@ -87,7 +89,42 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	$args->trans_no = $id;
 	hook_db_postwrite($args, ST_MANURECEIVE);
+
 	commit_transaction();
+}
+
+/*
+	Process component usage: generate and post stock move, update average component cost.
+*/
+function work_order_receive_costs($woid, $stock_id, $quantity, $date_, $rcv_no)
+{
+	$result = get_wo_requirements($woid);
+
+	// credit all the components
+	$total_cost = 0;
+	while ($bom_item = db_fetch($result))
+	{
+
+		$bom_cost = $bom_item["ComponentCost"] * $quantity;
+
+		update_wo_requirement_issued($bom_item['id'], $bom_item["units_req"] * $quantity, $bom_item["ComponentCost"]);
+
+		// insert a -ve stock move for each item
+		add_stock_move(ST_MANURECEIVE, $bom_item["stock_id"], $rcv_no,
+			$bom_item["loc_code"], $date_, "", -$bom_item["units_req"] * $quantity, $bom_item["ComponentCost"], 0);
+
+		if (!is_service($bom_item["mb_flag"]))
+			$ivaccount = $bom_item["inventory_account"];
+		else
+			$ivaccount = $bom_item["assembly_account"];
+
+		$memo = $date_.": ".$bom_item["units_req"] ." * ".$bom_item["description"];
+		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
+			$memo, -$bom_cost);
+	}
+
+    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, get_company_pref('wip_act'),
+        0, 0, $memo, -$total_cost);
 }
 
 //--------------------------------------------------------------------------------------------

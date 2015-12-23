@@ -25,3 +25,6 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('use_manufacturing','setup.company', 'tinyint', 1, '1'),
 	('use_fixed_assets','setup.company', 'tinyint', 1, '1'),
 	('wip_act', 'glsetup.manuf', 'varchar', '15', '');
+
+ALTER TABLE `0_wo_issue_items` ADD COLUMN  `unit_cost` double NOT NULL default '0' AFTER `qty_issued`;
+ALTER TABLE `0_wo_requirements` CHANGE COLUMN `std_cost` `unit_cost` double NOT NULL default '0';

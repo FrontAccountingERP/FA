@@ -9,8 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//--------------------------------------------------------------------------------------
-
+/*
+	Quick work order entry, $type is either WO_ASSEMBLY, or WO_UNASSEMBLY
+	All changes in material and manufactured item stock are made during work order entry.
+*/
 function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, 
 	$date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
@@ -68,7 +70,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		// insert a -ve stock move for each item
 		$UnitCost = get_standard_cost($bom_item["component"]);
 		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
-			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, 0, 1, $UnitCost);
+			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, $UnitCost, $UnitCost);
 	}
 
 	// -------------------------------------------------------------------------
@@ -93,7 +95,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	// -------------------------------------------------------------------------
 
-	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
+	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	// -------------------------------------------------------------------------
 
@@ -104,76 +106,57 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	$args->woid = $woid;
 	hook_db_postwrite($args, ST_WORKORDER);
+
 	commit_transaction();
 	return $woid;
 }
 
 //--------------------------------------------------------------------------------------
 
-function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
+function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
-	//global $wo_cost_types;
 	$result = get_bom($stock_id);
 
 	// credit all the components
 	$total_cost = 0;
-	$total_material_cost = 0;
 	while ($bom_item = db_fetch($result))
 	{
 
 		$bom_accounts = get_stock_gl_code($bom_item["component"]);
 
-		$bom_cost = $bom_item["ComponentCost"] * $units_reqd;
+		$bom_cost = $bom_item["ComponentCost"] * $units_reqd; // ??  * $bom_item["quantity"]
 
 		$memo = $bom_item["quantity"] ." * ".$bom_item["description"];
-		if ($advanced)
-		{
-			$memo = $date_.": ".$memo; 
-			update_wo_requirement_issued($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd); 			
-			// insert a -ve stock move for each item
-			$UnitCost = get_standard_cost($bom_item["component"]);			
-			add_stock_move(ST_MANURECEIVE, $bom_item["component"], $advanced,
-				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, $UnitCost, 0, 1, $UnitCost);
-		}
-		//Compatibility for Service Items
+
 		if (!is_service($bom_accounts["mb_flag"]))
 			$ivaccount = $bom_accounts["inventory_account"];
 		else
-			$ivaccount = $bom_accounts["assembly_account"]; // changed 2015.10.14 by Petros .		
+			$ivaccount = $bom_accounts["assembly_account"];
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
 			$memo, -$bom_cost);
-		$total_material_cost += $bom_cost;
 	}
-	if ($advanced)
-	{
-		//Material cost added at time of production as per BOM at the time and in adjustment mode.
-		add_material_cost($stock_id, $units_reqd, $date_, true, $woid);	
- 		// $wo = get_work_order($woid);
-		// also take the additional issues
-		// moved to work_order_issues_db.inc
-	} 	// credit additional costs
-	$item_accounts = get_stock_gl_code($stock_id);
+
+ 	$stockitem = get_item($stock_id);
+	// credit additional costs
 	if ($costs != 0.0)
 	{
-		add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $item_accounts["assembly_account"],
-			$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
+		add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $stockitem["assembly_account"],
+			$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
 	}
-	if ($labour != 0.0) // only for quick
+
+	if ($labour != 0.0)
 	{
-		add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $item_accounts["assembly_account"],
-			$date_, $item_accounts["dimension_id"], $item_accounts["dimension2_id"]);
+		add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $stockitem["assembly_account"],
+			$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
 	}
+
 	// debit total components $total_cost
- 	$stockitem = get_item($stock_id);
  	$memo = _("Produced")." ".$units_reqd. " * ".$stockitem["description"];
- 	if ($advanced)
- 		$memo = $date_.": ".$memo;
-    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
+
+    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $stockitem["inventory_account"],
         0, 0, $memo, -$total_cost);
-	if (!$advanced)
-	{
-		$UnitWOCost = ($total_material_cost + $costs + $labour)/$units_reqd;
-		update_stock_move(ST_WORKORDER, $woid, $stock_id, $UnitWOCost);	
-	}	
+
+	$UnitWOCost = ($total_cost + $costs + $labour)/$units_reqd;
+	update_stock_move(ST_WORKORDER, $woid, $stock_id, $UnitWOCost);	
 }
 

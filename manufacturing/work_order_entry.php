@@ -259,8 +259,7 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 {
 
 	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
-		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_'],
-		$_POST['old_stk_id'], $_POST['old_qty']);
+		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 }
@@ -355,8 +354,6 @@ if (isset($selected_id))
 	hidden('released', $_POST['released']);
 	hidden('released_date', $_POST['released_date']);
 	hidden('selected_id',  $selected_id);
-	hidden('old_qty', $myrow["units_reqd"]);
-	hidden('old_stk_id', $myrow["stock_id"]);
 
 	label_row(_("Reference:"), $_POST['wo_ref']);
 	label_row(_("Type:"), $wo_types_array[$_POST['type']]);

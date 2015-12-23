@@ -47,8 +47,6 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false, $woid=0)
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
 	$bom_cost = $m_cost;
-	// new 2015.10.15	
-	// additilnal costs.
 	$i_cost = 0;
 	if ($woid != 0 && work_order_has_issues($woid))
 	{
@@ -83,15 +81,85 @@ function add_material_cost($stock_id, $qty, $date_, $advanced=false, $woid=0)
 	if ($qoh + $qty != 0)
 	{
 		if ($qoh == 0)
-			$material_cost = $m_cost; // corrected 27.10.2014
+			$material_cost = $m_cost;
 		else
 			$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
 	}
-	
-	if ($advanced && $cost_adjust) // new 2010-02-10
-		adjust_deliveries($stock_id, $bom_cost, $date_);	
-	
+
+	if ($advanced && $cost_adjust)
+		adjust_deliveries($stock_id, $bom_cost, $date_);
+
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
+		    WHERE stock_id=".db_escape($stock_id);
+	db_query($sql,"The cost details for the inventory item could not be updated");
+}
+
+/*
+	Updates average material cost for item.
+*/
+function update_material_cost($stock_id, $qty, $unit_cost, $date)
+{
+	global $Refs;
+
+	$product = get_item($stock_id);
+	$avg_cost =  $product['material_cost'];
+
+	$qoh = get_qoh_on_date($stock_id, null, $date);
+
+	// unit_cost*qty is already posted on inventory GL
+/* 
+	if ($qoh > 0)
+	{
+		 if ($qty<0)
+			$qty_done = max(-$qoh, $qty);
+		 else
+			$qty_done = $qty;
+	} else {
+		if ($qty>0)
+			$qty_done = max($qoh+$qty, 0);
+		else
+			$qty_done = 0;
+	}
+	$qty_delayed = $qty-$qty_done;
+*/
+	if ($qoh < 0)
+	{
+			$qty_delayed = min(-$qoh, $qty);
+	} else {
+			$qty_delayed = 0;
+	}
+	$qty_new = $qty - $qty_delayed;
+
+	if ($qty_delayed > 0 && ($unit_cost != $avg_cost))
+	{
+		// post	$qty_delayed*($avg_cost-$unit_cost)
+		$diff = $qty_delayed*($unit_cost-$avg_cost);
+		$stock_gl_code = get_item($stock_id);
+
+		$dec = user_price_dec();
+		$old_cost = -round2($avg_cost, $dec);
+		$new_cost = -round2($unit_cost, $dec);
+
+		$cart = new items_cart(ST_COSTUPDATE);
+		$cart->tran_date = $cart->doc_date = $cart->event_date = $date;
+
+		if (!is_date_in_fiscalyear($cart->tran_date))
+			$cart->tran_date = end_fiscalyear();
+
+		$cart->reference = $Refs->get_next(ST_COSTUPDATE, null, $cart->tran_date, $date);
+
+		$cart->memo_ = sprintf(_("COGS changed from %s to %s for %d %s of '%s'"), $avg_cost, $unit_cost, $qty_delayed, $item['units'], $stock_id);
+
+		$cart->add_gl_item($item["cogs_account"], $item["dimension_id"], $item["dimension2_id"], -$diff);
+		$cart->add_gl_item($item["inventory_account"], 0, 0, $diff);
+
+		write_journal_entries($cart);
+	}
+
+	if ($qty > 0 && ($qoh != -$qty))
+		$avg_cost = ($avg_cost*($qoh+$qty_delayed)+$unit_cost*$qty_new)/($qoh+$qty);
+
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($avg_cost)."
 		    WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }

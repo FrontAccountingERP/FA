@@ -143,7 +143,10 @@ start_row();
 stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 end_row();
 if (list_updated('stock_id'))
+{
+	$selected_id = -1;
 	$Ajax->activate('_page_body');
+}
 end_table();
 br();
 
@@ -192,7 +195,7 @@ start_form();
 		echo "</td>";
 		end_row();
 	}
-	hidden('stock_id', $selected_parent);
+//	hidden('stock_id', $selected_parent);
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);

@@ -9,24 +9,32 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//--------------------------------------------------------------------------------------
-
+/*
+	Common entry procedure for all work order types
+*/
 function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
-	global $Refs;
-
 	if (!($type == WO_ADVANCED))
 		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
+	else
+		return add_work_order_advanced($wo_ref, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
+}
+
+/*
+	Advanced wrok order entry.
+*/
+function add_work_order_advanced($wo_ref, $loc_code, $units_reqd, $stock_id,
+	$date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
+{
+	global $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
 	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
-		'type', 'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+		'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
 	$args->woid = 0;
 	hook_db_prewrite($args, ST_WORKORDER);
-
-	add_material_cost($stock_id, $units_reqd, $date_);
 
 	$date = date2sql($date_);
 	$required = date2sql($required_by);
@@ -35,7 +43,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 		type, date_, required_by)
     	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", "
     	.db_escape($units_reqd).", ".db_escape($stock_id).",
-		".db_escape($type).", '$date', ".db_escape($required).")";
+		".WO_ADVANCED.", '$date', ".db_escape($required).")";
 	db_query($sql, "could not add work order");
 
 	$woid = db_insert_id();
@@ -47,6 +55,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	$args->woid = $woid;
 	hook_db_postwrite($args, ST_WORKORDER);
+
 	commit_transaction();
 
 	return $woid;
@@ -55,16 +64,13 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 //--------------------------------------------------------------------------------------
 
 function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
-					$date_, $required_by, $memo_, $old_stock_id, $old_qty)
+					$date_, $required_by, $memo_)
 {
 	begin_transaction();
 	$args = func_get_args();
 	$args = (object)array_combine(array('woid', 'loc_code', 'units_reqd', 'stock_id',
 		'date_', 'required_by', 'memo_'), $args);
 	hook_db_prewrite($args, ST_WORKORDER);
-
-	add_material_cost($old_stock_id, -$old_qty, $date_);
-	add_material_cost($stock_id, $units_reqd, $date_);
 
 	$date = date2sql($date_);
 	$required = date2sql($required_by);
@@ -88,8 +94,6 @@ function delete_work_order($woid, $stock_id, $qty, $date)
 {
 	begin_transaction();
 	hook_db_prevoid(ST_WORKORDER, $woid);
-
-	add_material_cost($stock_id, -$qty, $date);
 
 	// delete the work order requirements
 	delete_wo_requirements($woid);
@@ -119,7 +123,10 @@ function get_work_order($woid, $allow_null=false)
 	$result = db_query($sql, "The work order issues could not be retrieved");
 
 	if (!$allow_null && db_num_rows($result) == 0)
+	{
 		display_db_error("Could not find work order $woid", $sql);
+		return false;
+	}
 
 	return db_fetch($result);
 }
@@ -171,7 +178,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 		released=1 WHERE id = ".db_escape($woid);
 	db_query($sql, "could not release work order");
 
-	// create Work Order Requirements based on the bom
+	// create wo_requirements records according to current BOM
 	create_wo_requirements($woid, $stock_id);
 
 	add_comments(ST_WORKORDER, $woid, $releaseDate, $memo_);
@@ -199,14 +206,24 @@ function work_order_is_closed($woid)
 }
 
 //--------------------------------------------------------------------------------------
-
-function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
+/*
+	Update finished items quantity in work order, and close order either if all the order is produced,
+	or on user demand. Returns calculated unit cost on close, or null otherwise.
+*/
+function work_order_update_finished_quantity($woid, $quantity, $date, $force_close=0)
 {
-	$sql = "UPDATE ".TB_PREF."workorders SET units_issued = units_issued + ".db_escape($quantity).",
-		closed = ((units_issued >= units_reqd) OR ".db_escape($force_close).")
-		WHERE id = ".db_escape($woid);
+
+	$sql = "UPDATE ".TB_PREF."workorders SET units_issued = units_issued + ".db_escape($quantity)."
+		WHERE id = ".db_escape($woid). " AND !closed";
 
 	db_query($sql, "The work order issued quantity couldn't be updated");
+
+	$sql = "UPDATE ".TB_PREF."workorders SET closed = ((units_issued >= units_reqd) OR ".db_escape($force_close).")
+		WHERE id = ".db_escape($woid);
+
+	db_query($sql, "The work order couldn't be closed");
+
+	return db_num_affected_rows();	// returns 1 if WO has been closed
 }
 
 //--------------------------------------------------------------------------------------
@@ -219,6 +236,18 @@ function void_work_order($woid)
 	$work_order = get_work_order($woid);
 	if (!($work_order["type"] == WO_ADVANCED))
 	{
+		// restore average product costs 
+		$date = sql2date($work_order['date_']);
+		$qty = $work_order['units_reqd'];
+		add_material_cost($work_order['stock_id'], -$qty, $date); // remove avg. cost for qty
+		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
+		if ($cost != 0)
+			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
+		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
+		if ($cost != 0)
+			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
+
+		// close workorder
 		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			.db_escape($woid);
 		db_query($sql, "The work order couldn't be voided");
@@ -226,8 +255,8 @@ function void_work_order($woid)
 		// void all related stock moves
 		void_stock_move(ST_WORKORDER, $woid);
 
-		// void any related bank/gl trans
-		void_bank_trans(ST_WORKORDER, $woid, true);
+		// void any related costing records
+		void_wo_costing($woid);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
@@ -236,46 +265,43 @@ function void_work_order($woid)
 	{
 		// void everything inside the work order : issues, productions, payments
 		$date = sql2date($work_order['date_']);
-		
+
+		add_material_cost($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty
 		$result = get_work_order_productions($woid); // check the produced quantity
+		$qty = 0;
 		while ($row = db_fetch($result))
 		{
-			void_work_order_produce($row['id']);
-			
-			//Post voided entry if not prevoided explicitly
-			$void_entry = get_voided_entry(ST_MANURECEIVE, $row['id']);
-			if ($void_entry)
-				continue;
-			$memo_ = _("Voiding Work Order Trans # ").$woid;
-			add_audit_trail(ST_MANURECEIVE, $row['id'], today(), _("Voided.")."\n".$memo_);
-			add_voided_entry(ST_MANURECEIVE, $row['id'], today(), $memo_);
-		}
+			$qty += $row['quantity'];
+			// clear the production record
+			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$row['id'];
+			db_query($sql, "Cannot void a wo production");
 
-		$result = get_work_order_issues($woid);
+			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
+		}
+		$result = get_additional_issues($woid); // check the issued quantities
 		$cost = 0;
+		$issue_no = 0;
 		while ($row = db_fetch($result))
 		{
-			void_work_order_issue($row['issue_no']);
-			
-			//Post voided entry if not prevoided explicitly
-			$void_entry = get_voided_entry(ST_MANUISSUE, $row['issue_no']);
-			if ($void_entry)
-				continue;
-			$memo_ = _("Voiding Work Order Trans # ").$woid;
-			add_audit_trail(ST_MANUISSUE, $row['issue_no'], today(), _("Voided.")."\n".$memo_);
-			add_voided_entry(ST_MANUISSUE, $row['issue_no'], today(), $memo_);				
-		}
+			$std_cost = get_standard_cost($row['stock_id']);
+			$icost = $std_cost * $row['qty_issued'];
+			$cost += $icost;
+			if ($issue_no == 0)
+				$issue_no = $row['issue_no'];
+			// void the actual issue items and their quantities
+			$sql = "UPDATE ".TB_PREF."wo_issue_items SET qty_issued = 0 WHERE issue_id="
+				.db_escape($row['id']);
+			db_query($sql,"A work order issue item could not be voided");
+		}	
+		if ($issue_no != 0)
+			void_stock_move(ST_MANUISSUE, $issue_no); // and void the stock moves 
 
-		//Adust avg labour cost
-		$cost = get_gl_wo_cost($woid, WO_LABOUR); 
 		if ($cost != 0)
-			add_labour_cost($work_order['stock_id'], 1, $date, -$cost, true);
-			
-		//Adust avg overhead cost
-		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); 
+			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
+
 		if ($cost != 0)
-			add_overhead_cost($work_order['stock_id'], 1, $date, -$cost, true);
-		
+			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
+
 		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			.db_escape($woid);
 		db_query($sql, "The work order couldn't be voided");
@@ -284,11 +310,12 @@ function void_work_order($woid)
 		void_stock_move(ST_WORKORDER, $woid);
 
 		// void any related bank/gl trans
-		void_bank_trans(ST_WORKORDER, $woid, true);
+		void_wo_costing($woid);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
 	}
+
 	commit_transaction();
 }
 
@@ -348,6 +375,7 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}
+	$sql .= " ORDER BY workorder.id DESC";
 	return $sql;
 }
 
@@ -376,6 +404,6 @@ function get_gl_wo_cost($woid, $cost_type)
 	$result = get_gl_wo_cost_trans($woid, $cost_type);
 	while ($row = db_fetch($result))
 		$cost += -$row['amount'];
-	return $cost;	
+	return $cost;
 }
 

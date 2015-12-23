@@ -23,23 +23,6 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_MANUISSUE);
 
-	$details = get_work_order($woid);
-
-    if (strlen($details[0]) == 0)
-    {
-    	echo _("The order number sent is not valid.");
-    	cancel_transaction();
-    	exit;
-    }
-
-	if (work_order_is_closed($woid))
-	{
-		display_error("UNEXPECTED : Issuing items for a closed Work Order");
-		cancel_transaction();
-		exit;
-	}
-
-	// insert the actual issue
 	$sql = "INSERT INTO ".TB_PREF."wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
 		VALUES (".db_escape($woid).", ".db_escape($ref).", '" .
 		date2sql($date_) . "', ".db_escape($location).", ".db_escape($workcentre).")";
@@ -48,6 +31,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 	$number = db_insert_id();
 
 	$issue_total = $total_cost = 0;
+
+	$wo = get_work_order($woid);
 
 	foreach ($items as $item)
 	{
@@ -61,33 +46,40 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
 			$location, $date_, $memo_, -$item->quantity, $standard_cost);
 
-		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued)
-			VALUES (".db_escape($number).", ".db_escape($item->stock_id).", "
-			.db_escape($item->quantity).")";
+		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued, unit_cost)
+			SELECT ".db_escape($number).",".db_escape($item->stock_id).",".db_escape($item->quantity).", material_cost
+			FROM ".TB_PREF."stock_master
+			WHERE stock_id=".db_escape($item->stock_id);
+
 		db_query($sql,"A work order issue item could not be added");
 
 		$standard_cost = get_standard_cost($item->stock_id);
 		$issue_cost = $standard_cost * $item->quantity;
-		$issue = get_stock_gl_code($item->stock_id);
+
         $stockitem = get_item($item->stock_id);
 
 		// Compatibility for Service Items
-		if (!is_service($issue["mb_flag"]))
-			$ivaccount = $issue["inventory_account"];
+		if (!is_service($stockitem["mb_flag"]))
+			$ivaccount = $stockitem["inventory_account"];
 		else
-			$ivaccount = $issue["assembly_account"];		
+			$ivaccount = $stockitem["assembly_account"];
 
         $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
-                $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
+                $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);
 		$issue_total += $issue_cost;
-	}	
-	if ($issue_total != 0)
-		// Apply cost to QOH as adjustment only
-		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total, true);
-	$issue = get_stock_gl_code($details['stock_id']);
-    $stockitem = get_item($details['stock_id']);
-    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"],
-        0, 0, $date_.": "._("Issue to")." ".$stockitem["description"], -$total_cost);	
+	}
+
+	if ($issue_total != 0)	// Apply cost to QOH as adjustment only
+		add_issue_cost($wo['stock_id'], $wo['units_reqd'], $date_, $issue_total, true);
+
+    $stockitem = get_item($wo['stock_id']);
+    $wip_account = get_company_pref('wip_act'); 
+
+    if (!$wip_account)	// backward compatibility
+    	$wip_account = $stockitem["inventory_account"];
+
+    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $wip_account,
+        0, 0, $date_.": "._("Issue to")." ".$stockitem["description"], -$total_cost);
 
 	if ($memo_)
 		add_comments(ST_MANUISSUE, $number, $date_, $memo_);
@@ -97,6 +89,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 
 	$args->trans_no = $number;
 	hook_db_postwrite($args, ST_MANUISSUE);
+
 	commit_transaction();
 }
 
