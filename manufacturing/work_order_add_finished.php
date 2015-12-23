@@ -27,6 +27,8 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
+check_wip_account();
+
 if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 {
 	$_POST['selected_id'] = $_GET['trans_no'];

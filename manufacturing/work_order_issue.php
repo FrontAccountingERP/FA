@@ -30,6 +30,7 @@ if (user_use_date_picker())
 
 page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
+check_wip_account();
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 

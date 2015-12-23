@@ -83,7 +83,8 @@ if (isset($_POST['submit']) && can_process())
 		'no_zero_lines_amount', 'show_po_item_codes', 'accounts_alpha', 'loc_notification', 'print_invoice_no',
 		'allow_negative_prices', 'print_item_images_on_quote', 
 		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
-		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
+		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0,
+		'wip_act'
 )));
 
 	display_notification(_("The general GL setup has been updated."));
@@ -147,6 +148,7 @@ $_POST['allow_negative_prices'] = $myrow['allow_negative_prices'];
 $_POST['print_item_images_on_quote'] = $myrow['print_item_images_on_quote'];
 $_POST['default_loss_on_asset_disposal_act'] = $myrow['default_loss_on_asset_disposal_act'];
 $_POST['depreciation_period'] = $myrow['depreciation_period'];
+$_POST['wip_act'] = $myrow['wip_act'];
 
 //---------------
 
@@ -266,6 +268,8 @@ array_selector_row (_("Depreciation Period:"), 'depreciation_period', $_POST['de
 table_section_title(_("Manufacturing Defaults"));
 
 text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
+
+gl_all_accounts_list_row(_("Work In Progress Account:"), 'wip_act', $_POST['wip_act']);
 
 //----------------
 

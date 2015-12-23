@@ -165,8 +165,8 @@ $cols = array(
 	_("Required By") => array('type'=>'date', 'ord'=>''),
 	array('insert'=>true, 'fun'=> 'edit_link'),
 	array('insert'=>true, 'fun'=> 'release_link'),
-	array('insert'=>true, 'fun'=> 'produce_link'),
 	array('insert'=>true, 'fun'=> 'costs_link'),
+	array('insert'=>true, 'fun'=> 'produce_link'),
 	array('insert'=>true, 'fun'=> 'view_gl_link')
 );
 

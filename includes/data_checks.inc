@@ -153,8 +153,8 @@ function check_db_has_sales_people($msg)
     {
     	display_error($msg, true);
     	end_page();
-    	exit;	
-    }	
+    	exit;
+    }
 }
 
 function db_has_sales_areas()
@@ -673,4 +673,20 @@ function check_reference($reference, $trans_type, $trans_no=0, $context=null, $l
 		display_error( _("The entered reference is already in use.")); return false;
 	}
 	return true;
+}
+
+function check_sys_pref($name, $msg, $empty = '')
+{
+	global $path_to_root;
+
+	if (get_company_pref($name) === $empty)
+	{
+		display_error(menu_link("/admin/gl_setup.php", $msg), true);
+		display_footer_exit();
+	}
+}
+
+function check_wip_account()
+{
+	check_sys_pref('wip_act', _("You have to set Work In Progress Account in GL Setup before you can use this function."));
 }
