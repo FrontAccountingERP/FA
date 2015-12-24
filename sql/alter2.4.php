@@ -101,6 +101,13 @@ class fa2_4 extends fa_patch {
 		$pref = $this->companies[$company]['tbpref'];
 		db_query("DROP TABLE IF EXISTS " . $pref . 'wo_costing');
 		db_query("DROP TABLE IF EXISTS " . $pref . 'stock_fa_class');
+		db_query("DELETE FROM ".$pref."sys_prefs
+			WHERE `name` in (
+				'gl_closing_date', 'deferred_income_act', 'no_zero_lines_amount', 'accounts_alpha',
+				'tax_algorithm', 'grn_clearing_act', 'default_receival_required',
+				'default_quote_valid_days',	'no_zero_lines_amount',	'show_po_item_codes', 'accounts_alpha',
+				'loc_notification', 'print_invoice_no', 'allow_negative_prices', 'print_item_images_on_quote',
+				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates')");
 	}
 
 	function update_workorders()
@@ -108,7 +115,7 @@ class fa2_4 extends fa_patch {
 		global $db;
 
 		$sql = "SELECT DISTINCT type, type_no, tran_date, person_id FROM ".TB_PREF."gl_trans WHERE `type`=".ST_WORKORDER
-		." AND person_type_id=1";
+			." AND person_type_id=1";
 		$res = db_query($sql);
 		if (!$res)
 			return $this->log_error(sprintf(_("Cannot update work orders costs:\n%s"), db_error_msg($db)));

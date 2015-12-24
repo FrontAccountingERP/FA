@@ -208,15 +208,9 @@ UPDATE `0_trans_tax_details` reg
 
 INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0),
-	('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10'),
 	('default_quote_valid_days', 'glsetup.sales', 'smallint', 6, 30),
 	('no_zero_lines_amount', 'glsetup.sales', 'tinyint', 1, '1'),
-	('show_po_item_codes', 'glsetup.purchase', 'tinyint', 1, '0'),
 	('accounts_alpha', 'glsetup.general', 'tinyint', 1, '0'),
-	('loc_notification', 'glsetup.inventory', 'tinyint', 1, '0'),
-	('print_invoice_no', 'glsetup.sales', 'tinyint', 1, '0'),
-	('allow_negative_prices', 'glsetup.inventory', 'tinyint', 1, '1'),
-	('print_item_images_on_quote', 'glsetup.inventory', 'tinyint', 1, '0'),
 	('bcc_email', 'setup.company', 'varchar', 100, ''),
 	('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0'),
 	('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');

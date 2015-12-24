@@ -19,8 +19,9 @@ ALTER TABLE `0_stock_master` ADD COLUMN `depreciation_date` date NOT NULL DEFAUL
 ALTER TABLE `0_stock_master` ADD COLUMN `fa_class_id` varchar(20) NOT NULL DEFAULT '' AFTER `depreciation_date`;
 ALTER TABLE `0_stock_master` CHANGE `actual_cost` `purchase_cost` double NOT NULL default 0;
 
-INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
-INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
-
-INSERT INTO `0_sys_prefs` VALUES ('use_manufacturing','setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES ('use_fixed_assets','setup.company', 'tinyint', 1, '1');
+INSERT IGNORE INTO `0_sys_prefs` VALUES
+	('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660'),
+	('depreciation_period', 'glsetup.company', 'tinyint', '1', '1'),
+	('use_manufacturing','setup.company', 'tinyint', 1, '1'),
+	('use_fixed_assets','setup.company', 'tinyint', 1, '1'),
+	('wip_act', 'glsetup.manuf', 'varchar', '15', '');

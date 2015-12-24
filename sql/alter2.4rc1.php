@@ -22,6 +22,35 @@ class fa2_4rc1 extends fa_patch {
 		$this->description = _('Upgrade from version 2.4beta to 2.4RC1');
 	}
 
+    /*
+	    Shows parameters to be selected before upgrade (if any)
+	*/
+    function show_params($comp)
+	{
+	  display_note(_('Set optimal parameters and start upgrade:'));
+	  start_table(TABLESTYLE);
+	  start_row();
+		table_section_title(_("Fixed Assets Defaults"));
+		gl_all_accounts_list_row(_("Loss On Asset Disposal Account:"), 'default_loss_on_asset_disposal_act', '5660',
+			true, false, _("None (will be set later)"));
+
+	  	table_section_title(_("Manufacturing"));
+		gl_all_accounts_list_row(_("Work In Progress Account:"), 'wip_act', '1530',
+			true, false, _("None (will be set later)"));
+	  end_row();
+	  end_table();
+	  br();
+    }
+
+	/*
+	    Fetches selected upgrade parameters.
+    */
+	function prepare()
+    {
+		$this->wip_account = get_post('wip_act');
+		$this->fixed_disposal_act = get_post('default_loss_on_asset_disposal_act');
+		return true;
+	}
 	//
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
@@ -36,6 +65,17 @@ class fa2_4rc1 extends fa_patch {
 				'SA_DEPRECIATION', 'SA_ASSETSANALYTIC'),
 		);
 		$result = $this->update_security_roles($sec_updates);
+
+		$pref = $this->companies[$company]['tbpref'];
+
+		if ($result)
+			if (!db_query("UPDATE ".$pref."sys_prefs SET value=".db_escape($this->wip_act)
+					." WHERE name='wip_act'")
+				|| !db_query("UPDATE ".$pref."sys_prefs SET value=".db_escape($this->fixed_disposal_act)
+					." WHERE name='default_loss_on_asset_disposal_act'")
+			)
+				return $this->log_error(sprintf(_("Cannot update sys prefs setting:\n%s"), db_error_msg($db)));
+
 		return $result;
 	}
 
@@ -46,6 +86,14 @@ class fa2_4rc1 extends fa_patch {
 	{
 		$pref = $this->companies[$company]['tbpref'];
 		db_query("DROP TABLE IF EXISTS " . $pref . 'stock_fa_class');
+
+		db_query("DELETE FROM ".$pref."sys_prefs "
+			."WHERE `name` in (
+				'default_loss_on_asset_disposal_act',
+				'depreciation_period',
+				'use_manufacturing',
+				'use_fixed_assets',
+				'wip_act')");
 	}
 
 }
