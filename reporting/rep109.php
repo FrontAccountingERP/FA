@@ -154,7 +154,7 @@ function print_sales_orders()
 		$rep->TextCol(3, 6, _("Sub-total"), -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
-		if ($myrow['ov_freight'] != 0.0)
+		if ($myrow['freight_cost'] != 0.0)
 		{
 			$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
 			$rep->TextCol(3, 6, _("Shipping"), -2);
