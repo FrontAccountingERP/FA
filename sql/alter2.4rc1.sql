@@ -28,3 +28,5 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 
 ALTER TABLE `0_wo_issue_items` ADD COLUMN  `unit_cost` double NOT NULL default '0' AFTER `qty_issued`;
 ALTER TABLE `0_wo_requirements` CHANGE COLUMN `std_cost` `unit_cost` double NOT NULL default '0';
+
+ALTER TABLE `0_stock_master` DROP COLUMN `last_cost`;

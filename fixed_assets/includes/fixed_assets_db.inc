@@ -53,8 +53,7 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
 
   $sql = "UPDATE ".TB_PREF."stock_master SET 
     depreciation_date='".date2sql($cart->tran_date)."',
-    material_cost=".db_escape($new_cost).",
-    last_cost=".db_escape($old_cost)."
+    material_cost=".db_escape($new_cost)."
     WHERE stock_id=".db_escape($stock_id);
   db_query($sql,"The depreciation start date could not be updated");
 
