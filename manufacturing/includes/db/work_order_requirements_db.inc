@@ -13,7 +13,7 @@ function get_wo_requirements($woid)
 {
 	$sql = "SELECT req.*, item.description, item.mb_flag, loc.location_name, 
 			center.name AS WorkCentreDescription,
-			(item.material_cost+item.overhead_cost+item.labour_cost) as ComponentCost,
+			item.material_cost as ComponentCost,
 			item.inventory_account,
 			item.assembly_account
 		FROM (".TB_PREF."wo_requirements req,"

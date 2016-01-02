@@ -181,7 +181,7 @@ function add_credit_movements_item(&$credit_note, &$credit_line,
 	$credit_type, $price, $credited_invoice=0)
 {
     //Chaitanya : Stamp current cost in stock moves $credit_line does not fetch cost
-    $curr_std_cost = get_standard_cost($credit_line->stock_id);
+    $curr_std_cost = get_unit_cost($credit_line->stock_id);
 
 	$reference = _("Return");
 	if ($credited_invoice) {
@@ -210,12 +210,12 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 	$total = 0;
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-	$standard_cost = get_standard_cost($order_line->stock_id);
-	if ($standard_cost != 0) {
+	$unit_cost = get_unit_cost($order_line->stock_id);
+	if ($unit_cost != 0) {
 		/*first the cost of sales entry*/
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
-			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
+			$dim, $dim2, "", -($unit_cost * $order_line->qty_dispatched),
 			PT_CUSTOMER, $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
@@ -228,7 +228,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 		}
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0,
-			"", ($standard_cost * $order_line->qty_dispatched),
+			"", ($unit_cost * $order_line->qty_dispatched),
 			PT_CUSTOMER, $order->customer_id,
 			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
 

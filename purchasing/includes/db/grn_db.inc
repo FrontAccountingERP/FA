@@ -41,18 +41,11 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
     if (is_inventory_item($stock_id) && !$adj_only) 
         handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
 	
-	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+	$sql = "SELECT mb_flag, material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
 	
-	//Price adjustment for manufactured item
-	if (!$adj_only && $myrow['mb_flag'] == 'M') 
-	{
-		//reduce overhead_cost and labour_cost from price as those will remain as is
-		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
-	}
-
 	$cost_adjust = false;
 
 	$qoh = get_qoh_on_date($stock_id);
@@ -132,7 +125,7 @@ function add_grn(&$po)
 			{
 				/*This must be the first receipt of goods against this line */
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
-			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
+			   	$order_line->standard_cost = get_unit_cost($order_line->stock_id);
 			}
 			// Update the purchase data table
 			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 

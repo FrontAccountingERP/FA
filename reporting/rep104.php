@@ -33,7 +33,7 @@ print_price_listing();
 function fetch_items($category=0)
 {
 		$sql = "SELECT item.stock_id, item.description AS name,
-				item.material_cost+item.labour_cost+item.overhead_cost AS Standardcost,
+				item.material_cost AS Standardcost,
 				item.category_id,item.units,
 				category.description
 			FROM ".TB_PREF."stock_master item,

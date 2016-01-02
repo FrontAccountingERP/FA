@@ -51,7 +51,7 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false, $class='', $
 		$label = _("GL");
 		$icon = ICON_GL;
 	}
-	$url = ($type == ST_WORKORDER && !work_order_is_closed($trans_no)) ? "manufacturing/view/wo_costs_view.php?trans_no=$trans_no"
+	$url = ($type == ST_WORKORDER) ? "manufacturing/view/wo_costs_view.php?trans_no=$trans_no"
 		: "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 
 	return viewer_link($label, $url, $class, $id, $icon);

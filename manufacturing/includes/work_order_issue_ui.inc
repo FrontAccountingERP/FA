@@ -116,7 +116,7 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(0, $dec);
-		$std_cost = $item_info["standard_cost"];
+		$std_cost = $item_info["material_cost"];
 		$_POST['units'] = $item_info["units"];
 	}
 

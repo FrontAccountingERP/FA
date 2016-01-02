@@ -15,35 +15,26 @@
 function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
-	if (!($type == WO_ADVANCED))
-		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
-	else
-		return add_work_order_advanced($wo_ref, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
-}
-
-/*
-	Advanced wrok order entry.
-*/
-function add_work_order_advanced($wo_ref, $loc_code, $units_reqd, $stock_id,
-	$date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
-{
 	global $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
 	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
-		'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+		'type', 'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+
 	$args->woid = 0;
 	hook_db_prewrite($args, ST_WORKORDER);
 
+	if ($type != WO_ADVANCED)
+		$required_by = $date_;
+
 	$date = date2sql($date_);
 	$required = date2sql($required_by);
-
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, stock_id,
 		type, date_, required_by)
     	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", "
     	.db_escape($units_reqd).", ".db_escape($stock_id).",
-		".WO_ADVANCED.", '$date', ".db_escape($required).")";
+		".db_escape($type).", '$date', ".db_escape($required).")";
 	db_query($sql, "could not add work order");
 
 	$woid = db_insert_id();
@@ -55,6 +46,24 @@ function add_work_order_advanced($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	$args->woid = $woid;
 	hook_db_postwrite($args, ST_WORKORDER);
+
+	if ($type != WO_ADVANCED)
+	{
+	 	$stockitem = get_item($stock_id);
+		release_work_order($woid, $date_, '');
+		if ($costs != 0)
+			add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $stockitem["assembly_account"],
+				$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
+		if ($labour != 0)
+			add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $stockitem["assembly_account"],
+				$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
+
+		if ($type == WO_UNASSEMBLY)
+			$units_reqd = -$units_reqd;
+
+		$ref = $Refs->get_next(ST_MANURECEIVE, null, $date_);
+		work_order_produce($woid, $ref, $units_reqd, $date_, '', true);
+	}
 
 	commit_transaction();
 
@@ -113,8 +122,10 @@ function delete_work_order($woid, $stock_id, $qty, $date)
 function get_work_order($woid, $allow_null=false)
 {
     $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
-    		l.delivery_address,l.email, l.contact
-		FROM ".TB_PREF."workorders wo, ".TB_PREF."stock_master st, ".TB_PREF."locations l
+    		l.delivery_address,l.email, l.contact, st.inventory_account, st.assembly_account
+		FROM ".TB_PREF."workorders wo, "
+			.TB_PREF."stock_master st, "
+			.TB_PREF."locations l
 		WHERE st.stock_id=wo.stock_id
 		AND	l.loc_code=wo.loc_code
 		AND wo.id=".db_escape($woid)."
@@ -239,13 +250,8 @@ function void_work_order($woid)
 		// restore average product costs 
 		$date = sql2date($work_order['date_']);
 		$qty = $work_order['units_reqd'];
-		add_material_cost($work_order['stock_id'], -$qty, $date); // remove avg. cost for qty
-		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
-		if ($cost != 0)
-			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
-		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
-		if ($cost != 0)
-			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
+
+		// FIXME: update_material_cost
 
 		// close workorder
 		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
@@ -266,7 +272,8 @@ function void_work_order($woid)
 		// void everything inside the work order : issues, productions, payments
 		$date = sql2date($work_order['date_']);
 
-		add_material_cost($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty
+		// FIXME: update_material_cost
+
 		$result = get_work_order_productions($woid); // check the produced quantity
 		$qty = 0;
 		while ($row = db_fetch($result))
@@ -283,8 +290,8 @@ function void_work_order($woid)
 		$issue_no = 0;
 		while ($row = db_fetch($result))
 		{
-			$std_cost = get_standard_cost($row['stock_id']);
-			$icost = $std_cost * $row['qty_issued'];
+			$unit_cost = get_unit_cost($row['stock_id']);
+			$icost = $unit_cost * $row['qty_issued'];
 			$cost += $icost;
 			if ($issue_no == 0)
 				$issue_no = $row['issue_no'];
@@ -298,9 +305,6 @@ function void_work_order($woid)
 
 		if ($cost != 0)
 			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
-
-		if ($cost != 0)
-			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 
 		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			.db_escape($woid);

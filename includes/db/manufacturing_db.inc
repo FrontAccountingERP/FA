@@ -222,8 +222,8 @@ function get_bom($item)
 	$sql = "SELECT bom.*, loc.location_name,
 		centre.name AS WorkCentreDescription,
     	item.description, item.mb_flag AS ResourceType, 
-    	item.material_cost+item.labour_cost+item.overhead_cost AS standard_cost, units,
-    	bom.quantity * (item.material_cost+ item.labour_cost+ item.overhead_cost) AS ComponentCost 
+    	item.material_cost AS ProductCost, units,
+    	bom.quantity * item.material_cost AS ComponentCost 
     	FROM ".TB_PREF."workcentres centre,
     		".TB_PREF."locations loc,
     		".TB_PREF."bom bom

@@ -285,7 +285,7 @@ function get_sales_order_details($order_no, $trans_type) {
 				qty_sent as qty_done,
 				item.units,
 				item.mb_flag,
-				item.material_cost + item.labour_cost + item.overhead_cost AS standard_cost
+				item.material_cost
 			FROM ".TB_PREF."sales_order_details line,"
 				.TB_PREF."stock_master item
 			WHERE line.stk_code = item.stock_id
@@ -340,7 +340,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 		{
 			$order->add_to_cart($line_no,$myrow["stk_code"],$myrow["quantity"],
 				$myrow["unit_price"], $myrow["discount_percent"],
-				$myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"] );
+				$myrow["qty_done"], $myrow["material_cost"], $myrow["description"], $myrow["id"] );
 		$line_no++;
 		}
 	}

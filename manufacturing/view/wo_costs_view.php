@@ -33,32 +33,53 @@ if ($_GET['trans_no'] != "")
 }
 
 //-------------------------------------------------------------------------------------------------
+function print_gl_rows($result, $title)
+{
+	global $systypes_array;
 
+    if (db_num_rows($result))
+    {
+		table_section_title($title, 7);
+		while($myrow = db_fetch($result)) {
+			start_row();
+			label_cell(sql2date($myrow["tran_date"]));
+			label_cell(get_trans_view_str($myrow['type'],$myrow["type_no"], $systypes_array[$myrow['type']]. ' '.$myrow['type_no']));
+		    label_cell($myrow['account']);
+			label_cell($myrow['account_name']);
+			display_debit_or_credit_cells($myrow['amount']);
+			label_cell($myrow['memo_']);
+			end_row();
+		}
+	}
+}
 function display_wo_costs($prod_id)
 {
-	global $wo_cost_types;
-
-    $costs = get_gl_wo_cost_trans($prod_id);
-
 	br(1);
     start_table(TABLESTYLE);
-    $th = array(_("Date"), _("Type"), _("Amount"), _("Memo"), '');
-    table_header($th);
-	while($myrow = db_fetch($costs)) {
-		start_row();
-		label_cell(sql2date($myrow["tran_date"]));
-		label_cell($wo_cost_types[$myrow["cost_type"]]);
-		amount_cell(-$myrow['amount']);
-		label_cell($myrow['memo_']);
-		label_cell(get_trans_view_str($myrow['trans_type'],$myrow["trans_no"]));
-		end_row();
-	}
+
+	$th = array(_("Date"), _("Transaction"), _("Account Code"), _("Account Name"),
+		_("Debit"), _("Credit"), _("Memo"));
+
+   	table_header($th);
+
+	$productions = get_gl_wo_productions($prod_id, true);
+	print_gl_rows($productions, _("Finished Product Requirements"));
+
+	$issues = get_gl_wo_issue_trans($prod_id, -1, true);
+	print_gl_rows($issues, _("Additional Material Issues"));
+
+    $costs = get_gl_wo_cost_trans($prod_id, -1, true);
+	print_gl_rows($costs, _("Additional Costs"));
+
+	$wo = get_gl_trans(ST_WORKORDER, $prod_id);
+	print_gl_rows($wo, _("Finished Product Receival"));
 	end_table(1);
 }
 
 //-------------------------------------------------------------------------------------------------
-
 display_heading(sprintf(_("Production Costs for Work Order # %d"), $wo_id));
+
+display_wo_details($wo_id, true);
 
 display_wo_costs($wo_id);
 

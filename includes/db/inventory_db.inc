@@ -86,10 +86,11 @@ function check_negative_stock($stock_id, $delta_qty, $location=null, $date=null)
 
 function get_item_edit_info($stock_id)
 {
-	$sql = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
-		FROM ".TB_PREF."stock_master,".TB_PREF."item_units
+	$sql = "SELECT item.material_cost, item.units, unit.decimals
+		FROM ".TB_PREF."stock_master item,"
+			.TB_PREF."item_units unit
 		WHERE stock_id=".db_escape($stock_id)
-		." AND ".TB_PREF."stock_master.units=".TB_PREF."item_units.abbr";
+		." AND item.units=unit.abbr";
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
 	return db_fetch($result);
@@ -97,10 +98,11 @@ function get_item_edit_info($stock_id)
 
 //--------------------------------------------------------------------------------------
 
-function get_standard_cost($stock_id)
+function get_unit_cost($stock_id)
 {
-	$sql = "SELECT (material_cost + labour_cost + overhead_cost) AS std_cost
-		FROM ".TB_PREF."stock_master s WHERE stock_id=".db_escape($stock_id);
+	$sql = "SELECT material_cost
+		FROM ".TB_PREF."stock_master
+		WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
 	$myrow = db_fetch_row($result);
@@ -112,7 +114,8 @@ function get_standard_cost($stock_id)
 
 function is_inventory_item($stock_id)
 {
-	$sql = "SELECT stock_id FROM ".TB_PREF."stock_master
+	$sql = "SELECT stock_id FROM "
+		.TB_PREF."stock_master
 		WHERE stock_id=".db_escape($stock_id)." AND mb_flag <> 'D'";
 	$result = db_query($sql, "Cannot query is inventory item or not");
 
@@ -153,8 +156,8 @@ function get_already_delivered($stock_id, $location, $trans_no)
 	return $row[0];
 }
 /*
-	FIXME: $to ? 
 	Returns start move_id in latest negative status period for $stock_id
+	FIXME: $to ? 
 */
 function last_negative_stock_trans_id($stock_id, $to)
 {
@@ -352,7 +355,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 		$id = get_next_trans_no(ST_JOURNAL);
 		$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
-		$diff = round($qoh*get_standard_cost($stock_id) + $quantity*$standard_cost, user_price_dec());
+		$diff = round($qoh*get_unit_cost($stock_id) + $quantity*$standard_cost, user_price_dec());
 
 		if ($diff != 0)
 		{
@@ -417,8 +420,7 @@ function update_stock_move($type, $trans_no, $stock_id, $cost)
 
 function get_stock_moves($type, $type_no)
 {
-	$sql = "SELECT move.*, item.description, item.mb_flag, item.units, stock.location_name,
-		item.material_cost + item.labour_cost + item.overhead_cost AS FixedStandardCost
+	$sql = "SELECT move.*, item.description, item.mb_flag, item.units, stock.location_name
 		FROM ".TB_PREF."stock_moves move,"
 			.TB_PREF."locations stock,"
 			.TB_PREF."stock_master item

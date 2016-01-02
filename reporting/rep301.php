@@ -105,8 +105,8 @@ function getTransactions($category, $location, $date)
 			item.description, item.inactive,
 			move.loc_code,
 			SUM(move.qty) AS QtyOnHand, 
-			item.material_cost + item.labour_cost + item.overhead_cost AS UnitCost,
-			SUM(move.qty) *(item.material_cost + item.labour_cost + item.overhead_cost) AS ItemTotal 
+			item.material_cost AS UnitCost,
+			SUM(move.qty) * item.material_cost AS ItemTotal 
 			FROM "
 			.TB_PREF."stock_master item,"
 			.TB_PREF."stock_category category,"

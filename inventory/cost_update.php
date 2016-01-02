@@ -52,8 +52,7 @@ if (isset($_GET['stock_id']))
 $should_update = false;
 if (isset($_POST['UpdateData']))
 {
-
-	$old_cost = get_standard_cost($_POST['stock_id']);
+	$old_cost = get_unit_cost($_POST['stock_id']);
 
    	$new_cost = input_num('material_cost') + input_num('labour_cost')
 	     + input_num('overhead_cost');
@@ -131,7 +130,7 @@ $_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
 $_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
 $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
-amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
+amount_row(_("Unit cost"), "material_cost", null, "class='tableheader2'", null, $dec1);
 
 if ($myrow["mb_flag"]=='M')
 {

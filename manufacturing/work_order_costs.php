@@ -133,20 +133,23 @@ br();
 date_row(_("Date:"), 'date_');
 ref_row(_("Reference:"), 'ref', '');
 
-yesno_list_row(_("Type:"), 'PaymentType', null,	$wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
+yesno_list_row(_("Type:"), 'PaymentType', null,	$wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR], true);
+if (list_updated('PaymentType'))
+	$Ajax->activate('costs');
 
-$item_accounts = get_stock_gl_code($wo_details['stock_id']);
-$_POST['db_acc'] = $item_accounts['assembly_account'];
+$item = get_item($wo_details['stock_id']);
+$_POST['db_acc'] = $item['assembly_account'];
 $r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r[0];
+$_POST['costs'] = price_format(get_post('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 
 amount_row(_("Additional Costs:"), 'costs');
 gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);
 gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);
 textarea_row(_("Memo:"), 'memo', null, 40, 5);
 end_table(1);
-hidden('dim1', $item_accounts["dimension_id"]);
-hidden('dim2', $item_accounts["dimension2_id"]);
+hidden('dim1', $item["dimension_id"]);
+hidden('dim2', $item["dimension2_id"]);
 
 submit_center('process', _("Process Additional Cost"), true, '', true);
 

@@ -45,7 +45,7 @@ function getTransactions($category, $location, $fromcust, $from, $to, $show_serv
 			move.tran_date,
 			SUM(-move.qty) AS qty,
 			SUM(-move.qty*move.price) AS amt,
-			SUM(-IF(move.standard_cost <> 0, move.qty * move.standard_cost, move.qty *(item.material_cost + item.labour_cost + item.overhead_cost))) AS cost
+			SUM(-IF(move.standard_cost <> 0, move.qty * move.standard_cost, move.qty *item.material_cost)) AS cost
 		FROM ".TB_PREF."stock_master item,
 			".TB_PREF."stock_category category,
 			".TB_PREF."debtor_trans trans,

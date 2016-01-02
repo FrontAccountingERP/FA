@@ -47,7 +47,7 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 function get_calculated_price($stock_id, $add_pct)
 {
-	$avg = get_standard_cost($stock_id);
+	$avg = get_unit_cost($stock_id);
 	if ($avg == 0)
 		return 0;
 	return round2($avg * (1 + $add_pct / 100), user_price_dec());

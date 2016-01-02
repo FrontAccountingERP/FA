@@ -531,7 +531,7 @@ function check_item_data()
 		return false;
 	}
 
-	$cost_home = get_standard_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
+	$cost_home = get_unit_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
 	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (input_num('price') < $cost)
 	{

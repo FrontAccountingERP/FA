@@ -36,15 +36,13 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 
 	foreach ($items as $item)
 	{
-
 		if ($to_work_order)
 			$item->quantity = -$item->quantity;
 
-		// Stamp the standard_cost
-		$standard_cost = get_standard_cost($item->stock_id);
+		$unit_cost = get_unit_cost($item->stock_id);
 		// insert a -ve stock move for each item
 		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
-			$location, $date_, $memo_, -$item->quantity, $standard_cost);
+			$location, $date_, $memo_, -$item->quantity, $unit_cost);
 
 		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued, unit_cost)
 			SELECT ".db_escape($number).",".db_escape($item->stock_id).",".db_escape($item->quantity).", material_cost
@@ -53,8 +51,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 
 		db_query($sql,"A work order issue item could not be added");
 
-		$standard_cost = get_standard_cost($item->stock_id);
-		$issue_cost = $standard_cost * $item->quantity;
+		$unit_cost = get_unit_cost($item->stock_id);
+		$issue_cost = $unit_cost * $item->quantity;
 
         $stockitem = get_item($item->stock_id);
 
@@ -64,7 +62,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		else
 			$ivaccount = $stockitem["assembly_account"];
 
-        $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
+        $total_cost += add_gl_trans_std_cost(ST_MANUISSUE, $number, $date_, $ivaccount, 0, 0,
                 $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);
 		$issue_total += $issue_cost;
 	}
@@ -78,7 +76,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
     if (!$wip_account)	// backward compatibility
     	$wip_account = $stockitem["inventory_account"];
 
-    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $wip_account,
+    add_gl_trans_std_cost(ST_MANUISSUE, $number, $date_, $wip_account,
         0, 0, $date_.": "._("Issue to")." ".$stockitem["description"], -$total_cost);
 
 	if ($memo_)

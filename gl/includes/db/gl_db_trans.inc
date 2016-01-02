@@ -79,6 +79,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2,
 	$memo_,	$amount, $person_type_id=null, $person_id=null, $err_msg="")
 {
+
 	if ($amount != 0)
 		return add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 			$amount, null, $person_type_id, $person_id, $err_msg);
@@ -204,9 +205,10 @@ function get_gl_trans($type, $trans_id)
 
 //--------------------------------------------------------------------------------
 
-function get_gl_wo_cost_trans($trans_id, $cost_type=-1)
+function get_gl_wo_cost_trans($trans_id, $cost_type=-1, $all_gl=false)
 {
-	$sql = "SELECT costing.*, gl.*, chart.account_name, com.memo_ FROM "
+	$sql = "SELECT costing.*, gl.*, chart.account_name, com.memo_
+		FROM "
 		.TB_PREF."wo_costing costing, "
 		.TB_PREF."gl_trans gl LEFT JOIN ".TB_PREF."comments com ON gl.type=com.type	AND gl.type_no=com.id,"
 		.TB_PREF."chart_master chart
@@ -217,10 +219,48 @@ function get_gl_wo_cost_trans($trans_id, $cost_type=-1)
 			AND gl.type_no=costing.trans_no";
 	if ($cost_type != -1)
 		$sql .= " AND costing.cost_type=".db_escape($cost_type);
-	$sql .= " AND amount < 0";
-	
+	$sql .= $all_gl ? " AND amount != 0" : " AND amount < 0";
+
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
+
+function get_gl_wo_issue_trans($trans_id, $person_id=-1, $all_gl=false)
+{
+	$sql = "SELECT issue.*, gl.*, chart.account_name, com.memo_
+		FROM "
+			.TB_PREF."wo_issues issue,"
+			.TB_PREF."gl_trans gl LEFT JOIN ".TB_PREF."comments com ON gl.type=com.type	AND gl.type_no=com.id,"
+			.TB_PREF."chart_master chart
+		WHERE issue.workorder_id=".db_escape($trans_id)
+		 ." AND chart.account_code=gl.account
+			AND gl.type=".ST_MANUISSUE." AND gl.type_no=issue.issue_no";
+//			." AND gl.person_type_id=".PT_WORKORDER;
+	if ($person_id != -1)
+		$sql .= " AND gl.person_id=".db_escape($person_id);
+	$sql .= $all_gl ? " AND amount != 0" : " AND amount < 0";
+	$sql .= " ORDER BY type, type_no";
+	return db_query($sql, "The gl transactions could not be retrieved");
+}
+
+function get_gl_wo_productions($trans_id, $all_gl=false)
+{
+	$sql = "SELECT rcv.*, gl.*, chart.account_name, com.memo_
+		FROM "
+		.TB_PREF."wo_manufacture rcv, "
+		.TB_PREF."gl_trans gl LEFT JOIN ".TB_PREF."comments com ON gl.type=com.type	AND gl.type_no=com.id,"
+		.TB_PREF."chart_master chart
+		WHERE 
+			rcv.workorder_id=".db_escape($trans_id)
+		."	AND chart.account_code=gl.account
+			AND gl.type=".ST_MANURECEIVE."
+			AND gl.type_no=rcv.id
+			AND amount != 0 "
+		.($all_gl ? " AND amount != 0" : " AND amount < 0")
+		." ORDER BY type, type_no";
+
+	return db_query($sql, "The gl transactions could not be retrieved");
+}
+
 function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
 {
 	$from = date2sql($from_date);

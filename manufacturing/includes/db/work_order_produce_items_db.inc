@@ -9,14 +9,15 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
+function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 {
 	global $Refs;
 
+// FIXME: support for WO_UNASSEMBLY case
 	begin_transaction();
 
 	$args = func_get_args();
-	$args = (object)array_combine(array('woid', 'ref', 'quantity', 'date_', 'memo_','close_wo'),
+	$args = (object)array_combine(array('woid', 'ref', 'quantity', 'date_', 'memo','close_wo'),
 		$args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_MANURECEIVE);
@@ -35,7 +36,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	// -------------------------------------------------------------------------
 	// insert -ve and update averaged component unit cost for BOM usage (in wo_requirements)
-	work_order_receive_costs($woid, $product["stock_id"], $quantity, $date_, $id);
+	work_order_production_gl($woid, $product["stock_id"], $quantity, $date_, $id);
 
 	// update wo quantity and close wo if requested (or finished)
 	$closed = work_order_update_finished_quantity($woid, $quantity, $date_, $close_wo);
@@ -70,19 +71,24 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 		$o_cost = get_gl_wo_cost($woid, WO_OVERHEAD);
 		$l_cost += get_gl_wo_cost($woid, WO_LABOUR);
 
-		$unit_cost = ($o_cost+$m_cost+$l_cost)/($product['units_issued']+$quantity);
+		$total_cost = $o_cost + $m_cost + $l_cost;
 
-		update_material_cost($product['stock_id'], $product['units_issued']+$quantity, $unit_cost, $date_);
-		// FIXME: ?
-//		update_labour_cost(stock_id, qty, unit_cost);
-//		update_overheads_cost(stock_id, qty, unit_cost);
+	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, get_company_pref('wip_act'),
+    	    0, 0, $memo, -$total_cost);
+
+	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['inventory_account'],
+	   	    0, 0, $memo, $total_cost);
+
+		$unit_cost = $total_cost/($product['units_issued']+$quantity);
 
 		add_stock_move(ST_WORKORDER, $product["stock_id"], $woid,
 			$product["loc_code"], $date_, $ref, $product['units_issued']+$quantity, $unit_cost);
+
+		update_material_cost($product['stock_id'], $product['units_issued']+$quantity, $unit_cost, $date_);
 	}
 
-	if ($memo_)
-		add_comments(ST_MANURECEIVE, $id, $date_, $memo_);
+	if ($memo)
+		add_comments(ST_MANURECEIVE, $id, $date_, $memo);
 
 	$Refs->save(ST_MANURECEIVE, $id, $ref);
 	add_audit_trail(ST_MANURECEIVE, $id, $date_, _("Production."));
@@ -91,40 +97,6 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	hook_db_postwrite($args, ST_MANURECEIVE);
 
 	commit_transaction();
-}
-
-/*
-	Process component usage: generate and post stock move, update average component cost.
-*/
-function work_order_receive_costs($woid, $stock_id, $quantity, $date_, $rcv_no)
-{
-	$result = get_wo_requirements($woid);
-
-	// credit all the components
-	$total_cost = 0;
-	while ($bom_item = db_fetch($result))
-	{
-
-		$bom_cost = $bom_item["ComponentCost"] * $quantity;
-
-		update_wo_requirement_issued($bom_item['id'], $bom_item["units_req"] * $quantity, $bom_item["ComponentCost"]);
-
-		// insert a -ve stock move for each item
-		add_stock_move(ST_MANURECEIVE, $bom_item["stock_id"], $rcv_no,
-			$bom_item["loc_code"], $date_, "", -$bom_item["units_req"] * $quantity, $bom_item["ComponentCost"], 0);
-
-		if (!is_service($bom_item["mb_flag"]))
-			$ivaccount = $bom_item["inventory_account"];
-		else
-			$ivaccount = $bom_item["assembly_account"];
-
-		$memo = $date_.": ".$bom_item["units_req"] ." * ".$bom_item["description"];
-		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
-			$memo, -$bom_cost);
-	}
-
-    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, get_company_pref('wip_act'),
-        0, 0, $memo, -$total_cost);
 }
 
 //--------------------------------------------------------------------------------------------
