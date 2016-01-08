@@ -19,7 +19,7 @@ class fa2_4 extends fa_patch {
 	
 	function fa2_4() {
 		parent::fa_patch();
-		$this->description = _('Upgrade from version 2.3 to 2.4');
+		$this->description = _('Upgrade from version 2.3 to 2.4RC1');
 	}
 	
     /*
@@ -41,7 +41,7 @@ class fa2_4 extends fa_patch {
     */
 	function prepare()
     {
-		$this->collation = get_mysql_collation(get_post('collation'));
+		$this->collation = get_post('collation');
 		return true;
 	}
 
@@ -75,6 +75,20 @@ class fa2_4 extends fa_patch {
 
 		if ($result)
 			$result = $this->do_cleanup();
+		if ($result)
+		{
+			$db_connections[$company]['collation'] = $this->collation;
+			if (write_config_db())
+				return $this->log_error(_("Cannot update config_db.php file."));
+		}
+
+		$sec_updates = array(
+			'SA_SETUPCOMPANY' => array(
+				'SA_ASSET', 'SA_ASSETCATEGORY', 'SA_ASSETCLASS',
+				'SA_ASSETSTRANSVIEW','SA_ASSETTRANSFER', 'SA_ASSETDISPOSAL',
+				'SA_DEPRECIATION', 'SA_ASSETSANALYTIC'),
+		);
+		$result = $this->update_security_roles($sec_updates);
 
 		return $result;
 	}
@@ -135,12 +149,15 @@ class fa2_4 extends fa_patch {
 
 		$old_encoding = 'latin1'; // default client encoding
 
+		// uncomment in case of 1071 errors (requires SUPER privileges)
+		// db_query("SET @@global.innodb_large_prefix=1", "Cannot set large prefix");
+
 		 // site default encoding is presumed as encoding for all databases!
 		$lang = array_search_value($dflt_lang, $installed_languages, 'code');
 		$new_encoding = get_mysql_encoding_name(strtoupper($lang['encoding']));
 
  		$this->log_error(sprintf('Switching database to utf8 encoding from %s', $old_encoding), 'Info');
-		$collation = $this->collation;
+		$collation = get_mysql_collation($this->collation);
 		$tsql = "SHOW TABLES LIKE '".($pref=='' ? '' : substr($pref, 0, -1).'\\_')."%'";
 		$tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
 		while($tbl = db_fetch($tresult)) {

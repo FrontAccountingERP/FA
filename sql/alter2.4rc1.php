@@ -19,7 +19,7 @@ class fa2_4rc1 extends fa_patch {
 
 	function fa2_4rc1() {
 		parent::fa_patch();
-		$this->description = _('Upgrade from version 2.4beta to 2.4rc1');
+		$this->description = _('Upgrade from version 2.4beta to 2.4RC1');
 	}
 
 	//
