@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/includes/ui/items_cart.inc");
 
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
