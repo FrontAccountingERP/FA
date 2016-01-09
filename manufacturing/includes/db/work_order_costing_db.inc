@@ -195,7 +195,8 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $db_acc, $da
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $db_acc,
 		$dim1, $dim2,  $wo_cost_types[$cost_type], $amount);
 
-	$wip = get_company_pref('wip_act');
+	$wo = get_work_order($wo_id);
+	$wip = $wo['assembly_account'];
 
 	if ($db_acc != $wip)
 	{
@@ -237,7 +238,7 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 		if (!is_service($bom_item["mb_flag"]))
 			$ivaccount = $bom_item["inventory_account"];
 		else
-			$ivaccount = $bom_item["assembly_account"];
+			$ivaccount = $bom_item["cogs_account"];
 
 		$memo = $date_.": ".$bom_item["units_req"] ." * ".$bom_item["description"];
 
@@ -245,7 +246,8 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 			$memo, -$bom_item["ComponentCost"] * $bom_item["units_req"] * $quantity);
 	}
 
-    add_gl_trans_std_cost(ST_MANURECEIVE, $rcv_no, $date_, get_company_pref('wip_act'),
+	$wo = get_work_order($woid);
+    add_gl_trans_std_cost(ST_MANURECEIVE, $rcv_no, $date_, $wo['assembly_account'],
         0, 0, $memo, -$total_cost);
 }
 

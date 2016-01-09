@@ -2173,7 +2173,6 @@ INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup
 INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
 INSERT INTO `0_sys_prefs` VALUES ('use_manufacturing','setup.company', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES ('use_fixed_assets','setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES ('wip_act', 'glsetup.manuf', 'varchar', '15', '1530');
 
 
 -- --------------------------------------------------------

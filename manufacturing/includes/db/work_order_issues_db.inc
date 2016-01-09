@@ -60,7 +60,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		if (!is_service($stockitem["mb_flag"]))
 			$ivaccount = $stockitem["inventory_account"];
 		else
-			$ivaccount = $stockitem["assembly_account"];
+			$ivaccount = $stockitem["cogs_account"];
 
         $total_cost += add_gl_trans_std_cost(ST_MANUISSUE, $number, $date_, $ivaccount, 0, 0,
                 $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);
@@ -71,10 +71,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		add_issue_cost($wo['stock_id'], $wo['units_reqd'], $date_, $issue_total, true);
 
     $stockitem = get_item($wo['stock_id']);
-    $wip_account = get_company_pref('wip_act'); 
 
-    if (!$wip_account)	// backward compatibility
-    	$wip_account = $stockitem["inventory_account"];
+   	$wip_account = $stockitem["assembly_account"];
 
     add_gl_trans_std_cost(ST_MANUISSUE, $number, $date_, $wip_account,
         0, 0, $date_.": "._("Issue to")." ".$stockitem["description"], -$total_cost);
@@ -191,7 +189,7 @@ function void_work_order_issue($type_no)
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			$ivaccount = $issue["assembly_account"];
+			$ivaccount = $issue["cogs_account"];
 
 		if ($issue_cost != 0)
 		{

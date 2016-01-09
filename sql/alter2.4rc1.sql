@@ -23,8 +23,7 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660'),
 	('depreciation_period', 'glsetup.company', 'tinyint', '1', '1'),
 	('use_manufacturing','setup.company', 'tinyint', 1, '1'),
-	('use_fixed_assets','setup.company', 'tinyint', 1, '1'),
-	('wip_act', 'glsetup.manuf', 'varchar', '15', '');
+	('use_fixed_assets','setup.company', 'tinyint', 1, '1');
 
 ALTER TABLE `0_wo_issue_items` ADD COLUMN  `unit_cost` double NOT NULL default '0' AFTER `qty_issued`;
 ALTER TABLE `0_wo_requirements` CHANGE COLUMN `std_cost` `unit_cost` double NOT NULL default '0';

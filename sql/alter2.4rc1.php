@@ -33,10 +33,6 @@ class fa2_4rc1 extends fa_patch {
 		table_section_title(_("Fixed Assets Defaults"));
 		gl_all_accounts_list_row(_("Loss On Asset Disposal Account:"), 'default_loss_on_asset_disposal_act', '5660',
 			true, false, _("None (will be set later)"));
-
-	  	table_section_title(_("Manufacturing"));
-		gl_all_accounts_list_row(_("Work In Progress Account:"), 'wip_act', '1530',
-			true, false, _("None (will be set later)"));
 	  end_row();
 	  end_table();
 	  br();
@@ -47,7 +43,6 @@ class fa2_4rc1 extends fa_patch {
     */
 	function prepare()
     {
-		$this->wip_account = get_post('wip_act');
 		$this->fixed_disposal_act = get_post('default_loss_on_asset_disposal_act');
 		return true;
 	}
@@ -69,9 +64,7 @@ class fa2_4rc1 extends fa_patch {
 		$pref = $this->companies[$company]['tbpref'];
 
 		if ($result)
-			if (!db_query("UPDATE ".$pref."sys_prefs SET value=".db_escape($this->wip_act)
-					." WHERE name='wip_act'")
-				|| !db_query("UPDATE ".$pref."sys_prefs SET value=".db_escape($this->fixed_disposal_act)
+			if (!db_query("UPDATE ".$pref."sys_prefs SET value=".db_escape($this->fixed_disposal_act)
 					." WHERE name='default_loss_on_asset_disposal_act'")
 			)
 				return $this->log_error(sprintf(_("Cannot update sys prefs setting:\n%s"), db_error_msg($db)));
@@ -92,8 +85,7 @@ class fa2_4rc1 extends fa_patch {
 				'default_loss_on_asset_disposal_act',
 				'depreciation_period',
 				'use_manufacturing',
-				'use_fixed_assets',
-				'wip_act')");
+				'use_fixed_assets')");
 	}
 
 }

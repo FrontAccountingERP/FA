@@ -73,7 +73,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 
 		$total_cost = $o_cost + $m_cost + $l_cost;
 
-	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, get_company_pref('wip_act'),
+	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['assembly_account'],
     	    0, 0, $memo, -$total_cost);
 
 	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['inventory_account'],
@@ -167,7 +167,7 @@ function void_work_order_produce($type_no)
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			$ivaccount = $issue["assembly_account"];
+			$ivaccount = $issue["cogs_account"];
 
 		if ($issue_cost != 0)
 		{

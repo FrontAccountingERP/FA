@@ -685,8 +685,3 @@ function check_sys_pref($name, $msg, $empty = '')
 		display_footer_exit();
 	}
 }
-
-function check_wip_account()
-{
-	check_sys_pref('wip_act', _("You have to set Work In Progress Account in GL Setup before you can use this function."));
-}
