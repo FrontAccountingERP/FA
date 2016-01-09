@@ -23,7 +23,12 @@ function add_wo_costing($workorder_id, $cost_type, $trans_type, $trans_no, $fact
 
 function get_wo_costing($workorder_id)
 {
-	$sql="SELECT * FROM ".TB_PREF."wo_costing WHERE workorder_id=".db_escape($workorder_id);
+	$sql="SELECT * 
+		FROM ".TB_PREF."wo_costing cost,
+			".TB_PREF."journal gl
+		WHERE
+			cost.trans_type=gl.type AND cost.trans_no=gl.trans_no
+			AND workorder_id=".db_escape($workorder_id);
 
 	return db_query($sql, "could not get work order costing");
 }

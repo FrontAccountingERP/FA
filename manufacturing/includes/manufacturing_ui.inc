@@ -239,7 +239,7 @@ function display_wo_payments($woid)
 {
 	global $path_to_root, $wo_cost_types;
 
-    $result = get_gl_wo_cost_trans($woid);
+    $result = get_wo_costing($woid);
 
     if (db_num_rows($result) == 0)
     {
@@ -252,14 +252,12 @@ function display_wo_payments($woid)
 
         table_header($th);
 
-        $k = 0; //row colour counter
-		
+        $k = 0;
         while ($myrow = db_fetch($result))
         {
-
 			alt_table_row_color($k);
 
-        	label_cell(get_gl_view_str( $myrow["type"], $myrow["type_no"], $myrow["type_no"]));
+        	label_cell(get_gl_view_str( $myrow["trans_type"], $myrow["trans_no"], $myrow["trans_no"]));
         	label_cell($wo_cost_types[$myrow['cost_type']]);
         	$date = sql2date($myrow["tran_date"]);
         	label_cell($date);

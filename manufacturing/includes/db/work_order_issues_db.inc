@@ -102,9 +102,10 @@ function get_work_order_issues($woid)
 
 function get_additional_issues($woid)
 {
-	$sql = "SELECT issue.*, item.*
+	$sql = "SELECT issue.*, item.*, stock.mb_flag
 		FROM ".TB_PREF."wo_issues issue, "
 			.TB_PREF."wo_issue_items item
+			LEFT JOIN ".TB_PREF."stock_master stock ON stock.stock_id=item.stock_id
 		WHERE issue.issue_no=item.issue_id
 		AND issue.workorder_id=".db_escape($woid)
 		." ORDER BY item.id";
