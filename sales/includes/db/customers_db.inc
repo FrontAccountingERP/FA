@@ -195,3 +195,21 @@ function get_customer_currency($customer_id=null, $branch_id=null)
 	return $myrow[0];
 }
 
+function get_customers_search($customer)
+{
+	global $SysPrefs;
+
+	if (isset($SysPrefs->max_rows_in_search))
+		$limit = $SysPrefs->max_rows_in_search;
+	else
+		$limit = 10;
+
+	$sql = "SELECT debtor_no, name, debtor_ref, address, tax_id FROM ".TB_PREF."debtors_master 
+	  WHERE (  name LIKE " . db_escape("%" . $customer. "%") . " OR 
+    		 debtor_ref LIKE " . db_escape("%" . $customer. "%") . " OR 
+	        address LIKE " . db_escape("%" . $customer. "%") . " OR 
+    	     tax_id LIKE " . db_escape("%" . $customer. "%").")
+	  ORDER BY name LIMIT 0,".(int)($limit);
+
+	return db_query($sql, "Failed in retreiving customer list.");
+}

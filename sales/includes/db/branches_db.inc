@@ -267,3 +267,29 @@ function get_default_branch($customer_id, $ar_account=null)
 	return db_fetch($result);
 }
 
+function  get_branches_search($customer, $branch)
+{
+	global $SysPrefs;
+
+	if (isset($SysPrefs->max_rows_in_search))
+		$limit = $SysPrefs->max_rows_in_search;
+	else
+		$limit = 10;
+
+	$sql = "SELECT 
+		    b.branch_code,
+	    	b.branch_ref,
+	    	b.br_name,
+    		p.name as contact_name,
+		    p.phone
+		FROM ".TB_PREF."cust_branch b
+		LEFT JOIN ".TB_PREF."crm_contacts c
+			ON c.entity_id=b.branch_code AND c.type='cust_branch' AND c.action='general'
+		LEFT JOIN ".TB_PREF."crm_persons p ON c.person_id=p.id
+		WHERE b.debtor_no = ".db_escape($customer)."
+			AND b.br_name LIKE " . db_escape("%" . $branch. "%") . "
+		ORDER BY b.br_name LIMIT 0,".(int)($limit);
+
+	return db_query($sql, "Failed in retreiving branches list.");
+}
+
