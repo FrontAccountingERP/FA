@@ -106,7 +106,7 @@ if (isset($_POST['process']) && can_process($wo_details) == true)
 	$ref  = $_POST['ref'];
 
 	add_wo_costs_journal($_POST['selected_id'], input_num('costs'), $_POST['PaymentType'], 
-		$_POST['cr_acc'], $_POST['db_acc'], $date, $_POST['dim1'], $_POST['dim2'], $memo, $ref);
+		$_POST['cr_acc'], $date, $_POST['dim1'], $_POST['dim2'], $memo, $ref);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);
 }
@@ -138,13 +138,11 @@ if (list_updated('PaymentType'))
 	$Ajax->activate('costs');
 
 $item = get_item($wo_details['stock_id']);
-$_POST['db_acc'] = $item['assembly_account'];
 $r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r[0];
 $_POST['costs'] = price_format(get_post('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 
 amount_row(_("Additional Costs:"), 'costs');
-gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);
 gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);
 textarea_row(_("Memo:"), 'memo', null, 40, 5);
 end_table(1);

@@ -52,11 +52,10 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	 	$stockitem = get_item($stock_id);
 		release_work_order($woid, $date_, '');
 		if ($costs != 0)
-			add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $stockitem["assembly_account"],
-				$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
+			add_wo_costs_journal($woid, $costs, WO_OVERHEAD, $cr_acc, $date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
+
 		if ($labour != 0)
-			add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $stockitem["assembly_account"],
-				$date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
+			add_wo_costs_journal($woid, $labour, WO_LABOUR, $cr_lab_acc, $date_, $stockitem["dimension_id"], $stockitem["dimension2_id"]);
 
 		if ($type == WO_UNASSEMBLY)
 			$units_reqd = -$units_reqd;

@@ -15,7 +15,7 @@ function get_wo_requirements($woid)
 			center.name AS WorkCentreDescription,
 			item.material_cost as ComponentCost,
 			item.inventory_account,
-			item.assembly_account
+			item.cogs_account
 		FROM (".TB_PREF."wo_requirements req,"
 			.TB_PREF."locations loc,"
 			.TB_PREF."workcentres center)

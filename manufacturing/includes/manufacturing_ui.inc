@@ -61,6 +61,7 @@ function display_bom($item_check)
 		$item = get_item($item_check);
 		if ($item['labour_cost'] != 0)
 		{
+			$total_cost += $item['labour_cost'];
 			alt_table_row_color($k);
 	        label_cells(_("Standard Labour Cost"), number_format2($item['labour_cost'],user_price_dec()),
     	    	"colspan=6 align=left", "class=odd_row nowrap align=right");
@@ -68,6 +69,7 @@ function display_bom($item_check)
 		}
 		if ($item['overhead_cost'] != 0)
 		{
+			$total_cost += $item['overhead_cost'];
 			alt_table_row_color($k);
 	        label_cells(_("Standard Overhead Cost"), number_format2($item['overhead_cost'],user_price_dec()),
     	    	"colspan=6 align=left", "nowrap align=right");
@@ -261,7 +263,7 @@ function display_wo_payments($woid)
         	label_cell($wo_cost_types[$myrow['cost_type']]);
         	$date = sql2date($myrow["tran_date"]);
         	label_cell($date);
-			amount_cell(-($myrow['amount']));
+			amount_cell($myrow['amount']);
 			end_row();
 		}
 

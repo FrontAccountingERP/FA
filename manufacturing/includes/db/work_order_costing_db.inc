@@ -169,7 +169,7 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 /*
 	Create journal entry for WO related costs.
 */
-function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $db_acc, $date, $dim1=0, $dim2=0, $memo = null, $ref= null)
+function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1=0, $dim2=0, $memo = null, $ref= null)
 {
 //-------- this should be done by single call to write_journal_entries() using items_cart()
 //
@@ -179,33 +179,27 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $db_acc, $da
 
     $journal_id = get_next_trans_no(ST_JOURNAL);
 
+	$wo = get_work_order($wo_id);
+
     if (!$ref) $ref = $Refs->get_next(ST_JOURNAL, null, $date);
 
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $cr_acc,
 		0, 0, $wo_cost_types[$cost_type], -$amount);
+
 	$is_bank_to = is_bank_account($cr_acc);
 	if ($is_bank_to)
 	{
 		add_bank_trans(ST_JOURNAL, $journal_id, $is_bank_to, "",
 			$date, -$amount, PT_WORKORDER, $wo_id, get_company_currency(),
 			"Cannot insert a destination bank transaction");
-	} 
+	}
 	add_journal(ST_JOURNAL, $journal_id, $amount, $date, get_company_currency(), $ref);
 
-	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $db_acc,
+	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $wo['assembly_account'],
 		$dim1, $dim2,  $wo_cost_types[$cost_type], $amount);
 
 	$wo = get_work_order($wo_id);
 	$wip = $wo['assembly_account'];
-
-	if ($db_acc != $wip)
-	{
-		add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $db_acc,
-			0, 0,  $wo_cost_types[$cost_type], -$amount);
-
-		add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $wip,
-			0, 0,  $wo_cost_types[$cost_type], $amount);
-	}
 
 	$Refs->save(ST_JOURNAL, $journal_id, $ref);
 
