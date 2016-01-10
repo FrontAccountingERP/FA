@@ -144,8 +144,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		if (!is_service($bom_accounts["mb_flag"]))
 			$ivaccount = $bom_accounts["inventory_account"];
 		else
-			// $ivaccount = $bom_accounts["cogs_account"];
-			$ivaccount = $bom_accounts["assembly_account"]; // changed 2015.10.14 by Petros .		
+			$ivaccount = $bom_accounts["cogs_account"];
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
 			$memo, -$bom_cost);
 		$total_material_cost += $bom_cost;

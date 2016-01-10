@@ -106,7 +106,7 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 				-$costs);
 			//GL Posting to inventory adjustment account
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["assembly_account"], // changed 2015.10.14 from adjustment to assembly account. Petros.
+				$stock_gl_code["assembly_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 				$costs);
 				
@@ -164,7 +164,7 @@ function add_labour_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 				-$costs);
 			//GL Posting to inventory adjustment account
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["assembly_account"], // changed 2015.10.14 from adjustment to assembly account. Petros.
+				$stock_gl_code["assembly_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 				$costs);
 				
@@ -217,7 +217,7 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 				-$costs);
 			//GL Posting to inventory adjustment account
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["assembly_account"], // changed 2015.10.14 from adjustment to assembly account. Petros.
+				$stock_gl_code["assembly_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 				$costs);
 				
