@@ -317,7 +317,7 @@ function get_stock_gl_code($stock_id)
 {
 	/*Gets the GL Codes relevant to the item account  */
 	$sql = "SELECT mb_flag, inventory_account, cogs_account,
-		adjustment_account, sales_account, assembly_account, dimension_id, dimension2_id FROM
+		adjustment_account, sales_account, wip_account, dimension_id, dimension2_id FROM
 		".TB_PREF."stock_master WHERE stock_id = ".db_escape($stock_id);
 
 	$get = db_query($sql,"retreive stock gl code");

@@ -73,7 +73,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 
 		$total_cost = $o_cost + $m_cost + $l_cost;
 
-	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['assembly_account'],
+	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['wip_account'],
     	    0, 0, $memo, -$total_cost);
 
 	    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $product['inventory_account'],

@@ -10,12 +10,12 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function add_item_category($description, $tax_type_id, $sales_account, 
-	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
+	$cogs_account, $inventory_account, $adjustment_account, $wip_account, 
 	$units, $mb_flag, $dim1, $dim2, $no_sale, $no_purchase)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act, 
-			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act, 
+			dflt_inventory_act, dflt_adjustment_act, dflt_wip_act, 
 			dflt_dim1, dflt_dim2, dflt_no_sale, dflt_no_purchase)
 		VALUES ("
 		.db_escape($description).","
@@ -26,7 +26,7 @@ function add_item_category($description, $tax_type_id, $sales_account,
 		.db_escape($cogs_account).","
 		.db_escape($inventory_account).","
 		.db_escape($adjustment_account).","
-		.db_escape($assembly_account).","
+		.db_escape($wip_account).","
 		.db_escape($dim1).","
 		.db_escape($dim2).","
 		.db_escape($no_sale).","
@@ -37,7 +37,7 @@ function add_item_category($description, $tax_type_id, $sales_account,
 
 function update_item_category($id, $description, $tax_type_id, 
 	$sales_account, $cogs_account, $inventory_account, $adjustment_account, 
-	$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale, $no_purchase)
+	$wip_account, $units, $mb_flag, $dim1, $dim2, $no_sale, $no_purchase)
 
 {
 	$sql = "UPDATE ".TB_PREF."stock_category SET "
@@ -49,7 +49,7 @@ function update_item_category($id, $description, $tax_type_id,
 		."dflt_cogs_act = ".db_escape($cogs_account).","
 		."dflt_inventory_act = ".db_escape($inventory_account).","
 		."dflt_adjustment_act = ".db_escape($adjustment_account).","
-		."dflt_assembly_act = ".db_escape($assembly_account).","
+		."dflt_wip_act = ".db_escape($wip_account).","
 		."dflt_dim1 = ".db_escape($dim1).","
 		."dflt_dim2 = ".db_escape($dim2).","
 		."dflt_no_sale = ".db_escape($no_sale).","

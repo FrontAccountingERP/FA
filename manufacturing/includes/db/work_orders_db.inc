@@ -121,7 +121,7 @@ function delete_work_order($woid, $stock_id, $qty, $date)
 function get_work_order($woid, $allow_null=false)
 {
     $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
-    		l.delivery_address,l.email, l.contact, st.inventory_account, st.assembly_account
+    		l.delivery_address,l.email, l.contact, st.inventory_account, st.wip_account
 		FROM ".TB_PREF."workorders wo, "
 			.TB_PREF."stock_master st, "
 			.TB_PREF."locations l

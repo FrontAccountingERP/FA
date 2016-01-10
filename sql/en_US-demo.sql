@@ -1818,7 +1818,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_category` (
   `dflt_cogs_act` varchar(15) NOT NULL DEFAULT '',
   `dflt_inventory_act` varchar(15) NOT NULL DEFAULT '',
   `dflt_adjustment_act` varchar(15) NOT NULL DEFAULT '',
-  `dflt_assembly_act` varchar(15) NOT NULL DEFAULT '',
+  `dflt_wip_act` varchar(15) NOT NULL DEFAULT '',
   `dflt_dim1` int(11) DEFAULT NULL,
   `dflt_dim2` int(11) DEFAULT NULL,
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
@@ -1873,7 +1873,7 @@ CREATE TABLE IF NOT EXISTS `0_stock_master` (
   `cogs_account` varchar(15) NOT NULL DEFAULT '',
   `inventory_account` varchar(15) NOT NULL DEFAULT '',
   `adjustment_account` varchar(15) NOT NULL DEFAULT '',
-  `assembly_account` varchar(15) NOT NULL DEFAULT '',
+  `wip_account` varchar(15) NOT NULL DEFAULT '',
   `dimension_id` int(11) DEFAULT NULL,
   `dimension2_id` int(11) DEFAULT NULL,
   `purchase_cost` double NOT NULL DEFAULT '0',
@@ -2152,7 +2152,7 @@ INSERT INTO `0_sys_prefs` VALUES ('default_inventory_act', 'glsetup.items', 'var
 INSERT INTO `0_sys_prefs` VALUES ('default_cogs_act', 'glsetup.items', 'varchar', 15, '5010');
 INSERT INTO `0_sys_prefs` VALUES ('default_adj_act', 'glsetup.items', 'varchar', 15, '5040');
 INSERT INTO `0_sys_prefs` VALUES ('default_inv_sales_act', 'glsetup.items', 'varchar', 15, '4010');
-INSERT INTO `0_sys_prefs` VALUES ('default_assembly_act', 'glsetup.items', 'varchar', 15, '1530');
+INSERT INTO `0_sys_prefs` VALUES ('default_wip_act', 'glsetup.items', 'varchar', 15, '1530');
 INSERT INTO `0_sys_prefs` VALUES ('default_workorder_required', 'glsetup.manuf', 'int', 11, '20');
 INSERT INTO `0_sys_prefs` VALUES ('version_id', 'system', 'varchar', 11, '2.4.1');
 INSERT INTO `0_sys_prefs` VALUES ('auto_curr_reval', 'setup.company', 'smallint', 6, '1');

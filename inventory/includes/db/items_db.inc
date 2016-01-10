@@ -11,7 +11,7 @@
 ***********************************************************************/
 function update_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
-	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
+	$cogs_account, 	$adjustment_account, $wip_account, $dimension_id, 
 	$dimension2_id, $no_sale, $editable, $no_purchase,
 	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_factor=1,
 	$depreciation_start=null, $fa_class_id=null)
@@ -23,7 +23,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		inventory_account=".db_escape($inventory_account).",
 		cogs_account=".db_escape($cogs_account).",
 		adjustment_account=".db_escape($adjustment_account).",
-		assembly_account=".db_escape($assembly_account).",
+		wip_account=".db_escape($wip_account).",
 		dimension_id=".db_escape($dimension_id).",
 		dimension2_id=".db_escape($dimension2_id).",
 		tax_type_id=".db_escape($tax_type_id).",
@@ -55,21 +55,21 @@ function update_item($stock_id, $description, $long_description, $category_id,
 
 function add_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
-	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
+	$cogs_account, $adjustment_account,	$wip_account, $dimension_id, 
 	$dimension2_id, $no_sale, $editable, $no_purchase,
 	$depreciation_method='D', $depreciation_rate=100,  $depreciation_factor=1, $depreciation_start=null,
 	$fa_class_id=null)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
-		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale, no_purchase, editable,
+		adjustment_account, wip_account, dimension_id, dimension2_id, no_sale, no_purchase, editable,
 		depreciation_method, depreciation_rate, depreciation_factor, depreciation_start, depreciation_date, fa_class_id)
 		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		".db_escape($category_id).", ".db_escape($tax_type_id).", "
 		.db_escape($units).", ".db_escape($mb_flag).",
 		".db_escape($sales_account).", ".db_escape($inventory_account)
 		.", ".db_escape($cogs_account).",".db_escape($adjustment_account)
-		.", ".db_escape($assembly_account).", "
+		.", ".db_escape($wip_account).", "
 		.db_escape($dimension_id).", ".db_escape($dimension2_id).","
 		.db_escape($no_sale).","
 		.db_escape($no_purchase).","

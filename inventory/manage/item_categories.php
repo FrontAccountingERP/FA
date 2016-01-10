@@ -55,7 +55,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		    update_item_category($selected_id, $_POST['description'],
 				$_POST['tax_type_id'],	$_POST['sales_account'], 
 				$_POST['cogs_account'], $_POST['inventory_account'], 
-				$_POST['adjustment_account'], $_POST['assembly_account'],
+				$_POST['adjustment_account'], $_POST['wip_account'],
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
 				check_value('no_sale'), check_value('no_purchase'));
 			display_notification(_('Selected item category has been updated'));
@@ -65,7 +65,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		    add_item_category($_POST['description'],
 				$_POST['tax_type_id'],	$_POST['sales_account'], 
 				$_POST['cogs_account'], $_POST['inventory_account'], 
-				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	
 				$_POST['dim2'],	check_value('no_sale'), check_value('no_purchase'));
 			display_notification(_('New item category has been added'));
@@ -142,7 +142,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["dflt_cogs_act"], "align=center");
 	label_cell($myrow["dflt_adjustment_act"], "align=center");
 	if (!$fixed_asset)
-		label_cell($myrow["dflt_assembly_act"], "align=center");
+		label_cell($myrow["dflt_wip_act"], "align=center");
 	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
  	edit_button_cell("Edit".$myrow["category_id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["category_id"], _("Delete"));
@@ -170,7 +170,7 @@ if ($selected_id != -1)
 		$_POST['cogs_account']  = $myrow["dflt_cogs_act"];
 		$_POST['inventory_account']  = $myrow["dflt_inventory_act"];
 		$_POST['adjustment_account']  = $myrow["dflt_adjustment_act"];
-		$_POST['assembly_account']  = $myrow["dflt_assembly_act"];
+		$_POST['wip_account']  = $myrow["dflt_wip_act"];
 		$_POST['units']  = $myrow["dflt_units"];
 		$_POST['mb_flag']  = $myrow["dflt_mb_flag"];
 		$_POST['dim1']  = $myrow["dflt_dim1"];
@@ -200,8 +200,8 @@ if ($selected_id != -1)
 	if (get_post('adjustment_account') == "")
 		$_POST['adjustment_account'] = $company_record["default_adj_act"];
 
-	if (get_post('assembly_account') == "")
-		$_POST['assembly_account'] = $company_record["default_assembly_act"];
+	if (get_post('wip_account') == "")
+		$_POST['wip_account'] = $company_record["default_wip_act"];
 
 }
 
@@ -248,9 +248,9 @@ else
 }
 
 if (is_manufactured($_POST['mb_flag']))
-	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'wip_account', $_POST['wip_account']);
 else
-	hidden('assembly_account', $_POST['assembly_account']);
+	hidden('wip_account', $_POST['wip_account']);
 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)

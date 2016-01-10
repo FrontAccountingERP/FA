@@ -144,7 +144,7 @@ function add_issue_cost($stock_id, $qty, $date_, $costs, $adj_only=false)
 				-$costs);
 			//GL Posting to inventory adjustment account
 			add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
-				$stock_gl_code["assembly_account"],
+				$stock_gl_code["wip_account"],
 				$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 				$costs);
 				
@@ -195,11 +195,11 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
 	}
 	add_journal(ST_JOURNAL, $journal_id, $amount, $date, get_company_currency(), $ref);
 
-	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $wo['assembly_account'],
+	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $wo['wip_account'],
 		$dim1, $dim2,  $wo_cost_types[$cost_type], $amount);
 
 	$wo = get_work_order($wo_id);
-	$wip = $wo['assembly_account'];
+	$wip = $wo['wip_account'];
 
 	$Refs->save(ST_JOURNAL, $journal_id, $ref);
 
@@ -241,7 +241,7 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 	}
 
 	$wo = get_work_order($woid);
-    add_gl_trans_std_cost(ST_MANURECEIVE, $rcv_no, $date_, $wo['assembly_account'],
+    add_gl_trans_std_cost(ST_MANURECEIVE, $rcv_no, $date_, $wo['wip_account'],
         0, 0, $memo, -$total_cost);
 }
 

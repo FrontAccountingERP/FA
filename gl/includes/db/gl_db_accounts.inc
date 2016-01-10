@@ -111,7 +111,7 @@ function gl_account_in_company_defaults($acc)
 		OR name='default_cogs_act'
 		OR name='default_adj_act'
 		OR name='default_inv_sales_act'
-		OR name='default_assembly_act') AND value=".db_escape($acc);
+		OR name='default_wip_act') AND value=".db_escape($acc);
 	$result = db_query($sql,"Couldn't test for default company GL codes");
 
 	$myrow = db_fetch_row($result);

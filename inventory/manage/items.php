@@ -224,7 +224,7 @@ if (isset($_POST['addupdate']))
 				$_POST['tax_type_id'], get_post('units'),
 				get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
-				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
 				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
@@ -245,7 +245,7 @@ if (isset($_POST['addupdate']))
 				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
 				$_POST['units'], get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
-				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
 				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
@@ -348,7 +348,7 @@ function item_settings(&$stock_id, $new_item)
 			$_POST['inventory_account'] = $myrow['inventory_account'];
 			$_POST['cogs_account'] = $myrow['cogs_account'];
 			$_POST['adjustment_account']	= $myrow['adjustment_account'];
-			$_POST['assembly_account']	= $myrow['assembly_account'];
+			$_POST['wip_account']	= $myrow['wip_account'];
 			$_POST['dimension_id']	= $myrow['dimension_id'];
 			$_POST['dimension2_id']	= $myrow['dimension2_id'];
 			$_POST['no_sale']	= $myrow['no_sale'];
@@ -380,7 +380,7 @@ function item_settings(&$stock_id, $new_item)
 		$_POST['cogs_account'] = $category_record["dflt_cogs_act"];
 		$_POST['sales_account'] = $category_record["dflt_sales_act"];
 		$_POST['adjustment_account'] = $category_record["dflt_adjustment_act"];
-		$_POST['assembly_account'] = $category_record["dflt_assembly_act"];
+		$_POST['wip_account'] = $category_record["dflt_wip_act"];
 		$_POST['dimension_id'] = $category_record["dflt_dim1"];
 		$_POST['dimension2_id'] = $category_record["dflt_dim2"];
 		$_POST['no_sale'] = $category_record["dflt_no_sale"];
@@ -487,9 +487,9 @@ function item_settings(&$stock_id, $new_item)
 
 
 	if (is_manufactured($_POST['mb_flag']))
-		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
-		hidden('assembly_account', $_POST['assembly_account']);
+		hidden('wip_account', $_POST['wip_account']);
 
 	table_section_title(_("Other"));
 

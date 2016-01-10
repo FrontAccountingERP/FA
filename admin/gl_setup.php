@@ -77,7 +77,7 @@ if (isset($_POST['submit']) && can_process())
 		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act', 'deferred_income_act',
 		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
 		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act', 'depreciation_period',
-		'default_loss_on_asset_disposal_act', 'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
+		'default_loss_on_asset_disposal_act', 'default_adj_act', 'default_inv_sales_act', 'default_wip_act', 'legal_text',
 		'past_due_days', 'default_workorder_required', 'default_dim_required', 'default_receival_required',
 		'default_delivery_required', 'default_quote_valid_days', 'grn_clearing_act', 'tax_algorithm',
 		'no_zero_lines_amount', 'show_po_item_codes', 'accounts_alpha', 'loc_notification', 'print_invoice_no',
@@ -119,7 +119,7 @@ $_POST['default_inventory_act'] = $myrow["default_inventory_act"];
 $_POST['default_cogs_act'] = $myrow["default_cogs_act"];
 $_POST['default_adj_act'] = $myrow["default_adj_act"];
 $_POST['default_inv_sales_act'] = $myrow['default_inv_sales_act'];
-$_POST['default_assembly_act'] = $myrow['default_assembly_act'];
+$_POST['default_wip_act'] = $myrow['default_wip_act'];
 
 $_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
 
@@ -251,7 +251,7 @@ gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['def
 
 gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
 
-gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
+gl_all_accounts_list_row(_("WIP Account:"), 'default_wip_act', $_POST['default_wip_act']);
 
 //----------------
 

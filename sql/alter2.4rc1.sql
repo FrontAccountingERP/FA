@@ -1,3 +1,4 @@
+# new fixed assets module
 ALTER TABLE `0_locations` ADD COLUMN `fixed_asset` tinyint(1) NOT NULL DEFAULT '0' after `contact`;
 
 DROP TABLE IF EXISTS `0_stock_fa_class`;
@@ -25,8 +26,13 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('use_manufacturing','setup.company', 'tinyint', 1, '1'),
 	('use_fixed_assets','setup.company', 'tinyint', 1, '1');
 
+# manufacturing rewrite
 ALTER TABLE `0_wo_issue_items` ADD COLUMN  `unit_cost` double NOT NULL default '0' AFTER `qty_issued`;
 ALTER TABLE `0_wo_requirements` CHANGE COLUMN `std_cost` `unit_cost` double NOT NULL default '0';
 
 ALTER TABLE `0_stock_master` DROP COLUMN `last_cost`;
 UPDATE `0_stock_master` SET `material_cost`=`material_cost`+`labour_cost`+`overhead_cost`;
+
+ALTER TABLE `0_stock_master` CHANGE COLUMN `assembly_account` `wip_account` VARCHAR(15) NOT NULL default '';
+ALTER TABLE `0_stock_category` CHANGE COLUMN `dflt_assembly_act` `dflt_wip_act` VARCHAR(15) NOT NULL default '';
+UPDATE `0_sys_prefs` SET `name`='default_wip_act' WHERE `name`='default_assembly_act';
