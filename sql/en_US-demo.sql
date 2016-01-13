@@ -851,13 +851,14 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `begin` (`begin`),
   UNIQUE KEY `end` (`end`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `0_fiscal_year`
 --
 
 INSERT INTO `0_fiscal_year` VALUES (1, '2015-01-01', '2015-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES (2, '2016-01-01', '2016-12-31', 0);
 
 -- --------------------------------------------------------
 
