@@ -273,13 +273,15 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		elseif ($type == 2)	
 			$sql .= "AND s.mb_flag='F' ";
 	}
-	$sql .= "AND tran_date >= '$begin1' AND tran_date <= '$today1' GROUP by s.stock_id ORDER BY total DESC, s.stock_id 
+	if ($type != 2)
+		$sql .= "AND tran_date >= '$begin1' ";
+	$sql .= "AND tran_date <= '$today1' GROUP by s.stock_id ORDER BY total DESC, s.stock_id 
 		LIMIT $limit";
 	$result = db_query($sql);
 	if ($type == 1)
 		$title = _("Top $limit Manufactured Items in fiscal year");
 	elseif ($type == 2)
-		$title = _("Top $limit Fixed Assets in fiscal year");
+		$title = _("Top $limit Fixed Assets");
 	else	
 		$title = _("Top $limit Sold Items in fiscal year");
 	display_title($title);	
@@ -591,7 +593,7 @@ function supplier_trans($today)
 function bank_balance($today, $width)
 {
 	$today = date2sql($today);
-	$sql = "SELECT bank_act, bank_account_name, SUM(amount) balance FROM ".TB_PREF."bank_trans bt 
+	$sql = "SELECT bank_act, bank_account_name, bank_curr_code, SUM(amount) balance FROM ".TB_PREF."bank_trans bt 
 	            INNER JOIN ".TB_PREF."bank_accounts ba ON bt.bank_act = ba.id
 	            WHERE trans_date <= '$today'
 	            AND inactive <> 1
@@ -600,7 +602,7 @@ function bank_balance($today, $width)
 	$result = db_query($sql);
 	$title = _("Bank Account Balances");
 	display_title($title);
-	$th = array(_("Account"), _("Balance"));
+	$th = array(_("Account"), _("Currency"), _("Balance"));
 	start_table(TABLESTYLE, "width='$width%'");
 	table_header($th);
 	$k = 0; //row colour counter
@@ -608,6 +610,7 @@ function bank_balance($today, $width)
 	{
 		alt_table_row_color($k);
 		label_cell(viewer_link($myrow["bank_account_name"], 'gl/inquiry/bank_inquiry.php?bank_account='.$myrow["bank_act"]));
+		label_cell($myrow["bank_curr_code"]);
 		amount_cell($myrow['balance']);
 		end_row();
 	}
