@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry excluding="themes/bootstrap/vendor/|themes/bootstrap/vendor/" kind="src" path="htdocs"/>
+	<buildpathentry kind="src" path="tests"/>
+	<buildpathentry kind="src" path="vendor"/>
+	<buildpathentry kind="src" path="htdocs/themes/bootstrap/vendor"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>
