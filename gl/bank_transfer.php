@@ -114,8 +114,7 @@ function gl_payment_controls($trans_no)
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER, null, get_post('DatePaid')), false, ST_BANKTRANSFER,
-    	array('date' => get_post('DatePaid')));
+	ref_row(_("Reference:"), 'ref', '', $_POST['ref']);
 
 	table_section(2);
 
