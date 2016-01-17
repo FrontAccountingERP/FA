@@ -818,7 +818,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `begin` (`begin`),
   UNIQUE KEY `end` (`end`)
-) ENGINE=InnoDB  AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `0_fiscal_year`
@@ -826,6 +826,8 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 
 INSERT INTO `0_fiscal_year` VALUES(1, '2013-01-01', '2013-12-31', 0);
 INSERT INTO `0_fiscal_year` VALUES(2, '2014-01-01', '2014-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(3, '2015-01-01', '2015-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(4, '2016-01-01', '2016-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`

@@ -163,8 +163,7 @@ function void_work_order_produce($type_no)
 		if (!is_service($issue["mb_flag"]))
 			$ivaccount = $issue["inventory_account"];
 		else
-			//$ivaccount = $issue["cogs_account"];		
-			$ivaccount = $issue["assembly_account"]; // changed 2015.10.14 by Petros .		
+			$ivaccount = $issue["cogs_account"];		
 		
 		if ($issue_cost != 0)
 		{
