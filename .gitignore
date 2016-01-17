@@ -2,11 +2,14 @@ node_modules/
 vendor/
 vendor_bower/
 /.settings/
+/company/*
+!/company/0
 /company/*/attachments
 /company/*/backup/*.sql
 /company/*/backup/*.sql.gz
 /company/*/pdf_files/*.pdf
 /company/*/js_cache/*.js
+/company/*/js_cache/*/*.js
 /company/*/reporting
 /company/*/images
 /company/*/installed_extensions.php

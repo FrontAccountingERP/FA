@@ -37,6 +37,15 @@ class TestEnvironment
 
 	}
 
+	/**
+	 * This function setups up dependencies that exist in code that have been included at too high a level
+	 * for unit testing (i.e. in a function that also declares global variable at the top level), so they are included here.
+	 */
+	private static function setupCodeDependencies()
+	{
+		self::includeFile('admin/db/transactions_db.inc');
+	}
+	
 	private static function setupSQL()
 	{
 		global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
@@ -52,17 +61,21 @@ class TestEnvironment
 	{
 		self::includeFile('includes/hooks.inc');
 		self::includeFile('includes/types.inc');
-		self::includeFile('includes/systypes.inc');
-		self::includeFile('includes/prefs/sysprefs.inc');
 		self::includeFile('includes/db/comments_db.inc');
 		self::includeFile('includes/db/audit_trail_db.inc');
-		$_SESSION['SysPrefs'] = null;
-		$GLOBALS['SysPrefs'] = &$_SESSION['SysPrefs'];
 		self::mockRefs();
 	}
 
 	private static function setupSesstion()
 	{
+		self::includeFile('includes/session_utils.inc');
+		self::includeFile('includes/prefs/sysprefs.inc');
+		$_SESSION['SysPrefs'] = new sys_prefs();
+		$GLOBALS['SysPrefs'] = &$_SESSION['SysPrefs'];
+		
+		self::includeFile('includes/lang/language.inc');
+		$_SESSION['language'] = new language('default', 'C', 'utf-8', 'ltr');
+		
 		$_SESSION["wa_current_user"] = new TestUser();
 	}
 
@@ -78,6 +91,7 @@ class TestEnvironment
 		self::setupSesstion();
 		self::setupSQL();
 		self::setupSQLDependencies();
+		self::setupCodeDependencies();
 		$msg = '';
 		$dbname = $db_connections[0]['dbname'];
 		$expected = 'fa_test';
