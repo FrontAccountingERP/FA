@@ -286,7 +286,6 @@ class GLBankTransferTest extends PHPUnit_Framework_TestCase
 			TestEnvironment::cashAccount(),
 			TestEnvironment::currentAccount(),
 			'2/13/2014',
-			//'13/02/2014',
 			$amount,
 			'3',
 			'Some memo',
@@ -298,12 +297,10 @@ class GLBankTransferTest extends PHPUnit_Framework_TestCase
 			$transactionId2,
 			TestEnvironment::cashAccount(),
 			TestEnvironment::currentAccount(),
-			'2/2/2014',
-			//'1/02/2014',
+			'2/1/2014',
 			$amount,
 			0
 		);
-		var_dump($problemTransaction);
 		$this->assertNotNull($problemTransaction);
 		$this->assertEquals(-40, $problemTransaction['amount']);
 		$this->assertEquals('2014-02-01', $problemTransaction['trans_date']);

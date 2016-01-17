@@ -246,6 +246,16 @@ gulp.task('test-php-debug', ['env-db'], function(cb) {
   });
 });
 
+gulp.task('test-php-debug-fast', function(cb) {
+  var options = {
+      env: {'XDEBUG_CONFIG': 'idekey=eclipse'}
+  };
+  var command = '/usr/bin/env php modules/tests/vendor/bin/phpunit -c modules/tests/phpunit.xml';
+  execute(command, options, function(err) {
+    cb(null); // Swallow the error propagation so that gulp doesn't display a nodejs backtrace.
+  });
+});
+
 gulp.task('test-php-coverage', ['env-db'], function(cb) {
   var command = '/usr/bin/env php modules/tests/vendor/bin/phpunit -c modules/tests/phpunit.xml --coverage-html ./modules/tests/wiki/code_coverage';
   execute(command, null, function(err) {
