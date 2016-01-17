@@ -172,16 +172,17 @@ function void_bank_trans($type, $type_no, $nested=false)
 *	Returns null or transaction in conflict. Running balance is checked on daily basis only, to enable ID change after edition.
 *	$delta_amount - tested change in bank balance at $date.
 **/
-function check_bank_account_history($delta_amount, $bank_account, $date=null, $user=null)
+function check_bank_account_history($delta_amount, $bank_account, $date=null, $user=null, $balance_offset = 0)
 {
 	if ($delta_amount >= 0 && isset($date))
-		 return null;	// amount increese is always safe
+		 return null;	// amount increase is always safe
 
 	$balance = $date ? get_bank_account_limit($bank_account, $date, $user) : 0;
 
 	if (!isset($balance) && isset($date))
 		return null;	// unlimited account
 
+	$balance += $balance_offset;
 	if (floatcmp($balance, -$delta_amount) < 0)
 		return array('amount' => $balance + $delta_amount, 'trans_date'=> date2sql($date));
 
