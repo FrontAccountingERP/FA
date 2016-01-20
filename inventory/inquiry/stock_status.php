@@ -42,12 +42,14 @@ if (!isset($_POST['stock_id']))
 
 if (!$page_nested)
 {
-	echo "<center> " . _("Item:"). " ";
-	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+//	echo "<center> " . _("Item:"). " ";
+//	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+	ControlRenderer::get()->table_add_cells(array(_("Item:"), stock_costable_items_list('stock_id', $_POST['stock_id'], false, true)));
+	end_form();
 }
-echo "<br>";
+//echo "<br>";
 
-echo "<hr></center>";
+//echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
