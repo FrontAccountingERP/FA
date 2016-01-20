@@ -248,7 +248,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 		}
-		echo gl_all_accounts_list('code_id', null, true, true);
+		ControlRenderer::get()->table_add_cells(gl_all_accounts_list('code_id', null, true, true));
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

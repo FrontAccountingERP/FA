@@ -380,7 +380,6 @@ class ControlRenderer
 		echo "</tr>\n";
 	}
 
-	// TODO REVIEW: This function is no longer in stable CJP 2016-01
 	/**
 	 * @param array | string $cells
 	 */
