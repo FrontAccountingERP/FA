@@ -177,7 +177,6 @@ $new_role = get_post('role')=='';
 check_cells(_("Show inactive:"), 'show_inactive', null, true);
 end_row();
 end_table();
-echo "<hr>";
 
 if (get_post('_show_inactive_update')) {
 	$Ajax->activate('role');
