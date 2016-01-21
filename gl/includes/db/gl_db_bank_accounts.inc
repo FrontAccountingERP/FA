@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //---------------------------------------------------------------------------------------------
@@ -78,8 +78,8 @@ function get_bank_account($id)
 
 function get_bank_accounts($show_inactive=false)
 {
-	$sql = "SELECT account.*, gl_account.account_name 
-		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
+	$sql = "SELECT account.*, gl_account.account_name
+		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account
 		WHERE account.account_code = gl_account.account_code";
 	if (!$show_inactive) $sql .= " AND !account.inactive";
 	$sql .= " ORDER BY account_code, bank_curr_code";
@@ -209,7 +209,7 @@ function get_quick_entry($selected_id)
 	$result = db_query($sql, "could not retreive quick entry $selected_id");
 
 	return db_fetch($result);
-}	
+}
 
 function get_quick_entry_lines($qid)
 {
@@ -277,11 +277,12 @@ function get_ending_reconciled($bank_account, $bank_date)
 
 function get_sql_for_bank_account_reconcile($bank_account, $date)
 {
-	$sql = "SELECT	type, trans_no, ref, trans_date, 
+	$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM ".TB_PREF."bank_trans
 		WHERE bank_act = ".db_escape($bank_account) . "
 			AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
+			AND amount != 0
 		ORDER BY trans_date, id";
 	return $sql;
 }
