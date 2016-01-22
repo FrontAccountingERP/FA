@@ -86,12 +86,6 @@ function gl_payment_controls($trans_no)
 			$_POST['ToBankAccount'] = $to_trans['bank_act'];
 			$_POST['target_amount'] = price_format($to_trans['amount']);
 			$_POST['amount'] = price_format(-$from_trans['amount']);
-		} else {
-			$_POST['ref'] = $Refs->get_next(ST_BANKTRANSFER, null, get_post('DatePaid'));
-			$_POST['memo_'] = '';
-			$_POST['FromBankAccount'] = 0;
-			$_POST['ToBankAccount'] = 0;
-			$_POST['amount'] = 0;
 		}
 	}
 
@@ -114,7 +108,7 @@ function gl_payment_controls($trans_no)
 	}
     date_row(_("Transfer Date:"), 'DatePaid', '', true, 0, 0, 0, null, true);
 
-	ref_row(_("Reference:"), 'ref', '', $_POST['ref']);
+	ref_row(_("Reference:"), 'ref', '', null, false, ST_BANKTRANSFER, array('date' => get_post('DatePaid')));
 
 	table_section(2);
 
