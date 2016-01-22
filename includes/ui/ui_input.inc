@@ -350,16 +350,16 @@ function file_row($label, $name, $id = "")
 
 //-----------------------------------------------------------------------------------
 
-function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit_on_change=false)
+function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit_on_change=false, $type = null, $context = null)
 {
-	InputRenderer::get()->ref_cells($label, $name, $title, $init, $params, $submit_on_change);
+	InputRenderer::get()->ref_cells($label, $name, $title, $init, $params, $submit_on_change, $type, $context);
 }
 
 //-----------------------------------------------------------------------------------
 
-function ref_row($label, $name, $title=null, $init=null, $submit_on_change=false)
+function ref_row($label, $name, $title=null, $init=null, $submit_on_change=false, $type = null, $context = null)
 {
-	InputRenderer::get()->ref_row($label, $name, $title, $init, $submit_on_change);
+	InputRenderer::get()->ref_row($label, $name, $title, $init, $submit_on_change, $type, $context);
 }
 
 //-----------------------------------------------------------------------------------
