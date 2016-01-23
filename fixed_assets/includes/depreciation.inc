@@ -70,6 +70,8 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
 		break;
 
     case 'S':	// purchase_cost stores start cost of item
+		$done_months = months_between_dates($item['depreciation_start'], $item['depreciation_date']);
+		$remaining_months = 100.0/$item['depreciation_rate'] - $done_months;
 		$value = $item['purchase_cost']*$item['depreciation_rate']/100/12;
 		break;
 
@@ -90,6 +92,12 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
   $total = 0;
   $cnt = 0;
   for ($i=$m; $i < $m + $no_months; $i++) {
+
+	if ($item['depreciation_method'] == 'S') {
+		if ($cnt >= $remaining_months)
+			$value = 0;
+	}
+
     $date = sql2date(date("$y-$i-t", strtotime("$y-$i-1")));
 
     $total += $value;
@@ -109,15 +117,11 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
 
     $cnt++;
 
-    if ($item['depreciation_method'] == 'S') {
-      if ($cnt >= $remaining_months)
-        $value = 0;
-    }
-    elseif ($item['depreciation_method'] == 'O') {
-      // depreciate only in the first month
-      $value = 0;
-    }
-  }
+	if ($item['depreciation_method'] == 'O') {
+		// depreciate only in the first month
+		$value = 0;
+	}
+ }
 
   return $rows;
 }
