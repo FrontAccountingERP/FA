@@ -45,6 +45,22 @@ function help_url($context=null)
 		.'&ctxhelp=1&lang='.$country, ENT_QUOTES);
 }
 
+function send_css($css = '')
+{
+	global $css_files;
+
+	css_files_ensure_init();
+
+	foreach ($css_files as $css_file)
+	{
+		echo "<link href='$css_file' rel='stylesheet' type='text/css'> \n";
+	}
+	if ($css)
+	{
+		echo "<link href='$css' rel='stylesheet' type='text/css'> \n";
+	}
+}
+
 function send_scripts()
 {
     global $SysPrefs, $path_to_root, $js_static, $js_path, $js_userlib;
@@ -125,10 +141,9 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') != -1) // IE 11 doesn't work with input file type in form.
 		echo "<meta http-equiv='X-UA-Compatible' content='IE=10'>\n";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
- 	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
-	if ($css)
-		echo '<link href="'.$css.'" rel="stylesheet" type="text/css">';
+	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
+
+	send_css($css);
 
 	send_scripts();
 
