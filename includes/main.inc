@@ -68,6 +68,24 @@ function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no
 	page_footer($no_menu, $is_index);
 }
 
+function css_files_ensure_init() {
+	global $css_files, $path_to_root;
+
+	if (!isset($css_files))
+	{
+		$theme = user_theme();
+		$css_files = array();
+		$css_files[] = $path_to_root . "/themes/$theme/default.css";
+	}
+}
+
+function add_css_file($filename)
+{
+	global $css_files;
+	css_files_ensure_init();
+	$css_files[] = $filename;
+}
+
 function cache_js_file($fpath, $text) 
 {
 	global $SysPrefs;
