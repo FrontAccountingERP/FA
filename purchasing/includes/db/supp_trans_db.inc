@@ -112,6 +112,48 @@ function get_supp_trans($trans_no, $trans_type=-1, $supplier_id=null)
 
 //----------------------------------------------------------------------------------------
 
+function get_supp_payment_before($supplier_id, $date)
+{
+	$sql = "SELECT "
+	. TB_PREF . "supp_trans.trans_no,"
+	. TB_PREF . "supp_trans.type,"
+	. TB_PREF . "supp_trans.supplier_id,"
+	. TB_PREF . "supp_trans.tran_date,"
+	. TB_PREF . "supp_trans.ov_amount,"
+	. TB_PREF . "bank_trans.ref AS bank_ref,"
+	. TB_PREF . "bank_trans.amount AS bank_amount,"
+	. TB_PREF . "bank_accounts.id AS bank_id,"
+	. TB_PREF . "bank_accounts.bank_name,"
+	. TB_PREF . "bank_accounts.bank_account_name,"
+	. TB_PREF . "bank_accounts.bank_curr_code "
+	. "FROM "
+	. TB_PREF . "supp_trans,"
+	. TB_PREF . "bank_trans,"
+	. TB_PREF . "bank_accounts "
+	. "WHERE "
+	. TB_PREF . "supp_trans.supplier_id=" . $supplier_id . " "
+	. "AND " . TB_PREF . "supp_trans.tran_date<'" . $date . "' "
+	. "AND " . TB_PREF . "supp_trans.type=" . ST_SUPPAYMENT . " "
+	. "AND " . TB_PREF . "supp_trans.trans_no=" . TB_PREF . "bank_trans.trans_no "
+	. "AND " . TB_PREF . "supp_trans.type=" . TB_PREF . "bank_trans.type "
+	. "AND " . TB_PREF . "bank_accounts.id=" . TB_PREF . "bank_trans.bank_act "
+	. "ORDER BY "
+	. TB_PREF . "supp_trans.tran_date DESC "
+	. "LIMIT 1 "
+	;
+
+	$result = db_query($sql, "Cannot retreive a previous supplier payment");
+
+	if (db_num_rows($result) == 0)
+	{
+		return false;
+	}
+
+	return db_fetch($result);
+}
+
+//----------------------------------------------------------------------------------------
+
 function exists_supp_trans($type, $type_no)
 {
 	if ($type == ST_SUPPRECEIVE)
