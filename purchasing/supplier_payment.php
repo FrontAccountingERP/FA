@@ -72,8 +72,6 @@ if (!isset($_POST['bank_account'])) { // first page call
 	if (isset($_GET['PInvoice'])) {
 		//  get date and supplier
 		$inv = get_supp_trans($_GET['PInvoice'], $_GET['trans_type']);
-		$dflt_act = get_default_bank_account($inv['curr_code']);
-		$_POST['bank_account'] = $dflt_act['id'];
 		if ($inv) {
 			$_SESSION['alloc']->person_id = $_POST['supplier_id'] = $inv['supplier_id'];
 			$_SESSION['alloc']->read();
@@ -112,6 +110,17 @@ if (isset($_GET['AddedID'])) {
 	display_footer_exit();
 }
 
+//----------------------------------------------------------------------------------------
+
+function get_default_supplier_payment_bank_account($supplier_id, $date)
+{
+	$previous_payment = get_supp_payment_before($supplier_id, date2sql($date));
+	if ($previous_payment)
+	{
+		return $previous_payment['bank_id'];
+	}
+	return get_default_supplier_bank_account($supplier_id);
+}
 //----------------------------------------------------------------------------------------
 
 function check_inputs()
@@ -275,9 +284,12 @@ start_form();
 	set_global_supplier($_POST['supplier_id']);
 
 	if (!list_updated('bank_account') && !get_post('__ex_rate_changed'))
-		$_POST['bank_account'] = get_default_supplier_bank_account($_POST['supplier_id']);
-	else
+	{
+		$_POST['bank_account'] = get_default_supplier_payment_bank_account($_POST['supplier_id'], $_POST['DatePaid']);
+	} else
+	{
 		$_POST['amount'] = price_format(0);
+	}
 
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 
