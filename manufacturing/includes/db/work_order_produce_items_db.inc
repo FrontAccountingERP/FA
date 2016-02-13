@@ -39,7 +39,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 	work_order_production_gl($woid, $product["stock_id"], $quantity, $date_, $id);
 
 	// update wo quantity and close wo if requested (or finished)
-	$closed = work_order_update_finished_quantity($woid, $quantity, $date_, $close_wo);
+	$closed = work_order_update_finished_quantity($woid, $quantity, $close_wo);
 
 	// unit_cost is known when WO is finished, then generate +ve for all items
 	if ($closed)
@@ -103,7 +103,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 
 function get_work_order_produce($id)
 {
-	$sql = "SELECT prod.*, wo.stock_id, item.description AS StockDescription
+	$sql = "SELECT prod.*, wo.stock_id, item.description AS StockDescription, wo.closed
 			FROM ".TB_PREF."wo_manufacture prod,"
 				.TB_PREF."workorders wo,"
 				.TB_PREF."stock_master item
@@ -134,6 +134,14 @@ function exists_work_order_produce($id)
     return (db_num_rows($result) > 0);
 }
 
+//--------------------------------------------------------------------------------------
+
+function check_void_wo_production($prod_no)
+{
+	$prod = get_work_order_produce($prod_no);
+	return $prod['closed'] ? $prod['workorder_id'] : 0;
+}
+
 //--------------------------------------------------------------------------------------------
 
 function void_work_order_produce($type_no)
@@ -144,44 +152,22 @@ function void_work_order_produce($type_no)
 	// Skip processing already voided entry i.e. explicitly voided
 	$void_entry = get_voided_entry(ST_MANURECEIVE, $type_no);
 	if ($void_entry)
-		return;	
+		return;
 
-	$row = get_work_order_produce($type_no);
+	$prod = get_work_order_produce($type_no);
+
+	if (work_order_is_closed($prod['workorder_id']))
+		return;
 
 	// deduct the quantity of this production from the parent work order
-	work_order_update_finished_quantity($row["workorder_id"], -$row["quantity"]);
+	work_order_update_finished_quantity($prod["workorder_id"], -$prod["quantity"], false);
 
-	// void any related gl trans
-
-	$woid = $row["workorder_id"];
-	$date_ = sql2date($row["date_"]);
-		
-	$result = get_stock_moves(ST_MANURECEIVE, $type_no);
-	while ($myrow = db_fetch($result))
-	{
-		$issue_cost = $myrow["qty"]*$myrow["standard_cost"];
-		$issue = get_stock_gl_code($myrow["stock_id"]);
-        $stockitem = get_item($myrow["stock_id"]);
-
-		// Compatibility for Service Items
-		if (!is_service($issue["mb_flag"]))
-			$ivaccount = $issue["inventory_account"];
-		else
-			$ivaccount = $issue["cogs_account"];
-
-		if ($issue_cost != 0)
-		{
-			add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $ivaccount, 0, 0,
-				$date_.": "._("Reversed the production ")." ".$stockitem["description"],
-				-$issue_cost);
-		}
-	}
 	// clear the production record
 	$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".db_escape($type_no);
 	db_query($sql, "Cannot void a wo production");
 
-	// Shifted below
-	// void all related stock moves
+	void_gl_trans(ST_MANURECEIVE, $type_no);
+
 	void_stock_move(ST_MANURECEIVE, $type_no);
 
 	commit_transaction();

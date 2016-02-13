@@ -118,7 +118,7 @@ display_wo_details($_POST['selected_id']);
 //-------------------------------------------------------------------------------------
 
 if (!isset($_POST['ref']))
-	$_POST['ref'] = $Refs->get_next(ST_JOURNAL, null, get_post('date_'));
+	$_POST['ref'] = $Refs->get_next(ST_JOURNAL, null, Today());
 
 start_form();
 

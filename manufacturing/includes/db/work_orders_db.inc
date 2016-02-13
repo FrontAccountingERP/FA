@@ -220,7 +220,7 @@ function work_order_is_closed($woid)
 	Update finished items quantity in work order, and close order either if all the order is produced,
 	or on user demand. Returns calculated unit cost on close, or null otherwise.
 */
-function work_order_update_finished_quantity($woid, $quantity, $date, $force_close=0)
+function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
 {
 
 	$sql = "UPDATE ".TB_PREF."workorders SET units_issued = units_issued + ".db_escape($quantity)."
@@ -236,88 +236,59 @@ function work_order_update_finished_quantity($woid, $quantity, $date, $force_clo
 	return db_num_affected_rows();	// returns 1 if WO has been closed
 }
 
-//--------------------------------------------------------------------------------------
+function reopen_work_order($woid)
+{
+		// FIXME: update_material_cost
+//		update_material_cost($work_order['stock_id'], -$work_order['units_issued'], ... );
 
+		void_gl_trans(ST_WORKORDER, $woid);
+
+		void_stock_move(ST_WORKORDER, $woid);
+
+		$sql = "UPDATE ".TB_PREF."workorders SET closed=0 WHERE id = "
+			.db_escape($woid);
+		db_query($sql, "The work order couldn't be reopened");
+}
+
+//--------------------------------------------------------------------------------------
+/*
+	Void all work order related operations
+*/
 function void_work_order($woid)
 {
 	begin_transaction();
 	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	$work_order = get_work_order($woid);
-	if (!($work_order["type"] == WO_ADVANCED))
+
+	if ($work_order['closed'])
+		reopen_work_order($woid);
+
+	if ($work_order['units_issued'])
 	{
-		// restore average product costs 
-		$date = sql2date($work_order['date_']);
-		$qty = $work_order['units_reqd'];
-
-		// FIXME: update_material_cost
-
-		// close workorder
-		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			.db_escape($woid);
-		db_query($sql, "The work order couldn't be voided");
-
-		// void all related stock moves
-		void_stock_move(ST_WORKORDER, $woid);
-
-		// void any related costing records
-		void_wo_costing($woid);
-
-		// clear the requirements units received
-		void_wo_requirements($woid);
+		$prods = get_work_order_productions($woid);
+		while ($prod = db_fetch($prods))
+			void_work_order_produce($prod['id']);
 	}
-	else
-	{
-		// void everything inside the work order : issues, productions, payments
-		$date = sql2date($work_order['date_']);
 
-		// FIXME: update_material_cost
+	// close workorder
+	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
+		.db_escape($woid);
+	db_query($sql, "The work order couldn't be voided");
 
-		$result = get_work_order_productions($woid); // check the produced quantity
-		$qty = 0;
-		while ($row = db_fetch($result))
-		{
-			$qty += $row['quantity'];
-			// clear the production record
-			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$row['id'];
-			db_query($sql, "Cannot void a wo production");
+	// void addtional material issues
+	$issues = get_work_order_issues($woid);
+	while($issue = db_fetch($issues))
+		void_work_order_issue($issue['issue_no']);
 
-			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
-		}
-		$result = get_additional_issues($woid); // check the issued quantities
-		$cost = 0;
-		$issue_no = 0;
-		while ($row = db_fetch($result))
-		{
-			$unit_cost = get_unit_cost($row['stock_id']);
-			$icost = $unit_cost * $row['qty_issued'];
-			$cost += $icost;
-			if ($issue_no == 0)
-				$issue_no = $row['issue_no'];
-			// void the actual issue items and their quantities
-			$sql = "UPDATE ".TB_PREF."wo_issue_items SET qty_issued = 0 WHERE issue_id="
-				.db_escape($row['id']);
-			db_query($sql,"A work order issue item could not be voided");
-		}	
-		if ($issue_no != 0)
-			void_stock_move(ST_MANUISSUE, $issue_no); // and void the stock moves 
+	// void all related stock moves
+	void_stock_move(ST_WORKORDER, $woid);
 
-		if ($cost != 0)
-			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
+	// void any related costing records
+	void_wo_costing($woid);
 
-		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			.db_escape($woid);
-		db_query($sql, "The work order couldn't be voided");
-
-		// void all related stock moves
-		void_stock_move(ST_WORKORDER, $woid);
-
-		// void any related bank/gl trans
-		void_wo_costing($woid);
-
-		// clear the requirements units received
-		void_wo_requirements($woid);
-	}
+	// clear the requirements units received
+	void_wo_requirements($woid);
 
 	commit_transaction();
 }

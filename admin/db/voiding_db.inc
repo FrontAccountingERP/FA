@@ -99,12 +99,16 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case ST_MANUISSUE : // it's a work order issue
 			if (!exists_work_order_issue($type_no))
 				return _('Selected transaction does not exists.');
+			if ($wo = check_void_wo_issue($type_no))
+				return sprintf(_('Selected document cannot be voided because related Work Order %s is already closed.'), $wo);
 			void_work_order_issue($type_no);
 			break;
 
 		case ST_MANURECEIVE : // it's a work order production
 			if (!exists_work_order_produce($type_no))
 				return _('Selected transaction does not exists.');
+			if ($wo = check_void_wo_production($type_no))
+				return sprintf(_('Selected document cannot be voided because related Work Order %s is already closed.'), $wo);
 			void_work_order_produce($type_no);
 			break;
 
