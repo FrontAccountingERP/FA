@@ -294,3 +294,13 @@ UPDATE `0_stock_master` SET `material_cost`=`material_cost`+`labour_cost`+`overh
 ALTER TABLE `0_stock_master` CHANGE COLUMN `assembly_account` `wip_account` VARCHAR(15) NOT NULL default '';
 ALTER TABLE `0_stock_category` CHANGE COLUMN `dflt_assembly_act` `dflt_wip_act` VARCHAR(15) NOT NULL default '';
 UPDATE `0_sys_prefs` SET `name`='default_wip_act' WHERE `name`='default_assembly_act';
+
+UPDATE `0_wo_issue_items` i, `0_stock_moves` m
+	SET i.unit_cost=m.standard_cost
+	WHERE i.unit_cost=0 AND i.stock_id=m.stock_id AND m.trans_no=i.issue_id AND m.`type`=28 AND m.qty=-i.qty_issued
+
+UPDATE `0_wo_requirements` r, `0_stock_moves` m
+	SET r.unit_cost=m.standard_cost
+	WHERE r.unit_cost=0 AND r.stock_id=m.stock_id AND m.trans_no=r.workorder_id AND m.`type`=26 AND m.qty=-r.units_issued
+
+UPDATE `0_bank_trans` SET person_id=trans_no WHERE person_type_id=26;

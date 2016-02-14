@@ -247,6 +247,7 @@ function reopen_work_order($woid)
 
 		$sql = "UPDATE ".TB_PREF."workorders SET closed=0 WHERE id = "
 			.db_escape($woid);
+
 		db_query($sql, "The work order couldn't be reopened");
 }
 
@@ -271,11 +272,6 @@ function void_work_order($woid)
 			void_work_order_produce($prod['id']);
 	}
 
-	// close workorder
-	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-		.db_escape($woid);
-	db_query($sql, "The work order couldn't be voided");
-
 	// void addtional material issues
 	$issues = get_work_order_issues($woid);
 	while($issue = db_fetch($issues))
@@ -289,6 +285,11 @@ function void_work_order($woid)
 
 	// clear the requirements units received
 	void_wo_requirements($woid);
+
+	// close workorder
+	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
+		.db_escape($woid);
+	db_query($sql, "The work order couldn't be voided");
 
 	commit_transaction();
 }

@@ -154,6 +154,7 @@ function exists_work_order_issue($issue_no)
 function check_void_wo_issue($issue_no)
 {
 	$issue = get_work_order_issue($issue_no);
+
 	return $issue['closed'] ? $issue['workorder_id'] : 0;
 }
 
@@ -168,9 +169,7 @@ function void_work_order_issue($type_no)
 	if ($void_entry)
 		return;
 
-	$issue = get_work_order_issue($type_no);
-
-	if (work_order_is_closed($issue['workorder_id']))
+	if (check_void_wo_issue($type_no))
 		return;
 
 	// FIXME update issued material cost

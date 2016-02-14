@@ -59,8 +59,8 @@ function display_gl_heading($myrow)
 	if ($journal)
 	{
 		$header = get_journal($myrow['type'], $_GET['trans_no']);
-		label_cell(sql2date($header["doc_date"]), "align='center'");
-		label_cell(sql2date($header["event_date"]), "align='center'");
+		label_cell($header["doc_date"] == '0000-00-00' ? '-' : sql2date($header["doc_date"]), "align='center'");
+		label_cell($header["event_date"] == '0000-00-00' ? '-' : sql2date($header["event_date"]), "align='center'");
 	} else
 		label_cell(get_counterparty_name($_GET['type_id'],$_GET['trans_no']));
 	label_cell( get_journal_number($myrow['type'], $_GET['trans_no']), "align='center'");
