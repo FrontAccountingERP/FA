@@ -39,7 +39,7 @@ UPDATE `0_sys_prefs` SET `name`='default_wip_act' WHERE `name`='default_assembly
 
 UPDATE `0_wo_issue_items` i, `0_stock_moves` m
 	SET i.unit_cost=m.standard_cost
-	WHERE i.unit_cost=0 AND i.stock_id=m.stock_id AND m.trans_no=i.issue_id AND m.`type`=28 AND m.qty=-i.qty_issued
+	WHERE i.unit_cost=0 AND i.stock_id=m.stock_id AND m.trans_no=i.issue_id AND m.`type`=28 AND m.qty=-i.qty_issued;
 
 UPDATE `0_wo_requirements` r, `0_stock_moves` m
 	SET r.unit_cost=m.standard_cost
