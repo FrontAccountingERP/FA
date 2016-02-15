@@ -301,6 +301,6 @@ UPDATE `0_wo_issue_items` i, `0_stock_moves` m
 
 UPDATE `0_wo_requirements` r, `0_stock_moves` m
 	SET r.unit_cost=m.standard_cost
-	WHERE r.unit_cost=0 AND r.stock_id=m.stock_id AND m.trans_no=r.workorder_id AND m.`type`=26 AND m.qty=-r.units_issued
+	WHERE r.unit_cost=0 AND r.stock_id=m.stock_id AND m.trans_no=r.workorder_id AND m.`type`=26 AND m.qty=-r.units_issued;
 
 UPDATE `0_bank_trans` SET person_id=trans_no WHERE person_type_id=26;
