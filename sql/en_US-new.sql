@@ -1276,7 +1276,7 @@ CREATE TABLE IF NOT EXISTS `0_recurrent_invoices` (
 -- --------------------------------------------------------
 
 --
---- Table structure for table `0_reflines`
+-- Table structure for table `0_reflines`
 --
 
 DROP TABLE IF EXISTS `0_reflines`;
@@ -1294,7 +1294,7 @@ CREATE TABLE `0_reflines` (
 ) ENGINE=InnoDB AUTO_INCREMENT=23;
 
 --
---- Dumping data for table `0_reflines`
+-- Dumping data for table `0_reflines`
 --
 
 INSERT INTO `0_reflines` VALUES
