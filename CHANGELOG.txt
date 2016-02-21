@@ -1,3 +1,1219 @@
+2016-02-21 16:43:01 +0100 Joe Hunt 
+Release 2.4.RC1
+M	update.html
+M	version.php
+
+2016-02-21 12:51:03 +0100 Janusz Dobrowolski 
+Upgrade procedures max execution time for this version rised to 900s due to WAMP performance problems.
+M	sql/alter2.4.php
+M	sql/alter2.4rc1.php
+
+2016-02-16 11:34:44 +0100 Joe Hunt 
+Error in two comment lines in demo and new sql file. phpMyAdmin bailed out.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2016-02-15 12:20:39 +0100 Joe Hunt 
+More missing semicolons.
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+
+2016-02-15 12:14:18 +0100 Joe Hunt 
+Missing semicolon. Forgot the other file.
+M	sql/alter2.4.sql
+
+2016-02-15 11:47:39 +0100 Joe Hunt 
+Missing semicolon in UPDATE instruction.
+M	sql/alter2.4rc1.sql
+
+2016-02-14 22:06:29 +0100 Janusz Dobrowolski 
+Fixed upgrade procedures for manufacturing transactions, additional checks for voiding.
+M	admin/db/voiding_db.inc
+M	gl/view/gl_trans_view.php
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+
+2016-02-13 12:16:06 +0100 Janusz Dobrowolski 
+Fixed manufacturing module voiding procedures.
+M	admin/db/voiding_db.inc
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/work_order_costs.php
+
+2016-01-23 12:24:28 +0100 Janusz Dobrowolski 
+Fixed fixed assets stright line depreciation.
+M	fixed_assets/includes/depreciation.inc
+
+2016-01-21 10:53:33 +0100 Janusz Dobrowolski 
+Fixed bug in work order view.
+M	includes/types.inc
+
+2016-01-10 10:45:45 +0100 Janusz Dobrowolski 
+Manufacturing: assembly account renamed to WIP account.
+M	admin/gl_setup.php
+M	gl/includes/db/gl_db_accounts.inc
+M	includes/db/inventory_db.inc
+M	inventory/includes/db/items_category_db.inc
+M	inventory/includes/db/items_db.inc
+M	inventory/manage/item_categories.php
+M	inventory/manage/items.php
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2016-01-09 22:03:10 +0100 Janusz Dobrowolski 
+Removed sparse debit account selector from Work Order Additional Costs.
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_requirements_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/manufacturing_ui.inc
+M	manufacturing/work_order_costs.php
+
+2016-01-09 21:19:59 +0100 Janusz Dobrowolski 
+Removed redundant global wip_act preference, fixed invalid account used for service BOM items.
+M	admin/gl_setup.php
+M	includes/data_checks.inc
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/work_order_add_finished.php
+M	manufacturing/work_order_issue.php
+M	sql/alter2.4rc1.php
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2016-01-21 13:34:10 +0100 Cambell Prince 
+Fixed bank account balance checking procedure.
+M	gl/includes/db/gl_db_bank_trans.inc
+M	gl/includes/db/gl_db_banking.inc
+
+2016-01-21 11:29:20 +0100 Cambell Prince 
+Reconcile Bank Account shouldn't show void transactions.
+M	gl/includes/db/gl_db_bank_accounts.inc
+
+2016-01-09 12:44:36 +0100 Janusz Dobrowolski 
+Fixed costs display in work order view.
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/manufacturing_ui.inc
+
+2016-01-14 08:02:59 +0100 Joe Hunt 
+Added column Currency in Bank Accounts. Changed to all years in fixed assets.
+M	includes/dashboard.inc
+
+2016-01-13 08:23:04 +0100 Joe Hunt 
+Created new fiscal year, 2016-01-01 to 2016-12-31.
+M	sql/en_US-demo.sql
+
+2016-01-02 11:08:32 +0100 Janusz Dobrowolski 
+Overhead and labour cost changed to define standard costs.
+M	gl/includes/db/gl_db_trans.inc
+M	includes/db/inventory_db.inc
+M	includes/db/manufacturing_db.inc
+M	includes/ui/ui_view.inc
+M	inventory/cost_update.php
+M	inventory/includes/db/items_trans_db.inc
+M	inventory/includes/item_adjustments_ui.inc
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_order_requirements_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+D	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/includes/manufacturing_db.inc
+M	manufacturing/includes/manufacturing_ui.inc
+M	manufacturing/includes/work_order_issue_ui.inc
+M	manufacturing/view/wo_costs_view.php
+M	manufacturing/work_order_costs.php
+M	manufacturing/work_order_entry.php
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/purchasing_db.inc
+M	reporting/rep104.php
+M	reporting/rep301.php
+M	reporting/rep304.php
+M	sales/includes/db/sales_credit_db.inc
+M	sales/includes/db/sales_delivery_db.inc
+M	sales/includes/db/sales_order_db.inc
+M	sales/includes/sales_db.inc
+M	sales/sales_order_entry.php
+M	sql/alter2.4rc1.sql
+
+2015-12-30 15:46:52 +0100 Janusz Dobrowolski 
+Removed obsolete stock_master.last_cost field.
+M	fixed_assets/includes/fixed_assets_db.inc
+M	inventory/includes/db/items_trans_db.inc
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-23 21:57:33 +0100 Janusz Dobrowolski 
+Further changes in manufacturing, added unit_cost in issues and requirements
+M	admin/inst_module.php
+M	includes/db/inventory_db.inc
+M	includes/ui/ui_lists.inc
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_order_requirements_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/manage/bom_edit.php
+M	manufacturing/view/wo_issue_view.php
+M	manufacturing/work_order_entry.php
+M	reporting/includes/html_entity_decode_php4.php
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-23 23:54:22 +0100 Janusz Dobrowolski 
+Added WIP account in GL setup.
+M	admin/gl_setup.php
+M	includes/data_checks.inc
+M	manufacturing/search_work_orders.php
+M	manufacturing/work_order_add_finished.php
+M	manufacturing/work_order_issue.php
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-24 12:19:01 +0100 Janusz Dobrowolski 
+Fixes in upgrade procedures.
+M	sql/alter2.4.php
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.php
+M	sql/alter2.4rc1.sql
+
+2015-12-31 00:42:31 +0100 Janusz Dobrowolski 
+Fixed regressions in reports after last merge.
+M	reporting/rep109.php
+M	reporting/rep111.php
+M	reporting/rep113.php
+
+2016-01-09 11:55:28 +0100 Janusz Dobrowolski 
+Cleanup in popup lists related files.
+M	.gitignore
+M	gl/includes/db/gl_db_accounts.inc
+M	gl/inquiry/accounts_list.php
+M	inventory/includes/db/items_db.inc
+M	inventory/inquiry/stock_list.php
+M	purchasing/includes/db/suppliers_db.inc
+M	purchasing/inquiry/suppliers_list.php
+M	sales/includes/db/branches_db.inc
+M	sales/includes/db/customers_db.inc
+M	sales/inquiry/customer_branches_list.php
+M	sales/inquiry/customers_list.php
+
+2016-01-08 14:58:41 +0100 Janusz Dobrowolski 
+Fixed upgrade procedure (collation written to confg file).
+M	sql/alter2.4.php
+M	sql/alter2.4rc1.php
+
+2016-01-08 10:51:51 +0100 Janusz Dobrowolski 
+Fixed dependency problem during fiscal year closing.
+M	admin/db/fiscalyears_db.inc
+
+2015-12-22 23:34:55 +0100 Joe Hunt 
+Fine tuning of Standard themes and dashboard.
+M	includes/dashboard.inc
+M	themes/canvas/renderer.php
+M	themes/default/renderer.php
+M	themes/dropdown/renderer.php
+
+2015-12-22 10:41:23 +0100 Joe Hunt 
+Improvements to dashboard. All titles are outside the tables/graphics for better layout. A final touch on canvas theme.
+M	includes/dashboard.inc
+M	themes/canvas/default.css
+
+2015-12-22 00:52:57 +0100 Joe Hunt 
+Fixed shrinking screen problem in canvas theme
+M	themes/canvas/default.css
+
+2015-12-21 08:56:43 +0100 Joe Hunt 
+Dashboard. When empty data in company, suppress graphics. Thanks to Apmuthu.
+M	includes/dashboard.inc
+
+2015-12-20 16:40:59 +0100 Joe Hunt 
+Rerun of last commit. A minor bug was detected.
+M	includes/dashboard.inc
+
+2015-12-20 16:30:28 +0100 Joe Hunt 
+Fixed some bugs and added a new chart, Last weeks performance in GL.
+M	includes/dashboard.inc
+
+2015-12-15 22:01:35 +0100 Joe Hunt 
+Fixed a couple of small bugs in canvas theme.
+M	themes/canvas/default.css
+M	themes/canvas/renderer.php
+
+2015-12-15 00:36:59 +0100 Joe Hunt 
+Rerun of dashboard.inc file
+M	includes/dashboard.inc
+
+2015-12-15 00:24:41 +0100 Joe Hunt 
+Credited forum user bogeyman2007 for popup search lists and making it GPL3
+M	gl/inquiry/accounts_list.php
+M	inventory/inquiry/stock_list.php
+M	purchasing/inquiry/suppliers_list.php
+M	sales/inquiry/customer_branches_list.php
+M	sales/inquiry/customers_list.php
+
+2015-12-15 00:21:42 +0100 Joe Hunt 
+New standard dashboard routines to be used by all themes
+A	admin/dashboard.php
+A	includes/dashboard.inc
+
+2015-12-15 00:18:16 +0100 Joe Hunt 
+New standard themes, default, canvas and dropdown.
+D	themes/aqua/default.css
+D	themes/aqua/images/add.png
+D	themes/aqua/images/ajax-loader.gif
+D	themes/aqua/images/ajax-loader2.gif
+D	themes/aqua/images/alloc.png
+D	themes/aqua/images/button_ok.png
+D	themes/aqua/images/cancel.png
+D	themes/aqua/images/closed.png
+D	themes/aqua/images/credit.gif
+D	themes/aqua/images/delete.gif
+D	themes/aqua/images/download.gif
+D	themes/aqua/images/edit.gif
+D	themes/aqua/images/escape.png
+D	themes/aqua/images/gl.png
+D	themes/aqua/images/help.gif
+D	themes/aqua/images/invoice.gif
+D	themes/aqua/images/locate.png
+D	themes/aqua/images/lock.gif
+D	themes/aqua/images/log.png
+D	themes/aqua/images/login.gif
+D	themes/aqua/images/menu_entry.png
+D	themes/aqua/images/menu_inquiry.png
+D	themes/aqua/images/menu_maintenance.png
+D	themes/aqua/images/menu_report.png
+D	themes/aqua/images/menu_settings.png
+D	themes/aqua/images/menu_system.png
+D	themes/aqua/images/menu_transaction.png
+D	themes/aqua/images/menu_update.png
+D	themes/aqua/images/money.png
+D	themes/aqua/images/ok.gif
+D	themes/aqua/images/pdf.gif
+D	themes/aqua/images/preferences.gif
+D	themes/aqua/images/print.png
+D	themes/aqua/images/progressbar.gif
+D	themes/aqua/images/receive.gif
+D	themes/aqua/images/remove.png
+D	themes/aqua/images/report.png
+D	themes/aqua/images/right.gif
+D	themes/aqua/images/sort_asc.gif
+D	themes/aqua/images/sort_desc.gif
+D	themes/aqua/images/sort_none.gif
+D	themes/aqua/images/view.gif
+D	themes/aqua/images/warning.png
+D	themes/aqua/index.php
+D	themes/aqua/renderer.php
+A	themes/canvas/default.css
+A	themes/canvas/images/add.png
+A	themes/canvas/images/ajax-loader.gif
+A	themes/canvas/images/ajax-loader2.gif
+A	themes/canvas/images/alloc.png
+A	themes/canvas/images/arrow_12.gif
+A	themes/canvas/images/body_bg.png
+A	themes/canvas/images/button_ok.png
+A	themes/canvas/images/cal.gif
+A	themes/canvas/images/cancel.png
+A	themes/canvas/images/content_bg.png
+A	themes/canvas/images/credit.gif
+A	themes/canvas/images/delete.gif
+A	themes/canvas/images/download.gif
+A	themes/canvas/images/edit.gif
+A	themes/canvas/images/enter.png
+A	themes/canvas/images/escape.png
+A	themes/canvas/images/folder.gif
+A	themes/canvas/images/footer_bg.png
+A	themes/canvas/images/gl.png
+A	themes/canvas/images/help.gif
+A	themes/canvas/images/invoice.gif
+A	themes/canvas/images/link_bg.png
+A	themes/canvas/images/locate.png
+A	themes/canvas/images/lock.gif
+A	themes/canvas/images/login.gif
+A	themes/canvas/images/logo_frontaccounting.jpg
+A	themes/canvas/images/logo_frontaccounting.png
+A	themes/canvas/images/menu_break.png
+A	themes/canvas/images/money.png
+A	themes/canvas/images/news.gif
+A	themes/canvas/images/ok.gif
+A	themes/canvas/images/page_edit.png
+A	themes/canvas/images/pdf.gif
+A	themes/canvas/images/preferences.gif
+A	themes/canvas/images/print.png
+A	themes/canvas/images/progressbar.gif
+A	themes/canvas/images/receive.gif
+A	themes/canvas/images/remove.png
+A	themes/canvas/images/report.png
+A	themes/canvas/images/sort_asc.gif
+A	themes/canvas/images/sort_asc2.gif
+A	themes/canvas/images/sort_desc.gif
+A	themes/canvas/images/sort_desc2.gif
+A	themes/canvas/images/sort_none.gif
+A	themes/canvas/images/spacer.png
+A	themes/canvas/images/view.gif
+A	themes/canvas/images/warning.png
+A	themes/canvas/index.php
+A	themes/canvas/renderer.php
+D	themes/cool/default.css
+D	themes/cool/images/add.png
+D	themes/cool/images/ajax-loader.gif
+D	themes/cool/images/ajax-loader2.gif
+D	themes/cool/images/alloc.png
+D	themes/cool/images/button_ok.png
+D	themes/cool/images/cancel.png
+D	themes/cool/images/closed.png
+D	themes/cool/images/credit.gif
+D	themes/cool/images/delete.gif
+D	themes/cool/images/download.gif
+D	themes/cool/images/edit.gif
+D	themes/cool/images/escape.png
+D	themes/cool/images/gl.png
+D	themes/cool/images/help.gif
+D	themes/cool/images/invoice.gif
+D	themes/cool/images/locate.png
+D	themes/cool/images/lock.gif
+D	themes/cool/images/log.png
+D	themes/cool/images/login.gif
+D	themes/cool/images/menu_entry.png
+D	themes/cool/images/menu_inquiry.png
+D	themes/cool/images/menu_maintenance.png
+D	themes/cool/images/menu_report.png
+D	themes/cool/images/menu_settings.png
+D	themes/cool/images/menu_system.png
+D	themes/cool/images/menu_transaction.png
+D	themes/cool/images/menu_update.png
+D	themes/cool/images/money.png
+D	themes/cool/images/ok.gif
+D	themes/cool/images/pdf.gif
+D	themes/cool/images/preferences.gif
+D	themes/cool/images/print.png
+D	themes/cool/images/progressbar.gif
+D	themes/cool/images/receive.gif
+D	themes/cool/images/remove.png
+D	themes/cool/images/report.png
+D	themes/cool/images/right.gif
+D	themes/cool/images/sort_asc.gif
+D	themes/cool/images/sort_desc.gif
+D	themes/cool/images/sort_none.gif
+D	themes/cool/images/view.gif
+D	themes/cool/images/warning.png
+D	themes/cool/index.php
+D	themes/cool/renderer.php
+M	themes/default/renderer.php
+A	themes/dropdown/default.css
+A	themes/dropdown/images/add.png
+A	themes/dropdown/images/ajax-loader.gif
+A	themes/dropdown/images/ajax-loader2.gif
+A	themes/dropdown/images/arrow_12.gif
+A	themes/dropdown/images/basket.png
+A	themes/dropdown/images/body_bg.png
+A	themes/dropdown/images/breadcrumb.gif
+A	themes/dropdown/images/button_ok.png
+A	themes/dropdown/images/cal.gif
+A	themes/dropdown/images/cancel.png
+A	themes/dropdown/images/cog.png
+A	themes/dropdown/images/content_bg.png
+A	themes/dropdown/images/controller.png
+A	themes/dropdown/images/credit.gif
+A	themes/dropdown/images/delete.gif
+A	themes/dropdown/images/download.gif
+A	themes/dropdown/images/edit.gif
+A	themes/dropdown/images/enter.png
+A	themes/dropdown/images/escape.png
+A	themes/dropdown/images/folder.gif
+A	themes/dropdown/images/footer_bg.png
+A	themes/dropdown/images/gl.png
+A	themes/dropdown/images/help.gif
+A	themes/dropdown/images/invoice.gif
+A	themes/dropdown/images/link_bg.png
+A	themes/dropdown/images/locate.png
+A	themes/dropdown/images/lock.gif
+A	themes/dropdown/images/login.gif
+A	themes/dropdown/images/logo_frontaccounting.jpg
+A	themes/dropdown/images/logo_frontaccounting.png
+A	themes/dropdown/images/menu_break.png
+A	themes/dropdown/images/money.png
+A	themes/dropdown/images/news.gif
+A	themes/dropdown/images/ok.gif
+A	themes/dropdown/images/on_off.png
+A	themes/dropdown/images/page_edit.png
+A	themes/dropdown/images/pdf.gif
+A	themes/dropdown/images/preferences.gif
+A	themes/dropdown/images/print.png
+A	themes/dropdown/images/progressbar.gif
+A	themes/dropdown/images/receive.gif
+A	themes/dropdown/images/remove.png
+A	themes/dropdown/images/report.png
+A	themes/dropdown/images/sort_asc.gif
+A	themes/dropdown/images/sort_asc2.gif
+A	themes/dropdown/images/sort_desc.gif
+A	themes/dropdown/images/sort_desc2.gif
+A	themes/dropdown/images/sort_none.gif
+A	themes/dropdown/images/spacer.png
+A	themes/dropdown/images/test.png
+A	themes/dropdown/images/test_stock.png
+A	themes/dropdown/images/time.png
+A	themes/dropdown/images/transparent.gif
+A	themes/dropdown/images/view.gif
+A	themes/dropdown/images/warning.png
+A	themes/dropdown/index.php
+A	themes/dropdown/renderer.php
+
+2015-12-12 11:16:34 +0100 Joe Hunt 
+Fixed small bug when calling ui_lists.inc from WO issue.
+M	includes/ui/ui_lists.inc
+
+2015-12-12 10:33:18 +0100 Joe Hunt 
+Fixed bug in adding wo costs journal
+M	manufacturing/includes/db/work_order_costing_db.inc
+
+2015-12-12 09:39:02 +0100 Joe Hunt 
+Rerun of Moving bugfixes from 2.3 to 2.4, Manufacturing routines
+M	gl/includes/db/gl_db_trans.inc
+M	manufacturing/includes/db/work_order_costing_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/includes/manufacturing_db.inc
+M	manufacturing/includes/manufacturing_ui.inc
+M	manufacturing/work_order_costs.php
+
+2015-12-11 23:22:20 +0100 Joe Hunt 
+Moving bugfixes from 2.3 to 2.4 and updated install languages for Denmark and Sweden.
+M	admin/inst_module.php
+M	gl/includes/db/gl_db_trans.inc
+M	gl/manage/gl_accounts.php
+M	includes/hooks.inc
+M	install/lang/da_DK/LC_MESSAGES/da_DK.mo
+M	install/lang/da_DK/LC_MESSAGES/da_DK.po
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.mo
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.po
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/includes/manufacturing_db.inc
+M	manufacturing/includes/manufacturing_ui.inc
+M	manufacturing/work_order_costs.php
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/po_class.inc
+M	reporting/includes/html_entity_decode_php4.php
+M	reporting/rep107.php
+M	reporting/rep109.php
+M	reporting/rep110.php
+M	reporting/rep111.php
+M	reporting/rep113.php
+M	reporting/rep709.php
+M	sales/view/view_credit.php
+M	sales/view/view_dispatch.php
+M	sales/view/view_invoice.php
+M	sales/view/view_sales_order.php
+
+2015-12-11 13:17:57 +0100 Janusz Dobrowolski 
+Updated upgraded procedures, application version and gettext templates.
+M	install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
+M	install/lang/ar_EG/LC_MESSAGES/ar_EG.po
+M	install/lang/da_DK/LC_MESSAGES/da_DK.mo
+M	install/lang/da_DK/LC_MESSAGES/da_DK.po
+M	install/lang/de_DE/LC_MESSAGES/de_DE.mo
+M	install/lang/de_DE/LC_MESSAGES/de_DE.po
+M	install/lang/el_GR/LC_MESSAGES/el_GR.mo
+M	install/lang/el_GR/LC_MESSAGES/el_GR.po
+M	install/lang/es_MX/LC_MESSAGES/es_MX.mo
+M	install/lang/es_MX/LC_MESSAGES/es_MX.po
+M	install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
+M	install/lang/fr_FR/LC_MESSAGES/fr_FR.po
+M	install/lang/id_ID/LC_MESSAGES/id_ID.mo
+M	install/lang/id_ID/LC_MESSAGES/id_ID.po
+M	install/lang/it_IT/LC_MESSAGES/it_IT.mo
+M	install/lang/it_IT/LC_MESSAGES/it_IT.po
+M	install/lang/ka_GE/LC_MESSAGES/ka_GE.mo
+M	install/lang/ka_GE/LC_MESSAGES/ka_GE.po
+M	install/lang/new_language_template/LC_MESSAGES/empty.po
+M	install/lang/nl_BE/LC_MESSAGES/nl_BE.mo
+M	install/lang/nl_BE/LC_MESSAGES/nl_BE.po
+M	install/lang/pl_PL/LC_MESSAGES/pl_PL.mo
+M	install/lang/pl_PL/LC_MESSAGES/pl_PL.po
+M	install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
+M	install/lang/pt_BR/LC_MESSAGES/pt_BR.po
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.mo
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.po
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.mo
+M	install/lang/sv_SE/LC_MESSAGES/sv_SE.po
+M	install/lang/zh_CN/LC_MESSAGES/zh_CN.mo
+M	install/lang/zh_CN/LC_MESSAGES/zh_CN.po
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	sql/alter2.4.php
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+M	version.php
+
+2015-12-11 11:42:44 +0100 Janusz Dobrowolski 
+Exchange Rates: removed sparse home currency from selector.
+M	gl/manage/exchange_rates.php
+M	includes/ui/ui_lists.inc
+
+2015-12-09 10:24:09 +0100 Janusz Dobrowolski 
+Changed actual_cost to purchase_cost field in en_US-* init files.
+M	fixed_assets/includes/depreciation.inc
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-11 11:22:55 +0100 Joe Hunt 
+Rerun of last non fixed assets search.
+M	includes/ui/ui_lists.inc
+
+2015-12-10 22:21:42 +0100 Joe Hunt 
+Removed fixed assets from list item search and popup search.
+M	includes/ui/ui_lists.inc
+M	inventory/inquiry/stock_list.php
+
+2015-12-10 00:13:10 +0100 Joe Hunt 
+Rerun of stock list search.
+M	inventory/inquiry/stock_list.php
+
+2015-12-09 23:04:55 +0100 Joe Hunt 
+Fixed a couple of bugs in stock list and account list search.
+M	gl/inquiry/accounts_list.php
+M	includes/ui/ui_lists.inc
+M	inventory/inquiry/stock_list.php
+
+2015-12-09 14:52:45 +0100 Joe Hunt 
+Fixed inventory reports that didn't know about our new Fixed Asset flag.
+M	reporting/rep104.php
+M	reporting/rep301.php
+M	reporting/rep304.php
+M	reporting/rep305.php
+M	reporting/rep307.php
+M	reporting/rep308.php
+M	reporting/rep309.php
+
+2015-12-09 14:22:46 +0100 Joe Hunt 
+Changed search icons for popup search for the standard themes.
+M	themes/aqua/images/view.gif
+M	themes/cool/images/view.gif
+M	themes/default/images/view.gif
+
+2015-12-09 14:06:48 +0100 Joe Hunt 
+Fixed a hardcoded amount_row with fixed 2 decimals. Removed and the default user_price_dec() is used
+M	purchasing/supplier_payment.php
+
+2015-12-09 13:53:15 +0100 Joe Hunt 
+Also remove report classes when disabling Manufacturing or Fixed Assets.
+M	reporting/reports_main.php
+
+2015-12-09 13:34:52 +0100 Joe Hunt 
+Enabling popup search in Customers, branches, suppliers, inventory, fixed assets and GL Accounts. This is optional and can be disabled by setting $use_pop_search to false. This also works with built in search lists.
+M	.gitignore
+M	admin/gl_setup.php
+M	config.default.php
+A	gl/inquiry/accounts_list.php
+M	gl/manage/gl_accounts.php
+M	includes/prefs/sysprefs.inc
+M	includes/ui/ui_input.inc
+M	includes/ui/ui_lists.inc
+M	includes/ui/ui_view.inc
+A	inventory/inquiry/stock_list.php
+M	inventory/inquiry/stock_status.php
+M	inventory/manage/item_categories.php
+M	inventory/manage/item_codes.php
+M	inventory/manage/sales_kits.php
+M	inventory/prices.php
+M	inventory/purchasing_data.php
+M	inventory/reorder_level.php
+A	purchasing/inquiry/suppliers_list.php
+M	reporting/reports_main.php
+A	sales/inquiry/customer_branches_list.php
+A	sales/inquiry/customers_list.php
+M	sales/manage/customer_branches.php
+
+2015-12-08 21:01:15 +0100 Janusz Dobrowolski 
+Option to hide Manufacturing and Fixed Assets tabs in reorganized company settings, fixed typo in en_US-new file.
+M	admin/company_preferences.php
+M	frontaccounting.php
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-08 11:40:34 +0100 Janusz Dobrowolski 
+Fixed consistency in sql init/upgrade files.
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-08 08:36:21 +0100 Joe Hunt 
+Improvement of standard themes. 2 small gif files added. Shown upper right.
+A	themes/aqua/images/lock.gif
+A	themes/aqua/images/preferences.gif
+M	themes/aqua/renderer.php
+A	themes/cool/images/lock.gif
+A	themes/cool/images/preferences.gif
+M	themes/cool/renderer.php
+A	themes/default/images/lock.gif
+A	themes/default/images/preferences.gif
+M	themes/default/renderer.php
+
+2015-12-08 00:35:00 +0100 Joe Hunt 
+Fixed Assets, a couple of small bugs more.
+M	fixed_assets/includes/fa_classes_db.inc
+M	reporting/rep451.php
+
+2015-12-07 23:42:11 +0100 Joe Hunt 
+Fixed Assets fixes, bugs and improvements.
+M	fixed_assets/includes/depreciation.inc
+M	fixed_assets/includes/fixed_assets_db.inc
+M	fixed_assets/inquiry/stock_inquiry.php
+M	includes/db/inventory_db.inc
+M	includes/sysnames.inc
+M	includes/ui/items_cart.inc
+M	inventory/adjustments.php
+M	inventory/includes/item_adjustments_ui.inc
+M	inventory/inquiry/stock_movements.php
+M	inventory/manage/items.php
+M	inventory/transfers.php
+M	purchasing/includes/db/invoice_db.inc
+M	reporting/rep451.php
+M	sales/sales_order_entry.php
+M	sql/alter2.4rc1.sql
+
+2015-12-07 14:17:16 +0100 Janusz Dobrowolski 
+Bugfixes in fixed assets editor.
+M	includes/ui/ui_lists.inc
+M	inventory/manage/items.php
+
+2015-12-07 11:22:01 +0100 Janusz Dobrowolski 
+Fixed Assets: Added sum-of-the-year digits method, fixed declining balance method, changed related db scheme.
+M	fixed_assets/fixed_asset_classes.php
+M	fixed_assets/includes/depreciation.inc
+M	fixed_assets/includes/fa_classes_db.inc
+M	fixed_assets/includes/fixed_assets_db.inc
+M	fixed_assets/inquiry/stock_inquiry.php
+M	includes/sysnames.inc
+M	inventory/includes/db/items_db.inc
+M	inventory/manage/items.php
+M	sql/alter2.4rc1.sql
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-12-02 11:17:04 +0100 Janusz Dobrowolski 
+Added fixed asset related db changes in upgrade class.
+M	admin/includes/fa_patch.class.inc
+M	includes/access_levels.inc
+M	includes/ui/ui_lists.inc
+A	sql/alter2.4rc1.php
+A	sql/alter2.4rc1.sql
+
+2015-12-07 08:28:57 +0100 Joe Hunt 
+Changed login.gif icon.
+M	themes/aqua/images/login.gif
+M	themes/cool/images/login.gif
+M	themes/default/images/login.gif
+
+2015-12-01 16:19:32 +0100 Joe Hunt 
+New Fixed Assets Report file
+A	reporting/rep451.php
+
+2015-12-01 16:16:35 +0100 Joe Hunt 
+Fixed layout, changes, bugs and improvements to Fixed Assets application.
+M	admin/gl_setup.php
+M	applications/fixed_assets.php
+M	fixed_assets/includes/fixed_assets_db.inc
+M	fixed_assets/inquiry/stock_inquiry.php
+M	frontaccounting.php
+M	inventory/adjustments.php
+M	inventory/manage/item_categories.php
+M	inventory/manage/items.php
+M	inventory/manage/locations.php
+M	reporting/includes/reports_classes.inc
+M	reporting/reports_main.php
+
+2015-11-29 14:43:49 +0100 Mithy 
+Added fixed assets module
+M	admin/gl_setup.php
+A	applications/fixed_assets.php
+A	fixed_assets/fixed_asset_classes.php
+A	fixed_assets/includes/depreciation.inc
+A	fixed_assets/includes/fa_classes_db.inc
+A	fixed_assets/includes/fixed_assets_db.inc
+A	fixed_assets/inquiry/stock_inquiry.php
+A	fixed_assets/process_depreciation.php
+M	frontaccounting.php
+M	includes/access_levels.inc
+M	includes/data_checks.inc
+M	includes/db/class.reflines_db.inc
+M	includes/db/inventory_db.inc
+M	includes/inventory.inc
+M	includes/sysnames.inc
+M	includes/types.inc
+M	includes/ui/class.reflines_crud.inc
+M	includes/ui/items_cart.inc
+M	includes/ui/ui_controls.inc
+M	includes/ui/ui_input.inc
+M	includes/ui/ui_lists.inc
+M	install/lang/es_MX/LC_MESSAGES/es_MX.po
+M	inventory/adjustments.php
+M	inventory/cost_update.php
+M	inventory/includes/db/items_adjust_db.inc
+M	inventory/includes/db/items_category_db.inc
+M	inventory/includes/db/items_db.inc
+M	inventory/includes/db/items_locations_db.inc
+M	inventory/includes/db/items_trans_db.inc
+M	inventory/includes/item_adjustments_ui.inc
+M	inventory/includes/stock_transfers_ui.inc
+M	inventory/inquiry/stock_movements.php
+M	inventory/manage/item_categories.php
+M	inventory/manage/items.php
+M	inventory/manage/locations.php
+M	inventory/transfers.php
+M	purchasing/includes/po_class.inc
+M	purchasing/includes/ui/po_ui.inc
+M	purchasing/po_entry_items.php
+M	sales/includes/cart_class.inc
+M	sales/includes/db/sales_delivery_db.inc
+M	sales/includes/db/sales_invoice_db.inc
+M	sales/includes/db/sales_order_db.inc
+M	sales/includes/ui/sales_order_ui.inc
+M	sales/sales_order_entry.php
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-11-16 18:43:25 +0100 Janusz Dobrowolski 
+Fixed regression in Sales Invoice.
+M	sales/includes/db/sales_order_db.inc
+
+2015-11-13 05:48:02 +0100 Joe Hunt 
+Better vertical alignment of date picker icon.
+M	includes/ui/ui_input.inc
+M	reporting/includes/reports_classes.inc
+
+2015-11-11 22:46:51 +0100 Janusz Dobrowolski 
+Fixed a couple of refrences to transaction type number instead of type name.
+M	manufacturing/includes/manufacturing_ui.inc
+M	manufacturing/view/wo_issue_view.php
+M	manufacturing/work_order_add_finished.php
+M	purchasing/inquiry/po_search.php
+M	purchasing/inquiry/po_search_completed.php
+M	sales/create_recurrent_invoices.php
+M	sales/customer_invoice.php
+M	sales/includes/db/customers_db.inc
+M	sales/includes/db/sales_order_db.inc
+M	sales/inquiry/customer_allocation_inquiry.php
+
+2015-11-10 23:24:35 +0100 Janusz Dobrowolski 
+Further cleanups in sql statements.
+M	includes/ui/ui_lists.inc
+M	inventory/includes/db/items_db.inc
+M	reporting/includes/reports_classes.inc
+M	sales/includes/db/customers_db.inc
+M	sales/includes/db/sales_order_db.inc
+M	sales/includes/sales_db.inc
+M	taxes/db/item_tax_types_db.inc
+M	taxes/db/tax_types_db.inc
+
+2015-11-09 20:19:47 +0100 Joe Hunt 
+Cleanup comments. Small bugfixes. Final run
+M	frontaccounting.php
+M	includes/ui/ui_view.inc
+M	reporting/includes/class.graphic.inc
+M	reporting/includes/class.pdf.inc
+M	reporting/includes/excel_report.inc
+M	reporting/includes/pdf_report.inc
+M	reporting/includes/reporting.inc
+M	reporting/includes/reports_classes.inc
+M	reporting/rep101.php
+M	reporting/rep102.php
+M	reporting/rep103.php
+M	reporting/rep107.php
+M	reporting/rep109.php
+M	reporting/rep111.php
+M	reporting/rep113.php
+M	reporting/rep201.php
+M	reporting/rep203.php
+M	reporting/rep205.php
+M	reporting/rep303.php
+M	reporting/rep307.php
+M	reporting/rep309.php
+M	reporting/rep401.php
+M	reporting/rep409.php
+M	reporting/rep601.php
+M	reporting/rep701.php
+M	reporting/rep704.php
+M	reporting/rep705.php
+M	reporting/rep706.php
+M	reporting/rep707.php
+M	reporting/rep708.php
+M	reporting/rep709.php
+M	reporting/reports_main.php
+M	sales/allocations/customer_allocation_main.php
+M	sales/create_recurrent_invoices.php
+M	sales/credit_note_entry.php
+M	sales/customer_credit_invoice.php
+M	sales/customer_delivery.php
+M	sales/customer_invoice.php
+M	sales/customer_payments.php
+M	sales/includes/cart_class.inc
+M	sales/includes/db/payment_db.inc
+M	sales/includes/db/sales_credit_db.inc
+M	sales/includes/db/sales_delivery_db.inc
+M	sales/includes/db/sales_invoice_db.inc
+M	sales/includes/sales_db.inc
+M	sales/includes/ui/sales_credit_ui.inc
+M	sales/includes/ui/sales_order_ui.inc
+M	sales/inquiry/sales_orders_view.php
+M	sales/manage/sales_people.php
+M	sales/sales_order_entry.php
+M	taxes/tax_calc.inc
+M	themes/default/renderer.php
+M	version.php
+
+2015-11-09 12:04:08 +0100 Joe Hunt 
+Fixed tabbed dialogs. Removed redundant 'popup' variables.
+M	inventory/cost_update.php
+M	inventory/includes/db/items_purchases_db.inc
+M	inventory/inquiry/stock_movements.php
+M	inventory/inquiry/stock_status.php
+M	inventory/manage/items.php
+M	inventory/prices.php
+M	inventory/purchasing_data.php
+M	inventory/reorder_level.php
+M	purchasing/manage/suppliers.php
+M	sales/inquiry/customer_inquiry.php
+M	sales/manage/customers.php
+
+2015-11-09 09:42:38 +0100 Joe Hunt 
+Fixing check for non supplier reference. Cleanup.
+M	purchasing/po_entry_items.php
+M	purchasing/supplier_credit.php
+M	purchasing/supplier_invoice.php
+
+2015-11-09 00:47:57 +0100 Joe Hunt 
+Transaction Inquiry inside Supplier didn't work.
+M	purchasing/inquiry/supplier_inquiry.php
+M	purchasing/manage/suppliers.php
+
+2015-11-08 22:34:28 +0100 Joe Hunt 
+Supplier Invoice/Credit Note. Moved Dimensions entry from left section to middle section for better layout.
+M	purchasing/includes/ui/invoice_ui.inc
+
+2015-11-08 21:50:15 +0100 Janusz Dobrowolski 
+Fixed bug in price_format() helper leading to problems in various entry forms (e.g. Supplier/Customer Allocation)
+M	includes/current_user.inc
+
+2015-11-08 20:34:45 +0100 Janusz Dobrowolski 
+Customer Transaction Inquiry, Supplier Inquiry: fixed icons for closed transactions.
+M	includes/types.inc
+
+2015-11-08 20:08:08 +0100 Janusz Dobrowolski 
+Supplier Invoices, Supplier Credit Notes: fixed editon form bugs, fixed reference to unexisting $invoice_no variable in ass_supp_invoice().
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/purchasing_db.inc
+M	purchasing/includes/ui/invoice_ui.inc
+M	purchasing/supplier_credit.php
+
+2015-11-08 17:53:59 +0100 Janusz Dobrowolski 
+Tax Report: not taxable sales printed in separate summary line.
+M	reporting/rep709.php
+
+2015-11-08 08:56:42 +0100 Joe Hunt 
+Cleanup comments. Small bugfixes. Third run
+M	install/index.php
+M	inventory/adjustments.php
+M	inventory/cost_update.php
+M	inventory/includes/db/items_trans_db.inc
+M	inventory/includes/db/items_units_db.inc
+M	inventory/includes/inventory_db.inc
+M	inventory/includes/item_adjustments_ui.inc
+M	inventory/includes/stock_transfers_ui.inc
+M	inventory/inquiry/stock_movements.php
+M	inventory/manage/item_codes.php
+M	inventory/manage/items.php
+M	inventory/manage/sales_kits.php
+M	inventory/purchasing_data.php
+M	js/inserts.js
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/includes/work_order_issue_ui.inc
+M	manufacturing/inquiry/bom_cost_inquiry.php
+M	manufacturing/manage/bom_edit.php
+M	manufacturing/search_work_orders.php
+M	manufacturing/work_order_add_finished.php
+M	manufacturing/work_order_entry.php
+M	manufacturing/work_order_issue.php
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/db/po_db.inc
+M	purchasing/includes/db/suppalloc_db.inc
+M	purchasing/includes/purchasing_db.inc
+M	purchasing/includes/ui/grn_ui.inc
+M	purchasing/includes/ui/invoice_ui.inc
+M	purchasing/includes/ui/po_ui.inc
+M	purchasing/manage/suppliers.php
+M	purchasing/po_entry_items.php
+M	purchasing/po_receive_items.php
+M	purchasing/supplier_credit.php
+M	purchasing/view/view_po.php
+M	reporting/rep709.php
+
+2015-11-06 16:33:41 +0100 Joe Hunt 
+Cleanup comments. Small bugfixes. Second run
+M	gl/bank_account_reconcile.php
+M	gl/bank_transfer.php
+M	gl/gl_bank.php
+M	gl/gl_budget.php
+M	gl/manage/close_period.php
+M	gl/manage/gl_account_classes.php
+M	gl/manage/gl_account_types.php
+M	gl/manage/revaluate_currencies.php
+M	gl/view/accrual_trans.php
+M	gl/view/gl_deposit_view.php
+M	gl/view/gl_payment_view.php
+M	gl/view/gl_trans_view.php
+M	includes/access_levels.inc
+M	includes/ajax.inc
+M	includes/current_user.inc
+M	includes/db/connect_db_mysql.inc
+M	includes/db/connect_db_mysqli.inc
+M	includes/db/manufacturing_db.inc
+M	includes/db_pager.inc
+M	includes/errors.inc
+M	includes/hooks.inc
+M	includes/lang/gettext.inc
+M	includes/packages.inc
+M	includes/page/header.inc
+M	includes/session.inc
+M	includes/types.inc
+M	includes/ui/allocation_cart.inc
+M	includes/ui/class.reflines_crud.inc
+M	includes/ui/contacts_view.inc
+M	includes/ui/db_pager_view.inc
+M	includes/ui/items_cart.inc
+M	includes/ui/simple_crud_class.inc
+M	includes/ui/ui_controls.inc
+M	includes/ui/ui_input.inc
+M	includes/ui/ui_lists.inc
+M	includes/ui/ui_view.inc
+
+2015-11-05 20:53:16 +0100 Joe Hunt 
+Faulty escape in empty.po. Source to problem.
+M	includes/ui/ui_controls.inc
+
+2015-11-05 18:40:56 +0100 Joe Hunt 
+Cleanup comments. Small bugfixes. First run.
+M	access/login.php
+M	access/password_reset.php
+M	admin/attachments.php
+M	admin/create_coy.php
+M	admin/db/maintenance_db.inc
+M	admin/db/users_db.inc
+M	admin/includes/fa_patch.class.inc
+M	admin/inst_chart.php
+M	admin/inst_theme.php
+M	admin/inst_upgrade.php
+M	admin/print_profiles.php
+M	admin/security_roles.php
+M	admin/void_transaction.php
+M	applications/application.php
+M	dimensions/inquiry/search_dimensions.php
+M	gl/includes/db/gl_db_bank_trans.inc
+M	gl/includes/db/gl_db_banking.inc
+M	gl/includes/db/gl_db_rates.inc
+M	gl/includes/db/gl_db_trans.inc
+M	gl/includes/db/gl_journal.inc
+M	gl/includes/ui/gl_bank_ui.inc
+M	gl/includes/ui/gl_journal_ui.inc
+M	gl/inquiry/balance_sheet.php
+M	gl/inquiry/gl_account_inquiry.php
+M	gl/inquiry/gl_trial_balance.php
+M	gl/inquiry/profit_loss.php
+M	gl/inquiry/tax_inquiry.php
+
+2015-11-05 15:02:50 +0100 Janusz Dobrowolski 
+Print Deliveries: Fixed not working print as packing slip option.
+M	reporting/includes/doctext.inc
+M	reporting/rep110.php
+
+2015-11-05 14:39:09 +0100 Janusz Dobrowolski 
+Print Remittances: fixed usage of sys_prefs 'print_invoice_no' option.
+M	reporting/includes/reports_classes.inc
+
+2015-11-05 14:04:40 +0100 Janusz Dobrowolski 
+Global fixes in SQL queries aimed to make them more readible and easier for maintence.
+M	dimensions/includes/dimensions_db.inc
+M	gl/includes/db/gl_db_account_types.inc
+M	gl/includes/db/gl_db_accounts.inc
+M	gl/includes/db/gl_db_bank_accounts.inc
+M	gl/includes/db/gl_db_bank_trans.inc
+M	gl/includes/db/gl_db_banking.inc
+M	gl/includes/db/gl_db_rates.inc
+M	gl/includes/db/gl_db_trans.inc
+M	includes/db/inventory_db.inc
+M	includes/db/manufacturing_db.inc
+M	inventory/includes/db/items_prices_db.inc
+M	inventory/includes/db/items_purchases_db.inc
+M	inventory/includes/db/items_trans_db.inc
+M	inventory/includes/inventory_db.inc
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_order_requirements_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/db/po_db.inc
+M	purchasing/includes/db/supp_trans_db.inc
+M	reporting/rep102.php
+M	reporting/rep103.php
+M	reporting/rep104.php
+M	reporting/rep105.php
+M	reporting/rep108.php
+M	reporting/rep112.php
+M	reporting/rep201.php
+M	reporting/rep202.php
+M	reporting/rep203.php
+M	reporting/rep204.php
+M	reporting/rep205.php
+M	reporting/rep209.php
+M	reporting/rep210.php
+M	reporting/rep301.php
+M	reporting/rep302.php
+M	reporting/rep303.php
+M	reporting/rep305.php
+M	reporting/rep401.php
+M	reporting/rep602.php
+M	sales/includes/db/branches_db.inc
+M	sales/includes/db/credit_status_db.inc
+M	sales/includes/db/cust_trans_db.inc
+M	sales/includes/db/cust_trans_details_db.inc
+M	sales/includes/db/recurrent_invoices_db.inc
+
+2015-11-05 13:53:01 +0100 Janusz Dobrowolski 
+Tax Inquiry: fixed refrences to non-existing database fields.
+M	gl/includes/db/gl_db_trans.inc
+
+2015-11-05 13:34:50 +0100 Janusz Dobrowolski 
+Produce/Unassemble Finished Items from WorkOrder: fixed syntax error.
+M	manufacturing/includes/work_order_issue_ui.inc
+
+2015-11-05 12:52:23 +0100 Janusz Dobrowolski 
+Receive Purchase Order Items: invalid date was passed to reference number provider.
+M	purchasing/po_receive_items.php
+
+2015-11-05 08:13:36 +0100 Joe Hunt 
+faulty escape in empty.po
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2015-09-23 13:00:04 +0200 Janusz Dobrowolski 
+[0003305] Direct Purchase Invoice: added link to payment entry on final page.
+M	purchasing/po_entry_items.php
+
+2015-09-23 12:40:12 +0200 Janusz Dobrowolski 
+[0003304] Purchase Order Entry: fixed support for editable items description.
+M	includes/ui/ui_lists.inc
+M	purchasing/includes/ui/po_ui.inc
+
+2015-08-31 08:45:40 +0200 Janusz Dobrowolski 
+Small cleanups in mail class.
+M	reporting/includes/class.mail.inc
+
+2015-08-29 15:23:33 +0200 Janusz Dobrowolski 
+Fixed sparse js dialog when canceling sales document entry.
+M	sales/sales_order_entry.php
+
+2015-08-29 11:42:42 +0200 Janusz Dobrowolski 
+Void a Transaction: fixed GRN voiding.
+M	admin/db/voiding_db.inc
+M	admin/void_transaction.php
+
+2015-08-29 11:32:32 +0200 Janusz Dobrowolski 
+PDF documents sent by email have now meaningful names.
+M	reporting/includes/class.mail.inc
+M	reporting/includes/pdf_report.inc
+
+2015-08-25 18:59:42 +0200 Janusz Dobrowolski 
+Small warning cleanup in purchase order report.
+M	reporting/includes/doctext.inc
+
+2015-07-28 08:06:20 +0200 Joe Hunt 
+Added undefined function cache_invalidate() in install/isession.inc
+M	install/isession.inc
+
+2015-07-27 09:50:54 +0200 Joe Hunt 
+en_US-demo.sql and en_US-new.sql cleanup
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-07-23 11:34:34 +0200 Janusz Dobrowolski 
+[0003239] Bank Account Inquiry: fixed missing counterparty info for some transactions.
+M	gl/inquiry/bank_inquiry.php
+M	includes/types.inc
+
+2015-07-23 10:34:10 +0200 Janusz Dobrowolski 
+[0003246] Fixed wrong url generated by menu_link helper in final transaction entry menus.
+M	includes/ui/ui_controls.inc
+
+2015-07-23 10:07:08 +0200 Janusz Dobrowolski 
+[0003245] Invoice/Quotation Report: fixed option for printing order as quotation.
+M	reporting/includes/doctext.inc
+M	reporting/rep109.php
+
+2015-07-23 09:48:08 +0200 Janusz Dobrowolski 
+[0003238] Profit & Loss Drill Down fixed regression in reference period selection.
+M	gl/inquiry/profit_loss.php
+
+2015-07-09 08:18:41 +0200 Joe Hunt 
+Bug 3241. Parse error sales_credit_ui.inc on line 84.
+M	sales/includes/ui/sales_credit_ui.inc
+
+2015-07-06 10:33:47 +0200 Janusz Dobrowolski 
+[0003230] Fixed typo in gl_deposit_view.
+M	gl/view/gl_deposit_view.php
+
+2015-07-06 10:24:20 +0200 Janusz Dobrowolski 
+[0003231] Fixed warning about non well formed value in purchase pricing.
+M	inventory/purchasing_data.php
+
+2015-06-02 19:51:29 +0200 Janusz Dobrowolski 
+Fixed edit key icon display in Direct Supplier Invoice.
+M	includes/ui/ui_lists.inc
+
+2015-07-06 09:32:15 +0200 Joe Hunt 
+Changes user admin email address from adm@adm.com to adm@example.com. Also minor clean up.
+M	company/0/images/102.jpg
+M	company/0/images/103.jpg
+M	doc/CHANGELOG.old.txt
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2015-05-22 13:47:17 +0200 Janusz Dobrowolski 
+Fixed delays during access to external urls (e.g. exchange rate services).
+M	includes/remote_url.inc
+
+2015-05-17 18:54:38 +0200 Janusz Dobrowolski 
+Fixed Zend OpCache related issues in extension modules installer.
+M	admin/db/maintenance_db.inc
+M	admin/inst_theme.php
+M	includes/main.inc
+M	includes/session.inc
+
+2015-05-14 15:57:03 +0200 Joe Hunt 
+Release 2.4 beta
+M	CHANGELOG.txt
+
 2015-05-14 10:16:15 +0200 Janusz Dobrowolski 
 Gettext templates updated, version 2.4 beta.
 M	install/lang/ar_EG/LC_MESSAGES/ar_EG.mo
