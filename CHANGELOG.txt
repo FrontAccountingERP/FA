@@ -1,3 +1,104 @@
+2016-02-21 15:34:07 +0100 Joe Hunt 
+Release 2.3.25.
+M	version.php
+
+2016-01-13 08:21:19 +0100 Joe Hunt 
+Created new fiscal years in en_US-demo.sql
+M	sql/en_US-demo.sql
+
+2016-01-10 09:50:38 +0100 Janusz Dobrowolski 
+Reverted invalid changes in manufacturing accounts back to cogs_account for BOM service items.
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+
+2015-12-09 14:04:45 +0100 Joe Hunt 
+Fixed a hardcoded amount_row with fixed 2 decimals. Removed and the default user_price_dec() is used.
+M	purchasing/supplier_payment.php
+
+2015-11-26 21:48:19 +0100 Janusz Dobrowolski 
+Fixed es_MX installer translation file.
+M	install/lang/es_MX/LC_MESSAGES/es_MX.mo
+M	install/lang/es_MX/LC_MESSAGES/es_MX.po
+
+2015-11-23 09:26:48 +0100 Joe Hunt 
+No display of shipping if there are no shipping costs on sales documents or views.
+M	reporting/rep107.php
+M	reporting/rep109.php
+M	reporting/rep110.php
+M	reporting/rep111.php
+M	reporting/rep113.php
+M	sales/view/view_credit.php
+M	sales/view/view_dispatch.php
+M	sales/view/view_invoice.php
+M	sales/view/view_sales_order.php
+
+2015-11-14 22:26:25 +0100 Joe Hunt 
+Rerun. Backport of fixing vertical alignment on date picker icon
+M	reporting/includes/reports_classes.inc
+
+2015-11-14 09:34:54 +0100 Joe Hunt 
+Accounts entry. We only accept 0-9 and a dot if $accounts_alpha = 0 (default)
+M	gl/manage/gl_accounts.php
+
+2015-11-13 11:54:10 +0100 Joe Hunt 
+Backport of fixing vertical alignment on date picker icon
+M	includes/ui/ui_input.inc
+M	reporting/includes/reports_classes.inc
+
+2015-10-18 11:08:15 +0200 Joe Hunt 
+Rerun. Fixed wrong calculaiton of standard cost during Advanced Manufacturing. Petros
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+
+2015-10-17 14:42:42 +0200 Joe Hunt 
+Fixed wrong calculaiton of standard cost during Advanced Manufacturing. Petros.
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+M	manufacturing/work_order_costs.php
+
+2015-10-15 10:28:09 +0200 Joe Hunt 
+Fixed correct calculation of stock_moves standard_cost when producing an Advanced Assembly. Petros
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+
+2015-10-14 15:34:41 +0200 Joe Hunt 
+Changed the GL accounts in Manufacturing to go from Cost accounts to Assembly Accounts. Petros.
+M	manufacturing/includes/db/work_order_issues_db.inc
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	manufacturing/includes/db/work_orders_quick_db.inc
+
+2015-10-13 20:41:39 +0200 Janusz Dobrowolski 
+Fixed net value calculations for GRN leading to unbalanced clearing account.
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/po_class.inc
+
+2015-10-09 22:47:18 +0200 Joe Hunt 
+Material cost doubles itself, if quantity = 0. Fixed.
+M	manufacturing/includes/db/work_orders_db.inc
+
+2015-10-06 09:28:40 +0200 Janusz Dobrowolski 
+Fixed  deactive_extension hook execution on extension deactivation.
+M	admin/inst_module.php
+M	includes/hooks.inc
+
+2015-09-07 15:07:27 +0200 Joe Hunt 
+Improved safety handling of bad PHP interpretor releases.
+M	reporting/includes/html_entity_decode_php4.php
+
+2015-07-11 07:38:04 +0200 Joe Hunt 
+Merge branch 'master' of ssh://git.code.sf.net/p/frontaccounting/git
+2015-07-11 07:37:36 +0200 Joe Hunt 
+New CHANGELOG
+M	CHANGELOG.txt
+
+2015-07-10 15:22:28 +0200 Janusz Dobrowolski 
+[0003240] Tax Report: duplicated lines were listed for edited transactions.
+M	reporting/rep709.php
+
 2015-05-09 23:07:36 +0200 Joe Hunt 
 Merge branch 'master' of ssh://git.code.sf.net/p/frontaccounting/git
 2015-05-09 23:06:09 +0200 Joe Hunt 
