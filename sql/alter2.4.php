@@ -16,6 +16,7 @@ class fa2_4 extends fa_patch {
 	var $description;
 	var $sql = 'alter2.4.sql';
 	var $preconf = true;
+	var	$max_upgrade_time = 900;	// table recoding is really long process
 	
 	function fa2_4() {
 		parent::fa_patch();
