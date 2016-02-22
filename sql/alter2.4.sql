@@ -304,3 +304,6 @@ UPDATE `0_wo_requirements` r, `0_stock_moves` m
 	WHERE r.unit_cost=0 AND r.stock_id=m.stock_id AND m.trans_no=r.workorder_id AND m.`type`=26 AND m.qty=-r.units_issued;
 
 UPDATE `0_bank_trans` SET person_id=trans_no WHERE person_type_id=26;
+
+ALTER TABLE `0_budget_trans` CHANGE `counter` `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `0_sys_prefs` CHANGE `value` `value` text NOT NULL default '';
