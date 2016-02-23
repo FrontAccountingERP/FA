@@ -1,3 +1,12 @@
+2016-02-22 15:33:49 +0100 Janusz Dobrowolski 
+Fixed missing changes in upgrade sql files.
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+
+2016-02-21 16:44:45 +0100 Joe Hunt 
+New CHANGELOG.txt
+M	CHANGELOG.txt
+
 2016-02-21 16:43:01 +0100 Joe Hunt 
 Release 2.4.RC1
 M	update.html
