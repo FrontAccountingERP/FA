@@ -408,13 +408,13 @@ msgstr "Haupt-Konfigurationsdatei"
 #: includes/system_tests.inc:317
 #, php-format
 msgid "Can't write '%s' file. Check FA directory write permissions."
-msgstr "Kann '% s'-Datei nicht schreiben. Überprüfen Sie die Schreibrechte im FA-Verzeichnis ."
+msgstr "Kann '%s'-Datei nicht schreiben. Überprüfen Sie die Schreibrechte im FA-Verzeichnis ."
 
 #: includes/system_tests.inc:296
 #: includes/system_tests.inc:318
 #, php-format
 msgid "'%s' file exists."
-msgstr "'% s' Datei existiert."
+msgstr "'%s' Datei existiert."
 
 #: includes/system_tests.inc:300
 #, php-format
@@ -441,7 +441,7 @@ msgstr "Konfigurations Dateien und Verzeichnisse für Erweiterungen sollten besch
 #: includes/system_tests.inc:375
 #, php-format
 msgid "Non-standard theme directory '%s' is not writable"
-msgstr "Das NIcht-Standard-Design Verzeichnis '% s' ist nicht beschreibbar"
+msgstr "Das NIcht-Standard-Design Verzeichnis '%s' ist nicht beschreibbar"
 
 #: includes/system_tests.inc:385
 msgid "OpenSSL PHP extension have to be enabled to use extension repository system."
