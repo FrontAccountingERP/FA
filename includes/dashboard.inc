@@ -181,7 +181,7 @@ function customer_top($today, $limit=10, $width="33", &$pg=null)
 		AND tran_date >= '$begin1' AND tran_date <= '$today1' GROUP by d.debtor_no ORDER BY total DESC, d.debtor_no 
 		LIMIT $limit";
 	$result = db_query($sql);
-	$title = _("Top $limit customers in fiscal year");
+	$title = sprintf(_("Top %s customers in fiscal year"), $limit);
 	display_title($title);
 	$th = array(_("Customer"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");
@@ -218,7 +218,7 @@ function supplier_top($today, $limit=10, $width="33", &$pg=null)
 		AND tran_date >= '$begin1' AND tran_date <= '$today1' GROUP by s.supplier_id ORDER BY total DESC, s.supplier_id 
 		LIMIT $limit";
 	$result = db_query($sql);
-	$title = _("Top $limit suppliers in fiscal year");
+	$title = sprintf(_("Top %s suppliers in fiscal year"), $limit);
 	display_title($title);
 	$th = array(_("Supplier"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");
@@ -279,11 +279,11 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 		LIMIT $limit";
 	$result = db_query($sql);
 	if ($type == 1)
-		$title = _("Top $limit Manufactured Items in fiscal year");
+		$title = sprintf(_("Top %s Manufactured Items in fiscal year"), $limit);
 	elseif ($type == 2)
-		$title = _("Top $limit Fixed Assets");
+		$title = sprintf(_("Top %s Fixed Assets"), $limit);
 	else	
-		$title = _("Top $limit Sold Items in fiscal year");
+		$title = sprintf(_("Top %s Sold Items in fiscal year"), $limit);
 	display_title($title);	
 	if ($type == 0)	
 		$th = array(_("Item"), _("Sales"), _("Costs"), _("Quantity"));
@@ -328,7 +328,7 @@ function dimension_top($today, $limit=10, $width="33", &$pg=null)
 		(t.dimension_id = d.id OR t.dimension2_id = d.id) AND
 		t.tran_date >= '$begin1' AND t.tran_date <= '$today1' GROUP BY d.id ORDER BY total DESC LIMIT $limit";
 	$result = db_query($sql, "Transactions could not be calculated");
-	$title = _("Top $limit Dimensions in fiscal year");
+	$title = sprintf(_("Top %s Dimensions in fiscal year"), $limit);
 	display_title($title);
 	$th = array(_("Dimension"), _("Amount"));
 	start_table(TABLESTYLE, "width='$width%'");

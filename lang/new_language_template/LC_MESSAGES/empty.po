@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-11 13:17+0100\n"
+"POT-Creation-Date: 2016-05-17 19:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,8 +24,8 @@ msgstr ""
 
 #: /frontaccounting.php:77
 #: /access/logout.php:21
-#: /themes/default/renderer.php:72
-#: /themes/default/renderer.php:84
+#: /themes/default/renderer.php:73
+#: /themes/default/renderer.php:87
 msgid "Logout"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 #: /access/login.php:155
 #: /access/password_reset.php:106
 #: /admin/display_prefs.php:123
-#: /themes/default/renderer.php:133
+#: /themes/default/renderer.php:136
 msgid "Theme:"
 msgstr ""
 
@@ -132,14 +132,14 @@ msgstr ""
 
 #: /admin/attachments.php:83
 #: /admin/db/voiding_db.inc:28
-#: /admin/db/voiding_db.inc:38
-#: /admin/db/voiding_db.inc:51
-#: /admin/db/voiding_db.inc:63
-#: /admin/db/voiding_db.inc:69
-#: /admin/db/voiding_db.inc:88
-#: /admin/db/voiding_db.inc:95
-#: /admin/db/voiding_db.inc:101
-#: /admin/db/voiding_db.inc:107
+#: /admin/db/voiding_db.inc:40
+#: /admin/db/voiding_db.inc:53
+#: /admin/db/voiding_db.inc:65
+#: /admin/db/voiding_db.inc:71
+#: /admin/db/voiding_db.inc:90
+#: /admin/db/voiding_db.inc:97
+#: /admin/db/voiding_db.inc:103
+#: /admin/db/voiding_db.inc:111
 msgid "Selected transaction does not exists."
 msgstr ""
 
@@ -170,9 +170,9 @@ msgstr ""
 #: /admin/view_print_transaction.php:72
 #: /gl/inquiry/journal_inquiry.php:47
 #: /manufacturing/work_order_add_finished.php:191
-#: /manufacturing/work_order_costs.php:135
-#: /manufacturing/work_order_entry.php:362
-#: /manufacturing/work_order_entry.php:370
+#: /manufacturing/work_order_costs.php:136
+#: /manufacturing/work_order_entry.php:358
+#: /manufacturing/work_order_entry.php:367
 #: /manufacturing/includes/work_order_issue_ui.inc:166
 #: /sales/inquiry/customer_allocation_inquiry.php:47
 msgid "Type:"
@@ -311,12 +311,12 @@ msgstr ""
 #: /includes/ui/allocation_cart.inc:290
 #: /inventory/inquiry/stock_movements.php:104
 #: /manufacturing/search_work_orders.php:157
-#: /manufacturing/includes/manufacturing_ui.inc:157
-#: /manufacturing/includes/manufacturing_ui.inc:200
-#: /manufacturing/includes/manufacturing_ui.inc:236
-#: /manufacturing/includes/manufacturing_ui.inc:276
-#: /manufacturing/includes/manufacturing_ui.inc:280
-#: /manufacturing/includes/manufacturing_ui.inc:331
+#: /manufacturing/includes/manufacturing_ui.inc:174
+#: /manufacturing/includes/manufacturing_ui.inc:217
+#: /manufacturing/includes/manufacturing_ui.inc:253
+#: /manufacturing/includes/manufacturing_ui.inc:291
+#: /manufacturing/includes/manufacturing_ui.inc:295
+#: /manufacturing/includes/manufacturing_ui.inc:346
 #: /purchasing/view/view_po.php:115
 #: /purchasing/view/view_po.php:140
 #: /purchasing/inquiry/po_search_completed.php:110
@@ -352,13 +352,14 @@ msgstr ""
 #: /admin/payment_terms.php:127
 #: /admin/printers.php:84
 #: /admin/print_profiles.php:147
-#: /gl/inquiry/accounts_list.php:33
-#: /gl/inquiry/accounts_list.php:48
+#: /gl/inquiry/accounts_list.php:39
+#: /gl/inquiry/accounts_list.php:52
 #: /gl/inquiry/tax_inquiry.php:80
 #: /gl/manage/gl_quick_entries.php:190
 #: /gl/manage/gl_quick_entries.php:230
-#: /inventory/inquiry/stock_list.php:37
-#: /inventory/inquiry/stock_list.php:56
+#: /includes/dashboard.inc:525
+#: /inventory/inquiry/stock_list.php:41
+#: /inventory/inquiry/stock_list.php:53
 #: /inventory/manage/item_codes.php:127
 #: /inventory/manage/item_units.php:94
 #: /inventory/manage/sales_kits.php:36
@@ -465,7 +466,7 @@ msgstr ""
 #: /includes/system_tests.inc:113
 #: /includes/system_tests.inc:126
 #: /includes/ui/class.reflines_crud.inc:56
-#: /includes/ui/ui_lists.inc:1851
+#: /includes/ui/ui_lists.inc:1852
 #: /purchasing/manage/suppliers.php:122
 #: /reporting/rep101.php:128
 #: /reporting/rep102.php:110
@@ -583,7 +584,7 @@ msgstr ""
 
 #: /admin/change_current_user_password.php:16
 #: /admin/change_current_user_password.php:99
-#: /themes/default/renderer.php:78
+#: /themes/default/renderer.php:81
 msgid "Change password"
 msgstr ""
 
@@ -824,11 +825,13 @@ msgid "Optional Modules"
 msgstr ""
 
 #: /admin/company_preferences.php:213
+#: /includes/dashboard.inc:118
 #: /reporting/reports_main.php:285
 msgid "Manufacturing"
 msgstr ""
 
 #: /admin/company_preferences.php:214
+#: /includes/dashboard.inc:116
 #: /inventory/manage/items.php:24
 #: /reporting/reports_main.php:308
 msgid "Fixed Assets"
@@ -884,13 +887,13 @@ msgstr ""
 #: /includes/ui/ui_input.inc:226
 #: /includes/ui/ui_input.inc:961
 #: /inventory/adjustments.php:255
-#: /inventory/cost_update.php:151
+#: /inventory/cost_update.php:150
 #: /inventory/reorder_level.php:111
 #: /inventory/transfers.php:237
-#: /inventory/includes/item_adjustments_ui.inc:191
+#: /inventory/includes/item_adjustments_ui.inc:190
 #: /inventory/includes/stock_transfers_ui.inc:150
 #: /inventory/manage/sales_kits.php:208
-#: /manufacturing/work_order_entry.php:441
+#: /manufacturing/work_order_entry.php:437
 #: /manufacturing/includes/work_order_issue_ui.inc:132
 #: /purchasing/includes/ui/po_ui.inc:283
 #: /purchasing/includes/ui/po_ui.inc:436
@@ -1051,7 +1054,7 @@ msgstr ""
 #: /includes/system_tests.inc:126
 #: /includes/ui/class.reflines_crud.inc:56
 #: /includes/ui/class.reflines_crud.inc:101
-#: /includes/ui/ui_lists.inc:1852
+#: /includes/ui/ui_lists.inc:1853
 #: /purchasing/manage/suppliers.php:122
 #: /reporting/rep101.php:127
 #: /reporting/rep102.php:109
@@ -1168,9 +1171,9 @@ msgid "Category Subtype"
 msgstr ""
 
 #: /admin/crm_categories.php:88
-#: /purchasing/inquiry/suppliers_list.php:56
+#: /purchasing/inquiry/suppliers_list.php:53
 #: /sales/manage/customer_branches.php:283
-#: /sales/inquiry/customers_list.php:56
+#: /sales/inquiry/customers_list.php:54
 msgid "Short Name"
 msgstr ""
 
@@ -1190,6 +1193,12 @@ msgstr ""
 
 #: /admin/crm_categories.php:144
 msgid "Category Description:"
+msgstr ""
+
+#: /admin/dashboard.php:27
+#: /themes/default/renderer.php:70
+#: /themes/default/renderer.php:78
+msgid "Dashboard"
 msgstr ""
 
 #: /admin/display_prefs.php:16
@@ -1494,7 +1503,7 @@ msgid "Before GRN Clearing Account can be changed all GRNs have to be invoiced"
 msgstr ""
 
 #: /admin/gl_setup.php:66
-#: /admin/db/fiscalyears_db.inc:141
+#: /admin/db/fiscalyears_db.inc:142
 msgid ""
 "The Retained Earnings Account should be a Balance Account or the Profit and "
 "Loss Year Account should be an Expense Account (preferred the last one in "
@@ -1593,11 +1602,11 @@ msgstr ""
 #: /manufacturing/search_work_orders.php:158
 #: /manufacturing/view/wo_issue_view.php:42
 #: /manufacturing/view/wo_production_view.php:43
-#: /manufacturing/includes/manufacturing_ui.inc:157
-#: /manufacturing/includes/manufacturing_ui.inc:200
-#: /manufacturing/includes/manufacturing_ui.inc:276
-#: /manufacturing/includes/manufacturing_ui.inc:280
-#: /manufacturing/includes/manufacturing_ui.inc:331
+#: /manufacturing/includes/manufacturing_ui.inc:174
+#: /manufacturing/includes/manufacturing_ui.inc:217
+#: /manufacturing/includes/manufacturing_ui.inc:291
+#: /manufacturing/includes/manufacturing_ui.inc:295
+#: /manufacturing/includes/manufacturing_ui.inc:346
 #: /purchasing/includes/ui/grn_ui.inc:32
 #: /purchasing/includes/ui/grn_ui.inc:64
 #: /purchasing/includes/ui/po_ui.inc:298
@@ -1784,16 +1793,17 @@ msgid "Inventory Adjustments Account:"
 msgstr ""
 
 #: /admin/gl_setup.php:254
-#: /inventory/manage/item_categories.php:251
 #: /inventory/manage/items.php:490
-msgid "Item Assembly Costs Account:"
+msgid "WIP Account:"
 msgstr ""
 
 #: /admin/gl_setup.php:258
+#: /sql/alter2.4rc1.php:34
 msgid "Fixed Assets Defaults"
 msgstr ""
 
 #: /admin/gl_setup.php:260
+#: /sql/alter2.4rc1.php:35
 msgid "Loss On Asset Disposal Account:"
 msgstr ""
 
@@ -1913,8 +1923,8 @@ msgstr ""
 #: /purchasing/includes/ui/invoice_ui.inc:280
 #: /purchasing/includes/ui/invoice_ui.inc:282
 #: /reporting/rep501.php:87
-#: /reporting/rep709.php:115
 #: /reporting/rep709.php:116
+#: /reporting/rep709.php:117
 #: /sales/manage/customer_branches.php:284
 #: /sales/manage/sales_people.php:99
 #: /taxes/item_tax_types.php:117
@@ -2021,37 +2031,37 @@ msgstr ""
 
 #: /admin/inst_module.php:167
 #: /includes/ui/ui_lists.inc:743
-#: /includes/ui/ui_lists.inc:2329
+#: /includes/ui/ui_lists.inc:2330
 #: /reporting/includes/excel_report.inc:228
 #: /reporting/includes/pdf_report.inc:265
 msgid "Active"
 msgstr ""
 
-#: /admin/inst_module.php:216
+#: /admin/inst_module.php:217
 #, php-format
 msgid ""
 "Package '%s' is incompatible with current application version and cannot be "
 "activated.\n"
 msgstr ""
 
-#: /admin/inst_module.php:217
+#: /admin/inst_module.php:218
 #, php-format
 msgid "Check Install/Activate page for newer package version."
 msgstr ""
 
-#: /admin/inst_module.php:236
+#: /admin/inst_module.php:234
 msgid "Status change for some extensions failed."
 msgstr ""
 
-#: /admin/inst_module.php:239
+#: /admin/inst_module.php:237
 msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: /admin/inst_module.php:261
+#: /admin/inst_module.php:259
 msgid "Extensions:"
 msgstr ""
 
-#: /admin/inst_module.php:269
+#: /admin/inst_module.php:267
 msgid "No optional extension module is currently available."
 msgstr ""
 
@@ -2190,11 +2200,10 @@ msgstr ""
 #: /inventory/inquiry/stock_movements.php:104
 #: /inventory/manage/item_categories.php:121
 #: /manufacturing/search_work_orders.php:159
-#: /manufacturing/view/wo_costs_view.php:45
-#: /manufacturing/includes/manufacturing_ui.inc:236
-#: /manufacturing/includes/manufacturing_ui.inc:276
-#: /manufacturing/includes/manufacturing_ui.inc:280
-#: /manufacturing/includes/manufacturing_ui.inc:331
+#: /manufacturing/includes/manufacturing_ui.inc:253
+#: /manufacturing/includes/manufacturing_ui.inc:291
+#: /manufacturing/includes/manufacturing_ui.inc:295
+#: /manufacturing/includes/manufacturing_ui.inc:346
 #: /purchasing/inquiry/supplier_allocation_inquiry.php:136
 #: /purchasing/inquiry/supplier_inquiry.php:177
 #: /reporting/rep102.php:130
@@ -2207,7 +2216,7 @@ msgstr ""
 #: /reporting/rep704.php:82
 #: /reporting/rep704.php:85
 #: /reporting/rep704.php:88
-#: /reporting/rep709.php:111
+#: /reporting/rep709.php:112
 #: /reporting/rep710.php:78
 #: /reporting/rep710.php:86
 #: /reporting/reports_main.php:354
@@ -2467,7 +2476,7 @@ msgstr ""
 #: /includes/ui/simple_crud_class.inc:229
 #: /includes/ui/ui_controls.inc:645
 #: /includes/ui/ui_input.inc:229
-#: /inventory/includes/item_adjustments_ui.inc:193
+#: /inventory/includes/item_adjustments_ui.inc:192
 #: /inventory/includes/stock_transfers_ui.inc:152
 #: /inventory/manage/items.php:545
 #: /manufacturing/includes/work_order_issue_ui.inc:134
@@ -2536,8 +2545,8 @@ msgstr ""
 
 #: /admin/shipping_companies.php:91
 #: /inventory/manage/locations.php:155
-#: /purchasing/inquiry/suppliers_list.php:56
-#: /sales/inquiry/customers_list.php:56
+#: /purchasing/inquiry/suppliers_list.php:53
+#: /sales/inquiry/customers_list.php:54
 msgid "Address"
 msgstr ""
 
@@ -2666,7 +2675,7 @@ msgstr ""
 #: /reporting/rep106.php:94
 #: /reporting/includes/header2.inc:101
 #: /sales/manage/sales_people.php:99
-#: /sales/inquiry/customer_branches_list.php:52
+#: /sales/inquiry/customer_branches_list.php:49
 msgid "Phone"
 msgstr ""
 
@@ -2741,20 +2750,20 @@ msgstr ""
 #: /admin/view_print_transaction.php:83
 #: /admin/void_transaction.php:169
 #: /dimensions/inquiry/search_dimensions.php:87
-#: /gl/inquiry/accounts_list.php:34
+#: /gl/inquiry/accounts_list.php:40
 #: /gl/inquiry/journal_inquiry.php:58
-#: /inventory/inquiry/stock_list.php:38
+#: /inventory/inquiry/stock_list.php:42
 #: /manufacturing/search_work_orders.php:84
 #: /purchasing/includes/ui/invoice_ui.inc:483
 #: /purchasing/inquiry/po_search_completed.php:99
 #: /purchasing/inquiry/po_search.php:78
 #: /purchasing/inquiry/supplier_allocation_inquiry.php:57
 #: /purchasing/inquiry/supplier_inquiry.php:56
-#: /purchasing/inquiry/suppliers_list.php:38
+#: /purchasing/inquiry/suppliers_list.php:42
 #: /sales/inquiry/customer_allocation_inquiry.php:51
-#: /sales/inquiry/customer_branches_list.php:34
+#: /sales/inquiry/customer_branches_list.php:38
 #: /sales/inquiry/customer_inquiry.php:54
-#: /sales/inquiry/customers_list.php:38
+#: /sales/inquiry/customers_list.php:42
 #: /sales/inquiry/sales_deliveries_view.php:116
 #: /sales/inquiry/sales_orders_view.php:233
 msgid "Search"
@@ -2786,22 +2795,24 @@ msgstr ""
 #: /gl/view/bank_transfer_view.php:83
 #: /gl/view/gl_deposit_view.php:68
 #: /gl/view/gl_payment_view.php:66
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:570
 #: /includes/ui/allocation_cart.inc:290
 #: /includes/ui/ui_view.inc:546
 #: /inventory/inquiry/stock_movements.php:109
 #: /inventory/view/view_adjustment.php:44
 #: /inventory/view/view_transfer.php:37
 #: /manufacturing/search_work_orders.php:164
-#: /manufacturing/work_order_entry.php:402
-#: /manufacturing/work_order_entry.php:408
-#: /manufacturing/view/wo_costs_view.php:45
+#: /manufacturing/work_order_entry.php:399
+#: /manufacturing/work_order_entry.php:405
+#: /manufacturing/view/wo_costs_view.php:60
 #: /manufacturing/view/wo_production_view.php:44
-#: /manufacturing/includes/manufacturing_ui.inc:157
-#: /manufacturing/includes/manufacturing_ui.inc:200
-#: /manufacturing/includes/manufacturing_ui.inc:236
-#: /manufacturing/includes/manufacturing_ui.inc:277
-#: /manufacturing/includes/manufacturing_ui.inc:281
-#: /manufacturing/includes/manufacturing_ui.inc:332
+#: /manufacturing/includes/manufacturing_ui.inc:174
+#: /manufacturing/includes/manufacturing_ui.inc:217
+#: /manufacturing/includes/manufacturing_ui.inc:253
+#: /manufacturing/includes/manufacturing_ui.inc:292
+#: /manufacturing/includes/manufacturing_ui.inc:296
+#: /manufacturing/includes/manufacturing_ui.inc:347
 #: /purchasing/includes/ui/invoice_ui.inc:114
 #: /purchasing/includes/ui/po_ui.inc:312
 #: /purchasing/view/view_po.php:140
@@ -2809,7 +2820,7 @@ msgstr ""
 #: /purchasing/inquiry/supplier_inquiry.php:182
 #: /purchasing/allocations/supplier_allocation_main.php:97
 #: /reporting/rep101.php:132
-#: /reporting/rep107.php:204
+#: /reporting/rep107.php:203
 #: /reporting/rep201.php:107
 #: /reporting/rep306.php:141
 #: /reporting/rep402.php:103
@@ -2819,7 +2830,7 @@ msgstr ""
 #: /reporting/rep704.php:82
 #: /reporting/rep704.php:85
 #: /reporting/rep704.php:88
-#: /reporting/rep709.php:115
+#: /reporting/rep709.php:116
 #: /reporting/rep710.php:77
 #: /reporting/includes/doctext.inc:166
 #: /reporting/includes/doctext.inc:207
@@ -2849,17 +2860,17 @@ msgstr ""
 
 #: /admin/void_transaction.php:125
 #: /admin/void_transaction.php:184
-#: /gl/inquiry/accounts_list.php:68
+#: /gl/inquiry/accounts_list.php:63
 #: /includes/ui/ui_input.inc:152
 #: /includes/ui/ui_input.inc:300
 #: /includes/ui/ui_lists.inc:20
-#: /inventory/inquiry/stock_list.php:113
-#: /inventory/inquiry/stock_list.php:116
-#: /purchasing/inquiry/suppliers_list.php:76
-#: /purchasing/inquiry/suppliers_list.php:79
-#: /sales/inquiry/customer_branches_list.php:80
-#: /sales/inquiry/customers_list.php:77
-#: /sales/inquiry/customers_list.php:80
+#: /inventory/inquiry/stock_list.php:66
+#: /inventory/inquiry/stock_list.php:69
+#: /purchasing/inquiry/suppliers_list.php:65
+#: /purchasing/inquiry/suppliers_list.php:68
+#: /sales/inquiry/customer_branches_list.php:60
+#: /sales/inquiry/customers_list.php:66
+#: /sales/inquiry/customers_list.php:69
 msgid "Select"
 msgstr ""
 
@@ -2885,8 +2896,8 @@ msgstr ""
 #: /includes/ui/class.reflines_crud.inc:105
 #: /includes/ui/ui_view.inc:344
 #: /manufacturing/work_order_add_finished.php:196
-#: /manufacturing/work_order_costs.php:145
-#: /manufacturing/work_order_entry.php:433
+#: /manufacturing/work_order_costs.php:147
+#: /manufacturing/work_order_entry.php:429
 #: /manufacturing/work_order_release.php:102
 #: /purchasing/includes/ui/invoice_ui.inc:193
 #: /purchasing/includes/ui/po_ui.inc:465
@@ -2932,7 +2943,7 @@ msgstr ""
 #: /gl/manage/exchange_rates.php:33
 #: /gl/manage/revaluate_currencies.php:51
 #: /manufacturing/work_order_add_finished.php:89
-#: /manufacturing/work_order_costs.php:79
+#: /manufacturing/work_order_costs.php:80
 #: /purchasing/po_receive_items.php:174
 #: /purchasing/supplier_payment.php:185
 #: /sales/customer_credit_invoice.php:90
@@ -2963,19 +2974,19 @@ msgstr ""
 msgid "Attached File:"
 msgstr ""
 
-#: /admin/db/fiscalyears_db.inc:136
+#: /admin/db/fiscalyears_db.inc:137
 msgid ""
 "The Retained Earnings Account or the Profit and Loss Year Account has not "
 "been set in System and General GL Setup"
 msgstr ""
 
-#: /admin/db/fiscalyears_db.inc:166
 #: /admin/db/fiscalyears_db.inc:167
 #: /admin/db/fiscalyears_db.inc:168
+#: /admin/db/fiscalyears_db.inc:169
 msgid "Closing Year"
 msgstr ""
 
-#: /admin/db/fiscalyears_db.inc:219
+#: /admin/db/fiscalyears_db.inc:220
 #: /reporting/rep101.php:187
 #: /reporting/rep201.php:162
 #: /reporting/rep706.php:185
@@ -3036,37 +3047,51 @@ msgstr ""
 msgid "This transaction was already voided before."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:35
-#: /admin/db/voiding_db.inc:44
+#: /admin/db/voiding_db.inc:30
+#, php-format
+msgid ""
+"This transaction cannot be voided because it is part of Work Order %s costs."
+msgstr ""
+
+#: /admin/db/voiding_db.inc:37
+#: /admin/db/voiding_db.inc:46
 msgid ""
 "This transaction cannot be voided because the operation would decrease "
 "account balance below allowed limit in some point of account history."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:47
+#: /admin/db/voiding_db.inc:49
 msgid "This invoice cannot be voided because it was already credited."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:56
+#: /admin/db/voiding_db.inc:58
 msgid "This delivery cannot be voided because it was already invoiced."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:74
-#: /admin/db/voiding_db.inc:113
-#: /admin/db/voiding_db.inc:116
+#: /admin/db/voiding_db.inc:76
+#: /admin/db/voiding_db.inc:119
+#: /admin/db/voiding_db.inc:122
 msgid "This transaction type cannot be voided."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:79
+#: /admin/db/voiding_db.inc:81
 msgid "This GRN cannot be voided because it was already invoiced."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:81
-#: /admin/db/voiding_db.inc:90
+#: /admin/db/voiding_db.inc:83
+#: /admin/db/voiding_db.inc:92
 msgid "Error encountered when voiding transaction."
 msgstr ""
 
-#: /admin/db/voiding_db.inc:121
+#: /admin/db/voiding_db.inc:105
+#: /admin/db/voiding_db.inc:113
+#, php-format
+msgid ""
+"Selected document cannot be voided because related Work Order %s is already "
+"closed."
+msgstr ""
+
+#: /admin/db/voiding_db.inc:127
 #: /sales/includes/db/sales_invoice_db.inc:244
 msgid "Voided."
 msgstr ""
@@ -3766,7 +3791,7 @@ msgid "Start Date"
 msgstr ""
 
 #: /dimensions/dimension_entry.php:269
-#: /manufacturing/work_order_entry.php:403
+#: /manufacturing/work_order_entry.php:400
 msgid "Date Required By"
 msgstr ""
 
@@ -3829,6 +3854,7 @@ msgstr ""
 #: /gl/inquiry/gl_trial_balance.php:184
 #: /gl/manage/gl_quick_entries.php:248
 #: /gl/manage/gl_quick_entries.php:342
+#: /includes/dashboard.inc:605
 #: /includes/sysnames.inc:179
 #: /purchasing/includes/ui/invoice_ui.inc:278
 #: /purchasing/includes/ui/invoice_ui.inc:280
@@ -3857,6 +3883,7 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:103
 #: /gl/includes/ui/gl_journal_ui.inc:106
 #: /gl/includes/ui/gl_journal_ui.inc:109
+#: /manufacturing/view/wo_costs_view.php:61
 #: /purchasing/inquiry/supplier_allocation_inquiry.php:144
 #: /purchasing/inquiry/supplier_inquiry.php:185
 #: /reporting/rep601.php:80
@@ -3889,6 +3916,7 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:106
 #: /gl/includes/ui/gl_journal_ui.inc:109
 #: /includes/sysnames.inc:90
+#: /manufacturing/view/wo_costs_view.php:61
 #: /purchasing/inquiry/supplier_allocation_inquiry.php:145
 #: /purchasing/inquiry/supplier_inquiry.php:186
 #: /reporting/rep601.php:80
@@ -3909,6 +3937,7 @@ msgstr ""
 #: /gl/inquiry/bank_inquiry.php:72
 #: /gl/inquiry/gl_account_inquiry.php:141
 #: /gl/inquiry/gl_trial_balance.php:188
+#: /includes/dashboard.inc:605
 #: /purchasing/inquiry/supplier_allocation_inquiry.php:147
 #: /reporting/rep101.php:136
 #: /reporting/rep201.php:111
@@ -3945,9 +3974,9 @@ msgstr ""
 #: /inventory/includes/stock_transfers_ui.inc:42
 #: /manufacturing/search_work_orders.php:68
 #: /manufacturing/work_order_add_finished.php:185
-#: /manufacturing/work_order_costs.php:133
-#: /manufacturing/work_order_entry.php:361
-#: /manufacturing/work_order_entry.php:368
+#: /manufacturing/work_order_costs.php:134
+#: /manufacturing/work_order_entry.php:357
+#: /manufacturing/work_order_entry.php:365
 #: /manufacturing/includes/work_order_issue_ui.inc:161
 #: /purchasing/includes/ui/invoice_ui.inc:116
 #: /purchasing/includes/ui/po_ui.inc:156
@@ -3959,7 +3988,7 @@ msgstr ""
 
 #: /dimensions/inquiry/search_dimensions.php:74
 #: /includes/ui/allocation_cart.inc:314
-#: /includes/ui/ui_lists.inc:2099
+#: /includes/ui/ui_lists.inc:2100
 #: /reporting/rep101.php:114
 #: /reporting/rep102.php:92
 #: /reporting/rep104.php:95
@@ -4036,6 +4065,8 @@ msgstr ""
 
 #: /dimensions/inquiry/search_dimensions.php:129
 #: /dimensions/view/view_dimension.php:55
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:570
 #: /includes/ui/allocation_cart.inc:290
 #: /purchasing/includes/ui/invoice_ui.inc:135
 #: /purchasing/view/view_supp_credit.php:48
@@ -4123,7 +4154,7 @@ msgstr ""
 #: /inventory/adjustments.php:123
 #: /inventory/transfers.php:115
 #: /manufacturing/work_order_add_finished.php:95
-#: /manufacturing/work_order_costs.php:85
+#: /manufacturing/work_order_costs.php:86
 #: /manufacturing/work_order_entry.php:151
 #: /manufacturing/work_order_issue.php:82
 #: /purchasing/po_entry_items.php:351
@@ -4197,6 +4228,8 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:102
 #: /gl/includes/ui/gl_journal_ui.inc:103
 #: /gl/includes/ui/gl_journal_ui.inc:105
+#: /includes/dashboard.inc:134
+#: /includes/dashboard.inc:333
 #: /includes/sysnames.inc:43
 #: /includes/sysnames.inc:180
 #: /inventory/manage/item_categories.php:258
@@ -4288,10 +4321,10 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:109
 #: /gl/includes/ui/gl_journal_ui.inc:286
 #: /includes/ui/class.reflines_crud.inc:38
-#: /inventory/cost_update.php:147
-#: /inventory/includes/item_adjustments_ui.inc:215
+#: /inventory/cost_update.php:146
+#: /inventory/includes/item_adjustments_ui.inc:214
 #: /inventory/includes/stock_transfers_ui.inc:174
-#: /manufacturing/view/wo_costs_view.php:45
+#: /manufacturing/view/wo_costs_view.php:61
 #: /manufacturing/includes/work_order_issue_ui.inc:169
 #: /purchasing/includes/ui/invoice_ui.inc:278
 #: /purchasing/includes/ui/invoice_ui.inc:280
@@ -4356,23 +4389,30 @@ msgstr ""
 #: /gl/includes/ui/gl_bank_ui.inc:147
 #: /gl/includes/ui/gl_bank_ui.inc:150
 #: /gl/includes/ui/gl_bank_ui.inc:153
+#: /includes/dashboard.inc:121
+#: /includes/dashboard.inc:147
+#: /includes/dashboard.inc:167
+#: /includes/dashboard.inc:186
+#: /includes/dashboard.inc:223
+#: /includes/dashboard.inc:291
+#: /includes/dashboard.inc:333
+#: /includes/dashboard.inc:447
 #: /includes/sysnames.inc:138
 #: /includes/ui/allocation_cart.inc:290
-#: /includes/ui/ui_lists.inc:1348
-#: /manufacturing/view/wo_costs_view.php:45
-#: /manufacturing/includes/manufacturing_ui.inc:236
+#: /includes/ui/ui_lists.inc:1349
+#: /manufacturing/includes/manufacturing_ui.inc:253
 #: /purchasing/includes/ui/invoice_ui.inc:278
 #: /purchasing/includes/ui/invoice_ui.inc:280
 #: /purchasing/includes/ui/invoice_ui.inc:282
 #: /purchasing/view/view_supp_payment.php:60
 #: /purchasing/view/view_supp_payment.php:72
 #: /reporting/rep102.php:242
-#: /reporting/rep107.php:206
-#: /reporting/rep107.php:267
-#: /reporting/rep109.php:195
-#: /reporting/rep110.php:191
-#: /reporting/rep111.php:192
-#: /reporting/rep113.php:180
+#: /reporting/rep107.php:205
+#: /reporting/rep107.php:270
+#: /reporting/rep109.php:197
+#: /reporting/rep110.php:194
+#: /reporting/rep111.php:194
+#: /reporting/rep113.php:183
 #: /reporting/rep202.php:250
 #: /reporting/rep209.php:199
 #: /reporting/rep706.php:308
@@ -4813,7 +4853,7 @@ msgstr ""
 #: /reporting/rep708.php:200
 #: /reporting/rep708.php:209
 #: /reporting/rep708.php:216
-#: /reporting/rep709.php:110
+#: /reporting/rep709.php:111
 #: /reporting/rep710.php:85
 msgid "Period"
 msgstr ""
@@ -4839,9 +4879,11 @@ msgstr ""
 #: /gl/view/gl_trans_view.php:144
 #: /gl/includes/ui/gl_bank_ui.inc:195
 #: /gl/includes/ui/gl_journal_ui.inc:169
+#: /includes/dashboard.inc:486
+#: /includes/dashboard.inc:570
 #: /inventory/includes/item_adjustments_ui.inc:60
 #: /inventory/includes/item_adjustments_ui.inc:114
-#: /manufacturing/includes/manufacturing_ui.inc:178
+#: /manufacturing/includes/manufacturing_ui.inc:195
 #: /purchasing/includes/ui/invoice_ui.inc:341
 #: /purchasing/includes/ui/invoice_ui.inc:504
 #: /purchasing/includes/ui/invoice_ui.inc:575
@@ -5041,13 +5083,13 @@ msgstr ""
 
 #: /gl/gl_journal.php:546
 #: /gl/inquiry/tax_inquiry.php:102
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Input Tax"
 msgstr ""
 
 #: /gl/gl_journal.php:546
 #: /gl/inquiry/tax_inquiry.php:96
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Output Tax"
 msgstr ""
 
@@ -5063,18 +5105,18 @@ msgstr ""
 msgid "Process journal entry only if debits equal to credits"
 msgstr ""
 
-#: /gl/inquiry/accounts_list.php:13
+#: /gl/inquiry/accounts_list.php:25
 #: /inventory/manage/items.php:466
 #: /sales/manage/customer_branches.php:240
 msgid "GL Accounts"
 msgstr ""
 
-#: /gl/inquiry/accounts_list.php:34
+#: /gl/inquiry/accounts_list.php:40
 #: /includes/ui/ui_lists.inc:346
 msgid "Search GL accounts"
 msgstr ""
 
-#: /gl/inquiry/accounts_list.php:48
+#: /gl/inquiry/accounts_list.php:52
 #: /gl/view/gl_deposit_view.php:104
 #: /gl/view/gl_deposit_view.php:107
 #: /gl/view/gl_deposit_view.php:110
@@ -5090,12 +5132,13 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:102
 #: /gl/includes/ui/gl_journal_ui.inc:105
 #: /gl/includes/ui/gl_journal_ui.inc:108
+#: /manufacturing/view/wo_costs_view.php:60
 #: /reporting/rep701.php:110
 msgid "Account Code"
 msgstr ""
 
-#: /gl/inquiry/accounts_list.php:48
-#: /inventory/inquiry/stock_list.php:56
+#: /gl/inquiry/accounts_list.php:52
+#: /inventory/inquiry/stock_list.php:53
 #: /inventory/manage/item_codes.php:127
 #: /reporting/rep104.php:115
 #: /reporting/rep105.php:119
@@ -5126,6 +5169,7 @@ msgstr ""
 
 #: /gl/inquiry/balance_sheet.php:225
 #: /gl/inquiry/profit_loss.php:298
+#: /includes/dashboard.inc:391
 #: /reporting/rep705.php:322
 #: /reporting/rep706.php:278
 #: /reporting/rep706.php:303
@@ -5212,6 +5256,7 @@ msgstr ""
 
 #: /gl/inquiry/gl_trial_balance.php:93
 #: /gl/inquiry/gl_trial_balance.php:154
+#: /includes/dashboard.inc:525
 #: /reporting/rep706.php:307
 #: /reporting/rep707.php:325
 #: /reporting/rep708.php:51
@@ -5230,6 +5275,7 @@ msgstr ""
 #: /gl/view/gl_trans_view.php:95
 #: /gl/view/gl_trans_view.php:98
 #: /gl/view/gl_trans_view.php:101
+#: /manufacturing/view/wo_costs_view.php:60
 #: /reporting/rep701.php:110
 #: /reporting/rep702.php:53
 #: /reporting/rep705.php:235
@@ -5251,6 +5297,8 @@ msgstr ""
 
 #: /gl/inquiry/gl_trial_balance.php:206
 #: /gl/manage/gl_account_types.php:127
+#: /includes/dashboard.inc:147
+#: /includes/dashboard.inc:167
 #: /reporting/rep451.php:70
 #: /reporting/rep451.php:76
 msgid "Class"
@@ -5362,12 +5410,12 @@ msgid "Tax Inquiry"
 msgstr ""
 
 #: /gl/inquiry/tax_inquiry.php:80
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Outputs"
 msgstr ""
 
 #: /gl/inquiry/tax_inquiry.php:80
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Inputs"
 msgstr ""
 
@@ -5384,7 +5432,7 @@ msgid "Net payable or collectible"
 msgstr ""
 
 #: /gl/inquiry/tax_inquiry.php:115
-#: /reporting/rep709.php:220
+#: /reporting/rep709.php:221
 msgid "Total payable or refund"
 msgstr ""
 
@@ -5433,6 +5481,9 @@ msgstr ""
 #: /gl/view/bank_transfer_view.php:78
 #: /gl/view/gl_deposit_view.php:66
 #: /gl/view/gl_payment_view.php:64
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:570
+#: /includes/dashboard.inc:605
 #: /inventory/prices.php:151
 #: /inventory/purchasing_data.php:150
 #: /purchasing/view/view_supp_credit.php:49
@@ -6318,13 +6369,13 @@ msgstr ""
 msgid "To"
 msgstr ""
 
-#: /gl/includes/db/gl_db_banking.inc:534
+#: /gl/includes/db/gl_db_banking.inc:533
 #: /gl/includes/db/gl_journal.inc:114
 #: /purchasing/includes/db/invoice_db.inc:139
 msgid "Document reentered."
 msgstr ""
 
-#: /gl/includes/db/gl_db_trans.inc:96
+#: /gl/includes/db/gl_db_trans.inc:97
 #: /includes/ui/items_cart.inc:359
 #, php-format
 msgid "Rounding error %s encountered for trans_type:%s,trans_no:%s"
@@ -6334,7 +6385,7 @@ msgstr ""
 #: /inventory/includes/item_adjustments_ui.inc:35
 #: /inventory/includes/stock_transfers_ui.inc:40
 #: /manufacturing/work_order_add_finished.php:186
-#: /manufacturing/work_order_costs.php:132
+#: /manufacturing/work_order_costs.php:133
 #: /purchasing/allocations/supplier_allocate.php:56
 #: /sales/allocations/customer_allocate.php:54
 #: /sales/includes/ui/sales_credit_ui.inc:117
@@ -6421,7 +6472,7 @@ msgstr ""
 #: /gl/includes/ui/gl_bank_ui.inc:268
 #: /gl/includes/ui/gl_journal_ui.inc:268
 #: /includes/ui/simple_crud_class.inc:56
-#: /inventory/includes/item_adjustments_ui.inc:192
+#: /inventory/includes/item_adjustments_ui.inc:191
 #: /inventory/includes/stock_transfers_ui.inc:151
 #: /manufacturing/includes/work_order_issue_ui.inc:133
 #: /purchasing/includes/ui/po_ui.inc:437
@@ -6434,7 +6485,7 @@ msgstr ""
 #: /gl/includes/ui/gl_journal_ui.inc:270
 #: /includes/ui/class.crud_view.inc:292
 #: /includes/ui/simple_crud_class.inc:58
-#: /inventory/includes/item_adjustments_ui.inc:194
+#: /inventory/includes/item_adjustments_ui.inc:193
 #: /inventory/includes/stock_transfers_ui.inc:153
 #: /manufacturing/includes/work_order_issue_ui.inc:135
 #: /purchasing/includes/ui/po_ui.inc:439
@@ -6445,7 +6496,7 @@ msgstr ""
 
 #: /gl/includes/ui/gl_bank_ui.inc:275
 #: /gl/includes/ui/gl_journal_ui.inc:274
-#: /inventory/includes/item_adjustments_ui.inc:200
+#: /inventory/includes/item_adjustments_ui.inc:199
 #: /inventory/includes/stock_transfers_ui.inc:159
 #: /manufacturing/includes/work_order_issue_ui.inc:141
 #: /purchasing/includes/ui/po_ui.inc:445
@@ -6455,7 +6506,7 @@ msgid "Add Item"
 msgstr ""
 
 #: /gl/includes/ui/gl_bank_ui.inc:276
-#: /inventory/includes/item_adjustments_ui.inc:201
+#: /inventory/includes/item_adjustments_ui.inc:200
 #: /inventory/includes/stock_transfers_ui.inc:160
 #: /manufacturing/includes/work_order_issue_ui.inc:142
 #: /purchasing/includes/ui/po_ui.inc:446
@@ -7154,6 +7205,306 @@ msgstr ""
 msgid "Requesting data..."
 msgstr ""
 
+#: /includes/dashboard.inc:89
+#: /includes/dashboard.inc:159
+#: /includes/dashboard.inc:186
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:525
+#: /includes/sysnames.inc:101
+#: /includes/sysnames.inc:209
+#: /reporting/rep101.php:141
+#: /reporting/rep102.php:121
+#: /reporting/rep102.php:128
+#: /reporting/rep105.php:109
+#: /reporting/rep106.php:89
+#: /reporting/rep114.php:95
+#: /reporting/rep304.php:127
+#: /reporting/rep304.php:137
+#: /reporting/reports_main.php:34
+#: /reporting/reports_main.php:38
+#: /reporting/reports_main.php:47
+#: /reporting/reports_main.php:104
+#: /reporting/reports_main.php:123
+#: /reporting/reports_main.php:239
+#: /sales/create_recurrent_invoices.php:203
+#: /sales/customer_credit_invoice.php:234
+#: /sales/customer_delivery.php:326
+#: /sales/customer_invoice.php:431
+#: /sales/allocations/customer_allocation_main.php:91
+#: /sales/allocations/customer_allocation_main.php:99
+#: /sales/manage/recurrent_invoices.php:128
+#: /sales/view/view_credit.php:47
+#: /sales/inquiry/customer_allocation_inquiry.php:152
+#: /sales/inquiry/customer_allocation_inquiry.php:162
+#: /sales/inquiry/customer_inquiry.php:208
+#: /sales/inquiry/customer_inquiry.php:222
+#: /sales/inquiry/customers_list.php:41
+#: /sales/inquiry/customers_list.php:54
+#: /sales/inquiry/sales_deliveries_view.php:169
+#: /sales/inquiry/sales_orders_view.php:251
+#: /sales/inquiry/sales_orders_view.php:265
+msgid "Customer"
+msgstr ""
+
+#: /includes/dashboard.inc:89
+#: /includes/dashboard.inc:121
+#: /includes/dashboard.inc:159
+#: /includes/dashboard.inc:163
+#: /includes/dashboard.inc:289
+#: /includes/dashboard.inc:437
+#: /reporting/rep304.php:127
+#: /reporting/rep309.php:99
+#: /sales/manage/customer_branches.php:232
+#: /sales/manage/customers.php:265
+msgid "Sales"
+msgstr ""
+
+#: /includes/dashboard.inc:103
+#: /includes/dashboard.inc:161
+#: /includes/dashboard.inc:223
+#: /includes/dashboard.inc:570
+#: /includes/sysnames.inc:102
+#: /includes/sysnames.inc:187
+#: /includes/sysnames.inc:210
+#: /inventory/purchasing_data.php:150
+#: /purchasing/includes/ui/grn_ui.inc:20
+#: /purchasing/includes/ui/grn_ui.inc:52
+#: /purchasing/includes/ui/po_ui.inc:300
+#: /purchasing/view/view_supp_credit.php:42
+#: /purchasing/view/view_supp_invoice.php:46
+#: /purchasing/inquiry/po_search_completed.php:112
+#: /purchasing/inquiry/po_search.php:119
+#: /purchasing/inquiry/supplier_allocation_inquiry.php:139
+#: /purchasing/inquiry/supplier_allocation_inquiry.php:152
+#: /purchasing/inquiry/supplier_inquiry.php:180
+#: /purchasing/inquiry/supplier_inquiry.php:195
+#: /purchasing/inquiry/suppliers_list.php:41
+#: /purchasing/inquiry/suppliers_list.php:53
+#: /purchasing/allocations/supplier_allocation_main.php:98
+#: /purchasing/allocations/supplier_allocation_main.php:106
+#: /reporting/rep201.php:116
+#: /reporting/rep202.php:128
+#: /reporting/rep202.php:135
+#: /reporting/rep203.php:95
+#: /reporting/rep204.php:90
+#: /reporting/rep306.php:141
+#: /reporting/rep306.php:151
+#: /reporting/reports_main.php:151
+#: /reporting/reports_main.php:155
+#: /reporting/reports_main.php:164
+#: /reporting/reports_main.php:175
+#: /reporting/reports_main.php:182
+#: /reporting/reports_main.php:255
+msgid "Supplier"
+msgstr ""
+
+#: /includes/dashboard.inc:103
+msgid "Purchase"
+msgstr ""
+
+#: /includes/dashboard.inc:120
+#: /includes/dashboard.inc:163
+#: /includes/ui/ui_controls.inc:512
+#: /includes/ui/ui_controls.inc:514
+#: /inventory/transfers.php:231
+#: /inventory/inquiry/stock_list.php:29
+#: /inventory/manage/items.php:29
+#: /reporting/rep402.php:108
+#: /reporting/reports_main.php:256
+#: /reporting/reports_main.php:293
+msgid "Items"
+msgstr ""
+
+#: /includes/dashboard.inc:122
+#: /includes/dashboard.inc:163
+#: /includes/dashboard.inc:289
+#: /includes/dashboard.inc:437
+#: /manufacturing/search_work_orders.php:139
+msgid "Costs"
+msgstr ""
+
+#: /includes/dashboard.inc:134
+msgid "Performance"
+msgstr ""
+
+#: /includes/dashboard.inc:161
+msgid "Purchases"
+msgstr ""
+
+#: /includes/dashboard.inc:184
+#, php-format
+msgid "Top %s customers in fiscal year"
+msgstr ""
+
+#: /includes/dashboard.inc:221
+#, php-format
+msgid "Top %s suppliers in fiscal year"
+msgstr ""
+
+#: /includes/dashboard.inc:282
+#, php-format
+msgid "Top %s Manufactured Items in fiscal year"
+msgstr ""
+
+#: /includes/dashboard.inc:284
+#, php-format
+msgid "Top %s Fixed Assets"
+msgstr ""
+
+#: /includes/dashboard.inc:286
+#, php-format
+msgid "Top %s Sold Items in fiscal year"
+msgstr ""
+
+#: /includes/dashboard.inc:289
+#: /includes/dashboard.inc:291
+#: /manufacturing/search_work_orders.php:161
+#: /manufacturing/view/wo_issue_view.php:43
+#: /manufacturing/view/wo_production_view.php:44
+#: /purchasing/includes/ui/invoice_ui.inc:501
+#: /purchasing/includes/ui/invoice_ui.inc:513
+#: /reporting/rep204.php:84
+#: /reporting/rep306.php:152
+#: /reporting/rep402.php:103
+msgid "Item"
+msgstr ""
+
+#: /includes/dashboard.inc:289
+#: /includes/dashboard.inc:291
+#: /inventory/includes/item_adjustments_ui.inc:56
+#: /inventory/includes/item_adjustments_ui.inc:59
+#: /inventory/includes/stock_transfers_ui.inc:57
+#: /inventory/manage/item_codes.php:126
+#: /inventory/manage/sales_kits.php:36
+#: /inventory/view/view_adjustment.php:54
+#: /inventory/view/view_transfer.php:50
+#: /manufacturing/view/wo_issue_view.php:76
+#: /manufacturing/manage/bom_edit.php:44
+#: /manufacturing/includes/manufacturing_ui.inc:29
+#: /manufacturing/includes/manufacturing_ui.inc:174
+#: /manufacturing/includes/manufacturing_ui.inc:347
+#: /manufacturing/includes/work_order_issue_ui.inc:33
+#: /purchasing/includes/ui/invoice_ui.inc:514
+#: /purchasing/includes/ui/po_ui.inc:214
+#: /purchasing/view/view_grn.php:40
+#: /purchasing/view/view_po.php:45
+#: /reporting/rep301.php:172
+#: /reporting/rep303.php:120
+#: /reporting/rep303.php:126
+#: /reporting/rep401.php:71
+#: /reporting/includes/doctext.inc:31
+#: /reporting/includes/doctext.inc:191
+#: /reporting/includes/doctext.inc:224
+#: /sales/customer_invoice.php:518
+#: /sales/view/view_credit.php:90
+#: /sales/view/view_dispatch.php:112
+#: /sales/view/view_invoice.php:115
+#: /sales/view/view_sales_order.php:219
+#: /sales/includes/ui/sales_credit_ui.inc:162
+#: /sales/includes/ui/sales_order_ui.inc:146
+msgid "Quantity"
+msgstr ""
+
+#: /includes/dashboard.inc:331
+#, php-format
+msgid "Top %s Dimensions in fiscal year"
+msgstr ""
+
+#: /includes/dashboard.inc:369
+msgid "Class Balances"
+msgstr ""
+
+#: /includes/dashboard.inc:437
+msgid "Week"
+msgstr ""
+
+#: /includes/dashboard.inc:483
+msgid " overdue Sales Invoices"
+msgstr ""
+
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:570
+msgid "Ref."
+msgstr ""
+
+#: /includes/dashboard.inc:485
+#: /includes/dashboard.inc:525
+#: /reporting/rep105.php:109
+#: /reporting/rep106.php:89
+#: /reporting/rep112.php:180
+#: /sales/create_recurrent_invoices.php:203
+#: /sales/customer_credit_invoice.php:235
+#: /sales/customer_delivery.php:327
+#: /sales/customer_invoice.php:432
+#: /sales/manage/customers.php:255
+#: /sales/manage/customers.php:295
+#: /sales/manage/recurrent_invoices.php:128
+#: /sales/view/view_credit.php:58
+#: /sales/inquiry/customer_branches_list.php:37
+#: /sales/inquiry/customer_branches_list.php:49
+#: /sales/inquiry/customer_inquiry.php:209
+#: /sales/inquiry/sales_deliveries_view.php:171
+#: /sales/inquiry/sales_orders_view.php:252
+#: /sales/inquiry/sales_orders_view.php:266
+msgid "Branch"
+msgstr ""
+
+#: /includes/dashboard.inc:486
+#: /includes/dashboard.inc:571
+#: /includes/sysnames.inc:137
+msgid "Remainder"
+msgstr ""
+
+#: /includes/dashboard.inc:486
+#: /includes/dashboard.inc:571
+#: /purchasing/inquiry/supplier_inquiry.php:68
+#: /purchasing/inquiry/supplier_inquiry.php:69
+#: /purchasing/inquiry/supplier_inquiry.php:70
+#: /reporting/rep102.php:116
+#: /reporting/rep102.php:117
+#: /reporting/rep102.php:118
+#: /reporting/rep102.php:241
+#: /reporting/rep108.php:150
+#: /reporting/rep108.php:151
+#: /reporting/rep108.php:152
+#: /reporting/rep202.php:122
+#: /reporting/rep202.php:123
+#: /reporting/rep202.php:124
+#: /reporting/rep202.php:156
+#: /reporting/rep202.php:157
+#: /reporting/rep202.php:158
+#: /reporting/rep202.php:249
+#: /sales/create_recurrent_invoices.php:203
+#: /sales/manage/recurrent_invoices.php:128
+#: /sales/inquiry/customer_inquiry.php:71
+#: /sales/inquiry/customer_inquiry.php:72
+#: /sales/inquiry/customer_inquiry.php:73
+msgid "Days"
+msgstr ""
+
+#: /includes/dashboard.inc:523
+msgid "Overdue Recurrent Invoices"
+msgstr ""
+
+#: /includes/dashboard.inc:525
+#: /sales/create_recurrent_invoices.php:203
+#: /sales/manage/recurrent_invoices.php:128
+msgid "Template No"
+msgstr ""
+
+#: /includes/dashboard.inc:525
+#: /sales/create_recurrent_invoices.php:203
+msgid "Next invoice"
+msgstr ""
+
+#: /includes/dashboard.inc:568
+msgid " overdue Purchase Invoices"
+msgstr ""
+
+#: /includes/dashboard.inc:603
+msgid "Bank Account Balances"
+msgstr ""
+
 #: /includes/data_checks.inc:612
 #, php-format
 msgid "%s #%s is closed for further edition."
@@ -7260,7 +7611,7 @@ msgstr ""
 msgid "Missing refline context data: '%s'"
 msgstr ""
 
-#: /includes/references.inc:155
+#: /includes/references.inc:156
 msgid "Missing numeric placeholder in refline definition."
 msgstr ""
 
@@ -7415,6 +7766,7 @@ msgstr ""
 
 #: /includes/sysnames.inc:37
 #: /includes/sysnames.inc:100
+#: /includes/types.inc:133
 msgid "Work Order"
 msgstr ""
 
@@ -7550,7 +7902,7 @@ msgid "Chequing Account"
 msgstr ""
 
 #: /includes/sysnames.inc:83
-#: /manufacturing/work_order_costs.php:144
+#: /manufacturing/work_order_costs.php:146
 msgid "Credit Account"
 msgstr ""
 
@@ -7569,77 +7921,6 @@ msgstr ""
 #: /includes/sysnames.inc:91
 #: /includes/sysnames.inc:195
 msgid "Cash"
-msgstr ""
-
-#: /includes/sysnames.inc:101
-#: /includes/sysnames.inc:209
-#: /reporting/rep101.php:141
-#: /reporting/rep102.php:121
-#: /reporting/rep102.php:128
-#: /reporting/rep105.php:109
-#: /reporting/rep106.php:89
-#: /reporting/rep114.php:95
-#: /reporting/rep304.php:127
-#: /reporting/rep304.php:137
-#: /reporting/reports_main.php:34
-#: /reporting/reports_main.php:38
-#: /reporting/reports_main.php:47
-#: /reporting/reports_main.php:104
-#: /reporting/reports_main.php:123
-#: /reporting/reports_main.php:239
-#: /sales/create_recurrent_invoices.php:203
-#: /sales/customer_credit_invoice.php:234
-#: /sales/customer_delivery.php:326
-#: /sales/customer_invoice.php:431
-#: /sales/allocations/customer_allocation_main.php:91
-#: /sales/allocations/customer_allocation_main.php:99
-#: /sales/manage/recurrent_invoices.php:128
-#: /sales/view/view_credit.php:47
-#: /sales/inquiry/customer_allocation_inquiry.php:152
-#: /sales/inquiry/customer_allocation_inquiry.php:162
-#: /sales/inquiry/customer_inquiry.php:208
-#: /sales/inquiry/customer_inquiry.php:222
-#: /sales/inquiry/customers_list.php:37
-#: /sales/inquiry/customers_list.php:56
-#: /sales/inquiry/sales_deliveries_view.php:169
-#: /sales/inquiry/sales_orders_view.php:251
-#: /sales/inquiry/sales_orders_view.php:265
-msgid "Customer"
-msgstr ""
-
-#: /includes/sysnames.inc:102
-#: /includes/sysnames.inc:187
-#: /includes/sysnames.inc:210
-#: /inventory/purchasing_data.php:150
-#: /purchasing/includes/ui/grn_ui.inc:20
-#: /purchasing/includes/ui/grn_ui.inc:52
-#: /purchasing/includes/ui/po_ui.inc:300
-#: /purchasing/view/view_supp_credit.php:42
-#: /purchasing/view/view_supp_invoice.php:46
-#: /purchasing/inquiry/po_search_completed.php:112
-#: /purchasing/inquiry/po_search.php:119
-#: /purchasing/inquiry/supplier_allocation_inquiry.php:139
-#: /purchasing/inquiry/supplier_allocation_inquiry.php:152
-#: /purchasing/inquiry/supplier_inquiry.php:180
-#: /purchasing/inquiry/supplier_inquiry.php:195
-#: /purchasing/inquiry/suppliers_list.php:37
-#: /purchasing/inquiry/suppliers_list.php:56
-#: /purchasing/allocations/supplier_allocation_main.php:98
-#: /purchasing/allocations/supplier_allocation_main.php:106
-#: /reporting/rep201.php:116
-#: /reporting/rep202.php:128
-#: /reporting/rep202.php:135
-#: /reporting/rep203.php:95
-#: /reporting/rep204.php:90
-#: /reporting/rep306.php:141
-#: /reporting/rep306.php:151
-#: /reporting/reports_main.php:151
-#: /reporting/reports_main.php:155
-#: /reporting/reports_main.php:164
-#: /reporting/reports_main.php:175
-#: /reporting/reports_main.php:182
-#: /reporting/reports_main.php:255
-msgid "Supplier"
 msgstr ""
 
 #: /includes/sysnames.inc:110
@@ -7684,10 +7965,6 @@ msgstr ""
 
 #: /includes/sysnames.inc:130
 msgid "Expense"
-msgstr ""
-
-#: /includes/sysnames.inc:137
-msgid "Remainder"
 msgstr ""
 
 #: /includes/sysnames.inc:139
@@ -7756,7 +8033,7 @@ msgstr ""
 
 #: /includes/sysnames.inc:171
 #: /manufacturing/search_work_orders.php:163
-#: /manufacturing/includes/manufacturing_ui.inc:278
+#: /manufacturing/includes/manufacturing_ui.inc:293
 #: /reporting/rep402.php:103
 msgid "Manufactured"
 msgstr ""
@@ -8340,19 +8617,19 @@ msgstr ""
 msgid "Reference line cannot be deleted because it is already in use."
 msgstr ""
 
-#: /includes/db/inventory_db.inc:292
+#: /includes/db/inventory_db.inc:307
 msgid "Cost was "
 msgstr ""
 
-#: /includes/db/inventory_db.inc:292
+#: /includes/db/inventory_db.inc:307
 msgid " changed to "
 msgstr ""
 
-#: /includes/db/inventory_db.inc:292
+#: /includes/db/inventory_db.inc:307
 msgid " for item "
 msgstr ""
 
-#: /includes/db/inventory_db.inc:352
+#: /includes/db/inventory_db.inc:367
 msgid "Zero/negative inventory handling"
 msgstr ""
 
@@ -8375,12 +8652,12 @@ msgstr ""
 #: /reporting/rep704.php:82
 #: /reporting/rep704.php:85
 #: /reporting/rep704.php:88
-#: /reporting/rep709.php:115
+#: /reporting/rep709.php:116
 #: /sales/view/view_credit.php:68
 #: /sales/view/view_sales_order.php:109
 #: /sales/view/view_sales_order.php:142
 #: /sales/view/view_sales_order.php:179
-#: /sales/inquiry/customer_branches_list.php:52
+#: /sales/inquiry/customer_branches_list.php:49
 #: /sales/inquiry/sales_orders_view.php:211
 #: /sales/inquiry/sales_orders_view.php:250
 #: /sales/inquiry/sales_orders_view.php:264
@@ -8617,7 +8894,7 @@ msgstr ""
 
 #: /includes/ui/ui_controls.inc:506
 #: /sales/manage/customers.php:23
-#: /sales/inquiry/customers_list.php:17
+#: /sales/inquiry/customers_list.php:29
 msgid "Customers"
 msgstr ""
 
@@ -8627,19 +8904,8 @@ msgstr ""
 
 #: /includes/ui/ui_controls.inc:510
 #: /purchasing/manage/suppliers.php:22
-#: /purchasing/inquiry/suppliers_list.php:17
+#: /purchasing/inquiry/suppliers_list.php:29
 msgid "Suppliers"
-msgstr ""
-
-#: /includes/ui/ui_controls.inc:512
-#: /includes/ui/ui_controls.inc:514
-#: /inventory/transfers.php:231
-#: /inventory/inquiry/stock_list.php:17
-#: /inventory/manage/items.php:29
-#: /reporting/rep402.php:108
-#: /reporting/reports_main.php:256
-#: /reporting/reports_main.php:293
-msgid "Items"
 msgstr ""
 
 #: /includes/ui/ui_controls.inc:674
@@ -8654,7 +8920,7 @@ msgid "Click Here to Pick up the date"
 msgstr ""
 
 #: /includes/ui/ui_input.inc:971
-#: /includes/ui/ui_lists.inc:2329
+#: /includes/ui/ui_lists.inc:2330
 #: /reporting/rep301.php:232
 #: /reporting/rep302.php:168
 #: /reporting/rep303.php:178
@@ -8699,27 +8965,27 @@ msgstr ""
 #: /includes/ui/ui_lists.inc:321
 #: /includes/ui/ui_lists.inc:326
 #: /includes/ui/ui_lists.inc:330
-#: /inventory/inquiry/stock_list.php:38
+#: /inventory/inquiry/stock_list.php:42
 msgid "Search items"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:334
-#: /sales/inquiry/customers_list.php:38
+#: /sales/inquiry/customers_list.php:42
 msgid "Search customers"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:338
-#: /sales/inquiry/customer_branches_list.php:34
+#: /sales/inquiry/customer_branches_list.php:38
 msgid "Search branches"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:342
-#: /purchasing/inquiry/suppliers_list.php:38
+#: /purchasing/inquiry/suppliers_list.php:42
 msgid "Search suppliers"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:526
-#: /includes/ui/ui_lists.inc:1527
+#: /includes/ui/ui_lists.inc:1528
 msgid "All Suppliers"
 msgstr ""
 
@@ -8760,127 +9026,127 @@ msgstr ""
 msgid "All Items"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:1459
+#: /includes/ui/ui_lists.inc:1460
 msgid "All Sales Types"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:1806
+#: /includes/ui/ui_lists.inc:1807
 msgid "Use Item Sales Accounts"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2115
-#: /includes/ui/ui_lists.inc:2131
-#: /includes/ui/ui_lists.inc:2147
+#: /includes/ui/ui_lists.inc:2116
+#: /includes/ui/ui_lists.inc:2132
+#: /includes/ui/ui_lists.inc:2148
 msgid "All Types"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2116
+#: /includes/ui/ui_lists.inc:2117
 #: /sales/view/view_sales_order.php:140
 msgid "Sales Invoices"
-msgstr ""
-
-#: /includes/ui/ui_lists.inc:2117
-#: /includes/ui/ui_lists.inc:2133
-#: /includes/ui/ui_lists.inc:2150
-msgid "Overdue Invoices"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:2118
 #: /includes/ui/ui_lists.inc:2134
 #: /includes/ui/ui_lists.inc:2151
-#: /includes/ui/ui_view.inc:609
-#: /includes/ui/ui_view.inc:613
-msgid "Payments"
+msgid "Overdue Invoices"
 msgstr ""
 
 #: /includes/ui/ui_lists.inc:2119
 #: /includes/ui/ui_lists.inc:2135
 #: /includes/ui/ui_lists.inc:2152
+#: /includes/ui/ui_view.inc:609
+#: /includes/ui/ui_view.inc:613
+msgid "Payments"
+msgstr ""
+
+#: /includes/ui/ui_lists.inc:2120
+#: /includes/ui/ui_lists.inc:2136
+#: /includes/ui/ui_lists.inc:2153
 #: /sales/view/view_sales_order.php:176
 msgid "Credit Notes"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2120
+#: /includes/ui/ui_lists.inc:2121
 #: /sales/view/view_sales_order.php:106
 msgid "Delivery Notes"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2132
-#: /includes/ui/ui_lists.inc:2149
+#: /includes/ui/ui_lists.inc:2133
+#: /includes/ui/ui_lists.inc:2150
 msgid "Invoices"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2136
-#: /includes/ui/ui_lists.inc:2153
+#: /includes/ui/ui_lists.inc:2137
+#: /includes/ui/ui_lists.inc:2154
 msgid "Overdue Credit Notes"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2148
+#: /includes/ui/ui_lists.inc:2149
 msgid "GRNs"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2166
+#: /includes/ui/ui_lists.inc:2167
 msgid "Automatically put balance on back order"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2167
+#: /includes/ui/ui_lists.inc:2168
 msgid "Cancel any quantites not delivered"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2184
+#: /includes/ui/ui_lists.inc:2185
 msgid "Items Returned to Inventory Location"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2185
+#: /includes/ui/ui_lists.inc:2186
 msgid "Items Written Off"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2354
+#: /includes/ui/ui_lists.inc:2355
 msgid "New role"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2406
+#: /includes/ui/ui_lists.inc:2407
 msgid "No tags defined."
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2406
+#: /includes/ui/ui_lists.inc:2407
 msgid "No active tags defined."
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2444
+#: /includes/ui/ui_lists.inc:2445
 #, php-format
 msgid "Activated for '%s'"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2447
+#: /includes/ui/ui_lists.inc:2448
 msgid "Available and/or installed"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2517
+#: /includes/ui/ui_lists.inc:2518
 msgid "Standard new company American COA (4 digit)"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2519
+#: /includes/ui/ui_lists.inc:2520
 msgid "Standard American COA (4 digit) with demo data"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2540
+#: /includes/ui/ui_lists.inc:2541
 msgid "No payment Link"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2660
+#: /includes/ui/ui_lists.inc:2661
 msgid "Numeric"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2660
+#: /includes/ui/ui_lists.inc:2661
 msgid "Alpha Numeric"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2660
+#: /includes/ui/ui_lists.inc:2661
 msgid "ALPHA NUMERIC"
 msgstr ""
 
-#: /includes/ui/ui_lists.inc:2676
+#: /includes/ui/ui_lists.inc:2677
 msgid "All users"
 msgstr ""
 
@@ -8900,11 +9166,11 @@ msgid "Date Voided:"
 msgstr ""
 
 #: /includes/ui/ui_view.inc:442
-#: /reporting/rep107.php:258
-#: /reporting/rep109.php:186
-#: /reporting/rep110.php:182
-#: /reporting/rep111.php:183
-#: /reporting/rep113.php:171
+#: /reporting/rep107.php:261
+#: /reporting/rep109.php:188
+#: /reporting/rep110.php:185
+#: /reporting/rep111.php:185
+#: /reporting/rep113.php:174
 #: /reporting/rep209.php:190
 msgid "Total Tax Excluded"
 msgstr ""
@@ -8913,11 +9179,11 @@ msgstr ""
 #: /includes/ui/ui_view.inc:467
 #: /includes/ui/ui_view.inc:491
 #: /includes/ui/ui_view.inc:508
-#: /reporting/rep107.php:267
-#: /reporting/rep109.php:195
-#: /reporting/rep110.php:191
-#: /reporting/rep111.php:192
-#: /reporting/rep113.php:180
+#: /reporting/rep107.php:270
+#: /reporting/rep109.php:197
+#: /reporting/rep110.php:194
+#: /reporting/rep111.php:194
+#: /reporting/rep113.php:183
 #: /reporting/rep209.php:199
 msgid "Included"
 msgstr ""
@@ -9140,23 +9406,23 @@ msgid ""
 "manufactured items)."
 msgstr ""
 
-#: /inventory/cost_update.php:66
+#: /inventory/cost_update.php:65
 msgid "The entered cost is not numeric."
 msgstr ""
 
-#: /inventory/cost_update.php:72
+#: /inventory/cost_update.php:71
 msgid "The new cost is the same as the old cost. Cost was not updated."
 msgstr ""
 
-#: /inventory/cost_update.php:83
+#: /inventory/cost_update.php:82
 msgid "Cost has been updated."
 msgstr ""
 
-#: /inventory/cost_update.php:87
+#: /inventory/cost_update.php:86
 msgid "View the GL Journal Entries for this Cost Update"
 msgstr ""
 
-#: /inventory/cost_update.php:111
+#: /inventory/cost_update.php:110
 #: /inventory/prices.php:66
 #: /inventory/purchasing_data.php:121
 #: /inventory/reorder_level.php:54
@@ -9164,27 +9430,27 @@ msgstr ""
 #: /inventory/inquiry/stock_movements.php:74
 #: /inventory/inquiry/stock_status.php:45
 #: /inventory/manage/item_codes.php:108
-#: /manufacturing/work_order_entry.php:379
-#: /manufacturing/work_order_entry.php:384
+#: /manufacturing/work_order_entry.php:376
+#: /manufacturing/work_order_entry.php:381
 #: /purchasing/inquiry/po_search.php:74
 #: /sales/inquiry/sales_deliveries_view.php:112
 #: /sales/inquiry/sales_orders_view.php:226
 msgid "Item:"
 msgstr ""
 
-#: /inventory/cost_update.php:134
-msgid "Standard Material Cost Per Unit"
+#: /inventory/cost_update.php:133
+msgid "Unit cost"
 msgstr ""
 
-#: /inventory/cost_update.php:138
+#: /inventory/cost_update.php:137
 msgid "Standard Labour Cost Per Unit"
 msgstr ""
 
-#: /inventory/cost_update.php:139
+#: /inventory/cost_update.php:138
 msgid "Standard Overhead Cost Per Unit"
 msgstr ""
 
-#: /inventory/cost_update.php:146
+#: /inventory/cost_update.php:145
 msgid "Reference line:"
 msgstr ""
 
@@ -9502,7 +9768,7 @@ msgstr ""
 #: /inventory/includes/item_adjustments_ui.inc:56
 #: /inventory/includes/item_adjustments_ui.inc:59
 #: /inventory/includes/stock_transfers_ui.inc:57
-#: /inventory/inquiry/stock_list.php:56
+#: /inventory/inquiry/stock_list.php:53
 #: /inventory/view/view_adjustment.php:54
 #: /inventory/view/view_transfer.php:50
 #: /manufacturing/includes/work_order_issue_ui.inc:33
@@ -9549,40 +9815,6 @@ msgstr ""
 msgid "Item Description"
 msgstr ""
 
-#: /inventory/includes/item_adjustments_ui.inc:56
-#: /inventory/includes/item_adjustments_ui.inc:59
-#: /inventory/includes/stock_transfers_ui.inc:57
-#: /inventory/manage/item_codes.php:126
-#: /inventory/manage/sales_kits.php:36
-#: /inventory/view/view_adjustment.php:54
-#: /inventory/view/view_transfer.php:50
-#: /manufacturing/view/wo_issue_view.php:76
-#: /manufacturing/manage/bom_edit.php:44
-#: /manufacturing/includes/manufacturing_ui.inc:29
-#: /manufacturing/includes/manufacturing_ui.inc:157
-#: /manufacturing/includes/manufacturing_ui.inc:332
-#: /manufacturing/includes/work_order_issue_ui.inc:33
-#: /purchasing/includes/ui/invoice_ui.inc:514
-#: /purchasing/includes/ui/po_ui.inc:214
-#: /purchasing/view/view_grn.php:40
-#: /purchasing/view/view_po.php:45
-#: /reporting/rep301.php:172
-#: /reporting/rep303.php:120
-#: /reporting/rep303.php:126
-#: /reporting/rep401.php:71
-#: /reporting/includes/doctext.inc:31
-#: /reporting/includes/doctext.inc:191
-#: /reporting/includes/doctext.inc:224
-#: /sales/customer_invoice.php:518
-#: /sales/view/view_credit.php:90
-#: /sales/view/view_dispatch.php:112
-#: /sales/view/view_invoice.php:115
-#: /sales/view/view_sales_order.php:219
-#: /sales/includes/ui/sales_credit_ui.inc:162
-#: /sales/includes/ui/sales_order_ui.inc:146
-msgid "Quantity"
-msgstr ""
-
 #: /inventory/includes/item_adjustments_ui.inc:57
 #: /inventory/includes/item_adjustments_ui.inc:60
 #: /inventory/includes/stock_transfers_ui.inc:57
@@ -9605,6 +9837,7 @@ msgstr ""
 #: /inventory/includes/item_adjustments_ui.inc:57
 #: /inventory/includes/item_adjustments_ui.inc:60
 #: /inventory/view/view_adjustment.php:55
+#: /manufacturing/view/wo_issue_view.php:76
 #: /manufacturing/includes/manufacturing_ui.inc:29
 #: /manufacturing/includes/work_order_issue_ui.inc:34
 #: /reporting/rep301.php:172
@@ -9662,7 +9895,7 @@ msgid ""
 "\t\t\t\tusing this item as component"
 msgstr ""
 
-#: /inventory/includes/db/items_trans_db.inc:64
+#: /inventory/includes/db/items_trans_db.inc:63
 #, php-format
 msgid "Cost was %s changed to %s x quantity on hand of %s"
 msgstr ""
@@ -9861,6 +10094,10 @@ msgstr ""
 msgid "Depreciation/Disposal account:"
 msgstr ""
 
+#: /inventory/manage/item_categories.php:251
+msgid "Item Assembly Costs Account:"
+msgstr ""
+
 #: /inventory/manage/item_codes.php:20
 msgid "Foreign Item Codes"
 msgstr ""
@@ -9908,8 +10145,8 @@ msgstr ""
 #: /inventory/manage/item_codes.php:181
 #: /inventory/manage/sales_kits.php:243
 #: /manufacturing/work_order_add_finished.php:194
-#: /manufacturing/work_order_entry.php:407
-#: /manufacturing/manage/bom_edit.php:201
+#: /manufacturing/work_order_entry.php:404
+#: /manufacturing/manage/bom_edit.php:204
 msgid "Quantity:"
 msgstr ""
 
@@ -10348,8 +10585,8 @@ msgid "Update kit/alias name"
 msgstr ""
 
 #: /inventory/manage/sales_kits.php:223
-#: /manufacturing/manage/bom_edit.php:177
-#: /manufacturing/manage/bom_edit.php:184
+#: /manufacturing/manage/bom_edit.php:180
+#: /manufacturing/manage/bom_edit.php:187
 msgid "Component:"
 msgstr ""
 
@@ -10376,7 +10613,7 @@ msgstr ""
 #: /inventory/view/view_transfer.php:40
 #: /manufacturing/view/wo_issue_view.php:43
 #: /manufacturing/includes/manufacturing_ui.inc:29
-#: /manufacturing/includes/manufacturing_ui.inc:83
+#: /manufacturing/includes/manufacturing_ui.inc:100
 #: /reporting/includes/doctext.inc:228
 msgid "From Location"
 msgstr ""
@@ -10430,29 +10667,14 @@ msgstr ""
 msgid "Produce"
 msgstr ""
 
-#: /manufacturing/search_work_orders.php:139
-msgid "Costs"
-msgstr ""
-
-#: /manufacturing/search_work_orders.php:161
-#: /manufacturing/view/wo_issue_view.php:43
-#: /manufacturing/view/wo_production_view.php:44
-#: /purchasing/includes/ui/invoice_ui.inc:501
-#: /purchasing/includes/ui/invoice_ui.inc:513
-#: /reporting/rep204.php:84
-#: /reporting/rep306.php:152
-#: /reporting/rep402.php:103
-msgid "Item"
-msgstr ""
-
 #: /manufacturing/search_work_orders.php:162
 #: /reporting/rep402.php:103
 msgid "Required"
 msgstr ""
 
 #: /manufacturing/search_work_orders.php:165
-#: /manufacturing/includes/manufacturing_ui.inc:277
-#: /manufacturing/includes/manufacturing_ui.inc:281
+#: /manufacturing/includes/manufacturing_ui.inc:292
+#: /manufacturing/includes/manufacturing_ui.inc:296
 #: /reporting/rep402.php:103
 #: /reporting/includes/doctext.inc:226
 #: /sales/inquiry/sales_orders_view.php:255
@@ -10480,6 +10702,7 @@ msgid "View this Work Order"
 msgstr ""
 
 #: /manufacturing/work_order_add_finished.php:47
+#: /manufacturing/work_order_costs.php:46
 #: /manufacturing/work_order_entry.php:63
 #: /manufacturing/work_order_issue.php:42
 msgid "View the GL Journal Entries for this Work Order"
@@ -10491,16 +10714,14 @@ msgid "Print the GL Journal Entries for this Work Order"
 msgstr ""
 
 #: /manufacturing/work_order_add_finished.php:51
-#: /manufacturing/work_order_costs.php:48
+#: /manufacturing/work_order_costs.php:50
 #: /manufacturing/work_order_issue.php:44
 msgid "Select another &Work Order to Process"
 msgstr ""
 
 #: /manufacturing/work_order_add_finished.php:64
-#: /manufacturing/work_order_costs.php:61
-#: /manufacturing/work_order_entry.php:324
-#: /manufacturing/includes/db/work_order_issues_db.inc:30
-#: /manufacturing/includes/db/work_order_produce_items_db.inc:27
+#: /manufacturing/work_order_costs.php:63
+#: /manufacturing/work_order_entry.php:323
 msgid "The order number sent is not valid."
 msgstr ""
 
@@ -10555,28 +10776,24 @@ msgstr ""
 msgid "The additional cost has been entered."
 msgstr ""
 
-#: /manufacturing/work_order_costs.php:46
+#: /manufacturing/work_order_costs.php:48
 msgid "Enter another additional cost."
 msgstr ""
 
-#: /manufacturing/work_order_costs.php:72
+#: /manufacturing/work_order_costs.php:73
 msgid "The amount entered is not a valid number or less then zero."
 msgstr ""
 
-#: /manufacturing/work_order_costs.php:91
+#: /manufacturing/work_order_costs.php:92
 msgid ""
 "The additional cost date cannot be before the release date of the work order."
 msgstr ""
 
-#: /manufacturing/work_order_costs.php:142
+#: /manufacturing/work_order_costs.php:145
 msgid "Additional Costs:"
 msgstr ""
 
-#: /manufacturing/work_order_costs.php:143
-msgid "Debit Account"
-msgstr ""
-
-#: /manufacturing/work_order_costs.php:150
+#: /manufacturing/work_order_costs.php:152
 msgid "Process Additional Cost"
 msgstr ""
 
@@ -10654,53 +10871,53 @@ msgid ""
 "manufactured for this order."
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:281
+#: /manufacturing/work_order_entry.php:280
 msgid ""
 "This work order cannot be deleted because it has already been processed."
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:332
+#: /manufacturing/work_order_entry.php:331
 msgid "This work order is closed and cannot be edited."
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:380
-#: /manufacturing/work_order_entry.php:388
+#: /manufacturing/work_order_entry.php:377
+#: /manufacturing/work_order_entry.php:385
 msgid "Destination Location:"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:399
+#: /manufacturing/work_order_entry.php:396
 msgid "Quantity Required:"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:401
+#: /manufacturing/work_order_entry.php:398
 msgid "Quantity Manufactured:"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:419
+#: /manufacturing/work_order_entry.php:420
 msgid "Credit Labour Account"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:426
+#: /manufacturing/work_order_entry.php:422
 msgid "Credit Overhead Account"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:431
+#: /manufacturing/work_order_entry.php:427
 msgid "Released On:"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:441
+#: /manufacturing/work_order_entry.php:437
 msgid "Save changes to work order"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:444
+#: /manufacturing/work_order_entry.php:440
 msgid "Close This Work Order"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:446
+#: /manufacturing/work_order_entry.php:442
 msgid "Delete This Work Order"
 msgstr ""
 
-#: /manufacturing/work_order_entry.php:452
+#: /manufacturing/work_order_entry.php:448
 msgid "Add Workorder"
 msgstr ""
 
@@ -10779,7 +10996,7 @@ msgid "Work Order Reference:"
 msgstr ""
 
 #: /manufacturing/work_order_release.php:100
-#: /manufacturing/includes/manufacturing_ui.inc:278
+#: /manufacturing/includes/manufacturing_ui.inc:293
 msgid "Released Date"
 msgstr ""
 
@@ -10791,7 +11008,29 @@ msgstr ""
 msgid "View Work Order Costs"
 msgstr ""
 
-#: /manufacturing/view/wo_costs_view.php:61
+#: /manufacturing/view/wo_costs_view.php:60
+msgid "Transaction"
+msgstr ""
+
+#: /manufacturing/view/wo_costs_view.php:66
+msgid "Finished Product Requirements"
+msgstr ""
+
+#: /manufacturing/view/wo_costs_view.php:69
+msgid "Additional Material Issues"
+msgstr ""
+
+#: /manufacturing/view/wo_costs_view.php:72
+#: /manufacturing/view/work_order_view.php:66
+#: /manufacturing/view/work_order_view.php:73
+msgid "Additional Costs"
+msgstr ""
+
+#: /manufacturing/view/wo_costs_view.php:75
+msgid "Finished Product Receival"
+msgstr ""
+
+#: /manufacturing/view/wo_costs_view.php:80
 #, php-format
 msgid "Production Costs for Work Order # %d"
 msgstr ""
@@ -10827,13 +11066,13 @@ msgstr ""
 
 #: /manufacturing/view/wo_issue_view.php:76
 #: /manufacturing/includes/manufacturing_ui.inc:28
-#: /manufacturing/includes/manufacturing_ui.inc:83
+#: /manufacturing/includes/manufacturing_ui.inc:100
 #: /reporting/rep401.php:71
 #: /reporting/rep401.php:76
 msgid "Component"
 msgstr ""
 
-#: /manufacturing/view/wo_issue_view.php:113
+#: /manufacturing/view/wo_issue_view.php:114
 msgid "Items for this Issue"
 msgstr ""
 
@@ -10874,11 +11113,6 @@ msgstr ""
 msgid "Productions"
 msgstr ""
 
-#: /manufacturing/view/work_order_view.php:66
-#: /manufacturing/view/work_order_view.php:73
-msgid "Additional Costs"
-msgstr ""
-
 #: /manufacturing/view/work_order_view.php:81
 msgid "This work order has been voided."
 msgstr ""
@@ -10912,14 +11146,14 @@ msgstr ""
 #: /manufacturing/inquiry/where_used_inquiry.php:44
 #: /manufacturing/manage/bom_edit.php:44
 #: /manufacturing/includes/manufacturing_ui.inc:28
-#: /manufacturing/includes/manufacturing_ui.inc:83
+#: /manufacturing/includes/manufacturing_ui.inc:100
 #: /reporting/includes/doctext.inc:228
 msgid "Work Centre"
 msgstr ""
 
 #: /manufacturing/inquiry/where_used_inquiry.php:46
-#: /manufacturing/includes/manufacturing_ui.inc:277
-#: /manufacturing/includes/manufacturing_ui.inc:281
+#: /manufacturing/includes/manufacturing_ui.inc:292
+#: /manufacturing/includes/manufacturing_ui.inc:296
 msgid "Quantity Required"
 msgstr ""
 
@@ -10959,11 +11193,11 @@ msgid ""
 "not allowed."
 msgstr ""
 
-#: /manufacturing/manage/bom_edit.php:197
+#: /manufacturing/manage/bom_edit.php:200
 msgid "Location to Draw From:"
 msgstr ""
 
-#: /manufacturing/manage/bom_edit.php:198
+#: /manufacturing/manage/bom_edit.php:201
 msgid "Work Centre Added:"
 msgstr ""
 
@@ -11008,70 +11242,82 @@ msgid "The bill of material for this item is empty."
 msgstr ""
 
 #: /manufacturing/includes/manufacturing_ui.inc:29
-#: /manufacturing/includes/manufacturing_ui.inc:61
+#: /reporting/rep304.php:127
+msgid "Cost"
+msgstr ""
+
+#: /manufacturing/includes/manufacturing_ui.inc:66
+msgid "Standard Labour Cost"
+msgstr ""
+
+#: /manufacturing/includes/manufacturing_ui.inc:74
+msgid "Standard Overhead Cost"
+msgstr ""
+
+#: /manufacturing/includes/manufacturing_ui.inc:78
 msgid "Total Cost"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:77
+#: /manufacturing/includes/manufacturing_ui.inc:94
 msgid "There are no Requirements for this Order."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:84
+#: /manufacturing/includes/manufacturing_ui.inc:101
 #: /reporting/includes/doctext.inc:228
 msgid "Unit Quantity"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:84
+#: /manufacturing/includes/manufacturing_ui.inc:101
 #: /reporting/includes/doctext.inc:228
 msgid "Total Quantity"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:84
+#: /manufacturing/includes/manufacturing_ui.inc:101
 #: /reporting/includes/doctext.inc:228
 msgid "Units Issued"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:84
+#: /manufacturing/includes/manufacturing_ui.inc:101
 msgid "On Hand"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:138
+#: /manufacturing/includes/manufacturing_ui.inc:155
 msgid "Marked items have insufficient quantities in stock."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:152
+#: /manufacturing/includes/manufacturing_ui.inc:169
 msgid "There are no Productions for this Order."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:195
+#: /manufacturing/includes/manufacturing_ui.inc:212
 msgid "There are no Issues for this Order."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:231
+#: /manufacturing/includes/manufacturing_ui.inc:248
 msgid "There are no additional costs for this Order."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:269
-#: /manufacturing/includes/manufacturing_ui.inc:325
+#: /manufacturing/includes/manufacturing_ui.inc:284
+#: /manufacturing/includes/manufacturing_ui.inc:340
 msgid "The work order number sent is not valid."
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:276
-#: /manufacturing/includes/manufacturing_ui.inc:280
-#: /manufacturing/includes/manufacturing_ui.inc:331
+#: /manufacturing/includes/manufacturing_ui.inc:291
+#: /manufacturing/includes/manufacturing_ui.inc:295
+#: /manufacturing/includes/manufacturing_ui.inc:346
 #: /reporting/includes/doctext.inc:222
 msgid "Manufactured Item"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:277
-#: /manufacturing/includes/manufacturing_ui.inc:281
-#: /manufacturing/includes/manufacturing_ui.inc:332
+#: /manufacturing/includes/manufacturing_ui.inc:292
+#: /manufacturing/includes/manufacturing_ui.inc:296
+#: /manufacturing/includes/manufacturing_ui.inc:347
 #: /reporting/includes/doctext.inc:223
 msgid "Into Location"
 msgstr ""
 
-#: /manufacturing/includes/manufacturing_ui.inc:311
-#: /manufacturing/includes/manufacturing_ui.inc:356
+#: /manufacturing/includes/manufacturing_ui.inc:326
+#: /manufacturing/includes/manufacturing_ui.inc:371
 msgid "This work order is closed."
 msgstr ""
 
@@ -11095,51 +11341,41 @@ msgstr ""
 msgid "Issue Items to Work order"
 msgstr ""
 
-#: /manufacturing/includes/db/work_order_issues_db.inc:81
+#: /manufacturing/includes/db/work_order_costing_db.inc:98
+#, php-format
+msgid "COGS changed from %s to %s for %d %s of '%s'"
+msgstr ""
+
+#: /manufacturing/includes/db/work_order_costing_db.inc:217
+#, php-format
+msgid "Voided WO #%s"
+msgstr ""
+
+#: /manufacturing/includes/db/work_order_issues_db.inc:66
 msgid "Issue of"
 msgstr ""
 
-#: /manufacturing/includes/db/work_order_issues_db.inc:90
+#: /manufacturing/includes/db/work_order_issues_db.inc:74
 msgid "Issue to"
 msgstr ""
 
-#: /manufacturing/includes/db/work_order_issues_db.inc:207
-msgid "Reversed the issue of"
-msgstr ""
-
-#: /manufacturing/includes/db/work_order_issues_db.inc:219
-msgid "Reversed the issue to"
-msgstr ""
-
-#: /manufacturing/includes/db/work_order_produce_items_db.inc:73
+#: /manufacturing/includes/db/work_order_produce_items_db.inc:94
 msgid "Production."
 msgstr ""
 
-#: /manufacturing/includes/db/work_order_produce_items_db.inc:153
-msgid "Reversed the production "
-msgstr ""
-
-#: /manufacturing/includes/db/work_orders_db.inc:79
+#: /manufacturing/includes/db/work_orders_db.inc:95
 #: /purchasing/includes/db/po_db.inc:153
 #: /sales/includes/db/cust_trans_db.inc:115
 #: /sales/includes/db/sales_order_db.inc:211
 msgid "Updated."
 msgstr ""
 
-#: /manufacturing/includes/db/work_orders_db.inc:100
+#: /manufacturing/includes/db/work_orders_db.inc:114
 msgid "Canceled."
 msgstr ""
 
-#: /manufacturing/includes/db/work_orders_db.inc:176
+#: /manufacturing/includes/db/work_orders_db.inc:195
 msgid "Released."
-msgstr ""
-
-#: /manufacturing/includes/db/work_orders_quick_db.inc:104
-msgid "Quick production."
-msgstr ""
-
-#: /manufacturing/includes/db/work_orders_quick_db.inc:165
-msgid "Produced"
 msgstr ""
 
 #: /purchasing/includes/purchasing_db.inc:216
@@ -11454,11 +11690,11 @@ msgstr ""
 
 #: /purchasing/includes/ui/po_ui.inc:272
 #: /purchasing/po_receive_items.php:114
-#: /reporting/rep107.php:233
-#: /reporting/rep109.php:155
-#: /reporting/rep110.php:157
-#: /reporting/rep111.php:152
-#: /reporting/rep113.php:146
+#: /reporting/rep107.php:232
+#: /reporting/rep109.php:154
+#: /reporting/rep110.php:156
+#: /reporting/rep111.php:151
+#: /reporting/rep113.php:145
 #: /reporting/rep209.php:166
 #: /sales/customer_credit_invoice.php:317
 #: /sales/customer_delivery.php:505
@@ -11475,7 +11711,7 @@ msgstr ""
 #: /purchasing/view/view_grn.php:79
 #: /purchasing/view/view_po.php:93
 #: /sales/customer_delivery.php:512
-#: /sales/view/view_sales_order.php:262
+#: /sales/view/view_sales_order.php:263
 #: /sales/includes/ui/sales_order_ui.inc:230
 msgid "Amount Total"
 msgstr ""
@@ -12107,8 +12343,8 @@ msgstr ""
 #: /purchasing/view/view_po.php:84
 #: /purchasing/view/view_supp_credit.php:60
 #: /purchasing/view/view_supp_invoice.php:66
-#: /sales/view/view_credit.php:136
-#: /sales/view/view_sales_order.php:252
+#: /sales/view/view_credit.php:135
+#: /sales/view/view_sales_order.php:253
 msgid "Sub Total"
 msgstr ""
 
@@ -12174,7 +12410,7 @@ msgid "TOTAL CREDIT NOTE"
 msgstr ""
 
 #: /purchasing/view/view_supp_credit.php:71
-#: /sales/view/view_credit.php:147
+#: /sales/view/view_credit.php:150
 msgid "This credit note has been voided."
 msgstr ""
 
@@ -12187,14 +12423,14 @@ msgid "SUPPLIER INVOICE"
 msgstr ""
 
 #: /purchasing/view/view_supp_invoice.php:73
-#: /reporting/rep107.php:282
-#: /reporting/rep107.php:288
-#: /sales/view/view_invoice.php:166
+#: /reporting/rep107.php:285
+#: /reporting/rep107.php:291
+#: /sales/view/view_invoice.php:168
 msgid "TOTAL INVOICE"
 msgstr ""
 
 #: /purchasing/view/view_supp_invoice.php:77
-#: /sales/view/view_invoice.php:170
+#: /sales/view/view_invoice.php:172
 msgid "This invoice has been voided."
 msgstr ""
 
@@ -12482,31 +12718,6 @@ msgstr ""
 msgid "Select a supplier:"
 msgstr ""
 
-#: /purchasing/inquiry/supplier_inquiry.php:68
-#: /purchasing/inquiry/supplier_inquiry.php:69
-#: /purchasing/inquiry/supplier_inquiry.php:70
-#: /reporting/rep102.php:116
-#: /reporting/rep102.php:117
-#: /reporting/rep102.php:118
-#: /reporting/rep102.php:241
-#: /reporting/rep108.php:150
-#: /reporting/rep108.php:151
-#: /reporting/rep108.php:152
-#: /reporting/rep202.php:122
-#: /reporting/rep202.php:123
-#: /reporting/rep202.php:124
-#: /reporting/rep202.php:156
-#: /reporting/rep202.php:157
-#: /reporting/rep202.php:158
-#: /reporting/rep202.php:249
-#: /sales/create_recurrent_invoices.php:203
-#: /sales/manage/recurrent_invoices.php:128
-#: /sales/inquiry/customer_inquiry.php:71
-#: /sales/inquiry/customer_inquiry.php:72
-#: /sales/inquiry/customer_inquiry.php:73
-msgid "Days"
-msgstr ""
-
 #: /purchasing/inquiry/supplier_inquiry.php:70
 #: /reporting/rep102.php:118
 #: /reporting/rep108.php:152
@@ -12549,8 +12760,8 @@ msgstr ""
 msgid "Print Remittance"
 msgstr ""
 
-#: /purchasing/inquiry/suppliers_list.php:56
-#: /sales/inquiry/customers_list.php:56
+#: /purchasing/inquiry/suppliers_list.php:53
+#: /sales/inquiry/customers_list.php:54
 msgid "Tax ID"
 msgstr ""
 
@@ -12635,7 +12846,7 @@ msgstr ""
 #: /reporting/rep101.php:132
 #: /reporting/rep201.php:107
 #: /reporting/rep203.php:88
-#: /reporting/rep709.php:115
+#: /reporting/rep709.php:116
 #: /reporting/includes/doctext.inc:166
 #: /reporting/includes/doctext.inc:207
 #: /reporting/includes/doctext.inc:245
@@ -12692,7 +12903,7 @@ msgstr ""
 #: /reporting/rep102.php:98
 #: /reporting/rep106.php:99
 #: /reporting/rep202.php:104
-#: /reporting/rep709.php:99
+#: /reporting/rep709.php:100
 #: /reporting/reports_main.php:50
 #: /reporting/reports_main.php:93
 #: /reporting/reports_main.php:167
@@ -12704,7 +12915,7 @@ msgstr ""
 
 #: /reporting/rep102.php:100
 #: /reporting/rep202.php:106
-#: /reporting/rep709.php:101
+#: /reporting/rep709.php:102
 msgid "Detailed Report"
 msgstr ""
 
@@ -12894,26 +13105,6 @@ msgstr ""
 
 #: /reporting/rep105.php:109
 #: /reporting/rep106.php:89
-#: /reporting/rep112.php:180
-#: /sales/create_recurrent_invoices.php:203
-#: /sales/customer_credit_invoice.php:235
-#: /sales/customer_delivery.php:327
-#: /sales/customer_invoice.php:432
-#: /sales/manage/customers.php:255
-#: /sales/manage/customers.php:295
-#: /sales/manage/recurrent_invoices.php:128
-#: /sales/view/view_credit.php:58
-#: /sales/inquiry/customer_branches_list.php:33
-#: /sales/inquiry/customer_branches_list.php:52
-#: /sales/inquiry/customer_inquiry.php:209
-#: /sales/inquiry/sales_deliveries_view.php:171
-#: /sales/inquiry/sales_orders_view.php:252
-#: /sales/inquiry/sales_orders_view.php:266
-msgid "Branch"
-msgstr ""
-
-#: /reporting/rep105.php:109
-#: /reporting/rep106.php:89
 msgid "Customer Ref"
 msgstr ""
 
@@ -12977,38 +13168,38 @@ msgstr ""
 msgid "INVOICE"
 msgstr ""
 
-#: /reporting/rep107.php:198
+#: /reporting/rep107.php:197
 msgid "Prepayments invoiced to this order up to day:"
 msgstr ""
 
-#: /reporting/rep107.php:205
+#: /reporting/rep107.php:204
 msgid "Invoice reference"
 msgstr ""
 
-#: /reporting/rep107.php:222
+#: /reporting/rep107.php:221
 msgid "Total payments:"
 msgstr ""
 
-#: /reporting/rep107.php:236
-#: /reporting/rep109.php:158
-#: /reporting/rep110.php:160
-#: /reporting/rep111.php:155
-#: /reporting/rep113.php:149
-#: /sales/view/view_credit.php:138
+#: /reporting/rep107.php:238
+#: /reporting/rep109.php:160
+#: /reporting/rep110.php:162
+#: /reporting/rep111.php:157
+#: /reporting/rep113.php:151
+#: /sales/view/view_credit.php:140
 #: /sales/view/view_dispatch.php:155
-#: /sales/view/view_invoice.php:159
-#: /sales/view/view_sales_order.php:245
+#: /sales/view/view_invoice.php:160
+#: /sales/view/view_sales_order.php:246
 #: /sales/includes/ui/sales_credit_ui.inc:217
 msgid "Shipping"
 msgstr ""
 
-#: /reporting/rep107.php:282
-#: /reporting/rep109.php:210
-#: /reporting/rep111.php:207
+#: /reporting/rep107.php:285
+#: /reporting/rep109.php:212
+#: /reporting/rep111.php:209
 msgid "TOTAL ORDER VAT INCL."
 msgstr ""
 
-#: /reporting/rep107.php:288
+#: /reporting/rep107.php:291
 msgid "THIS INVOICE"
 msgstr ""
 
@@ -13044,8 +13235,8 @@ msgstr ""
 msgid "QUOTE"
 msgstr ""
 
-#: /reporting/rep109.php:164
-#: /reporting/rep111.php:161
+#: /reporting/rep109.php:166
+#: /reporting/rep111.php:163
 msgid "TOTAL ORDER EX VAT"
 msgstr ""
 
@@ -13064,7 +13255,7 @@ msgstr ""
 msgid "DELIVERY NOTE"
 msgstr ""
 
-#: /reporting/rep110.php:204
+#: /reporting/rep110.php:207
 msgid "TOTAL DELIVERY INCL. VAT"
 msgstr ""
 
@@ -13109,8 +13300,8 @@ msgstr ""
 msgid "CREDIT NOTE"
 msgstr ""
 
-#: /reporting/rep113.php:193
-#: /sales/view/view_credit.php:143
+#: /reporting/rep113.php:196
+#: /sales/view/view_credit.php:146
 msgid "TOTAL CREDIT"
 msgstr ""
 
@@ -13132,7 +13323,7 @@ msgid "Total ex. Tax"
 msgstr ""
 
 #: /reporting/rep114.php:95
-#: /reporting/rep709.php:116
+#: /reporting/rep709.php:117
 #: /taxes/tax_groups.php:171
 msgid "Tax"
 msgstr ""
@@ -13263,17 +13454,6 @@ msgid "Qty"
 msgstr ""
 
 #: /reporting/rep304.php:127
-#: /reporting/rep309.php:99
-#: /sales/manage/customer_branches.php:232
-#: /sales/manage/customers.php:265
-msgid "Sales"
-msgstr ""
-
-#: /reporting/rep304.php:127
-msgid "Cost"
-msgstr ""
-
-#: /reporting/rep304.php:127
 msgid "Contribution"
 msgstr ""
 
@@ -13340,7 +13520,7 @@ msgid "QTY"
 msgstr ""
 
 #: /reporting/rep308.php:243
-#: /reporting/rep709.php:116
+#: /reporting/rep709.php:117
 #: /taxes/item_tax_types.php:185
 msgid "Rate"
 msgstr ""
@@ -13494,27 +13674,27 @@ msgstr ""
 msgid "Profit and Loss Statement"
 msgstr ""
 
-#: /reporting/rep709.php:97
+#: /reporting/rep709.php:98
 msgid "Tax Report"
 msgstr ""
 
-#: /reporting/rep709.php:115
+#: /reporting/rep709.php:116
 msgid "Branch Name"
 msgstr ""
 
-#: /reporting/rep709.php:116
+#: /reporting/rep709.php:117
 msgid "Net"
 msgstr ""
 
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Tax Rate"
 msgstr ""
 
-#: /reporting/rep709.php:188
+#: /reporting/rep709.php:189
 msgid "Net Tax"
 msgstr ""
 
-#: /reporting/rep709.php:206
+#: /reporting/rep709.php:207
 msgid "Exempt"
 msgstr ""
 
@@ -14480,21 +14660,12 @@ msgstr ""
 
 #: /sales/create_recurrent_invoices.php:203
 #: /sales/manage/recurrent_invoices.php:128
-msgid "Template No"
-msgstr ""
-
-#: /sales/create_recurrent_invoices.php:203
-#: /sales/manage/recurrent_invoices.php:128
 msgid "Begin"
 msgstr ""
 
 #: /sales/create_recurrent_invoices.php:203
 #: /sales/manage/recurrent_invoices.php:128
 msgid "End"
-msgstr ""
-
-#: /sales/create_recurrent_invoices.php:203
-msgid "Next invoice"
 msgstr ""
 
 #: /sales/create_recurrent_invoices.php:240
@@ -15567,7 +15738,7 @@ msgid "Dissallow invoicing ?"
 msgstr ""
 
 #: /sales/manage/customer_branches.php:22
-#: /sales/inquiry/customer_branches_list.php:18
+#: /sales/inquiry/customer_branches_list.php:25
 msgid "Customer Branches"
 msgstr ""
 
@@ -15681,7 +15852,7 @@ msgid "Billing Address:"
 msgstr ""
 
 #: /sales/manage/customer_branches.php:285
-#: /sales/inquiry/customer_branches_list.php:52
+#: /sales/inquiry/customer_branches_list.php:49
 #: /sales/inquiry/sales_deliveries_view.php:172
 msgid "Contact"
 msgstr ""
@@ -16203,11 +16374,11 @@ msgstr ""
 msgid "There are no line items on this dispatch."
 msgstr ""
 
-#: /sales/view/view_dispatch.php:162
+#: /sales/view/view_dispatch.php:163
 msgid "TOTAL VALUE"
 msgstr ""
 
-#: /sales/view/view_dispatch.php:166
+#: /sales/view/view_dispatch.php:167
 msgid "This dispatch has been voided."
 msgstr ""
 
@@ -16789,17 +16960,17 @@ msgstr ""
 msgid "Main Menu"
 msgstr ""
 
-#: /themes/default/renderer.php:70
-#: /themes/default/renderer.php:77
+#: /themes/default/renderer.php:71
+#: /themes/default/renderer.php:80
 msgid "Preferences"
 msgstr ""
 
-#: /themes/default/renderer.php:71
+#: /themes/default/renderer.php:72
 msgid "Change Password"
 msgstr ""
 
-#: /themes/default/renderer.php:73
-#: /themes/default/renderer.php:82
+#: /themes/default/renderer.php:74
+#: /themes/default/renderer.php:85
 msgid "Help"
 msgstr ""
 
@@ -16853,34 +17024,50 @@ msgstr ""
 msgid "Upgrade from version 2.2 to 2.3"
 msgstr ""
 
-#: /sql/alter2.4.php:22
-msgid "Upgrade from version 2.3 to 2.4"
+#: /sql/alter2.4.php:23
+msgid "Upgrade from version 2.3 to 2.4RC1"
 msgstr ""
 
-#: /sql/alter2.4.php:30
+#: /sql/alter2.4.php:31
+#: /sql/alter2.4rc1.php:31
 msgid "Set optimal parameters and start upgrade:"
 msgstr ""
 
-#: /sql/alter2.4.php:33
+#: /sql/alter2.4.php:34
 msgid "Text collation optimization:"
 msgstr ""
 
-#: /sql/alter2.4.php:100
+#: /sql/alter2.4.php:83
+msgid "Cannot update config_db.php file."
+msgstr ""
+
+#: /sql/alter2.4.php:122
 #, php-format
 msgid ""
 "Cannot update work orders costs:\n"
 "%s"
 msgstr ""
 
-#: /sql/alter2.4.php:190
+#: /sql/alter2.4.php:215
 msgid "Convertion to utf8 done."
 msgstr ""
 
-#: /sql/alter2.4.php:229
+#: /sql/alter2.4.php:254
 #, php-format
 msgid "Cannot drop column in %s table: %s"
 msgstr ""
 
-#: /sql/alter2.4rc1.php:22
-msgid "Upgrade from version 2.4beta to 2.4rc1"
+#: /sql/alter2.4rc1.php:23
+msgid "Upgrade from version 2.4beta to 2.4RC1"
+msgstr ""
+
+#: /sql/alter2.4rc1.php:36
+msgid "None (will be set later)"
+msgstr ""
+
+#: /sql/alter2.4rc1.php:71
+#, php-format
+msgid ""
+"Cannot update sys prefs setting:\n"
+"%s"
 msgstr ""

@@ -493,12 +493,12 @@ msgstr ""
 #: /includes/packages.inc:347
 #, php-format
 msgid "Security alert: broken index file in repository '%s'. Please inform repository administrator about this issue."
-msgstr "ALERTA DE SEGURANÇA: ficheiro de índice danificado no repositório '% s'. Por favor, informe o administrador do repositório sobre este assunto."
+msgstr "ALERTA DE SEGURANÇA: ficheiro de índice danificado no repositório '%s'. Por favor, informe o administrador do repositório sobre este assunto."
 
 #: /includes/packages.inc:383
 #, php-format
 msgid "Security alert: broken package '%s' in repository. Please inform repository administrator about this issue."
-msgstr "ALERTA DE SEGURANÇA: pacote '% s' danificado no repositório. Por favor, informe o administrador do repositório sobre este assunto."
+msgstr "ALERTA DE SEGURANÇA: pacote '%s' danificado no repositório. Por favor, informe o administrador do repositório sobre este assunto."
 
 #: /includes/packages.inc:641 /includes/packages.inc:696
 #, php-format
