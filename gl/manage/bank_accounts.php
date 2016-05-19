@@ -158,9 +158,7 @@ if ($selected_id != -1)
 	$_POST['bank_charge_act'] = $myrow["bank_charge_act"];
   }
 	hidden('selected_id', $selected_id);
-	hidden('account_code');
-	hidden('account_type');
-	hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);	
+	}
 	set_focus('bank_account_name');
 } 
 
@@ -169,6 +167,7 @@ text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 if ($is_used) 
 {
 	label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
+	hidden('account_type');
 } 
 else 
 {
@@ -177,6 +176,7 @@ else
 if ($is_used) 
 {
 	label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
+	hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
 } 
 else 
 {
@@ -186,8 +186,10 @@ else
 yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 
 if($is_used)
+{
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
-else 
+	hidden('account_code');
+} else 
 	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 
 gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', null, true);
