@@ -158,7 +158,6 @@ if ($selected_id != -1)
 	$_POST['bank_charge_act'] = $myrow["bank_charge_act"];
   }
 	hidden('selected_id', $selected_id);
-	}
 	set_focus('bank_account_name');
 } 
 
