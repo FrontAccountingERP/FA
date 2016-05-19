@@ -154,7 +154,6 @@ if ($selected_id != -1)
 	$_POST['dflt_curr_act'] = $myrow["dflt_curr_act"];
   }
 	hidden('selected_id', $selected_id);
-	}
 	set_focus('bank_account_name');
 } 
 
