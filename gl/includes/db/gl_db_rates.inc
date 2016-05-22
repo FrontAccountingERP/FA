@@ -113,6 +113,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/stats/eurofxref/eurofxref-daily.xml";
 		$site = "www.ecb.europa.eu";
+		$site_ip="172.230.157.137";
 	}
 	elseif ($provider == 'YAHOO')
 	{
@@ -120,16 +121,19 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$site = "download.finance.yahoo.com";
         //$filename = "/q?s={$curr_a}{$curr_b}=X"; // Let old code be here for a while, Joe.
  		//$site = "finance.yahoo.com";
+		$site_ip="203.84.220.151";
 	}
 	elseif ($provider == 'GOOGLE')
 	{
 		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
 		$site = "www.google.com";
+		$site_ip = "74.125.23.147";
 	}
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$filename = "/quote/{$curr_b}{$curr_a}:CUR";
 		$site = "www.bloomberg.com";
+		$site_ip = "23.35.88.72";
 	}
 	$contents = '';
 	if (function_exists('curl_init'))
@@ -149,7 +153,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	       curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
-		   $site="172.230.157.137";
+		   $site=$site_ip;
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
@@ -207,11 +211,13 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$val = '';
-		$stmask = '<span class=" price">';
-		$val = trim(strstr($contents, $stmask));
-		$stmask = chr(10);
-		$val = trim(strstr($val, $stmask));
-		$val = trim(strtok($val, $stmask)); 
+		$stmask = '<div class="price">';
+		$val = strstr($contents, $stmask);
+		$val = trim($val);
+		$val = substr($val, strlen($stmask));
+		$stmask = '</div>';
+		$val = strtok($val, $stmask); 
+		$val = trim($val);
     }    
 	return $val;
 }  /* end function get_extern_rate */
