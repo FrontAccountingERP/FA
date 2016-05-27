@@ -585,12 +585,14 @@ $tabs = (get_post('fixed_asset'))
 		'movement' => array(_('&Transactions'), $stock_id) )
 	: array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'sales_pricing' => array(_('S&ales Pricing'), $stock_id),
-		'purchase_pricing' => array(_('&Purchasing Pricing'), $stock_id),
-		'standard_cost' => array(_('Standard &Costs'), $stock_id),
-		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), $stock_id),
-		'status' => array(_('&Status'), (is_inventory_item($stock_id) ? $stock_id : null)),
+		'sales_pricing' => array(_('S&ales Pricing'), (user_check_access('SA_SALESPRICE') ? $stock_id : null)),
+		'purchase_pricing' => array(_('&Purchasing Pricing'), (user_check_access('SA_PURCHASEPRICING') ? $stock_id : null)),
+		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
+		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
+			user_check_access('SA_REORDER') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
+		'status' => array(_('&Status'), $stock_id),
+		//'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 	);
 
 tabbed_content_start('tabs', $tabs);

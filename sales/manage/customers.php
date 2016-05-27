@@ -349,7 +349,7 @@ if (!$selected_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
-		'transactions' => array(_('&Transactions'), $selected_id),
+		'transactions' => array(_('&Transactions'), (user_check_access('SA_SALESTRANSVIEW') ? $selected_id : null)),
 		'orders' => array(_('Sales &Orders'), $selected_id),
 	));
 	
