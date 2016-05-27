@@ -347,7 +347,8 @@ if (!$selected_id || list_updated('customer_id'))
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
-		'transactions' => array(_('&Transactions'), $selected_id),
+		'transactions' => array(_('&Transactions'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_SALESTRANSVIEW') ? $selected_id : null)),
 		'orders' => array(_('Sales &Orders'), $selected_id),
 	));
 	

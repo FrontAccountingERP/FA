@@ -306,7 +306,8 @@ if (!$supplier_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
-		'transactions' => array(_('&Transactions'), $supplier_id),
+		'transactions' => array(_('&Transactions'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
 		'orders' => array(_('Purchase &Orders'), $supplier_id),
 	));
 	

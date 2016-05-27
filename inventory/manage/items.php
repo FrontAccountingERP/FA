@@ -452,12 +452,19 @@ if (!$stock_id)
 
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'sales_pricing' => array(_('S&ales Pricing'), $stock_id),
-		'purchase_pricing' => array(_('&Purchasing Pricing'), $stock_id),
-		'standard_cost' => array(_('Standard &Costs'), $stock_id),
-		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), $stock_id),
+		'sales_pricing' => array(_('S&ales Pricing'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_SALESPRICE') ? $stock_id : null)),
+		'purchase_pricing' => array(_('&Purchasing Pricing'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_PURCHASEPRICING') ? $stock_id : null)),
+		'standard_cost' => array(_('Standard &Costs'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_STANDARDCOST') ? $stock_id : null)),
+		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
+			$_SESSION["wa_current_user"]->can_access_page('SA_REORDER') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
 		'status' => array(_('&Status'), $stock_id),
+		//'status' => array(_('&Status'), 
+		//	($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
