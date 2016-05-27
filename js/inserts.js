@@ -469,7 +469,7 @@ var inserts = {
 		var tab=ulist[x].getElementsByTagName("button")[0];
 		    var url = tab.form.action
 		    tab.onclick=function(){
-		    if (!_hotkeys.alt && !tab.disabled)
+		    if (!_hotkeys.alt && !this.disabled)
 				_expand(this);
 			return false;
 		    }
