@@ -467,7 +467,7 @@ var inserts = {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
 		    var url = tab.form.action
 		    tab.onclick=function(){
-		    if (!_hotkeys.alt && !tab.disabled)
+		    if (!_hotkeys.alt && !this.disabled)
 				_expand(this);
 			return false;
 		    }

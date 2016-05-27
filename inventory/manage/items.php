@@ -462,9 +462,8 @@ tabbed_content_start('tabs', array(
 			$_SESSION["wa_current_user"]->can_access_page('SA_REORDER') ? $stock_id : null)),
 		'movement' => array(_('&Transactions'), 
 			($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
-		'status' => array(_('&Status'), $stock_id),
-		//'status' => array(_('&Status'), 
-		//	($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSSTATVIEW') ? $stock_id : null)),
+		'status' => array(_('&Status'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {

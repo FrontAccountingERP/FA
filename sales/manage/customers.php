@@ -349,7 +349,8 @@ tabbed_content_start('tabs', array(
 		'contacts' => array(_('&Contacts'), $selected_id),
 		'transactions' => array(_('&Transactions'), 
 			($_SESSION["wa_current_user"]->can_access_page('SA_SALESTRANSVIEW') ? $selected_id : null)),
-		'orders' => array(_('Sales &Orders'), $selected_id),
+		'orders' => array(_('Sales &Orders'), 
+			($_SESSION["wa_current_user"]->can_access_page('SA_SALESTRANSVIEW') ? $selected_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
