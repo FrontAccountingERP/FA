@@ -199,11 +199,12 @@ function is_date_in_fiscalyear($date, $convert=false)
 	else
 		$date2 = $date;
 
+	if (is_date_closed($date2))
+		return 0;
+
 	if (user_check_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
 		return is_date_in_fiscalyears($date2, false);
 
-	if (is_date_closed($date2))
-		return 0;
 	$myrow = get_current_fiscalyear();
 	$begin = sql2date($myrow['begin']);
 	$end = sql2date($myrow['end']);
