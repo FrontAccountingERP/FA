@@ -389,7 +389,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 		if ($order->fixed_asset)
 			stock_purchasable_fa_list_cells(null, 'stock_id', null, false, true, false, true, $order->line_items);
 		else
-			stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30));
+			stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30, 'where'=>array("NOT no_purchase")));
 
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
