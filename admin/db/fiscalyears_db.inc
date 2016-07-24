@@ -301,19 +301,19 @@ function delete_this_fiscalyear($selected_id)
 		delete_attachments_and_comments($row['type'], $row['trans_no']);
 	}
 	$sql = "SELECT id FROM ".TB_PREF."workorders WHERE released_date <= '$to' AND closed=1";
-	$result = db_query($sql, "Could not retrieve supp trans");
+	$result = db_query($sql, "Could not retrieve workorders");
 	while ($row = db_fetch($result))
 	{
 		$sql = "SELECT issue_no FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row['id']}"; 
 		$res = db_query($sql, "Could not retrieve wo issues");
-		while ($row2 = db_fetch_row($res))
-		{
-			$sql = "DELETE FROM ".TB_PREF."wo_issue_items WHERE issue_id = {$row2[0]}";
-			db_query($sql, "Could not delete wo issue items");
-		}	
-		delete_attachments_and_comments(ST_MANUISSUE, $row['id']);
-		$sql = "DELETE FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row['id']}";
-		db_query($sql, "Could not delete wo issues");
+        while ($row2 = db_fetch_row($res))
+        {
+            $sql = "DELETE FROM ".TB_PREF."wo_issue_items WHERE issue_id = {$row2[0]}";
+            db_query($sql, "Could not delete wo issue items");
+            $sql = "DELETE FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row2[0]}";
+            db_query($sql, "Could not delete wo issues");
+            delete_attachments_and_comments(ST_MANUISSUE, $row2[0]);
+        }		
 		$sql = "DELETE FROM ".TB_PREF."wo_manufacture WHERE workorder_id = {$row['id']}";
 		db_query($sql, "Could not delete wo manufacture");
 		$sql = "DELETE FROM ".TB_PREF."wo_requirements WHERE workorder_id = {$row['id']}";
@@ -324,7 +324,7 @@ function delete_this_fiscalyear($selected_id)
 	}
 	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by 
 		loc_code, stock_id";
-	$result = db_query($sql, "Could not retrieve supp trans");
+	$result = db_query($sql, "Could not retrieve stock moves");
 	while ($row = db_fetch($result))
 	{
 		$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
@@ -342,7 +342,7 @@ function delete_this_fiscalyear($selected_id)
 	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE date_ <= '$to'";
 	db_query($sql, "Could not delete exchange rates");
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE tran_date <= '$to'";
-	db_query($sql, "Could not delete exchange rates");
+	db_query($sql, "Could not delete budget trans");
 	$sql = "SELECT account, SUM(amount) AS amount, person_type_id, person_id FROM "
 		.TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account, person_type_id, person_id";
 	$result = db_query($sql, "Could not retrieve gl trans");
