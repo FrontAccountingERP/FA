@@ -442,10 +442,10 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 
 		if (db_num_rows($result) > 0)
 		{
-
+			$counter = 0;
+			$sql2 = "";
             while ($details_row = db_fetch($result))
             {
-
              	if ($details_row["gl_code"] == 0)
              	{
              		$supp_trans->add_grn_to_trans($details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"],
@@ -454,8 +454,16 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
              	}
              	else
              	{
-             		$supp_trans->add_gl_codes_to_trans($details_row["gl_code"], get_gl_account_name($details_row["gl_code"]), 0, 0,
-           				$details_row["FullUnitPrice"], $details_row["memo_"]);
+             		$sql2 .= "$counter";             		
+ 					$sql = "SELECT gl.counter, gl.dimension_id, gl.dimension2_id, gl.account FROM ".TB_PREF."gl_trans gl
+						WHERE type_no = ".db_escape($trans_no)." AND type = ".db_escape($trans_type)." 
+						AND gl.account = ".$details_row["gl_code"]." AND gl.counter NOT IN ($sql2)";
+					$res = db_query($sql, "Cannot retreive a gl_trans");
+					$row = db_fetch($res);
+             		$supp_trans->add_gl_codes_to_trans($details_row["gl_code"], get_gl_account_name($details_row["gl_code"]), 
+             			$row['dimension_id'], $row['dimension2_id'], $details_row["FullUnitPrice"], $details_row["memo_"]);
+					$sql2 .= ",";
+					$counter = $row['counter'];
              	}
             }
 			$supp_trans->tax_overrides = get_tax_overrides($trans_type, $trans_no);
