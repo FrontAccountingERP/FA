@@ -33,7 +33,7 @@ function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $des
 function add_supp_invoice_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $amount, $memo_, $dim_id=0, $dim2_id=0)
 {
 	return add_supp_invoice_item($supp_trans_type, $supp_trans_no,  "", "", $gl_code, $amount,
-		0, 0, /*$grn_item_id*/-1, /*$po_detail_item_id*/0, $memo_, 0, $dim_id, $dim2_id);
+		0, 0, /*$grn_item_id*/-1, /*$po_detail_item_id*/0, $memo_, $dim_id, $dim2_id);
 }
 
 
