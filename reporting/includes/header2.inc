@@ -59,7 +59,6 @@
 		{
 			$this->LineTo($col += $width, $iline2,$col, $iline4);
 		}
-		$this->LineTo($right, $iline2 ,$right, $iline4);
 		$this->LineTo($this->leftMargin, $iline5 ,$this->leftMargin, $iline7);
 		if ($this->l['a_meta_dir'] == 'rtl') // avoid line overwrite in rtl language
 			$this->LineTo($this->cols[$cols - 2], $iline5 ,$this->cols[$cols - 2], $iline7);
