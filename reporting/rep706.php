@@ -179,7 +179,7 @@ function print_balance_sheet()
 	else
 		$dec = user_price_dec();
 
-	$cols = array(0, 50, 200, 350, 425,	500);
+	$cols = array(0, 60, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
 
 	$headers = array(_('Account'), _('Account Name'), _('Open Balance'), _('Period'),

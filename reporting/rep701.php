@@ -105,7 +105,7 @@ function print_Chart_of_Accounts()
 
 	$orientation = ($orientation ? 'L' : 'P');
 
-	$cols = array(0, 50, 300, 425, 500);
+	$cols = array(0, 60, 300, 425, 500);
 
 	$headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
 	

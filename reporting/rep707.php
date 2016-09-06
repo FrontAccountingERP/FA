@@ -204,7 +204,7 @@ function print_profit_and_loss_statement()
 		$dec = user_price_dec();
 	$pdec = user_percent_dec();
 
-	$cols = array(0, 50, 200, 350, 425,	500);
+	$cols = array(0, 60, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
 
 	$headers = array(_('Account'), _('Account Name'), _('Period'), _('Accumulated'), _('Achieved %'));

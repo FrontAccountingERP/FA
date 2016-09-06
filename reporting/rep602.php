@@ -73,7 +73,7 @@ function print_bank_transactions_reconcile()
 	$rep = new FrontReport(_('Bank Statement w/Reconcile'), "BankStatementReconcile", user_pagesize(), 9, "L");
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 110, 170, 225, 450, 500, 550, 600, 660, 700);
+	$cols = array(0, 90, 120, 170, 225, 450, 500, 550, 600, 660, 700);
 
 	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right', 'center', 'left');
 

@@ -72,7 +72,7 @@ function print_bank_transactions()
 	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
+	$cols = array(0, 90, 120, 170, 225, 350, 400, 460, 520);
 
 	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 

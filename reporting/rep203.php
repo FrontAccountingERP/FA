@@ -83,7 +83,7 @@ function print_payment_report()
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
 
-	$cols = array(0, 100, 130, 190,	250, 320, 385, 450,	515);
+	$cols = array(0, 100, 160, 210,	250, 320, 385, 450,	515);
 
 	$headers = array(_('Trans Type'), _('#'), _('Due Date'), '', '',
 		'', _('Total'), _('Balance'));
