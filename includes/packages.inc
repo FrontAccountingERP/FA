@@ -730,8 +730,8 @@ function check_src_ext_version($ext_v)
 	global $src_version;
 
 	$compat_levels = 2;	// current policy is keeping compatibility on major version level.
-	$app = explode('.', strspn($src_version, "0123456789."));
-	$pkg = explode('.', strspn($ext_v, "0123456789."));
+	$app = explode('.', substr($src_version, 0, strspn($src_version, "0123456789.")));
+	$pkg = explode('.', substr($ext_v, 0, strspn($ext_v, "0123456789.")));
 
 	for ($i=0; $i < min($compat_levels, count($app)); $i++)
 		if ($pkg[$i] < $app[$i])
