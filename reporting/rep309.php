@@ -38,7 +38,7 @@ function getTransactions($category, $from, $to)
 			item.stock_id,
 			item.description,
 			line.unit_price * trans.rate AS unit_price,
-			SUM(line.quantity) as quantity
+			SUM(IF(line.debtor_trans_type = ".ST_CUSTCREDIT.", -line.quantity, line.quantity)) AS quantity
 		FROM ".TB_PREF."stock_master item,
 			".TB_PREF."stock_category category,
 			".TB_PREF."debtor_trans trans,
