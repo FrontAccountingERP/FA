@@ -395,10 +395,8 @@ function view_stock_status($stock_id, $description=null, $echo=true)
 
 function view_stock_status_cell($stock_id, $description=null)
 {
-	echo "<td>";
-	view_stock_status($stock_id, $description);
-	echo "</td>";
-}
+	$control = view_stock_status($stock_id, $description, false);
+	label_cell($control);}
 
 //--------------------------------------------------------------------------------------
 
