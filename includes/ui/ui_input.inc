@@ -334,7 +334,7 @@ function select_button_cell($name, $value, $title=false)
 
 function check_value($name)
 {
-	if (!isset($_POST[$name]))
+    if (!isset($_POST[$name]) || ($_POST[$name]+0) === 0)
 		return 0;
 	return 1;
 }
