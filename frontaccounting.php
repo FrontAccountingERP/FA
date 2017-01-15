@@ -34,10 +34,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		function front_accounting()
 		{
 		}
-		function add_application(&$app)
+		function add_application($app)
 		{	
 			if ($app->enabled) // skip inactive modules
-				$this->applications[$app->id] = &$app;
+				$this->applications[$app->id] = $app;
 		}
 		function get_application($id)
 		{
