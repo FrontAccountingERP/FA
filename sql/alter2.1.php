@@ -70,7 +70,7 @@ class fa2_1 extends fa_patch {
 		}
 		// remove obsolete bank_trans_types table 
 		// (DROP queries are skipped during non-forced upgrade)
-		$sql = "DROP TABLE IF EXISTS `0_bank_trans_types`";
+		$sql = "DROP TABLE IF EXISTS `".TB_PREF."bank_trans_types`";
 		db_query($sql);
 		//
 		//	Move all debtor and supplier trans tax details to new table
