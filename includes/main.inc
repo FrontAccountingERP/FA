@@ -418,7 +418,7 @@ if (!function_exists('array_fill_keys')) // since 5.2
 {
 	function array_fill_keys($keys, $value)
 	{
-		return array_combine($keys, array_fill(count($keys), $value));
+		return (object)array_combine($keys, array_fill(count($keys), $value));
 	}
 }
 
