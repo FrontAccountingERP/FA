@@ -72,7 +72,7 @@ function end_form($breaks=0)
 
 	if ($form_nested-- > 0) return;
 
-	$_SESSION['csrf_token'] = hash('sha256', uniqid(mt_rand(), true));
+	$_SESSION['csrf_token'] = random_id();
 	if ($breaks)
 		br($breaks);
 	hidden('_focus');

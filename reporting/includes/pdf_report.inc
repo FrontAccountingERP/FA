@@ -957,7 +957,7 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-			$fname = $dir.'/'.uniqid('').'.pdf';
+			$fname = $dir.'/'.random_id().'.pdf';
 			$this->Output($fname, 'F');
 
 			if ($email == 1)
