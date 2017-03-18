@@ -116,7 +116,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 				unlink($dir."/".$unique_name);
 		}
 		else
-			$unique_name = uniqid('');
+			$unique_name = random_id();
 
 		//save the file
 		move_uploaded_file($tmpname, $dir."/".$unique_name);

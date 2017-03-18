@@ -80,7 +80,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$rtl = ($_SESSION['language']->dir == 'rtl');
 		$this->code = strtolower($_SESSION['language']->encoding);
 		$this->filename = $filename.".xls";
-		$this->unique_name = uniqid('').".xls";
+		$this->unique_name = random_id().".xls";
 		$this->path = company_path(). '/pdf_files';
 		$this->Spreadsheet_Excel_Writer_Workbook($this->path."/".$this->unique_name);
 		//$this->setCountry(48);

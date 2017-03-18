@@ -66,7 +66,7 @@ function end_form($breaks=0)
 {
 	global $Ajax, $hidden_fields;
 
-	$_SESSION['csrf_token'] = hash('sha256', uniqid(mt_rand(), true));
+	$_SESSION['csrf_token'] = random_id();
 	if ($breaks)
 		br($breaks);
 	hidden('_focus');

@@ -256,7 +256,7 @@ function print_aged_supplier_analysis()
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = company_path(). "/pdf_files/". uniqid("").".png";
+		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
