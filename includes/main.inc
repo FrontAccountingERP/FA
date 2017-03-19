@@ -369,7 +369,7 @@ function random_id($strength = 128)
 		for($i=0; $i < $n; $i++)
 			$bin .= chr(mt_rand(0, 255));	// Mersene Twister generator
 	}
-	$id = strtr(base64_encode($bin), '+/', '-_');	// see RFC 4648 Section 5
+	$id = strtr(base64_encode($bin), '+/=', '-_x');	// see RFC 4648 Section 5
 
 	return $id;
 }

@@ -27,10 +27,10 @@ if (isset($save_report_selections) && $save_report_selections > 0 && isset($_POS
 	}
 }	
 
-if (isset($_GET['xls']))
+if (isset($_GET['xls']) || isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
-	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
+	$unique_name = preg_replace('/[^0-9_a-z.\-]/i', '', $_GET['unique']);
 	$path =  company_path(). '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename" );
@@ -40,20 +40,7 @@ if (isset($_GET['xls']))
 	echo file_get_contents($path.$unique_name);
 	exit();
 }
-elseif (isset($_GET['xml']))
-{
-	$filename = $_GET['filename'];
-	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
-	$path =  company_path(). '/pdf_files/';
-	header("content-type: text/xml");
-	header("Content-Disposition: attachment; filename=$filename");
-	header("Expires: 0");
-	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
-	header("Pragma: public");
-	echo file_get_contents($path.$unique_name);
-	exit();
-}
-	
+
 if (!isset($_POST['REP_ID'])) {	// print link clicked
 	$def_pars = array(0, 0, '', '', 0, '', '', 0); //default values
 	$rep = $_POST['REP_ID'] = $_GET['REP_ID'];
