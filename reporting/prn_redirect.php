@@ -32,7 +32,7 @@ if (isset($_GET['xls']) || isset($_GET['xml']))
 	$filename = $_GET['filename'];
 	$unique_name = preg_replace('/[^0-9_a-z.\-]/i', '', $_GET['unique']);
 	$path =  company_path(). '/pdf_files/';
-	header("Content-type: application/vnd.ms-excel");
+	header("Content-type: ". (isset($_GET['xls']) ? "application/vnd.ms-excel" : "text/xml"));
 	header("Content-Disposition: attachment; filename=$filename" );
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
