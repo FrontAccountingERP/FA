@@ -451,7 +451,7 @@ function source_graphic($today, $title, $x_axis, $pg, $graphic1, $graphic2=null,
 	$pg->type      = $type;
 	$pg->skin      = 1;
 	$pg->built_in  = false;
-	$filename = company_path(). "/pdf_files/". uniqid("").".png";
+	$filename = company_path(). "/pdf_files/". random_id().".png";
 	$pg->display($filename, true);
 	start_table(TABLESTYLE);
 	start_row();
