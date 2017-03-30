@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //---------------------------------------------------------------------------------------------
@@ -17,14 +17,14 @@ function clear_dflt_curr_account($curr_code) {
 }
 
 function add_bank_account($account_code, $account_type, $bank_account_name,
-	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, 
+	$bank_name, $bank_account_number, $bank_address, $bank_curr_code,
 	$dflt_curr_act)
 {
 	if($dflt_curr_act) 	// only one default account for any currency
 	  clear_dflt_curr_account($bank_curr_code);
 
-	$sql = "INSERT INTO ".TB_PREF."bank_accounts (account_code, account_type, 
-		bank_account_name, bank_name, bank_account_number, bank_address, 
+	$sql = "INSERT INTO ".TB_PREF."bank_accounts (account_code, account_type,
+		bank_account_name, bank_name, bank_account_number, bank_address,
 		bank_curr_code, dflt_curr_act)
 		VALUES (".db_escape($account_code).", ".db_escape($account_type).", "
 		.db_escape($bank_account_name).", ".db_escape($bank_name).", "
@@ -36,7 +36,7 @@ function add_bank_account($account_code, $account_type, $bank_account_name,
 
 //---------------------------------------------------------------------------------------------
 
-function update_bank_account($id, $account_code, $account_type, $bank_account_name, 
+function update_bank_account($id, $account_code, $account_type, $bank_account_name,
 	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act)
 {
 	if($dflt_curr_act) 	// only one default account for any currency
@@ -78,8 +78,8 @@ function get_bank_account($id)
 
 function get_bank_accounts($show_inactive=false)
 {
-	$sql = "SELECT account.*, gl_account.account_name 
-		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
+	$sql = "SELECT account.*, gl_account.account_name
+		FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account
 		WHERE account.account_code = gl_account.account_code";
 	if (!$show_inactive) $sql .= " AND !account.inactive";
 	$sql .= " ORDER BY account_code, bank_curr_code";
@@ -104,7 +104,7 @@ function get_bank_gl_account($id)
 
 function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type) 
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type)
 	VALUES (".db_escape($description).", ".db_escape($type).", "
 		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).")";
 
@@ -136,9 +136,9 @@ function delete_quick_entry($selected_id)
 
 function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines 
-		(qid, action, dest_id, amount, dimension_id, dimension2_id) 
-	VALUES 
+	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines
+		(qid, action, dest_id, amount, dimension_id, dimension2_id)
+	VALUES
 		(".db_escape($qid).", ".db_escape($action).",".db_escape($dest_id).",
 			".db_escape($amount).", ".db_escape($dim).", ".db_escape($dim2).")";
 
@@ -152,7 +152,7 @@ function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount,
 	$sql = "UPDATE ".TB_PREF."quick_entry_lines SET qid = ".db_escape($qid)
 		.", action=".db_escape($action).",
 		dest_id=".db_escape($dest_id).", amount=".db_escape($amount)
-		.", dimension_id=".db_escape($dim).", dimension2_id=".db_escape($dim2)." 
+		.", dimension_id=".db_escape($dim).", dimension2_id=".db_escape($dim2)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry line for $selected_id");
@@ -196,7 +196,7 @@ function get_quick_entry($selected_id)
 	$result = db_query($sql, "could not retreive quick entry $selected_id");
 
 	return db_fetch($result);
-}	
+}
 
 function get_quick_entry_lines($qid)
 {
@@ -207,7 +207,7 @@ function get_quick_entry_lines($qid)
 			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."chart_master.account_code
 		LEFT JOIN ".TB_PREF."tax_types ON
 			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."tax_types.id
-		WHERE 
+		WHERE
 			qid=".db_escape($qid)." ORDER by id";
 
 	return db_query($sql, "could not retreive quick entries");
@@ -267,11 +267,12 @@ function get_ending_reconciled($bank_account, $bank_date)
 
 function get_sql_for_bank_account_reconcile($bank_account, $date)
 {
-	$sql = "SELECT	type, trans_no, ref, trans_date, 
+	$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM ".TB_PREF."bank_trans
 		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
 			AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
+			AND amount != 0
 		ORDER BY trans_date,".TB_PREF."bank_trans.id";
 // or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
 	return $sql;
