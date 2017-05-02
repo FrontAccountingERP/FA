@@ -119,7 +119,6 @@ function write_credit_note(&$credit_note, $write_off_acc)
 			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
 			$credit_line->standard_cost, $credit_line->src_id, $trans_no==0 ? 0:  $credit_line->id);
 
-
 		if ($credit_type == 'Return')
 			add_credit_movements_item($credit_note, $credit_line,
 				$credit_type, ($line_taxfree_price+$line_tax)*(1-$credit_line->discount_percent), $credit_invoice);
@@ -184,14 +183,13 @@ function add_credit_movements_item(&$credit_note, &$credit_line,
     $curr_std_cost = get_unit_cost($credit_line->stock_id);
 
 	$reference = _("Return");
-	if ($credited_invoice) {
+	if ($credited_invoice) 
 		$reference .= ' '._("Ex Inv:").' ' . $credited_invoice;
 
-	    add_stock_move(ST_CUSTCREDIT,  $credit_line->stock_id,
-   		    key($credit_note->trans_no), $credit_note->Location,
-       		$credit_note->document_date, $reference, $credit_line->qty_dispatched,
-	        $curr_std_cost, $price);
-	}
+    add_stock_move(ST_CUSTCREDIT,  $credit_line->stock_id,
+	    key($credit_note->trans_no), $credit_note->Location,
+   		$credit_note->document_date, $reference, $credit_line->qty_dispatched,
+        $curr_std_cost, $price);
 }
 
 //----------------------------------------------------------------------------------------
