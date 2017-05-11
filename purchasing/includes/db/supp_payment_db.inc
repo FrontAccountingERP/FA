@@ -28,31 +28,43 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 	  void_cust_allocations(ST_SUPPAYMENT, $trans_no, $date_);
 	}
 
+	$bank = get_bank_account($bank_account);
+
+	if (!$bank_amount) 	// auto 
+	{
+		$rate = get_exchange_rate_from_to(get_supplier_currency($supplier_id),
+			$bank['bank_curr_code'], $date_ );
+		$bank_amount = $supp_amount/$rate;
+	}
+
+	if ($bank['bank_curr_code'] == get_company_currency()) // [0002506]
+		$rate = $bank_amount/$supp_amount;
+	else
+		$rate = 0;
+
 	/* Create a supp_trans entry for the supplier payment */
 	$payment_id = write_supp_trans(ST_SUPPAYMENT, 0, $supplier_id, $date_, $date_,
-		$ref, "", -$supp_amount, 0, -$supp_discount);
+		$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 
 	// Now debit creditors account with payment + discount
 
 	$total = 0;
     $supplier_accounts = get_supplier_accounts($supplier_id);
 	$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
-		$supp_amount + $supp_discount, $supplier_id);
+		$supp_amount + $supp_discount, $supplier_id, "", $rate);
 
 	// Now credit discount received account with discounts
 	if ($supp_discount != 0)
 	{
 		$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0,
-			-$supp_discount, $supplier_id);
+			-$supp_discount, $supplier_id, "", $rate);
 	}
-
-	$bank = get_bank_account($bank_account);
 
 	if ($bank_charge != 0)
 	{
 		$charge_act = get_company_pref('bank_charge_act');
 		$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $charge_act, 0, 0, '',
-			$bank_charge, $bank['bank_curr_code'], PT_SUPPLIER, $supplier_id);
+			$bank_charge, $bank['bank_curr_code']);
 	}
 
 	$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $bank['account_code'], 0, 0, '',
