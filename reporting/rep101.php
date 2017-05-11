@@ -38,7 +38,7 @@ function get_open_balance($debtorno, $to)
      	-abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 0)) AS charges,";
      $sql .= "SUM(IF(t.type != ".ST_SALESINVOICE." AND NOT(t.type = ".ST_JOURNAL." AND t.ov_amount>0),
      	abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1, 0)) AS credits,";
-     $sql .= "SUM(t.alloc) AS Allocated,";
+     $sql .= "SUM(IF(t.type != ".ST_SALESINVOICE." AND NOT(t.type = ".ST_JOURNAL." AND t.ov_amount>0), t.alloc * -1, t.alloc)) AS Allocated,";
 
  	$sql .=	"SUM(IF(t.type = ".ST_SALESINVOICE.", 1, -1) *
  			(abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) - abs(t.alloc))) AS OutStanding
@@ -218,19 +218,20 @@ function print_customer_balances()
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(4, 5, $item[0], $dec);
 				$accumulate += $item[0];
+				$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			}
 			else
 			{
 				$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(5, 6, $item[1], $dec);
 				$accumulate -= $item[1];
+				$item[2] = round2($trans['Allocated'] * $rate, $dec) * -1;
 			}
-			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->AmountCol(6, 7, $item[2], $dec);
 			if ($trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT)
-				$item[3] = $item[0] + $item[1] - $item[2];
+				$item[3] = $item[0] - $item[2];
 			else	
-				$item[3] = $item[0] - $item[1] + $item[2];
+				$item[3] = -$item[1] - $item[2];
 			if ($show_balance)	
 				$rep->AmountCol(7, 8, $accumulate, $dec);
 			else	
