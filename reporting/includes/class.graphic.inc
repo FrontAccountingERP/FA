@@ -160,7 +160,7 @@ class graph
 		// You can also use another UTF-8 font and put it in config.php with the name in $UTF8_fontfile 
 		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($SysPrefs->UTF8_fontfile) && $SysPrefs->UTF8_fontfile != "" ?
 			$path.$SysPrefs->UTF8_fontfile : $path.'FreeSans.ttf') : $path.'LiberationSans-Regular.ttf';
-		
+        
         $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;
         $this->biggest_y        = NULL;
@@ -1000,6 +1000,12 @@ class graph
     			$size = 12;
     		$y += $size + 3;	
 			$angle = 0;
+
+			if ($this->encoding == 'UTF-8' && is_arabic($string))
+			{
+				$size += 2;
+				$string = str_replace(" ", "  ", $string);
+			}	
    			
    			imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
     	}

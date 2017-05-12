@@ -154,6 +154,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	/* UTF-8 font for Business Graphics. Copy it to /reporting/fonts/ folder. */
 	$UTF8_fontfile	= "FreeSans.ttf";
+	//$UTF8_fontfile	= "zarnormal.ttf"; // for Arabic Dashboard
 
 /* 
 	Display a dropdown select box for choosing Company to login if false.

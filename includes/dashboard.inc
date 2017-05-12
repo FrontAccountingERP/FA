@@ -408,17 +408,16 @@ function gl_performance($today, $width="33", $weeks=5)
 	$begin = begin_fiscalyear();
 	$begin1 = date2sql($begin);
 	$today1 = date2sql($today);
-	$sql = "SELECT CONCAT(YEAR(tran_date), '/', WEEK(tran_date)) AS week_name, 
-			SUM(IF (c.ctype = 4, amount * -1, 0)) AS sales, 
-			SUM(IF (c.ctype = 6, amount, 0)) AS costs 
-		FROM
+	$sql = "SELECT week_name, sales, costs 
+		FROM(SELECT DATE_FORMAT(tran_date, '%Y-%u') AS week_name, 
+			SUM(IF(c.ctype = 4, amount * -1, 0)) AS sales, 
+			SUM(IF(c.ctype = 6, amount, 0)) AS costs FROM 
 			".TB_PREF."gl_trans, ".TB_PREF."chart_master AS a, ".TB_PREF."chart_types AS t, 
-			".TB_PREF."chart_class AS c WHERE (c.ctype = 4 OR c.ctype = 6)
-			AND account = a.account_code AND a.account_type = t.id AND t.class_id = c.cid
-			AND IF(c.ctype > 3, tran_date >= '$begin1', tran_date >= '0000-00-00') 
-			AND tran_date <= '$today1' 
-		GROUP BY week_name 
-		ORDER BY YEAR(tran_date) DESC, WEEK(tran_date) DESC limit 0, $weeks";
+			".TB_PREF."chart_class AS c WHERE(c.ctype = 4 OR c.ctype = 6) 
+			AND account = a.account_code AND a.account_type = t.id AND t.class_id = c.cid 
+			AND tran_date >= '$begin1' AND tran_date <= '$today1' 
+			GROUP BY week_name ORDER BY week_name DESC 	LIMIT 0, 5) b 
+		GROUP BY week_name ORDER BY week_name ASC";
 	$result = db_query($sql, "Transactions could not be calculated");
 	$title = _("Last $weeks weeks Performance");
 	check_page_security('SA_GLANALYTIC');
@@ -430,9 +429,6 @@ function gl_performance($today, $width="33", $weeks=5)
 		$pg->z[$i] = $myrow['costs'];
 		$i++;
 	}	
-	$pg->x = array_reverse($pg->x);
-	$pg->y = array_reverse($pg->y);
-	$pg->z = array_reverse($pg->z);
 	
 	source_graphic($today, $title, _("Week"), $pg, _("Sales"), _("Costs"), 1);
 }
