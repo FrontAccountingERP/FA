@@ -265,7 +265,7 @@ class BoxReports
 
 				case 'TEXTBOX':
 					$value = (isset($_POST[$name]) ? $_POST[$name] : "");
-					return "<textarea rows=4 cols=30 name='$name'>$value</textarea>";
+					return "<textarea rows=4 cols=30 maxlength=130 name='$name'>$value</textarea>";
 
 				case 'ACCOUNTS': // not used
 					return gl_account_types_list($name, null, _("No Account Group Filter"), true);
