@@ -403,20 +403,22 @@ function gl_top($today, $width="33", &$pg=null)
 
 function gl_performance($today, $width="33", $weeks=5)
 {
+	global $SysPrefs;
 	$pg = new graph();
 
 	$begin = begin_fiscalyear();
 	$begin1 = date2sql($begin);
 	$today1 = date2sql($today);
+	$sep = $SysPrefs->dateseps[user_date_sep()];
 	$sql = "SELECT week_name, sales, costs 
-		FROM(SELECT DATE_FORMAT(tran_date, '%Y-%u') AS week_name, 
+		FROM(SELECT DATE_FORMAT(tran_date, '%Y{$sep}%u') AS week_name, 
 			SUM(IF(c.ctype = 4, amount * -1, 0)) AS sales, 
 			SUM(IF(c.ctype = 6, amount, 0)) AS costs FROM 
 			".TB_PREF."gl_trans, ".TB_PREF."chart_master AS a, ".TB_PREF."chart_types AS t, 
 			".TB_PREF."chart_class AS c WHERE(c.ctype = 4 OR c.ctype = 6) 
 			AND account = a.account_code AND a.account_type = t.id AND t.class_id = c.cid 
 			AND tran_date >= '$begin1' AND tran_date <= '$today1' 
-			GROUP BY week_name ORDER BY week_name DESC 	LIMIT 0, 5) b 
+			GROUP BY week_name ORDER BY week_name DESC LIMIT 0, $weeks) b 
 		GROUP BY week_name ORDER BY week_name ASC";
 	$result = db_query($sql, "Transactions could not be calculated");
 	$title = _("Last $weeks weeks Performance");
