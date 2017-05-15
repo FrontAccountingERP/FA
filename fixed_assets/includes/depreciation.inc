@@ -71,7 +71,7 @@ function compute_gl_rows_for_depreciation($item, $no_months, $period) {
 
     case 'S':	// purchase_cost stores start cost of item
 		$done_months = months_between_dates($item['depreciation_start'], $item['depreciation_date']);
-		$remaining_months = 100.0/$item['depreciation_rate'] - $done_months;
+		$remaining_months = 12.0 * 100.0/$item['depreciation_rate'] - $done_months;
 		$value = $item['purchase_cost']*$item['depreciation_rate']/100/12;
 		break;
 

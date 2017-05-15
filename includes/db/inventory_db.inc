@@ -111,6 +111,20 @@ function get_unit_cost($stock_id)
 }
 
 //--------------------------------------------------------------------------------------
+ 
+function get_purchase_cost($stock_id)
+{
+	$sql = "SELECT purchase_cost
+		FROM ".TB_PREF."stock_master
+		WHERE stock_id=".db_escape($stock_id);
+	$result = db_query($sql, "The purchase cost cannot be retrieved");
+
+	$myrow = db_fetch_row($result);
+
+	return $myrow[0];
+}
+
+//--------------------------------------------------------------------------------------
 
 function is_inventory_item($stock_id)
 {

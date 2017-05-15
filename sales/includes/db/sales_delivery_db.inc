@@ -101,7 +101,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			$mb_flag = get_mb_flag($delivery_line->stock_id);
 
 			if (is_fixed_asset($mb_flag)) {
-				$sql = "UPDATE ".TB_PREF."stock_master SET inactive=1
+				$sql = "UPDATE ".TB_PREF."stock_master SET inactive=1, material_cost=0
 					WHERE stock_id=".db_escape($delivery_line->stock_id);
 				db_query($sql,"The cost details for the fixed asset could not be updated");
 			}
@@ -123,27 +123,47 @@ function write_sales_delivery(&$delivery,$bo_policy)
 					$delivery->customer_id, "The sales price GL posting could not be inserted");
 			}
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-			if (is_inventory_item($delivery_line->stock_id) && $delivery_line->standard_cost != 0) {
+			
+			if (is_inventory_item($delivery_line->stock_id)) {
+				// Fixed Assets
+				if ($delivery->fixed_asset) {
+				    $fa_purchase_cost = get_purchase_cost($delivery_line->stock_id);
+					$fa_depreciation = $fa_purchase_cost - $delivery_line->standard_cost;
+					/*first remove depreciation*/
+					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
+						$delivery->document_date, $stock_gl_code["adjustment_account"], $dim, $dim2, "",
+						$fa_depreciation,
+						PT_CUSTOMER, $delivery->customer_id,
+						"The cost of sales GL posting could not be inserted");
+					/*then remove asset*/
+					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
+						$stock_gl_code["inventory_account"], 0, 0, "",
+						-$fa_purchase_cost,
+						PT_CUSTOMER, $delivery->customer_id,
+						"The stock side of the cost of sales GL posting could not be inserted");
+					/*finally adjust sales account with the remaining*/
+					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
+						$stock_gl_code["sales_account"], 0, 0, "",
+						($fa_purchase_cost - $fa_depreciation),
+						PT_CUSTOMER, $delivery->customer_id,
+						"The stock side of the cost of sales GL posting could not be inserted");
+				}
+				// Invetory Items
+				else if ($delivery_line->standard_cost != 0) {
+					/*first the cost of sales entry*/
+					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
+						$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
+						$delivery_line->standard_cost * $delivery_line->qty_dispatched,
+						PT_CUSTOMER, $delivery->customer_id,
+						"The cost of sales GL posting could not be inserted");
 
-				/*first the cost of sales entry*/
-
-				$delivery_gl_code = $stock_gl_code["cogs_account"];
-				if ($delivery->fixed_asset)
-					$delivery_gl_code = $stock_gl_code["adjustment_account"];
-
-				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
-					$delivery->document_date, $delivery_gl_code, $dim, $dim2, "",
-					$delivery_line->standard_cost * $delivery_line->qty_dispatched,
-					PT_CUSTOMER, $delivery->customer_id,
-					"The cost of sales GL posting could not be inserted");
-
-				/*now the stock entry*/
-
-				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
-					$stock_gl_code["inventory_account"], 0, 0, "",
-					(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
-					PT_CUSTOMER, $delivery->customer_id,
-					"The stock side of the cost of sales GL posting could not be inserted");
+					/*now the stock entry*/
+					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
+						$stock_gl_code["inventory_account"], 0, 0, "",
+						(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
+						PT_CUSTOMER, $delivery->customer_id,
+						"The stock side of the cost of sales GL posting could not be inserted");
+				}				
 
 			} /* end of if GL and stock integrated and standard cost !=0 */
 
