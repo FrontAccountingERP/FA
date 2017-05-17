@@ -91,7 +91,8 @@ function print_fixed_assets_valuation_report()
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
-		$d = sql2date($trans['purchase_date']);
+		$purchase = get_fixed_asset_purchase($trans['stock_id']);
+		$d = sql2date($purchase['tran_date']);
 		if (date1_greater_date2($d, $date))
 			continue;
 		if ($class != 0 && $cln != $trans['description'])

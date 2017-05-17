@@ -83,6 +83,13 @@ function display_db_pager(&$pager) {
 	$cc = 0; //row colour counter
    	foreach($pager->data as $line_no => $row) {	
 
+        if ($pager->row_fun) {
+            if (function_exists($pager->row_fun)) {
+                $fn = $pager->row_fun;
+                $row = $fn($row);
+            }
+        }
+
 		$marker = $pager->marker;
 	    if ($marker && $marker($row)) 
         	start_row("class='$pager->marker_class'");

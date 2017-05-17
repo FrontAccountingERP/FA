@@ -29,6 +29,7 @@ class db_pager {
 	var $width;			// table width (default '95%')
 	var $header_fun;	// additional row between title and body
 	var $header_class;
+    var $row_fun;       // Function for row preprocessing
 	var $footer_fun;
 	var $footer_class;
 	var $data = array();

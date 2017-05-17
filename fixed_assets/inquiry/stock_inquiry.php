@@ -52,25 +52,46 @@ if(get_post('RefreshInquiry'))
 
 function gl_view($row)
 {
-  $row = get_fixed_asset_move($row['stock_id'], ST_JOURNAL);
+  	$row = get_fixed_asset_move($row['stock_id'], ST_JOURNAL);
 
-  //if ($row === false)
-    //return "";
-
-  //return get_journal_trans_view_str(ST_JOURNAL, $row["trans_no"], sql2date($row["tran_date"]));
 	return get_gl_view_str(ST_JOURNAL, $row["trans_no"]);
+}
+
+function fa_prepare_row($row) {
+  	$purchase = get_fixed_asset_purchase($row['stock_id']);
+  	if ($purchase !== false) {
+    	$row['purchase_date'] = $purchase['tran_date'];
+    	$row['purchase_no'] = $purchase['trans_no'];
+  	}
+  	else {
+    	$row['purchase_date'] = NULL;
+    	$row['purchase_no'] = NULL;
+  	}
+
+  	$disposal = get_fixed_asset_disposal($row['stock_id']);
+  	if ($disposal !== false) {
+    	$row['disposal_date'] = $disposal['tran_date'];
+    	$row['disposal_no'] = $disposal['trans_no'];
+    	$row['disposal_type'] = $disposal['type'];
+  	}
+  	else {
+    	$row['disposal_date'] = NULL;
+    	$row['disposal_no'] = NULL;
+    	$row['disposal_type'] = NULL;
+  	}	
+  	return $row;
 }
 
 function fa_link($row)
 {
-  $url = "inventory/manage/items.php?FixedAsset=1&stock_id=".$row['stock_id'];
+  	$url = "inventory/manage/items.php?FixedAsset=1&stock_id=".$row['stock_id'];
 
-	return viewer_link($row['stock_id'], $url);
+  	return viewer_link($row['stock_id'], $url);
 }
 
 function depr_method_title($row) {
-  global $depreciation_methods;
-  return $depreciation_methods[$row['depreciation_method']];
+  	global $depreciation_methods;
+  	return $depreciation_methods[$row['depreciation_method']];
 }
 
 function depr_par($row) {
@@ -85,7 +106,7 @@ function depr_par($row) {
 
 function status_title($row) {
 
-	if ($row['inactive'] || ($row['disposal_date'] !== NULL))
+   	if ($row['inactive'] || ($row['disposal_date'] !== NULL))
 		return _("Disposed"); // disposed or saled
 	elseif ($row['purchase_date'] === NULL)
 		return _("Purchasable"); // not yet purchased
@@ -97,22 +118,25 @@ function status_title($row) {
 function purchase_link($row)
 {
 
-  if ($row['purchase_date'] === null)
-    return "";
+  	if ($row['purchase_date'] === NULL)
+    	return "";
 
-  return get_supplier_trans_view_str(ST_SUPPRECEIVE, $row["purchase_no"], sql2date($row["purchase_date"]));
+  	return get_supplier_trans_view_str(ST_SUPPRECEIVE, $row["purchase_no"], sql2date($row["purchase_date"]));
 }
 
 function disposal_link($row)
 {
-  switch ($row['disposal_type']) {
-    case ST_INVADJUST:
-      return get_inventory_trans_view_str(ST_INVADJUST, $row["disposal_no"], sql2date($row["disposal_date"]));
-    case ST_CUSTDELIVERY:
-	    return get_customer_trans_view_str(ST_CUSTDELIVERY, $row["disposal_no"], sql2date($row["disposal_date"]));
-    default:
-      return "";
-  }
+  	if ($row['disposal_date'] === NULL)
+    	return "";
+
+  	switch ($row['disposal_type']) {
+    	case ST_INVADJUST:
+      		return get_inventory_trans_view_str(ST_INVADJUST, $row["disposal_no"], sql2date($row["disposal_date"]));
+    	case ST_CUSTDELIVERY:
+	    	return get_customer_trans_view_str(ST_CUSTDELIVERY, $row["disposal_no"], sql2date($row["disposal_date"]));
+    	default:
+      		return "";
+  	}
 }
 
 function amount_link($row)
@@ -162,6 +186,7 @@ $cols = array(
 $table =& new_db_pager('fixed_assets_tbl', $sql, $cols);
 
 $table->width = "85%";
+$table->row_fun = "fa_prepare_row";
 
 display_db_pager($table);
 

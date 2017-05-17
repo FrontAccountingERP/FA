@@ -85,7 +85,9 @@ function get_fixed_asset_disposal($stock_id) {
 
   $sql = "SELECT * FROM ".TB_PREF."stock_moves 
     	WHERE stock_id=".db_escape($stock_id)."
-    		AND (type=".ST_INVADJUST." OR type=".ST_CUSTDELIVERY.")";
+    		AND (type=".ST_INVADJUST." OR type=".ST_CUSTDELIVERY.")
+        ORDER BY tran_date DESC
+        LIMIT 1";
 
   $result = db_query($sql, "cannot retrieve fixed asset move");
 
@@ -96,23 +98,25 @@ function get_fixed_asset_disposal($stock_id) {
   return $row;
 }
 
-function get_fixed_asset_purchase($stock_id) {
+function get_fixed_asset_purchase($stock_id) 
+{
+  	$sql = "SELECT * 
+  		FROM ".TB_PREF."stock_master m, "
+  			.TB_PREF."supp_invoice_items i, "
+  			.TB_PREF."supp_trans t
+    	WHERE m.stock_id=".db_escape($stock_id)."
+		    AND i.supp_trans_no=t.trans_no
+    		AND m.stock_id=i.stock_id
+    	ORDER BY t.tran_date DESC
+    	LIMIT 1";
 
-  $sql = "SELECT * 
-  	FROM ".TB_PREF."stock_master m, "
-  		.TB_PREF."supp_invoice_items i, "
-  		.TB_PREF."supp_trans t
-    WHERE m.stock_id=".db_escape($stock_id)."
-	    AND i.supp_trans_no=t.trans_no
-    	AND m.stock_id=i.stock_id";
+  	$result = db_query($sql, "cannot retrieve fixed asset move");
 
-  $result = db_query($sql, "cannot retrieve fixed asset move");
+  	if (db_num_rows($result) == 0)
+    	return false;
 
-  if (db_num_rows($result) == 0)
-    return false;
-
-  $row = db_fetch_assoc($result);
-  return $row;
+  	$row = db_fetch_assoc($result);
+  	return $row;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -130,17 +134,17 @@ function get_fixed_asset_class($id)
 
 function get_sql_for_fixed_assets($show_inactive = false)
 {
-  $sql = "SELECT s.stock_id, c.description, s.units, s.description as name,
-    s.depreciation_rate, s.depreciation_method, s.inactive, rcv.tran_date as purchase_date, rcv.trans_no as purchase_no,
-    adj.tran_date as disposal_date, adj.type as disposal_type, adj.trans_no as disposal_no, s.material_cost, s.purchase_cost, s.depreciation_factor
+  	$sql = "SELECT s.stock_id, c.description, s.units, s.description as name,
+        s.depreciation_rate, s.depreciation_method, s.inactive, 
+        s.material_cost, s.purchase_cost, s.depreciation_factor
     FROM ".TB_PREF."stock_master s"
-    	." LEFT JOIN ".TB_PREF."stock_moves rcv ON rcv.stock_id=s.stock_id AND rcv.type=".ST_SUPPRECEIVE
-    	." LEFT JOIN ".TB_PREF."stock_moves adj ON adj.stock_id=s.stock_id AND adj.type IN(".ST_INVADJUST.",".ST_CUSTDELIVERY.")"
     	." LEFT JOIN ".TB_PREF."stock_fa_class c ON s.fa_class_id=c.fa_class_id"
     	." WHERE s.mb_flag='F'";
 
-  if (!$show_inactive)
-    $sql .= " AND !s.inactive AND !ISNULL(rcv.tran_date) AND ISNULL(adj.tran_date)";
+  	if (!$show_inactive)
+    	$sql .= " AND !s.inactive ";
+
+  	$sql .= " ORDER BY c.description ";
 
 	return $sql;
 }
