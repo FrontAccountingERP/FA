@@ -607,7 +607,7 @@ function display_delivery_details(&$order)
 		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true, $order->fixed_asset);
-		if ($order->payment_terms['days_before_due'] < 0)
+		if ($order->payment_terms['days_before_due'] == -1)
 		{
 			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update
 			if (!$order->is_started())

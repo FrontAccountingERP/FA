@@ -342,7 +342,7 @@ function check_data()
 			return false;
 		}
 	} else {
-		if (($_SESSION['Items']->payment_terms['days_before_due'] < 0) && !count($_SESSION['Items']->prepayments)) {
+		if (($_SESSION['Items']->payment_terms['days_before_due'] == -1) && !count($_SESSION['Items']->prepayments)) {
 			display_error(_("There is no non-invoiced payments for this order. If you want to issue final invoice, select delayed or cash payment terms."));
 			return false;
 		}
@@ -355,6 +355,7 @@ function check_data()
 if (isset($_POST['process_invoice']) && check_data()) {
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
+
 	if ($newinvoice) 
 		new_doc_date($_SESSION['Items']->document_date);
 
