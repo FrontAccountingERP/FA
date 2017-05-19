@@ -161,13 +161,29 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
 */
 function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 {
+	global $SysPrefs, $path_to_root;
+
+	if ($SysPrefs->loc_notification() == 1)
+	{
+		include_once($path_to_root . "/sales/includes/cart_class.inc");
+		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+		$st_ids = array();
+		$st_names = array();
+		$st_num = array();
+		$st_reorder = array();
+	}
+	
 	$result = get_wo_requirements($woid);
 
 	// credit all the components
 	$total_cost = 0;
 	while ($bom_item = db_fetch($result))
 	{
-
+		if ($SysPrefs->loc_notification() == 1 && is_inventory_item($bom_item['stock_id']))
+		{
+			$line = new line_details($bom_item['stock_id'], $bom_item["units_req"] * $quantity, 0, 0, 0, 0, $bom_item['description']);
+			$loc = calculate_reorder_level($bom_item["loc_code"], $line, $st_ids, $st_names, $st_num, $st_reorder); 
+		}
 		update_wo_requirement_issued($bom_item['id'], $bom_item["units_req"] * $quantity, $bom_item["ComponentCost"]);
 
 		// insert a -ve stock move for each item
@@ -188,6 +204,8 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 	$wo = get_work_order($woid);
     add_gl_trans_std_cost(ST_MANURECEIVE, $rcv_no, $date_, $wo['wip_account'],
         0, 0, $memo, -$total_cost);
+	if ($SysPrefs->loc_notification() == 1 && count($st_ids) > 0)
+		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 }
 
 function check_wo_costing($type, $trans_no)
