@@ -636,12 +636,12 @@ class cart
 		$remainder = prepaid_invoice_remainder($this->order_no);
 
 		// recalculate prepaid part from payments
-		if ($this->payment_terms['days_before_due'] < 0)
+		if ($this->payment_terms['days_before_due'] == -1)
 		{	// this is partial invoice for selected prepayments made.
 			$paid = 0;
 			foreach($this->prepayments as $payment)
 				$paid += $payment['amt'];
-			$this->prep_amount = min($remainder, $paid);
+			$this->prep_amount = $this->trans_no ? $paid : min($remainder, $paid);
 		} else	// this is final invoice
 			$this->prep_amount = $remainder;
 	}
