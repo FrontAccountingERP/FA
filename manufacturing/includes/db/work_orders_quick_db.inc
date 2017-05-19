@@ -14,7 +14,7 @@
 function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, 
 	$date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
-	global $Refs;
+	global $loc_notification, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
@@ -48,6 +48,15 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	//--------------------------------------------------------------------------
 
+	if ($loc_notification == 1)
+	{
+		include_once($path_to_root . "/sales/includes/cart_class.inc");
+		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+		$st_ids = array();
+		$st_names = array();
+		$st_num = array();
+		$st_reorder = array();
+	}
 	// create Work Order Requirements based on the bom
 	$result = get_bom($stock_id);
 
@@ -57,7 +66,12 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		$unit_quantity = $bom_item["quantity"];
 		$item_quantity = $bom_item["quantity"] * $units_reqd;
 
-
+		if ($loc_notification == 1 && is_inventory_item($bom_item["component"]))
+		{
+			
+			$line = new line_details($bom_item['component'], $item_quantity, 0, 0, 0, 0, $bom_item['description']);
+			$loc = calculate_reorder_level($bom_item["loc_code"], $line, $st_ids, $st_names, $st_num, $st_reorder); 
+		}
 		$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
 			VALUES ($woid, " . "'" . $bom_item["component"] . "'" . ",
 			'". $bom_item["workcentre_added"] . "',
@@ -108,6 +122,9 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	$args->woid = $woid;
 	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
+	if ($loc_notification == 1 && count($st_ids) > 0)
+		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
+	
 	return $woid;
 }
 
@@ -115,8 +132,18 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
 {
-	global $wo_cost_types;
+	global $loc_notification, $path_to_root, $wo_cost_types;
 	$result = get_bom($stock_id);
+
+	if ($loc_notification == 1 && $advanced)
+	{
+		include_once($path_to_root . "/sales/includes/cart_class.inc");
+		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+		$st_ids = array();
+		$st_names = array();
+		$st_num = array();
+		$st_reorder = array();
+	}
 
 	// credit all the components
 	$total_cost = 0;
@@ -131,6 +158,11 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		$memo = $bom_item["quantity"] ." * ".$bom_item["description"];
 		if ($advanced)
 		{
+			if ($loc_notification == 1 && is_inventory_item($bom_item['component']))
+			{
+				$line = new line_details($bom_item['component'], $bom_item["quantity"] * $units_reqd, 0, 0, 0, 0, $bom_item['description']);
+				$loc = calculate_reorder_level($bom_item["loc_code"], $line, $st_ids, $st_names, $st_num, $st_reorder); 
+			}	
 			$memo = $date_.": ".$memo; 
 			update_wo_requirement_issued($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd); 			
 			// insert a -ve stock move for each item
@@ -219,7 +251,11 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
  	$stockitem = get_item($stock_id);
  	$memo = _("Produced")." ".$units_reqd. " * ".$stockitem["description"];
  	if ($advanced)
+ 	{
+		if ($loc_notification == 1 && count($st_ids) > 0)
+			send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
  		$memo = $date_.": ".$memo;
+ 	}	
     add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
         0, 0, $memo, -$total_cost);	
 		
@@ -228,7 +264,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	{
 		$UnitWOCost = ($total_material_cost + $costs + $labour)/$units_reqd;
 		update_stock_move(ST_WORKORDER, $woid, $stock_id, $UnitWOCost);	
-	}	
+	}
 }
 
 //--------------------------------------------------------------------------------------
