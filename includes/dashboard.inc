@@ -15,7 +15,7 @@ function dashboard($sel_app)
 	$selected_app = $sel_app;
 
 
-	if (!$_SESSION["wa_current_user"]->check_application_access($selected_app))
+	if (is_object($sel_app) && !$_SESSION["wa_current_user"]->check_application_access($selected_app))
 		return;
 	// first have a look through the directory, 
 	// and remove old temporary pdfs and pngs
