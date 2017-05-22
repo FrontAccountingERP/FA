@@ -1,3 +1,246 @@
+2017-05-19 21:55:10 +0200 Joe Hunt 
+Sales type bug in tax_included (persistent on)
+M	sales/manage/sales_types.php
+
+2017-05-19 14:04:16 +0200 Joe Hunt 
+Dedeted doc/CHANGELOG.old.txt. Not neede any more.
+D	doc/CHANGELOG.old.txt
+
+2017-05-19 12:28:20 +0200 Joe Hunt 
+Merge branch 'unstable' of ssh://git.code.sf.net/p/frontaccounting/git into unstable
+2017-05-19 12:27:41 +0200 Joe Hunt 
+0003761: Reorder email is not sent for items used work order. Fixed.
+M	manufacturing/includes/db/work_order_costing_db.inc
+
+2017-05-18 22:02:12 +0200 Janusz Dobrowolski 
+[0003780] Sales Invoice to partial delivery was improperly issued as final prepayment invoice.
+M	sales/customer_invoice.php
+M	sales/includes/cart_class.inc
+M	sales/includes/db/sales_invoice_db.inc
+M	sales/includes/ui/sales_order_ui.inc
+M	sales/sales_order_entry.php
+
+2017-05-17 23:47:26 +0200 Joe Hunt 
+0003871: [Fixed Assets] new patch fix for: 0003866, 0003869
+M	fixed_assets/includes/fixed_assets_db.inc
+M	fixed_assets/inquiry/stock_inquiry.php
+M	includes/db_pager.inc
+M	includes/ui/db_pager_view.inc
+M	reporting/rep451.php
+
+2017-05-15 16:22:21 +0200 Joe Hunt 
+0003789: Comments is cut off when actual invoice is printed. Maximized to 130 characters.
+M	reporting/includes/reports_classes.inc
+
+2017-05-15 15:08:39 +0200 Joe Hunt 
+Rerun. 0003864: [Fixed Assets] GL Transactions for Fixed Asset Sales are wrong (patch provided)
+M	sales/includes/db/sales_delivery_db.inc
+
+2017-05-15 08:48:53 +0200 Joe Hunt 
+Improvements to dashboard.
+M	includes/dashboard.inc
+
+2017-05-15 08:25:39 +0200 Joe Hunt 
+0003862: Straight Line Depreciation value calculation is wrong 0003863: Fixed Assets Valuation Report Includes inactive Items with Valuation 0003864: [Fixed Assets] GL Transactions for Fixed Asset Sales are wrong (patch provided)
+M	fixed_assets/includes/depreciation.inc
+M	includes/db/inventory_db.inc
+M	sales/includes/db/sales_delivery_db.inc
+
+2017-05-14 21:21:33 +0200 Joe Hunt 
+Optimized Inventory Valuation Reports, 301 and 308.
+M	reporting/rep301.php
+M	reporting/rep308.php
+
+2017-05-12 18:02:36 +0200 Joe Hunt 
+Added a small Arabic font file and improved the builtin DashBoard.
+M	config.default.php
+M	includes/dashboard.inc
+A	reporting/fonts/zarnormal.ttf
+M	reporting/includes/class.graphic.inc
+
+2017-05-11 13:40:13 +0200 Joe Hunt 
+Merge branch 'unstable' of ssh://git.code.sf.net/p/frontaccounting/git into unstable
+2017-05-11 13:39:42 +0200 Joe Hunt 
+Customer/Supplier Balances Report | Allocated column not showing correctly. Fixed.
+M	reporting/rep101.php
+M	reporting/rep201.php
+
+2017-05-02 21:59:12 +0200 Janusz Dobrowolski 
+[0003795] Fixed incorrect GL postings for cash purchase invoices.
+M	purchasing/includes/db/supp_payment_db.inc
+
+2017-05-02 08:38:21 +0200 Joe Hunt 
+0003816: Customer Credit Note (stand alone) does not restore inventory
+M	sales/includes/db/sales_credit_db.inc
+
+2017-03-19 15:26:09 +0100 Janusz Dobrowolski 
+Additional fix to previous commit.
+M	reporting/prn_redirect.php
+
+2017-03-19 14:41:39 +0100 ApMuthu 
+Fixed problems with excel report generation.
+M	includes/main.inc
+M	reporting/prn_redirect.php
+
+2017-03-19 14:39:50 +0100 Janusz Dobrowolski 
+Additional fix to unique filenames.
+M	includes/dashboard.inc
+
+2017-03-18 15:56:19 +0100 Janusz Dobrowolski 
+Improved entropy for report file urls.
+M	admin/attachments.php
+M	includes/main.inc
+M	includes/ui/ui_controls.inc
+M	reporting/includes/excel_report.inc
+M	reporting/includes/pdf_report.inc
+M	reporting/rep102.php
+M	reporting/rep202.php
+M	reporting/rep706.php
+M	reporting/rep707.php
+
+2017-01-17 11:47:56 +0100 Janusz Dobrowolski 
+Fixed buggy prefix in sql query in 2.1 upgrade class.
+M	sql/alter2.1.php
+
+2017-01-18 15:59:57 +0100 Joe Hunt 
+Fixed an array_combine object issue.
+M	includes/main.inc
+M	includes/ui/ui_lists.inc
+
+2017-01-15 19:22:16 +0100 Janusz Dobrowolski 
+[0003733] Fixed php7 compatibility issue.
+M	frontaccounting.php
+
+2017-01-15 18:28:20 +0100 Janusz Dobrowolski 
+[0003658] Errors during reference line edition when no table prefix is used.
+M	includes/db/class.reflines_db.inc
+
+2016-12-23 08:57:23 +0100 Joe Hunt 
+Bug submitting forms in FA 2.4.x when checkbox field not changed. Fixed
+M	includes/ui/ui_input.inc
+
+2016-12-03 23:15:02 +0100 Joe Hunt 
+Rerun Items Summary Report
+M	reporting/rep309.php
+
+2016-11-29 16:20:32 +0100 Joe Hunt 
+Fixed A Bug in Item Sales Summary Report
+M	reporting/rep309.php
+
+2016-11-18 14:30:47 +0100 Joe Hunt 
+Merge branch 'unstable' of ssh://git.code.sf.net/p/frontaccounting/git into unstable
+2016-11-18 14:30:11 +0100 Joe Hunt 
+0003667: supplier payment link after entering supplier invoice resultes in erro. Fixed.
+M	purchasing/supplier_invoice.php
+
+2016-09-06 12:34:03 +0200 Janusz Dobrowolski 
+Fixed problem with installing third party extension packages.
+M	includes/packages.inc
+
+2016-09-06 08:55:51 +0200 Joe Hunt 
+Increased space for built in number columns etc. in reports.
+M	reporting/rep101.php
+M	reporting/rep201.php
+M	reporting/rep203.php
+M	reporting/rep601.php
+M	reporting/rep602.php
+M	reporting/rep701.php
+M	reporting/rep706.php
+M	reporting/rep707.php
+
+2016-01-30 21:50:20 +0700 Cambell 
+Added functions for custom css files registered by modules
+M	includes/main.inc
+M	includes/page/header.inc
+
+2016-02-06 11:32:32 +0700 Cambell 
+Supplier Payment: by default bank account is selected to be the same as that used on the last payment for the supplier (if any, or default currency account otherwise).
+M	purchasing/includes/db/supp_trans_db.inc
+M	purchasing/supplier_payment.php
+
+2016-08-05 15:55:19 +0700 Cambell 
+Ajax calls: set the checkbox value = 0 for an unset checkbox rather than skipping the element.
+M	js/utils.js
+
+2016-08-06 10:43:40 +0200 Janusz Dobrowolski 
+Fixed broken html enities handling in longer TextWrap fields in reports.
+M	reporting/includes/class.pdf.inc
+
+2016-08-06 10:36:43 +0200 Joe Hunt 
+One comma too much in line 312 /purchasing/manage/suppliers.php. Fixed.
+M	purchasing/manage/suppliers.php
+
+2016-07-31 23:47:24 +0200 Joe Hunt 
+Removed redundant line in reporting/includes/header2.inc.
+M	reporting/includes/header2.inc
+
+2016-07-26 09:13:39 +0200 Joe Hunt 
+Rerun. Dimension is missing in Supplier Invoice View. GL Rows. Apmuthu.
+M	purchasing/includes/db/invoice_db.inc
+
+2016-07-26 08:11:54 +0200 Joe Hunt 
+Dimension is missing in Supplier Invoice View  GL Rows. Fixed a parameter bug in add_supp_invoice_gl_item.
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/db/invoice_items_db.inc
+
+2016-07-24 14:54:28 +0200 Joe Hunt 
+Minor bug in deleting fiscal years. Apmuthu.
+M	admin/db/fiscalyears_db.inc
+
+2016-07-15 10:55:11 +0200 Joe Hunt 
+Bug 3585. 'Exclude from purchase' function not working in PO.
+M	purchasing/includes/ui/po_ui.inc
+
+2016-07-08 08:49:19 +0200 Joe Hunt 
+Bug. is_date_closed() should be performed before is_date_in_fiscalyears().
+M	admin/void_transaction.php
+M	includes/date_functions.inc
+
+2016-05-27 12:10:57 +0200 Joe Hunt 
+Rerun. Tabbed dialogs allowed non access pages.
+M	purchasing/manage/suppliers.php
+M	sales/manage/customers.php
+
+2016-05-27 11:19:00 +0200 Janusz Dobrowolski 
+Fixed security check for last tab in tabbed_content.
+M	inventory/manage/items.php
+M	js/inserts.js
+
+2016-05-27 09:11:57 +0200 Joe Hunt 
+Tabbed dialogs allowed non access pages.
+M	inventory/manage/items.php
+M	purchasing/manage/suppliers.php
+M	sales/manage/customers.php
+
+2016-05-22 22:29:20 +0200 Joe Hunt 
+Bloomberg Rate has changed their wrapper from span to div.
+M	gl/includes/db/gl_db_rates.inc
+
+2016-05-19 22:48:45 +0200 Janusz Dobrowolski 
+Fixed typo in last commit.
+M	gl/manage/bank_accounts.php
+
+2016-05-19 22:37:03 +0200 Janusz Dobrowolski 
+Fixed bug in bank account edition.
+M	gl/manage/bank_accounts.php
+
+2016-05-17 19:05:28 +0200 Janusz Dobrowolski 
+Fixed typos in installer translation files, fixed translations in dashboard procedures.
+M	includes/dashboard.inc
+M	install/lang/de_DE/LC_MESSAGES/de_DE.mo
+M	install/lang/de_DE/LC_MESSAGES/de_DE.po
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.mo
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.po
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2016-02-25 13:25:42 +0100 Janusz Dobrowolski 
+Constant string after last placeholder in reference line definition was ignored.
+M	includes/references.inc
+
+2016-02-23 20:08:46 +0100 Joe Hunt 
+New CHANGELOG.txt file
+M	CHANGELOG.txt
+
 2016-02-22 15:33:49 +0100 Janusz Dobrowolski 
 Fixed missing changes in upgrade sql files.
 M	sql/alter2.4.sql
