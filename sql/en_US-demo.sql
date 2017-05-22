@@ -2025,7 +2025,7 @@ INSERT INTO `0_sys_prefs` VALUES('coy_logo', 'setup.company', 'varchar', 100, 'l
 INSERT INTO `0_sys_prefs` VALUES('domicile', 'setup.company', 'varchar', 55, '');
 INSERT INTO `0_sys_prefs` VALUES('curr_default', 'setup.company', 'char', 3, 'USD');
 INSERT INTO `0_sys_prefs` VALUES('use_dimension', 'setup.company', 'tinyint', 1, '1');
-INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '2');
+INSERT INTO `0_sys_prefs` VALUES('f_year', 'setup.company', 'int', 11, '4');
 INSERT INTO `0_sys_prefs` VALUES('no_item_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_customer_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES('no_supplier_list', 'setup.company', 'tinyint', 1, '0');
