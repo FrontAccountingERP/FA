@@ -21,9 +21,9 @@
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 
-	// Server time zone. If leaved empty the time zone set in php init file will be used.
-	// If timezone is not set in this file nor in php.ini, Europe/Berlin' is used as defualt.
-	$server_time_zone = '';
+	// Server time zone. Since php 5.3.0 time zone have to be set either here or in server php ini file
+	if (!ini_get('date.timezone'))
+		ini_set('date.timezone', 'Europe/Berlin');
 
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
