@@ -733,6 +733,10 @@ function check_src_ext_version($ext_v)
 	$app = explode('.', substr($src_version, 0, strspn($src_version, "0123456789.")));
 	$pkg = explode('.', substr($ext_v, 0, strspn($ext_v, "0123456789.")));
 
+	if ($ext_v == '' || $ext_v == '-') {
+		return true;
+	}
+
 	for ($i=0; $i < min($compat_levels, count($app)); $i++)
 		if ($pkg[$i] < $app[$i])
 			return false;
