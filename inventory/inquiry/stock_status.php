@@ -13,12 +13,16 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+
 if (!@$_GET['popup'])
 {
 	if (isset($_GET['stock_id'])){
-		page(_($help_context = "Inventory Item Status"), true);
+		page(_($help_context = "Inventory Item Status"), true, false, "", $js);
 	} else {
-		page(_($help_context = "Inventory Item Status"));
+		page(_($help_context = "Inventory Item Status"), false, false, "", $js);
 	}
 }
 if (isset($_GET['stock_id']))

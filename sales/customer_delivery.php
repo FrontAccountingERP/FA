@@ -441,7 +441,10 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 
 		// Skip line if needed
 		if($q_class === 'skip')  continue;
-		if(is_array($q_class)) {
+		// Mark the insufficient qty in row only for new delivery.
+		// The already done shouldn't have mark on it even if the qty is not enough anymore
+		// because it has been delivered.
+		if(is_array($q_class) && $new) {
 		  list($ln_itm->qty_dispatched, $row_classes) = $q_class;
 			$has_marked = true;
 		}

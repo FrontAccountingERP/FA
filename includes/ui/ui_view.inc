@@ -852,6 +852,48 @@ function get_js_open_window($width, $height)
 		. " var top = (screen.height - $height) / 2;\n"
 		. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
 		. "}\n";
+	$js .= get_js_lookup_window();
+	return $js;
+}
+
+function get_js_lookup_window() {
+	$js = "function lookupWindow(url, title) {
+		var u = url.split('#');
+		if (u.length == 2) {
+			var element = document.getElementById(u[1]);
+			var options = element.options;
+			url = u[0] + '&' + u[1] + '=' + options[element.selectedIndex].value;
+		}
+		openWindow(url, title);
+	}";
+	return $js;
+}
+
+function get_js_populate_combo_item() {
+	$js = "function populateComboItem(element, value, text) {
+		var opt = document.createElement('option');
+		opt.value = value;
+		opt.innerHTML = text;
+		element.appendChild(opt);
+	}";
+	return $js;
+}
+
+function get_js_select_combo_item() {
+	$js = "function selectComboItem(doc, client_id, value, text, append){
+		var element = doc.getElementById(client_id);
+		if (append == true) {
+			populateComboItem(element, value, text);
+		}
+		var options = element.options;
+		for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+			if (options[i].value == value) {
+				element.selectedIndex = i;
+				element.onchange();
+			}
+		}
+		window.close();
+	}";
 	return $js;
 }
 
@@ -860,7 +902,7 @@ function get_js_open_window($width, $height)
   If $form<0 $name is element id.
 */
 function set_focus($name, $form_no=0) {
-  global $Ajax;
+	global $Ajax;
 	$Ajax->addFocus(true, $name);
     $_POST['_focus'] = $name;
 }
@@ -1430,5 +1472,3 @@ function payment_link($name, $options)
 
 	return strtr($link, $patterns);
 }
-
-?>

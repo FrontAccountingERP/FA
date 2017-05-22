@@ -527,12 +527,13 @@ function setHotKeys() {
 	document.onkeydown = function(ev) {
 		ev = ev||window.event;
 		key = ev.keyCode||ev.which;
-		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
-			_hotkeys.alt = true;
+		if (key == 27 && !ev.altKey) {	// cancel selection
+			_hotkeys.alt = false;
 			_hotkeys.focus = -1;
 			return stopEv(ev);
 		}
-		else if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
+    else if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
+      _hotkeys.alt = true;
 			key = String.fromCharCode(key);
 			var n = _hotkeys.focus;
 			var l = document.getElementsBySelector('[accesskey='+key+']');
