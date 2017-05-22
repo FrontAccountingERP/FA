@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 26, 2014 at 11:37 AM
+-- Generation Time: Sep 26, 2015 at 11:37 AM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6-1+lenny2
 
@@ -762,8 +762,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES(1, '2013-01-01', '2013-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(2, '2014-01-01', '2014-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(2, '2016-01-01', '2016-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`

@@ -1,3 +1,122 @@
+2017-05-19 21:53:28 +0200 Joe Hunt 
+Sales type potential bug in tax_included (persistent on)
+M	sales/manage/sales_types.php
+
+2017-05-19 14:02:50 +0200 Joe Hunt 
+Deleted doc/CHANGELOG.old.txt. Not needed any more.
+D	doc/CHANGELOG.old.txt
+
+2017-05-19 12:25:49 +0200 Joe Hunt 
+0003761: Reorder email is not sent for items used work order. Fixed
+M	manufacturing/includes/db/work_orders_quick_db.inc
+
+2017-05-14 21:18:19 +0200 Joe Hunt 
+Optimized Inventory Valuation Reports, 301 and 308.
+M	reporting/rep301.php
+M	reporting/rep308.php
+
+2017-05-11 13:35:19 +0200 Joe Hunt 
+Customer/Supplier Balances Report | Allocated column not showing correctly. Fixed.
+M	reporting/rep101.php
+M	reporting/rep201.php
+
+2017-03-19 15:25:15 +0100 Janusz Dobrowolski 
+Additional fix to previous commit.
+M	reporting/prn_redirect.php
+
+2017-03-19 14:32:53 +0100 ApMuthu 
+Fixed problems with excel report generation.
+M	includes/main.inc
+M	reporting/prn_redirect.php
+
+2017-03-18 15:52:46 +0100 Janusz Dobrowolski 
+Improved entropy for report file urls.
+M	admin/attachments.php
+M	includes/main.inc
+M	includes/ui/ui_controls.inc
+M	reporting/includes/excel_report.inc
+M	reporting/includes/pdf_report.inc
+M	reporting/rep102.php
+M	reporting/rep202.php
+M	reporting/rep706.php
+M	reporting/rep707.php
+
+2017-01-18 15:52:40 +0100 Joe Hunt 
+Missing Changelog
+A	CHANGELOG.txt
+
+2017-01-18 15:45:47 +0100 Joe Hunt 
+Missing changelog.
+D	CHANGELOG.txt
+
+2017-01-18 15:32:57 +0100 Joe Hunt 
+Fixed an array_combine object issue.
+M	includes/ui/ui_lists.inc
+
+2016-12-23 08:56:18 +0100 Joe Hunt 
+Bug submitting forms in FA 2.3.x when checkbox field not changed. Fixed
+M	includes/ui/ui_input.inc
+
+2016-12-03 23:14:30 +0100 Joe Hunt 
+Rerun Items Summary Report fix
+M	reporting/rep309.php
+
+2016-11-29 16:19:27 +0100 Joe Hunt 
+Fixed A Bug in Item Sales Summary Report
+M	reporting/rep309.php
+
+2016-11-28 23:14:44 +0100 Joe Hunt 
+0003667: supplier payment link after entering supplier invoice result. Fixed.
+M	purchasing/supplier_invoice.php
+
+2016-11-14 12:15:42 +0100 Janusz Dobrowolski 
+Cleanup in sales_invoice_db.inc (obsolete parameteres in update_debtor_trans_allocation calls)
+M	sales/includes/db/sales_invoice_db.inc
+
+2016-07-26 07:39:50 +0200 Joe Hunt 
+Dimension is missing in Supplier Invoice View, GL Rows.
+M	purchasing/includes/db/invoice_db.inc
+
+2016-07-24 14:52:49 +0200 Joe Hunt 
+Minor bugs in deleting fiscal years. Apmuthu.
+M	admin/db/fiscalyears_db.inc
+
+2016-05-27 12:09:47 +0200 Joe Hunt 
+Rerun. Tabbed dialogs allowed non access pages.
+M	inventory/manage/items.php
+M	js/inserts.js
+M	purchasing/manage/suppliers.php
+M	sales/manage/customers.php
+
+2016-05-27 09:09:22 +0200 Joe Hunt 
+Tabbed dialogs allowed non access pages.
+M	inventory/manage/items.php
+M	purchasing/manage/suppliers.php
+M	sales/manage/customers.php
+
+2016-05-22 22:28:03 +0200 Joe Hunt 
+Bloomberg Rate has changed their wrapper from span to div.
+M	gl/includes/db/gl_db_rates.inc
+
+2016-05-19 22:48:04 +0200 Janusz Dobrowolski 
+Fixed typo in last commit.
+M	gl/manage/bank_accounts.php
+
+2016-05-19 22:35:19 +0200 Janusz Dobrowolski 
+Fixed bug in Bank Accounts edition.
+M	gl/manage/bank_accounts.php
+
+2016-05-17 18:57:23 +0200 Janusz Dobrowolski 
+Fixed typos in some installer translation files.
+M	install/lang/de_DE/LC_MESSAGES/de_DE.mo
+M	install/lang/de_DE/LC_MESSAGES/de_DE.po
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.mo
+M	install/lang/pt_PT/LC_MESSAGES/pt_PT.po
+
+2016-02-21 15:37:42 +0100 Joe Hunt 
+New CHANGELOG.txt
+M	CHANGELOG.txt
+
 2016-02-21 15:34:07 +0100 Joe Hunt 
 Release 2.3.25.
 M	version.php
