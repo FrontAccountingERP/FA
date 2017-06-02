@@ -163,7 +163,7 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 
 function print_annual_expense_breakdown()
 {
-	global $path_to_root, $date_system;
+	global $path_to_root, $SysPrefs;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -178,7 +178,7 @@ function print_annual_expense_breakdown()
 		$orientation = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		$year = $_POST['PARAM_0'];
 		$dimension = $_POST['PARAM_1'];
@@ -202,13 +202,10 @@ function print_annual_expense_breakdown()
 
 	$orientation = ($orientation ? 'L' : 'P');
 	$dec = 1;
-	//$pdec = user_percent_dec();
 
 	$cols = array(0, 40, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510);
 	//------------0--1---2----3----4----5----6----7----8----10---11---12---13---14---15-
 
-	//$yr = date('Y');
-	//$mo = date('m'):
 	// from now
 	$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
 	$result = db_query($sql, "could not get fiscal year");
@@ -218,9 +215,9 @@ function print_annual_expense_breakdown()
 	$yr = $row['yr'];
 	$mo = $row['mo'];
 	$da = 1;
-	if ($date_system == 1)
+	if ($SysPrefs->date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
-	elseif ($date_system == 2)
+	elseif ($SysPrefs->date_system == 2)
 		list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
 	$per12 = strftime('%b',mktime(0,0,0,$mo,$da,$yr));
 	$per11 = strftime('%b',mktime(0,0,0,$mo-1,$da,$yr));
@@ -254,7 +251,7 @@ function print_annual_expense_breakdown()
                     	5 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
                     	1 => array('text' => _("Year"),
@@ -332,4 +329,3 @@ function print_annual_expense_breakdown()
 	$rep->End();
 }
 
-?>

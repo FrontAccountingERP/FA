@@ -43,7 +43,7 @@ function get_customer_trans_version($type, $trans_no) {
 	$sql .= implode(' OR ', $trans_no) . ')';
 
 	$res = db_query($sql, 'document version retreival');
-	
+
 	$vers = array();
 	while($mysql=db_fetch($res)) {
 		$vers[$mysql['trans_no']] = $mysql['version'];
@@ -56,7 +56,7 @@ function get_customer_trans_version($type, $trans_no) {
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
 	$sales_type=0, $order_no=0, $ship_via=0, $due_date="",
-	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0, $payment_terms=null)
+	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0, $payment_terms=null, $tax_included=0, $prep_amount=0)
 {
 	$new = $trans_no==0;
 	$curr = get_customer_currency($debtor_no);
@@ -85,7 +85,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc,
-		dimension_id, dimension2_id, payment_terms
+		dimension_id, dimension2_id, payment_terms, tax_included, prep_amount
 		) VALUES (".db_escape($trans_no).", ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
@@ -93,7 +93,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		".db_escape($Freight).",
 		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
 		".db_escape($dimension_id).", ".db_escape($dimension2_id).", "
-		.db_escape($payment_terms, true).")";
+		.db_escape($payment_terms, true).", "
+		.db_escape($tax_included).", ".db_escape($prep_amount).")";
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
 		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
@@ -103,31 +104,34 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
 		ship_via=".db_escape($ship_via).", alloc=$AllocAmt,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
-		payment_terms=".db_escape($payment_terms, true)."
+		payment_terms=".db_escape($payment_terms, true).",
+		tax_included=".db_escape($tax_included).",
+		prep_amount =".db_escape($prep_amount)."
 		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
-	add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
+	if ($trans_type != ST_JOURNAL) // skip for journal entries
+		add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
 
 	return $trans_no;
 }
 //----------------------------------------------------------------------------------------
 
-function get_customer_trans($trans_id, $trans_type)
+function get_customer_trans($trans_id, $trans_type, $customer_id=null)
 {
-	global $go_debug;
+	global $SysPrefs;
 
 	$sql = "SELECT trans.*,"
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
 		."cust.name AS DebtorName, cust.address, "
 		."cust.curr_code, "
-		."cust.tax_id, "
+		."cust.tax_id,
+		trans.prep_amount>0 as prepaid,"
 		."com.memo_";
 
 	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
-		// Chaitanya : Added bank_act to support Customer Payment Edit
 		$sql .= ",bank_act,".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType,
 			".TB_PREF."bank_accounts.bank_curr_code,
@@ -143,6 +147,10 @@ function get_customer_trans($trans_id, $trans_type)
 		."cust.discount, "
 		.TB_PREF."tax_groups.name AS tax_group_name, "
 		.TB_PREF."tax_groups.id AS tax_group_id ";
+	}
+
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= ", branch.*";
 	}
 
 	$sql .= " FROM ".TB_PREF."debtor_trans trans
@@ -162,9 +170,16 @@ function get_customer_trans($trans_id, $trans_type)
 		.TB_PREF."tax_groups ";
 	}
 
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= ", ".TB_PREF."cust_branch branch ";
+	}
+
 	$sql .= " WHERE trans.trans_no=".db_escape($trans_id)."
 		AND trans.type=".db_escape($trans_type)."
 		AND trans.debtor_no=cust.debtor_no";
+
+	if (isset($customer_id))
+		$sql .= " AND trans.debtor_no=".db_escape($customer_id);
 
 	if ($trans_type == ST_CUSTPAYMENT || $trans_type == ST_BANKDEPOSIT) {
 		// it's a payment so also get the bank account
@@ -179,19 +194,22 @@ function get_customer_trans($trans_id, $trans_type)
 			AND branch.branch_code = trans.branch_code
 			AND branch.tax_group_id = ".TB_PREF."tax_groups.id ";
 	}
+	if ($trans_type == ST_JOURNAL) {
+		$sql .= " AND branch.branch_code = trans.branch_code ";
+	}
 
 	$result = db_query($sql, "Cannot retreive a debtor transaction");
 
 	if (db_num_rows($result) == 0) {
 		// can't return nothing
-		if($go_debug)
+		if ($SysPrefs->go_debug)
 			display_backtrace();
 		display_db_error("no debtor trans found for given params", $sql, true);
 		exit;
 	}
 	if (db_num_rows($result) > 1) {
 		// can't return multiple
-		if($go_debug)
+		if($SysPrefs->go_debug)
 			display_backtrace();
 		display_db_error("duplicate debtor transactions found for given params", $sql, true);
 		exit;
@@ -232,11 +250,14 @@ function get_customer_trans_order($type, $type_no)
 
 function get_customer_details_from_trans($type, $type_no)
 {
-	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name
-		FROM ".TB_PREF."debtors_master,".TB_PREF."cust_branch,".TB_PREF."debtor_trans
-		WHERE ".TB_PREF."debtor_trans.type=".db_escape($type)." AND ".TB_PREF."debtor_trans.trans_no=".db_escape($type_no)."
-		AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-		AND	".TB_PREF."cust_branch.branch_code = ".TB_PREF."debtor_trans.branch_code";
+	$sql = "SELECT debtor.name, debtor.curr_code, branch.br_name
+		FROM "
+			.TB_PREF."debtors_master debtor,"
+			.TB_PREF."cust_branch branch,"
+			.TB_PREF."debtor_trans trans
+		WHERE trans.type=".db_escape($type)." AND trans.trans_no=".db_escape($type_no)."
+		AND debtor.debtor_no = trans.debtor_no
+		AND	branch.branch_code = trans.branch_code";
 
 	$result = db_query($sql, "could not get customer details from trans");
 	return db_fetch($result);
@@ -248,7 +269,7 @@ function void_customer_trans($type, $type_no)
 {
 	// clear all values and mark as void
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
-		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+		ov_freight_tax=0, alloc=0, prep_amount=0, version=version+1 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	db_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 }
@@ -281,11 +302,10 @@ function post_void_customer_trans($type, $type_no)
 }
 
 //----------------------------------------------------------------------------------------
-
-function get_sql_for_customer_inquiry()
+function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter = ALL_TEXT)
 {
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
+    $date_after = date2sql($from);
+    $date_to = date2sql($to);
 
   	$sql = "SELECT 
   		trans.type, 
@@ -297,9 +317,10 @@ function get_sql_for_customer_inquiry()
 		debtor.name, 
 		branch.br_name,
 		debtor.curr_code,
+		debtor.debtor_no,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
-   	if ($_POST['filterType'] != ALL_TEXT)
+   	if ($filter != ALL_TEXT)
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 
 //	else
@@ -309,46 +330,50 @@ function get_sql_for_customer_inquiry()
 		$sql .= "trans.alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue ,
-		Sum(line.quantity-line.qty_done) AS Outstanding
+		Sum(line.quantity-line.qty_done) AS Outstanding,
+		Sum(line.qty_done) AS HasChild
 		FROM "
 			.TB_PREF."debtor_trans as trans
 			LEFT JOIN ".TB_PREF."debtor_trans_details as line
-				ON trans.trans_no=line.debtor_trans_no AND trans.type=line.debtor_trans_type,"
-			.TB_PREF."debtors_master as debtor, "
-			.TB_PREF."cust_branch as branch
+				ON trans.trans_no=line.debtor_trans_no AND trans.type=line.debtor_trans_type
+			LEFT JOIN ".TB_PREF."voided as v
+				ON trans.trans_no=v.id AND trans.type=v.type
+			LEFT JOIN ".TB_PREF."cust_branch as branch ON trans.branch_code=branch.branch_code,"
+			.TB_PREF."debtors_master as debtor
 		WHERE debtor.debtor_no = trans.debtor_no
 			AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code";
+			AND trans.branch_code = branch.branch_code
+			AND ISNULL(v.date_)";
 
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+   	if ($cust_id != ALL_TEXT)
+   		$sql .= " AND trans.debtor_no = ".db_escape($cust_id);
 
-   	if ($_POST['filterType'] != ALL_TEXT)
+   	if ($filter != ALL_TEXT)
    	{
-   		if ($_POST['filterType'] == '1')
+   		if ($filter == '1')
    		{
    			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
-   		elseif ($_POST['filterType'] == '2')
+   		elseif ($filter == '2')
    		{
    			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
-   		elseif ($_POST['filterType'] == '3')
+   		elseif ($filter == '3')
    		{
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
 					." OR trans.type = ".ST_BANKDEPOSIT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		}
-   		elseif ($_POST['filterType'] == '4')
+   		elseif ($filter == '4')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
-   		elseif ($_POST['filterType'] == '5')
+   		elseif ($filter == '5')
    		{
 			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
    		}
 
-    	if ($_POST['filterType'] == '2')
+    	if ($filter == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
@@ -361,7 +386,7 @@ function get_sql_for_customer_inquiry()
    	return $sql;
 }
 
-function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item=null, $customer_id=ALL_TEXT)
+function get_sql_for_sales_deliveries_view($from, $to, $customer_id, $stock_item, $location, $delivery, $outstanding=false)
 {
 	$sql = "SELECT trans.trans_no,
 			debtor.name,
@@ -374,7 +399,7 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 			trans.due_date,
 			(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
 			debtor.curr_code,
-			Sum(line.quantity-line.qty_done) AS Outstanding,
+			Sum(line.quantity-line.qty_done) AND sorder.prep_amount=0 AS Outstanding,
 			Sum(line.qty_done) AS Done
 		FROM "
 		 .TB_PREF."sales_orders as sorder, "
@@ -391,37 +416,32 @@ function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_i
 				AND trans.branch_code = branch.branch_code
 				AND trans.debtor_no = branch.debtor_no ";
 
-	if ($_POST['OutstandingOnly'] == true) {
+	if ($outstanding == true) {
 		 $sql .= " AND line.qty_done < line.quantity ";
 	}
 
 	//figure out the sql required from the inputs available
-	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
+	if ($delivery)
 	{
-		$delivery = "%".$_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE ".db_escape($delivery);
+		$sql .= " AND trans.trans_no LIKE ".db_escape('%' . $delivery . '%');
 		$sql .= " GROUP BY trans.trans_no";
 	}
 	else
 	{
-		$sql .= " AND trans.tran_date >= '".date2sql($_POST['DeliveryAfterDate'])."'";
-		$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
+		$sql .= " AND trans.tran_date >= '".date2sql($from)."'";
+		$sql .= " AND trans.tran_date <= '".date2sql($to)."'";
 
-		if ($selected_customer != -1)
-			$sql .= " AND trans.debtor_no=".db_escape($selected_customer)." ";
+		if ($stock_item != ALL_TEXT)
+			$sql .= " AND line.stock_id=".db_escape($stock_item)." ";
 
-		if (isset($selected_stock_item))
-			$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
+		if ($location != ALL_TEXT)
+			$sql .= " AND sorder.from_stk_loc = ".db_escape($location)." ";
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
-		
 		if ($customer_id != ALL_TEXT)
-			$sql .= " AND trans.debtor_no = ".db_escape($customer_id);		
+			$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
 
 		$sql .= " GROUP BY trans.trans_no ";
 
 	} //end no delivery number selected
 	return $sql;
 }
-?>

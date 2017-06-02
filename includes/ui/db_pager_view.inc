@@ -40,7 +40,7 @@ function navi_button_cell($name, $value, $enabled=true, $align='left') {
 //    Sql paged table view. Call this function inside form.
 //
 function display_db_pager(&$pager) {
-    global	$use_popup_windows, $use_date_picker, $path_to_root;
+    global	$path_to_root;
 
 	$pager->select_records();
 
@@ -82,6 +82,13 @@ function display_db_pager(&$pager) {
 
 	$cc = 0; //row colour counter
    	foreach($pager->data as $line_no => $row) {	
+
+        if ($pager->row_fun) {
+            if (function_exists($pager->row_fun)) {
+                $fn = $pager->row_fun;
+                $row = $fn($row);
+            }
+        }
 
 		$marker = $pager->marker;
 	    if ($marker && $marker($row)) 
@@ -132,7 +139,6 @@ function display_db_pager(&$pager) {
 				if(get_post('show_inactive'))
 					$pager->inactive_control_cell($row); break;
 		    default:
-//		    case 'text':
 			  if (isset( $col['align']))
 			  	  label_cell($cell, "align='" . $col['align'] . "'");
 			  else
@@ -188,7 +194,7 @@ function display_db_pager(&$pager) {
 		echo $inact;
 		echo "</td>";
 	} else {
-	  label_cell( _('No records') . $inact, "colspan=$colspan class='navibar'");
+	  	label_cell( _('No records') . $inact, "colspan=$colspan class='navibar'");
 	}
 
 	end_row();
@@ -203,4 +209,3 @@ function display_db_pager(&$pager) {
 }
 
 
-?>

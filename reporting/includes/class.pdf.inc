@@ -120,7 +120,6 @@ class Cpdf extends FPDI {
 		$this->FontFamily = 'helvetica';
 		$this->FontStyle = '';
 		$this->FontSizePt = 12;
-//		$this->utf8Bidi(array(""));
 	}
 
 
@@ -181,7 +180,7 @@ class Cpdf extends FPDI {
                 {
                     default :        $fontname = "freesans13";     break;
                 }
-            }			
+            }
             // else use built-in adobe fonts helvetica.
 		}
 		$this->SetFont($fontname, $style);
@@ -309,6 +308,7 @@ class Cpdf extends FPDI {
 		else
 			$align = 'R';
 
+		$txt = parent::unhtmlentities($txt);
 		// If horizontal scaling was requested, check to see if we're trying to scale
 		// too much.  If so, cut back string first and then scale it.
 		$maxScaleFactor = 1.4;
@@ -320,7 +320,7 @@ class Cpdf extends FPDI {
 		$ret = $txt[1];
 		$txt = $txt[0];
 		$this->SetXY($xb, $this->h - $yb - $h);
-		$txt = parent::unhtmlentities($txt);
+
 		if ($this->isunicode && $this->encoding != "UTF-8")
 			$txt = iconv($this->encoding, "UTF-8", $txt);
 		$this->Cell($w, $h, $txt, $border, 0, $align, $fill, $link, $stretch);
@@ -334,4 +334,3 @@ class Cpdf extends FPDI {
 
 } // end of class
 
-?>

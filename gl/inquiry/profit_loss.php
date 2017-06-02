@@ -21,11 +21,16 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js = get_js_date_picker();
 
 page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
 
+$compare_types = array(
+	_("Accumulated"),
+	_("Period Y-1"),
+	_("Budget")
+);
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 
@@ -50,7 +55,7 @@ if (isset($_GET["AccGrp"]))
 //----------------------------------------------------------------------------------------------------
 
 function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert,
-	&$dec, &$pdec, &$rep, $dimension=0, $dimension2=0, $drilldown, $path_to_root)
+	$dimension=0, $dimension2=0, $drilldown, $path_to_root)
 {
 	global $levelptr, $k;
 		
@@ -63,7 +68,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 	
 	//Get Accounts directly under this group/type
 	$result = get_gl_accounts(null, null, $type);	
-		
+
 	while ($account=db_fetch($result))
 	{
 		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -101,7 +106,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 	while ($accounttype=db_fetch($result))
 	{	
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, 
-			$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+			$compare, $convert, $dimension, $dimension2, $drilldown, $path_to_root);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
@@ -157,24 +162,24 @@ function Achieve($d1, $d2)
 
 function inquiry_controls()
 {  
+	global $compare_types;
+
 	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
 	$date = today();
-	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = begin_month($date);
 	if (!isset($_POST['TransToDate']))
 		$_POST['TransToDate'] = end_month($date);
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = add_days(end_month($date), -user_transaction_days());
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	
-	//Compare Combo
-	global $sel;
-	$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));	
 	echo "<td>"._("Compare to").":</td>\n";
 	echo "<td>";
-	echo array_selector('Compare', null, $sel);
+	echo array_selector('Compare', null, $compare_types);
 	echo "</td>\n";	
+
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
 	if ($dim > 1)
@@ -188,9 +193,9 @@ function inquiry_controls()
 
 //----------------------------------------------------------------------------------------------------
 
-function display_profit_and_loss()
+function display_profit_and_loss($compare)
 {
-	global $path_to_root, $sel;
+	global $path_to_root, $compare_types;
 
 	if (!isset($_POST['Dimension']))
 		$_POST['Dimension'] = 0;
@@ -201,16 +206,12 @@ function display_profit_and_loss()
 
 	$from = $_POST['TransFromDate'];
 	$to = $_POST['TransToDate'];
-	$compare = $_POST['Compare'];
 	
 	if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0))
 		$drilldown = 1; // Deeper Level
 	else
 		$drilldown = 0; // Root level
 	
-	$dec = 0;
-	$pdec = user_percent_dec();
-
 	if ($compare == 0 || $compare == 2)
 	{
 		$end = $to;
@@ -234,15 +235,12 @@ function display_profit_and_loss()
 	$tableheader =  "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>
         <td class='tableheader'>" . _("Period") . "</td>
-		<td class='tableheader'>" . $sel[$compare] . "</td>
+		<td class='tableheader'>" . $compare_types[$compare] . "</td>
 		<td class='tableheader'>" . _("Achieved %") . "</td>
         </tr>";	
 	
 	if (!$drilldown) //Root Level
 	{
-		$parent = -1;
-		$classper = 0.0;
-		$classacc = 0.0;
 		$salesper = 0.0;
 		$salesacc = 0.0;	
 	
@@ -260,10 +258,11 @@ function display_profit_and_loss()
 			
 			//Get Account groups/types under this group/type
 			$typeresult = get_account_types(false, $class['cid'], -1);
+			$k = 0; // row color
 			while ($accounttype=db_fetch($typeresult))
 			{
 				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
-					$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+					$dimension, $dimension2, $drilldown, $path_to_root);
 				$class_per_total += $TypeTotal[0];
 				$class_acc_total += $TypeTotal[1];	
 
@@ -319,7 +318,7 @@ function display_profit_and_loss()
 		echo $tableheader;
 		
 		$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
-			$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+			$dimension, $dimension2, $drilldown, $path_to_root);
 		
 	}
 		
@@ -334,10 +333,9 @@ start_form();
 
 inquiry_controls();
 
-display_profit_and_loss();
+display_profit_and_loss(get_post('Compare'));
 
 end_form();
 
 end_page();
 
-?>

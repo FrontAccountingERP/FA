@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/includes/ui/items_cart.inc");
 
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
@@ -48,8 +49,6 @@ function get_fiscalyear($id)
 
 function get_current_fiscalyear()
 {
-	global $path_to_root;
-	include_once($path_to_root . "/admin/db/company_db.inc");
 	$year = get_company_pref('f_year');
 
 	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
@@ -130,6 +129,8 @@ function check_years_before($date, $closed=false)
 //---------------------------------------------------------------------------------------------
 function close_year($year)
 {
+	global $Refs;
+
 	$co = get_company_prefs();
 	if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false)
 	{
@@ -159,15 +160,15 @@ function close_year($year)
 
 	if ($balance != 0.0)
 	{
-		$trans_type = ST_JOURNAL;
-		$trans_id = get_next_trans_no($trans_type);
+		$cart = new items_cart(ST_JOURNAL);
+		$cart->reference = $Refs->get_next(ST_JOURNAL, null, sql2date($to));
+		$cart->tran_date = $cart->doc_date = $cart->event_date = $to;
 
-		add_gl_trans($trans_type, $trans_id, $to, $co['retained_earnings_act'],
-			0, 0, _("Closing Year"), -$balance);
-		add_gl_trans($trans_type, $trans_id, $to, $co['profit_loss_year_act'],
-			0, 0, _("Closing Year"), $balance);
-
-	}	
+		$cart->add_gl_item($co['retained_earnings_act'], 0, 0, -$balance, _("Closing Year"), '', 0);
+		$cart->add_gl_item($co['profit_loss_year_act'], 0, 0, $balance, _("Closing Year"), '', 0);
+		$cart->memo_ = _("Closing Year");
+		write_journal_entries($cart);
+	}
 	close_transactions($to);
 
 	commit_transaction();
@@ -180,7 +181,7 @@ function open_year($year)
 	$from = sql2date($myrow['begin']);
 
 	begin_transaction();
-	open_transactions($from);
+	close_transactions(add_days($from, -1));
 	commit_transaction();
 }
 
@@ -214,7 +215,7 @@ function delete_this_fiscalyear($selected_id)
 {
 	global $db_connections;
 	
-	db_backup($db_connections[$_SESSION["wa_current_user"]->company], 'Security backup before Fiscal Year Removal');
+	db_backup($db_connections[user_company()], 'Security backup before Fiscal Year Removal');
 	begin_transaction();
 	$ref = _("Open Balance");
 	$myrow = get_fiscalyear($selected_id);
@@ -342,19 +343,26 @@ function delete_this_fiscalyear($selected_id)
 	db_query($sql, "Could not delete exchange rates");
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE tran_date <= '$to'";
 	db_query($sql, "Could not delete budget trans");
-	
-	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
+	$sql = "SELECT account, SUM(amount) AS amount, person_type_id, person_id FROM "
+		.TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account, person_type_id, person_id";
 	$result = db_query($sql, "Could not retrieve gl trans");
 	$trans_no = get_next_trans_no(ST_JOURNAL);
+
+	$last_account='';
 	$new = false;
 	while ($row = db_fetch($result))
 	{
-		$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
-		db_query($sql, "Could not delete gl trans");
-		if (is_account_balancesheet($row['account']))
+		if ($last_account != $row['account']) // deletes all subledgers postings, so do it once for account
 		{
-			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
-				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
+			$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
+			db_query($sql, "Could not delete gl trans");
+			$last_account = $row['account'];
+		}
+		if (is_account_balancesheet($row['account']) && $row['amount'])
+		{
+			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount, person_type_id, person_id) VALUES
+				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']}, "
+				.db_escape($row['person_type_id'], true).", ".db_escape($row['person_id'], true).")";
 			db_query($sql, "Could not insert gl trans");
 			$new = true;
 		}
@@ -363,10 +371,11 @@ function delete_this_fiscalyear($selected_id)
 	{
 		global $Refs;
 		$trans_type = ST_JOURNAL;
-		$reference = $Refs->get_next($trans_type);
-		$Refs->save($trans_type, $trans_no, $reference);
 		$date_ = sql2date($to);
-
+		$reference = $Refs->get_next($trans_type, null, $date_);
+		$Refs->save($trans_type, $trans_no, $reference);
+		add_journal($trans_type, $trans_no, $total, $date_, get_company_currency(), $reference);
+		$Refs->save($trans_type, $trans_no, $reference);
 		add_audit_trail($trans_type, $trans_no, $date_);
 	}
 	$sql = "SELECT bank_act, SUM(amount) AS amount FROM ".TB_PREF."bank_trans WHERE trans_date <= '$to' GROUP BY bank_act";
@@ -415,4 +424,3 @@ function delete_this_fiscalyear($selected_id)
 }
 
 
-?>

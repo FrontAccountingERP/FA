@@ -12,10 +12,11 @@
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 
-include_once($path_to_root . "/includes/db/inventory_db.inc");
+include_once($path_to_root . "/includes/db/allocations_db.inc");
 
 include_once($path_to_root . "/purchasing/includes/db/supp_trans_db.inc");
 include_once($path_to_root . "/purchasing/includes/db/po_db.inc");
@@ -114,4 +115,110 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $descripti
 	return true;
 }
 
-?>
+function get_po_prepayments($supp_trans)
+{
+	// collect purchase order line ids
+	$allocations = array();
+	$line_ids = array();
+	foreach($supp_trans->grn_items as $item)
+		if ($item->po_detail_item)
+			$line_ids[] = $item->po_detail_item;
+
+	if (!count($line_ids))
+		return $allocations;
+
+	$sql = "SELECT DISTINCT allocs.*
+		FROM ".TB_PREF."supp_allocations allocs 
+			LEFT JOIN ".TB_PREF."purch_order_details line ON line.order_no=allocs.trans_no_to AND trans_type_to=".ST_PURCHORDER."
+		WHERE line.po_detail_item IN(".implode(',', array_values($line_ids)).")";
+
+	$result = db_query($sql, "Cannot retrieve po prepayments");
+
+	while($dat = db_fetch($result))
+	{
+		$allocations[] = $dat;
+	}
+
+	return $allocations;
+}
+
+//---------------------------------------------------------------------------------------------------
+//
+//	Add Purchase Order, GRN or Purchase Invoice with parent auto documents (if any)
+//
+function add_direct_supp_trans($cart)
+{
+	global $Refs, $type_shortcuts;
+
+	if ($cart->trans_type != ST_PURCHORDER) {
+		// for direct grn/invoice set same dates for lines as for whole document
+		foreach ($cart->line_items as $line_no =>$line)
+			$cart->line_items[$line_no]->req_del_date = $cart->orig_order_date;
+	}
+
+	$ref = $cart->reference;
+	if ($cart->trans_type != ST_PURCHORDER) {
+		$cart->reference = 'auto';
+		begin_transaction();	// all db changes as single transaction for direct document
+	}
+	$order_no = add_po($cart);
+   	$cart->order_no = $order_no;
+
+	if ($cart->trans_type == ST_PURCHORDER)
+		return $order_no;
+
+	//Direct GRN
+	if ($cart->trans_type == ST_SUPPRECEIVE)
+		$cart->reference = $ref;
+	if ($cart->trans_type != ST_SUPPINVOICE)
+		$cart->Comments = $cart->reference; //grn does not hold supp_ref
+	foreach($cart->line_items as $key => $line)
+		$cart->line_items[$key]->receive_qty = $line->quantity;
+	$grn_no = add_grn($cart);
+	if ($cart->trans_type == ST_SUPPRECEIVE) {
+		commit_transaction(); // save PO+GRN
+		return $grn_no;
+	}
+	//	Direct Purchase Invoice
+	$inv = new supp_trans(ST_SUPPINVOICE);
+	$inv->Comments = $cart->Comments;
+	$inv->supplier_id = $cart->supplier_id;
+	$inv->tran_date = $cart->orig_order_date;
+	$inv->due_date = $cart->due_date;
+	$inv->dimension = $cart->dimension;
+	$inv->dimension2 = $cart->dimension2;
+	$inv->reference = $ref;
+	$inv->supp_reference = $cart->supp_ref;
+	$inv->tax_included = $cart->tax_included;
+	$supp = get_supplier($cart->supplier_id);
+	$inv->tax_group_id = $supp['tax_group_id'];
+	$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
+	$total = 0;
+		foreach($cart->line_items as $key => $line) {
+		$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
+			$line->item_description, $line->receive_qty, 0, $line->receive_qty,
+			$line->price, $line->price, true, get_unit_cost($line->stock_id), '');
+		$total += round2(($line->receive_qty * $line->price), user_price_dec());
+	}
+	$inv->tax_overrides = $cart->tax_overrides;
+	if (!$inv->tax_included) {
+		$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
+		foreach( $taxes as $taxitem) {
+			$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
+		}
+	}
+	$inv->ex_rate = $cart->ex_rate;
+
+	$inv_no = add_supp_invoice($inv);
+
+	if ($cart->cash_account) {
+		$pmt_no = write_supp_payment(0, $inv->supplier_id, $cart->cash_account,	$inv->tran_date, $Refs->get_next(ST_SUPPAYMENT, null, $inv->tran_date), 
+			$total, 0, _('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
+		add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->supplier_id, $inv->tran_date);
+		update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no, $inv->supplier_id);
+		update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no, $inv->supplier_id);
+	}
+	commit_transaction(); // save PO+GRN+PI(+SP)
+	return $inv_no;
+}
+

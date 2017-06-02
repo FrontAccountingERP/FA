@@ -70,4 +70,3 @@ function delete_sales_point($id)
 	db_query($sql,"The point of sale record could not be deleted");
 }
 
-?>

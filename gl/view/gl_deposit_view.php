@@ -68,7 +68,7 @@ label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), 
 label_cells(_("Date"), sql2date($to_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("From"), payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+label_cells(_("From"), get_counterparty_name(ST_BANKDEPOSIT, $to_trans['trans_no']), "class='tableheader2'", "colspan=$colspan1");
 if ($show_currencies)
 {
 	label_cells(_("Settle currency"), $to_trans['settle_curr'], "class='tableheader2'");
@@ -103,7 +103,7 @@ else
     if ($dim == 2)
         $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
             _("Amount"), _("Memo"));
-    else if ($dim == 1)
+    elseif ($dim == 1)
         $th = array(_("Account Code"), _("Account Description"), _("Dimension"),
             _("Amount"), _("Memo"));
     else
@@ -142,4 +142,3 @@ else
 }
 
 end_page(true, false, false, ST_BANKDEPOSIT, $trans_no);
-?>

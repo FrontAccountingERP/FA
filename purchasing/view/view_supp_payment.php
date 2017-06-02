@@ -17,7 +17,7 @@ include($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
@@ -91,4 +91,3 @@ if (!$voided)
 }
 
 end_page(true, false, false, ST_SUPPAYMENT, $trans_no);
-?>

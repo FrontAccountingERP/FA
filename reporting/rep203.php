@@ -32,21 +32,16 @@ function getTransactions($supplier, $date)
 	$date = date2sql($date);
 	$dec = user_price_dec();
 
-	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
-			".TB_PREF."supp_trans.tran_date,
-			".TB_PREF."supp_trans.due_date,
-			".TB_PREF."supp_trans.trans_no,
-			".TB_PREF."supp_trans.type,
-			".TB_PREF."supp_trans.rate,
-			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc) AS Balance,
-			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
+	$sql = "SELECT  supp_reference, tran_date, due_date, trans_no, type, rate,
+			(ABS( ov_amount) + ABS( ov_gst) -  alloc) AS Balance,
+			(ABS( ov_amount) + ABS( ov_gst) ) AS TranTotal
 		FROM ".TB_PREF."supp_trans
-		WHERE ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
-		AND ROUND(ABS(".TB_PREF."supp_trans.ov_amount),$dec) + ROUND(ABS(".TB_PREF."supp_trans.ov_gst),$dec) - 
-		ROUND(".TB_PREF."supp_trans.alloc,$dec) != 0
-		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
-		ORDER BY ".TB_PREF."supp_trans.type,
-			".TB_PREF."supp_trans.trans_no";
+		WHERE  supplier_id = '$supplier'
+		AND ROUND(ABS( ov_amount),$dec) + ROUND(ABS( ov_gst),$dec) - 
+		ROUND( alloc,$dec) != 0
+		AND  tran_date <='$date'
+		ORDER BY  type,
+			 trans_no";
 
     return db_query($sql, "No transactions were returned");
 }
@@ -55,13 +50,13 @@ function getTransactions($supplier, $date)
 
 function print_payment_report()
 {
-    	global $path_to_root, $systypes_array;
+	global $path_to_root, $systypes_array;
 
-    	$to = $_POST['PARAM_0'];
-    	$fromsupp = $_POST['PARAM_1'];
-    	$currency = $_POST['PARAM_2'];
-    	$no_zeros = $_POST['PARAM_3'];
-    	$comments = $_POST['PARAM_4'];
+	$to = $_POST['PARAM_0'];
+	$fromsupp = $_POST['PARAM_1'];
+	$currency = $_POST['PARAM_2'];
+	$no_zeros = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
 	$orientation = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
@@ -88,7 +83,7 @@ function print_payment_report()
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
 
-	$cols = array(0, 100, 130, 190,	250, 320, 385, 450,	515);
+	$cols = array(0, 100, 160, 210,	250, 320, 385, 450,	515);
 
 	$headers = array(_('Trans Type'), _('#'), _('Due Date'), '', '',
 		'', _('Total'), _('Balance'));
@@ -99,7 +94,7 @@ function print_payment_report()
     			1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
     			2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
-			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
@@ -187,4 +182,3 @@ function print_payment_report()
     $rep->End();
 }
 
-?>

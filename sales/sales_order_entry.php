@@ -51,11 +51,11 @@ set_page_security( @$_SESSION['Items']->trans_type,
 
 $js = '';
 
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
 
-if ($use_date_picker) {
+if (user_use_date_picker()) {
 	$js .= get_js_date_picker();
 }
 
@@ -66,8 +66,13 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
-	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
+
+	if (isset($_GET['FixedAsset'])) {
+		$_SESSION['page_title'] = _($help_context = "Fixed Assets Sale");
+		$_SESSION['Items']->fixed_asset = true;
+  	} else
+		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
@@ -95,6 +100,12 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
+
+if (isset($_GET['ModifyOrderNumber']))
+	check_is_editable(ST_SALESORDER, $_GET['ModifyOrderNumber']);
+elseif (isset($_GET['ModifyQuotationNumber']))
+	check_is_editable(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
+
 //-----------------------------------------------------------------------------
 
 if (list_updated('branch_id')) {
@@ -214,13 +225,10 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, 'prtopt');
 	submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, null, 1);
 	set_focus('prtopt');
-	
-	$sql = "SELECT trans_type_from, trans_no_from FROM ".TB_PREF."cust_allocations
-			WHERE trans_type_to=".ST_SALESINVOICE." AND trans_no_to=".db_escape($invoice);
-	$result = db_query($sql, "could not retrieve customer allocation");
-	$row = db_fetch($result);
+
+	$row = db_fetch(get_allocatable_from_cust_transactions(null, $invoice, ST_SALESINVOICE));
 	if ($row !== false)
-		submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from']."-".$row['trans_type_from'], 'prtopt');
+		submenu_print(_("Print &Receipt"), $row['type'], $row['trans_no']."-".$row['type'], 'prtopt');
 
 	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);
 
@@ -238,7 +246,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts();
+	check_edit_conflicts(get_post('cart_id'));
 //-----------------------------------------------------------------------------
 
 function copy_to_cart()
@@ -264,6 +272,7 @@ function copy_to_cart()
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
 			$cart->ship_via = 0;
 			$cart->deliver_to = '';
+			$cart->prep_amount = 0;
 		}
 	} else {
 		$cart->due_date = $_POST['delivery_date'];
@@ -272,6 +281,8 @@ function copy_to_cart()
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
 		$cart->ship_via = $_POST['ship_via'];
+		if (!$cart->trans_no || ($cart->trans_type == ST_SALESORDER && !$cart->is_started()))
+			$cart->prep_amount = input_num('prep_amount', 0);
 	}
 	$cart->Location = $_POST['Location'];
 	$cart->freight_cost = input_num('freight_cost');
@@ -313,6 +324,7 @@ function copy_from_cart()
 
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
+	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	// POS 
 	$_POST['payment'] = $cart->payment;
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
@@ -325,10 +337,10 @@ function copy_from_cart()
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
-  global 	$Ajax;
+  	global 	$Ajax;
 
-  $Ajax->activate('items_table');
-  set_focus('_stock_id_edit');
+  	$Ajax->activate('items_table');
+  	set_focus('_stock_id_edit');
 }
 
 //--------------------------------------------------------------------------------
@@ -358,7 +370,7 @@ function can_process() {
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type!=ST_SALESORDER && $_SESSION['Items']->trans_type!=ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
-		display_error(_("The entered date is not in fiscal year"));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('OrderDate');
 		return false;
 	}
@@ -367,20 +379,24 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
-
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
 		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
-
 	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-
+		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((input_num('prep_amount')<=0) ||
+			input_num('prep_amount')>$_SESSION['Items']->get_trans_total())) {
+			display_error(_("Pre-payment required have to be positive and less than total amount."));
+			set_focus('prep_amount');
+			return false;
+		}
 		if (strlen($_POST['deliver_to']) <= 1) {
 			display_error(_("You must enter the person or company to whom delivery should be made to."));
 			set_focus('deliver_to');
 			return false;
 		}
+
 		if ($_SESSION['Items']->trans_type != ST_SALESQUOTE && strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
@@ -420,7 +436,7 @@ function can_process() {
 			return false;
 		}	
 	}	
-	if (!$Refs->is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'], $_SESSION['Items']->trans_type)) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
@@ -451,7 +467,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	if ($ret == -1)
 	{
 		display_error(_("The entered reference is already in use."));
-		$ref = get_next_reference($_SESSION['Items']->trans_type);
+		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => Today()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
 			display_error(_("The reference number field has been increased. Please save the document again."));
@@ -491,7 +507,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 function check_item_data()
 {
-	global $SysPrefs, $allow_negative_prices;
+	global $SysPrefs;
 	
 	$is_inventory_item = is_inventory_item(get_post('stock_id'));
 	if(!get_post('stock_id_text', true)) {
@@ -503,7 +519,7 @@ function check_item_data()
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
-	} elseif (!check_num('price', 0) && (!$allow_negative_prices || $is_inventory_item)) {
+	} elseif (!check_num('price', 0) && (!$SysPrefs->allow_negative_prices() || $is_inventory_item)) {
 		display_error( _("Price for inventory item must be entered and can not be less than 0"));
 		set_focus('price');
 		return false;
@@ -515,7 +531,7 @@ function check_item_data()
 		return false;
 	}
 
-	$cost_home = get_standard_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
+	$cost_home = get_unit_cost(get_post('stock_id')); // Added 2011-03-27 Joe Hunt
 	$cost = $cost_home / get_exchange_rate_from_home_currency($_SESSION['Items']->customer_currency, $_SESSION['Items']->document_date);
 	if (input_num('price') < $cost)
 	{
@@ -554,7 +570,7 @@ function handle_delete_item($line_no)
     if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 	    $_SESSION['Items']->remove_from_cart($line_no);
     } else {
-	display_error(_("This item cannot be deleted because some of it has already been delivered."));
+		display_error(_("This item cannot be deleted because some of it has already been delivered."));
     }
     line_start_focus();
 }
@@ -613,7 +629,6 @@ function  handle_cancel_order()
 			meta_forward($path_to_root.'/index.php','application=orders');
 		}
 	}
-	$Ajax->activate('_page_body');
 	processing_end();
 	display_footer_exit();
 }
@@ -622,9 +637,9 @@ function  handle_cancel_order()
 
 function create_cart($type, $trans_no)
 { 
-	global $Refs;
+	global $Refs, $SysPrefs;
 
-	if (!$_SESSION['SysPrefs']->db_ok) // create_cart is called before page() where the check is done
+	if (!$SysPrefs->db_ok) // create_cart is called before page() where the check is done
 		return;
 
 	processing_start();
@@ -647,7 +662,7 @@ function create_cart($type, $trans_no)
 			$doc->pos = get_sales_point(user_pos());
 		} else
 			$doc->due_date = $doc->document_date;
-		$doc->reference = $Refs->get_next($doc->trans_type);
+		$doc->reference = $Refs->get_next($doc->trans_type, null, array('date' => Today()));
 		//$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {
 			$doc->line_items[$line_no]->qty_done = 0;
@@ -678,7 +693,10 @@ if (isset($_POST['CancelItemChanges'])) {
 }
 
 //--------------------------------------------------------------------------------
-check_db_has_stock_items(_("There are no inventory items defined in the system."));
+if ($_SESSION['Items']->fixed_asset)
+	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+else
+	check_db_has_stock_items(_("There are no inventory items defined in the system."));
 
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 
@@ -712,8 +730,7 @@ if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 start_form();
 
 hidden('cart_id');
-$customer_error = display_order_header($_SESSION['Items'],
-	($_SESSION['Items']->any_already_delivered() == 0), $idate);
+$customer_error = display_order_header($_SESSION['Items'], !$_SESSION['Items']->is_started(), $idate);
 
 if ($customer_error == "") {
 	start_table(TABLESTYLE, "width='80%'", 10);
@@ -730,13 +747,13 @@ if ($customer_error == "") {
 		submit_center_first('ProcessOrder', $porder,
 		    _('Check entered data and save document'), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'), true);
+	   		_('Cancels document entry or removes sales order when editing an old document'));
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	} else {
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');
 		submit_center_last('CancelOrder', $cancelorder,
-	   		_('Cancels document entry or removes sales order when editing an old document'), true);
+	   		_('Cancels document entry or removes sales order when editing an old document'));
 		if ($_SESSION['Items']->trans_type==ST_SALESORDER)
 			submit_js_confirm('CancelOrder', _('You are about to cancel undelivered part of this order.\nDo you want to continue?'));
 		else
@@ -749,4 +766,3 @@ if ($customer_error == "") {
 
 end_form();
 end_page();
-?>

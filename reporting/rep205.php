@@ -30,20 +30,11 @@ print_supplier_details_listing();
 
 function get_supplier_details_for_report()
 {
-	$sql = "SELECT ".TB_PREF."suppliers.supplier_id,
-			".TB_PREF."suppliers.supp_name,
-			".TB_PREF."suppliers.address,
-			".TB_PREF."suppliers.supp_address,
-			".TB_PREF."suppliers.supp_ref,
-			".TB_PREF."suppliers.contact,
-			".TB_PREF."suppliers.curr_code,
-			".TB_PREF."suppliers.dimension_id,
-			".TB_PREF."suppliers.dimension2_id,
-			".TB_PREF."suppliers.notes,
-			".TB_PREF."suppliers.gst_no
-		FROM ".TB_PREF."suppliers
-		WHERE inactive = 0
-	 	ORDER BY supp_name";
+	$sql = "SELECT supplier_id,	supp_name, address, supp_address, supp_ref,
+				contact, curr_code,	dimension_id, dimension2_id, notes, gst_no
+			FROM ".TB_PREF."suppliers
+			WHERE inactive = 0
+	 		ORDER BY supp_name";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -133,7 +124,7 @@ function print_supplier_details_listing()
 		{
 			$newrow = 0;
 			$rep->NewLine();
-			// Here starts the new report lines 2013-01-28 Joe Hunt
+			// Here starts the new report lines
 			$contacts = get_supplier_contacts($myrow['supplier_id']);
 			$rep->TextCol(0, 1,	$myrow['supp_name']);
 			$rep->TextCol(1, 2,	_('Tax_Id') . ": " . $myrow['gst_no']);
@@ -176,7 +167,7 @@ function print_supplier_details_listing()
 			{
 				$oldrow = $rep->row;
 				$rep->NewLine();
-				$rep->TextColLines(1, 2, _("Gereral Notes:")." ".$myrow['notes'], -2);
+				$rep->TextColLines(1, 2, _("General Notes:")." ".$myrow['notes'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
 			}	
@@ -206,4 +197,3 @@ function print_supplier_details_listing()
     $rep->End();
 }
 
-?>

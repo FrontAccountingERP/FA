@@ -24,7 +24,6 @@ function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
 		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
 		" . $pymt_discount . ", " . $credit_limit 
 		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
-
 	db_query($sql,"The customer could not be added");
 }
 
@@ -71,43 +70,37 @@ function get_customer_details($customer_id, $to=null, $all=true)
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
+	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
 	if ($all)
-    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
-    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
+    	$value = "IFNULL($sign*(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
     else		
-    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
-    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
+    	$value = "IFNULL($sign*(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
     		trans.alloc),0)";
-	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
-    $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
-		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
-
-		Sum(IFNULL($value,0)) AS Balance,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0)) AS Due,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past1,$value,0)) AS Overdue1,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past2,$value,0)) AS Overdue2
-
-		FROM ".TB_PREF."debtors_master
-			 LEFT JOIN ".TB_PREF."debtor_trans trans ON 
-			 trans.tran_date <= '$todate' AND ".TB_PREF."debtors_master.debtor_no = trans.debtor_no AND trans.type <> 13
-,
-			 ".TB_PREF."payment_terms,
-			 ".TB_PREF."credit_status
-
-		WHERE
-			 ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
- 			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)." ";
+	$due = "IF (trans.type=".ST_SALESINVOICE.", trans.due_date, trans.tran_date)";
+    $sql = "SELECT debtor.name, debtor.curr_code, terms.terms, debtor.credit_limit,
+    			credit_status.dissallow_invoices, credit_status.reason_description,
+				Sum(IFNULL($value,0)) AS Balance,
+				Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0)) AS Due,
+				Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past1,$value,0)) AS Overdue1,
+				Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $past2,$value,0)) AS Overdue2
+			FROM ".TB_PREF."debtors_master debtor
+				 LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.tran_date <= '$todate' AND debtor.debtor_no = trans.debtor_no AND trans.type <> ".ST_CUSTDELIVERY.","
+				 .TB_PREF."payment_terms terms,"
+				 .TB_PREF."credit_status credit_status
+			WHERE
+					debtor.payment_terms = terms.terms_indicator
+	 			AND debtor.credit_status = credit_status.id
+			 	AND debtor.debtor_no = ".db_escape($customer_id);
 	if (!$all)
-		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > ".FLOAT_COMP_DELTA." ";  
-	$sql .= "GROUP BY
-			  ".TB_PREF."debtors_master.name,
-			  ".TB_PREF."payment_terms.terms,
-			  ".TB_PREF."payment_terms.days_before_due,
-			  ".TB_PREF."payment_terms.day_in_following_month,
-			  ".TB_PREF."debtors_master.credit_limit,
-			  ".TB_PREF."credit_status.dissallow_invoices,
-			  ".TB_PREF."credit_status.reason_description";
+		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > ".FLOAT_COMP_DELTA;
+	$sql .= " GROUP BY
+			  	debtor.name,
+			  	terms.terms,
+			  	terms.days_before_due,
+			  	terms.day_in_following_month,
+			  	debtor.credit_limit,
+			  	credit_status.dissallow_invoices,
+			  	credit_status.reason_description";
     $result = db_query($sql,"The customer details could not be retrieved");
 
     $customer_record = db_fetch($result);
@@ -139,11 +132,11 @@ function get_customer_name($customer_id)
 
 function get_customer_habit($customer_id)
 {
-	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
-		".TB_PREF."credit_status.dissallow_invoices
-		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
-		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
+	$sql = "SELECT debtor.pymt_discount, credit_status.dissallow_invoices
+			FROM ".TB_PREF."debtors_master debtor,"
+				.TB_PREF."credit_status credit_status
+			WHERE debtor.credit_status = credit_status.id
+			AND debtor.debtor_no = ".db_escape($customer_id);
 
 	$result = db_query($sql, "could not query customers");
 
@@ -187,4 +180,36 @@ function get_customer_by_ref($reference)
 	return db_fetch($result);
 }
 
-?>
+//----------------------------------------------------------------------------------
+
+function get_customer_currency($customer_id=null, $branch_id=null)
+{
+    $sql = "SELECT curr_code
+    	FROM ".TB_PREF."debtors_master cust
+    		LEFT JOIN ".TB_PREF."cust_branch branch ON branch.debtor_no=cust.debtor_no
+    	WHERE " .(isset($branch_id) ? "branch_code = ".db_escape($branch_id) : "cust.debtor_no = ".db_escape($customer_id));
+
+	$result = db_query($sql, "Retreive currency of customer $customer_id");
+
+	$myrow=db_fetch_row($result);
+	return $myrow[0];
+}
+
+function get_customers_search($customer)
+{
+	global $SysPrefs;
+
+	if (isset($SysPrefs->max_rows_in_search))
+		$limit = $SysPrefs->max_rows_in_search;
+	else
+		$limit = 10;
+
+	$sql = "SELECT debtor_no, name, debtor_ref, address, tax_id FROM ".TB_PREF."debtors_master 
+	  WHERE (  name LIKE " . db_escape("%" . $customer. "%") . " OR 
+    		 debtor_ref LIKE " . db_escape("%" . $customer. "%") . " OR 
+	        address LIKE " . db_escape("%" . $customer. "%") . " OR 
+    	     tax_id LIKE " . db_escape("%" . $customer. "%").")
+	  ORDER BY name LIMIT 0,".(int)($limit);
+
+	return db_query($sql, "Failed in retreiving customer list.");
+}

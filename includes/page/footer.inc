@@ -44,4 +44,3 @@ function page_footer($no_menu=false, $is_index=false)
     echo "</body></html>\n";
 }
 
-?>

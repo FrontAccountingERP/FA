@@ -10,7 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/db/inventory_db.inc");
+include_once($path_to_root . "/includes/inventory.inc");
+include_once($path_to_root . "/includes/db/allocations_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_order_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_credit_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_invoice_db.inc");
@@ -25,21 +26,6 @@ include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/db/payment_db.inc");
 include_once($path_to_root . "/sales/includes/db/branches_db.inc");
 include_once($path_to_root . "/sales/includes/db/customers_db.inc");
-
-//----------------------------------------------------------------------------------------
-// $price in customer's currency
-// $quantity is used as is (if it's neg it's neg, if it's pos it's pos)
-// $std_cost is in home currency
-// $show_or_hide 1 show this item in invoice/credit views, 0 to hide it (used for write-off items)
-// $type is 10 (invoice) or 11 (credit)
-
-function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_, $reference,
-	$quantity, $std_cost, $show_or_hide=1, $price=0, $discount_percent=0)
-{
-	return add_stock_move($type, $stock_id, $trans_id, $location, $date_, $reference,
-		$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
-		"The customer stock movement record cannot be inserted");
-}
 
 //----------------------------------------------------------------------------------------
 // add a debtor-related gl transaction
@@ -61,7 +47,7 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 function get_calculated_price($stock_id, $add_pct)
 {
-	$avg = get_standard_cost($stock_id);
+	$avg = get_unit_cost($stock_id);
 	if ($avg == 0)
 		return 0;
 	return round2($avg * (1 + $add_pct / 100), user_price_dec());
@@ -131,20 +117,6 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}
-/*
-	if (isset($prices[$sales_type_id][$home_curr])) 
-	{
-	    $price = $prices[$sales_type_id][$home_curr] / $rate;
-	}
-	elseif (isset($prices[$base_id][$currency])) 
-	{
-	    $price = $prices[$base_id][$currency] * $factor;
-	}
-	elseif (isset($prices[$base_id][$home_curr])) 
-	{
-	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
-	}
-*/	
 	elseif ($num_rows == 0 && $add_pct != -1)
 	{
 		$price = get_calculated_price($stock_id, $add_pct);
@@ -203,7 +175,6 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 
         $qty_dispatched = (float)$qty_dispatched;
 
-//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 	if ($doc_type == 0)
 		return false;
 	else {
@@ -229,14 +200,15 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 //
 function get_location(&$cart)
 {
-	$sql = "SELECT ".TB_PREF."locations.* FROM ".TB_PREF."stock_moves,"
-		.TB_PREF."locations".
+	$sql = "SELECT location.*
+		FROM ".TB_PREF."stock_moves move,"
+			.TB_PREF."locations location".
 		" WHERE type=".db_escape($cart->trans_type).
 		" AND trans_no=".key($cart->trans_no).
 		" AND qty!=0 ".
-		" AND ".TB_PREF."locations.loc_code=".TB_PREF."stock_moves.loc_code";
-	$result = db_query($sql, 'Retreiving inventory location');
+		" AND location.loc_code=move.loc_code";
 
+	$result = db_query($sql, 'Retreiving inventory location');
 
 	if (db_num_rows($result)) {
 		return db_fetch($result);
@@ -251,7 +223,7 @@ function get_location(&$cart)
 function read_sales_trans($doc_type, $trans_no, &$cart)
 {
 	if (!is_array($trans_no) && $trans_no)
-			$trans_no = array($trans_no);
+		$trans_no = array($trans_no);
 
 	$cart->trans_type = $doc_type;
 	if (!$trans_no) { // new document
@@ -273,6 +245,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 			$myrow["tax_group_name"]);
 
 		$cart->reference = $myrow["reference"];
+		$cart->prepaid = $myrow["prepaid"];
 		$cart->order_no = $myrow["order_"];
 		$cart->due_date = sql2date($myrow["due_date"]);
 		$cart->document_date = sql2date($myrow["tran_date"]);
@@ -306,6 +279,8 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 					@$myrow["src_id"]);
 			}
 		}
+		$cart->prepayments = get_payments_for($trans_no, $doc_type);
+
 	} // !newdoc
 
 	return true;
@@ -405,5 +380,3 @@ function get_sales_child_documents($trans_type, $trans_no)
 	return db_query($sql,"The related credit notes could not be retreived");
 }
 
-
-?>

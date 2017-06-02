@@ -49,4 +49,3 @@ function delete_work_centre($type_id)
 	db_query($sql, "could not delete work centre");
 }
 
-?>

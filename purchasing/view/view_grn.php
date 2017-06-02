@@ -16,7 +16,7 @@ include($path_to_root . "/purchasing/includes/po_class.inc");
 include($path_to_root . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
@@ -87,4 +87,3 @@ is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been v
 
 end_page(true, false, false, ST_SUPPRECEIVE, $_GET['trans_no']);
 
-?>

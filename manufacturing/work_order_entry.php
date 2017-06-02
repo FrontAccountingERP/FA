@@ -15,16 +15,15 @@ $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
@@ -63,7 +62,7 @@ if (isset($_GET['AddedID']))
 		submenu_print(_("&Email This Work Order"), ST_WORKORDER, $id, null, 1);
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype, 'PARAM_3' => '',
-    		'PARAM_4' => (isset($def_print_orientation) && $def_print_orientation == 1 ? 1 : 0)); 
+    		'PARAM_4' => (user_def_print_orientation() == 1 ? 1 : 0)); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$stype&trans_no=$id");
 	}
@@ -123,20 +122,12 @@ if (!isset($_POST['date_']))
 
 function can_process()
 {
-	global $selected_id, $SysPrefs, $Refs;
+	global $selected_id, $SysPrefs;
 
 	if (!isset($selected_id))
 	{
-    	if (!$Refs->is_valid($_POST['wo_ref']))
+    	if (!check_reference($_POST['wo_ref'], ST_WORKORDER))
     	{
-    		display_error(_("You must enter a reference."));
-			set_focus('wo_ref');
-    		return false;
-    	}
-
-    	if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER))
-    	{
-    		display_error(_("The entered reference is already in use."));
 			set_focus('wo_ref');
     		return false;
     	}
@@ -157,7 +148,7 @@ function can_process()
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -232,15 +223,8 @@ function can_process()
     		display_error( _("The date entered is in an invalid format."));
     		return false;
 		}
-		//elseif (!is_date_in_fiscalyear($_POST['RequDate']))
-		//{
-		//	display_error(_("The entered date is not in fiscal year."));
-		//	return false;
-		//}
     	if (isset($selected_id))
     	{
-    		$myrow = get_work_order($selected_id, true);
-
     		if ($_POST['units_issued'] > input_num('quantity'))
     		{
 				set_focus('quantity');
@@ -301,7 +285,7 @@ if (isset($_POST['delete']))
 	{ //ie not cancelled the delete as a result of above tests
 
 		// delete the actual work order
-		delete_work_order($selected_id);
+		delete_work_order($selected_id, $_POST['stock_id'], $_POST['quantity'], $_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 	}
 }
@@ -359,7 +343,6 @@ if (isset($selected_id))
 	$_POST['date_'] = sql2date($myrow["date_"]);
 	$_POST['RequDate'] = sql2date($myrow["required_by"]);
 	$_POST['released_date'] = sql2date($myrow["released_date"]);
-	$_POST['memo_'] = "";
 	$_POST['units_issued'] = $myrow["units_issued"];
 	$_POST['Costs'] = price_format($myrow["additional_costs"]);
 
@@ -370,8 +353,6 @@ if (isset($selected_id))
 	hidden('released', $_POST['released']);
 	hidden('released_date', $_POST['released_date']);
 	hidden('selected_id',  $selected_id);
-	hidden('old_qty', $myrow["units_reqd"]);
-	hidden('old_stk_id', $myrow["stock_id"]);
 
 	label_row(_("Reference:"), $_POST['wo_ref']);
 	label_row(_("Type:"), $wo_types_array[$_POST['type']]);
@@ -380,7 +361,8 @@ if (isset($selected_id))
 else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
-	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
+
+	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER, null, get_post('date_')), false, ST_WORKORDER);
 
 	wo_types_list_row(_("Type:"), 'type', null);
 }
@@ -423,24 +405,22 @@ else
     date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
-	$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
-	$rs = db_query($sql,"could not get bank accounts");
-	$r = db_fetch_row($rs);
-	if (!isset($_POST['Labour']))
+	if (!isset($_POST['Labour']) || list_updated('stock_id') || list_updated('type'))
 	{
-		$_POST['Labour'] = price_format(0);
-		$_POST['cr_lab_acc'] = $r[0];
+		$bank_act = get_default_bank_account();
+		$item = get_item(get_post('stock_id'));
+		$_POST['Labour'] = price_format(get_post('type') == WO_ASSEMBLY ? $item['labour_cost'] : 0);
+		$_POST['cr_lab_acc'] = $bank_act['account_code'];
+		$_POST['Costs'] = price_format(get_post('type') == WO_ASSEMBLY ? $item['overhead_cost'] : 0);
+		$_POST['cr_acc'] = $bank_act['account_code'];
+		$Ajax->activate('_page_body');
 	}
+
 	amount_row($wo_cost_types[WO_LABOUR], 'Labour');
 	gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
-	if (!isset($_POST['Costs']))
-	{
-		$_POST['Costs'] = price_format(0);
-		$_POST['cr_acc'] = $r[0];
-	}
 	amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
 	gl_all_accounts_list_row(_("Credit Overhead Account"), 'cr_acc', null);
-	
+
 }
 
 if (get_post('released'))
@@ -471,4 +451,3 @@ else
 end_form();
 end_page();
 
-?>

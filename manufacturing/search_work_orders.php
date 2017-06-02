@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true))
 {
@@ -112,8 +112,7 @@ function wo_type_name($dummy, $type)
 function edit_link($row)
 {
 	return  $row['closed'] ? '<i>'._('Closed').'</i>' :
-		pager_link(_("Edit"),
-			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+		trans_editor_link(ST_WORKORDER, $row["id"]);
 }
 
 function release_link($row)
@@ -136,12 +135,6 @@ function produce_link($row)
 
 function costs_link($row)
 {
-/*
-	return $row["closed"] || !$row["released"] ? '' :
-		pager_link(_('Costs'),
-			"/gl/gl_bank.php?NewPayment=1&PayType=" 
-			.PT_WORKORDER. "&PayPerson=" .$row["id"]);
-*/			
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/manufacturing/work_order_costs.php?trans_no=" .$row["id"]);
@@ -149,8 +142,6 @@ function costs_link($row)
 
 function view_gl_link($row)
 {
-	//if ($row['closed'] == 0)
-	//	return '';
 	return get_gl_view_str(ST_WORKORDER, $row['id']);
 }
 
@@ -159,7 +150,8 @@ function dec_amount($row, $amount)
 	return number_format2($amount, $row['decimals']);
 }
 
-$sql = get_sql_for_work_orders($outstanding_only, $all_items);
+$sql = get_sql_for_work_orders($outstanding_only, get_post('SelectedStockItem'), get_post('StockLocation'),
+	get_post('OrderId'), get_post('OrderNumber'), check_value('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link', 'ord'=>''), 
@@ -173,8 +165,8 @@ $cols = array(
 	_("Required By") => array('type'=>'date', 'ord'=>''),
 	array('insert'=>true, 'fun'=> 'edit_link'),
 	array('insert'=>true, 'fun'=> 'release_link'),
-	array('insert'=>true, 'fun'=> 'produce_link'),
 	array('insert'=>true, 'fun'=> 'costs_link'),
+	array('insert'=>true, 'fun'=> 'produce_link'),
 	array('insert'=>true, 'fun'=> 'view_gl_link')
 );
 
@@ -187,4 +179,3 @@ display_db_pager($table);
 
 end_form();
 end_page();
-?>

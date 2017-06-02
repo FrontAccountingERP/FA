@@ -50,6 +50,7 @@ function getTransactions($category, $from, $to)
 		AND trans.tran_date>='$from'
 		AND trans.tran_date<='$to'
 		AND line.quantity<>0
+		AND item.mb_flag <>'F'
 		AND (line.debtor_trans_type = ".ST_SALESINVOICE." OR line.debtor_trans_type = ".ST_CUSTCREDIT.")";
 		if ($category != 0)
 			$sql .= " AND item.category_id = ".db_escape($category);
@@ -113,8 +114,6 @@ function print_inventory_sales()
 
 	$res = getTransactions($category, $from, $to);
 	$total = $grandtotal = 0.0;
-	$total1 = $grandtotal1 = 0.0;
-	$total2 = $grandtotal2 = 0.0;
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
@@ -128,7 +127,7 @@ function print_inventory_sales()
 				$rep->Line($rep->row - 2);
 				$rep->NewLine();
 				$rep->NewLine();
-				$total = $total1 = $total2 = 0.0;
+				$total = 0.0;
 			}
 			$rep->TextCol(0, 1, $trans['category_id']);
 			$rep->TextCol(1, 7, $trans['cat_description']);
@@ -163,4 +162,3 @@ function print_inventory_sales()
     $rep->End();
 }
 
-?>

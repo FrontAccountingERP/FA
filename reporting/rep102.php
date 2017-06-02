@@ -35,50 +35,46 @@ function get_invoices($customer_id, $to, $all=true)
 
 	// Revomed allocated from sql
 	if ($all)
-    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount)";
-	else		
-    	$value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-			.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
-	$due = "IF (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE.",".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
-		".TB_PREF."debtor_trans.tran_date,
-		$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
+    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount)";
+	else
+    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc)";
+	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
+	$due = "IF (type=".ST_SALESINVOICE.", due_date, tran_date)";
 
-		FROM ".TB_PREF."debtors_master,
-			".TB_PREF."debtor_trans
+	$sql = "SELECT type, reference, tran_date,
+		$sign*$value as Balance,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$sign*$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$sign*$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$sign*$value,0) AS Overdue2
 
-		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
-			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > ".FLOAT_COMP_DELTA." ";
+		FROM ".TB_PREF."debtor_trans trans
+
+		WHERE type <> ".ST_CUSTDELIVERY."
+			AND debtor_no = $customer_id 
+			AND tran_date <= '$todate'
+			AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > " . FLOAT_COMP_DELTA;
+
 	if (!$all)
-		$sql .= "AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) > ".FLOAT_COMP_DELTA." ";  
-	$sql .= "ORDER BY ".TB_PREF."debtor_trans.tran_date";
+		$sql .= "AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc) > " . FLOAT_COMP_DELTA;
+	$sql .= "ORDER BY tran_date";
 
-	return db_query($sql, "The customer details could not be retrieved");
+	return db_query($sql, "The customer transactions could not be retrieved");
 }
 
 //----------------------------------------------------------------------------------------------------
 
 function print_aged_customer_analysis()
 {
-    global $path_to_root, $systypes_array;
+    global $path_to_root, $systypes_array, $SysPrefs;
 
-    	$to = $_POST['PARAM_0'];
-    	$fromcust = $_POST['PARAM_1'];
-    	$currency = $_POST['PARAM_2'];
-    	$show_all = $_POST['PARAM_3'];
+    $to = $_POST['PARAM_0'];
+    $fromcust = $_POST['PARAM_1'];
+    $currency = $_POST['PARAM_2'];
+    $show_all = $_POST['PARAM_3'];
 	$summaryOnly = $_POST['PARAM_4'];
-    	$no_zeros = $_POST['PARAM_5'];
-    	$graphics = $_POST['PARAM_6'];
-    	$comments = $_POST['PARAM_7'];
+    $no_zeros = $_POST['PARAM_5'];
+    $graphics = $_POST['PARAM_6'];
+    $comments = $_POST['PARAM_7'];
 	$orientation = $_POST['PARAM_8'];
 	$destination = $_POST['PARAM_9'];
 	if ($destination)
@@ -140,7 +136,7 @@ function print_aged_customer_analysis()
     $rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
     	recalculate_cols($cols);
- 
+
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
@@ -175,7 +171,7 @@ function print_aged_customer_analysis()
 		if ($no_zeros && floatcmp(array_sum($str), 0) == 0) continue;
 
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow["name"]);
 		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
 		$total[0] += ($custrec["Balance"] - $custrec["Due"]);
@@ -198,6 +194,7 @@ function print_aged_customer_analysis()
         		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
+
 				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
 				{
 					$trans['Balance'] *= -1;
@@ -205,6 +202,7 @@ function print_aged_customer_analysis()
 					$trans['Overdue1'] *= -1;
 					$trans['Overdue2'] *= -1;
 				}
+
 				foreach ($trans as $i => $value)
 					$trans[$i] *= $rate;
 				$str = array($trans["Balance"] - $trans["Due"],
@@ -238,16 +236,15 @@ function print_aged_customer_analysis()
    	$rep->Line($rep->row - 8);
    	if ($graphics)
    	{
-   		global $decseps, $graph_skin;
 		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Days");
 		$pg->axis_y    = _("Amount");
 		$pg->graphic_1 = $to;
 		$pg->type      = $graphics;
-		$pg->skin      = $graph_skin;
+		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
@@ -261,5 +258,3 @@ function print_aged_customer_analysis()
 	$rep->NewLine();
     $rep->End();
 }
-
-?>

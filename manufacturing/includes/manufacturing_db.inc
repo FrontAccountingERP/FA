@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/db/work_centres_db.inc");
 include_once($path_to_root . "/manufacturing/includes/db/work_orders_db.inc");
-include_once($path_to_root . "/manufacturing/includes/db/work_orders_quick_db.inc");
+include_once($path_to_root . "/manufacturing/includes/db/work_order_costing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/db/work_order_issues_db.inc");
 include_once($path_to_root . "/manufacturing/includes/db/work_order_produce_items_db.inc");
 include_once($path_to_root . "/manufacturing/includes/db/work_order_requirements_db.inc");
 
-?>

@@ -12,25 +12,6 @@
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------
-//	Check if given account is used by any bank_account. 
-//	Returns id of first bank_account using account_code, null otherwise.
-//
-//	Keep in mind that direct posting to bank account is depreciated
-//	because we have no way to select right bank account if 
-//	there is more than one using given gl account.
-//
-function is_bank_account($account_code)
-{
-	$sql= "SELECT id FROM ".TB_PREF."bank_accounts WHERE account_code=".db_escape($account_code);
-	$result = db_query($sql, "checking account is bank account");
-	if (db_num_rows($result) > 0) {
-		$acct = db_fetch($result);
-		return $acct['id'];
-	} else
-		return false;
-}
-
-//----------------------------------------------------------------------------------
 
 function is_company_currency($currency)
 {
@@ -46,54 +27,15 @@ function get_company_currency()
 
 //----------------------------------------------------------------------------------
 
-function get_bank_account_currency($id)
-{
-	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($id);
-	$result = db_query($sql, "retreive bank account currency");
-
-	$myrow = db_fetch_row($result);
-	return $myrow[0];
-}
-
-//----------------------------------------------------------------------------------
-
-function get_customer_currency($customer_id)
-{
-    $sql = "SELECT curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($customer_id);
-
-	$result = db_query($sql, "Retreive currency of customer $customer_id");
-
-	$myrow=db_fetch_row($result);
-	return $myrow[0];
-}
-
-//----------------------------------------------------------------------------------
-
-function get_supplier_currency($supplier_id)
-{
-    $sql = "SELECT curr_code FROM ".TB_PREF."suppliers WHERE supplier_id = ".db_escape($supplier_id);
-
-	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
-
-	$myrow=db_fetch_row($result);
-	return $myrow[0];
-}
-
-//----------------------------------------------------------------------------------
-
 function get_exchange_rate_from_home_currency($currency_code, $date_)
 {
 	if ($currency_code == get_company_currency() || $currency_code == null)
 		return 1.0000;
 
-	$date = date2sql($date_);
 
-	$sql = "SELECT rate_buy, max(date_) as date_ FROM ".TB_PREF."exchange_rates WHERE curr_code = ".db_escape($currency_code)."
-				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
+	$rate = get_last_exchange_rate($currency_code, $date_);
 
-	$result = db_query($sql, "could not query exchange rates");
-
-	if (db_num_rows($result) == 0)
+	if (!$rate)
 	{
 		// no stored exchange rate, just return 1
 		display_error(
@@ -102,8 +44,7 @@ function get_exchange_rate_from_home_currency($currency_code, $date_)
 		return 1.000;
 	}
 
-	$myrow = db_fetch_row($result);
-	return $myrow[0];
+	return $rate['rate_buy'];
 }
 
 //----------------------------------------------------------------------------------
@@ -206,4 +147,3 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	}
 }
 
-?>

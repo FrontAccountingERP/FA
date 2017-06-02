@@ -40,29 +40,28 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The tax group name cannot be empty."));
 		set_focus('name');
 	} 
-
 	if ($input_error != 1) 
 	{
 
 		// create an array of the taxes and array of rates
     	$taxes = array();
-    	$rates = array();
+    	$tax_shippings = array();
 
 		while (($id = find_submit('tax_type_id'))!=-1)
 		{
        		$taxes[] = $id;
-			$rates[] = get_tax_type_default_rate($id);
+			$tax_shippings[] = check_value('tax_shipping'.$id);
 			unset($_POST['tax_type_id' . $id]);
+			unset($_POST['tax_shipping' . $id]);
 		}
     	if ($selected_id != -1) 
     	{
-	   		update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, 
-    			$rates);
+	   		update_tax_group($selected_id, $_POST['name'], $taxes, $tax_shippings);
 			display_notification(_('Selected tax group has been updated'));
     	} 
     	else 
     	{
-	   		add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
+	   		add_tax_group($_POST['name'], $taxes, $tax_shippings);
 			display_notification(_('New tax group has been added'));
     	}
 
@@ -111,7 +110,7 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
 	unset($_POST);
-	if($sav)
+	if ($sav)
 		$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
@@ -121,7 +120,7 @@ $result = get_all_tax_groups(check_value('show_inactive'));
 start_form();
 
 start_table(TABLESTYLE);
-$th = array(_("Description"), _("Shipping Tax"), "", "");
+$th = array(_("Description"), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -133,10 +132,6 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["name"]);
-	if ($myrow["tax_shipping"])
-		label_cell(_("Yes"));
-	else
-		label_cell(_("No"));
 
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
@@ -159,30 +154,47 @@ if ($selected_id != -1)
     	$group = get_tax_group($selected_id);
 
     	$_POST['name']  = $group["name"];
-    	$_POST['tax_shipping'] = $group["tax_shipping"];
 
 	}
 	hidden('selected_id', $selected_id);
+
 }
 text_row_ex(_("Description:"), 'name', 40);
-yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 
 end_table();
 
 display_note(_("Select the taxes that are included in this group."), 1, 1);
 
-// null means transport tax group, but for new we do not use real rates
 $items = get_tax_group_rates($selected_id!=-1 ? $selected_id : null);
 
-$th = array(_("Tax"), "");
-
 start_table(TABLESTYLE2);
+$th = array(_("Tax"), "", _("Shipping Tax"));
 table_header($th);
 
-while($item = db_fetch_assoc($items)) 
+while($item = db_fetch($items)) 
 {
-	check_row($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
-		$selected_id!=-1 && isset($item['rate']), "align='center'");
+	start_row();
+	if ($selected_id != -1)
+	{
+		check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+			isset($item['rate']), true, false, "align='center'");
+		if (isset($item['rate']))
+			check_cells(null, 'tax_shipping' . $item['tax_type_id'], $item['tax_shipping']);
+	}
+	else
+	{
+		check_cells($item['tax_type_name'], 'tax_type_id' . $item['tax_type_id'], 
+			null, true, false, "align='center'");
+		if (get_post('_tax_type_id' . $item['tax_type_id'].'_update'))	
+		{
+			//$_POST['_tax_type_id' . $item['tax_type_id'].'_update'] = 0;
+			$Ajax->activate('_page_body');
+		}
+		if (check_value('tax_type_id' . $item['tax_type_id'])==1)
+			check_cells(null, 'tax_shipping' . $item['tax_type_id'], null);
+	}		
+	end_row();	
+	
 }
 
 end_table(1);
@@ -195,4 +207,3 @@ end_form();
 
 end_page();
 
-?>

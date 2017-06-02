@@ -14,15 +14,14 @@ $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
 
@@ -115,4 +114,3 @@ end_form();
 
 end_page();
 
-?>

@@ -20,7 +20,6 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 
 	// We have to calculate all the currency accounts belonging to the GL account
 	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
-	// 2010-02-23 Joe Hunt with help of Ary Wibowo
 	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
 		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = ".db_escape($account)." AND bt.trans_date<='".date2sql($date_)."'
@@ -37,41 +36,57 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 	$diff = $amount - $for_amount;
 	if (floatcmp($diff,0))
 	{
-		if ($trans_no == null)
-			$trans_no = get_next_trans_no(ST_JOURNAL);
+		// generate journal entry // FIXME: use cart?
+		global $Refs;
+
+		begin_transaction();
+		$trans_no = get_next_trans_no(ST_JOURNAL);
+		$ref = $Refs->get_next(ST_JOURNAL);
+
+		add_journal(ST_JOURNAL, $trans_no, $diff, $date_ , get_company_currency(), $ref, '', 1, $date_, $date_);
+		$Refs->save(ST_JOURNAL, $trans_no, $ref);
+		add_audit_trail(ST_JOURNAL, $trans_no, $date_);
+
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
 		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
-    		-$diff, null, $person_type_id, $person_id);
+    		$diff, null, $person_type_id, $person_id);
+
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
-    		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
+    		_("Exchange Variance"),	-$diff, null, $person_type_id, $person_id);
+		commit_transaction();
 		return true;
 	}
 	return false;
 }
 
-//------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
 function add_cust_supp_revaluation($ledger_act, $ex_act, $date, $amount, $person_type_id, $person_id, $memo)
 {
 	global $Refs;
 	if ($amount == 0)
 		return;
+
+	begin_transaction();
 	$trans_no = get_next_trans_no(ST_JOURNAL);
+	$ref = $Refs->get_next(ST_JOURNAL);
+
+	add_journal(ST_JOURNAL, $trans_no, $amount, $date, get_company_currency(), $ref, '', 1, $date, $date);
+	$Refs->save(ST_JOURNAL, $trans_no, $ref);
+	add_audit_trail(ST_JOURNAL, $trans_no, $date);
+
 	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ledger_act, 0, 0, _("Exchange Variance"),
 		$amount, null, $person_type_id, $person_id);
 	add_gl_trans(ST_JOURNAL, $trans_no, $date, $ex_act, 0, 0, 
 		_("Exchange Variance"),	-$amount, null, $person_type_id, $person_id);
 	add_comments(ST_JOURNAL, $trans_no, $date, $memo);
-	$ref = $Refs->get_next(ST_JOURNAL);
-	$Refs->save(ST_JOURNAL, $trans_no, $ref);
-	add_audit_trail(ST_JOURNAL, $trans_no, $date);
+	commit_transaction();
 }
 
 function get_cust_account_curr_balances($date)
 {
 	$to = date2sql($date);
 
-    $sql = "SELECT SUM(IF(t.type =".ST_CUSTCREDIT." OR t.type = ".ST_CUSTPAYMENT." OR t.type = ".ST_BANKDEPOSIT.",
+    $sql = "SELECT SUM(IF(t.type IN(". implode(',', array(ST_CUSTCREDIT, ST_CUSTPAYMENT, ST_BANKDEPOSIT, ST_JOURNAL))."),
 			-(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 
 	    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount))) AS amount,
 	    	dt.debtor_no, dt.name, dt.curr_code, b.receivables_account
@@ -117,7 +132,6 @@ function get_account_home_balance($person_id, $person_type, $rec_account, $to_da
 }
 //------------- New helper functions for revaluation of customer/supplier currencies 2011-05-08 Joe Hunt.
 
-
 function add_exchange_variation_all($date=null, $ref="", $memo)
 {
 	global $Refs;
@@ -136,7 +150,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 	{
 		add_comments(ST_JOURNAL, $trans_no, $date, $memo);
 		if ($ref == "")
-			$ref = $Refs->get_next(ST_JOURNAL);
+			$ref = $Refs->get_next(ST_JOURNAL, null, $date);
 		$Refs->save(ST_JOURNAL, $trans_no, $ref);
 		add_audit_trail(ST_JOURNAL, $trans_no, $date);
 	}	
@@ -179,7 +193,7 @@ function add_exchange_variation_all($date=null, $ref="", $memo)
 		}
 	}
 	//------------- END
-		
+
 	commit_transaction();
 	return array(($exchanged ? $trans_no : 0), $je);
 }
@@ -194,7 +208,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$amount, $ref, $memo_, $charge=0, $target_amount=0)
 {
 	global $Refs, $SysPrefs;
-	
+
 	begin_transaction();
 	$args = func_get_args(); if (count($args) < 8) $args[] = 0;
 	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
@@ -235,7 +249,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	if ($charge != 0)
 	{
 		/* Now Debit bank charge account with charges */
-		$charge_act = get_company_pref('bank_charge_act');
+		$charge_act = get_bank_charge_account($from_account);
 		$total += add_gl_trans($trans_type, $trans_no, $date_,
 			$charge_act, 0, 0, $person_id, $charge, $currency);
 	}
@@ -262,14 +276,13 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$currency = get_bank_account_currency($to_account);
-	
 		if (add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	
 			$currency, PT_MISC, $person_id))
 			$exchanged = true;
 	}
 	if ($exchanged == true)
 	{
-		$ref1 = $Refs->get_next(ST_JOURNAL);
+		$ref1 = $Refs->get_next(ST_JOURNAL, null, $date_);
 		$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 		add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
 	}
@@ -284,6 +297,76 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	return $trans_no;
 }
+
+function check_bank_transfer($trans_no, $from_account, $to_account, $date_,
+    $amount, $target_amount=0)
+{
+	$dbResult = get_bank_trans(ST_BANKTRANSFER, $trans_no);
+
+	$old_from = db_fetch($dbResult);
+	$old_to = db_fetch($dbResult);
+	if ($old_to['amount'] < 0.0) {
+		$tmp = $old_from;
+		$old_from = $old_to;
+		$old_to = $tmp;
+	}
+	// There are four accounts to consider:
+	// 1) The original from account that is being voided. This results in funds being put back which is always fine.
+	// 2) The original to account that is being voided. This results in funds being removed which may result in a
+	//    negative balance in the account at some time and therefore needs to be checked.
+	$problemTransaction = check_bank_account_history(-$old_to['amount'], $old_to['bank_act'], sql2date($old_from['trans_date']));
+	if ($problemTransaction) {
+		// If the destination account is the same as that being edited, it may be that this edit will resolve the
+		// problem of voiding.
+		if ($to_account == $old_to['bank_act'] && sql_date_comp($problemTransaction['trans_date'], date2sql($date_)) > 0) {
+			$problemTransaction['amount'] += $amount;
+			if ($problemTransaction['amount'] >= 0) {
+				$problemTransaction = null;
+			}
+		}
+		if ($problemTransaction != null) {
+			$problemTransaction['account'] = $old_to['bank_act'];
+			$problemTransaction['bank_account_name'] = $old_to['bank_account_name'];
+			return $problemTransaction;
+		}
+	}
+
+	// 3) The edited from account, that is having funds removed which may result in a
+	//    negative balance in the account at some time and therefore needs to be checked.
+	$balance_offset = 0;
+	if ($from_account == $old_from['bank_act'] && sql_date_comp(date2sql($date_), $old_from['trans_date']) >= 0) {
+		// If the edited from_account is the same as the original transaction, and the new date is later than the old date
+		// then add the amount from the original from transaction when checking the history to simulate the void that would
+		// take effect from that date.
+		$balance_offset = -$old_from['amount'];
+	}
+	$problemTransaction = check_bank_account_history(-$amount, $from_account, $date_, null, $balance_offset);
+	if ($problemTransaction != null) {
+		$problemTransaction['account'] = $old_from['bank_act'];
+		$problemTransaction['bank_account_name'] = $old_from['bank_account_name'];
+		return $problemTransaction;
+	}
+	// 4) The edited to account, that is having funds added which is always ok.
+
+	return $problemTransaction;
+}
+
+function update_bank_transfer(
+	$trans_no, $from_account, $to_account, $date_,
+	$amount, $ref, $memo_, $charge=0, $target_amount=0)
+{
+	begin_transaction();
+	delete_comments(ST_BANKTRANSFER, $trans_no);
+	void_bank_trans(ST_BANKTRANSFER, $trans_no, true);
+	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
+	$new_trans_no = add_bank_transfer(
+		$from_account, $to_account, $date_, $amount,
+		$ref, $memo_, $charge, $target_amount
+	);
+	commit_transaction();
+	return $new_trans_no;
+}
+
 //----------------------------------------------------------------------------------
 //	Add bank payment or deposit to database.
 //
@@ -317,12 +400,14 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		'person_type_id', 'person_id', 'person_detail_id', 'ref', 'memo_', 'use_transaction', 'settled_amount'),
 		$args);
 	hook_db_prewrite($args, $trans_type);
+
 	$aid = 0;
 	if ($trans_no) {
 		$old_trans = $trans_no;
 		$Refs->restore_last($trans_type, $trans_no);
 		$aid = has_attachment($trans_type, $trans_no);
-	}
+	} else
+		$old_trans = false;
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -344,7 +429,8 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
         	$ref, $cust_amount);
-
+		if ($old_trans)
+			move_trans_attachments($trans_type, $old_trans, $trans_no);
     }
     elseif ($person_type_id == PT_SUPPLIER)
     {
@@ -360,7 +446,8 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 		$trans_no = write_supp_trans($trans_type, 0, $person_id, $date_, '',
 			$ref, "", $supp_amount, 0, 0);
-
+		if ($old_trans)
+			move_trans_attachments($trans_type, $old_trans, $trans_no);
     }
     else
     {
@@ -428,7 +515,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id))
     	{
-   			$ref1 = $Refs->get_next(ST_JOURNAL);
+   			$ref1 = $Refs->get_next(ST_JOURNAL, null, $date_);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
 			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
 		}
@@ -441,8 +528,16 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 	// old transaction can be voided only after new transaction is entered,
 	//  otherwise the operation could fail for cash accounts due to temporary negative balance
-	if (@$old_trans) 
-			void_transaction($trans_type, $old_trans, Today(), _("Document reentered."));
+	if ($old_trans) 
+	{
+		$msg = void_transaction($trans_type, $old_trans, Today(), _("Document reentered."));
+		if ($msg)
+		{
+			display_error($msg);
+			return false;
+		}
+	}
+
 
 	$args->trans_no = $trans_no;
 	hook_db_postwrite($args, $trans_type);
@@ -451,5 +546,3 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 	return array($trans_type, $trans_no);
 }
-
-?>

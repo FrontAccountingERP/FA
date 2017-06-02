@@ -12,15 +12,15 @@
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "../..";
 
-include($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 	
-page(_($help_context = "Customers"), @$_REQUEST['popup'], false, "", $js); 
+page(_($help_context = "Customers"), false, false, "", $js); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -79,7 +79,7 @@ function can_process()
 
 function handle_submit(&$selected_id)
 {
-	global $path_to_root, $Ajax, $auto_create_branch;
+	global $path_to_root, $Ajax, $SysPrefs;
 
 	if (!can_process())
 		return;
@@ -108,12 +108,12 @@ function handle_submit(&$selected_id)
 
 		$selected_id = $_POST['customer_id'] = db_insert_id();
          
-		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		if (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 		{
         	add_branch($selected_id, $_POST['CustName'], $_POST['cust_ref'],
                 $_POST['address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], '',
                 get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'),
-                $_POST['location'], $_POST['address'], 0, 0, $_POST['ship_via'], $_POST['notes']);
+                $_POST['location'], $_POST['address'], 0, $_POST['ship_via'], $_POST['notes'], $_POST['bank_account']);
                 
         	$selected_branch = db_insert_id();
         
@@ -129,7 +129,7 @@ function handle_submit(&$selected_id)
 
 		display_notification(_("A new customer has been added."));
 
-		if (isset($auto_create_branch) && $auto_create_branch == 1)
+		if (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 			display_notification(_("A default Branch has been automatically created, please check default Branch values by using link below."));
 		
 		$Ajax->activate('_page_body');
@@ -187,7 +187,7 @@ if (isset($_POST['delete']))
 
 function customer_settings($selected_id) 
 {
-	global $SysPrefs, $path_to_root, $auto_create_branch;
+	global $SysPrefs, $path_to_root, $page_nested;
 	
 	if (!$selected_id) 
 	{
@@ -250,13 +250,14 @@ function customer_settings($selected_id)
 
 	if($selected_id)
 		record_status_list_row(_("Customer status:"), 'inactive');
-	elseif (isset($auto_create_branch) && $auto_create_branch == 1)
+	elseif (isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
 		text_row(_("Phone:"), 'phone', null, 32, 30);
 		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
 		text_row(_("Fax Number:"), 'fax', null, 32, 30);
 		email_row(_("E-mail:"), 'email', null, 35, 55);
+		text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
 		sales_persons_list_row( _("Sales Person:"), 'salesman', null);
 	}
 	table_section(2);
@@ -283,13 +284,13 @@ function customer_settings($selected_id)
 		start_row();
 		echo '<td class="label">'._('Customer branches').':</td>';
 	  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
-			'<b>'. (@$_REQUEST['popup'] ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
-			"debtor_no=".$selected_id.(@$_REQUEST['popup'] ? '&popup=1':''));
+			'<b>'. ($page_nested ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+			"debtor_no=".$selected_id.($page_nested ? '&popup=1':''));
 		end_row();
 	}
 
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
-	if (!$selected_id && isset($auto_create_branch) && $auto_create_branch == 1)
+	if (!$selected_id && isset($SysPrefs->auto_create_branch) && $SysPrefs->auto_create_branch == 1)
 	{
 		table_section_title(_("Branch"));
 		locations_list_row(_("Default Inventory Location:"), 'location');
@@ -307,7 +308,7 @@ function customer_settings($selected_id)
 	else 
 	{
 		submit_center_first('submit', _("Update Customer"), 
-		  _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
+		  _('Update customer data'), $page_nested ? true : 'default');
 		submit_return('select', $selected_id, _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), 
 		  _('Delete customer data if have been never used'), true);
@@ -341,16 +342,15 @@ else
 	hidden('customer_id');
 }
 
-if (!$selected_id || list_updated('customer_id'))
+//if (!$selected_id || list_updated('customer_id'))
+if (!$selected_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $selected_id),
 		'contacts' => array(_('&Contacts'), $selected_id),
-		'transactions' => array(_('&Transactions'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_SALESTRANSVIEW') ? $selected_id : null)),
-		'orders' => array(_('Sales &Orders'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_SALESTRANSVIEW') ? $selected_id : null)),
+		'transactions' => array(_('&Transactions'), (user_check_access('SA_SALESTRANSVIEW') ? $selected_id : null)),
+		'orders' => array(_('Sales &Orders'), (user_check_access('SA_SALESTRANSVIEW') ? $selected_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -364,20 +364,16 @@ tabbed_content_start('tabs', array(
 			break;
 		case 'transactions':
 			$_GET['customer_id'] = $selected_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/sales/inquiry/customer_inquiry.php");
 			break;
 		case 'orders':
 			$_GET['customer_id'] = $selected_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/sales/inquiry/sales_orders_view.php");
 			break;
 	};
 br();
 tabbed_content_end();
 
-hidden('popup', @$_REQUEST['popup']);
 end_form();
-end_page(@$_REQUEST['popup']);
+end_page();
 
-?>

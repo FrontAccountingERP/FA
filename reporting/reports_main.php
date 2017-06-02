@@ -18,7 +18,9 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reports_classes.inc");
 $js = "";
-if ($use_date_picker)
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 add_js_file('reports.js');
@@ -195,7 +197,7 @@ $reports->addReport(RC_SUPPLIER, 209, _('Print Purchase &Orders'),
 			_('Email Suppliers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
-$reports->addReport(RC_SUPPLIER, 210, _('Print Remittances'),
+$reports->addReport(RC_SUPPLIER, 210, _('Print Remi&ttances'),
 	array(	_('From') => 'REMITTANCE',
 			_('To') => 'REMITTANCE',
 			_('Currency Filter') => 'CURRENCY',
@@ -205,7 +207,7 @@ $reports->addReport(RC_SUPPLIER, 210, _('Print Remittances'),
 
 $reports->addReportClass(_('Inventory'), RC_INVENTORY);
 $reports->addReport(RC_INVENTORY,  301, _('Inventory &Valuation Report'),
-	array(	_('End Date') => 'DATE',	
+	array(	_('End Date') => 'DATE',
 			_('Inventory Category') => 'CATEGORIES',
 			_('Location') => 'LOCATIONS',
 			_('Summary Only') => 'YES_NO',
@@ -278,27 +280,41 @@ $reports->addReport(RC_INVENTORY, 309,_('Item &Sales Summary Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));				
-
-$reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
-$reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
-	array(	_('From product') => 'ITEMS',
-			_('To product') => 'ITEMS',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_MANUFACTURE, 402, _('Work Order &Listing'),
-	array(	_('Items') => 'ITEMS_ALL',
-			_('Location') => 'LOCATIONS',
-			_('Outstanding Only') => 'YES_NO',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION',
-			_('Destination') => 'DESTINATION'));
-$reports->addReport(RC_MANUFACTURE, 409, _('Print &Work Orders'),
-	array(	_('From') => 'WORKORDER',
-			_('To') => 'WORKORDER',
-			_('Email Locations') => 'YES_NO',
-			_('Comments') => 'TEXTBOX',
-			_('Orientation') => 'ORIENTATION'));
+if (get_company_pref('use_manufacturing'))
+{
+	$reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);
+	$reports->addReport(RC_MANUFACTURE, 401, _('&Bill of Material Listing'),
+		array(	_('From product') => 'ITEMS',
+				_('To product') => 'ITEMS',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_MANUFACTURE, 402, _('Work Order &Listing'),
+		array(	_('Items') => 'ITEMS_ALL',
+				_('Location') => 'LOCATIONS',
+				_('Outstanding Only') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_MANUFACTURE, 409, _('Print &Work Orders'),
+		array(	_('From') => 'WORKORDER',
+				_('To') => 'WORKORDER',
+				_('Email Locations') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION'));
+}
+if (get_company_pref('use_fixed_assets'))
+{
+	$reports->addReportClass(_('Fixed Assets'), RC_FIXEDASSETS);
+	$reports->addReport(RC_FIXEDASSETS, 451, _('&Fixed Assets Valuation'),
+		array(	_('End Date') => 'DATE',
+				_('Fixed Assets Class') => 'FCLASS',
+				_('Fixed Assets Location') => 'FLOCATIONS',
+				_('Summary Only') => 'YES_NO',
+				_('Comments') => 'TEXTBOX',
+				_('Orientation') => 'ORIENTATION',
+				_('Destination') => 'DESTINATION'));
+}				
 $reports->addReportClass(_('Dimensions'), RC_DIMENSIONS);
 if ($dim > 0)
 {
@@ -309,9 +325,6 @@ if ($dim > 0)
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
-	//$reports->addReport(_('Dimensions'),502, _('Dimension Details'),
-	//array(	_('Dimension'),'DIMENSIONS'),
-	//		_('Comments'),'TEXTBOX')));
 }
 $reports->addReportClass(_('Banking'), RC_BANKING);
 	$reports->addReport(RC_BANKING,  601, _('Bank &Statement'),
@@ -321,6 +334,12 @@ $reports->addReportClass(_('Banking'), RC_BANKING);
 			_('Zero values') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));
+	$reports->addReport(RC_BANKING,  602, _('Bank Statement w/ &Reconcile'),
+	array(	_('Bank Accounts') => 'BANK_ACCOUNTS',
+			_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
 
 $reports->addReportClass(_('General Ledger'), RC_GL);
@@ -336,8 +355,6 @@ $reports->addReport(RC_GL, 702, _('List of &Journal Entries'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
-//$reports->addReport(RC_GL, 703, _('GL Account Group Summary'),
-//	array(	_('Comments'),'TEXTBOX')));
 
 if ($dim == 2)
 {
@@ -393,7 +410,7 @@ if ($dim == 2)
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
 }
-else if ($dim == 1)
+elseif ($dim == 1)
 {
 	$reports->addReport(RC_GL, 704, _('GL Account &Transactions'),
 	array(	_('Start Date') => 'DATEBEGINM',
@@ -507,4 +524,3 @@ add_custom_reports($reports);
 echo $reports->getDisplay();
 
 end_page();
-?>

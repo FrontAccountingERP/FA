@@ -16,7 +16,6 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // Creator:	Janusz Dobrwolski
 // date_:	2008-01-14
 // Title:	Print Delivery Notes
-// draft version!
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -25,7 +24,6 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
-$packing_slip = 0;
 //----------------------------------------------------------------------------------------------------
 
 print_deliveries();
@@ -34,7 +32,7 @@ print_deliveries();
 
 function print_deliveries()
 {
-	global $path_to_root, $packing_slip, $alternative_tax_include_on_docs, $suppress_tax_rates, $no_zero_lines_amount;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -60,7 +58,7 @@ function print_deliveries()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments);
+	$params = array('comments' => $comments, 'packing_slip' => $packing_slip);
 
 	$cur = get_company_Pref('curr_default');
 
@@ -94,13 +92,13 @@ function print_deliveries()
 					$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
 				}
 			}
-			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_branch_contacts($branch['branch_code'], 'delivery', $branch['debtor_no'], true);
 			$rep->SetCommonData($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY, $contacts);
+			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
 
    			$result = get_customer_trans_details(ST_CUSTDELIVERY, $i);
@@ -109,7 +107,7 @@ function print_deliveries()
 			{
 				if ($myrow2["quantity"] == 0)
 					continue;
-					
+
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
@@ -125,8 +123,8 @@ function print_deliveries()
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
-				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
-				{			
+				if ($Net != 0.0  || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
+				{
 					$rep->TextCol(2, 3,	$DisplayQty, -2);
 					$rep->TextCol(3, 4,	$myrow2['units'], -2);
 					if ($packing_slip == 0)
@@ -135,7 +133,7 @@ function print_deliveries()
 						$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 						$rep->TextCol(6, 7,	$DisplayNet, -2);
 					}
-				}	
+				}
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
@@ -160,7 +158,7 @@ function print_deliveries()
 				$rep->NewLine();
 				if ($myrow['ov_freight'] != 0.0)
 				{
-   					$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
+					$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
 					$rep->TextCol(3, 6, _("Shipping"), -2);
 					$rep->TextCol(6, 7,	$DisplayFreight, -2);
 					$rep->NewLine();
@@ -173,14 +171,14 @@ function print_deliveries()
     					continue;
     				$DisplayTax = number_format2($tax_item['amount'], $dec);
  
- 					if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+ 					if ($SysPrefs->suppress_tax_rates() == 1)
  		   				$tax_type_name = $tax_item['tax_type_name'];
  		   			else
  		   				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
- 
- 					if ($tax_item['included_in_price'])
+
+ 					if ($myrow['tax_included'])
     				{
-   						if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+   						if ($SysPrefs->alternative_tax_include_on_docs() == 1)
     					{
     						if ($first)
     						{
@@ -225,4 +223,3 @@ function print_deliveries()
 		$rep->End();
 }
 
-?>

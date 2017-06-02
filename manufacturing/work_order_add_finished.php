@@ -12,19 +12,18 @@
 $page_security = 'SA_MANUFRECEIVE';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_bank_trans.inc");
-include_once($path_to_root . "/includes/db/inventory_db.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
@@ -68,20 +67,12 @@ if (strlen($wo_details[0]) == 0)
 
 //--------------------------------------------------------------------------------------------------
 
-function can_process()
+function can_process($wo_details)
 {
-	global $wo_details, $SysPrefs, $Refs;
+	global $SysPrefs;
 
-	if (!$Refs->is_valid($_POST['ref']))
+	if (!check_reference($_POST['ref'], ST_MANURECEIVE))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], 29))
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -101,7 +92,7 @@ function can_process()
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -157,7 +148,7 @@ function can_process()
 
 //--------------------------------------------------------------------------------------------------
 
-if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true)
+if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process($wo_details) == true)
 {
 
 	$close_wo = 0;
@@ -183,7 +174,6 @@ display_wo_details($_POST['selected_id']);
 start_form();
 
 hidden('selected_id', $_POST['selected_id']);
-//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
 $dec = get_qty_dec($wo_details["stock_id"]);
 if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
@@ -192,7 +182,8 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 start_table(TABLESTYLE2);
 br();
 
-ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
+ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_MANURECEIVE, null, get_post('date_')), false, ST_MANURECEIVE);
+date_row(_("Date:"), 'date_');
 
 if (!isset($_POST['ProductionType']))
 	$_POST['ProductionType'] = 1;
@@ -201,8 +192,6 @@ yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'],
 	_("Produce Finished Items"), _("Return Items to Work Order"));
 
 small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-
-date_row(_("Date:"), 'date_');
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 
@@ -215,4 +204,3 @@ end_form();
 
 end_page();
 
-?>

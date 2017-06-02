@@ -16,9 +16,9 @@ include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
 
@@ -47,7 +47,7 @@ start_row();
 
 supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'TransToDate', '', null, 1);
 
 supp_allocations_list_cell("filterType", null);
@@ -87,23 +87,32 @@ function due_date($row)
 
 function fmt_balance($row)
 {
-	$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT)
-		? -$row["TotalAmount"] - $row["Allocated"]
-		: $row["TotalAmount"] - $row["Allocated"];
+	$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT)	? -$row["TotalAmount"] - $row["Allocated"]
+		: ($row["type"] == ST_JOURNAL ? abs($row["TotalAmount"]) - $row["Allocated"] :
+			$row["TotalAmount"] - $row["Allocated"]);
 	return $value;
 }
 
 function alloc_link($row)
 {
-	if (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) 
-		&& (-$row["TotalAmount"] - $row["Allocated"]) >= 0)
-			return 	pager_link(_("Allocations"), "/purchasing/allocations/supplier_allocate.php?trans_no=" .
-				$row["trans_no"]. "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_ALLOC);
-	elseif ($row["type"] == ST_SUPPINVOICE && ($row["TotalAmount"] - $row["Allocated"]) > 0)
-			return 	pager_link(_("Pay"), "/purchasing/supplier_payment.php?supplier_id=".$row["supplier_id"]
-				."&PInvoice=".$row["trans_no"], ICON_MONEY );
-	else
-		return '';
+	$link = 
+	pager_link(_("Allocations"),
+		"/purchasing/allocations/supplier_allocate.php?trans_no=" .
+			$row["trans_no"]. "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_ALLOC );
+
+	if ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPAYMENT ||
+		(($row["type"] == ST_SUPPCREDIT || $row["type"] == ST_JOURNAL) && $row["TotalAmount"] < 0))
+		return floatcmp(-$row["TotalAmount"], $row["Allocated"]) ? $link : '';
+
+	$link = 
+	pager_link(_("Payment"),
+		"/purchasing/supplier_payment.php?supplier_id=".$row["supplier_id"]."&PInvoice=" 
+			. $row["trans_no"]."&trans_type=" . $row["type"], ICON_MONEY);
+
+	if ($row["type"] == ST_SUPPINVOICE || (($row["type"] == ST_SUPPCREDIT || $row["type"] == ST_JOURNAL) && $row["TotalAmount"] > 0))
+		return floatcmp($row["TotalAmount"], $row["Allocated"]) ? $link : '';
+
+
 }
 
 function fmt_debit($row)
@@ -120,7 +129,8 @@ function fmt_credit($row)
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = get_sql_for_supplier_allocation_inquiry();
+$sql = get_sql_for_supplier_allocation_inquiry(get_post('TransAfterDate'),get_post('TransToDate'),
+	get_post('filterType'), get_post('supplier_id'), check_value('showSettled'));
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
@@ -153,4 +163,3 @@ display_db_pager($table);
 
 end_form();
 end_page();
-?>

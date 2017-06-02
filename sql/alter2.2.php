@@ -10,12 +10,13 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-class fa2_2 {
-	var $version = '2.2';	// version installed
+class fa2_2 extends fa_patch  {
+	var $previous = '2.1';		// applicable database version
+	var $version = '2.2rc';	// version installed
 	var $description;
 	var $sql = 'alter2.2.sql';
 	var $preconf = true;
-	var $beta = false; // upgrade from 2.1 or 2.2beta; set in pre_check
+	var $beta = false; // upgrade from 2.1 or 2.2beta; set in prepare()
 	
 	function fa2_2() {
 		global $security_groups;
@@ -28,13 +29,14 @@ class fa2_2 {
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
 	//
-	function install($pref, $force) 
+	function install($company, $force=false) 
 	{
-		global $db, $systypes_array;
-		
+		global $db, $systypes_array, $db_connections;
+
 		if (!$this->preconf)
 			return false;
 
+		$pref = $db_connections[$company]['tbpref'];
 		// Until 2.2 sanitizing text input with db_escape was not
 		// consequent enough. To avoid comparision problems we have to 
 		// fix this now.
@@ -45,7 +47,7 @@ class fa2_2 {
 
 		// set item category dflt accounts to values from company GL setup
 		$prefs = get_company_prefs();
-		$sql = "UPDATE {$pref}stock_category SET "
+		$sql = "UPDATE ".TB_PREF."stock_category SET "
 			."dflt_sales_act = '" . $prefs['default_inv_sales_act'] . "',"
 			."dflt_cogs_act = '". $prefs['default_cogs_act'] . "',"
 			."dflt_inventory_act = '" . $prefs['default_inventory_act'] . "',"
@@ -60,14 +62,14 @@ class fa2_2 {
 		foreach($systypes_array as $typeno => $typename) {
 			$info = get_systype_db_info($typeno);
 			if ($info == null || $info[3] == null) continue;
-			$tbl = str_replace(TB_PREF, $pref, $info[0]);
+ 			$tbl = $info[0];
 			$sql = "SELECT DISTINCT {$info[2]} as id,{$info[3]} as ref FROM $tbl";
 			if ($info[1])
 				$sql .= " WHERE {$info[1]}=$typeno";
 			$result = db_query($sql);
 			if (db_num_rows($result)) {
 				while ($row = db_fetch($result)) {
-					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
+					$res2 = db_query("INSERT INTO ".TB_PREF."refs VALUES("
 						. $row['id'].",".$typeno.",'".$row['ref']."')");
 					if (!$res2) {
 						display_error(_("Cannot copy references from $tbl")
@@ -78,7 +80,7 @@ class fa2_2 {
 			}
 		}
 
-		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
+		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `".TB_PREF."sales_orders`")) ||
 			!db_num_rows($ret))
 		{
 				display_error(_('Cannot query max sales order number.'));
@@ -87,7 +89,7 @@ class fa2_2 {
 		$row = db_fetch($ret);
 		$max_order = $row[0];
 		$next_ref = $max_order+1;
-		$sql = "UPDATE `{$pref}sys_types` 
+		$sql = "UPDATE `".TB_PREF."sys_types` 
 			SET `type_no`='$max_order',`next_reference`='$next_ref'
 			WHERE `type_id`=30";
 		if(!db_query($sql))
@@ -100,48 +102,17 @@ class fa2_2 {
 	//
 	//	Checking before install
 	//
-	function pre_check($pref, $force)
-	{	
+	function prepare()
+	{
 		global $security_groups;
-		
-		if ($this->beta && !$force)
+
+		if ($this->beta)
 			$this->sql = 'alter2.2rc.sql';
 		// return ok when security groups still defined (upgrade from 2.1)
 		// or usersonline not defined (upgrade from 2.2 beta)
-		return isset($security_groups) || (check_table($pref, 'usersonline')!=0);
-	}
-	//
-	//	Test if patch was applied before.
-	//
-	function installed($pref) {
-		$n = 1; // number of patches to be installed
-		$patchcnt = 0;
-		if (!$this->beta) {
-			$n = 16;
- 			if (check_table($pref, 'company')) // skip in 2.3
- 				$n -= 3;
- 			else {
- 				if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
- 				if (!check_table($pref, 'company', 'profit_loss_year_act'))	$patchcnt++;
- 				if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
- 			}
-			if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $patchcnt++;
-			if (!check_table($pref, 'users', 'sticky_doc_date')) $patchcnt++;
-			if (!check_table($pref, 'users', 'startup_tab')) $patchcnt++;
-			if (!check_table($pref, 'cust_branch', 'inactive')) $patchcnt++;
-			if (!check_table($pref, 'chart_class', 'ctype')) $patchcnt++;
-			if (!check_table($pref, 'audit_trail')) $patchcnt++;
-			if (!check_table($pref, 'currencies', 'auto_update')) $patchcnt++;
-			if (!check_table($pref, 'stock_master','no_sale')) $patchcnt++;
-			if (!check_table($pref, 'suppliers', 'supp_ref')) $patchcnt++;
-			if (!check_table($pref, 'users', 'role_id')) $patchcnt++;
-			if (!check_table($pref, 'sales_orders', 'reference')) $patchcnt++;
-			if (!check_table($pref, 'tags')) $patchcnt++;
-		} 
-		if (!check_table($pref, 'useronline')) $patchcnt++;
+		$pref = $this->companies[$company]['tbpref'];
 
-		$n -= $patchcnt;
-		return $n == 0 ? true : $patchcnt;
+		return isset($security_groups) || (check_table($pref, 'usersonline')!=0);
 	}
 };
 
@@ -209,7 +180,7 @@ function convert_roles($pref)
 			}
 			$sections  = array_keys($sections);
 			sort($sections); sort($area_set);
-			import_security_role($pref, $security_headings[$role_id], $sections, $area_set);
+			import_security_role($security_headings[$role_id], $sections, $area_set);
 			$new_ids[$role_id] = db_insert_id();
 		}
 		$result = get_users(true);
@@ -219,7 +190,7 @@ function convert_roles($pref)
 		}
 		foreach($users as $old_id => $uids)
 			foreach( $uids as $id) {
-				$sql = "UPDATE {$pref}users set role_id=".$new_ids[$old_id].
+				$sql = "UPDATE ".TB_PREF."users set role_id=".$new_ids[$old_id].
 					" WHERE id=$id";
 				$ret = db_query($sql, 'cannot update users roles');
 				if(!$ret) return false;
@@ -227,9 +198,9 @@ function convert_roles($pref)
 		return true;
 }
 
-function import_security_role($pref, $name, $sections, $areas)
+function import_security_role($name, $sections, $areas)
 {
-	$sql = "INSERT INTO {$pref}security_roles (role, description, sections, areas)
+	$sql = "INSERT INTO ".TB_PREF."security_roles (role, description, sections, areas)
 	VALUES (".db_escape('FA 2.1 '.$name).",".db_escape($name).","
 	.db_escape(implode(';',$sections)).",".db_escape(implode(';',$areas)).")";
 
@@ -299,7 +270,7 @@ function sanitize_database($pref, $test = false) {
 			}
 		}
 
- 		if (empty($keys)) { // comments table have no primary key, so let's give up
+ 		if (empty($keys)) { // comments table have no primary key, so give up
  			continue;
  		}
 	 	if ($test)
@@ -325,10 +296,9 @@ function sanitize_database($pref, $test = false) {
 				$key[] = $k.'=\''.$rec[substr($k,1,-1)].'\'';
 			}
 			$sql .= implode( ' AND ', $key);
- 		 	if ($test) {
- 				error_log($sql);
+		 	if ($test)
 				error_log("\t(".implode(',',$val).") updated");
-			} else
+			else
 				db_query($sql, 'cannot update record');
 		}
 	}
@@ -337,4 +307,3 @@ function sanitize_database($pref, $test = false) {
 }
 
 $install = new fa2_2;
-?>

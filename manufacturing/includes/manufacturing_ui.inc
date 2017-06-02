@@ -26,7 +26,7 @@ function display_bom($item_check)
 
         start_table(TABLESTYLE);
         $th = array(_("Component"), _("Description"), _("Work Centre"),
-        	_("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost"));
+        	_("From Location"), _("Quantity"), _("Unit Cost"), _("Cost"));
 
         table_header($th);
 
@@ -45,19 +45,36 @@ function display_bom($item_check)
 			label_cell($myrow["WorkCentreDescription"]);
 			label_cell($myrow["location_name"]);
 			qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
-			amount_cell($myrow["standard_cost"]);
+			amount_cell($myrow["ProductCost"]);
 			amount_cell($myrow["ComponentCost"]);
 			end_row();
         	$total_cost += $myrow["ComponentCost"];
 
         	$j++;
-        	If ($j == 12)
+        	if ($j == 12)
         	{
         		$j = 1;
         		table_header($th);
-        	}//end of page full new headings if
-		}//end of while
+        	}
+		}
 
+		$item = get_item($item_check);
+		if ($item['labour_cost'] != 0)
+		{
+			$total_cost += $item['labour_cost'];
+			alt_table_row_color($k);
+	        label_cells(_("Standard Labour Cost"), number_format2($item['labour_cost'],user_price_dec()),
+    	    	"colspan=6 align=left", "class=odd_row nowrap align=right");
+    	    end_row();
+		}
+		if ($item['overhead_cost'] != 0)
+		{
+			$total_cost += $item['overhead_cost'];
+			alt_table_row_color($k);
+	        label_cells(_("Standard Overhead Cost"), number_format2($item['overhead_cost'],user_price_dec()),
+    	    	"colspan=6 align=left", "nowrap align=right");
+    	    end_row();
+		}
         label_row("<b>" . _("Total Cost") . "</b>", "<b>" . number_format2($total_cost,user_price_dec()) ."</b>",
         	"colspan=6 align=right", "nowrap align=right");
 		end_table();
@@ -168,7 +185,7 @@ function display_wo_productions($woid)
 
 			$total_qty += $myrow['quantity'];
 
-        	label_cell(get_trans_view_str(29, $myrow["id"]));
+        	label_cell(get_trans_view_str(ST_MANURECEIVE, $myrow["id"]));
 			label_cell($myrow['reference']);
 			label_cell(sql2date($myrow["date_"]));
 			qty_cell($myrow['quantity'], false, get_qty_dec($myrow['reference']));
@@ -208,7 +225,7 @@ function display_wo_issues($woid)
 
 			alt_table_row_color($k);
 
-        	label_cell(get_trans_view_str(28, $myrow["issue_no"]));
+        	label_cell(get_trans_view_str(ST_MANUISSUE, $myrow["issue_no"]));
 			label_cell($myrow['reference']);
 			label_cell(sql2date($myrow["issue_date"]));
 			end_row();
@@ -224,7 +241,7 @@ function display_wo_payments($woid)
 {
 	global $path_to_root, $wo_cost_types;
 
-    $result = get_gl_wo_cost_trans($woid);
+    $result = get_wo_costing($woid);
 
     if (db_num_rows($result) == 0)
     {
@@ -237,18 +254,16 @@ function display_wo_payments($woid)
 
         table_header($th);
 
-        $k = 0; //row colour counter
-		
+        $k = 0;
         while ($myrow = db_fetch($result))
         {
-
 			alt_table_row_color($k);
 
-        	label_cell(get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
-        	label_cell($wo_cost_types[$myrow['person_id']]);
+        	label_cell(get_gl_view_str( $myrow["trans_type"], $myrow["trans_no"], $myrow["trans_no"]));
+        	label_cell($wo_cost_types[$myrow['cost_type']]);
         	$date = sql2date($myrow["tran_date"]);
         	label_cell($date);
-			amount_cell(-($myrow['amount']));
+			amount_cell($myrow['amount']);
 			end_row();
 		}
 
@@ -357,4 +372,3 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
     }
 }
 
-?>

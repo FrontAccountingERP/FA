@@ -71,7 +71,7 @@ class JsHttpRequest
         $GLOBALS['_RESULT'] =& $this->RESULT; 
         
         // Parse QUERY_STRING.
-        if (preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m)) {
+        if (array_key_exists('QUERY_STRING', $_SERVER) && preg_match('/^(.*)(?:&|^)JsHttpRequest=(?:(\d+)-)?([^&]+)((?:&|$).*)$/s', @$_SERVER['QUERY_STRING'], $m)) {
             $this->ID = $m[2];
             $this->LOADER = strtolower($m[3]);
             $_SERVER['QUERY_STRING'] = preg_replace('/^&+|&+$/s', '', preg_replace('/(^|&)'.session_name().'=[^&]*&?/s', '&', $m[1] . $m[4]));
@@ -187,7 +187,7 @@ class JsHttpRequest
         if ($this->SCRIPT_DECODE_MODE == 'entities')
             return str_replace(array('"', '<', '>'), array('&quot;', '&lt;', '&gt;'), $s);
         else
-            return htmlspecialchars($s);
+            return html_specials_encode($s);
     }
     
 

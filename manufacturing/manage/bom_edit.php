@@ -19,8 +19,6 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-include_once($path_to_root . "/includes/manufacturing.inc");
-
 check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 
 check_db_has_workcentres(_("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
@@ -29,36 +27,11 @@ simple_page_mode(true);
 $selected_component = $selected_id;
 //--------------------------------------------------------------------------------------------------
 
-//if (isset($_GET["NewItem"]))
-//{
-//	$_POST['stock_id'] = $_GET["NewItem"];
-//}
 if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $_GET['stock_id'];
 	$selected_parent =  $_GET['stock_id'];
 }
-
-/* selected_parent could come from a post or a get */
-/*if (isset($_GET["selected_parent"]))
-{
-	$selected_parent = $_GET["selected_parent"];
-}
-else if (isset($_POST["selected_parent"]))
-{
-	$selected_parent = $_POST["selected_parent"];
-}
-*/
-/* selected_component could also come from a post or a get */
-/*if (isset($_GET["selected_component"]))
-{
-	$selected_component = $_GET["selected_component"];
-}
-else
-{
-	$selected_component = get_post("selected_component", -1);
-}
-*/
 
 //--------------------------------------------------------------------------------------------------
 
@@ -170,7 +143,10 @@ start_row();
 stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 end_row();
 if (list_updated('stock_id'))
+{
+	$selected_id = -1;
 	$Ajax->activate('_page_body');
+}
 end_table();
 br();
 
@@ -219,7 +195,7 @@ start_form();
 		echo "</td>";
 		end_row();
 	}
-	hidden('stock_id', $selected_parent);
+//	hidden('stock_id', $selected_parent);
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
@@ -235,4 +211,3 @@ start_form();
 
 end_page();
 
-?>

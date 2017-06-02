@@ -11,20 +11,20 @@
 ***********************************************************************/
 //-------------------------------------------------------------------------------------------------------------
 
-function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
+function add_stock_transfer($Items, $location_from, $location_to, $date_, $reference, $memo_)
 {
-	global $loc_notification, $path_to_root, $Refs;
+	global $SysPrefs, $path_to_root, $Refs;
 
 	begin_transaction();
 	$args = func_get_args();
 	$args = (object)array_combine(array('Items', 'location_from', 'location_to', 
-	'date_', 'type', 'reference', 'memo_'), $args);
+	'date_', 'reference', 'memo_'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_LOCTRANSFER);
 
 	$transfer_id = get_next_trans_no(ST_LOCTRANSFER);
 
-	if ($loc_notification == 1)
+	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
@@ -34,10 +34,10 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 	}
 	foreach ($Items as $line_item)
 	{
-		if ($loc_notification == 1)
+		if ($SysPrefs->loc_notification() == 1)
 			$loc = calculate_reorder_level($location_from, $line_item, $st_ids, $st_names, $st_num, $st_reorder); 
 		add_stock_transfer_item($transfer_id, $line_item->stock_id, $location_from,
-			$location_to, $date_, $type, $reference, $line_item->quantity);
+			$location_to, $date_, $reference, $line_item->quantity);
 	}
 
 	add_comments(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
@@ -50,7 +50,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 
 	commit_transaction();
 	
-	if ($loc_notification == 1 && count($st_ids) > 0)
+	if ($SysPrefs->loc_notification() == 1 && count($st_ids) > 0)
 		send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder);
 
 	return $transfer_id;
@@ -64,7 +64,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 // it seems the standard_cost field is not used at all
 
 function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $location_to,
-	$date_, $type, $reference, $quantity)
+	$date_, $reference, $quantity)
 {
 	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from,
        	$date_, $reference, -$quantity, 0);
@@ -75,26 +75,29 @@ function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $locat
 }
 
 //-------------------------------------------------------------------------------------------------------------
-
+//
+//	Get inventory transfer common data (currently this is still stored in stock_moves table).
+//
 function get_stock_transfer($trans_no)
 {
-	$result = get_stock_transfer_items($trans_no);
-	if (db_num_rows($result) < 2)
-	{
-		display_db_error("transfer with less than 2 items : $trans_no", "");
-	}
+	// retrieve common data from any two from/to move records
+	$sql = "SELECT loc_from.*, loc_to.*
+		FROM
+			(SELECT trans_no, type, tran_date, reference, move.loc_code as from_loc, loc.location_name as from_name
+			FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."locations loc ON loc.loc_code=move.loc_code
+			WHERE type=".ST_LOCTRANSFER." AND trans_no=".db_escape($trans_no). " AND qty<0 LIMIT 1) loc_from,
 
-	// this function is very bad that it assumes that 1st record and 2nd record contain the
-	// from and to locations - if get_stock_moves uses a different ordering than trans_no then
-	// it will bomb
-	$move1 = db_fetch($result);
-	$move2 = db_fetch($result);
+			(SELECT move.loc_code as to_loc, loc.location_name as to_name
+			FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."locations loc ON loc.loc_code=move.loc_code
+			WHERE type=".ST_LOCTRANSFER." AND trans_no=".db_escape($trans_no). " AND qty>0 LIMIT 1) loc_to";
 
-	// return an array of (From, To)
-	if ($move1['qty'] < 0)
-		return array($move1, $move2);
-	else
-		return array($move2, $move1);
+	$result = db_query($sql, "Could not get transfer common data");
+
+	$data = db_fetch($result);
+
+	return $data;
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -119,4 +122,3 @@ function void_stock_transfer($type_no)
 	void_stock_move(ST_LOCTRANSFER, $type_no);
 }
 
-?>

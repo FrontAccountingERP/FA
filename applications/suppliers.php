@@ -22,7 +22,7 @@ class suppliers_app extends application
 			"purchasing/inquiry/po_search.php?", 'SA_GRN', MENU_TRANSACTION);
 		$this->add_lapp_function(0, _("Direct &GRN"),
 			"purchasing/po_entry_items.php?NewGRN=Yes", 'SA_GRN', MENU_TRANSACTION);
-		$this->add_lapp_function(0, _("Direct &Invoice"),
+		$this->add_lapp_function(0, _("Direct Supplier &Invoice"),
 			"purchasing/po_entry_items.php?NewInvoice=Yes", 'SA_SUPPLIERINVOICE', MENU_TRANSACTION);
 
 		$this->add_rapp_function(0, _("&Payments to Suppliers"),
@@ -40,7 +40,6 @@ class suppliers_app extends application
 			"purchasing/inquiry/po_search_completed.php?", 'SA_SUPPTRANSVIEW', MENU_INQUIRY);
 		$this->add_lapp_function(1, _("Supplier Transaction &Inquiry"),
 			"purchasing/inquiry/supplier_inquiry.php?", 'SA_SUPPTRANSVIEW', MENU_INQUIRY);
-		$this->add_lapp_function(1, "","");
 		$this->add_lapp_function(1, _("Supplier Allocation &Inquiry"),
 			"purchasing/inquiry/supplier_allocation_inquiry.php?", 'SA_SUPPLIERALLOC', MENU_INQUIRY);
 
@@ -56,4 +55,3 @@ class suppliers_app extends application
 }
 
 
-?>

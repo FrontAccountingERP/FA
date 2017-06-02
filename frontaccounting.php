@@ -15,6 +15,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	include_once($path_to_root . '/applications/customers.php');
 	include_once($path_to_root . '/applications/suppliers.php');
 	include_once($path_to_root . '/applications/inventory.php');
+	include_once($path_to_root . '/applications/fixed_assets.php');
 	include_once($path_to_root . '/applications/manufacturing.php');
 	include_once($path_to_root . '/applications/dimensions.php');
 	include_once($path_to_root . '/applications/generalledger.php');
@@ -22,7 +23,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	include_once($path_to_root . '/installed_extensions.php');
 
 	class front_accounting
-		{
+	{
 		var $user;
 		var $settings;
 		var $applications;
@@ -33,17 +34,17 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		function front_accounting()
 		{
 		}
-		function add_application(&$app)
-				{	
-					if ($app->enabled) // skip inactive modules
-						$this->applications[$app->id] = &$app;
-				}
+		function add_application($app)
+		{	
+			if ($app->enabled) // skip inactive modules
+				$this->applications[$app->id] = $app;
+		}
 		function get_application($id)
-				{
-				 if (isset($this->applications[$id]))
-					return $this->applications[$id];
-				 return null;
-				}
+		{
+			 if (isset($this->applications[$id]))
+				return $this->applications[$id];
+			 return null;
+		}
 		function get_selected_application()
 		{
 			if (isset($this->selected_application))
@@ -69,6 +70,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		}
 		function init()
 		{
+			global $SysPrefs;
 
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
@@ -77,7 +79,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->add_application(new customers_app());
 			$this->add_application(new suppliers_app());
 			$this->add_application(new inventory_app());
-			$this->add_application(new manufacturing_app());
+			if (get_company_pref('use_manufacturing'))
+				$this->add_application(new manufacturing_app());
+			if (get_company_pref('use_fixed_assets'))
+			    $this->add_application(new assets_app());
 			$this->add_application(new dimensions_app());
 			$this->add_application(new general_ledger_app());
 
@@ -85,5 +90,4 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 			$this->add_application(new setup_app());
 		}
-}
-?>
+	}

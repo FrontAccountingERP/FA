@@ -23,9 +23,9 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = '';
 set_focus('account');
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
@@ -68,7 +68,7 @@ function gl_inquiry_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
     gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, _("All Accounts"));
-	date_cells(_("from:"), 'TransFromDate', '', null, -30);
+	date_cells(_("from:"), 'TransFromDate', '', null, -user_transaction_days());
 	date_cells(_("to:"), 'TransToDate');
     end_row();
 	end_table();
@@ -132,7 +132,7 @@ function show_results()
 	
 	if ($dim == 2)
 		$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
-	else if ($dim == 1)
+	elseif ($dim == 1)
 		$dim_cols = array(_("Dimension"));
 	else
 		$dim_cols = array();
@@ -238,4 +238,3 @@ div_end();
 
 end_page();
 
-?>

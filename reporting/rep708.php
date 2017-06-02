@@ -31,7 +31,7 @@ $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 
 function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balances, $dimension, $dimension2)
 {
-	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal, $clear_trial_balance_opening;
+	global $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal, $SysPrefs;
 	
 	$printtitle = 0; //Flag for printing type name	
 	
@@ -57,7 +57,7 @@ function display_type ($type, $typename, &$dec, &$rep, $from, $to, $zero, $balan
 		
 		// FA doesn't really clear the closed year, therefore the brought forward balance includes all the transactions from the past, even though the balance is null.
 		// If we want to remove the balanced part for the past years, this option removes the common part from from the prev and tot figures.
-		if (@$clear_trial_balance_opening)
+		if (@$SysPrefs->clear_trial_balance_opening)
 		{
 			$open = get_balance($account["account_code"], $dimension, $dimension2, $begin,  $begin, false, true);
 			$offset = min($open['debit'], $open['credit']);
@@ -203,7 +203,7 @@ function print_trial_balance()
                     	3 => array('text' => _('Dimension')." 2",
                             'from' => get_dimension_string($dimension2), 'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
@@ -226,7 +226,7 @@ function print_trial_balance()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 	$rep->NewPage();
-	
+
 	$classresult = get_account_classes(false);
 	while ($class = db_fetch($classresult))
 	{
@@ -274,7 +274,7 @@ function print_trial_balance()
 	else
 		$rep->AmountCol(7, 8, abs($tbal), $dec);
 	$rep->NewLine();
-		
+
 	$rep->Line($rep->row + 10);
 	if (($pbal = round2($pbal, $dec)) != 0.0 && $dimension == 0 && $dimension2 == 0)
 	{
@@ -285,4 +285,3 @@ function print_trial_balance()
 	$rep->End();
 }
 
-?>

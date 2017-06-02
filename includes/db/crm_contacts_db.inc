@@ -300,4 +300,16 @@ function get_crm_contact($id)
 	return $ret;
 }
 
-?>
+/*
+	 Check for whether category is used in contacts.
+*/
+function is_crm_category_used($id)
+{
+	$row = get_crm_category($id);
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."crm_contacts WHERE type='".$row['type']."' AND action='".$row['action']."'";
+	$result = db_query($sql, "check relations for crm_contacts failed");
+	$contacts = db_fetch($result);
+	return $contacts[0];
+}
+
+

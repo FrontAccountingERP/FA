@@ -32,21 +32,17 @@ print_statements();
 
 function getTransactions($debtorno, $date, $show_also_allocated)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
-				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
-				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
-				AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
-				FROM ".TB_PREF."debtor_trans
-				WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
-    				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-					AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > 1e-6";
+    $sql = "SELECT *,
+    			(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
+				((type = ".ST_SALESINVOICE.") AND due_date < '$date') AS OverDue
+			FROM ".TB_PREF."debtor_trans
+			WHERE tran_date <= '$date' AND debtor_no = ".db_escape($debtorno)."
+   				AND type <> ".ST_CUSTDELIVERY."
+				AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > ". FLOAT_COMP_DELTA;
+
 	if (!$show_also_allocated)
-		$sql .= " AND ABS(ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight +
-				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) - alloc) > 1e-6";
-	$sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
+		$sql .= " AND ABS(ABS(ov_amount + ov_gst + ov_freight +	ov_freight_tax + ov_discount) - alloc) > ". FLOAT_COMP_DELTA;
+	$sql .= " ORDER BY tran_date";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -83,9 +79,9 @@ function print_statements()
 
 	if ($email == 0)
 		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize(), 9, $orientation);
-   if ($orientation == 'L')
+    if ($orientation == 'L')
     	recalculate_cols($cols);
- 
+
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_TEXT)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
@@ -116,13 +112,13 @@ function print_statements()
 		}
 
 		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		//= get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
 		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 		$rep->NewLine();
 		$doctype = ST_STATEMENT;
@@ -177,4 +173,3 @@ function print_statements()
 		$rep->End();
 }
 
-?>

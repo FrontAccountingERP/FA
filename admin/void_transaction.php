@@ -21,9 +21,9 @@ include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 	
 page(_($help_context = "Void a Transaction"), false, false, "", $js);
@@ -73,7 +73,7 @@ function exist_transaction($type, $type_no)
 			return false;
 
 		case ST_SUPPRECEIVE : // it's a GRN
-			if (exists_grn_on_invoices($type_no))
+			if (exists_grn($type_no))
 				return false;
 			break;
 
@@ -104,7 +104,6 @@ function exist_transaction($type, $type_no)
 			return false;
 		case ST_COSTUPDATE : // it's a stock cost update
 			return false;
-			break;
 	}
 
 	return true;
@@ -122,7 +121,7 @@ function select_link($row)
 	if (!isset($row['type']))
 		$row['type'] = $_POST['filterType'];
 	if (!is_date_in_fiscalyear($row['trans_date'], true))
-		return _("No");
+		return _("N/A");
   	return button('Edit'.$row["trans_no"], _("Select"), _("Select"), ICON_EDIT);
 }
 
@@ -154,7 +153,7 @@ function voiding_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Type:"), 'filterType', null, true, $not_implemented);
+	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true, $not_implemented);
 	if (list_updated('filterType'))
 		$selected_id = -1;
 
@@ -168,12 +167,12 @@ function voiding_controls()
     ref_cells(_("to #:"), 'ToTransNo');
 
     submit_cells('ProcessSearch', _("Search"), '', '', 'default');
-		
+
 	end_row();
     end_table(1);
     
 	$trans_ref = false;
-	$sql = get_sql_for_view_transactions($_POST['filterType'], $_POST['FromTransNo'], $_POST['ToTransNo'], $trans_ref);
+	$sql = get_sql_for_view_transactions(get_post('filterType'), get_post('FromTransNo'), get_post('ToTransNo'), $trans_ref);
 	if ($sql == "")
 		return;
 
@@ -241,7 +240,7 @@ function check_valid_entries()
 	{
 		display_error(_("The selected transaction was closed for edition and cannot be voided."));
 		set_focus('trans_no');
-		return;
+		return false;
 	}
 	if (!is_date($_POST['date_']))
 	{
@@ -251,7 +250,7 @@ function check_valid_entries()
 	}
 	if (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -283,10 +282,10 @@ function handle_void_transaction()
 			return;
 		}
 
-		$ret = void_transaction($_POST['filterType'], $_POST['trans_no'],
+		$msg = void_transaction($_POST['filterType'], $_POST['trans_no'],
 			$_POST['date_'], $_POST['memo_']);
 
-		if ($ret) 
+		if (!$msg) 
 		{
 			display_notification_centered(_("Selected transaction has been voided."));
 			unset($_POST['trans_no']);
@@ -294,7 +293,7 @@ function handle_void_transaction()
 			unset($_POST['date_']);
 		}
 		else {
-			display_error(_("The entered transaction does not exist or cannot be voided."));
+			display_error($msg);
 			set_focus('trans_no');
 
 		}
@@ -335,4 +334,3 @@ voiding_controls();
 
 end_page();
 
-?>

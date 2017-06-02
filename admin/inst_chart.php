@@ -14,7 +14,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root."/includes/packages.inc");
 
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js = get_js_open_window(900, 500);
 }
 page(_($help_context = "Install Charts of Accounts"), false, false, '', $js);
@@ -45,54 +45,55 @@ if ($id = find_submit('Update', false))
 start_form(true);
 
 	div_start('ext_tbl');
-	start_table(TABLESTYLE);
 
-	$th = array(_("Chart"),  _("Installed"), _("Available"), _("Encoding"), "", "");
-	table_header($th);
-
-	$k = 0;
 	$mods = get_charts_list();
 
-	foreach($mods as $pkg_name => $ext)
+	if (!$mods)
+		display_note(_("No optional chart of accounts is currently available."));
+	else
 	{
-		$available = @$ext['available'];
-		$installed = @$ext['version'];
-		$id = @$ext['local_id'];
-		$encoding = @$ext['encoding'];
+		$th = array(_("Chart"),  _("Installed"), _("Available"), _("Encoding"), "", "");
+		$k = 0;
 
-		alt_table_row_color($k);
+		start_table(TABLESTYLE);
+		table_header($th);
+		foreach($mods as $pkg_name => $ext)
+		{
+			$available = @$ext['available'];
+			$installed = @$ext['version'];
+			$id = @$ext['local_id'];
+			$encoding = @$ext['encoding'];
 
-//		label_cell(is_array($ext['Descr']) ? $ext['Descr'][0] : $ext['Descr']);
-		label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
+			alt_table_row_color($k);
 
-		label_cell($id === null ? _("None") :
-			($available && $installed ? $installed : _("Unknown")));
-		label_cell($available ? $available : _("None"));
-		label_cell($encoding ? $encoding : _("Unknown"));
+			label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
-		if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
-			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
-				_('Upload and install latest extension package'), ICON_DOWN);
-		else
-			label_cell('');
+			label_cell($id === null ? _("None") :
+				($available && $installed ? $installed : _("Unknown")));
+			label_cell($available ? $available : _("None"));
+			label_cell($encoding ? $encoding : _("Unknown"));
 
-		if ($id !== null) {
-			delete_button_cell('Delete'.$id, _('Delete'));
-			submit_js_confirm('Delete'.$id, 
-				sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
-					$ext['name']));
-		} else
-			label_cell('');
+			if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
+				button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+					_('Upload and install latest extension package'), ICON_DOWN);
+			else
+				label_cell('');
 
-		end_row();
-	}
+			if ($id !== null) {
+				delete_button_cell('Delete'.$id, _('Delete'));
+				submit_js_confirm('Delete'.$id, 
+					sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+						$ext['name']));
+			} else
+				label_cell('');
 
+			end_row();
+		}
 	end_table(1);
-
+	}
 	div_end();
 
 //---------------------------------------------------------------------------------------------
 end_form();
 
 end_page();
-?>

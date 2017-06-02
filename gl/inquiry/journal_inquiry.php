@@ -19,9 +19,9 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 page(_($help_context = "Journal Inquiry"), false, false, "", $js);
@@ -48,12 +48,14 @@ journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
 date_cells(_("To:"), 'ToDate');
 
-check_cells( _("Show closed:"), 'AlsoClosed', null);
-
-submit_cells('Search', _("Search"), '', '', 'default');
 end_row();
 start_row();
 ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
+users_list_cells(_("User:"), 'userid', null, false);
+if (get_company_pref('use_dimension') && isset($_POST['dimension'])) // display dimension only, when started in dimension mode
+	dimensions_list_cells(_('Dimension:'), 'dimension', null, true, null, true);
+check_cells( _("Show closed:"), 'AlsoClosed', null);
+submit_cells('Search', _("Search"), '', '', 'default');
 end_row();
 end_table();
 
@@ -71,53 +73,30 @@ function systype_name($dummy, $type)
 
 function view_link($row) 
 {
-	return get_trans_view_str($row["type"], $row["type_no"]);
+	return get_trans_view_str($row["trans_type"], $row["trans_no"]);
 }
 
 function gl_link($row) 
 {
-	return get_gl_view_str($row["type"], $row["type_no"]);
+	return get_gl_view_str($row["trans_type"], $row["trans_no"]);
 }
-
-$editors = array(
-	ST_JOURNAL => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
-	ST_BANKPAYMENT => "/gl/gl_bank.php?ModifyPayment=Yes&trans_no=%d&trans_type=%d",
-	ST_BANKDEPOSIT => "/gl/gl_bank.php?ModifyDeposit=Yes&trans_no=%d&trans_type=%d",
-//	4=> Funds Transfer,
-   ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
-//   11=>
-// free hand (debtors_trans.order_==0)
-//	"/sales/credit_note_entry.php?ModifyCredit=%d"
-// credit invoice
-//	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
-//	 12=> Customer Payment,
-   ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
-//   16=> Location Transfer,
-//   17=> Inventory Adjustment,
-//   20=> Supplier Invoice,
-//   21=> Supplier Credit Note,
-//   22=> Supplier Payment,
-//   25=> Purchase Order Delivery,
-//   28=> Work Order Issue,
-//   29=> Work Order Production",
-//   35=> Cost Update,
-);
 
 function edit_link($row)
 {
-	global $editors;
 
 	$ok = true;
-	if ($row['type'] == ST_SALESINVOICE)
+	if ($row['trans_type'] == ST_SALESINVOICE)
 	{
-		$myrow = get_customer_trans($row["type_no"], $row["type"]);
-		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["type_no"]) !== false)
+		$myrow = get_customer_trans($row["trans_no"], $row["trans_type"]);
+		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
 			$ok = false;
-	}		
-	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) && $ok ? 
-		pager_link(_("Edit"), 
-			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
-			ICON_EDIT) : '';
+	}
+	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '';
+}
+
+function invoice_supp_reference($row)
+{
+	return $row['supp_reference'];
 }
 
 $sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),
@@ -128,6 +107,8 @@ $cols = array(
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
+ 	_("Counterparty") => array('ord' => ''),
+	_("Supplier's Reference") => 'skip',
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),
 	_("Memo"),
@@ -140,6 +121,11 @@ if (!check_value('AlsoClosed')) {
 	$cols[_("#")] = 'skip';
 }
 
+if($_POST['filterType'] == ST_SUPPINVOICE) //add the payment column if shown supplier invoices only
+{
+	$cols[_("Supplier's Reference")] = array('fun'=>'invoice_supp_reference', 'align'=>'center');
+}
+
 $table =& new_db_pager('journal_tbl', $sql, $cols);
 
 $table->width = "80%";
@@ -149,4 +135,3 @@ display_db_pager($table);
 end_form();
 end_page();
 
-?>

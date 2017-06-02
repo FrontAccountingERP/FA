@@ -42,4 +42,3 @@ class manufacturing_app extends application
 }
 
 
-?>

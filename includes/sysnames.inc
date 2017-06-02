@@ -16,7 +16,7 @@
 //
 global $systypes_array, $bank_account_types, $bank_transfer_types, 
 	$payment_person_types, $wo_types_array, $wo_cost_types, $class_types,
-	$quick_actions, $quick_entry_types, $stock_types, $tag_types;
+	$quick_actions, $quick_entry_types, $stock_types, $tag_types, $bank_owner;
 
 $systypes_array = array (
 	ST_JOURNAL => _("Journal Entry"),
@@ -40,7 +40,12 @@ $systypes_array = array (
 	ST_SALESORDER => _("Sales Order"),
 	ST_SALESQUOTE => _("Sales Quotation"),
 	ST_COSTUPDATE => _("Cost Update"),
-	ST_DIMENSION => _("Dimension")
+	ST_DIMENSION => _("Dimension"),
+	);
+
+$fa_systypes_array = array (
+	ST_INVADJUST => _("Fixed Assets Disposal"),
+	ST_COSTUPDATE => _("Fixed Assets Revaluation"),
 	);
 
 $type_shortcuts = array(
@@ -110,6 +115,7 @@ $wo_types_array = array (
 $wo_cost_types = array(
 	WO_LABOUR => _("Labour Cost"),
 	WO_OVERHEAD => _("Overhead Cost"),
+	WO_MATERIALS => _("Materials")
 );
 
 //----------------------------------------------------------------------------------
@@ -151,6 +157,15 @@ $quick_entry_types = array(
 );
 
 //----------------------------------------------------------------------------------
+// depreciation methods
+$depreciation_methods = array(
+  'D' => _("Declining balance"),
+  'S' => _("Straight line"),
+  'N' => _("Sum of the Year Digits"),
+  'O' => _("One-time"),
+);
+
+//----------------------------------------------------------------------------------
 // Types of stock items
 $stock_types = array(
 	'M' => _("Manufactured"),
@@ -182,8 +197,44 @@ $pterm_types = array(
 	PTT_FOLLOWING => _("Day In Following Month")
 );
 
+$tax_algorithms = array( 
+	TCA_LINES => _("Sum per line taxes"), 
+	TCA_TOTALS => _("Taxes from totals")
+);
 //----------------------------------------------------------------------------------
+
+$bank_owner_types = array(
+	BO_UNKNOWN => _("Unknown"),
+	BO_COMPANY => _("Company"),
+	BO_CUSTBRANCH => _("Customer"),
+	BO_SUPPLIER => _("Supplier")
+);
+
 // This month array is for use with the last 3 dateformats. 
 $tmonths = array("", _("Jan"),_("Feb"),_("Mar"),_("Apr"),_("May"),_("Jun"),_("Jul"),_("Aug"),_("Sep"),_("Oct"),_("Nov"),_("Dec"));
 
-?>
+//
+//	FA supported db backend language settings.
+//
+$supported_collations = array(
+  'utf8_xx' => _('Unicode (multilanguage)'),
+  'utf8_is' => _('Icelandic'),
+  'utf8_lv' => _('Latvian'),
+  'utf8_ro' => _('Romanian'),
+  'utf8_sl' => _('Slovenian'),
+  'utf8_pl' => _('Polish'),
+  'utf8_et' => _('Estonian'),
+  'utf8_es' => _('Spanish'), // or 'spanish2',
+  'utf8_sw' => _('Swedish'),
+  'utf8_tr' => _('Turkish'),
+  'utf8_cs' => _('Czech'),
+  'utf8_da' => _('Danish'),
+  'utf8_lt' => _('Lithuanian'),
+  'utf8_sk' => _('Slovak'),
+  'utf8_sp' => _('Spanish (alternative)'),
+  'utf8_fa' => _('Persian'),
+  'utf8_hu' => _('Hungarian'),
+  'utf8_fr' => _('French'),
+  'utf8_it' => _('Italian'),
+);
+

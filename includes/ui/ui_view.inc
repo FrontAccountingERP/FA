@@ -50,11 +50,11 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false, $class='', $
 	{
 		$label = _("GL");
 		$icon = ICON_GL;
-	}	
+	}
+	$url = ($type == ST_WORKORDER) ? "manufacturing/view/wo_costs_view.php?trans_no=$trans_no"
+		: "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 
-	return viewer_link($label, 
-		"gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", 
-		$class, $id, $icon);
+	return viewer_link($label, $url, $class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ function get_package_view_str($pkg, $label="", $icon=false, $class='', $id='')
 		$label = _("Info");
 //		$icon = ICON_GL;
 	}
-	return viewer_link($label, "includes/ui/view_package.php?id=$pkg", $class, $id, $icon);
+	return viewer_link($label, "admin/view/view_package.php?id=$pkg", $class, $id, $icon);
 }
 
 
@@ -262,7 +262,7 @@ function check_ui_refresh($name=null)
 		$name = $bt[1]['function'];
 	$old = @$_SESSION['ui_context'][$name];
 	$new = $_SESSION['ui_context'][$name] = $bt[1]['args'];
-	return ($new != $old) || ($_SERVER['REQUEST_METHOD'] == 'GET');
+	return ($new != $old);
 }
 
 //--------------------------------------------------------------------------------------
@@ -272,7 +272,7 @@ function check_ui_refresh($name=null)
 //
 function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
-    global $Ajax, $xr_provider_authoritative;
+    global $Ajax, $SysPrefs;
 
 	$readonly = false;
 
@@ -299,7 +299,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
  					$rate = retrieve_exrate($currency, $date_);
 					if (!$rate)
 						display_warning(sprintf(_("Cannot retrieve exchange rate for currency %s. Please adjust approximate rate if needed."), $currency));
-					elseif ($xr_provider_authoritative) {
+					elseif ($SysPrefs->xr_provider_authoritative) {
 						// if the remote exrate is considered authoritative we can store the rate here,
 						// otherwise exrate will be stored during transaction write
 						$readonly = true;
@@ -385,11 +385,9 @@ function view_stock_status($stock_id, $description=null, $echo=true)
 {
 	global $path_to_root;
 	if ($description)
-		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
-		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >". (user_show_codes()?$stock_id . " - ":"") . $description."</a>";
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id&popup=1' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >". (user_show_codes()?$stock_id . " - ":"") . $description."</a>";
 	else
-		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
-		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id&popup=1' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
 	if($echo)
 		echo $preview_str;
 	return $preview_str;
@@ -423,7 +421,8 @@ function display_debit_or_credit_cells($value, $bold=false)
 
 function display_customer_trans_tax_details($tax_items, $columns)
 {
-	global $alternative_tax_include_on_docs, $suppress_tax_rates;
+	global $SysPrefs;
+
 	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
@@ -431,13 +430,13 @@ function display_customer_trans_tax_details($tax_items, $columns)
      		continue;
 
     	$tax = number_format2($tax_item['amount'],user_price_dec());
-		if (isset($suppress_tax_rates) && $suppress_tax_rates == 1)
+		if ($SysPrefs->suppress_tax_rates() == 1)
 			$tax_type_name = $tax_item['tax_type_name'];
 		else
 			$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
     	if ($tax_item['included_in_price'])
     	{
-			if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+			if ($SysPrefs->alternative_tax_include_on_docs() == 1)
   			{
   				if ($first)
   					label_row(_("Total Tax Excluded"), number_format2($tax_item['net_amount'], user_price_dec()),
@@ -533,14 +532,14 @@ function display_footer_exit($space=2)
 
 //--------------------------------------------------------------------------------------
 
-function display_allocations($alloc_result, $total, $payments=false)
+function display_allocations($alloc_result, $total, $title, $show_summary=true)
 {
 	global $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
 
-    display_heading2(($payments ? _("Payments") : _("Allocations")));
+    display_heading2($title);
 
     start_table(TABLESTYLE, "width='80%'");
 
@@ -551,7 +550,6 @@ function display_allocations($alloc_result, $total, $payments=false)
 
     while ($alloc_row = db_fetch($alloc_result))
     {
-
     	alt_table_row_color($k);
 
     	label_cell($systypes_array[$alloc_row['type']]);
@@ -559,7 +557,7 @@ function display_allocations($alloc_result, $total, $payments=false)
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
     	$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
-    	if ($payments && ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT))
+    	if ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT)
     		$alloc_row['Total'] = -$alloc_row['Total'];
     	amount_cell($alloc_row['Total']);
    		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -572,12 +570,14 @@ function display_allocations($alloc_result, $total, $payments=false)
    	label_cell(_("Total Allocated:"), "align=right colspan=5");
 	amount_cell($total_allocated);
 	end_row();
-	start_row();
-    label_cell(_("Left to Allocate:"), "align=right colspan=5");
-    $total = round2($total, user_price_dec());
-    amount_cell($total - $total_allocated);
-    end_row();
-
+	if ($show_summary)
+	{
+		start_row();
+	    label_cell(_("Left to Allocate:"), "align=right colspan=5");
+	    $total = round2($total, user_price_dec());
+    	amount_cell($total - $total_allocated);
+    	end_row();
+	}
     end_table(1);
 }
 
@@ -589,11 +589,11 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	{
 		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total);
+			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total);
+			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 	}
 }
@@ -606,11 +606,11 @@ function display_allocations_to($person_type, $person_id, $type, $type_no, $tota
 	{
 		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_from_cust_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total, true);
+			display_allocations($alloc_result, $total, $type == ST_SALESORDER ? _("Pre-Payments") : _("Payments"), false);
 			return;
 		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_from_supp_transactions($person_id, $type_no, $type);
-			display_allocations($alloc_result, $total, true);
+			display_allocations($alloc_result, $total, $type == ST_PURCHORDER ? _("Pre-Payments") : _("Payments"), false);
 			return;
 	}
 }
@@ -623,7 +623,7 @@ function display_allocations_to($person_type, $person_id, $type, $type_no, $tota
 function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 {
 	$bank_amount = 0;
-	
+
 	if (!isset($id) || $id == null || $id == "")
 	{
 		display_error( _("No Quick Entries are defined."));
@@ -633,31 +633,79 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 	{
 		if ($type == QE_DEPOSIT)
 			$base = -$base;
-		if ($type != QE_SUPPINV)	// only one quick entry on journal/bank transaction
+		if ($type != QE_SUPPINV && $type != QE_JOURNAL)	// only one quick entry on journal/bank transaction
 			$cart->clear_items();
-		$qe = get_quick_entry($id);
-		if ($qe['bal_type'] == 1)
-		{
-			if ($qe['base_amount'] == 1.0) // monthly
-				$begin = begin_month($cart->tran_date);
-			else
-			{
-				if (is_account_balancesheet($qe['base_desc'])) // total
-					$begin = "";
-				else
-					$begin = begin_fiscalyear(); // from fiscalyear begin
-			}		
-			$base = get_gl_trans_from_to($begin, $cart->tran_date, $qe['base_desc']);
-				
-		}
-		if ($descr != '') $qe['description'] .= ': '.$descr;
-		$result = get_quick_entry_lines($id);
-		if (db_num_rows($result) == 0)
+
+		// as for now tax_group is passed only in QE_SUPPINV
+		$qe_lines = quickentry_calculate($base, $id, @$cart->tax_group_id, $cart->tran_date);
+
+		if ($qe_lines === 0)
 		{
 			display_error( _("No Quick Entry lines are defined."));
 			set_focus('totamount');
 			return 0;
-		}	
+		} elseif ($qe_lines === -1)
+		{
+			display_error(_("Cannot post to GL account used by more than one tax type."));
+			return 0;
+		}
+		foreach($qe_lines as $qe_line)
+		{
+			if ($descr != '') $qe_line['descr'] .= ': '.$descr;
+			if ($type != QE_SUPPINV)
+				$cart->add_gl_item($qe_line['code'], $qe_line['dim1'],
+					$qe_line['dim2'], $qe_line['amount'], $qe_line['descr']);
+			else 
+			{
+				$acc_name = get_gl_account_name($qe_line['code']);
+				$cart->add_gl_codes_to_trans($qe_line['code'], 
+					$acc_name, $qe_line['dim1'], 
+					$qe_line['dim2'], $qe_line['amount'], $qe_line['descr']);
+			}
+		}
+	}
+	return $bank_amount;
+}
+
+//--------------------------------------------------------------------------------------
+
+function quickentry_calculate($base, $id, $taxgroup=null, $date=null)
+{
+		$gl_entries = array();
+		$qe = get_quick_entry($id);
+		$type = $qe['type'];
+		$total = $base;
+		// quick entry made on account balance is special case.
+		if ($qe['bal_type'] == 1) // if this is quick entry based on balance - calculate it
+		{
+			// Note, that this is ugly hack overriding standard field usage 
+			// just to make the feature available between major FA releases!
+			$gl_code = $qe['base_desc'];
+			$monthly = $qe['base_amount'] == 1.0;
+
+			if (!isset($date))
+				$date = Today();
+
+			if ($monthly) // marked as monthly
+				$begin = begin_month($date);
+			else
+			{
+				if (is_account_balancesheet($gl_code)) // total
+					$begin = "";
+				else
+					$begin = begin_fiscalyear(); // from fiscalyear begin
+			}
+			$base = get_gl_trans_from_to($begin, $date, $gl_code);
+
+		}
+
+		$result = get_quick_entry_lines($id);
+		if (db_num_rows($result) == 0)
+		{
+			return 0;
+		}
+
+		// first calculate total rate in case more than one tax is used
 		$totrate = 0;
 		while ($row = db_fetch($result))
 		{
@@ -667,14 +715,15 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					if (substr($row['action'],0,1) != 'T') 
-						$totrate += get_tax_type_default_rate($row['dest_id']);
+					if (substr($row['action'], 0, 1) != 'T') 
+						$totrate += get_tax_type_rate($row['dest_id']);
 			}
 		}
 		$first = true;
 		$taxbase = 0;
 		foreach($qe_lines as $qe_line)
 		{
+			$gl_code = $qe_line['dest_id'];
 			switch (strtolower($qe_line['action'])) {
 				case "=": // post current base amount to GL account
 					$part = $base;
@@ -712,57 +761,44 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 						$part = $taxbase;
 					else
 						$part = $base/100;
+
 					$item_tax = get_tax_type($qe_line['dest_id']);
 					//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 					if ($type == QE_SUPPINV)
 					{
-						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
-						$res = get_tax_group_rates($cart->tax_group_id);
+						$res = get_tax_group_rates($taxgroup);
 						while ($row = db_fetch($res))
 							$rates += $row['rate'];
 						if ($rates == 0)
 							continue 2;
 					}
 					$tax = round2($part * $item_tax['rate'],  user_price_dec());
-					if ($tax==0) continue 2;
+					if ($tax == 0) continue 2;
 					$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 						? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 					if (!is_tax_gl_unique($gl_code)) {
-	   					display_error(_("Cannot post to GL account used by more than one tax type."));
-						break 2;
+						return -1; // more than one taxtype used with this GL account
 					}
-					if ($type != QE_SUPPINV)
-						$cart->add_gl_item($gl_code, 
-							$qe_line['dimension_id'], $qe_line['dimension2_id'], 
-							$tax, $qe['description']);
-					else 
-					{
-						$acc_name = get_gl_account_name($gl_code);
-						$cart->add_gl_codes_to_trans($gl_code, 
-							$acc_name, $qe_line['dimension_id'], 
-							$qe_line['dimension2_id'], $tax, $qe['description']);
-					}
+
+					$part = $tax;
 					if (strpos($qe_line['action'], '+'))
 						$base += $tax;
 					elseif (strpos($qe_line['action'], '-'))
 						$base -= $tax;
-					continue 2;
+				}
+				$gl_entries[] = array(
+					'code' => $gl_code, 
+					'name' => get_gl_account_name($gl_code),
+					'dim1' => $qe_line['dimension_id'], 
+					'dim2' => $qe_line['dimension2_id'], 
+					'amount' => $part, 
+					'descr' => $qe_line['memo']
+				);
 			}
-			if ($type != QE_SUPPINV)
-				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			else 
-			{
-				$acc_name = get_gl_account_name($qe_line['dest_id']);
-				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
-					$acc_name, $qe_line['dimension_id'], 
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			}
-		}
-	}	
-	return $bank_amount;
+	return $gl_entries;
 }
+
 
 //--------------------------------------------------------------------------------------
 //
@@ -842,7 +878,7 @@ function price_in_words($amount, $document=0)
     else
     	$frac = "";
     return _number_to_words(intval($amount)) . $frac;
-}    
+}
 
 function get_js_open_window($width, $height)
 {
@@ -852,6 +888,51 @@ function get_js_open_window($width, $height)
 		. " var top = (screen.height - $height) / 2;\n"
 		. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
 		. "}\n";
+  	$js .= get_js_lookup_window();
+	return $js;
+}
+
+function get_js_lookup_window() {
+  	$js = "function lookupWindow(url, title) {
+    	var u = url.split('#');
+    	if (u.length == 2) {
+      		var element = document.getElementById(u[1]);
+      		var options = element.options;
+      		url = u[0] + '&' + u[1] + '=' + options[element.selectedIndex].value;
+    	}
+    	openWindow(url, title);
+	}";
+	return $js;
+}
+
+function get_js_select_combo_item() {
+	$js = "function selectComboItem(doc, client_id, value){
+    	var element = doc.getElementById(client_id);
+		var options = element.options;
+		for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+			if (options[i].value == value) {
+				element.selectedIndex = i;
+        		element.onchange();
+			}
+		}
+		window.close();
+	}";
+	return $js;
+}
+/* for space search option */
+function get_js_set_combo_item() {
+	$js = "function setComboItem(doc, client_id, value, text){
+    	var element = doc.getElementById(client_id);
+ 		var options = element.options;
+ 		options.length = 0;
+ 		var option = doc.createElement('option');
+		option.value = value;
+		option.text = text;
+    	element.add(option, 0);
+		element.selectedIndex = 0;
+        element.onchange();
+		window.close();
+	}";
 	return $js;
 }
 
@@ -887,13 +968,14 @@ function reset_focus()
 
 function get_js_date_picker()
 {
-    global $go_debug;
-    $fpath = company_path().'/js_cache/'.'date_picker.js';
+    global $SysPrefs, $tmonths;
 
-    if (!file_exists($fpath) || $go_debug) {
+    $fpath = user_js_cache().'/'.'date_picker.js';
 
-	global $dateseps, $date_system, $tmonths;
+    if (!file_exists($fpath) || $SysPrefs->go_debug) {
 
+	$date_system = $SysPrefs->date_system;
+	$dateseps = $SysPrefs->dateseps;
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
 	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 || $how == 3 ? 0 : 1));	// weekstart (sun = 0, mon = 1)
@@ -1431,4 +1513,36 @@ function payment_link($name, $options)
 	return strtr($link, $patterns);
 }
 
-?>
+function trans_editor_link($type, $trans_no)
+{
+	global $path_to_root;
+
+	$editor_url = array(
+		ST_JOURNAL => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
+		ST_BANKPAYMENT => "/gl/gl_bank.php?ModifyPayment=Yes&trans_no=%d&trans_type=%d",
+		ST_BANKDEPOSIT => "/gl/gl_bank.php?ModifyDeposit=Yes&trans_no=%d&trans_type=%d",
+	    ST_BANKTRANSFER => "/gl/bank_transfer.php?ModifyTransfer=Yes&trans_no=%d&trans_type=%d",
+    	ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
+		ST_CUSTCREDIT => "/sales/credit_note_entry.php?ModifyCredit=%d", // only for free hand credit notes (debtors_trans.order_==0)
+		ST_CUSTPAYMENT => "/sales/customer_payments.php?trans_no=%d",
+		ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
+//   16=> Location Transfer,
+//   17=> Inventory Adjustment,
+		ST_SUPPINVOICE => "/purchasing/supplier_invoice.php?ModifyInvoice=%d",
+		ST_SUPPCREDIT =>  "/purchasing/supplier_credit.php?ModifyCredit=%d",
+//   21=> Supplier Credit Note,
+//   22=> Supplier Payment,
+//   25=> Purchase Order Delivery,
+		ST_PURCHORDER => "/purchasing/po_entry_items.php?ModifyOrderNumber=%d",
+//   28=> Work Order Issue,
+//   29=> Work Order Production",
+		ST_WORKORDER => "/manufacturing/work_order_entry.php?trans_no=%d",
+		ST_SALESORDER => "/sales/sales_order_entry.php?ModifyOrderNumber=%d",
+		ST_SALESQUOTE => "/sales/sales_order_entry.php?ModifyQuotationNumber=%d",
+	//   35=> Cost Update,
+	);
+
+	return !isset($editor_url[$type]) ? '' :
+		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
+			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
+}

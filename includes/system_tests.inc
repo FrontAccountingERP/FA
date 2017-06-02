@@ -23,7 +23,7 @@ function tst_mysql()
 {
 	$test['descr'] = _('MySQL version'). ' >=4.1';
 	$test['type'] = 3;
-	$test['test'] = mysql_get_server_info();
+	$test['test'] = db_get_version();
 	$test['result'] = $test['test']>='4.1';
 	$test['comments'] = _('Upgrade MySQL server to version at least 4.1');
 
@@ -34,7 +34,7 @@ function tst_phpmysql()
 {
 	$test['descr'] = _('PHP MySQL extension');
 	$test['type'] = 3;
-	$test['result'] = function_exists('mysql_connect');
+	$test['result'] = db_extension_exists();
 	$test['test'] = $test['result'] ? _('Yes'): _('No');
 	
 	$test['comments'] = _('Your PHP has to have MySQL extension enabled.');
@@ -43,11 +43,11 @@ function tst_phpmysql()
 
 function tst_php() 
 {
-	$test['descr'] = _('PHP version').' >=4.3.3';
+	$test['descr'] = _('PHP version').' >=5.0.0';
 	$test['type'] = 3;
 	$test['test'] = phpversion();
-	$test['result'] = $test['test']>='4.3.3';
-	$test['comments'] = _('Upgrade PHP to version at least 4.3.3');
+	$test['result'] = $test['test']>='5.0.0';
+	$test['comments'] = _('Upgrade PHP to version at least 5.0.0');
 
 	return $test;
 }
@@ -120,11 +120,11 @@ function tst_gettext()
 
 function tst_debug() 
 {
-	global $go_debug;
+	global $SysPrefs;
 	$test['descr'] = _('Debugging mode');
 	$test['type'] = 0;
-	$test['test'] = $go_debug ? _("Yes") : _("No");
-	$test['result'] = $go_debug != 0;
+	$test['test'] = $SysPrefs->go_debug ? _("Yes") : _("No");
+	$test['result'] = $SysPrefs->go_debug != 0;
 	$test['comments'] = _('To switch debugging on set $go_debug>0 in config.php file');
 
 	return $test;
@@ -132,8 +132,9 @@ function tst_debug()
 
 function tst_logging() 
 {
-	global $error_logfile;
+	global $SysPrefs;
 	
+	$error_logfile = $SysPrefs->error_logfile;
 	$test['descr'] = _('Error logging');
 	$test['type'] = 2;
 	// if error lgging is on, but log file does not exists try write
@@ -229,7 +230,7 @@ function tst_tmpdir()
 function tst_langs($install)
 {
 	global $installed_languages, $path_to_root, $GetText;
-	
+
 	$test['descr'] = _('Language configuration consistency');
 	$test['type'] = 3;
 	$test['result'] = true;

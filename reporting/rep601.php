@@ -43,11 +43,11 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = '$account'
+	$sql = "SELECT * FROM ".TB_PREF."bank_trans
+		WHERE bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date, id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
 }
@@ -72,7 +72,7 @@ function print_bank_transactions()
 	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
+	$cols = array(0, 90, 120, 170, 225, 350, 400, 460, 520);
 
 	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 
@@ -125,7 +125,7 @@ function print_bank_transactions()
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
 				$rep->TextCol(2, 3,	$myrow['ref']);
 				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
-				$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$rep->TextCol(4, 5,	get_counterparty_name($myrow["type"], $myrow["trans_no"], false));
 				if ($myrow['amount'] > 0.0)
 				{
 					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
@@ -174,4 +174,3 @@ function print_bank_transactions()
 	$rep->End();
 }
 
-?>

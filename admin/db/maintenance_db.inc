@@ -71,7 +71,6 @@ function write_config_db($new = false)
 
 	if ($new)
 		$tb_pref_counter++;
-	$n = count($db_connections);
 	$msg = "<?php\n\n";
 	$msg .= "/*Connection Information for the database\n";
 	$msg .= "\$def_coy - the default company that is pre-selected on login\n\n";
@@ -86,7 +85,7 @@ function write_config_db($new = false)
 	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
 	$msg .= "\$tb_pref_counter = " . $tb_pref_counter . ";\n\n";
 	$msg .= "\$db_connections = " .var_export($db_connections, true);
-	$msg .= ";\n?>";
+	$msg .= ";\n";
 
 	$filename = $path_to_root . "/config_db.php";
 	// Check if the file exists and is writable first.
@@ -105,6 +104,7 @@ function write_config_db($new = false)
 			}
 			// Close file
 			fclose($zp);
+			cache_invalidate($filename);
 		}
 	}
 	else
@@ -142,7 +142,7 @@ function write_extensions($extensions=null, $company = -1)
 */\n\n";
 
 	$msg .= "\$installed_extensions = ". var_export($extensions, true);
-	$msg .= ";\n?>";
+	$msg .= ";\n";
 	$filename = $path_to_root . ($company==-1 ? '' : '/company/'.$company)
 		.'/installed_extensions.php';
 
@@ -164,6 +164,7 @@ function write_extensions($extensions=null, $company = -1)
 		}
 		// Close file
 		fclose($zp);
+		cache_invalidate($filename);
 	}
 	return true;
 }
@@ -207,7 +208,6 @@ function write_lang()
 	global $path_to_root, $installed_languages, $dflt_lang;
 
 	$installed_languages = array_natsort($installed_languages, 'code', 'code');
-	$n = count($installed_languages);
 	$msg = "<?php\n\n";
 
 	$msg .= "/* How to make new entries here for non-packaged languages:\n\n";
@@ -221,7 +221,7 @@ function write_lang()
 
 	$msg .= "\$installed_languages = " . var_export($installed_languages, true);
 	$msg .= ";\n";
-	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
+	$msg .= "\n\$dflt_lang = '$dflt_lang';\n";
 
 	$path = $path_to_root . "/lang";
 	$filename = $path.'/installed_languages.inc';
@@ -243,6 +243,7 @@ function write_lang()
 			}
 			// Close file
 			fclose($zp);
+			cache_invalidate($filename);
 		}
 	}
 	else
@@ -252,12 +253,21 @@ function write_lang()
 	}
 	return true;
 }
-
-function db_import($filename, $connection, $force=true)
+/*
+	Database import:
+		$filename - sql file name
+		$connection - database connection
+		$force - ignore duplicate errors
+		$init - presume $filename is initialization file with '0_' prefix
+		$protect - protect users/roles 
+		$return_errors - return errors instead of display them
+*/
+function db_import($filename, $connection, $force=true, $init=true, $protect=false, $return_errors=false)
 {
-	global $db, $go_debug, $sql_trail;
+	global $db, $SysPrefs;
 
-	$sql_trail = false;
+	$trail = $SysPrefs->sql_trail;
+	$SysPrefs->sql_trail = false;
 
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
@@ -265,10 +275,19 @@ function db_import($filename, $connection, $force=true)
 		"alter table" => 'table_queries', 
 		"insert" => 'data_queries', 
 		"update" => 'data_queries', 
+		"set names" => 'set_names',
 		"drop table if exists" => 'drop_queries',
 		"drop function if exists" => 'drop_queries',
 		"drop trigger if exists" => 'drop_queries',
+		"select" => 'data_queries', 
+		"delete" => 'data_queries', 
 		);
+
+	$protected = array(
+		'security_roles',
+		'users'
+	);
+
 	$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 		'1022',	// duplicate key
 		'1050', // Table %s already exists
@@ -277,15 +296,24 @@ function db_import($filename, $connection, $force=true)
 		'1062', // duplicate key entry
 		'1091'  // can't drop key/column check if exists
 	);
+
+	$set_names = array();
 	$data_queries = array();
 	$drop_queries = array();
 	$table_queries = array();
 	$sql_errors = array();
 
-	ini_set("max_execution_time", "180");
+	$old_encoding = db_get_charset($db);
+
+	ini_set("max_execution_time", max("180", ini_get("max_execution_time")));
 	db_query("SET foreign_key_checks=0");
+
+	if (isset($connection['collation']))
+		db_set_collation($db, $connection['collation']);
+
 	$check_line_len = false;
-	// uncrompress gziped backup files
+
+	// uncompress gziped backup files
 	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
 	{	$lines = db_ungzip("lines", $filename);
 		$check_line_len = true;
@@ -297,12 +325,14 @@ function db_import($filename, $connection, $force=true)
 	// parse input file
 	$query_table = '';
 	$delimiter = ';';
+
 	foreach($lines as $line_no => $line)
 	{
 		$gzfile_bug = $check_line_len && (strlen($line) == 8190); // there is a bug in php (at least 4.1.1-5.5.9) gzfile which limits line length to 8190 bytes!
 
 		$line = trim($line);
-		$line = str_replace("0_", $connection["tbpref"], $line);
+		if ($init)
+			$line = str_replace("0_", $connection["tbpref"], $line);
 
 		if ($query_table == '') 
 		{	// check if line begins with one of allowed queries
@@ -315,7 +345,17 @@ function db_import($filename, $connection, $force=true)
 						continue 2;
 					}
 					$query_table = $table;
-					${$query_table}[] = array('', $line_no+1);
+					$skip = false;
+					if ($protect)
+					{
+						foreach($protected as $protbl)
+							if (strpos($line, $connection["tbpref"].$protbl) !== false)
+							{
+								$skip = true; break;
+							}
+					}
+					if (!$skip)
+						${$query_table}[] = array('', $line_no+1);
 					break;
 				}
 		 	}
@@ -328,20 +368,63 @@ function db_import($filename, $connection, $force=true)
 				$line = substr($line, 0, strlen($line) - strlen($delimiter)); // strip delimiter
 				$query_table = '';
 			}
-			${$table}[count(${$table}) - 1][0] .= $line . "\n";
+			if (!$skip)
+				${$table}[count(${$table}) - 1][0] .= $line . "\n";
 		}
-		
+
 	}
-/*
-	{ 	// for debugging purposes
+
+	//
+	// 'set names' or equivalents should be used only on post 2.3 FA versions
+	// otherwise text encoding can be broken during import
+	//
+	$encoding = null; // UI encoding for default site language is the default
+	$new_db = $init || db_fixed();
+	$new_file = count($set_names);
+	if ($new_db)
+	{
+		if ($new_file)
+		{
+			if (count($set_names)) // standard db restore
+			{
+				if (preg_match('/set\s*names\s*[\']?(\w*)[\']?/i', $set_names[0][0], $match))
+					$encoding = $match[1];
+			}
+			// otherwise use default site ui encoding
+		}
+	}
+	else
+	{
+		if ($new_file) // import on old db is forbidden: this would destroy db content unless latin1 was used before in UI
+		{
+			$msg = _("This is new format backup file which cannot be restored on database not migrated to utf8.");
+			if ($return_errors)
+				return $msg;
+			else
+				display_error($msg);
+			return false;
+		}
+		 else	// backup restore during upgrade failure
+			$encoding = 'latin1'; // standard encoding on mysql client
+	}
+
+	db_set_charset($db, $encoding);
+
+/*/	{ 	// for debugging purposes
 	global $path_to_root;
 	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w+');
+	fwrite($f, print_r($set_names,true) ."\n");
 	fwrite($f, print_r($drop_queries,true) ."\n");
 	fwrite($f, print_r($table_queries,true) ."\n");
 	fwrite($f, print_r($data_queries,true));
 	fclose($f);
 	}
-*/
+/*/
+	if ($return_errors)
+	{	// prevent errors display
+		$save_debug = $SysPrefs->go_debug;
+		$SysPrefs->go_debug = 0;
+	}
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
 	{
@@ -382,10 +465,20 @@ function db_import($filename, $connection, $force=true)
 		}
 	}
 
+	if ($return_errors)
+		$SysPrefs->go_debug = $save_debug;
+
+	$SysPrefs->sql_trail = $trail;
+
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case
 
+	db_set_charset($db, $old_encoding); // restore connection encoding
+
 	if (count($sql_errors)) {
+		if ($return_errors)
+			return $sql_errors;
+
 		// display first failure message; the rest are probably derivative 
 		$err = $sql_errors[0];
 		display_error(sprintf(_("SQL script execution failed in line %d: %s"),
@@ -448,22 +541,22 @@ function db_unzip($mode, $path)
     	return explode("\n", $file_data);
 }
 
-function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
+function db_backup($conn, $ext='no', $comm='', $path='')
 {
 	if ($conn['tbpref'] != "")
 		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
 	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-	return db_export($conn, clean_file_name($filename), $ext, $comm, $tbpref);
+	return db_export($conn, $path . clean_file_name($filename), $ext, $comm);
 }
-
-// generates a dump of $db database
-// $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, $no_default=false)
+//
+// Generates a dump of $db database
+//
+function db_export($conn, $filename, $zip='no', $comment='')
 {
 
-	global $app_title, $version, $power_url, $path_to_root;
+	global $SysPrefs, $version;
 
     $error = false;
     // set max string size before writing to file
@@ -479,15 +572,19 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
     	$backupfile = $filename . ".zip";
     else
     	$backupfile = $filename;
-    $company = get_company_pref('coy_name', $tbpref);
+    $company = $conn['name']; // get_company_pref('coy_name');
+
+	if (file_exists($backupfile))	// prevent appends
+		unlink($backupfile);
 
     //create comment
     $out="# MySQL dump of database '".$conn["dbname"]."' on host '".$conn["host"]."'\n";
     $out.="# Backup Date and Time: ".date("Y-m-d H:i")."\n";
-    $out.="# Built by " . $app_title . " " . $version ."\n";
-    $out.="# ".$power_url."\n";
+    $out.="# Built by " . $SysPrefs->app_title . " " . $version ."\n";
+    $out.="# ".$SysPrefs->power_url."\n";
     $out.="# Company: ". @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding)."\n";
     $out.="# User: ".$_SESSION["wa_current_user"]->name."\n\n";
+    $out.="# Compatibility: ".get_company_pref('version_id')."\n\n";
 
 	// write users comment
 	if ($comment)
@@ -500,8 +597,12 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 		$out.="\n";
 	}
 
-    //$out.="use ".$db.";\n"; we don't use this option.
-
+	if (db_fixed())
+	{
+		db_set_encoding();
+		if ($mysql_enc = get_mysql_encoding_name($_SESSION['language']->encoding))
+			$out .= "\nSET NAMES $mysql_enc;\n";
+	}
     // get auto_increment values and names of all tables
     $res = db_query("show table status");
     $all_tables = array();
@@ -551,13 +652,8 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 			$out.="### Structure of table `".$tablename."` ###\n\n";
 
 			$out.="DROP TABLE IF EXISTS `".$tablename."`;\n\n";
-			if ($no_default && ($def_pos = strpos($table_sql[$tablename], "DEFAULT CHARSET")) > 0)
-				$table_sql[$tablename] = substr($table_sql[$tablename], 0, $def_pos);
 			$out.=$table_sql[$tablename];
 
-			// add auto_increment value
-//			if ($auto_incr[$tablename])
-//				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
 			$out.=" ;";
 			$out.="\n\n";
 
@@ -627,7 +723,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 			}
 			elseif ($error)
 			{
-				@unlink(BACKUP_PATH . $backupfile);
+				@unlink($backupfile);
 				return false;
 			}
 
@@ -645,19 +741,17 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 	}
 	else
 	{
-		@unlink(BACKUP_PATH . $backupfile);
+		@unlink($backupfile);
 		return false;
 	}
 
-	//if ($zip == "zip")
-	//	$zip = $time;
 	if (save_to_file($backupfile, $zip, $out))
 	{
 		$out = "";
 	}
 	else
 	{
-		@unlink(BACKUP_PATH . $backupfile);
+		@unlink($backupfile);
 		return false;
 	}
     return $backupfile;
@@ -714,13 +808,14 @@ function order_sql_tables($tables, $fks)
 
 // saves the string in $fileData to the file $backupfile as gz file or not ($zip)
 // returns backup file name if name has changed (zip), else TRUE. If saving failed, return value is FALSE
-function save_to_file($backupfile, $zip, $fileData)
+function save_to_file($path, $zip, $fileData)
 {
-	global $path_to_root;
+
+	$backupfile = basename($path);
 
     if ($zip == "gzip")
     {
-        if ($zp = @gzopen(BACKUP_PATH . $backupfile, "a9"))
+        if ($zp = @gzopen($path, "a9"))
         {
 			@gzwrite($zp, $fileData);
 			@gzclose($zp);
@@ -797,7 +892,7 @@ function save_to_file($backupfile, $zip, $fileData)
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
 
-        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen($path, "w"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -812,7 +907,7 @@ function save_to_file($backupfile, $zip, $fileData)
     }
     else
     {
-        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen($path, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -827,7 +922,7 @@ function save_to_file($backupfile, $zip, $fileData)
 
 function create_comp_dirs($comp_path, $comp_subdirs)
 {
-		$index = "<?php\nheader(\"Location: ../index.php\");\n?>";
+		$index = "<?php\nheader(\"Location: ../index.php\");\n";
 	    $cdir = $comp_path;
 	    @mkdir($cdir);
 		$f = @fopen("$cdir/index.php", "wb");
@@ -877,4 +972,26 @@ function check_table($pref, $table, $field=null, $properties=null)
 	return 2; // field not found
 }
 
-?>
+/*
+	Update or create setting in simple php config file.
+*/
+function update_config_var($file, $variable, $value, $comment='')
+{
+	if (!is_file($file) || !is_writeable($file))
+		return false;
+	$content = file_get_contents($file);
+	$strvalue = '$'."$variable = ".var_export($value, true).';';
+	$pattern = '/'.preg_quote('$'.$variable).'\s*=\s*[^;]*;/m';
+	$content = preg_replace($pattern, $strvalue, $content, -1, $result);
+	if (!$result)
+	{
+		$strvalue = ($comment ? "// $comment" : '') ."\n$strvalue\n";
+		$content = preg_replace('/\?>\s*/m', $strvalue, $content, -1, $result);
+		if (!$result)
+			$content .= $strvalue;
+	}
+
+	return file_put_contents($file, $content)!=false;
+}
+
+

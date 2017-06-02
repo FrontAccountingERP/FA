@@ -1,6 +1,8 @@
 # Protect sensitive files.
 <FilesMatch "\.(inc|po|sh|.*sql|log)$">
 	Order allow,deny
+	Deny from All
+	Satisfy All
 </FilesMatch>
 
 # Disable directory listings.

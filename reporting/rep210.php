@@ -32,32 +32,22 @@ print_remittances();
 //----------------------------------------------------------------------------------------------------
 function get_remittance($type, $trans_no)
 {
-   	$sql = "SELECT ".TB_PREF."supp_trans.*, 
-   		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst) AS Total,
-   		".TB_PREF."supp_trans.ov_discount,
-   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, 
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."suppliers.gst_no AS tax_id, 
-   		".TB_PREF."suppliers.address
-		FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
-		WHERE ".TB_PREF."supp_trans.supplier_id = ".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."supp_trans.type = ".db_escape($type)."
-		AND ".TB_PREF."supp_trans.trans_no = ".db_escape($trans_no);
+   	$sql = "SELECT trans.*, 
+   		(trans.ov_amount+trans.ov_gst) AS Total,
+   		trans.ov_discount,
+   		supplier.supp_name,  supplier.supp_account_no, 
+   		supplier.curr_code, supplier.payment_terms, supplier.gst_no AS tax_id, 
+   		supplier.address
+		FROM "
+			.TB_PREF."supp_trans trans,"
+			.TB_PREF."suppliers supplier
+		WHERE trans.supplier_id = supplier.supplier_id
+		AND trans.type = ".db_escape($type)."
+		AND trans.trans_no = ".db_escape($trans_no);
    	$result = db_query($sql, "The remittance cannot be retrieved");
    	if (db_num_rows($result) == 0)
    		return false;
     return db_fetch($result);
-}
-
-function get_allocations_for_remittance($supplier_id, $type, $trans_no)
-{
-	$sql = get_alloc_supp_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=".db_escape($trans_no)."
-		AND alloc.trans_type_from=".db_escape($type)."
-		AND trans.supplier_id=".db_escape($supplier_id),
-		TB_PREF."supp_allocations as alloc");
-	$sql .= " ORDER BY trans_no";
-	return db_query($sql, "Cannot retreive alloc to transactions");
 }
 
 function print_remittances()
@@ -107,7 +97,7 @@ function print_remittances()
 		{
 			$myrow = get_remittance($j, $i);
 			if (!$myrow)
-				continue;			
+				continue;
 			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
 				continue;
 			}
@@ -121,22 +111,22 @@ function print_remittances()
 				$rep->title = _('REMITTANCE');
 				$rep->filename = "Remittance" . $i . ".pdf";
 			}
-			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_supplier_contacts($myrow['supplier_id'], 'invoice');
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
+			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
-			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
+			$result = get_allocatable_to_supp_transactions($myrow['supplier_id'], $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_SUPPAYMENT;
 
 			$total_allocated = 0;
 			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
-			
+
 			while ($myrow2=db_fetch($result))
 			{
 				$rep->TextCol(0, 1,	$systypes_array[$myrow2['type']], -2);
@@ -185,17 +175,16 @@ function print_remittances()
 			{
 				$rep->NewLine(2);
 				$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
-			}	
+			}
 			$rep->Font();
 			if ($email == 1)
 			{
 				$myrow['DebtorName'] = $myrow['supp_name'];
 				$rep->End($email);
 			}
-		}	
+		}
 	}
 	if ($email == 0)
 		$rep->End();
 }
 
-?>

@@ -13,13 +13,13 @@
 	{
 		function get_icon($category)
 		{
-			global  $path_to_root, $show_menu_category_icons;
+			global  $path_to_root, $SysPrefs;
 
-			if ($show_menu_category_icons)
+			if ($SysPrefs->show_menu_category_icons)
 				$img = $category == '' ? 'right.gif' : $category.'.png';
 			else	
 				$img = 'right.gif';
-			return "<img src='$path_to_root/themes/default/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
+			return "<img src='$path_to_root/themes/".user_theme()."/images/$img' style='vertical-align:middle;' border='0'>&nbsp;&nbsp;";
 		}
 
 		function wa_header()
@@ -34,7 +34,7 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $help_base_url, $db_connections;
+			global $path_to_root, $SysPrefs, $db_connections;
 			echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<td colspan='2' rowspan='2'>\n";
@@ -45,6 +45,8 @@
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<td class='quick_menu'>\n"; // tabs
+
+			$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
 			if (!$no_menu)
 			{
 				$applications = $_SESSION['App']->applications;
@@ -65,28 +67,35 @@
 				echo "</div>";
 				echo "</td></tr></table>";
 				// top status bar
-				$img = "<img src='$local_path_to_root/themes/default/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
-				$himg = "<img src='$local_path_to_root/themes/default/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
-
+				$rimg = "<img src='$path_to_root/themes/".user_theme()."/images/report.png' style='width:14px;height:14px;border:0;vertical-align:middle;' alt='"._('Dashboard')."'>&nbsp;&nbsp;";
+				$pimg = "<img src='$local_path_to_root/themes/".user_theme()."/images/preferences.gif' style='width:14px;height:14px; border:0;vertical-align:middle;' alt='"._('Preferences')."'>&nbsp;&nbsp;";
+				$limg = "<img src='$local_path_to_root/themes/".user_theme()."/images/lock.gif' style='width:14px;height:14px;border:0;vertical-align:middle;' alt='"._('Change Password')."'>&nbsp;&nbsp;";
+				$img = "<img src='$local_path_to_root/themes/".user_theme()."/images/login.gif' style='width:14px;height:14px;border:0;vertical-align:middle;' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$local_path_to_root/themes/".user_theme()."/images/help.gif' style='width:14px;height:14px;border:0;vertical-align:middle;'' alt='"._('Help')."'>&nbsp;&nbsp;";
 				echo "<table class='logoutBar'>";
-				echo "<tr><td class='headingtext3'>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
-				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
+				echo "<tr><td class='headingtext3'>" . $db_connections[user_company()]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
 				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td>";
-				echo "  <td class='logoutBarRight'><a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
-				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				echo "<td class='logoutBarRight'><a href='$path_to_root/admin/dashboard.php?sel_app=$sel_app'>$rimg" . _("Dashboard") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				
+				echo "<a class='shortcut' href='$path_to_root/admin/display_prefs.php?'>$pimg" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				echo "  <a class='shortcut' href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>$limg" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
-				if ($help_base_url != null)
+				if ($SysPrefs->help_base_url != null)
 				{
-					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url()."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
+					echo "<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url()."'>$himg" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
-				echo "$img<a class='shortcut' href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
+				echo "<a class='shortcut' href='$local_path_to_root/access/logout.php?'>$img" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr><tr><td colspan=3>";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
+
 			if ($no_menu)
-				echo "<br>";
-			elseif ($title && !$is_index)
+			{	// ajax indicator for installer and popups
+				echo "<center><table class='tablestyle_noborder'>"
+					."<tr><td><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;' alt='ajaxmark'></td></tr>"
+					."</table></center>";
+			} elseif ($title && !$is_index)
 			{
 				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"
 				."<td align=right>"
@@ -98,8 +107,8 @@
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url,
-				$power_by, $path_to_root, $Pagehelp, $Ajax;
+			global $version, $path_to_root, $Pagehelp, $Ajax, $SysPrefs;
+
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			echo "</td></tr></table>\n"; // 'main_page'
@@ -123,12 +132,14 @@
 			{
 				echo "<table align='center' id='footer'>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online()."</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='".$SysPrefs->power_url."' tabindex='-1'><font color='#ffffff'>".$SysPrefs->app_title
+					." $version - " . _("Theme:") . " " . user_theme() . " - ".show_users_online()."</font></a></td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url' tabindex='-1'><font color='#ffff00'>$power_by</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='".$SysPrefs->power_url
+					."' tabindex='-1'><font color='#ffff00'>".$SysPrefs->power_by."</font></a></td>\n";
 				echo "</tr>\n";
-				if ($allow_demo_mode==true)
+				if ($SysPrefs->allow_demo_mode)
 				{
 					echo "<tr>\n";
 					//echo "<td><br><div align='center'><a href='http://sourceforge.net'><img src='http://sourceforge.net/sflogo.php?group_id=89967&amp;type=5' alt='SourceForge.net Logo' width='210' height='62' border='0' align='center' /></a></div></td>\n";
@@ -209,6 +220,5 @@
 				echo "</tr></table></td></tr>";
 			}
 			echo "</table>";
-		}
+  		}
 	}
-?>

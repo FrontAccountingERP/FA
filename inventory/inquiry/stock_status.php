@@ -13,22 +13,21 @@ $page_security = 'SA_ITEMSSTATVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-if (!@$_GET['popup'])
-{
-	if (isset($_GET['stock_id'])){
-		page(_($help_context = "Inventory Item Status"), true);
-	} else {
-		page(_($help_context = "Inventory Item Status"));
-	}
-}
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
 if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
+
+page(_($help_context = "Inventory Item Status"), isset($_GET['stock_id']), false, "", $js);
+
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 
 if (list_updated('stock_id')) 
 	$Ajax->activate('status_tbl');
@@ -36,17 +35,16 @@ if (list_updated('stock_id'))
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 
-if (!@$_GET['popup'])
-	start_form();
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center> " . _("Item:"). " ";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-}	
+}
 echo "<br>";
 
 echo "<hr></center>";
@@ -122,10 +120,6 @@ while ($myrow = db_fetch($loc_details))
 
 end_table();
 div_end();
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}	
+end_form();
+end_page();
 
-?>

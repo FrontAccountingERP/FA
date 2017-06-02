@@ -10,30 +10,38 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_STANDARDCOST';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/includes/ui/items_cart.inc");
 
-if (!@$_GET['popup'])
-{
-	$js = "";
-	if ($use_popup_windows)
-		$js .= get_js_open_window(900, 500);
-	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
+$js = "";
+if ($SysPrefs->use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+
+if (isset($_GET['FixedAsset'])) {
+	$_SESSION['page_title'] = _($help_context = "FA Revaluation");
+	$_POST['fixed_asset'] = 1;
+} else {
+	$_SESSION['page_title'] = _($help_context = "Inventory Item Cost Update");
 }
+page($_SESSION['page_title'], false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 
-check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
+if (get_post('fixed_asset') == 1)
+	check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+else
+	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
 
 if (isset($_GET['stock_id']))
 {
@@ -41,11 +49,11 @@ if (isset($_GET['stock_id']))
 }
 
 //--------------------------------------------------------------------------------------
+$should_update = false;
 if (isset($_POST['UpdateData']))
 {
+	$old_cost = get_unit_cost($_POST['stock_id']);
 
-	$old_cost = get_standard_cost($_POST['stock_id']);
-     
    	$new_cost = input_num('material_cost') + input_num('labour_cost')
 	     + input_num('overhead_cost');
 
@@ -68,7 +76,8 @@ if (isset($_POST['UpdateData']))
    	{
 		$update_no = stock_cost_update($_POST['stock_id'],
 		    input_num('material_cost'), input_num('labour_cost'),
-		    input_num('overhead_cost'),	$old_cost);
+		    input_num('overhead_cost'),	$old_cost, 
+        $_POST['refline'], $_POST['memo_']);
 
         display_notification(_("Cost has been updated."));
 
@@ -80,21 +89,29 @@ if (isset($_POST['UpdateData']))
    	}
 }
 
-if (list_updated('stock_id'))
+if (list_updated('stock_id') || $should_update) {
+	unset($_POST['memo_']);
 	$Ajax->activate('cost_table');
+}
 //-----------------------------------------------------------------------------------------
 
-if (!@$_GET['popup'])
-	start_form();
+$action = $_SERVER['PHP_SELF'];
+if ($page_nested)
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
+
+hidden('fixed_asset');
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
-	//echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
+	if (get_post('fixed_asset') == 1)
+		echo stock_disposable_fa_list('stock_id', $_POST['stock_id'], false, true);
+	else
+		echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 
 	echo "</center><hr>";
 }
@@ -113,13 +130,8 @@ $_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
 $_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
 $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
-amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
+amount_row(_("Unit cost"), "material_cost", null, "class='tableheader2'", null, $dec1);
 
-if (@$_GET['popup'])
-{
-	hidden('_tabs_sel', get_post('_tabs_sel'));
-	hidden('popup', @$_GET['popup']);
-}
 if ($myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
@@ -130,14 +142,12 @@ else
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);
 }
+refline_list_row(_("Reference line:"), 'refline', ST_COSTUPDATE, null, false, get_post('fixed_asset'));
+textarea_row(_("Memo"), 'memo_', null, 40, 4);
 
 end_table(1);
 div_end();
 submit_center('UpdateData', _("Update"), true, false, 'default');
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}
-?>
+end_form();
+end_page();

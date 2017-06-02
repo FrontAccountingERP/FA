@@ -34,10 +34,10 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	$company_record = get_company_prefs();
 
 	if ($trans_no != 0) {
-	  delete_comments(ST_CUSTPAYMENT, $trans_no);
-	  void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
-	  void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
-	  void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
+	  	delete_comments(ST_CUSTPAYMENT, $trans_no);
+	  	void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  	void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  	void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 	}
 
 	$bank = get_bank_account($bank_account);
@@ -90,7 +90,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	if ($charge != 0)	{
 		/* Now Debit bank charge account with charges */
-		$charge_act = get_company_pref('bank_charge_act');
+		$charge_act = get_bank_charge_account($bank_account);
 		$total += add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,	$charge_act, 0, 0, '', 
 			$charge, $bank['bank_curr_code'], PT_CUSTOMER,  $customer_id);
 	}
@@ -166,4 +166,3 @@ function get_cust_bank_charge($type, $trans_no)
 	return $myrow['0'];
 }
 
-?>

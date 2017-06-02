@@ -20,9 +20,13 @@ $page_security = 'SA_SALESTRANSVIEW';
 
 set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
-			'InvoiceTemplates' => 'SA_SALESINVOICE'),
+			'InvoiceTemplates' => 'SA_SALESINVOICE',
+			'DeliveryTemplates' => 'SA_SALESDELIVERY',
+			'PrepaidOrders' => 'SA_SALESINVOICE'),
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
-			'InvoiceTemplates' => 'SA_SALESINVOICE')
+			'InvoiceTemplates' => 'SA_SALESINVOICE',
+			'DeliveryTemplates' => 'SA_SALESDELIVERY',
+			'PrepaidOrders' => 'SA_SALESINVOICE')
 );
 
 if (get_post('type'))
@@ -49,6 +53,11 @@ if ($trans_type == ST_SALESORDER)
 		$_POST['order_view_mode'] = 'DeliveryTemplates';
 		$_SESSION['page_title'] = _($help_context = "Select Template for Delivery");
 	}
+	elseif (isset($_GET['PrepaidOrders']) && ($_GET['PrepaidOrders'] == true))
+	{
+		$_POST['order_view_mode'] = 'PrepaidOrders';
+		$_SESSION['page_title'] = _($help_context = "Invoicing Prepayment Orders");
+	}
 	elseif (!isset($_POST['order_view_mode']))
 	{
 		$_POST['order_view_mode'] = false;
@@ -61,38 +70,12 @@ else
 	$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
 }
 
-if (!@$_GET['popup'])
-{
-	$js = "";
-	if ($use_popup_windows)
-		$js .= get_js_open_window(900, 600);
-	if ($use_date_picker)
-		$js .= get_js_date_picker();
-	page($_SESSION['page_title'], false, false, "", $js);
-}
-
-if (isset($_GET['selected_customer']))
-{
-	$selected_customer = $_GET['selected_customer'];
-}
-elseif (isset($_POST['selected_customer']))
-{
-	$selected_customer = $_POST['selected_customer'];
-}
-else
-	$selected_customer = -1;
-
-//---------------------------------------------------------------------------------------------
-
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != ALL_TEXT))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	unset($selected_stock_item);
-}
+$js = "";
+if ($SysPrefs->use_popup_windows)
+	$js .= get_js_open_window(900, 600);
+if (user_use_date_picker())
+	$js .= get_js_date_picker();
+page($_SESSION['page_title'], false, false, "", $js);
 //---------------------------------------------------------------------------------------------
 //	Query format functions
 //
@@ -121,21 +104,22 @@ function prt_link($row)
 
 function edit_link($row) 
 {
-	if (@$_GET['popup'])
-		return '';
-	global $trans_type;
-	$modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
-  return pager_link( _("Edit"),
-    "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
+	global $page_nested;
+
+	return $page_nested ? '' : trans_editor_link($row['trans_type'], $row['order_no']);
 }
 
 function dispatch_link($row)
 {
 	global $trans_type;
+
+	if ($row['ord_payments'] + $row['inv_payments'] < $row['prep_amount'])
+ 		return '';
+
 	if ($trans_type == ST_SALESORDER)
   		return pager_link( _("Dispatch"),
 			"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
-	else		
+	else
   		return pager_link( _("Sales Order"),
 			"/sales/sales_order_entry.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 }
@@ -164,10 +148,12 @@ function order_link($row)
 
 function tmpl_checkbox($row)
 {
-	global $trans_type;
-	if ($trans_type == ST_SALESQUOTE)
+	global $trans_type, $page_nested;
+
+	if ($trans_type == ST_SALESQUOTE || !check_sales_order_type($row['order_no']))
 		return '';
-	if (@$_GET['popup'])
+
+	if ($page_nested)
 		return '';
 	$name = "chgtpl" .$row['order_no'];
 	$value = $row['type'] ? 1:0;
@@ -178,27 +164,27 @@ function tmpl_checkbox($row)
  	_('Set this order as a template for direct deliveries/invoices'))
 	. hidden('last['.$row['order_no'].']', $value, false);
 }
-//---------------------------------------------------------------------------------------------
-// Update db record if respective checkbox value has changed.
-//
-function change_tpl_flag($id)
-{
-	global	$Ajax;
-	
-  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=$id";
 
-  	db_query($sql, "Can't change sales order type");
-	$Ajax->activate('orders_tbl');
+function invoice_prep_link($row)
+{
+	// invoicing should be available only for partially allocated orders
+	return 
+		$row['inv_payments'] < $row['total'] ?
+		pager_link($row['ord_payments']  ? _("Prepayment Invoice") : _("Final Invoice"),
+		"/sales/customer_invoice.php?InvoicePrepayments=" .$row['order_no'], ICON_DOC) : '';
 }
 
 $id = find_submit('_chgtpl');
 if ($id != -1)
-	change_tpl_flag($id);
+{
+	sales_order_set_template($id, check_value('chgtpl'.$id));
+	$Ajax->activate('orders_tbl');
+}
 
 if (isset($_POST['Update']) && isset($_POST['last'])) {
 	foreach($_POST['last'] as $id => $value)
 		if ($value != check_value('chgtpl'.$id))
-			change_tpl_flag($id);
+			sales_order_set_template($id, !check_value('chgtpl'.$id));
 }
 
 $show_dates = !in_array($_POST['order_view_mode'], array('OutstandingOnly', 'InvoiceTemplates', 'DeliveryTemplates'));
@@ -210,15 +196,14 @@ if (get_post('_OrderNumber_changed') || get_post('_OrderReference_changed')) // 
 	$disable = get_post('OrderNumber') !== '' || get_post('OrderReference') !== '';
 
   	if ($show_dates) {
-			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
-			$Ajax->addDisable(true, 'OrdersToDate', $disable);
+		$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+		$Ajax->addDisable(true, 'OrdersToDate', $disable);
 	}
 
 	$Ajax->activate('orders_tbl');
 }
 
-if (!@$_GET['popup'])
-	start_form();
+start_form();
 
 start_table(TABLESTYLE_NOBORDER);
 start_row();
@@ -226,7 +211,7 @@ ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
 ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
 if ($show_dates)
 {
-  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
+  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -user_transaction_days());
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true, true);
@@ -239,7 +224,8 @@ if($show_dates) {
 	start_row();
 }
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, true);
-if (!@$_GET['popup'])
+
+if (!$page_nested)
 	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true);
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
@@ -254,8 +240,9 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-$sql = get_sql_for_sales_orders_view($selected_customer, $trans_type, $_POST['OrderNumber'], $_POST['order_view_mode'],
-	@$selected_stock_item, @$_POST['OrdersAfterDate'], @$_POST['OrdersToDate'], @$_POST['OrderReference'], $_POST['StockLocation'], $_POST['customer_id']);
+$sql = get_sql_for_sales_orders_view($trans_type, get_post('OrderNumber'), get_post('order_view_mode'),
+	get_post('SelectStockFromList'), get_post('OrdersAfterDate'), get_post('OrdersToDate'), get_post('OrderReference'), get_post('StockLocation'),
+	get_post('customer_id'));
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
@@ -286,7 +273,6 @@ else
 		_("Currency") => array('align'=>'center')
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-	//array_substitute($cols, 4, 1, _("Cust Order Ref"));
 	array_append($cols, array(
 		array('insert'=>true, 'fun'=>'dispatch_link'),
 		array('insert'=>true, 'fun'=>'edit_link')));
@@ -299,6 +285,10 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	array_substitute($cols, 4, 1, _("Description"));
 	array_append($cols, array(
 			array('insert'=>true, 'fun'=>'delivery_link'))
+	);
+} else if ($_POST['order_view_mode'] == 'PrepaidOrders') {
+	array_append($cols, array(
+			array('insert'=>true, 'fun'=>'invoice_prep_link'))
 	);
 
 } elseif ($trans_type == ST_SALESQUOTE) {
@@ -322,9 +312,5 @@ $table->width = "80%";
 display_db_pager($table);
 submit_center('Update', _("Update"), true, '', null);
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page();
-}
-?>
+end_form();
+end_page();

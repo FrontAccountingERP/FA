@@ -10,19 +10,21 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_PURCHASEPRICING';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Supplier Purchasing Data"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Supplier Purchasing Data"), false, false, "", $js);
 
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -106,18 +108,19 @@ if (list_updated('stock_id'))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
-if (!@$_GET['popup'])
-	start_form();
+$action = $_SERVER['PHP_SELF'];
+if ($page_nested)
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
-	//Chaitanya : All items can be purchased
+	// All items can be purchased
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-	//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
 }
 else
@@ -194,11 +197,6 @@ if ($Mode =='Edit')
 
 br();
 hidden('selected_id', $selected_id);
-if (@$_GET['popup'])
-{
-	hidden('_tabs_sel', get_post('_tabs_sel'));
-	hidden('popup', @$_GET['popup']);
-}
 
 start_table(TABLESTYLE2);
 
@@ -219,17 +217,12 @@ if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
    	$_POST['conversion_factor'] = maxprec_format(1);
 }
-amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor',
-  maxprec_format($_POST['conversion_factor']), null, null, 'max');
+amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', null, null, null, 'max');
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
 end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}
-?>
+end_form();
+end_page();

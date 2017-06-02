@@ -29,6 +29,7 @@ class db_pager {
 	var $width;			// table width (default '95%')
 	var $header_fun;	// additional row between title and body
 	var $header_class;
+    var $row_fun;       // Function for row preprocessing
 	var $footer_fun;
 	var $footer_class;
 	var $data = array();
@@ -57,7 +58,12 @@ class db_pager {
 	var $key;	// key field name
 	
 	//  db_pager constructor
-	//  accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
+	//  accepts $sql query either as:
+	//  a. string in form 'SELECT field_list FROM table_joins [WHERE conditions [GROUP group_list [ORDER order_list]]]'
+	//		- if WHERE keyword is used in table_joins, WHERE conditions is obligatory
+	//  b. associative array using select, where, group and order keys ex :
+	//  	array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
+	//
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $table = null, $page_len=0) 
 	{
@@ -68,14 +74,12 @@ class db_pager {
 	 	$this->set_sql($sql);
 	}
 	//
-	//	Parse base sql select query.
-	//	or use an associative array.
-	//  Usefull is the query can't be split correctly (using subquery for example).
-	//  The associative array shouldn't contain the keyword itself.
-	//  ex :
-	//  array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
+	//	Parse base sql select query	or use an associative array.
+	//
 	function set_sql($sql)
 	{
+		global $SysPrefs;
+
 		if ($sql != $this->sql) {
 		    $this->sql = $sql;
 		    $this->ready = false;
@@ -88,27 +92,32 @@ class db_pager {
 				}
 				else {
 					// parse the query
+					$parts = preg_split('/\sFROM\s/si', $sql, 2);
+					if (count($parts) == 2) {
+						$this->select = $parts[0];
+						$sql = $parts[1];
+					} else {
+						if ($SysPrefs->go_debug)
+							display_error("Invalid sql input for db_pager");
+					}
+
+					$parts = preg_split('/\sWHERE(?!.*WHERE.*)\s/si', $sql, 2); // last occurence
+					if(count($parts) == 2) {
+						$this->from = $parts[0];
+						$sql = $parts[1];
+
 						$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->order = $parts[1];
-					}
+						if(count($parts) == 2) {
+							$sql = $parts[0];
+							$this->order = $parts[1];
+						}
 						$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->group = $parts[1];
+						if(count($parts) == 2) {
+							$sql = $parts[0];
+							$this->group = $parts[1];
+						}
+						$this->where = $sql;
 					}
-						$parts = preg_split('/\sWHERE\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->where = $parts[1];
-					}
-						$parts = preg_split('/\sFROM\s/si', $sql, 2);
-					if(count($parts) == 2) {
-						$sql = $parts[0];
-						$this->from = $parts[1];
-					}
-					$this->select = $sql;
 			}
 		}
 	}
@@ -180,53 +189,53 @@ class db_pager {
 	    if ($result) {
 		// setting field names for subsequent queries
 			$c = 0;
-		  // add result field names to column defs for 
-		  // col value retrieve and sort purposes 
-		   $cnt = min(db_num_fields($result), count($this->columns));
+		  	// add result field names to column defs for 
+		  	// col value retrieve and sort purposes 
+		   	$cnt = min(db_num_fields($result), count($this->columns));
 			for ($c = $i = 0; $c < $cnt; $c++) {
 				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 //					if (!@($this->columns[$c]['type']=='skip'))
 			 			$this->columns[$c]['name']= db_field_name($result, $i);
 					if (!@($this->columns[$c]['type']=='insert'))
-			 		$i++;
-			 		}
+			 			$i++;
+			 	}
 		  	}
 		  	while ($row = db_fetch_assoc($result)) {
 				$this->data[] = $row;
 		  	}
 		} else 
-		  return false;
+		  	return false;
 		return true;
-	}	    
+	}
 	//
 	//	Calculates page numbers for html controls.
 	//
 	function set_page($to) 
 	{
 	    switch($to) {
-		case 'next':
-		    $page = $this->curr_page+1; break;
-		case 'prev':
-		    $page = $this->curr_page-1; break;
-		case 'last':
-		    $page = $this->last_page; break;
-		default:
-		    if (is_numeric($to)) {
-			 $page = $to; break;
-		    }
-		case 'first':
-		    $page = 1; break;
+			case 'next':
+			    $page = $this->curr_page+1; break;
+			case 'prev':
+			    $page = $this->curr_page-1; break;
+			case 'last':
+			    $page = $this->last_page; break;
+			default:
+			    if (is_numeric($to)) {
+				 	$page = $to; break;
+			    }
+			case 'first':
+			    $page = 1; break;
 	    }
-	  if ($page < 1) 
-	    $page = 1;
-	  $max = $this->max_page;
-	  if ($page > $max) 
-	    $page = $max;
-	  $this->curr_page = $page;
-	  $this->next_page = ($page < $max) ? $page+1 : null;
-	  $this->prev_page = ($page > 1) ? ($page-1) : null;
-	  $this->last_page = ($page < $max) ? $max : null;
-	  $this->first_page = ($page != 1) ? 1: null;
+	  	if ($page < 1) 
+	    	$page = 1;
+	  	$max = $this->max_page;
+	  	if ($page > $max) 
+	    	$page = $max;
+	  	$this->curr_page = $page;
+	  	$this->next_page = ($page < $max) ? $page+1 : null;
+	  	$this->prev_page = ($page > 1) ? ($page-1) : null;
+	  	$this->last_page = ($page < $max) ? $max : null;
+	  	$this->first_page = ($page != 1) ? 1: null;
 	}
 	//
 	//	Set column definitions
@@ -239,8 +248,8 @@ class db_pager {
 		}
 		foreach ($flds as $colnum=>$coldef) {
 			if (is_string($colnum)) {	// 'colname'=>params
-			  $h = $colnum;
-			  $c = $coldef;
+			  	$h = $colnum;
+			  	$c = $coldef;
 			} else {			//  n=>params
 				if (is_array($coldef)) {
 					$h = '';
@@ -251,10 +260,10 @@ class db_pager {
 				}
 			}
 			if (is_string($c)) 			// params is simple column type
-			  $c = array('type'=>$c);
+			  	$c = array('type'=>$c);
 
 			if (!isset($c['type']))
-			  $c['type'] = 'text';
+			  	$c['type'] = 'text';
 
 			switch($c['type']) {
 				case 'inactive': 
@@ -294,12 +303,12 @@ class db_pager {
 		if ($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
-			// sort order column by priority instead of table order.
-			$columns = array();
+		// sort order column by priority instead of table order.
+		$columns = array();
 	    foreach ($this->columns as $col) {
-					if(isset($col['ord_priority'])) {
-						$columns[$col['ord_priority']] = $col;
-					}
+			if(isset($col['ord_priority'])) {
+				$columns[$col['ord_priority']] = $col;
+			}
 		}
 		krsort($columns);
 
@@ -312,8 +321,7 @@ class db_pager {
 	    }
 
 	    if (count($ord)) {
-			$ord = array_map(function_exists('mysql_real_escape_string') ? 
-				'mysql_real_escape_string': 'mysql_escape_string', $ord);
+			$ord = array_map('db_escape_function', $ord);
 			$sql .= " ORDER BY " . implode(',', $ord);
 		} else {
 			if($order)
@@ -333,7 +341,7 @@ class db_pager {
 	//
 	function _init() 
 	{
-		global $go_debug;
+		global $SysPrefs;
 		
 	    if ($this->ready == false ) {
 			$sql = $this->_sql_gen(true);
@@ -345,14 +353,14 @@ class db_pager {
 	  		$this->max_page = $this->page_len ?
 				ceil($this->rec_count/$this->page_len) : 0;
 		
-			if ($go_debug) { // FIX - need column name parsing, but for now:
+			if ($SysPrefs->go_debug) { // FIX - need column name parsing, but for now:
 				// check if field names are set explicite in col def
 				// for all initially ordered columns
 			    foreach ($this->columns as $col) {
 		    	   	if (isset($col['ord']) && $col['ord'] != '' 
 						&&  !isset($col['name'])) {
 							display_warning("Result field names must be set
-								for all intially ordered db_pager columns.");
+								for all initially ordered db_pager columns.");
 			    	}
 				}
 	    	}
@@ -423,9 +431,6 @@ class db_pager {
 	function inactive_control_cell(&$row)
 	{
 		if ($this->inactive_ctrl) {
-//			return inactive_control_cell($row[$this->inactive_ctrl['key']],
-//				 $row['inactive'], $this->inactive_ctrl['table'], 
-//				 $this->inactive_ctrl['key']);
 				 
 			global	$Ajax;
 
@@ -501,4 +506,3 @@ function refresh_pager($name)
 	if (isset($_SESSION[$name]))
 		$_SESSION[$name]->ready = false;
 }
-?>

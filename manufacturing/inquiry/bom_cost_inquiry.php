@@ -16,7 +16,6 @@ include_once($path_to_root . "/includes/session.inc");
 page(_($help_context = "Costed Bill Of Material Inquiry"));
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -28,7 +27,7 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 } 
 if (list_updated('stock_id'))
-		$Ajax->activate('_page_body');
+	$Ajax->activate('_page_body');
 
 start_form(false, true);
 start_table(TABLESTYLE_NOBORDER);
@@ -41,4 +40,3 @@ display_bom($_POST['stock_id']);
 end_form();
 
 end_page();
-?>

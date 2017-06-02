@@ -19,7 +19,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Exchange Rates"), false, false, "", $js);
 
@@ -108,8 +108,9 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $Ajax, $xr_providers, $dflt_xr_provider;
-	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
+	global $selected_id, $Ajax, $SysPrefs;
+	$xchg_rate_provider = ((isset($SysPrefs->xr_providers) && isset($SysPrefs->dflt_xr_provider))
+		? $SysPrefs->xr_providers[$SysPrefs->dflt_xr_provider] : 'ECB');
 	start_table(TABLESTYLE2);
 
 	if ($selected_id != "")
@@ -177,7 +178,7 @@ if (!isset($_POST['curr_abrev']))
 
 echo "<center>";
 echo _("Select a currency :") . "  ";
-echo currencies_list('curr_abrev', null, true);
+echo currencies_list('curr_abrev', null, true, true);
 echo "</center>";
 
 // if currency sel has changed, clear the form
@@ -187,9 +188,9 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 	$selected_id = "";
 }
 
-set_global_curr_code($_POST['curr_abrev']);
+set_global_curr_code(get_post('curr_abrev'));
 
-$sql = get_sql_for_exchange_rates();
+$sql = get_sql_for_exchange_rates(get_post('curr_abrev'));
 
 $cols = array(
 	_("Date to Use From") => 'date', 
@@ -199,7 +200,7 @@ $cols = array(
 );
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
-if (is_company_currency($_POST['curr_abrev']))
+if (is_company_currency(get_post('curr_abrev')))
 {
 
 	display_note(_("The selected currency is the company currency."), 2);
@@ -221,4 +222,3 @@ end_form();
 
 end_page();
 
-?>

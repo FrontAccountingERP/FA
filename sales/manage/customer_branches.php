@@ -15,7 +15,11 @@ $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
+page(_($help_context = "Customer Branches"), @$_REQUEST['popup'], false, "", $js);
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/includes/ui/contacts_view.inc");
@@ -80,10 +84,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			update_branch($_POST['customer_id'], $_POST['branch_code'], $_POST['br_name'], $_POST['br_ref'],
 				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
-				$_POST['default_location'], $_POST['br_post_address'], $_POST['disable_trans'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
-//			update_record_status($_POST['supplier_id'], $_POST['inactive'],
-//				'cust_branch', 'branch_code');
+				$_POST['default_location'], $_POST['br_post_address'], $_POST['group_no'],
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
 
 			$note =_('Selected customer branch has been updated');
   		}
@@ -92,8 +94,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			add_branch($_POST['customer_id'], $_POST['br_name'], $_POST['br_ref'],
 				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
-				$_POST['default_location'], $_POST['br_post_address'], 0, $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
+				$_POST['default_location'], $_POST['br_post_address'], $_POST['group_no'],
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
 			$selected_id = db_insert_id();
 
 			add_crm_person($_POST['contact_name'], $_POST['contact_name'], '', $_POST['br_post_address'], 
@@ -107,7 +109,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		}
 		commit_transaction();
 		display_notification($note);
-//		$Mode = 'RESET';
+
 		if (@$_REQUEST['popup']) {
 			set_focus("Select".($_POST['branch_code'] == -1 ? $selected_id: $_POST['branch_code']));
 		}
@@ -116,9 +118,6 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 }
 elseif ($Mode == 'Delete')
 {
-	//the link to delete a selected record was clicked instead of the submit button
-
-	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
 	if (branch_in_foreign_table($_POST['customer_id'], $_POST['branch_code'], 'debtor_trans'))
 	{
@@ -136,7 +135,7 @@ elseif ($Mode == 'Delete')
 			delete_branch($_POST['customer_id'], $_POST['branch_code']);
 			display_notification(_('Selected customer branch has been deleted'));
 		}
-	} //end ifs to test if the branch can be deleted
+	}
 	$Mode = 'RESET';
 }
 
@@ -167,8 +166,8 @@ function select_link($row) {
 	return button("Select".$row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
 }
 
-function branch_settings($selected_id) {
-	global $Mode, $num_branches;
+function branch_settings($selected_id, $num_branches) {
+	global $Mode;
 
 	start_outer_table(TABLESTYLE2);
 
@@ -186,16 +185,9 @@ function branch_settings($selected_id) {
 		    $_POST['br_ref']  = $myrow["branch_ref"];
 		    $_POST['br_address']  = $myrow["br_address"];
 		    $_POST['br_post_address']  = $myrow["br_post_address"];
-//		    $_POST['contact_name'] = $myrow["contact_name"];
 		    $_POST['salesman'] =$myrow["salesman"];
 		    $_POST['area'] =$myrow["area"];
-//		    $_POST['rep_lang'] =$myrow["rep_lang"];
-//		    $_POST['phone'] =$myrow["phone"];
-//		    $_POST['phone2'] =$myrow["phone2"];
-//		    $_POST['fax'] =$myrow["fax"];
-//		    $_POST['email'] =$myrow["email"];
 		    $_POST['tax_group_id'] = $myrow["tax_group_id"];
-		    $_POST['disable_trans'] = $myrow['disable_trans'];
 		    $_POST['default_location'] = $myrow["default_location"];
 		    $_POST['default_ship_via'] = $myrow['default_ship_via'];
 		    $_POST['sales_account'] = $myrow["sales_account"];
@@ -204,13 +196,13 @@ function branch_settings($selected_id) {
 		    $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
 			$_POST['group_no']  = $myrow["group_no"];
 			$_POST['notes']  = $myrow["notes"];
+			$_POST['bank_account']  = $myrow["bank_account"];
 
 		}
 	}
 	elseif ($Mode != 'ADD_ITEM')
-	{ //end of if $SelectedBranch only do the else when a new record is being entered
+	{
 		$myrow = get_default_info_for_branch($_POST['customer_id']);
-//		$_POST['rep_lang'] = $myrow['rep_lang'];
 		if(!$num_branches) {
 			$_POST['br_name'] = $myrow["name"];
 			$_POST['br_ref'] = $myrow["debtor_ref"];
@@ -224,7 +216,7 @@ function branch_settings($selected_id) {
 
 			// We use the Item Sales Account as default!
 		    // $_POST['sales_account'] = $company_record["default_sales_act"];
-		    $_POST['sales_account'] = $_POST['notes']  = '';
+		    $_POST['sales_account'] = $_POST['notes']  = $_POST['bank_account'] = '';
 		    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 		    $_POST['receivables_account'] = $company_record['debtors_act'];
 		    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
@@ -234,7 +226,7 @@ function branch_settings($selected_id) {
 	hidden('popup', @$_REQUEST['popup']);
 
 	table_section_title(_("Name and Contact"));
-	text_row(_("Branch Name:"), 'br_name', null, 35, 40);
+	text_row(_("Branch Name:"), 'br_name', null, 50, 60);
 	text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
 
 	table_section_title(_("Sales"));
@@ -246,30 +238,28 @@ function branch_settings($selected_id) {
 	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 
 	table_section_title(_("GL Accounts"));
-	// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
+
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
 	gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
 	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account', null, true);
 	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
+	text_row(_("Bank Account Number:"), 'bank_account', null, 30, 60);
 
 	table_section(2);
 
-if($selected_id==-1) {
-	table_section_title(_("General contact data"));
-	text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
-	text_row(_("Phone Number:"), 'phone', null, 32, 30);
-	text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
-	text_row(_("Fax Number:"), 'fax', null, 32, 30);
-	email_row(_("E-mail:"), 'email', null, 35, 55);
-	languages_list_row( _("Document Language:"), 'rep_lang', null, _("Customer default"));
-}
+	if($selected_id==-1) {
+		table_section_title(_("General contact data"));
+		text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
+		text_row(_("Phone Number:"), 'phone', null, 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+		languages_list_row( _("Document Language:"), 'rep_lang', null, _("Customer default"));
+	}
 	table_section_title(_("Addresses"));
 	textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
 	textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);
 	textarea_row(_("General Notes:"), 'notes', null, 35, 4);
-
-if($selected_id!=-1)
-	yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 
 	end_outer_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
@@ -281,9 +271,9 @@ echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 echo customer_list('customer_id', null, false, true);
 echo "</center><br>";
 
-$num_branches = db_customer_has_branches($_POST['customer_id']);
+$num_branches = db_customer_has_branches(get_post('customer_id'));
 
-$sql = get_sql_for_customer_branches();
+$sql = get_sql_for_customer_branches(get_post('customer_id'));
 
 //------------------------------------------------------------------------------------------------
 if ($num_branches)
@@ -300,7 +290,6 @@ $cols = array(
 	_("E-mail") => 'email',
 	_("Tax Group"),
 	_("Inactive") => 'inactive',
-//		array('fun'=>'inactive'),
 		' '=> array('insert'=>true, 'fun'=>'select_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'del_link')
@@ -312,7 +301,6 @@ $cols = array(
 $table =& new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
 $table->set_inactive_ctrl('cust_branch', 'branch_code');
 
-//$table->width = "85%";
 display_db_pager($table);
 }
 else
@@ -327,7 +315,7 @@ tabbed_content_start('tabs', array(
 	switch (get_post('_tabs_sel')) {
 		default:
 		case 'settings':
-			branch_settings($selected_id); 
+			branch_settings($selected_id, $num_branches); 
 			break;
 		case 'contacts':
 			$contacts = new contacts('contacts', $selected_id, 'cust_branch');
@@ -345,4 +333,3 @@ end_form();
 
 end_page(@$_REQUEST['popup']);
 
-?>

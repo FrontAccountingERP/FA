@@ -11,7 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_trans_db.inc");
@@ -20,7 +20,6 @@ include_once($path_to_root . "/inventory/includes/db/items_purchases_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
-include_once($path_to_root . "/inventory/includes/db/movement_types_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_adjust_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_transfer_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
@@ -31,13 +30,42 @@ function item_img_name($stock_id)
 	return clean_file_name($stock_id);
 }
 
+function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
+{
+	$before_date = date2sql($BeforeDate);
+	$after_date = date2sql($AfterDate);
+  	$sql = "SELECT move.*, IF(ISNULL(supplier.supplier_id), debtor.name, supplier.supp_name) name";
+
+	if(!$StockLocation) {
+		 $sql .= ", move.loc_code";
+	}
+  	$sql.=    " FROM ".TB_PREF."stock_moves move
+				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
+				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
+				LEFT JOIN ".TB_PREF."suppliers supplier ON IFNULL(grn.supplier_id, credit.supplier_id)=supplier.supplier_id
+				LEFT JOIN ".TB_PREF."debtor_trans cust_trans ON cust_trans.trans_no=move.trans_no AND cust_trans.type=move.type
+				LEFT JOIN ".TB_PREF."debtors_master debtor ON cust_trans.debtor_no=debtor.debtor_no
+		WHERE";
+
+  	if ($StockLocation) {
+    	$sql.= " move.loc_code=".db_escape($StockLocation)." AND";
+	}
+
+	$sql.= " move.tran_date >= '". $after_date . "'
+		AND move.tran_date <= '" . $before_date . "'
+		AND move.stock_id = ".db_escape($stock_id) . " ORDER BY move.tran_date, move.trans_id";
+
+  	return db_query($sql, "could not query stock moves");
+}
+
 function calculate_reorder_level($location, $line, &$st_ids, &$st_names, &$st_num, &$st_reorder)
 {
-	$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
-		FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-		WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-		AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
-		AND ".TB_PREF."loc_stock.loc_code = '" . $location . "'";
+	$sql = "SELECT stock.*, loc.location_name, loc.email
+		FROM ".TB_PREF."loc_stock stock,"
+			.TB_PREF."locations loc
+		WHERE stock.loc_code=loc.loc_code
+		AND stock.stock_id = '" . $line->stock_id . "'
+		AND stock.loc_code = '" . $location . "'";
 	$res = db_query($sql,"a location could not be retreived");
 	$loc = db_fetch($res);
 	if ($loc['email'] != "")
@@ -60,11 +88,10 @@ function calculate_reorder_level($location, $line, &$st_ids, &$st_names, &$st_nu
 function send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder)
 {
 	global $path_to_root;
-	
+
 	require_once($path_to_root . "/reporting/includes/class.mail.inc");
 	$company = get_company_prefs();
 	$mail = new email($company['coy_name'], $company['email']);
-	$from = $company['coy_name'] . " <" . $company['email'] . ">";
 	$to = $loc['location_name'] . " <" . $loc['email'] . ">";
 	$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
 	$msg = "\n";
@@ -77,4 +104,3 @@ function send_reorder_email($loc, $st_ids, $st_names, $st_num, $st_reorder)
 	$mail->text($msg);
 	return $mail->send();
 }
-?>

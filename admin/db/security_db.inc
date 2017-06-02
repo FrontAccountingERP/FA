@@ -64,4 +64,3 @@ function check_role_used($id) {
 	$row = db_fetch($ret);
 	return $row[0];
 }
-?>

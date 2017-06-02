@@ -14,6 +14,8 @@
 *	Set document type dependent elements of common page layout.
 *
 */
+	global $SysPrefs;
+
 	$Addr1 = array(
 			'title' => _("Charge To"),
 			'name' => @$this->formData['br_name'] ? $this->formData['br_name'] : @$this->formData['DebtorName'],
@@ -32,13 +34,22 @@
 	// for links use 'text' => 'url'
 	$Footer[0] = _("All amounts stated in") . " - " . @$this->formData['curr_code'];
 
+	if (!in_array($this->formData['doctype'], array(ST_STATEMENT, ST_WORKORDER)))
+	{
+		$row = get_payment_terms($this->formData['payment_terms']);
+		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
+		if ($this->formData['doctype'] == ST_SALESINVOICE && $this->formData['prepaid'])
+			$this->formData['prepaid'] = ($row['days_before_due'] >= 0) ? 'final' : 'partial';
+	}
+
+
 	switch ($this->formData['doctype'])
 	{
 		case ST_SALESQUOTE:
 			$this->title = _("SALES QUOTATION");
 			$this->formData['document_name'] =_("Quotation No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+			$this->formData['document_number'] = $SysPrefs->print_invoice_no() == 0 && isset($this->formData['reference'])
 				? $this->formData['reference'] : $this->formData['order_no'];
 			$aux_info = array(
 				_("Customer's Reference") => $this->formData["customer_ref"],
@@ -50,10 +61,10 @@
 			break;
 
 		case ST_SALESORDER:
-			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
+			$this->title = ($this->params['print_quote'] ? _("QUOTE") : ($this->formData['prepaid'] ? _("PREPAYMENT ORDER") : _("SALES ORDER")));
 			$this->formData['document_name'] =_("Order No.");
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+			$this->formData['document_number'] = $SysPrefs->print_invoice_no() == 0 && isset($this->formData['reference'])
 				? $this->formData['reference'] : $this->formData['order_no'];
 			$this->formData['document_amount'] = $this->formData['order_no'];
 
@@ -67,12 +78,12 @@
 			break;
 
 		case ST_CUSTDELIVERY:
-			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
+			$this->title = ($this->params['packing_slip'] ? _("PACKING SLIP") : _("DELIVERY NOTE"));
 			$this->formData['document_name'] = _("Delivery Note No.");
 			if (@$packing_slip)
 				$Payment_Terms = '';
 			$ref = $this->formData['order_'];
-			if ($print_invoice_no == 0)
+			if ($SysPrefs->print_invoice_no() == 0)
 			{
 				$ref = get_reference(ST_SALESORDER, $this->formData['order_']);
 				if (!$ref)
@@ -102,13 +113,14 @@
 			break;
 
 		case ST_SALESINVOICE:
-			$this->title = _("INVOICE");
+			$this->title = $this->formData['prepaid']=='partial' ? _("PREPAYMENT INVOICE")
+				: ($this->formData['prepaid']=='final' ? _("FINAL INVOICE")  : _("INVOICE"));
 			$this->formData['document_name'] =_("Invoice No.");
 			$this->formData['domicile'] = $this->company['domicile'];
 			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). " - " . $this->formData['curr_code'];
 
 			$deliveries = get_sales_parent_numbers(ST_SALESINVOICE, $this->formData['trans_no']);
-			if ($print_invoice_no == 0)
+			if ($SysPrefs->print_invoice_no() == 0)
 			{
 				foreach($deliveries as $n => $delivery) {
 					$deliveries[$n] = get_reference(ST_CUSTDELIVERY, $delivery);
@@ -118,9 +130,18 @@
 				_("Customer's Reference") => $this->formData["customer_ref"],
 				_("Sales Person") => get_salesman_name($this->formData['salesman']),
 				_("Your VAT no.") => $this->formData['tax_id'],
-				_("Delivery Note No.") => implode(',', $deliveries),
-				_("Due Date") => sql2date($this->formData['due_date']),
 			);
+			if ($this->formData['prepaid']=='partial')
+			{
+				$aux_info[_("Date of Payment")] = sql2date(get_oldest_payment_date($this->formData['trans_no']));
+				$aux_info[_("Our Order No")]  = $this->formData['order_'];
+			} else {
+				if ($this->formData['prepaid'] =='final')
+					$aux_info[_("Invoice Date")] = sql2date($this->formData['tran_date']);
+				else
+					$aux_info[_("Date of Sale")] = sql2date(get_oldest_delivery_date($this->formData['trans_no']));
+				$aux_info[_("Due Date")]  = sql2date($this->formData['due_date']);
+			}
 			break;
 
 		case ST_SUPPAYMENT:
@@ -155,14 +176,14 @@
 			$Addr2['name'] = $this->company['coy_name'];
 			//$Addr2['address'] = $this->company['postal_address']; No, don't destroy delivery address!
 			$this->formData['document_date'] = $this->formData['ord_date'];
-			$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+			$this->formData['document_number'] = $SysPrefs->print_invoice_no() == 0 && isset($this->formData['reference'])
 				? $this->formData['reference'] : $this->formData['order_no'];
 
 			$aux_info = array(
 				_("Customer's Reference") => $this->formData['supp_account_no'],
 				_("Sales Person") => $this->formData['contact'],
 				_("Your VAT no.") => $this->formData['tax_id'],
-				_("Supplier's Reference") => $this->formData['requisition_no'],
+				_("Supplier's Reference") => @$this->formData['requisition_no'],
 				_("Order Date") => sql2date($this->formData['document_date']),
 			);
 
@@ -230,17 +251,8 @@
 		$this->formData['document_date'] = $this->formData['tran_date'];
 
 	if (!isset($this->formData['document_number']))
-		$this->formData['document_number'] = $print_invoice_no == 0 && isset($this->formData['reference'])
+		$this->formData['document_number'] = $SysPrefs->print_invoice_no() == 0 && isset($this->formData['reference'])
 			? $this->formData['reference'] : @$this->formData['trans_no'];
-
-	if (!isset($Payment_Terms))
-	{
-		$id = $this->formData['payment_terms'];
-		$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
-		$result = db_query($sql,"could not get paymentterms");
-		$row = db_fetch($result);
-		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
-	}
 
 	// footer generic content
 	if (@$this->formData['bank_name'])
@@ -272,4 +284,3 @@
 	}
 
 	$this->formData['recipient_name'] = $Addr1['name'];
-?>

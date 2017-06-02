@@ -15,12 +15,11 @@ $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
@@ -72,6 +71,4 @@ display_wo_production($wo_production);
 br(2);
 
 end_page(true, false, false, ST_MANURECEIVE, $wo_production);
-
-?>
 

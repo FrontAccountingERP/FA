@@ -29,47 +29,42 @@ print_customer_details_listing();
 
 function get_customer_details_for_report($area=0, $salesid=0)
 {
-	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no,
-			".TB_PREF."debtors_master.name,
-			".TB_PREF."debtors_master.address,
-			".TB_PREF."debtors_master.curr_code,
-			".TB_PREF."debtors_master.dimension_id,
-			".TB_PREF."debtors_master.dimension2_id,
-			".TB_PREF."debtors_master.notes,
-			".TB_PREF."sales_types.sales_type,
-			".TB_PREF."cust_branch.branch_code,
-			".TB_PREF."cust_branch.br_name,
-			".TB_PREF."cust_branch.br_address,
-			".TB_PREF."cust_branch.br_post_address,
-			".TB_PREF."cust_branch.contact_name,
-			".TB_PREF."cust_branch.area,
-			".TB_PREF."cust_branch.salesman,
-			".TB_PREF."areas.description,
-			".TB_PREF."salesman.salesman_name
-		FROM ".TB_PREF."debtors_master
-		INNER JOIN ".TB_PREF."cust_branch
-			ON ".TB_PREF."debtors_master.debtor_no=".TB_PREF."cust_branch.debtor_no
-		INNER JOIN ".TB_PREF."sales_types
-			ON ".TB_PREF."debtors_master.sales_type=".TB_PREF."sales_types.id
-		INNER JOIN ".TB_PREF."areas
-			ON ".TB_PREF."cust_branch.area = ".TB_PREF."areas.area_code
-		INNER JOIN ".TB_PREF."salesman
-			ON ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
-		WHERE ".TB_PREF."debtors_master.inactive = 0";
+	$sql = "SELECT debtor.debtor_no,
+			debtor.name,
+			debtor.address,
+			debtor.curr_code,
+			debtor.dimension_id,
+			debtor.dimension2_id,
+			debtor.notes,
+			pricelist.sales_type,
+			branch.branch_code,
+			branch.br_name,
+			branch.br_address,
+			branch.br_post_address,
+			branch.area,
+			branch.salesman,
+			area.description,
+			salesman.salesman_name
+		FROM ".TB_PREF."debtors_master debtor
+		INNER JOIN ".TB_PREF."cust_branch branch ON debtor.debtor_no=branch.debtor_no
+		INNER JOIN ".TB_PREF."sales_types pricelist	ON debtor.sales_type=pricelist.id
+		INNER JOIN ".TB_PREF."areas area ON branch.area = area.area_code
+		INNER JOIN ".TB_PREF."salesman salesman	ON branch.salesman=salesman.salesman_code
+		WHERE debtor.inactive = 0";
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
-				AND ".TB_PREF."areas.area_code=".db_escape($area);
+			$sql .= " AND salesman.salesman_code=".db_escape($salesid)."
+				AND area.area_code=".db_escape($area);
 		else
-			$sql .= " AND ".TB_PREF."areas.area_code=".db_escape($area);
+			$sql .= " AND area.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " AND ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
+		$sql .= " AND salesman.salesman_code=".db_escape($salesid);
 	$sql .= " ORDER BY description,
-			".TB_PREF."salesman.salesman_name,
-			".TB_PREF."debtors_master.debtor_no,
-			".TB_PREF."cust_branch.branch_code";
+			salesman.salesman_name,
+			debtor.debtor_no,
+			branch.branch_code";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -77,7 +72,9 @@ function get_customer_details_for_report($area=0, $salesid=0)
 function get_contacts_for_branch($branch)
 {
 	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
-		FROM ".TB_PREF."crm_persons p,".TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='cust_branch' 
+		FROM ".TB_PREF."crm_persons p,"
+			.TB_PREF."crm_contacts r
+		WHERE r.person_id=p.id AND r.type='cust_branch' 
 			AND r.entity_id=".db_escape($branch);
 	$res = db_query($sql, "can't retrieve branch contacts");
 	$results = array();
@@ -212,7 +209,7 @@ function print_customer_details_listing()
 				$rep->NewLine();
 			}
 			$rep->NewLine();
-			// Here starts the new report lines 2010-11-02 Joe Hunt
+			// Here starts the new report lines
 			$contacts = get_contacts_for_branch($myrow['branch_code']);
 			$rep->TextCol(0, 1,	$myrow['name']);
 			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
@@ -281,35 +278,6 @@ function print_customer_details_listing()
 			if ($newrow != 0 && $newrow < $rep->row)
 				$rep->row = $newrow;
 			$rep->NewLine();
-			/*
-			$rep->TextCol(0, 1,	$myrow['name']);
-			$adr = Explode("\n", $myrow['address']);
-			$count1 = count($adr);
-			for ($i = 0; $i < $count1; $i++)
-				$rep->TextCol(0, 1, $adr[$i], 0, ($i + 1) * $rep->lineHeight);
-			$count1++;
-			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
-			if ($more != 0.0 || $less != 0.0)
-				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec), 0, $rep->lineHeight);
-			$rep->TextCol(2, 3,	$myrow['br_name']);
-
-			$contacts = get_branch_contacts($myrow['branch_code']);
-			if (isset($contacts[0]))
-			{
-				$rep->TextCol(2, 3, $contacts[0]['name'], 0, $rep->lineHeight);
-				$rep->TextCol(2, 3, _('Ph') . ": " . $contacts[0]['phone'], 0, 2 * $rep->lineHeight);
-				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax'], 0, 3 * $rep->lineHeight);
-			}
-			$adr = Explode("\n", $myrow['br_address']);
-			$count2 = count($adr);
-			for ($i = 0; $i < $count2; $i++)
-				$rep->TextCol(3, 4, $adr[$i], 0, ($i + 1) * $rep->lineHeight);
-			//$rep->TextCol(3, 4, $myrow['email'], 0, ($count2 + 1) * $rep->lineHeight);
-			$count2++;
-			$count1 = Max($count1, $count2);
-			$count1 = Max($count1, 4);
-			$rep->NewLine($count3);
-			*/
 			$rep->Line($rep->row + 8);
 			$rep->NewLine(0, 3);
 		}
@@ -317,4 +285,3 @@ function print_customer_details_listing()
     $rep->End();
 }
 
-?>

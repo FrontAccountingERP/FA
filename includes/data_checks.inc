@@ -37,21 +37,21 @@ function check_db_has_currencies($msg)
     {
     	display_error($msg, true);
     	end_page();
-    	exit;	
-    }	
+    	exit;
+    }
 }
 
 function db_has_currency_rates($currency, $date_, $msg=false)
 {
 	$date = date2sql($date_);
-	
+
 	if (is_company_currency($currency))
 		return 1;
 	$ret = check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."exchange_rates WHERE curr_code = '$currency' && date_ <= '$date'");
 	if ($ret == 0 && $msg)
 		display_error(sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
 					 $currency, $date_), true);
-	return $ret;				 
+	return $ret;
 }
 
 function db_has_sales_types()
@@ -118,22 +118,6 @@ function check_db_has_tax_groups($msg)
     }	
 }
 
-function db_has_movement_types()
-{
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."movement_types");
-}
-
-function check_db_has_movement_types($msg)
-{
-	global $path_to_root;
-    if (!db_has_movement_types()) 
-    {
-    	display_error($msg, true);
-    	end_page();
-    	exit;	
-    }	
-}
-
 function db_customer_has_branches($customer_id)
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch "
@@ -169,8 +153,8 @@ function check_db_has_sales_people($msg)
     {
     	display_error($msg, true);
     	end_page();
-    	exit;	
-    }	
+    	exit;
+    }
 }
 
 function db_has_sales_areas()
@@ -266,7 +250,8 @@ function check_db_has_suppliers($msg)
 
 function db_has_stock_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master");
+
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE mb_flag!='F'");
 }
 
 function check_db_has_stock_items($msg)
@@ -344,9 +329,128 @@ function check_db_has_costable_items($msg)
     }	
 }
 
+function check_db_has_fixed_asset_classes($msg)
+{
+	global $path_to_root;
+    if (!db_has_fixed_asset_classes()) 
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}
+
+function db_has_fixed_asset_classes()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_fa_class");
+}
+
+function db_has_depreciable_fixed_assets()
+{
+	$year = get_current_fiscalyear();
+	$y = date('Y', strtotime($year['end']));
+
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master 
+	    WHERE mb_flag='F'
+		    AND material_cost > 0
+    		AND stock_id IN ( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )
+		    AND stock_id NOT IN	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )
+		    AND depreciation_date < '".$y."-12-01'
+    		AND depreciation_date >= '".($y-1)."-12-01'");
+}
+
+function check_db_has_depreciable_fixed_assets($msg)
+{
+	global $path_to_root;
+
+	if (!db_has_depreciable_fixed_assets()) 
+	{
+		display_error($msg, true);
+		end_page();
+	exit;
+	}
+}
+
+function db_has_fixed_assets()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE mb_flag='F'");
+}
+
+function check_db_has_fixed_assets($msg)
+{
+	global $path_to_root;
+
+	if (!db_has_fixed_assets()) 
+	{
+		display_error($msg, true);
+		end_page();
+		exit;
+	}
+}
+
+function db_has_purchasable_fixed_assets()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master 
+    	WHERE mb_flag='F'
+    		AND !inactive
+			AND stock_id NOT IN
+				( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )");
+}
+
+function check_db_has_purchasable_fixed_assets($msg)
+{
+	global $path_to_root;
+
+	if (!db_has_purchasable_fixed_assets()) 
+	{
+		display_error($msg, true);
+		end_page();
+	 	exit;
+    }
+}
+
+function db_has_disposable_fixed_assets()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master 
+    	WHERE mb_flag='F'
+		    AND !inactive
+		    AND stock_id IN
+				( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )
+		    AND stock_id NOT IN
+				( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )");
+}
+
+function check_db_has_disposable_fixed_assets($msg)
+{
+	global $path_to_root;
+
+	if (!db_has_disposable_fixed_assets()) 
+	{
+		display_error($msg, true);
+		end_page();
+		exit;
+	}
+}
+
 function db_has_stock_categories()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_category");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_category WHERE dflt_mb_flag!='F'");
+}
+
+function check_db_has_fixed_asset_categories($msg)
+{
+	global $path_to_root;
+    if (!db_has_fixed_asset_categories()) 
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}
+
+function db_has_fixed_asset_categories()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_category WHERE dflt_mb_flag='F'");
 }
 
 function check_db_has_stock_categories($msg)
@@ -356,8 +460,8 @@ function check_db_has_stock_categories($msg)
     {
     	display_error($msg, true);
     	end_page();
-    	exit;	
-    }	
+    	exit;
+    }
 }
 
 function db_has_workcentres()
@@ -378,7 +482,7 @@ function check_db_has_workcentres($msg)
 
 function db_has_locations()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."locations");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."locations WHERE fixed_asset=0");
 }
 
 function check_db_has_locations($msg)
@@ -498,5 +602,86 @@ function check_num($postname, $min=null, $max=null, $dflt=0) {
     return 1;
 }
 
+function check_is_closed($type, $type_no, $msg=null)
+{
+	global $systypes_array;
 
-?>
+    if (($type_no > 0) && is_closed_trans($type, $type_no))
+    {
+    	if (!$msg)
+    		$msg = sprintf(_("%s #%s is closed for further edition."), $systypes_array[$type], $type_no);
+	   	display_error($msg, true);
+		display_footer_exit();
+	}
+}
+
+function check_db_has_template_orders($msg)
+{
+ 	$sql  = "SELECT sorder.order_no 
+ 		FROM ".TB_PREF."sales_orders as sorder,"
+ 			.TB_PREF."sales_order_details as line
+		WHERE sorder.order_no = line.order_no AND sorder.type = 1
+		GROUP BY line.order_no";
+
+    if (!check_empty_result($sql))
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;
+    }
+}
+
+function check_deferred_income_act($msg)
+{
+	global $path_to_root;
+
+    if (!get_company_pref('deferred_income_act')) 
+    {
+    	display_error($msg, true);
+		display_footer_exit();
+    }
+}
+
+function check_is_editable($trans_type, $trans_no, $msg=null)
+{
+	if (!$_SESSION['wa_current_user']->can_access('SA_EDITOTHERSTRANS'))
+	{
+		$audit = get_audit_trail_last($trans_type, $trans_no);
+
+		if ($_SESSION['wa_current_user']->user != $audit['user'])
+		{
+	    	if (!$msg)
+		    	$msg = '<b>'._("You have no edit access to transactions created by other users.").'</b>';
+			display_note($msg);
+			display_footer_exit();
+		}
+	}
+	if (!in_array($trans_type, array(ST_SALESORDER, ST_SALESQUOTE, ST_PURCHORDER, ST_WORKORDER)))
+		check_is_closed($trans_type, $trans_no, $msg);
+}
+
+function check_reference($reference, $trans_type, $trans_no=0, $context=null, $line=null)
+{
+	global $Refs;
+
+	if (!$Refs->is_valid($reference, $trans_type, $context, $line))
+	{
+		display_error(_("The entered reference is invalid.")); return false;
+	}
+	elseif (!$Refs->is_new_reference($reference, $trans_type, $trans_no))
+	{
+		display_error( _("The entered reference is already in use.")); return false;
+	}
+	return true;
+}
+
+function check_sys_pref($name, $msg, $empty = '')
+{
+	global $path_to_root;
+
+	if (get_company_pref($name) === $empty)
+	{
+		display_error(menu_link("/admin/gl_setup.php", $msg), true);
+		display_footer_exit();
+	}
+}

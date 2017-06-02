@@ -220,4 +220,3 @@ function is_record_in_tags($tags, $type, $recordid)
 	return true;
 }
 
-?>

@@ -151,16 +151,16 @@ class graph
 	
     function graph()
     {
-    	global $UTF8_fontfile;
+    	global $SysPrefs;
 		$this->encoding = strtoupper($_SESSION['language']->encoding);
 		$path = dirname(__FILE__).'/../fonts/';
 
 		// If you use UTF-8 encoding you have to download and install FreeSans.ttf font.
 		// It is not bundled with application due to its size.
 		// You can also use another UTF-8 font and put it in config.php with the name in $UTF8_fontfile 
-		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($UTF8_fontfile) && $UTF8_fontfile != "" ? $path.$UTF8_fontfile : $path.'FreeSans.ttf') : 
-			$path.'LiberationSans-Regular.ttf';
-		
+		$this->fontfile = $this->encoding == 'UTF-8' ? (isset($SysPrefs->UTF8_fontfile) && $SysPrefs->UTF8_fontfile != "" ?
+			$path.$SysPrefs->UTF8_fontfile : $path.'FreeSans.ttf') : $path.'LiberationSans-Regular.ttf';
+        
         $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;
         $this->biggest_y        = NULL;
@@ -233,9 +233,6 @@ class graph
 
         // Fill background
         imagefill($this->img, 0, 0, $this->color['background']);
-        //imagefilledrectangle($this->img, 0, 0, $this->width, $this->height, $this->color['background']);
-        //if ($border)
-        //	imagerectangle($this->img, 0, 0, $this->width-1, $this->height-1, imagecolorallocate($this->img, 100, 150, 200));
 
         // Draw title
         if (!empty($this->title))
@@ -278,13 +275,11 @@ class graph
                     if ($len2 < $len1)
                     	$len2 += ($len1-$len2-1);
                     $less = 7 * $len2;
-                    //$this->_imagestring($this->img, $this->size, ($x1-$less-7), ($y2-7), $value, $this->color['axis_values']);
                     $this->_imagestring($this->img, $this->size, ($x1-$less-7), ($y2-7), $value, $this->color['axis_values']);
                 }
             }
 
             // Axis X
-            //$this->_imagestring($this->img, $this->size, $this->graphic_area_x2+10, $this->graphic_area_y2+3, $this->axis_x, $this->color['title']);
             $this->_imagestring($this->img, $this->size, $this->graphic_area_x2+40, $this->graphic_area_y2+3, $this->axis_x, $this->color['title']);
             imageline($this->img, $this->graphic_area_x1, $this->graphic_area_y2, $this->graphic_area_x2, $this->graphic_area_y2, $this->color['axis_line']);
             // Axis Y
@@ -373,7 +368,6 @@ class graph
                 imageline($this->img, ($x2+1), ($y1-1), ($x2+1), $y2, $this->color['bars_shadow']);
                 imageline($this->img, ($x2+2), ($y1-1), ($x2+2), $y2, $this->color['bars_shadow']);
                 imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars']);
-                //$this->_imagestring($this->img, $this->size, ((($x1+$x2)/2) - (strlen($parameter)*7/2)), ($y2+2), $parameter, $this->color['axis_values'], $alt);
                 $this->_imagestring($this->img, $this->size, $x1, ($y2+2), $parameter, $this->color['axis_values'], $alt);
             }
         }
@@ -415,7 +409,6 @@ class graph
                 imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars']);
                 $this->_imagestring($this->img, $this->size, ($x2+7), ($y1+2), $this->number_formated($this->y[$i], $this->dec2), $this->color['bars_shadow']);
 
-                //$this->_imagestring($this->img, $this->size, ($x1 - ((strlen($parameter)*7)+7)), ($y1+2), $parameter, $this->color['axis_values']);
                 $this->_imagestring($this->img, $this->size, 30, ($y1+2), $parameter, $this->color['axis_values']);
             }
         }
@@ -445,7 +438,6 @@ class graph
                 {
                     imageline($this->img, $x[$i], ($this->graphic_area_y1+10), $x[$i], ($this->graphic_area_y2-1), $this->color['bg_lines']);
                 }
-                //$this->_imagestring($this->img, $this->size, ($x[$i] - (strlen($parameter)*7/2 )), ($this->graphic_area_y2+2), $parameter, $this->color['axis_values'], $alt);
                 $this->_imagestring($this->img, $this->size, $x[$i], ($this->graphic_area_y2+2), $parameter, $this->color['axis_values'], $alt);
 
                 $x[$i+1] = $x[$i] + 40;
@@ -529,7 +521,6 @@ class graph
 
                     for ($i = $this->h3d; $i >= 0; $i--)
                     {
-                        //imagearc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color]);
                         if ($size >= 1)
                         	imagefilledarc($this->img, $center_x, ($center_y+$i), $width, $height, $start, ($start+$size), $this->color[$color], IMG_ARC_NOFILL);
                     }
@@ -841,9 +832,7 @@ class graph
         {
             // Office
             case 1:
-                //$this->color['title']       = imagecolorallocate($this->img,  50,  50,  50);
                 $this->color['title']       = imagecolorallocate($this->img,  40,  70,  130);
-                //$this->color['background']  = imagecolorallocate($this->img, 238, 255, 238);
                 $this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
                 $this->color['axis_values'] = imagecolorallocate($this->img,  50,  50,  50);
                 $this->color['axis_line']   = imagecolorallocate($this->img, 100, 100, 100);
@@ -925,7 +914,6 @@ class graph
             // Spring
             case 3:
                 $this->color['title']       = imagecolorallocate($this->img, 250,  50,  50);
-                //$this->color['background']  = imagecolorallocate($this->img, 250, 250, 220);
                 $this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
                 $this->color['axis_values'] = imagecolorallocate($this->img,  50, 150,  50);
                 $this->color['axis_line']   = imagecolorallocate($this->img,  50, 100,  50);
@@ -976,7 +964,7 @@ class graph
 				$string = mb_convert_encoding($string, 'UTF-8', $this->encoding);
 		}
 		
-		// New 2014-06-26 Joe Hunt for handling ev. RTL languages
+		// Handling ev. RTL languages
 		if ($alt)
 		{
 			if ($this->encoding == 'UTF-8' && is_arabic($string))
@@ -1011,10 +999,13 @@ class graph
     		else
     			$size = 12;
     		$y += $size + 3;	
-    		//if ($alt)
-    		//	$angle = -15;
-    		//else
-   				$angle = 0;
+			$angle = 0;
+
+			if ($this->encoding == 'UTF-8' && is_arabic($string))
+			{
+				$size += 2;
+				$string = str_replace(" ", "  ", $string);
+			}	
    			
    			imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
     	}
@@ -1074,7 +1065,9 @@ function utf8_chr($uni)
 	return $r;
 }
 
-global $p_chars;
+///
+function arabic($str,$z="",$method='normal')
+{
 $p_chars = array (
     utf8_chr(0x0622) => array (utf8_chr(0xfe82), utf8_chr(0xfe82), utf8_chr(0x0622)),
     utf8_chr(0x0627) => array (utf8_chr(0xfe8e), utf8_chr(0xfe8e), utf8_chr(0x0627)),
@@ -1117,29 +1110,22 @@ $p_chars = array (
     utf8_chr(0x0629) => array (utf8_chr(0xfe94), utf8_chr(0xfe98), utf8_chr(0xfe97))
 );
 
-global $nastaligh;
 $nastaligh = array (
     utf8_chr(0x0647) => array (utf8_chr(0xfbab), utf8_chr(0xfbad), utf8_chr(0xfbac))
 );
-global $normal;
+
 $normal = array (
     utf8_chr(0x0647) => array (utf8_chr(0xfeea), utf8_chr(0xfeec), utf8_chr(0xfeeb))
 );
 
-global $mp_chars;
 $mp_chars = array (utf8_chr(0x0622), utf8_chr(0x0627), utf8_chr(0x062f), utf8_chr(0x0630), utf8_chr(0x0631), utf8_chr(0x0632), 
 	utf8_chr(0x0698), utf8_chr(0x0648), utf8_chr(0x0623), utf8_chr(0x0625), utf8_chr(0x0624));
 
-global $ignorelist;
 $ignorelist = array (utf8_chr(0x0000), utf8_chr(0x064c), utf8_chr(0x064d), utf8_chr(0x064b), utf8_chr(0x064f), utf8_chr(0x0650), 
 	utf8_chr(0x064e), utf8_chr(0x0651), utf8_chr(0x0653), utf8_chr(0x0670), utf8_chr(0x0654), utf8_chr(0xfe76), utf8_chr(0xfe7a), 
 	utf8_chr(0xfe78), utf8_chr(0xfe7c), utf8_chr(0xfe7e), utf8_chr(0xfe74), utf8_chr(0xfe70), utf8_chr(0xfc5e), utf8_chr(0xfc5f), 
 	utf8_chr(0xfc60), utf8_chr(0xfc61), utf8_chr(0xfc62), utf8_chr(0xfc63));
 
-///
-function arabic($str,$z="",$method='normal')
-{
-	global $p_chars,$mp_chars, $ignorelist,$nastaligh,$normal;
 	$str_back = $output = $e_output = $str_next = $str1 = $num = "";
 	if ($method == 'nastaligh')
 		$p_chars = array_merge($p_chars, $nastaligh);
@@ -1304,4 +1290,3 @@ function arabic($str,$z="",$method='normal')
 	return  $output;
 }
 
-?>

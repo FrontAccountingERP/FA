@@ -179,7 +179,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 				}
 				if (el.type )
 				  if(
-				  ((el.type == 'radio' || el.type == 'checkbox') && el.checked == false)
+				  (el.type == 'radio' && el.checked == false)
 				  || (el.type == 'submit' && (!submitObj || el.name!=submitObj.name)))
 					continue;
 				if (el.disabled && el.disabled == true)
@@ -202,7 +202,11 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 						q[name] = el;
 					else
 					{
-						q[name] = el.value;
+						if (el.type == 'checkbox') {
+							q[name] = (el.checked == true);
+						} else {
+							q[name] = el.value;
+						}
 					}
 				}
 			}

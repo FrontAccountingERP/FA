@@ -29,11 +29,9 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 print_sales_orders();
 
-$print_as_quote = 0;
-
 function print_sales_orders()
 {
-	global $path_to_root, $print_as_quote, $no_zero_lines_amount;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -55,12 +53,13 @@ function print_sales_orders()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments);
+	$params = array('comments' => $comments, 'print_quote' => $print_as_quote);
 
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
 	{
+
 		if ($print_as_quote == 0)
 			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
 		else
@@ -79,6 +78,11 @@ function print_sales_orders()
 		$params['bankaccount'] = $baccount['id'];
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
+			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+		$rep->SetHeaderType('Header2');
+		$rep->currency = $cur;
+		$rep->Font();
+		if ($print_as_quote == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
 			if ($print_as_quote == 1)
@@ -94,13 +98,13 @@ function print_sales_orders()
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESORDER);
@@ -125,16 +129,15 @@ function print_sales_orders()
 			$rep->TextColLines(1, 2, $myrow2['description'], -2);
 			$newrow = $rep->row;
 			$rep->row = $oldrow;
-			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !isset($no_zero_lines_amount) || $no_zero_lines_amount == 0)
+			if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
 			{
 				$rep->TextCol(2, 3,	$DisplayQty, -2);
 				$rep->TextCol(3, 4,	$myrow2['units'], -2);
 				$rep->TextCol(4, 5,	$DisplayPrice, -2);
 				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 				$rep->TextCol(6, 7,	$DisplayNet, -2);
-			}	
+			}
 			$rep->row = $newrow;
-			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();
 		}
@@ -157,7 +160,7 @@ function print_sales_orders()
 			$rep->TextCol(3, 6, _("Shipping"), -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
-		}
+		}	
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		if ($myrow['tax_included'] == 0) {
 			$rep->TextCol(3, 6, _("TOTAL ORDER EX VAT"), - 2);
@@ -178,7 +181,7 @@ function print_sales_orders()
 
 			if ($myrow['tax_included'])
 			{
-				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
 				{
 					if ($first)
 					{
@@ -224,4 +227,3 @@ function print_sales_orders()
 		$rep->End();
 }
 
-?>

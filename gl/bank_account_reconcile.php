@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* Author Rob Mallon */
 $page_security = 'SA_RECONCILE';
 $path_to_root = "..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -23,9 +22,9 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 add_js_file('reconcile.js');
@@ -86,20 +85,18 @@ function fmt_credit($row)
 	return $value>0 ? price_format($value) : '';
 }
 
-function fmt_person($row)
+function fmt_person($trans)
 {
-	return payment_person_name($row["person_type_id"],$row["person_id"]);
+	return get_counterparty_name($trans["type"], $trans["trans_no"]);
 }
 
-$update_pager = false;
 function update_data()
 {
-	global $Ajax, $update_pager;
+	global $Ajax;
 	
 	unset($_POST["beg_balance"]);
 	unset($_POST["end_balance"]);
 	$Ajax->activate('summary');
-	$update_pager = true;
 }
 //---------------------------------------------------------------------------------------------
 // Update db record if respective checkbox value has changed.
@@ -223,7 +220,7 @@ echo "<hr>";
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+$sql = get_sql_for_bank_account_reconcile(get_post('bank_account'), get_post('reconcile_date'));
 
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
@@ -254,4 +251,3 @@ end_form();
 
 end_page();
 
-?>

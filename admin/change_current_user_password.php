@@ -64,7 +64,7 @@ if (isset($_POST['UPDATE_ITEM']) && check_csrf_token())
 
 	if (can_process())
 	{
-		if ($allow_demo_mode) {
+		if ($SysPrefs->allow_demo_mode) {
 		    display_warning(_("Password cannot be changed in demo mode."));
 		} else {
 			update_user_password($_SESSION["wa_current_user"]->user, 
@@ -99,4 +99,3 @@ end_table(1);
 submit_center( 'UPDATE_ITEM', _('Change password'), true, '',  'default');
 end_form();
 end_page();
-?>

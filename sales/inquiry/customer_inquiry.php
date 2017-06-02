@@ -18,15 +18,12 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
-if (!@$_GET['popup'])
-{
-	$js = "";
-	if ($use_popup_windows)
-		$js .= get_js_open_window(900, 500);
-	if ($use_date_picker)
-		$js .= get_js_date_picker();
-	page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
-}
+$js = "";
+if ($SysPrefs->use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+if (user_use_date_picker())
+	$js .= get_js_date_picker();
+page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
 
 if (isset($_GET['customer_id']))
 {
@@ -35,8 +32,7 @@ if (isset($_GET['customer_id']))
 
 //------------------------------------------------------------------------------------------------
 
-if (!@$_GET['popup'])
-	start_form();
+start_form();
 
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
@@ -44,10 +40,10 @@ if (!isset($_POST['customer_id']))
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 
-if (!@$_GET['popup'])
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, !@$_GET['popup']);
+if (!$page_nested)
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, true);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'TransToDate', '', null);
 
 if (!isset($_POST['filterType']))
@@ -142,7 +138,7 @@ function gl_view($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -151,14 +147,17 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
 
+
 function credit_link($row)
 {
-	if (@$_GET['popup'])
+	global $page_nested;
+
+	if ($page_nested)
 		return '';
 	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
 		pager_link(_("Credit This") ,
@@ -167,29 +166,14 @@ function credit_link($row)
 
 function edit_link($row)
 {
-	if (@$_GET['popup'] || get_voided_entry($row['type'], $row["trans_no"]) || is_closed_trans($row['type'], $row["trans_no"]))
-		return '';
+	global $page_nested;
 
 	$str = '';
-	switch($row['type']) {
-		case ST_SALESINVOICE:
-			$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
-		break;
-		case ST_CUSTCREDIT:
-			if ($row['order_']==0) // free-hand credit note
-			    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
-			else	// credit invoice
-			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
-		break;
-		case ST_CUSTDELIVERY:
-   			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
-		break;
-		case ST_CUSTPAYMENT:
-   			$str = "/sales/customer_payments.php?trans_no=".$row['trans_no'];
-		break;
-	}
+	if ($page_nested)
+		return '';
 
-	return $str ? pager_link(_('Edit'), $str, ICON_EDIT) : '';
+	return $row['type'] == ST_CUSTCREDIT && $row['order_'] ? '' : 	// allow  only free hand credit notes edition
+			trans_editor_link($row['type'], $row['trans_no']);
 }
 
 function prt_link($row)
@@ -198,7 +182,7 @@ function prt_link($row)
 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
   	elseif ($row['type'] == ST_BANKPAYMENT) // bank payment printout not defined yet.
 		return '';
- 	else	
+ 	else
  		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
@@ -208,7 +192,8 @@ function check_overdue($row)
 		&& floatcmp($row["TotalAmount"], $row["Allocated"]) != 0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_customer_inquiry();
+$sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransToDate'),
+	get_post('customer_id'), get_post('filterType'));
 
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");
@@ -247,9 +232,5 @@ $table->width = "85%";
 
 display_db_pager($table);
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}
-?>
+end_form();
+end_page();

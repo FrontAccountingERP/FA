@@ -33,9 +33,8 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
 	else
 		$ret_tax_array = get_tax_group_items_as_array($tax_group);
 	
-	//print_r($ret_tax_array);
-
 	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
+
 	// if no exemptions or taxgroup is empty, then no included/excluded taxes
 	if ($tax_array == null)
 		return $price;
@@ -142,23 +141,38 @@ function get_taxes_for_item($stock_id, $tax_group_items_array)
 //-----------------------------------------------------------------------------------
 // return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value) 
 
-function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null)
+function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null, $tax_algorithm = null)
 {
+	if (!$tax_algorithm)
+		$tax_algorithm = get_company_pref('tax_algorithm');
 	// first create and set an array with all the tax types of the tax group
 	if($tax_items_array!=null)
-	  $ret_tax_array = $tax_items_array;
+	  	$ret_tax_array = $tax_items_array;
 	else
-	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
+	  	$ret_tax_array = get_tax_group_items_as_array($tax_group);
 
+	$dec = user_price_dec();
+
+	$fully_exempt = true;
 	foreach($ret_tax_array as $k=>$t)
+	{
+		if ($t['rate'] !== null)
+			$fully_exempt = false;
 		$ret_tax_array[$k]['Net'] = 0;
+	}
 
+	$ret_tax_array['exempt'] = array('Value'=>0, 'Net'=>0, 'rate' => null, 'tax_type_id' => '');
 	$dec = user_price_dec();
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
 	{
 		$item_taxes = get_taxes_for_item($items[$i], $ret_tax_array);
-		if ($item_taxes != null) 
+		if ($item_taxes == null || $fully_exempt) 
+		{
+			  $ret_tax_array['exempt']['Value'] += round2(0, $dec);
+			  $ret_tax_array['exempt']['Net'] += $prices[$i];
+		}
+		else
 		{
 			$tax_multiplier = 0;
 			foreach ($item_taxes as $taxitem) 
@@ -170,21 +184,20 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 				if ($item_tax['rate'] !== null) {
 					$index = $item_tax['tax_type_id'];
 					if ($tax_included == 1) {
-					  $ret_tax_array[$index]['Value'] += round2($prices[$i]*$item_tax['rate']/(100+$tax_multiplier), $dec);
-					  $ret_tax_array[$index]['Net'] += round2($prices[$i]*100/(100+$tax_multiplier), $dec);
+					  	$ret_tax_array[$index]['Value'] += round2($prices[$i]*$item_tax['rate']/(100+$tax_multiplier), $dec);
+					  	$ret_tax_array[$index]['Net'] += round2($prices[$i]*100/(100+$tax_multiplier), $dec);
 					} else {
-					  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
-					  $ret_tax_array[$index]['Net'] += $prices[$i];
+					  	$ret_tax_array[$index]['Value'] += round2($prices[$i] * $item_tax['rate'] / 100, $dec);
+					  	$ret_tax_array[$index]['Net'] += $prices[$i];
 					}
 				}
 			}
 		}
 	}
-
 	// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
 	if ($shipping_cost != 0) 
 	{
-		$item_taxes = get_shipping_tax_as_array();
+		$item_taxes = get_shipping_tax_as_array($tax_group);
 		if ($item_taxes != null) 
 		{
 			if ($tax_included == 1)
@@ -203,20 +216,25 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if ($item_tax['rate'] !== null && $ret_tax_array[$index]['rate'] !== null) {
-					  if($tax_included==1) {
-					    $ret_tax_array[$index]['Value'] += round2($shipping_cost*$item_tax['rate']/(100+$tax_rate), $dec);
-					    $ret_tax_array[$index]['Net'] += $shipping_net;
-					  } else {
-						$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
-					    $ret_tax_array[$index]['Net'] += $shipping_cost;
-					  }
+					if($tax_included==1) {
+					   	$ret_tax_array[$index]['Value'] += round2($shipping_cost*$item_tax['rate']/(100+$tax_rate), $dec);
+					   	$ret_tax_array[$index]['Net'] += $shipping_net;
+					} else {
+						$ret_tax_array[$index]['Value'] += round2($shipping_cost * $item_tax['rate'] / 100, $dec);
+					   	$ret_tax_array[$index]['Net'] += $shipping_cost;
+					}
 				}
 			}
 		}
 	}
-	//print_r($ret_tax_array);
+
+	if ($tax_algorithm == TCA_TOTALS ) {
+		// update taxes with 
+		foreach($ret_tax_array as $index => $item_tax) {
+			$ret_tax_array[$index]['Value'] = round2($item_tax['Net'] * $item_tax['rate'] / 100, $dec);
+		}
+	}
 
 	return $ret_tax_array;
 }
 
-?>

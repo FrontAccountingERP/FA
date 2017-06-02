@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+//------------------- update average material cost ---------------------------------------------- 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
 	// probably this function should be optimized
@@ -33,32 +33,21 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	}	
 	else
 		$price_in_home_currency = $price;
-	
+
 	$price_in_home_currency_ = $price_in_home_currency;
 
-	//Handle if inventory will become negative
-    //8-OCT-2011 : Skip negative inventory adjustment for case of adjust_only
+	// Handle if inventory will become negative
+    // Skip negative inventory adjustment for case of adjust_only
     if (is_inventory_item($stock_id) && !$adj_only) 
         handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
 	
-	$sql = "SELECT mb_flag, material_cost, labour_cost, overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+	$sql = "SELECT mb_flag, material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
 	
-	//Price adjustment for manufactured item
-	if (!$adj_only && $myrow['mb_flag'] == 'M') 
-	{
-		$standard_cost = get_standard_cost($stock_id);
-		//reduce overhead_cost and labour_cost from price as those will remain as is
-		$price_in_home_currency = $price_in_home_currency - $myrow['labour_cost'] - $myrow['overhead_cost'];
-	}
-	
-	if ($adj_only)
-		$exclude = ST_CUSTDELIVERY;
-	else
-		$exclude = 0;
 	$cost_adjust = false;
+
 	$qoh = get_qoh_on_date($stock_id);
 
 	if ($adj_only)
@@ -78,7 +67,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}
 
-	if ($cost_adjust) // new 2010-02-10 //Chaitanya : Material_cost replaced with price
+	if ($cost_adjust) // Material_cost replaced with price
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
@@ -98,9 +87,16 @@ function add_grn(&$po)
 	begin_transaction();
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
-	add_new_exchange_rate(get_supplier_currency($po->supplier_id), $date_, $po->ex_rate);
+	if (!is_company_currency($po->curr_code))
+	{
+		if (!$po->ex_rate)
+			$po->ex_rate = get_date_exchange_rate($po->curr_code, $date_);
+		else
+			add_new_exchange_rate($po->curr_code, $date_, $po->ex_rate);
+	} else
+		$po->ex_rate = 1;
 
-	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
+	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_, $po->ex_rate);
 
     $clearing_act = get_company_pref('grn_clearing_act');
 	if ($clearing_act) {	// otherwise GRN clearing account is not used
@@ -112,25 +108,26 @@ function add_grn(&$po)
 		{
 			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
-			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
-			//------------------- update average material cost and clearing account ----- Joe Hunt Mar-03-2008
+			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL 
+			  and recorded in the stock movements for FIFO/LIFO stocks valuations*/
+			//------------------- update average material cost and clearing account --------------------------------
 			if (is_inventory_item($order_line->stock_id))
 			{
 				if ($clearing_act)
 					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-						$order_line->taxfree_charge_value($po), $po->supplier_id, '', 0, $order_line->stock_id);
-				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
+					    $order_line->taxfree_charge_value($po), $po->supplier_id, '', 0, $order_line->stock_id);
+ 				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->receive_qty, $date_);
-			}		
-			//----------------------------------------------------------------------------------------------------------------
+			}
+			//------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
 				/*This must be the first receipt of goods against this line */
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
-			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
+			   	$order_line->standard_cost = get_unit_cost($order_line->stock_id);
 			}
-			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			// Update the purchase data table
 			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
 				$order_line->item_description); 
 
@@ -144,8 +141,8 @@ function add_grn(&$po)
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
-				$order_line->receive_qty, $order_line->standard_cost,
-            		$po->supplier_id, 1, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);
+			 	$order_line->receive_qty, $order_line->standard_cost,		
+			 	$po->supplier_id, 1, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
@@ -167,13 +164,13 @@ function add_grn(&$po)
 
 //----------------------------------------------------------------------------------------
 
-function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
+function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_, $rate)
 {
 	$date = date2sql($date_);
 
-	$sql = "INSERT INTO ".TB_PREF."grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
+	$sql = "INSERT INTO ".TB_PREF."grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code, rate)
 			VALUES (".db_escape($po_number).", ".db_escape($date).", "
-			.db_escape($supplier_id).", ".db_escape($reference).", ".db_escape($location).")";
+			.db_escape($supplier_id).", ".db_escape($reference).", ".db_escape($location).", ".db_escape($rate).")";
 
 	db_query($sql, "A grn batch record could not be inserted.");
 
@@ -191,7 +188,6 @@ function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $descri
         quantity_ordered=".db_escape($quantity).",
         act_price=".db_escape($price)."
         WHERE po_detail_item = ".db_escape($po_detail_item);
-
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
 	$sql = "INSERT INTO ".TB_PREF."grn_items (grn_batch_id, po_detail_item, item_code, description, qty_recd)
@@ -225,11 +221,13 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	$mcost = update_average_material_cost($supplier, $entered_grn->item_code,
 		$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
 
- 	$sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*
-    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items
-    	WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
-		AND ".TB_PREF."grn_items.id=".db_escape($entered_grn->id)."
-    	AND ".TB_PREF."grn_items.item_code=".db_escape($entered_grn->item_code);
+ 	$sql = "SELECT grn.*, item.*
+    	FROM ".TB_PREF."grn_batch grn,"
+    		.TB_PREF."grn_items item
+    	WHERE item.grn_batch_id=grn.id
+		AND item.id=".db_escape($entered_grn->id)."
+    	AND item.item_code=".db_escape($entered_grn->item_code);
+
 	$result = db_query($sql, "Could not retreive GRNS");
 	$myrow = db_fetch($result);
 
@@ -251,47 +249,56 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	db_query($sql);
 
     add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
-       	$entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
+       	$entered_grn->this_quantity_inv, $mcost, $entered_grn->chg_price);
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
 	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
-    $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, "
-    	.TB_PREF."purch_order_details.unit_price,"
-    	.TB_PREF."purch_order_details.act_price,"
-    	.TB_PREF."purch_order_details.quantity_ordered,"
-		.TB_PREF."purch_order_details.std_cost_unit, units
-    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, "
-    	.TB_PREF."purch_order_details, ".TB_PREF."stock_master";
-    if ($invoice_no != 0)
-    	$sql .= ", ".TB_PREF."supp_invoice_items";
-    $sql .= " WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
-		AND ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item";
-	if ($invoice_no != 0)
-		$sql .= " AND ".TB_PREF."supp_invoice_items.supp_trans_type=".ST_SUPPINVOICE." AND 
-			".TB_PREF."supp_invoice_items.supp_trans_no=$invoice_no AND
-			".TB_PREF."grn_items.id=".TB_PREF."supp_invoice_items.grn_item_id";
-	$sql .= " AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
+    $sql = "SELECT grn.*, grn_item.*,
+		grn_item.quantity_inv".($invoice_no ? "-invoice_item.quantity" : '')."  quantity_inv,
+    	po_item.unit_price,
+    	po_item.act_price,
+    	po_item.quantity_ordered,
+    	po_item.std_cost_unit, units
+    	FROM	".TB_PREF."grn_batch grn, "
+    			.TB_PREF."purch_order_details po_item, "
+    			.TB_PREF."stock_master stock_item,"
+	   			.TB_PREF."grn_items grn_item ";
+ 
+    if ($invoice_no != 0) {
+    	$sql .= " LEFT JOIN ".TB_PREF."supp_invoice_items invoice_item ON ";
 
-	if ($begin != "")
-		$sql .= " AND ".TB_PREF."grn_batch.delivery_date>='".date2sql($begin)."'";
-	if ($end != "")
-		$sql .= " AND ".TB_PREF."grn_batch.delivery_date<='".date2sql($end)."'";
-	if ($grn_batch_id != 0)
-		$sql .= " AND ".TB_PREF."grn_batch.id=".db_escape($grn_batch_id)
-			." AND ".TB_PREF."grn_items.grn_batch_id=".db_escape($grn_batch_id);
-
-	if ($is_invoiced_only)
-		$sql .= " AND ".TB_PREF."grn_items.quantity_inv > 0";
+		$inv_cond = "invoice_item.supp_trans_type=".ST_SUPPINVOICE." AND invoice_item.supp_trans_no ";
+		if (is_array($invoice_no))
+			$inv_cond .= " IN (".implode(',' , $invoice_no) . ")";
+		else
+			$inv_cond .= " = $invoice_no";
+		$sql .= "($inv_cond) AND grn_item.id=invoice_item.grn_item_id";
+	}
+    $sql .= " WHERE grn_item.grn_batch_id=grn.id
+		AND grn_item.po_detail_item=po_item.po_detail_item";
 
 	if ($outstanding_only)
-    	$sql .= " AND ".TB_PREF."grn_items.qty_recd - ".TB_PREF."grn_items.quantity_inv > 0";
+    	$sql .= " AND (".($invoice_no ? "$inv_cond OR ":'')."grn_item.qty_recd - grn_item.quantity_inv > 0)";
+
+	$sql .= " AND stock_item.stock_id=grn_item.item_code ";
+
+	if ($begin != "")
+		$sql .= " AND grn.delivery_date>='".date2sql($begin)."'";
+	if ($end != "")
+		$sql .= " AND grn.delivery_date<='".date2sql($end)."'";
+	if ($grn_batch_id != 0)
+		$sql .= " AND grn.id=".db_escape($grn_batch_id)
+			." AND grn_item.grn_batch_id=".db_escape($grn_batch_id);
+
+	if ($is_invoiced_only)
+		$sql .= " AND grn_item.quantity_inv > 0";
 
 	if ($supplier_id != "")
-		$sql .= " AND ".TB_PREF."grn_batch.supplier_id =".db_escape($supplier_id);
+		$sql .= " AND grn.supplier_id =".db_escape($supplier_id);
 
-	$sql .= " ORDER BY ".TB_PREF."grn_batch.delivery_date, ".TB_PREF."grn_batch.id, ".TB_PREF."grn_items.id";
+	$sql .= " ORDER BY grn.delivery_date, grn.id, grn_item.id";
 
 	return db_query($sql, "Could not retreive GRNS");
 }
@@ -302,13 +309,14 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 
 function get_grn_item_detail($grn_item_no)
 {
-	$sql = "SELECT ".TB_PREF."grn_items.*, ".TB_PREF."purch_order_details.unit_price,
-    	".TB_PREF."grn_items.qty_recd - ".TB_PREF."grn_items.quantity_inv AS QtyOstdg,
-    	".TB_PREF."purch_order_details.std_cost_unit
-		FROM ".TB_PREF."grn_items, ".TB_PREF."purch_order_details, ".TB_PREF."stock_master
-		WHERE ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item
- 			AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code
-			AND ".TB_PREF."grn_items.id=".db_escape($grn_item_no);
+	$sql = "SELECT grn.*, po.unit_price, grn.qty_recd - grn.quantity_inv AS QtyOstdg,
+    		po.std_cost_unit
+		FROM ".TB_PREF."grn_items grn,"
+			.TB_PREF."purch_order_details po,"
+			.TB_PREF."stock_master item
+		WHERE grn.po_detail_item=po.po_detail_item
+ 			AND item.stock_id=grn.item_code
+			AND grn.id=".db_escape($grn_item_no);
 
 	$result = db_query($sql, "could not retreive grn item details");
 	return db_fetch($result);
@@ -326,7 +334,7 @@ function read_grn_items_to_order($grn_batch, &$order)
 	 	while ($myrow = db_fetch($result))
 	 	{
 	 		if ($myrow['qty_recd'] == 0 && $myrow['quantity_inv'] == 0)
-				continue; // 2011-01-18 Joe Hunt. We will not have empty credited rows.
+				continue; // We will not have empty credited rows.
 		 	if (is_null($myrow["units"]))
 		 	{
 				$units = "";
@@ -358,6 +366,7 @@ function read_grn($grn_batch, &$order)
 
 	$row = db_fetch($result);
 	$po_number = $row["purch_order_no"];
+	$order->ex_rate = $row["rate"];
 
 	$result = read_po_header($po_number, $order);
 
@@ -398,8 +407,10 @@ function exists_grn($grn_batch)
 
 function exists_grn_on_invoices($grn_batch)
 {
-	$sql = "SELECT ".TB_PREF."supp_invoice_items.id FROM ".TB_PREF."supp_invoice_items,".TB_PREF."grn_items
-		WHERE ".TB_PREF."supp_invoice_items.grn_item_id=".TB_PREF."grn_items.id
+	$sql = "SELECT inv.id
+		FROM ".TB_PREF."supp_invoice_items inv,"
+			.TB_PREF."grn_items grn
+		WHERE inv.grn_item_id=grn.id
 		AND quantity != 0
 		AND grn_batch_id=".db_escape($grn_batch);
 	$result = db_query($sql, "Cannot query GRNs");
@@ -455,4 +466,3 @@ function void_grn($grn_batch)
 
 //----------------------------------------------------------------------------------------------------------
 
-?>

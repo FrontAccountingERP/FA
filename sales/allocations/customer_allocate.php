@@ -20,7 +20,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
 add_js_file('allocate.js');
@@ -54,11 +54,12 @@ function edit_allocations_for_transaction($type, $trans_no)
     display_heading2(_("Date:") . " <b>" . $cart->date_ . "</b>");
    	display_heading2(_("Total:"). " <b>" . price_format($cart->bank_amount).' '.$cart->currency."</b>");
 
-	if ($cart->currency != $cart->person_curr)
+	if (floatcmp($cart->bank_amount, $cart->amount))
 	{
-	    $total = _("Total in clearing currency:") . " <b>" . price_format($cart->amount)."</b>"
-	    	. sprintf(" %s (%s %s/%s)", $cart->person_curr, exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
-    	display_heading2($total);
+	    $total = _("Amount ot be settled:") . " <b>" . price_format($cart->amount).' '.$cart->person_curr."</b>";
+		if ($cart->currency != $cart->person_curr)
+    		$total .= sprintf(" (%s %s/%s)",  exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
+	   	display_heading2($total);
 	}
 
     echo "<br>";
@@ -125,4 +126,3 @@ if (isset($_SESSION['alloc']))
 
 end_page();
 
-?>

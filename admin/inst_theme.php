@@ -12,46 +12,27 @@
 $page_security = 'SA_CREATEMODULES';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root."/includes/packages.inc");
 
-if ($use_popup_windows) {
+include_once($path_to_root."/includes/packages.inc");
+include_once($path_to_root . "/admin/db/maintenance_db.inc");
+include_once($path_to_root . "/includes/ui.inc");
+
+if ($SysPrefs->use_popup_windows) {
 	$js = get_js_open_window(900, 500);
 }
 page(_($help_context = "Install Themes"), false, false, '', $js);
 
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/admin/db/company_db.inc");
-include_once($path_to_root . "/admin/db/maintenance_db.inc");
-include_once($path_to_root . "/includes/ui.inc");
-
 //---------------------------------------------------------------------------------------------
-// If theme is used in customer record set to default
-//
-function clean_user_themes($id)
-{
-	global $db_connections, $db, $installed_extensions;
 
-	$theme = $installed_extensions[$id]['package'];
-	$comp = user_company();
-
-	foreach ($db_connections as $n => $conn) {
-		$db = $_SESSION["wa_current_user"]->set_db_connection($n);
-		$sql = "UPDATE {$conn['tbpref']}users SET theme='default' WHERE theme='$theme'";
-		if (!db_query($sql, 'Cannot update user theme settings'))
-			return false;
-	}
-	$db = $_SESSION["wa_current_user"]->set_db_connection($comp);
-
-	$_SESSION['wa_current_user']->prefs->theme = 'default';
-	return true;
-}
-
-if (($id = find_submit('Delete', false)) && clean_user_themes($id))
+if (($id = find_submit('Delete', false)) && isset($installed_extensions[$id])
+	&& clean_user_themes($installed_extensions[$id]['package']))
 {
 	$extensions = get_company_extensions();
 	$theme = $extensions[$id]['package'];
+	$path = $extensions[$id]['path'];
+
 	if (uninstall_package($theme)) {
-		$dirname = $path_to_root.'/themes/'.$theme;
+		$dirname = $path_to_root.'/'.$path;
 		flush_dir($dirname, true);
 		rmdir($dirname);
 		unset($extensions[$id]);
@@ -72,49 +53,52 @@ start_form(true);
 	start_table(TABLESTYLE);
 
 	$th = array(_("Theme"),  _("Installed"), _("Available"), "", "");
-	table_header($th);
-
 	$k = 0;
+
 	$mods = get_themes_list();
 
-	foreach($mods as $pkg_name => $ext)
+	if (!$mods)
+		display_note(_("No optional theme is currently available."));
+	else
 	{
-		$available = @$ext['available'];
-		$installed = @$ext['version'];
-		$id = @$ext['local_id'];
+		table_header($th);
 
-		alt_table_row_color($k);
+		foreach($mods as $pkg_name => $ext)
+		{
+			$available = @$ext['available'];
+			$installed = @$ext['version'];
+			$id = @$ext['local_id'];
 
-//		label_cell(is_array($ext['Descr']) ? $ext['Descr'][0] : $ext['Descr']);
-		label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
+			alt_table_row_color($k);
 
-		label_cell($id === null ? _("None") :
-			($available && $installed ? $installed : _("Unknown")));
-		label_cell($available ? $available : _("None"));
+			label_cell($available ? get_package_view_str($pkg_name, $ext['name']) : $ext['name']);
 
-		if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
-			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
-				_('Upload and install latest extension package'), ICON_DOWN);
-		else
-			label_cell('');
+			label_cell($id === null ? _("None") :
+				($available && $installed ? $installed : _("Unknown")));
+			label_cell($available ? $available : _("None"));
 
-		if ($id !== null) {
-			delete_button_cell('Delete'.$id, _('Delete'));
-			submit_js_confirm('Delete'.$id, 
-				sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
-					$ext['name']));
-		} else
-			label_cell('');
+			if ($available && check_pkg_upgrade($installed, $available)) // outdated or not installed theme in repo
+				button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+					_('Upload and install latest extension package'), ICON_DOWN, 'process');
+			else
+				label_cell('');
 
-		end_row();
+			if ($id !== null) {
+				delete_button_cell('Delete'.$id, _('Delete'));
+				submit_js_confirm('Delete'.$id, 
+					sprintf(_("You are about to remove package \'%s\'.\nDo you want to continue ?"), 
+						$ext['name']));
+			} else
+				label_cell('');
+
+			end_row();
+		}
+
+		end_table(1);
 	}
-
-	end_table(1);
-
 	div_end();
 
 //---------------------------------------------------------------------------------------------
 end_form();
 
 end_page();
-?>

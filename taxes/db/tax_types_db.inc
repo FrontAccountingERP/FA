@@ -31,40 +31,42 @@ function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $
 
 function get_all_tax_types($all=false)
 {
-	$sql = "SELECT ".TB_PREF."tax_types.*,
-		Chart1.account_name AS SalesAccountName,
-		Chart2.account_name AS PurchasingAccountName
-		FROM ".TB_PREF."tax_types, ".TB_PREF."chart_master AS Chart1,
-		".TB_PREF."chart_master AS Chart2
-		WHERE ".TB_PREF."tax_types.sales_gl_code = Chart1.account_code
-		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code";
+	$sql = "SELECT tax_type.*,
+				Chart1.account_name AS SalesAccountName,
+				Chart2.account_name AS PurchasingAccountName
+			FROM ".TB_PREF."tax_types tax_type,"
+				.TB_PREF."chart_master AS Chart1,"
+				.TB_PREF."chart_master AS Chart2
+			WHERE tax_type.sales_gl_code = Chart1.account_code
+				AND tax_type.purchasing_gl_code = Chart2.account_code";
 
-	if (!$all) $sql .= " AND !".TB_PREF."tax_types.inactive";
+	if (!$all) $sql .= " AND !tax_type.inactive";
 	return db_query($sql, "could not get all tax types");
 }
 
 function get_all_tax_types_simple()
 {
-	$sql = "SELECT * FROM ".TB_PREF."tax_types";
+	$sql = "SELECT * FROM ".TB_PREF."tax_types WHERE !inactive";
 
 	return db_query($sql, "could not get all tax types");
 }
 
 function get_tax_type($type_id)
 {
-	$sql = "SELECT ".TB_PREF."tax_types.*,
-		Chart1.account_name AS SalesAccountName,
-		Chart2.account_name AS PurchasingAccountName
-		FROM ".TB_PREF."tax_types, ".TB_PREF."chart_master AS Chart1,
-		".TB_PREF."chart_master AS Chart2
-		WHERE ".TB_PREF."tax_types.sales_gl_code = Chart1.account_code
-		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code AND id=".db_escape($type_id);
+	$sql = "SELECT tax_type.*,
+				Chart1.account_name AS SalesAccountName,
+				Chart2.account_name AS PurchasingAccountName
+			FROM ".TB_PREF."tax_types tax_type,"
+				.TB_PREF."chart_master AS Chart1,"
+				.TB_PREF."chart_master AS Chart2
+			WHERE tax_type.sales_gl_code = Chart1.account_code
+		AND tax_type.purchasing_gl_code = Chart2.account_code AND id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get tax type");
 	return db_fetch($result);
 }
 
-function get_tax_type_default_rate($type_id)
+function get_tax_type_rate($type_id)
 {
 	$sql = "SELECT rate FROM ".TB_PREF."tax_types WHERE id=".db_escape($type_id);
 
@@ -101,9 +103,9 @@ function is_tax_gl_unique($gl_code, $gl_code2=-1, $selected_id=-1) {
 	$purch_code = $gl_code2== -1 ? $gl_code : $gl_code2;
 
 	$sql = "SELECT count(*) FROM "
-		.TB_PREF."tax_types	
+			.TB_PREF."tax_types	
 		WHERE (sales_gl_code=" .db_escape($gl_code)
-		." OR purchasing_gl_code=" .db_escape($purch_code). ")";
+			." OR purchasing_gl_code=" .db_escape($purch_code). ")";
 
 	if ($selected_id != -1)
 		$sql .= " AND id!=".db_escape($selected_id);
@@ -127,4 +129,3 @@ function is_tax_account($account_code)
 }
 
 
-?>

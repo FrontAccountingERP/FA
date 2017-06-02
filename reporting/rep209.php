@@ -33,24 +33,25 @@ print_po();
 //----------------------------------------------------------------------------------------------------
 function get_po($order_no)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  "
-   		.TB_PREF."suppliers.supp_account_no,".TB_PREF."suppliers.tax_included,".TB_PREF."suppliers.gst_no AS tax_id,
-   		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
-   		".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact, ".TB_PREF."suppliers.tax_group_id
-		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
-		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
-		AND ".TB_PREF."locations.loc_code = into_stock_location
-		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
+   	$sql = "SELECT po.*, supplier.supp_name, supplier.supp_account_no,supplier.tax_included,
+   		supplier.gst_no AS tax_id,
+   		supplier.curr_code, supplier.payment_terms, loc.location_name,
+   		supplier.address, supplier.contact, supplier.tax_group_id
+		FROM ".TB_PREF."purch_orders po,"
+			.TB_PREF."suppliers supplier,"
+			.TB_PREF."locations loc
+		WHERE po.supplier_id = supplier.supplier_id
+		AND loc.loc_code = into_stock_location
+		AND po.order_no = ".db_escape($order_no);
    	$result = db_query($sql, "The order cannot be retrieved");
     return db_fetch($result);
 }
 
 function get_po_details($order_no)
 {
-	$sql = "SELECT ".TB_PREF."purch_order_details.*, units
-		FROM ".TB_PREF."purch_order_details
-		LEFT JOIN ".TB_PREF."stock_master
-		ON ".TB_PREF."purch_order_details.item_code=".TB_PREF."stock_master.stock_id
+	$sql = "SELECT poline.*, units
+		FROM ".TB_PREF."purch_order_details poline
+			LEFT JOIN ".TB_PREF."stock_master item ON poline.item_code=item.stock_id
 		WHERE order_no =".db_escape($order_no)." ";
 	$sql .= " ORDER BY po_detail_item";
 	return db_query($sql, "Retreive order Line Items");
@@ -58,7 +59,7 @@ function get_po_details($order_no)
 
 function print_po()
 {
-	global $path_to_root, $show_po_item_codes;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -103,13 +104,13 @@ function print_po()
 			$rep->title = _('PURCHASE ORDER');
 			$rep->filename = "PurchaseOrder" . $i . ".pdf";
 		}	
-		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_supplier_contacts($myrow['supplier_id'], 'order');
 		$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_PURCHORDER, $contacts);
+		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_po_details($i);
@@ -138,7 +139,7 @@ function print_po()
 			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
 			$DisplayNet = number_format2($Net,$dec);
-			if ($show_po_item_codes) {
+			if ($SysPrefs->show_po_item_codes()) {
 				$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
 				$rep->TextCol(1, 2,	$myrow2['description'], -2);
 			} else
@@ -167,7 +168,7 @@ function print_po()
 		$rep->NewLine();
 
 		$tax_items = get_tax_for_items($items, $prices, 0,
-		  $myrow['tax_group_id'], $myrow['tax_included'],  null);
+		  $myrow['tax_group_id'], $myrow['tax_included'],  null, TCA_LINES);
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{
@@ -175,11 +176,14 @@ function print_po()
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			$tax_type_name = $tax_item['tax_type_name'];
+			if ($SysPrefs->suppress_tax_rates() == 1)
+				$tax_type_name = $tax_item['tax_type_name'];
+			else
+				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
 
 			if ($myrow['tax_included'])
 			{
-				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+				if ($SysPrefs->alternative_tax_include_on_docs() == 1)
 				{
 					if ($first)
 					{
@@ -228,4 +232,3 @@ function print_po()
 		$rep->End();
 }
 
-?>

@@ -12,16 +12,14 @@
 //----------------------------------------------------------------------------------------
 function get_demand_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - "
-		.TB_PREF."sales_order_details.qty_sent) AS QtyDemand
-			FROM ".TB_PREF."sales_order_details,
-					".TB_PREF."sales_orders
-				WHERE ".TB_PREF."sales_order_details.order_no="
-				.TB_PREF."sales_orders.order_no AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." AND 
-				".TB_PREF."sales_orders.trans_type=".TB_PREF."sales_order_details.trans_type AND ";
+	$sql = "SELECT SUM(line.quantity - line.qty_sent) AS QtyDemand
+			FROM ".TB_PREF."sales_order_details line,
+				".TB_PREF."sales_orders sorder
+				WHERE line.order_no=sorder.order_no AND sorder.trans_type=".ST_SALESORDER
+				." AND sorder.trans_type=line.trans_type"
+				." AND line.stk_code = ".db_escape($stock_id);
 	if ($location != "")
-		$sql .= TB_PREF."sales_orders.from_stk_loc =".db_escape($location)." AND ";
-	$sql .= TB_PREF."sales_order_details.stk_code = ".db_escape($stock_id);
+		$sql .= " AND sorder.from_stk_loc =".db_escape($location);
 
     $result = db_query($sql,"No transactions were returned");
 	$row = db_fetch($result);
@@ -35,35 +33,44 @@ $qoh_stock = NULL;
 
 function load_stock_levels($location)
 {
-	global $qoh_stock;
 	$date = date2sql(Today());
 
-	$sql = "SELECT stock_id, SUM(qty) FROM ".TB_PREF."stock_moves WHERE tran_date <= '$date'";
-	if ($location != '') $sql .= " AND loc_code = ".db_escape($location);
+	$qoh_stock = array();
+	$sql = "SELECT stock_id, SUM(qty)
+		FROM ".TB_PREF."stock_moves
+		WHERE tran_date <= '$date'";
+	if ($location != '')
+		$sql .= " AND loc_code = ".db_escape($location);
 	$sql .= " GROUP BY stock_id";
+
 	$result = db_query($sql, "QOH calculation failed");
-	while ($row = db_fetch($result)) {
+	while ($row = db_fetch($result))
 		$qoh_stock[$row[0]] = $row[1];
-	}
+
+	return $qoh_stock;
 }
 
-// recursion fixed by Tom Moulton. Max 10 recursion levels.
+// recursion fixed. Max 10 recursion levels.
 function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level=0) 
 {
 	global $bom_list, $qoh_stock;
+
 	$demand = 0.0;
 	if ($level > 10) {
 		display_warning("BOM Too many Manufacturing levels deep $level");
 		return $demand;
 	}
 	// Load all stock levels (stock moves) into $qoh_stock
-	if ($qoh_stock == NULL) {
-		$qoh_stock = array();
-		load_stock_levels($location);
-	}
-	if (empty($qoh_stock[$stock_id])) $stock_qty = 0;
-	else $stock_qty = $qoh_stock[$stock_id];
-	if ($qty <= $stock_qty) return $demand;
+	if ($qoh_stock == NULL)
+		$qoh_stock = load_stock_levels($location);
+
+	if (empty($qoh_stock[$stock_id]))
+		$stock_qty = 0;
+	else
+		$stock_qty = $qoh_stock[$stock_id];
+
+	if ($qty <= $stock_qty)
+		return $demand;
 	$bom = @$bom_list[$stock_id];
 	if ($bom == NULL) {
 		$sql = "SELECT parent, component, quantity FROM "
@@ -78,7 +85,7 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 		}
 		db_free_result($result);
 		$bom_list[$stock_id] = $bom;
-	}	
+	}
 	$len = count($bom);
 	$i = 0;
 	while ($i < $len) {
@@ -97,20 +104,19 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 function get_demand_asm_qty($stock_id, $location) 
 {
 	$demand_qty = 0.0;
-	$sql = "SELECT ".TB_PREF."sales_order_details.stk_code, SUM(".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)
-				   AS Demmand
-				   FROM ".TB_PREF."sales_order_details,
-						".TB_PREF."sales_orders,
-						".TB_PREF."stock_master
-				   WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND 
-				   	".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." AND 
-					".TB_PREF."sales_orders.trans_type=".TB_PREF."sales_order_details.trans_type AND ";
+	$sql = "SELECT line.stk_code, SUM(line.quantity-line.qty_sent) AS Demmand
+		   FROM ".TB_PREF."sales_order_details line,
+				".TB_PREF."sales_orders sorder,
+				".TB_PREF."stock_master item
+		   WHERE sorder.order_no = line.order_no
+		   		AND sorder.trans_type=".ST_SALESORDER
+		   	 ." AND sorder.trans_type=line.trans_type
+				AND line.quantity-line.qty_sent > 0
+				AND item.stock_id=line.stk_code
+				AND item.mb_flag='M'";
 	if ($location != "")
-		$sql .= TB_PREF."sales_orders.from_stk_loc =".db_escape($location)." AND ";
-	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
-				   ".TB_PREF."stock_master.stock_id=".TB_PREF."sales_order_details.stk_code AND
-				   ".TB_PREF."stock_master.mb_flag='M'
-				   GROUP BY ".TB_PREF."sales_order_details.stk_code";
+		$sql .= " AND sorder.from_stk_loc =".db_escape($location);
+	$sql .= " GROUP BY line.stk_code";
     $result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {
 		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
@@ -120,14 +126,13 @@ function get_demand_asm_qty($stock_id, $location)
 
 function get_on_porder_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM(".TB_PREF."purch_order_details.quantity_ordered - "
-		.TB_PREF."purch_order_details.quantity_received) AS qoo
-		FROM ".TB_PREF."purch_order_details INNER JOIN "
-			.TB_PREF."purch_orders ON ".TB_PREF."purch_order_details.order_no=".TB_PREF."purch_orders.order_no
-		WHERE ".TB_PREF."purch_order_details.item_code=".db_escape($stock_id)." ";
+	$sql = "SELECT SUM(line.quantity_ordered - line.quantity_received) AS qoo
+		FROM ".TB_PREF."purch_order_details line 
+			INNER JOIN ".TB_PREF."purch_orders po ON line.order_no=po.order_no
+		WHERE line.item_code=".db_escape($stock_id);
 	if ($location != "")
-		$sql .= "AND ".TB_PREF."purch_orders.into_stock_location=".db_escape($location)." ";
-	$sql .= "AND ".TB_PREF."purch_order_details.item_code=".db_escape($stock_id);
+		$sql .= " AND po.into_stock_location=".db_escape($location);
+	$sql .= " AND line.item_code=".db_escape($stock_id);
 	$qoo_result = db_query($sql,"could not receive quantity on order for item");
 
 	if (db_num_rows($qoo_result) == 1)
@@ -144,14 +149,14 @@ function get_on_porder_qty($stock_id, $location)
 
 function get_on_worder_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued) * 
-		(".TB_PREF."wo_requirements.units_req-".TB_PREF."wo_requirements.units_issued)) AS qoo
-		FROM ".TB_PREF."wo_requirements INNER JOIN ".TB_PREF."workorders 
-			ON ".TB_PREF."wo_requirements.workorder_id=".TB_PREF."workorders.id
-		WHERE ".TB_PREF."wo_requirements.stock_id=".db_escape($stock_id)." ";
+	$sql = "SELECT SUM((wo.units_reqd-wo.units_issued) * (req.units_req-req.units_issued)) AS qoo
+		FROM ".TB_PREF."wo_requirements req
+			INNER JOIN ".TB_PREF."workorders wo	ON req.workorder_id=wo.id
+		WHERE req.stock_id=".db_escape($stock_id)
+			." AND wo.released=1";
 	if ($location != "")
-		$sql .= "AND ".TB_PREF."wo_requirements.loc_code=".db_escape($location)." ";
-	$sql .= "AND ".TB_PREF."workorders.released=1";
+		$sql .= " AND req.loc_code=".db_escape($location);
+
 	$qoo_result = db_query($sql,"could not receive quantity on order for item");
 	if (db_num_rows($qoo_result) == 1)
 	{
@@ -163,12 +168,14 @@ function get_on_worder_qty($stock_id, $location)
 	$flag = get_mb_flag($stock_id);
 	if ($flag == 'M')
 	{
-		$sql = "SELECT SUM((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued)) AS qoo
-			FROM ".TB_PREF."workorders 
-			WHERE ".TB_PREF."workorders.stock_id=".db_escape($stock_id)." ";
-		if ($location != "")	
-			$sql .= "AND ".TB_PREF."workorders.loc_code=".db_escape($location)." ";
-		$sql .= "AND ".TB_PREF."workorders.released=1";
+		$sql = "SELECT SUM((units_reqd-units_issued)) AS qoo
+			FROM ".TB_PREF."workorders
+			WHERE stock_id=".db_escape($stock_id)
+				." AND released=1";
+
+		if ($location != "")
+			$sql .= " AND loc_code=".db_escape($location);
+
 		$qoo_result = db_query($sql,"could not receive quantity on order for item");
 		if (db_num_rows($qoo_result) == 1)
 		{
@@ -177,19 +184,6 @@ function get_on_worder_qty($stock_id, $location)
 		}
 	}
 	return $qoo;
-}
-
-function get_mb_flag($stock_id)
-{
-	$sql = "SELECT mb_flag FROM ".TB_PREF."stock_master WHERE stock_id = "
-		.db_escape($stock_id);
-	$result = db_query($sql, "retreive mb_flag from item");
-	
-	if (db_num_rows($result) == 0)
-		return -1;
-
-	$myrow = db_fetch_row($result);
-	return $myrow[0];
 }
 
 //--------------------------------------------------------------------------------------
@@ -225,14 +219,18 @@ function delete_bom($selected_id)
 
 function get_bom($item)
 {
-	$sql = "SELECT ".TB_PREF."bom.*, ".TB_PREF."locations.location_name, ".TB_PREF."workcentres.name AS WorkCentreDescription, 
-    	".TB_PREF."stock_master.description, ".TB_PREF."stock_master.mb_flag AS ResourceType, 
-    	".TB_PREF."stock_master.material_cost+ ".TB_PREF."stock_master.labour_cost+".TB_PREF."stock_master.overhead_cost AS standard_cost, units, 
-    	".TB_PREF."bom.quantity * (".TB_PREF."stock_master.material_cost+ ".TB_PREF."stock_master.labour_cost+ ".TB_PREF."stock_master.overhead_cost) AS ComponentCost 
-    	FROM (".TB_PREF."workcentres, ".TB_PREF."locations, ".TB_PREF."bom) INNER JOIN ".TB_PREF."stock_master ON ".TB_PREF."bom.component = ".TB_PREF."stock_master.stock_id 
-    	WHERE ".TB_PREF."bom.parent = ".db_escape($item)."
-		AND ".TB_PREF."workcentres.id=".TB_PREF."bom.workcentre_added
-		AND ".TB_PREF."bom.loc_code = ".TB_PREF."locations.loc_code ORDER BY ".TB_PREF."bom.id";
+	$sql = "SELECT bom.*, loc.location_name,
+		centre.name AS WorkCentreDescription,
+    	item.description, item.mb_flag AS ResourceType, 
+    	item.material_cost AS ProductCost, units,
+    	bom.quantity * item.material_cost AS ComponentCost 
+    	FROM ".TB_PREF."workcentres centre,
+    		".TB_PREF."locations loc,
+    		".TB_PREF."bom bom
+	    		INNER JOIN ".TB_PREF."stock_master item ON bom.component = item.stock_id 
+    	WHERE bom.parent = ".db_escape($item)."
+		AND centre.id=bom.workcentre_added
+		AND bom.loc_code = loc.loc_code ORDER BY bom.id";
 	
 	return db_query($sql, "The bill of material could not be retrieved");
 }
@@ -241,10 +239,11 @@ function get_bom($item)
 
 function get_component_from_bom($selected_id)
 {
-	$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM "
-		.TB_PREF."bom,".TB_PREF."stock_master
+	$sql = "SELECT bom.*, item.description
+		FROM ".TB_PREF."bom bom,"
+			.TB_PREF."stock_master item
 		WHERE id=".db_escape($selected_id)."
-		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component";
+		AND item.stock_id=bom.component";
 
 	$result = db_query($sql, "could not get bom");
 	return db_fetch($result);
@@ -262,7 +261,8 @@ function has_bom($item)
 
 function is_component_already_on_bom($component, $workcentre_added, $loc_code, $selected_parent)
 {
-	$sql = "SELECT component FROM ".TB_PREF."bom
+	$sql = "SELECT component
+		FROM ".TB_PREF."bom
 		WHERE parent=".db_escape($selected_parent)."
 		AND component=".db_escape($component) . "
 		AND workcentre_added=".db_escape($workcentre_added) . "
@@ -283,7 +283,7 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	$sql = "SELECT component FROM ".TB_PREF."bom WHERE parent=".db_escape($component_to_check);
 	$result = db_query($sql,"could not check recursive bom");
 
-	if ($result != 0)
+	if ($result)
 	{
 		while ($myrow = db_fetch_row($result))
 		{
@@ -296,10 +296,9 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 			{
 				return 1;
 			}
-		} //(while loop)
-	} //end if $result is true
+		}
+	}
 
 	return 0;
-} //end of function check_for_recursive_bom
+}
 
-?>

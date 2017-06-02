@@ -21,9 +21,9 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 add_js_file('payalloc.js');
@@ -71,16 +71,14 @@ if (!isset($_POST['bank_account'])) { // first page call
 
 	if (isset($_GET['PInvoice'])) {
 		//  get date and supplier
-		$inv = get_supp_trans($_GET['PInvoice'], ST_SUPPINVOICE);
-		$dflt_act = get_default_bank_account($inv['curr_code']);
-		$_POST['bank_account'] = $dflt_act['id'];
-		if($inv) {
+		$inv = get_supp_trans($_GET['PInvoice'], $_GET['trans_type']);
+		if ($inv) {
 			$_SESSION['alloc']->person_id = $_POST['supplier_id'] = $inv['supplier_id'];
 			$_SESSION['alloc']->read();
 			$_POST['DatePaid'] = sql2date($inv['tran_date']);
 			$_POST['memo_'] = $inv['supp_reference'];
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
-				if ($trans->type == ST_SUPPINVOICE && $trans->type_no == $_GET['PInvoice']) {
+				if ($trans->type == $_GET['trans_type'] && $trans->type_no == $_GET['PInvoice']) {
 					$un_allocated = abs($trans->amount) - $trans->amount_allocated;
 					$_SESSION['alloc']->amount = $_SESSION['alloc']->allocs[$line]->current_allocated = $un_allocated;
 					$_POST['amount'] = $_POST['amount'.$line] = price_format($un_allocated);
@@ -114,6 +112,17 @@ if (isset($_GET['AddedID'])) {
 
 //----------------------------------------------------------------------------------------
 
+function get_default_supplier_payment_bank_account($supplier_id, $date)
+{
+	$previous_payment = get_supp_payment_before($supplier_id, date2sql($date));
+	if ($previous_payment)
+	{
+		return $previous_payment['bank_id'];
+	}
+	return get_default_supplier_bank_account($supplier_id);
+}
+//----------------------------------------------------------------------------------------
+
 function check_inputs()
 {
 	global $Refs;
@@ -144,7 +153,7 @@ function check_inputs()
 	}
 
 	if (isset($_POST['charge']) && input_num('charge') > 0) {
-		$charge_acct = get_company_pref('bank_charge_act');
+		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
 			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 			set_focus('charge');
@@ -202,16 +211,8 @@ function check_inputs()
 		return false;
 	}
 
-    if (!$Refs->is_valid($_POST['ref'])) 
-    {
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) 
+	if (!check_reference($_POST['ref'], ST_SUPPAYMENT))
 	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -283,9 +284,12 @@ start_form();
 	set_global_supplier($_POST['supplier_id']);
 
 	if (!list_updated('bank_account') && !get_post('__ex_rate_changed'))
-		$_POST['bank_account'] = get_default_supplier_bank_account($_POST['supplier_id']);
-	else
+	{
+		$_POST['bank_account'] = get_default_supplier_payment_bank_account($_POST['supplier_id'], $_POST['DatePaid']);
+	} else
+	{
 		$_POST['amount'] = price_format(0);
+	}
 
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 
@@ -295,7 +299,9 @@ start_form();
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT, null, 
+    	array('supplier'=>get_post('supplier_id'), 'date'=>get_post('DatePaid'))), false, ST_SUPPAYMENT);
+
 
 	table_section(3);
 
@@ -330,4 +336,3 @@ start_form();
 end_form();
 
 end_page();
-?>

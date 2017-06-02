@@ -13,12 +13,13 @@ $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
 
@@ -69,7 +70,7 @@ display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst,user_price_dec());
 
-label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
+label_row(_("TOTAL INVOICE").' ('.$supplier_curr_code.')', $display_total, "colspan=1 align=right", "nowrap align=right");
 
 end_table(1);
 
@@ -83,4 +84,3 @@ if (!$voided)
 
 end_page(true, false, false, ST_SUPPINVOICE, $trans_no);
 
-?>

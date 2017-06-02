@@ -11,32 +11,40 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/db/connect_db.inc");
 
+include_once($path_to_root . "/admin/db/transactions_db.inc");
 include_once($path_to_root . "/includes/types.inc");
-include_once($path_to_root . "/includes/systypes.inc");
 include_once($path_to_root . "/includes/references.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
 include_once($path_to_root . "/includes/db/audit_trail_db.inc");
-//include_once($path_to_root . "/includes/validation.inc");
 
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
-	
+
+$page_nested = -1;
+// static js files path
+$js_path = $path_to_root.'/js/';
+// standard external js scripts included in all files
+$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
+// additional js source included in header
+$js_lib = $js_userlib = array();
+
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false, $css='')
 {
 
-   	global $path_to_root, $page_security;
+   	global $path_to_root, $page_security, $page_nested;
 
+	if (++$page_nested) return;
 
    	$hide_menu = $no_menu;
 
-   	include($path_to_root . "/includes/page/header.inc");
+   	include_once($path_to_root . "/includes/page/header.inc");
 
    	page_header($title, $no_menu, $is_index, $onload, $js, $css);
 	check_page_security($page_security);
 //	error_box();
-	if($script_only) {		
+	if($script_only) {
 		echo '<noscript>';
 		echo display_heading(_('This page is usable only with javascript enabled browsers.'));
 		echo '</noscript>';
@@ -48,27 +56,68 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 
 function end_page($no_menu=false, $is_index=false, $final_screen=false, $type_no=0, $trans_no=0)
 {
-	global $path_to_root;
+	global $path_to_root, $page_nested;
+
+	if ($page_nested-- > 0) return;
 
 	if (!$is_index && function_exists('hyperlink_back'))
 		hyperlink_back(true, $no_menu, $type_no, $trans_no, $final_screen);
 	div_end();	// end of _page_body section
 
-	include($path_to_root . "/includes/page/footer.inc");
+	include_once($path_to_root . "/includes/page/footer.inc");
 	page_footer($no_menu, $is_index);
+}
+
+function css_files_ensure_init() {
+	global $css_files, $path_to_root;
+
+	if (!isset($css_files))
+	{
+		$theme = user_theme();
+		$css_files = array();
+		$css_files[] = $path_to_root . "/themes/$theme/default.css";
+	}
+}
+
+function add_css_file($filename)
+{
+	global $css_files;
+	css_files_ensure_init();
+	$css_files[] = $filename;
 }
 
 function cache_js_file($fpath, $text) 
 {
-	global $go_debug;
+	global $SysPrefs;
 
-	if(!$go_debug) $text = js_compress($text);
+	if (!$SysPrefs->go_debug) $text = js_compress($text);
 
-        $file = fopen($fpath, 'w');
+    $file = force_open($fpath);
 	if (!$file) return false;
 	if (!fwrite($file, $text)) return false;
 	return fclose($file);
 
+}
+
+/*
+	Open file for writing with creration of subfolders if needed.
+*/
+function force_open($fname)
+{
+	$file = pathinfo($fname);
+
+	$path = $fname[0] == '/' ? '/' : '';
+	$tree = explode('/', $file['dirname']);
+	foreach($tree as $level) {
+		$path .= $level;
+		if (!file_exists($path)) {
+			if (!mkdir($path)) {
+				return null;
+			}
+		}
+		$path .= '/';
+	}
+	return fopen($fname, 'w');
 }
 
 function add_js_file($filename) 
@@ -92,7 +141,7 @@ function add_js_ufile($filename)
 function add_js_source($text) 
 {
 	  global $js_lib;
-	  
+
 	  $search = array_search($text, $js_lib);
 	  if ($search === false || $search === null) // php>4.2.0 returns null
 		$js_lib[] = $text;
@@ -350,6 +399,27 @@ function find_custom_file($rep)
 function clean_file_name($filename) {
     $filename = str_replace(chr(0), '', $filename);
     return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
+}
+
+/*
+	Simple random password generator.
+*/
+function generate_password()
+{
+	if (PHP_VERSION >= '5.3')
+		$bytes = openssl_random_pseudo_bytes(8, $cstrong);
+	else
+		$bytes = sprintf("08%x", mt_rand(0,0xffffffff));
+
+	return  base64_encode($bytes);
+}
+
+if (!function_exists('array_fill_keys')) // since 5.2
+{
+	function array_fill_keys($keys, $value)
+	{
+		return (object)array_combine($keys, array_fill(count($keys), $value));
+	}
 }
 
 /*

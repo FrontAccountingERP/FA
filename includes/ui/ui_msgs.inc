@@ -69,4 +69,3 @@ function stock_item_heading($stock_id)
 	}
 }
 
-?>

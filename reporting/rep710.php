@@ -120,4 +120,3 @@ function print_audit_trail()
     $rep->End();
 }
 
-?>

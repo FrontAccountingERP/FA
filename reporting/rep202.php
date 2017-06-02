@@ -37,32 +37,30 @@ function get_invoices($supplier_id, $to, $all=true)
 
 	// Revomed allocated from sql
 	if ($all)
-    	$value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-    else	
-    	$value = "IF (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type=".ST_BANKDEPOSIT.", 
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc),
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount + ".TB_PREF."supp_trans.alloc))";
-	$due = "IF (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type=".ST_SUPPCREDIT.",".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."supp_trans.type,
-		".TB_PREF."supp_trans.reference,
-		".TB_PREF."supp_trans.tran_date,
+    	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)";
+    else
+    	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.", 
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc),
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc))";
+	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
+	$sql = "SELECT trans.type,
+		trans.reference,
+		trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$value,0) AS Due,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$value,0) AS Overdue1,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$value,0) AS Overdue2
 
-		FROM ".TB_PREF."suppliers,
-			".TB_PREF."payment_terms,
-			".TB_PREF."supp_trans
+		FROM ".TB_PREF."suppliers supplier,
+			".TB_PREF."supp_trans trans
 
-	   	WHERE ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
-			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
-			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
-			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
-			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > ".FLOAT_COMP_DELTA." ";
+	   	WHERE supplier.supplier_id = trans.supplier_id
+			AND trans.supplier_id = $supplier_id
+			AND trans.tran_date <= '$todate'
+			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) > ".FLOAT_COMP_DELTA;
 	if (!$all)
-		$sql .= "AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) - ".TB_PREF."supp_trans.alloc > ".FLOAT_COMP_DELTA." ";  
-	$sql .= "ORDER BY ".TB_PREF."supp_trans.tran_date";
+		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
+	$sql .= " ORDER BY trans.tran_date";
 
 
 	return db_query($sql, "The supplier details could not be retrieved");
@@ -72,7 +70,7 @@ function get_invoices($supplier_id, $to, $all=true)
 
 function print_aged_supplier_analysis()
 {
-    global $path_to_root, $systypes_array;
+    global $path_to_root, $systypes_array, $SysPrefs;
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
@@ -246,16 +244,15 @@ function print_aged_supplier_analysis()
    	$rep->NewLine();
    	if ($graphics)
    	{
-   		global $decseps, $graph_skin;
 		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Days");
 		$pg->axis_y    = _("Amount");
 		$pg->graphic_1 = $to;
 		$pg->type      = $graphics;
-		$pg->skin      = $graph_skin;
+		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
@@ -269,4 +266,3 @@ function print_aged_supplier_analysis()
     $rep->End();
 }
 
-?>

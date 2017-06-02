@@ -10,7 +10,6 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/sales/includes/cart_class.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
 function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description='')
@@ -44,27 +43,27 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $des
 		}
 		$item_price = round($item_price, user_price_dec());
 
-	 if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
-	 {	// this is sales kit - recurse 
-		add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
-			$item_price, $discount);
-	 }
-	 else
-	 {	// stock item record eventually with foreign code
-
-		// check duplicate stock item
-		foreach ($order->line_items as $order_item)
-		{
-			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
-			{
-				display_warning(_("For Part :").$item['stock_id']. " " 
-					. _("This item is already on this document. You have been warned."));
-				break;
-			}
+		if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
+		{	// this is sales kit - recurse 
+			add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
+				$item_price, $discount);
 		}
-		$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
-			$new_item_qty*$item['quantity'], $item_price, $discount, 0,0, $description);
-	 }
+		else
+		{	// stock item record eventually with foreign code
+
+			// check duplicate stock item
+			foreach ($order->line_items as $order_item)
+			{
+				if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
+				{
+					display_warning(_("For Part :").$item['stock_id']. " " 
+						. _("This item is already on this document. You have been warned."));
+					break;
+				}
+			}
+			$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
+				$new_item_qty*$item['quantity'], $item_price, $discount, 0,0, $description);
+		}
 	}
 
 }
@@ -125,6 +124,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->due_date = add_days($order->document_date, $SysPrefs->default_delivery_required_by());
 	elseif ($order->trans_type == ST_SALESQUOTE)
 		$order->due_date = add_days($order->document_date, $SysPrefs->default_quote_valid_days());
+
 	if($order->payment_terms['cash_sale']) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
@@ -178,7 +178,6 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			view_stock_status_cell($stock_item->stock_id);
 
-			//label_cell($stock_item->item_description, "nowrap" );
 			label_cell($stock_item->item_description );
 			$dec = get_qty_dec($stock_item->stock_id);
 			qty_cell($stock_item->qty_dispatched, false, $dec);
@@ -254,8 +253,6 @@ function display_order_header(&$order, $editable, $date_text)
 
 	if (isset($order) && !$editable)
 	{
-		// can't change the customer/branch if items already received on this order
-		//echo $order->customer_name . " - " . $order->deliver_to;
 		label_row(null, $order->customer_name . " - " . $order->deliver_to);
 		hidden('customer_id', $order->customer_id);
 		hidden('branch_id', $order->Branch);
@@ -295,7 +292,7 @@ function display_order_header(&$order, $editable, $date_text)
 			else
 			{
 
-				$old_order = (PHP_VERSION<5) ? $order : clone( $order );
+				$old_order = (PHP_VERSION<5) ? $order : clone $order;
 
 				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 				$_POST['Location'] = $order->Location;
@@ -361,7 +358,7 @@ function display_order_header(&$order, $editable, $date_text)
 		}
 	}
 
-	ref_row(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
+	ref_row(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '', $order->trans_type, array('date'=> @$_POST['OrderDate']));
 
 	table_section(2);
 
@@ -378,7 +375,8 @@ function display_order_header(&$order, $editable, $date_text)
 
 	table_section(3);
 	start_row();
-	if ($order->pos['cash_sale'] || $order->pos['credit_sale']) {
+	if (($order->pos['cash_sale'] || $order->pos['credit_sale']) 
+		&& !$order->is_started()) {
 		 // editable payment type 
 		if (get_post('payment') !== $order->payment) {
 			$order->payment = get_post('payment');
@@ -394,11 +392,10 @@ function display_order_header(&$order, $editable, $date_text)
 		$paymcat = !$order->pos['cash_sale'] ? PM_CREDIT : 
 			(!$order->pos['credit_sale'] ? PM_CASH : PM_ANY);
 		// all terms are available for SO
-		sale_payment_list_cells(_('Payment:'), 'payment', 
-			(in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER)) 
-			? PM_ANY : $paymcat), null);
+		$is_order = in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER));
+		sale_payment_list_cells(_('Payment:'), 'payment', $is_order ? PM_ANY : $paymcat, null, true, $is_order);
 	} else {
-		label_cells(_('Payment:'), $order->payment_terms['terms']);
+		label_cells(_('Payment:'), $order->payment_terms['terms'], "class='label'");
 	}
 	end_row();
 
@@ -465,7 +462,6 @@ function display_order_header(&$order, $editable, $date_text)
 			$line = &$order->line_items[$line_no];
 			$line->price = get_kit_price($line->stock_id, $order->customer_currency,
 				$order->sales_type, $order->price_factor, get_post('OrderDate'));
-		//		$line->discount_percent = $order->default_discount;
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -499,15 +495,14 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 			hidden('item_description', $_POST['item_description']);
 			label_cell($_POST['item_description']);
 		}
-//		} else {
-//			sales_items_list_cells(null,'item_description', null, false, true);
-//		}
-		//label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	    $Ajax->activate('items_table');
 	}
 	else	// prepare new line
 	{
-		sales_items_list_cells(null,'stock_id', null, false, true, true);
+		if ($order->fixed_asset)
+			stock_disposable_fa_list_cells(null,'stock_id', null, _('[Select item]'), true, $order->line_items);
+		else
+			sales_items_list_cells(null,'stock_id', null, false, true, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -527,7 +522,11 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
-	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+	if ($order->fixed_asset) {
+		label_cell(1, '', 'qty');
+		hidden('qty', 1);
+	} else 
+		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
 	if ($order->trans_no!=0) {
 		qty_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done, false, $dec);
@@ -607,7 +606,15 @@ function display_delivery_details(&$order)
 		start_outer_table(TABLESTYLE2, "width='90%'");
 		table_section(1);
 
-		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
+		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true, $order->fixed_asset);
+		if ($order->payment_terms['days_before_due'] == -1)
+		{
+			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update
+			if (!$order->is_started())
+				amount_row(_("Pre-Payment Required:"), 'prep_amount');
+			else
+				label_row(_("Pre-Payment Required:"), price_format($order->prep_amount), "class='label'");
+		}
 		if (list_updated('Location'))
 			$Ajax->activate('items_table');
 
@@ -615,7 +622,7 @@ function display_delivery_details(&$order)
 		date_row($delname, 'delivery_date',
 			$order->trans_type==ST_SALESORDER ?  _('Enter requested day of delivery') 
 				: $order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : '');
-		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
+		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 50, 60,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 
 		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
@@ -636,4 +643,3 @@ function display_delivery_details(&$order)
 	div_end();
 }
 
-?>

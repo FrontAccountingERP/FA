@@ -23,4 +23,3 @@
 		$app->selected_application = $_GET['application'];
 
 	$app->display();
-?>

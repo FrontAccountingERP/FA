@@ -34,9 +34,6 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 		$amount_bank = $amount;
 	$amount_bank = round2($amount_bank, user_price_dec());	
 
-	// Also store the rate to the home
-	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
-
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id) ";
 
@@ -54,7 +51,9 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 
 function exists_bank_trans($type, $type_no)
 {
-	$sql = "SELECT trans_no FROM ".TB_PREF."bank_trans WHERE type=".db_escape($type)
+	$sql = "SELECT trans_no
+		FROM ".TB_PREF."bank_trans
+		WHERE type=".db_escape($type)
 		." AND trans_no=".db_escape($type_no);
 	$result = db_query($sql, "Cannot retreive a bank transaction");
 
@@ -96,12 +95,14 @@ function get_bank_trans_for_bank_account($bank_account, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT t.* FROM "
-		.TB_PREF."bank_trans t LEFT JOIN ".TB_PREF."voided v ON t.type=v.type AND t.trans_no=v.id
+	$sql = "SELECT t.* 
+		FROM ".TB_PREF."bank_trans t 
+			LEFT JOIN ".TB_PREF."voided v ON t.type=v.type AND t.trans_no=v.id
 		WHERE t.bank_act = ".db_escape($bank_account) . "
-		AND ISNULL(v.date_)
-		AND trans_date >= '$from'
-		AND trans_date <= '$to'
+			AND ISNULL(v.date_)
+			AND trans_date >= '$from'
+			AND trans_date <= '$to'
+			AND amount != 0
 		ORDER BY trans_date, t.id";
 
 	return db_query($sql,"The transactions for '" . $bank_account . "' could not be retrieved");
@@ -112,9 +113,10 @@ function get_bank_trans_for_bank_account($bank_account, $from, $to)
 function get_balance_before_for_bank_account($bank_account, $from)
 {
 	$from = date2sql($from);
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act="
-		.db_escape($bank_account) . "
-		AND trans_date < '$from'";
+	$sql = "SELECT SUM(amount)
+		FROM ".TB_PREF."bank_trans
+		WHERE bank_act=".db_escape($bank_account) . "
+			AND trans_date < '$from'";
 	$before_qty = db_query($sql, "The starting balance on hand could not be calculated");
 	$bfw_row = db_fetch_row($before_qty);
 	return $bfw_row[0];
@@ -123,9 +125,11 @@ function get_balance_before_for_bank_account($bank_account, $from)
 
 function get_gl_trans_value($account, $type, $trans_no)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account="
-	.db_escape($account)." AND type=".db_escape($type)
-	." AND type_no=".db_escape($trans_no);
+	$sql = "SELECT SUM(amount)
+		FROM ".TB_PREF."gl_trans
+		WHERE account=".db_escape($account)
+			." AND type=".db_escape($type)
+			." AND type_no=".db_escape($trans_no);
 
 	$result = db_query($sql, "query for gl trans value");
 
@@ -141,10 +145,11 @@ function void_bank_trans($type, $type_no, $nested=false)
 	if (!$nested)
 		begin_transaction();
 
-	$sql = "UPDATE ".TB_PREF."bank_trans SET amount=0
-		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+	$sql = "UPDATE ".TB_PREF."bank_trans 
+			SET amount=0
+			WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
-	$result = db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
+	db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 
 	void_gl_trans($type, $type_no, true);
 
@@ -167,22 +172,25 @@ function void_bank_trans($type, $type_no, $nested=false)
 *	Returns null or transaction in conflict. Running balance is checked on daily basis only, to enable ID change after edition.
 *	$delta_amount - tested change in bank balance at $date.
 **/
-function check_bank_account_history($delta_amount, $bank_account, $date=null, $user=null)
+function check_bank_account_history($delta_amount, $bank_account, $date=null, $user=null, $balance_offset = 0)
 {
 	if ($delta_amount >= 0 && isset($date))
-		 return null;	// amount increese is always safe
+		 return null;	// amount increase is always safe
 
 	$balance = $date ? get_bank_account_limit($bank_account, $date, $user) : 0;
 
 	if (!isset($balance) && isset($date))
 		return null;	// unlimited account
 
+	$balance += $balance_offset;
 	if (floatcmp($balance, -$delta_amount) < 0)
-		return array('amount' => $balance - $delta_amount, 'trans_date'=> $date);
+		return array('amount' => $balance + $delta_amount, 'trans_date'=> date2sql($date));
 
 	$balance += $delta_amount;
 
-	$sql = "SELECT sum(amount) as amount, trans_date FROM ".TB_PREF."bank_trans WHERE bank_act=".db_escape($bank_account);
+	$sql = "SELECT sum(amount) as amount, trans_date
+			FROM ".TB_PREF."bank_trans
+			WHERE bank_act=".db_escape($bank_account);
 	if ($date)
 	{
 		$date = date2sql($date);
@@ -195,7 +203,10 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 	while ($trans = db_fetch($history)) {
 		$balance += $trans['amount'];
 		if ($balance < 0)
+		{
+			$trans['amount'] = $balance;
 			return $trans;
+		}
 	}
 
 	return null;
@@ -215,4 +226,3 @@ function check_void_bank_trans($type, $type_no)
 	return true;
 }
 
-?>

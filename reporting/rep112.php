@@ -31,34 +31,24 @@ print_receipts();
 //----------------------------------------------------------------------------------------------------
 function get_receipt($type, $trans_no)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-				".TB_PREF."debtor_trans.ov_freight_tax) AS Total,
-				".TB_PREF."debtor_trans.ov_discount,
-   				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
-   				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
-   				.TB_PREF."debtors_master.tax_id AS tax_id,
-   				".TB_PREF."debtors_master.address
-    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
-				WHERE ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
-				AND ".TB_PREF."debtor_trans.type = ".db_escape($type)."
-				AND ".TB_PREF."debtor_trans.trans_no = ".db_escape($trans_no);
+    $sql = "SELECT trans.*,
+				(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax) AS Total,
+				trans.ov_discount, 
+				debtor.name AS DebtorName,
+				debtor.debtor_ref,
+   				debtor.curr_code,
+   				debtor.payment_terms,
+   				debtor.tax_id AS tax_id,
+   				debtor.address
+    			FROM ".TB_PREF."debtor_trans trans,"
+    				.TB_PREF."debtors_master debtor
+				WHERE trans.debtor_no = debtor.debtor_no
+				AND trans.type = ".db_escape($type)."
+				AND trans.trans_no = ".db_escape($trans_no);
    	$result = db_query($sql, "The remittance cannot be retrieved");
    	if (db_num_rows($result) == 0)
    		return false;
     return db_fetch($result);
-}
-
-function get_allocations_for_receipt($debtor_id, $type, $trans_no)
-{
-	$sql = get_alloc_trans_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
-		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=$trans_no
-		AND alloc.trans_type_from=$type
-		AND trans.debtor_no=".db_escape($debtor_id),
-		TB_PREF."cust_allocations as alloc");
-	$sql .= " ORDER BY trans_no";
-	return db_query($sql, "Cannot retreive alloc to transactions");
 }
 
 function print_receipts()
@@ -95,7 +85,6 @@ function print_receipts()
 	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
     	recalculate_cols($cols);
- 	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
@@ -110,7 +99,7 @@ function print_receipts()
 		{
 			$myrow = get_receipt($j, $i);
 			if (!$myrow)
-				continue;			
+				continue;
 			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
 				continue;
 			}
@@ -120,15 +109,16 @@ function print_receipts()
 
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
+ 			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
-			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
+			$result = get_allocatable_to_cust_transactions($myrow['debtor_no'], $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_CUSTPAYMENT;
 
 			$total_allocated = 0;
 			$rep->TextCol(0, 4,	_("As advance / full / part / payment towards:"), -2);
 			$rep->NewLine(2);
-			
+
 			while ($myrow2=db_fetch($result))
 			{
 				$rep->TextCol(0, 1,	$systypes_array[$myrow2['type']], -2);
@@ -175,7 +165,7 @@ function print_receipts()
 			{
 				$rep->NewLine(1);
 				$rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, - 2);
-			}	
+			}
 			$rep->Font();
 			$rep->NewLine();
 			$rep->TextCol(6, 7, _("Received / Sign"), - 2);
@@ -190,9 +180,8 @@ function print_receipts()
 			$rep->TextCol(4, 5, _("Branch"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->TextCol(6, 7, "__________________");
-		}	
+		}
 	}
 	$rep->End();
 }
 
-?>

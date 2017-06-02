@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/banking.inc");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "Supplier Allocations"), false, false, "", $js);
 
@@ -69,12 +69,12 @@ function alloc_link($row)
 {
 	return pager_link(_("Allocate"),
 		"/purchasing/allocations/supplier_allocate.php?trans_no="
-			.$row["trans_no"] . "&trans_type=" . $row["type"], ICON_ALLOC);
+ 			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&supplier_id=" . $row["supplier_id"], ICON_ALLOC);
 }
 
 function amount_left($row)
 {
-	return price_format(-$row["Total"]-$row["alloc"]);
+ 	return price_format($row['type'] == ST_JOURNAL ?  abs($row["Total"])-$row["alloc"] : -$row["Total"]-$row["alloc"]);
 }
 
 function amount_total($row)
@@ -116,4 +116,3 @@ display_db_pager($table);
 
 end_form();
 end_page();
-?>

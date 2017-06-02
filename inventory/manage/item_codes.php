@@ -13,11 +13,14 @@ $page_security = 'SA_FORITEMCODE';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Foreign Item Codes"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+
+page(_($help_context = "Foreign Item Codes"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
@@ -38,7 +41,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    	elseif (!input_num('quantity'))
    	{
       	$input_error = 1;
-      	display_error( _("The price entered was not positive number."));
+      	display_error( _("The quantity entered was not positive number."));
 		set_focus('quantity');
    	}
    	elseif ($_POST['description'] == '')
@@ -103,9 +106,8 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-//Chaitanya : Manufcatured item visible
+//Manufcatured item visible
 echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
-//echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 
@@ -187,4 +189,3 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 end_form();
 end_page();
 
-?>

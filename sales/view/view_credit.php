@@ -19,7 +19,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Credit Note"), true, false, "", $js);
 
@@ -134,12 +134,12 @@ $display_total = price_format($credit_total);
 if ($sub_total != 0)
 	label_row(_("Sub Total"), $display_sub_tot, "colspan=6 align=right",
 		"nowrap align=right width='15%'");
-
 if ($myrow["ov_freight"] != 0.0)
 {
 	$display_freight = price_format($myrow["ov_freight"]);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 }
+
 $tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
@@ -157,4 +157,3 @@ if (!$voided)
 
 end_page(true, false, false, ST_CUSTCREDIT, $trans_id);
 
-?>

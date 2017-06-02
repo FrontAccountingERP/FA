@@ -53,7 +53,7 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
 		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
-			AND taxrec.trans_type <> ".ST_CUSTDELIVERY."
+			AND !ISNULL(taxrec.reg_type)
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.trans_type, taxrec.tran_date, taxrec.trans_no, taxrec.ex_rate";
@@ -78,8 +78,8 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
-	
+	global $path_to_root, $systypes_array;
+
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$summaryOnly = $_POST['PARAM_2'];
@@ -103,7 +103,7 @@ function print_tax_report()
 
 	$res = getTaxTypes();
 
-	$taxes = array();
+	$taxes[0] = array('in'=>0, 'out'=>0, 'taxin'=>0, 'taxout'=>0);
 	while ($tax=db_fetch($res))
 		$taxes[$tax['id']] = array('in'=>0, 'out'=>0, 'taxin'=>0, 'taxout'=>0);
 
@@ -136,7 +136,7 @@ function print_tax_report()
 			$trans['net_amount'] *= -1;
 			$trans['amount'] *= -1;
 		}
-		
+
 		if (!$summaryOnly)
 		{
 			$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
@@ -150,7 +150,7 @@ function print_tax_report()
 			$rep->AmountCol(5, 6, $trans['net_amount'], $dec);
 			$rep->AmountCol(6, 7, $trans['rate'], $dec);
 			$rep->AmountCol(7, 8, $trans['amount'], $dec);
-			
+
 			$rep->TextCol(9, 10, $trans['taxname']);
 
 			$rep->NewLine();
@@ -161,20 +161,21 @@ function print_tax_report()
 				$rep->NewPage();
 			}
 		}
-		if ($trans['trans_type']==ST_JOURNAL && $trans['amount']<0) {
-			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
+		$tax_type = $trans['tax_type_id'];
+		if ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_INPUT) {
+			$taxes[$tax_type]['taxin'] += $trans['amount'];
+			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}
-		elseif ($trans['trans_type']==ST_JOURNAL && $trans['amount']>=0) {
-			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
+		elseif ($trans['trans_type']==ST_JOURNAL && $trans['reg_type']==TR_OUTPUT) {
+			$taxes[$tax_type]['taxout'] += $trans['amount'];
+			$taxes[$tax_type]['out'] += $trans['net_amount'];
 		}
 		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
-			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
-		} else {
-			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
-			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
+			$taxes[$tax_type]['taxout'] += $trans['amount'];
+			$taxes[$tax_type]['out'] += $trans['net_amount'];
+		} elseif ($trans['reg_type'] !== NULL) {
+			$taxes[$tax_type]['taxin'] += $trans['amount'];
+			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}
 		$totalnet += $trans['net_amount'];
 		$totaltax += $trans['amount'];
@@ -191,9 +192,6 @@ function print_tax_report()
 
 	$rep->Info($params, $cols2, $headers2, $aligns2);
 
-	//for ($i = 0; $i < count($cols2); $i++)
-	//	$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
-
 	$rep->headers = $headers2;
 	$rep->aligns = $aligns2;
 	$rep->NewPage();
@@ -201,9 +199,13 @@ function print_tax_report()
 	$taxtotal = 0;
 	foreach( $taxes as $id=>$sum)
 	{
-		$tx = getTaxInfo($id);
-		
-		$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+		if ($id)
+		{
+			$tx = getTaxInfo($id);
+			$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+		} else {
+			$rep->TextCol(0, 1, _('Exempt'));
+		}
 		$rep->AmountCol(1, 2, $sum['out'], $dec);
 		$rep->AmountCol(2, 3, $sum['taxout'], $dec);
 		$rep->AmountCol(3, 4, $sum['in'], $dec);
@@ -227,4 +229,3 @@ function print_tax_report()
 	$rep->End();
 }
 
-?>

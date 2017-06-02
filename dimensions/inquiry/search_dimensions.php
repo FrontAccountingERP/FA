@@ -18,9 +18,9 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['outstanding_only']) && $_GET['outstanding_only'])
@@ -50,7 +50,6 @@ if (get_post('SearchOrders'))
 	$Ajax->addDisable(true, 'OpenOnly', $disable);
 
 	if ($disable) {
-//		$Ajax->addFocus(true, 'OrderNumber');
 		set_focus('OrderNumber');
 	} else
 		set_focus('type_');
@@ -114,14 +113,12 @@ function is_overdue($row)
 
 function edit_link($row)
 {
-	//return $row["closed"] ?  '' :
-	//	pager_link(_("Edit"),
-	//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 	return pager_link(_("Edit"),
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
-$sql = get_sql_for_search_dimensions($dim);
+$sql = get_sql_for_search_dimensions($dim, $_POST['FromDate'], $_POST['ToDate'],
+	$_POST['OrderNumber'], $_POST['type_'], check_value('OpenOnly'), check_value('OverdueOnly'));
 
 $cols = array(
 	_("#") => array('fun'=>'view_link'), 
@@ -149,4 +146,3 @@ display_db_pager($table);
 end_form();
 end_page();
 
-?>

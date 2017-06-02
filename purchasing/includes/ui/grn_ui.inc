@@ -13,8 +13,8 @@
 
 function display_grn_summary(&$po)
 {
-	global $Refs;
-    start_table(TABLESTYLE2, "width='90%'");
+
+   start_table(TABLESTYLE2, "width='90%'");
 
     start_row();
 	label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
@@ -45,7 +45,7 @@ function display_grn_summary(&$po)
 function edit_grn_summary(&$po)
 {
 	global $Refs;
-
+	
 	start_outer_table(TABLESTYLE2, "width='80%'");
 
 	table_section(1);
@@ -60,7 +60,7 @@ function edit_grn_summary(&$po)
 
 	table_section(2);
     	if (!isset($_POST['ref']))
-    	    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
+    	    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE, null, array('supplier' => $po->supplier_id, 'date' => Today()));
     	ref_row(_("Reference"), 'ref', '', null);
 
         if (!isset($_POST['Location']))
@@ -74,8 +74,6 @@ function edit_grn_summary(&$po)
     	date_row(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, '', true);
 
 	table_section(3);
-		// currently this is related order supp reference
-//		ref_row(_("Supplier's Reference"), 'supp_ref', _("Supplier's Reference"));
 		label_row(_("Supplier's Reference"), $po->supp_ref);
 
 	   	label_row(_("Delivery Address"), $po->delivery_address);
@@ -88,4 +86,3 @@ function edit_grn_summary(&$po)
 	end_outer_table(1);
 }
 
-?>

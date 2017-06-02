@@ -52,7 +52,7 @@ $dim = get_company_pref('use_dimension');
 $first_cols = array(_("Type"), "#", _("Date"));
 if ($dim == 2)
 	$dim_cols = array(_("Dimension")." 1", _("Dimension")." 2");
-else if ($dim == 1)
+elseif ($dim == 1)
 	$dim_cols = array(_("Dimension"));
 else
 	$dim_cols = array();
@@ -64,7 +64,7 @@ $th = array_merge($first_cols, $dim_cols, $remaining_cols);
 table_header($th);
 $end = $_GET['date'];
 $account = $_GET['act'];
-$begin = add_days($end, -30);
+$begin = add_days($end, -user_transaction_days());
 
 $result = get_gl_transactions($begin, $end, -1,	$account, 0, 0, null);
 $j = 0;
@@ -105,4 +105,3 @@ end_table(1);
 
 end_page(true);
 
-?>

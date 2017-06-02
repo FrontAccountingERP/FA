@@ -150,7 +150,7 @@ function Achieve($d1, $d2)
 
 function print_profit_and_loss_statement()
 {
-	global $path_to_root;
+	global $path_to_root, $SysPrefs;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -169,7 +169,7 @@ function print_profit_and_loss_statement()
 		$orientation = $_POST['PARAM_9'];
 		$destination = $_POST['PARAM_10'];
 	}
-	else if ($dim == 1)
+	elseif ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_3'];
 		$tags = (isset($_POST['PARAM_4']) ? $_POST['PARAM_4'] : -1);
@@ -204,7 +204,7 @@ function print_profit_and_loss_statement()
 		$dec = user_price_dec();
 	$pdec = user_percent_dec();
 
-	$cols = array(0, 50, 200, 350, 425,	500);
+	$cols = array(0, 60, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
 
 	$headers = array(_('Account'), _('Account Name'), _('Period'), _('Accumulated'), _('Achieved %'));
@@ -221,7 +221,7 @@ function print_profit_and_loss_statement()
                             'from' => get_dimension_string($dimension2), 'to' => ''),
                         4 => array('text' => _('Tags'), 'from' => get_tag_names($tags), 'to' => ''));
     }
-    else if ($dim == 1)
+    elseif ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
@@ -321,16 +321,15 @@ function print_profit_and_loss_statement()
 	$rep->Line($rep->row);
 	if ($graphics)
 	{
-		global $decseps, $graph_skin;
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Group");
 		$pg->axis_y    = _("Amount");
 		$pg->graphic_1 = $headers[2];
 		$pg->graphic_2 = $headers[3];
 		$pg->type      = $graphics;
-		$pg->skin      = $graph_skin;
+		$pg->skin      = $SysPrefs->graph_skin;
 		$pg->built_in  = false;
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
+		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
@@ -345,4 +344,3 @@ function print_profit_and_loss_statement()
 	$rep->End();
 }
 
-?>

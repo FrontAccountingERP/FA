@@ -28,7 +28,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 {
 	$printtitle = 0; //Flag for printing type name	
-	
+
 	//Get Accounts directly under this group/type
 	$result = get_gl_accounts(null, null, $type);	
 	while ($account=db_fetch($result))
@@ -40,7 +40,7 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 			for ($sp=1; $sp<=$level; $sp++)
 			{
 				$prefix .= '         ';
-			}		
+			}
 			$printtitle = 1;
 			$rep->row -= 4;
 			$rep->TextCol(0, 1, $type);
@@ -63,7 +63,7 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance, $level)
 			$rep->AmountCol(3, 4, $balance, $dec);
 		$rep->NewLine();
 	}
-		
+
 	//Get Account groups/types under this group/type
 	$result = get_account_types(false, false, $type);
 	while ($accounttype=db_fetch($result))
@@ -104,9 +104,8 @@ function print_Chart_of_Accounts()
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$orientation = ($orientation ? 'L' : 'P');
-	$dec = 0;
 
-	$cols = array(0, 50, 300, 425, 500);
+	$cols = array(0, 60, 300, 425, 500);
 
 	$headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
 	
@@ -143,4 +142,3 @@ function print_Chart_of_Accounts()
 	$rep->End();
 }
 
-?>

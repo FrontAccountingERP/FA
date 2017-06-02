@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js = get_js_date_picker();
 
 page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);
@@ -47,9 +47,9 @@ if (isset($_GET["AccGrp"]))
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $convert, $dimension, $dimension2, $drilldown, $path_to_root)
+function display_type ($type, $typename, $from, $to, $convert, $dimension, $dimension2, $drilldown)
 {
-	global $levelptr, $k;
+	global $path_to_root, $levelptr, $k;
 	
 	$acctstotal = 0;
 	$typestotal = 0;
@@ -86,7 +86,7 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 	while ($accounttype=db_fetch($result))
 	{			
 		$typestotal += display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-			$convert, $dimension, $dimension2, $drilldown, $path_to_root);	
+			$convert, $dimension, $dimension2, $drilldown);
 	}
 
 	//Display Type Summary if total is != 0  
@@ -104,7 +104,6 @@ function display_type ($type, $typename, $from, $to, $convert, $dimension, $dime
 		$parent1 = $acctype1["parent"];
 		if ($drilldown && $parent1 == $_POST["AccGrp"])
 		//END Patch#2		
-		//elseif ($drilldown && $type != $_POST["AccGrp"])
 		{
 			$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
@@ -164,8 +163,6 @@ function display_balance_sheet()
 		$lclose = 0.0; 
 		$calculateclose = 0.0;		
 
-		$parent = -1;
-
 		//Get classes for BS
 		$classresult = get_account_classes(false, 1);
 	
@@ -174,18 +171,18 @@ function display_balance_sheet()
 			$classclose = 0.0;
 			$convert = get_class_type_convert($class["ctype"]);
 			$ctype = $class["ctype"];
-			$classname = $class["class_name"];	
 
 			//Print Class Name	
 			table_section_title($class["class_name"]);
 			
 			//Get Account groups/types under this group/type
 			$typeresult = get_account_types(false, $class['cid'], -1);
-				
+			
+			$k = 0;
 			while ($accounttype=db_fetch($typeresult))
 			{
 				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-						$convert, $dimension, $dimension2, $drilldown, $path_to_root);	
+						$convert, $dimension, $dimension2, $drilldown);	
 				//Print Summary 
 				if ($TypeTotal != 0 )
 				{
@@ -252,7 +249,7 @@ function display_balance_sheet()
 		table_section_title($_POST["AccGrp"]. " " . get_account_type_name($_POST["AccGrp"]));	
 		
 		$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, 
-			$convert, $dimension, $dimension2, $drilldown, $path_to_root);
+			$convert, $dimension, $dimension2, $drilldown);
 	}
 	
 	end_table(1); // outer table
@@ -270,6 +267,4 @@ display_balance_sheet();
 end_form();
 
 end_page();
-
-?>
 

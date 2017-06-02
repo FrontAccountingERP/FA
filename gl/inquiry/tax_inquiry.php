@@ -22,9 +22,9 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = '';
 set_focus('account');
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 page(_($help_context = "Tax Inquiry"), false, false, '', $js);
@@ -58,7 +58,7 @@ function tax_inquiry_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	date_cells(_("from:"), 'TransFromDate', '', null, -30);
+	date_cells(_("from:"), 'TransFromDate', '', null, -user_transaction_days());
 	date_cells(_("to:"), 'TransToDate');
 	submit_cells('Show',_("Show"),'','', 'default');
 
@@ -73,8 +73,6 @@ function tax_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root;
-
     /*Now get the transactions  */
 	div_start('trans_tbl');
 	start_table(TABLESTYLE);
@@ -83,8 +81,6 @@ function show_results()
 	table_header($th);
 	$k = 0;
 	$total = 0;
-	$bdate = date2sql($_POST['TransFromDate']);
-	$edate  = date2sql($_POST['TransToDate']);
 
 	$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 
@@ -135,4 +131,3 @@ show_results();
 
 end_page();
 
-?>

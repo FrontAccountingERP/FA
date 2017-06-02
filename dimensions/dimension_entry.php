@@ -14,7 +14,6 @@ $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/admin/db/tags_db.inc");
@@ -22,7 +21,7 @@ include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Dimension Entry"), false, false, "", $js);
 
@@ -110,17 +109,8 @@ function can_process()
 
 	if ($selected_id == -1) 
 	{
-
-    	if (!$Refs->is_valid($_POST['ref'])) 
+    	if (!check_reference($_POST['ref'], ST_DIMENSION))
     	{
-    		display_error( _("The dimension reference must be entered."));
-			set_focus('ref');
-    		return false;
-    	}
-
-    	if (!is_new_reference($_POST['ref'], ST_DIMENSION)) 
-    	{
-    		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
     		return false;
     	}
@@ -265,7 +255,7 @@ if ($selected_id != -1)
 else 
 {
 	$_POST['dimension_tags'] = array();
-	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
+	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION), false, ST_DIMENSION);
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -307,4 +297,3 @@ end_form();
 
 end_page();
 
-?>

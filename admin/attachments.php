@@ -36,10 +36,7 @@ if ($view_id != -1)
 			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
     		header("Content-type: ".$type);
     		header('Content-Length: '.$row['filesize']);
-	    	//if ($type == 'application/octet-stream')
-    		//	header('Content-Disposition: attachment; filename='.$row['filename']);
-    		//else
-	 			header("Content-Disposition: inline");
+ 			header("Content-Disposition: inline");
 	    	echo file_get_contents(company_path(). "/attachments/".$row['unique_name']);
     		exit();
 		}
@@ -69,7 +66,7 @@ if ($download_id != -1)
 }
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 page(_($help_context = "Attach Documents"), false, false, "", $js);
 
@@ -84,8 +81,14 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
-	elseif ($Mode == 'ADD_ITEM' && (!isset($_FILES['filename']) || $_FILES['filename']['size'] == 0))
+	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
 		display_error(_("Select attachment file."));
+	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
+    	if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
+		  	display_error(_("The file size is over the maximum allowed."));
+    	else
+		  	display_error(_("Select attachment file."));
+  	}
 	else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
@@ -94,7 +97,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		if (!file_exists($dir))
 		{
 			mkdir ($dir,0777);
-			$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
+			$index_file = "<?php\nheader(\"Location: ../index.php\");\n";
 			$fp = fopen($dir."/index.php", "w");
 			fwrite($fp, $index_file);
 			fclose($fp);
@@ -258,4 +261,3 @@ end_form();
 
 end_page();
 
-?>

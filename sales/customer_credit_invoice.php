@@ -20,17 +20,16 @@ $path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
 
-if ($use_date_picker) {
+if (user_use_date_picker()) {
 	$js .= get_js_date_picker();
 }
 
@@ -78,7 +77,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 } else
-	check_edit_conflicts();
+	check_edit_conflicts(get_post('cart_id'));
 
 
 //-----------------------------------------------------------------------------
@@ -92,13 +91,13 @@ function can_process()
 		set_focus('CreditDate');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['CreditDate']))	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('CreditDate');
 		return false;
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
 			display_error(_("You must enter a reference."));;
 			set_focus('ref');
 			return false;
@@ -238,11 +237,11 @@ function display_credit_items()
     end_row();
     start_row();
 
-//	if (!isset($_POST['ref']))
-//		$_POST['ref'] = $Refs->get_next(11);
-
     if ($_SESSION['Items']->trans_no==0) {
-		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTCREDIT,
+		array('customer' => $_SESSION['Items']->customer_id,
+			'branch' => $_SESSION['Items']->Branch,
+			'date' => get_post('CreditDate')));
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
@@ -253,10 +252,6 @@ function display_credit_items()
 	}
 	label_cell(_("Shipping Company"), "class='tableheader2'");
 	shippers_list_cells(null, 'ShipperID', $_POST['ShipperID']);
-//	if (!isset($_POST['sales_type_id']))
-//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
-//	label_cell(_("Sales Type"), "class='tableheader2'");
-//	sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
 
 	end_row();
 	end_table();
@@ -388,4 +383,3 @@ end_form();
 
 end_page();
 
-?>

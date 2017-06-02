@@ -65,9 +65,11 @@ class email
     	$this->bcc[] = $mail;
     }
 
-    function attachment($file)
+    function attachment($file, $filename=null)
     {
-		$this->attachment[] = $file;
+    	if (!isset($filename))
+    		$filename = basename($file);
+    	$this->attachment[$filename] = $file;
     }
 
     function subject($subject)
@@ -97,6 +99,8 @@ class email
 		if ($filename == $file . '.zip') return 'application/x-zip-compressed';
 		$file = basename($filename, '.pdf');
 		if ($filename == $file . '.pdf') return 'application/pdf';
+		$file = basename($filename, '.xls'); 
+		if ($filename == $file . '.xls') return 'application/vnd.ms-excel'; 
 		$file = basename($filename, '.csv');
 		if ($filename == $file . '.csv') return 'application/vnd.ms-excel';
 		$file = basename($filename, '.tar');
@@ -114,46 +118,30 @@ class email
 
 	function send()
     {
-        // CC Empfänger hinzufügen
-        $max = count($this->cc);
-        if ($max > 0)
-        {
-            $this->header .= "Cc: ".$this->cc[0];
-            for ($i = 1; $i < $max; $i++)
-            {
-                $this->header .= ", ".$this->cc[$i];
-            }
-            $this->header .= "\n";
-        }
-        // BCC Empfänger hinzufügen
-        $max = count($this->bcc);
-        if ($max > 0)
-        {
-            $this->header .= "Bcc: ".$this->bcc[0];
-            for ($i = 1; $i < $max; $i++)
-            {
-                $this->header .= ", ".$this->bcc[$i];
-            }
-            $this->header .= "\n";
-        }
+        // Add CC Recipients 
+		if (!empty($this->cc)) 
+			$this->header .= "Cc: " . implode(", ", $this->cc) . "\n" ; 
+
+		// Add BCC Recipients 
+		if (!empty($this->bcc)) 
+			$this->header .= "Bcc: " . implode(", ", $this->bcc) . "\n" ; 
 		$this->header .= "Content-Type: multipart/mixed;\n boundary=\"$this->boundary\"\n";
 
-        // Attachment hinzufügen
-        $max = count($this->attachment);
-        if ($max > 0)
+        // Add Attachments
+        if (!empty($this->attachment))
         {
-            for ($i = 0; $i < $max; $i++)
+            foreach ($this->attachment as $filename => $file)
             {
-                $file = fread(fopen($this->attachment[$i], "r"), filesize($this->attachment[$i]));
+                $file = fread(fopen($file, "r"), filesize($file));
 				$this->body .= "--".$this->boundary."\n";
-				$this->body .= "Content-Type: " .$this->mime_type(basename($this->attachment[$i])). "; name=\"".basename($this->attachment[$i])."\"\n";
+				$this->body .= "Content-Type: " .$this->mime_type($file). "; name=\"".$filename."\"\n";
 				$this->body .= "Content-Transfer-Encoding: base64\n";
-				$this->body .= "Content-Disposition: attachment; filename=\"".basename($this->attachment[$i])."\"\n\n";
+				$this->body .= "Content-Disposition: attachment; filename=\"".$filename."\"\n\n";
 				$this->body .= chunk_split(base64_encode($file),"72","\n");
                 $file = "";
             }
         }
-			$this->body .= "--".$this->boundary."--\n";
+		$this->body .= "--".$this->boundary."--\n";
 
 		$ret = 0;
         foreach($this->to as $mail)
@@ -164,4 +152,3 @@ class email
         return $ret;
     }
 }
-?>

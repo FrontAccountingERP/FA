@@ -18,9 +18,9 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Receive Purchase Order Items"), false, false, "", $js);
 
@@ -131,7 +131,7 @@ function check_po_changed()
 {
 	/*Now need to check that the order details are the same as they were when they were read
 	into the Items array. If they've changed then someone else must have altered them */
-	// Sherifoz 22.06.03 Compare against COMPLETED items only !!
+	// Compare against COMPLETED items only !!
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$result = get_po_items($_SESSION['PO']->order_no);
 
@@ -161,7 +161,7 @@ function check_po_changed()
 
 function can_process()
 {
-	global $SysPrefs, $Refs;
+	global $SysPrefs;
 	
 	if (count($_SESSION['PO']->line_items) <= 0)
 	{
@@ -175,24 +175,14 @@ function can_process()
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
-
-	if (!is_date_in_fiscalyear($_POST['DefaultReceivedDate'])) 
-	{
-		display_error(_("The entered date is not in fiscal year"));
+	if (!is_date_in_fiscalyear($_POST['DefaultReceivedDate'])) {
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
 
-    if (!$Refs->is_valid($_POST['ref']))
-    {
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE))
+	if (!check_reference($_POST['ref'], ST_SUPPRECEIVE))
 	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
@@ -283,7 +273,8 @@ if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']
 {
 	create_new_po(ST_PURCHORDER, $_GET['PONumber']);
 	$_SESSION['PO']->trans_type = ST_SUPPRECEIVE;
-	$_SESSION['PO']->reference = $Refs->get_next(ST_SUPPRECEIVE);
+	$_SESSION['PO']->reference = $Refs->get_next(ST_SUPPRECEIVE, 
+		array('date' => Today(), 'supplier' => $_SESSION['PO']->supplier_id));
 	copy_from_cart();
 }
 
@@ -338,5 +329,3 @@ end_form();
 
 //--------------------------------------------------------------------------------------------------
 end_page();
-?>
-

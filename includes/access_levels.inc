@@ -40,6 +40,10 @@ define('SS_ITEMS_C',31<<8);
 define('SS_ITEMS',	32<<8);
 define('SS_ITEMS_A',33<<8);
 
+define('SS_ASSETS_C',36<<8);
+define('SS_ASSETS',	37<<8);
+define('SS_ASSETS_A',38<<8);
+
 define('SS_MANUF_C',41<<8);
 define('SS_MANUF',	42<<8);
 define('SS_MANUF_A',43<<8);
@@ -53,26 +57,29 @@ define('SS_GL',		62<<8);
 define('SS_GL_A',	63<<8);
 
 $security_sections = array(
- SS_SADMIN => _("System administration"),
- SS_SETUP => _("Company setup"),
- SS_SPEC => _("Special maintenance"),
- SS_SALES_C => _("Sales configuration"),
- SS_SALES => _("Sales transactions"),
- SS_SALES_A => _("Sales related reports"),
- SS_PURCH_C => _("Purchase configuration"),
- SS_PURCH => _("Purchase transactions"),
- SS_PURCH_A => _("Purchase analytics"),
- SS_ITEMS_C => _("Inventory configuration"),
- SS_ITEMS => _("Inventory operations"),
- SS_ITEMS_A => _("Inventory analytics"),
- SS_MANUF_C => _("Manufacturing configuration"),
- SS_MANUF => _("Manufacturing transactions"),
- SS_MANUF_A => _("Manufacturing analytics"),
- SS_DIM_C => _("Dimensions configuration"),
- SS_DIM => _("Dimensions"),
- SS_GL_C => _("Banking & GL configuration"),
- SS_GL => _("Banking & GL transactions"),
- SS_GL_A => _("Banking & GL analytics")
+ 	SS_SADMIN => _("System administration"),
+ 	SS_SETUP => _("Company setup"),
+ 	SS_SPEC => _("Special maintenance"),
+ 	SS_SALES_C => _("Sales configuration"),
+ 	SS_SALES => _("Sales transactions"),
+ 	SS_SALES_A => _("Sales related reports"),
+ 	SS_PURCH_C => _("Purchase configuration"),
+ 	SS_PURCH => _("Purchase transactions"),
+ 	SS_PURCH_A => _("Purchase analytics"),
+ 	SS_ITEMS_C => _("Inventory configuration"),
+ 	SS_ITEMS => _("Inventory operations"),
+ 	SS_ITEMS_A => _("Inventory analytics"),
+	SS_ASSETS_C => _("Fixed Assets configuration"),
+	SS_ASSETS => _("Fixed Assets operations"),
+	SS_ASSETS_A => _("Fixed Assets analytics"),
+ 	SS_MANUF_C => _("Manufacturing configuration"),
+ 	SS_MANUF => _("Manufacturing transactions"),
+ 	SS_MANUF_A => _("Manufacturing analytics"),
+ 	SS_DIM_C => _("Dimensions configuration"),
+ 	SS_DIM => _("Dimensions"),
+ 	SS_GL_C => _("Banking & GL configuration"),
+ 	SS_GL => _("Banking & GL transactions"),
+ 	SS_GL_A => _("Banking & GL analytics")
 );
 
 /*
@@ -118,9 +125,9 @@ $security_areas =array(
 	'SA_BACKUP' => array(SS_SPEC|2, _("Database backup/restore")),
 	'SA_VIEWPRINTTRANSACTION' => array(SS_SPEC|3, _("Common view/print transactions interface")),
 	'SA_ATTACHDOCUMENT' => array(SS_SPEC|4, _("Attaching documents")),
-	'SA_SETUPDISPLAY' => array(SS_SPEC|5, _("Display preferences")), //???
-	'SA_CHGPASSWD' => array(SS_SPEC|6, _("Password changes")), //???
-
+	'SA_SETUPDISPLAY' => array(SS_SPEC|5, _("Display preferences")),
+	'SA_CHGPASSWD' => array(SS_SPEC|6, _("Password changes")),
+	'SA_EDITOTHERSTRANS' => array(SS_SPEC|7, _("Edit other users transactions")),
 //
 // Sales related functionality
 //
@@ -188,6 +195,20 @@ $security_areas =array(
 	'SA_ITEMSVALREP' => array(SS_ITEMS_A|3, _("Inventory valuation report")),
 
 //
+// Fixed Assets
+//
+	'SA_ASSET' => array(SS_ASSETS_C|1, _("Fixed Asset items add/edit")),
+	'SA_ASSETCATEGORY' => array(SS_ASSETS_C|2, _("Fixed Asset categories")),
+	'SA_ASSETCLASS' => array(SS_ASSETS_C|4, _("Fixed Asset classes")),
+
+	'SA_ASSETSTRANSVIEW' => array(SS_ASSETS|1, _("Fixed Asset transactions view")),
+	'SA_ASSETTRANSFER' => array(SS_ASSETS|2, _("Fixed Asset location transfers")),
+	'SA_ASSETDISPOSAL' => array(SS_ASSETS|3, _("Fixed Asset disposals")),
+    'SA_DEPRECIATION' => array(SS_ASSETS|4, _("Depreciation")),
+
+	'SA_ASSETSANALYTIC' => array(SS_ASSETS_A|1, _("Fixed Asset analytical reports and inquiries")),
+
+//
 // Manufacturing module 
 //
 	'SA_BOM' => array(SS_MANUF_C|1, _("Bill of Materials")),
@@ -227,6 +248,8 @@ $security_areas =array(
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
 	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
+	'SA_GLCLOSE' => array(SS_GL_C|14, _("Closing GL transactions")),
+	'SA_GLREOPEN' => array(SS_GL_C|15, _("Reopening GL transactions")), // see below
 	'SA_MULTIFISCALYEARS' => array(SS_GL_C|13, _("Allow entry on non closed Fiscal years")),
 
 	'SA_BANKTRANSVIEW' => array(SS_GL|1, _("Bank transactions view")),
@@ -247,6 +270,9 @@ $security_areas =array(
 	'SA_BANKREP' => array(SS_GL_A|3, _("Bank reports and inquiries")),
 	'SA_GLREP' => array(SS_GL_A|4, _("GL reports and inquiries")),
 );
+
+if (!@$SysPrefs->allow_gl_reopen)
+	unset($security_areas['SA_GLREOPEN']);
 /*
 	This function should be called whenever we want to extend core access level system
 	with new security areas and/or sections i.e.: 
@@ -292,21 +318,39 @@ function add_access_extensions()
 		}
 	}
 }
-/*
-	Helper function to retrieve extension access definitions in isolated environment.
-*/
-/*
-function get_access_extensions($id) {
-	global $path_to_root, $installed_extensions;
-	
-	$ext = $installed_extensions[$id];
-	
-	$security_sections = $security_areas = array();
-	
-	if (isset($ext['acc_file']))
-		include_once($path_to_root.'/'.$ext['path'].'/'.$ext['acc_file']);
 
-	return array($security_areas, $security_sections);
+function check_edit_access($name)
+{
+	global $input_security;
+
+	$access = @$input_security[$name];
+
+	if (!$access)
+		$access = @$input_security['']; // default access level
+
+	if (!$access)
+		return true; // if constraint is not defined edit access is allowed
+
+	return  user_check_access($access);
 }
+/*
+	Returns POST value or null if edit access to $name control is forbidden.
 */
-?>
+function access_post($name, $dflt=null)
+{
+	if (!check_edit_access($name))
+		return $dflt;
+	else
+		return get_post($name, $dflt);
+}
+
+/*
+	Returns numeric input value or null if edit access to $name control is forbidden.
+*/
+function access_num($name, $dflt=null)
+{
+	if (!check_edit_access($name))
+		return $dflt;
+	else
+		return input_num($name, $dflt);
+}

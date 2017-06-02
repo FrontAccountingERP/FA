@@ -11,6 +11,7 @@
 ***********************************************************************/
 $page_security = 'SA_MANUFISSUE';
 $path_to_root = "..";
+
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -22,10 +23,11 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 include_once($path_to_root . "/manufacturing/includes/work_order_issue_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
+
 page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
@@ -67,39 +69,28 @@ function handle_new_order()
 }
 
 //-----------------------------------------------------------------------------------------------
-
 function can_process()
 {
-	global $Refs;
-
-	if (!is_date($_POST['date_'])) 
+	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the issue is invalid."));
 		set_focus('date_');
 		return false;
 	} 
-	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
+	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_MANUISSUE))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	if (!is_new_reference($_POST['ref'], ST_MANUISSUE)) 
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
 
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
-	if ($failed_item) 
+	if ($failed_item)
 	{
    		display_error(_("The issue cannot be processed because it would cause negative inventory balance for marked items as of document date or later."));
 		return false;
@@ -227,4 +218,3 @@ end_form();
 
 end_page();
 
-?>

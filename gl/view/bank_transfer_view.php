@@ -92,4 +92,3 @@ end_table(1);
 is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 
 end_page(true, false, false, ST_BANKTRANSFER, $trans_no);
-?>

@@ -27,7 +27,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 		.db_escape($website). ", "
 		.db_escape($supp_account_no). ", "
 		.db_escape($bank_account). ", "
-		.db_escape($credit_limit). ", "
+		.$credit_limit. ", "
 		.db_escape($dimension_id). ", "
 		.db_escape($dimension2_id). ", "
 		.db_escape($curr_code). ", "
@@ -91,7 +91,8 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
 	if ($all)
     	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)";
     else	
-    	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.",
+    	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT."
+    	OR (trans.type=".ST_JOURNAL." AND (trans.ov_amount + trans.ov_gst + trans.ov_discount)>0),
     		(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc),
     		(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc))";
 	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
@@ -120,7 +121,6 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
 			  ".TB_PREF."payment_terms.terms,
 			  ".TB_PREF."payment_terms.days_before_due,
 			  ".TB_PREF."payment_terms.day_in_following_month";
-
     $result = db_query($sql,"The customer details could not be retrieved");
     $supp = db_fetch($result);
 
@@ -179,4 +179,34 @@ function is_new_supplier($id)
 
 	return !key_in_foreign_table($id, $tables, 'supplier_id');
 }
-?>
+
+function get_supplier_currency($supplier_id)
+{
+    $sql = "SELECT curr_code FROM ".TB_PREF."suppliers WHERE supplier_id = ".db_escape($supplier_id);
+
+	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
+
+	$myrow=db_fetch_row($result);
+	return $myrow[0];
+}
+
+function get_suppliers_search($supplier)
+{
+	global $SysPrefs;
+
+	if (isset($SysPrefs->max_rows_in_search))
+		$limit = $SysPrefs->max_rows_in_search;
+	else
+		$limit = 10;
+
+	$sql = "SELECT supplier_id, supp_name, supp_ref, address, gst_no
+		FROM ".TB_PREF."suppliers
+		WHERE (supp_name LIKE " . db_escape("%" . $supplier. "%") . " OR 
+			supp_ref LIKE " . db_escape("%" . $supplier. "%") . " OR 
+			address LIKE " . db_escape("%" . $supplier. "%") . " OR 
+			gst_no LIKE " . db_escape("%" . $supplier. "%") . ")
+		ORDER BY supp_name LIMIT 0,".(int)($limit);
+
+	return db_query($sql, "Failed in retreiving supplier list.");
+}
+

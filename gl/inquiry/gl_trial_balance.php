@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = "";
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js = get_js_date_picker();
 
 page(_($help_context = "Trial Balance"), false, false, "", $js);
@@ -47,10 +47,10 @@ function gl_inquiry_controls()
     start_table(TABLESTYLE_NOBORDER);
 
 	$date = today();
-	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = begin_month($date);
 	if (!isset($_POST['TransToDate']))
 		$_POST['TransToDate'] = end_month($date);
+	if (!isset($_POST['TransFromDate']))
+		$_POST['TransFromDate'] = add_days(end_month($date), -user_transaction_days());
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
@@ -69,19 +69,17 @@ function gl_inquiry_controls()
 
 function display_trial_balance($type, $typename)
 {
-	global $path_to_root, $clear_trial_balance_opening;
-	
-	global $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
-	$printtitle = 0; //Flag for printing type name		
+	global $path_to_root, $SysPrefs,
+		 $k, $pdeb, $pcre, $cdeb, $ccre, $tdeb, $tcre, $pbal, $cbal, $tbal;
+
+	$printtitle = 0; //Flag for printing type name
 
 	$k = 0;
 
-	//$accounts = get_gl_accounts();
 	//Get Accounts directly under this group/type
-	$accounts = get_gl_accounts(null, null, $type);		
-	
+	$accounts = get_gl_accounts(null, null, $type);
+
 	$begin = get_fiscalyear_begin_for_date($_POST['TransFromDate']);
-	//$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
 	$begin = add_days($begin, -1);
@@ -90,16 +88,16 @@ function display_trial_balance($type, $typename)
 	{
 		//Print Type Title if it has atleast one non-zero account	
 		if (!$printtitle)
-		{	
+		{
 			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
-			end_row();		
-			$printtitle = 1;		
-		}	
-	
+			end_row();
+			$printtitle = 1;
+		}
+
 		// FA doesn't really clear the closed year, therefore the brought forward balance includes all the transactions from the past, even though the balance is null.
 		// If we want to remove the balanced part for the past years, this option removes the common part from from the prev and tot figures.
-		if (@$clear_trial_balance_opening)
+		if (@$SysPrefs->clear_trial_balance_opening)
 		{
 			$open = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin,  $begin, false, true);
 			$offset = min($open['debit'], $open['credit']);
@@ -122,7 +120,7 @@ function display_trial_balance($type, $typename)
 			display_debit_or_credit_cells($prev['balance']);
 			display_debit_or_credit_cells($curr['balance']);
 			display_debit_or_credit_cells($tot['balance']);
-			
+
 		}
 		else
 		{
@@ -154,8 +152,9 @@ function display_trial_balance($type, $typename)
 		{
 			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
-			end_row();		
-			$printtitle = 1;		
+			end_row();
+			$printtitle = 1;
+
 		}
 		display_trial_balance($accounttype["id"], $accounttype["name"].' ('.$typename.')');
 	}
@@ -173,8 +172,8 @@ if (isset($_POST['TransFromDate']))
 		display_error(_("The from date cannot be bigger than the fiscal year end."));
 		set_focus('TransFromDate');
 		return;
-	}	
-}	
+	}
+}
 div_start('balance_tbl');
 if (!isset($_POST['Dimension']))
 	$_POST['Dimension'] = 0;
@@ -215,9 +214,6 @@ while ($class = db_fetch($classresult))
 	}
 }
 
-	//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
-	//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-	//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
 	if (!check_value('Balance'))
 	{
 		start_row("class='inquirybg' style='font-weight:bold'");
@@ -245,6 +241,4 @@ while ($class = db_fetch($classresult))
 //----------------------------------------------------------------------------------------------------
 
 end_page();
-
-?>
 

@@ -19,14 +19,18 @@ function copy_from_cart()
 
 	$_POST['supplier_id'] = $cart->supplier_id;
 	$_POST['OrderDate'] = $cart->orig_order_date;
-	if ($cart->trans_type==ST_SUPPINVOICE)
+	if ($cart->trans_type == ST_SUPPINVOICE)
 		$_POST['due_date'] = $cart->due_date;
     $_POST['supp_ref'] = $cart->supp_ref;
     $_POST['ref'] = $cart->reference;
 	$_POST['Comments'] = $cart->Comments;
     $_POST['StkLocation'] = $cart->Location;
     $_POST['delivery_address'] = $cart->delivery_address;
+	$_POST['prep_amount'] = price_format($cart->prep_amount);
 	$_POST['_ex_rate'] = $cart->ex_rate;
+	$_POST['cash_account'] = $cart->cash_account;
+    $_POST['dimension'] = $cart->dimension;
+    $_POST['dimension2'] = $cart->dimension2;
     foreach($cart->tax_overrides as $id => $value)
 	    $_POST['mantax'][$id] = price_format($value);
 }
@@ -37,49 +41,25 @@ function copy_to_cart()
 
 	$cart->supplier_id = $_POST['supplier_id'];	
 	$cart->orig_order_date = $_POST['OrderDate'];
-	if ($cart->trans_type==ST_SUPPINVOICE)
+	if ($cart->trans_type == ST_SUPPINVOICE)
+	{
 		$cart->due_date = $_POST['due_date'];
+		$cart->cash_account = get_post('cash_account');
+	}
 	$cart->reference = $_POST['ref'];
 	$cart->supp_ref = $_POST['supp_ref'];
 	$cart->Comments = $_POST['Comments'];	
 	$cart->Location = $_POST['StkLocation'];
 	$cart->delivery_address = $_POST['delivery_address'];
+   	$cart->dimension = @$_POST['dimension'];
+	$cart->dimension2 =  @$_POST['dimension2'];
+	$cart->prep_amount = input_num('prep_amount', 0);
 	$cart->ex_rate = input_num('_ex_rate', null);
 
     if (isset($_POST['mantax'])) {
 		foreach($_POST['mantax'] as $id => $tax) {
 			$cart->tax_overrides[$id] = user_numeric($_POST['mantax'][$id]); }
 	}
-}
-// ------------------------------------------------------------------------------
-
-function get_supplier_details_to_order(&$order, $supplier_id)
-{
-	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included,
-			supp.credit_limit - Sum(IFNULL(ov_amount + ov_gst + ov_discount,0)) as cur_credit,
-				terms.terms, terms.days_before_due, terms.day_in_following_month
-		FROM ".TB_PREF."suppliers supp
-			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
-			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.terms_indicator
-		WHERE supp.supplier_id = ".db_escape($supplier_id)."
-		GROUP BY
-			  supp.supp_name";
-
-	$result = db_query($sql, "The supplier details could not be retreived");
-
-	$myrow = db_fetch($result);
-	$order->credit = $myrow["cur_credit"];
-	$order->terms = array( 
-		'description' => $myrow['terms'],
-		'days_before_due' => $myrow['days_before_due'], 
-		'day_in_following_month' => $myrow['day_in_following_month'] );
-
-	$_POST['supplier_id'] = $supplier_id;
-	$_POST['supplier_name'] = $myrow["supp_name"];
-	$_POST['curr_code'] = $myrow["curr_code"];
-
-	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
-		$myrow["tax_group_id"], $myrow["tax_included"]);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -104,7 +84,8 @@ function create_new_po($trans_type, $trans_no)
 		read_po($trans_no, $cart);
 		$cart->order_no = $trans_no;
 	} else
-		$cart->reference = $Refs->get_next($trans_type);
+		$cart->reference = $Refs->get_next($trans_type, null,
+			array('supplier_id' => $cart->supplier_id, 'date' => get_post('OrderDate')));
 	$_SESSION['PO'] = &$cart;
 }
 
@@ -170,10 +151,9 @@ function display_po_header(&$order)
 			$_POST['OrderDate']);
 	}
 
-
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref');
+    	ref_row(_("Reference:"), 'ref', '', null, false, $order->trans_type, array('date'=> @$_POST['OrderDate']));
     }
     else
     {
@@ -187,7 +167,12 @@ function display_po_header(&$order)
 		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 
   	text_row(_("Supplier's Reference:"), 'supp_ref', null, 16, 15);
-	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true); 
+
+	if (get_company_pref('use_dimension'))
+		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
+	if (get_company_pref('use_dimension') == 2)
+		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
+	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true, $order->fixed_asset); 
 
 	table_section(3);
 
@@ -197,13 +182,9 @@ function display_po_header(&$order)
     {
     	/*If this is the first time the form loaded set up defaults */
 
-        //$_POST['StkLocation'] = $_SESSION['UserStockLocation'];
-        $sql = "SELECT delivery_address, phone FROM ".TB_PREF."locations WHERE loc_code=".db_escape($_POST['StkLocation']);
-        $result = db_query($sql,"could not get location info");
-
-        if (db_num_rows($result) == 1)
+		$loc_row = get_item_location(get_post('StkLocation'));
+        if ($loc_row)
         {
-    	  	$loc_row = db_fetch($result);
     	  	$_POST['delivery_address'] = $loc_row["delivery_address"];
 			$Ajax->activate('delivery_address');
     	  	$_SESSION['PO']->Location = $_POST['StkLocation'];
@@ -235,8 +216,9 @@ function display_po_items(&$order, $editable=true)
    		_("Required Delivery Date"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Line Total"), "");
 	if ($order->trans_type != ST_PURCHORDER)
 		array_remove($th, 5);
-		
+
 	if (count($order->line_items)) $th[] = '';
+
    	table_header($th);
 
 	$id = find_submit('Edit');
@@ -250,7 +232,11 @@ function display_po_items(&$order, $editable=true)
     		alt_table_row_color($k);
         	label_cell($po_line->stock_id);
     		label_cell($po_line->item_description);
-            qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+        	if ($order->fixed_asset)
+    		    label_cell(1);
+         	else
+            	qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+
             qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     		label_cell($po_line->units);
 			if ($order->trans_type == ST_PURCHORDER)
@@ -293,7 +279,8 @@ function display_po_items(&$order, $editable=true)
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
-	$order->order_no ? submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true)
+	$order->trans_type == ST_SUPPINVOICE
+	 ? submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true)
 		: label_cell('', "colspan=2");
 	end_row();
 
@@ -345,6 +332,14 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
     	label_row(_("Delivery Address"), $po->delivery_address, "class='tableheader2'",
     		"colspan=9");
 
+	if (!$editable && ($po->prep_amount > 0))
+	{
+		start_row();
+		label_cells(_("Required Pre-Payment"), price_format($po->prep_amount), "class='tableheader2'");
+		label_cells(_("Pre-Payments Allocated"), price_format($po->alloc), "class='tableheader2'");
+		end_row();
+	}
+
     if ($po->Comments != "")
     	label_row(_("Order Comments"), $po->Comments, "class='tableheader2'",
     		"colspan=9");
@@ -363,12 +358,10 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	$id = find_submit('Edit');
 	if (($id != -1) && $line_no == $id)
 	{
-//		hidden('line_no', $id);
 
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-		//$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['price'] = price_decimal_format($order->line_items[$id]->price, $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
 			$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
@@ -383,7 +376,6 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 			text_cells(null,'item_description', null, 45, 150);
 		else {
 			hidden('item_description', $_POST['item_description']);
-//			label_cell($_POST['item_description']);
 			label_cell($order->line_items[$id]->item_description); 
 		}
 
@@ -392,11 +384,13 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-//		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		//Chaitanya : Manufcatured item can be purchased
-		stock_items_list_cells(null, 'stock_id', null, false, true, false, true);
-		//stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
+		// Manufactured item can be purchased
+		if ($order->fixed_asset)
+			stock_purchasable_fa_list_cells(null, 'stock_id', null, false, true, false, true, $order->line_items);
+		else
+			stock_items_list_cells(null, 'stock_id', null, false, true, false, true, array('editable' => 30, 'where'=>array("NOT no_purchase")));
+
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -409,14 +403,18 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
-		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		if ($order->trans_type == ST_PURCHORDER)
-			$_POST['req_del_date'] = add_days(Today(), $SysPrefs->default_delivery_required_by());
+			$_POST['req_del_date'] = add_days(Today(), $SysPrefs->default_receival_required_by());
 		$qty_rcvd = '';
 	}
 
-	qty_cells(null, 'qty', null, null, null, $dec);
+	if ($order->fixed_asset) {
+		label_cell(1, '', 'qty');
+		hidden('qty', 1);
+	} else
+		qty_cells(null, 'qty', null, null, null, $dec);
+
 	qty_cell($qty_rcvd, false, $dec);
 
 	label_cell($_POST['units'], '', 'units');
@@ -430,7 +428,6 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    	else	
 		amount_cells(null, 'price', null, null, null, $dec2);
 
-	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
 	amount_cell($line_total, false, '','line_total');
 
@@ -454,6 +451,22 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 //---------------------------------------------------------------------------------------------------
 
+function display_po_footer(&$trans)
+{
+	global $Ajax;
+
+start_table(TABLESTYLE2);
+
+if ($trans->trans_type == ST_SUPPINVOICE) {
+	cash_accounts_list_row(_("Payment:"), 'cash_account', null, false, _('Delayed'));
+} elseif ($trans->trans_type == ST_PURCHORDER)
+	amount_row(_("Pre-Payment Required:"), 'prep_amount');
+
+textarea_row(_("Memo:"), 'Comments', null, 70, 4);
+
+end_table();
+}
+//---------------------------------------------------------------------------------------------------
 
 
-?>
+

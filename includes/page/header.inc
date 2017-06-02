@@ -15,7 +15,7 @@
 function help_url($context=null)
 {
 
-	global $help_base_url, $help_context, $old_style_help;
+	global $SysPrefs, $help_context;
 
 	$country = $_SESSION['language']->code;
 	$clean = 0;
@@ -34,27 +34,44 @@ function help_url($context=null)
 		$clean = 1;
 	}
 
-	if (@$old_style_help)
+	if (@$SysPrefs->old_style_help)
 		$help_page_url = _($help_page_url);
 
 	if ($clean)
 		$help_page_url = access_string($help_page_url, true);
 
-	return htmlspecialchars($help_base_url
+	return htmlspecialchars($SysPrefs->help_base_url
 		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
-		.'&ctxhelp=1&lang='.$country);
+		.'&ctxhelp=1&lang='.$country, ENT_QUOTES);
+}
+
+function send_css($css = '')
+{
+	global $css_files;
+
+	css_files_ensure_init();
+
+	foreach ($css_files as $css_file)
+	{
+		echo "<link href='$css_file' rel='stylesheet' type='text/css'> \n";
+	}
+	if ($css)
+	{
+		echo "<link href='$css' rel='stylesheet' type='text/css'> \n";
+	}
 }
 
 function send_scripts()
 {
-    global $js_static, $js_path, $js_userlib, $path_to_root, $go_debug;
+    global $SysPrefs, $path_to_root, $js_static, $js_path, $js_userlib;
 
 	$js ='';
 	foreach($js_static as $jsfile)
 	{
-	    $fpath = company_path().'/js_cache/'.$jsfile;
+		$cached_name = basename($jsfile);
+		$fpath = user_js_cache().'/'.$cached_name;
 	    // compress also static files
-	  	if (!file_exists($fpath) || $go_debug)
+	  	if (!file_exists($fpath) || $SysPrefs->go_debug)
 			cache_js_file($fpath, file_get_contents($js_path.$jsfile));
 
 	  	$js .= '<script language="javascript" type="text/javascript" src="'.
@@ -72,19 +89,14 @@ function send_scripts()
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="", $css='')
 {
 	// titles and screen header
-	global $path_to_root, $def_app, $use_popup_windows, $help_base_url, $db_connections;
+	global $path_to_root, $SysPrefs, $db_connections;
 
 	if (in_ajax())
 		return; // just for speed up
 
-//	$jsext = substr_replace($_SERVER['PHP_SELF'], '.js', -4);
-
-//	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
-//		add_js_ufile($jsext);
-
 	$theme = user_theme();
 
-	if ($help_base_url != null && $use_popup_windows && $js == '')
+	if ($SysPrefs->help_base_url != null && $SysPrefs->use_popup_windows && $js == '')
 	{
 		if (!function_exists('get_js_open_window'))
 		{
@@ -93,7 +105,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		add_js_source(get_js_open_window(900, 500));
 	}
 	if ($js!='')
-	  add_js_source($js);
+	  	add_js_source($js);
 
 	if (!isset($no_menu))
 	{
@@ -129,10 +141,9 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') != -1) // IE 11 doesn't work with input file type in form.
 		echo "<meta http-equiv='X-UA-Compatible' content='IE=10'>\n";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
- 	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
-	if ($css)
-		echo '<link href="'.$css.'" rel="stylesheet" type="text/css">';
+	echo "<link href='$path_to_root/themes/default/images/favicon.ico' rel='icon' type='image/x-icon'> \n";
+
+	send_css($css);
 
 	send_scripts();
 
@@ -148,4 +159,3 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	error_box();
 }
 
-?>

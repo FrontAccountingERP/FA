@@ -14,15 +14,15 @@
 	print button in reporting module. 
 */
 $path_to_root = "..";
-global $page_security, $save_report_selections;
+global $page_security;
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
-if (isset($save_report_selections) && $save_report_selections > 0 && isset($_POST['REP_ID'])) {	// save parameters from Report Center
+if (user_save_report_selections() > 0 && isset($_POST['REP_ID'])) {	// save parameters from Report Center
 	for($i=0; $i<12; $i++) { // 2013-01-16 Joe Hunt
 		if (isset($_POST['PARAM_'.$i]) && !is_array($_POST['PARAM_'.$i])) {
 			$rep = $_POST['REP_ID'];
-			setcookie("select[$rep][$i]", $_POST['PARAM_'.$i], time()+60*60*24*$save_report_selections); // days from $save_report_selections
+			setcookie("select[$rep][$i]", $_POST['PARAM_'.$i], time()+60*60*24*user_save_report_selections()); // days from user_save_report_selections()
 		}	
 	}
 }	
@@ -60,4 +60,3 @@ if ($rep_file) {
 	display_error("Cannot find report file '$rep'");
 exit();
 
-?>

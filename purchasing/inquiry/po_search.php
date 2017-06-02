@@ -18,9 +18,9 @@ include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Search Outstanding Purchase Orders"), false, false, "", $js);
 
@@ -61,7 +61,7 @@ start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'order_number', '',null, '', true);
 
-date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
+date_cells(_("from:"), 'OrdersAfterDate', '', null, -user_transaction_days());
 date_cells(_("to:"), 'OrdersToDate');
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
@@ -86,13 +86,12 @@ function trans_view($trans)
 
 function edit_link($row) 
 {
-  return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	return trans_editor_link(ST_PURCHORDER, $row["order_no"]);
 }
 
 function prt_link($row)
 {
-	return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT);
+	return print_document_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT);
 }
 
 function receive_link($row) 
@@ -107,23 +106,9 @@ function check_overdue($row)
 }
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['order_number']) && ($_POST['order_number'] != ""))
-{
-	$order_number = $_POST['order_number'];
-}
-
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != $all_items))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	unset($selected_stock_item);
-}
-
 //figure out the sql required from the inputs available
-$sql = get_sql_for_po_search($_POST['supplier_id']);
+$sql = get_sql_for_po_search(get_post('OrdersAfterDate'), get_post('OrdersToDate'), get_post('supplier_id'), get_post('StockLocation'),
+	$_POST['order_number'], get_post('SelectStockFromList'));
 
 //$result = db_query($sql,"No orders were returned");
 
@@ -142,7 +127,7 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'receive_link')
 );
 
-if (get_post('StockLocation') != $all_items) {
+if (get_post('StockLocation') != ALL_TEXT) {
 	$cols[_("Location")] = 'skip';
 }
 
@@ -155,4 +140,3 @@ display_db_pager($table);
 
 end_form();
 end_page();
-?>

@@ -17,7 +17,7 @@ include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Purchase Order"), true, false, "", $js);
 
@@ -155,8 +155,9 @@ echo "</td></tr>";
 
 end_table(1); // outer table
 
+display_allocations_to(PT_SUPPLIER, $purchase_order->supplier_id, ST_PURCHORDER, $purchase_order->order_no, $total + $tax_total);
+
 //----------------------------------------------------------------------------------------------------
 
 end_page(true, false, false, ST_PURCHORDER, $_GET['trans_no']);
 
-?>

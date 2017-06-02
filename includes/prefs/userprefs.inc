@@ -35,21 +35,31 @@ class user_prefs
 	var $graphic_links; // use graphic links
 	var $sticky_date;	// save date on subsequent document entry
 	var $startup_tab;  // default start-up menu tab
-	
+	var $transaction_days; // transaction days in inquiries
+	var $save_report_selection; // save report selections days 0...
+	var $use_date_picker; // use date picker for all date fields
+	var $def_print_destination; // default print destination. 0 = PDF/Printer, 1 = Excel
+	var $def_print_orientation; // default print orientation. 0 = Portrait. 1 = Landscape
+
 	function user_prefs($user=null)
 	{
 		if ($user == null) { 
 			// set default values, used before login
-			global $dflt_lang, $dflt_date_sep, $dflt_date_fmt;
-			
-			$this->date_sep = $dflt_date_sep;
-			$this->date_format = $dflt_date_fmt;
+			global $dflt_lang, $SysPrefs;
+
+			$this->date_sep = $SysPrefs->dflt_date_sep;
+			$this->date_format = $SysPrefs->dflt_date_fmt;
 			$this->tho_sep = 0;
 			$this->dec_sep = 0;
 			$this->price_dec = 2;
 			$this->language = $dflt_lang;
 			$this->theme = 'default';
-			
+			$this->transaction_days = -30;
+			$this->save_report_selections = 0;
+			$this->use_date_picker = 1;
+			$this->def_print_destination = 0;
+			$this->def_print_orientation = 0;
+
 		} else {
 			global $path_to_root;
 			$this->language = $user["language"];
@@ -83,6 +93,12 @@ class user_prefs
 				$this->sticky_date = 0;
 				$this->startup_tab = "orders";
 			}
+			$this->transaction_days = @$user['transaction_days'];
+			$this->save_report_selections = @$user['save_report_selections'];
+			$this->use_date_picker = @$user['use_date_picker'];
+			$this->def_print_destination = @$user['def_print_destination'];
+			$this->def_print_orientation = @$user['def_print_orientation'];
+
 			if (!file_exists("$path_to_root/themes/$this->theme"))
 				$this->theme = "default";
 		}
@@ -110,7 +126,11 @@ class user_prefs
 			'query_size' => $this->query_size,
 			'graphic_links' => $this->graphic_links,
 			'sticky_doc_date' => $this->sticky_date,
-			'startup_tab' => $this->startup_tab);
+			'startup_tab' => $this->startup_tab,
+			'save_report_selections' => $this->save_report_selections,
+			'use_date_picker' => $this->use_date_picker,
+			'def_print_destination' => $this->def_print_destination,
+			'def_print_orientation' => $this->def_print_orientation);
 	}
 	
 	function language() 
@@ -160,8 +180,8 @@ class user_prefs
 
 	function date_display() 
 	{
-		global $dateseps;
-		$sep = $dateseps[$this->date_sep];
+		global $SysPrefs;
+		$sep = $SysPrefs->dateseps[$this->date_sep];
 		if ($this->date_format == 0)
 			return "m".$sep."d".$sep."Y";
 		elseif ($this->date_format == 1)
@@ -231,6 +251,31 @@ class user_prefs
 		return $this->startup_tab;
 	}
 
+    function transaction_days() 
+    {
+        return $this->transaction_days;
+    }
+
+    function save_report_selections() 
+    {
+        return $this->save_report_selections;
+    }
+
+    function use_date_picker() 
+    {
+        return $this->use_date_picker;
+    }
+
+    function def_print_destination() 
+    {
+        return $this->def_print_destination;
+    }
+
+    function def_print_orientation() 
+    {
+        return $this->def_print_orientation;
+    }
+
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 
 	{
 		$this->price_dec = $price_dec;
@@ -253,4 +298,3 @@ class user_prefs
 
 }
 
-?>

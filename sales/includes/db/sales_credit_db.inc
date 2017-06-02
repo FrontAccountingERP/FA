@@ -61,15 +61,13 @@ function write_credit_note(&$credit_note, $write_off_acc)
 	    $items_added_tax = 0;
 	    $freight_added_tax = 0;
 	}
-	// 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
+	// If the Customer Branch AR Account is set to a Bank Account,
 	// the transaction will be settled at once.
 	if (is_bank_account($branch_data['receivables_account']))
 		$alloc = $credit_note_total + $items_added_tax + $credit_note->freight_cost + $freight_added_tax;
 	else
 		$alloc = 0;
 
-//	$sales_order=$invoice->order_no;	//?
-//    if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
 	if (!isset($credit_note->order_no))
 		$credit_note->order_no = 0;
 
@@ -81,8 +79,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		$credit_note->freight_cost, $freight_added_tax,
 		$credit_note->sales_type, $credit_note->order_no, $credit_note->ship_via,
 		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id,
-		$credit_note->payment); 
-		// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
+		$credit_note->payment, $credit_note->tax_included); 
 
 	if ($trans_no==0) {
 		$credit_note->trans_no = array($credit_no=>0);
@@ -122,8 +119,9 @@ function write_credit_note(&$credit_note, $write_off_acc)
 			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
 			$credit_line->standard_cost, $credit_line->src_id, $trans_no==0 ? 0:  $credit_line->id);
 
-		add_credit_movements_item($credit_note, $credit_line,
-			$credit_type, $line_taxfree_price+$line_tax, $credit_invoice);
+		if ($credit_type == 'Return')
+			add_credit_movements_item($credit_note, $credit_line,
+				$credit_type, ($line_taxfree_price+$line_tax)*(1-$credit_line->discount_percent), $credit_invoice);
 
 		$total += add_gl_trans_credit_costs($credit_note, $credit_line, $credit_no,
 		    $credit_date, $credit_type, $write_off_acc, $branch_data);
@@ -153,7 +151,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 			add_trans_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate,
-				$credit_note->document_date, $credit_note->reference);
+				$credit_note->document_date, $credit_note->reference, TR_OUTPUT);
 
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0,
 				$taxitem['Value'], $credit_note->customer_id,
@@ -178,40 +176,20 @@ function write_credit_note(&$credit_note, $write_off_acc)
 // Insert a stock movement coming back in to show the credit note and
 // 	a reversing stock movement to show the write off
 //
-
 function add_credit_movements_item(&$credit_note, &$credit_line,
 	$credit_type, $price, $credited_invoice=0)
 {
-
     //Chaitanya : Stamp current cost in stock moves $credit_line does not fetch cost
-    $curr_std_cost = get_standard_cost($credit_line->stock_id);
+    $curr_std_cost = get_unit_cost($credit_line->stock_id);
 
-	if ($credit_type == "Return") {
+	$reference = _("Return");
+	if ($credited_invoice) 
+		$reference .= ' '._("Ex Inv:").' ' . $credited_invoice;
 
-		$reference = "Return ";
-		if ($credited_invoice) {
-			$reference .= "Ex Inv: " . $credited_invoice;
-		}
-
-	} elseif ($credit_type == "WriteOff") {
-
-		$reference = "WriteOff ";
-		if ($credited_invoice)
-			$reference .= "Ex Inv: " . $credited_invoice;
-
-   	 	add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
-        	key($credit_note->trans_no), $credit_note->Location,
-        	$credit_note->document_date, $reference, -$credit_line->qty_dispatched,
-        	$curr_std_cost,  0, $price,
-        	$credit_line->discount_percent);
-
-	}
-    add_stock_move_customer(ST_CUSTCREDIT,  $credit_line->stock_id,
-        key($credit_note->trans_no), $credit_note->Location,
-        $credit_note->document_date, $reference, $credit_line->qty_dispatched,
-        $curr_std_cost,  0, $price,
-        $credit_line->discount_percent);
-
+    add_stock_move(ST_CUSTCREDIT,  $credit_line->stock_id,
+	    key($credit_note->trans_no), $credit_note->Location,
+   		$credit_note->document_date, $reference, $credit_line->qty_dispatched,
+        $curr_std_cost, $price);
 }
 
 //----------------------------------------------------------------------------------------
@@ -221,7 +199,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 {
 	$stock_gl_codes = get_stock_gl_code($order_line->stock_id);
 	$customer = get_customer($order->customer_id);
-	// 2008-08-01. If there is a Customer Dimension, then override with this,
+	// If there is a Customer Dimension, then override with this,
 	// else take the Item Dimension (if any)
 	$dim = ($order->dimension_id != $customer['dimension_id'] ? $order->dimension_id : 
 		($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]));
@@ -230,12 +208,12 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 	$total = 0;
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-	$standard_cost = get_standard_cost($order_line->stock_id);
-	if ($standard_cost != 0) {
+	$unit_cost = get_unit_cost($order_line->stock_id);
+	if ($unit_cost != 0) {
 		/*first the cost of sales entry*/
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
-			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
+			$dim, $dim2, "", -($unit_cost * $order_line->qty_dispatched),
 			PT_CUSTOMER, $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
@@ -248,7 +226,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 		}
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0,
-			"", ($standard_cost * $order_line->qty_dispatched),
+			"", ($unit_cost * $order_line->qty_dispatched),
 			PT_CUSTOMER, $order->customer_id,
 			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
 
@@ -266,7 +244,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		//Post sales transaction to GL credit sales
 
-		// 2008-06-14. If there is a Branch Sales Account, then override with this,
+		// If there is a Branch Sales Account, then override with this,
 		// else take the Item Sales Account
 		if ($branch_data['sales_account'] != "")
 			$sales_account = $branch_data['sales_account'];
@@ -288,4 +266,3 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	return $total;
 }
 
-?>

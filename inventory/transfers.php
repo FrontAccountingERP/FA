@@ -21,17 +21,25 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/stock_transfers_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
+
+if (isset($_GET['NewTransfer'])) {
+	if (isset($_GET['FixedAsset'])) {
+		$page_security = 'SA_ASSETTRANSFER';
+		$_SESSION['page_title'] = _($help_context = "Fixed Assets Location Transfers");
+	}
+	else {
+		$_SESSION['page_title'] = _($help_context = "Inventory Location Transfers");
+	}
+}
+page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
-
-check_db_has_movement_types(_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 
 //-----------------------------------------------------------------------------------------------
 
@@ -43,7 +51,12 @@ if (isset($_GET['AddedID']))
 	display_notification_centered(_("Inventory transfer has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
+  $itm = db_fetch(get_stock_transfer_items($_GET['AddedID']));
+
+  if (is_fixed_asset($itm['mb_flag']))
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Fixed Assets Transfer"), "NewTransfer=1&FixedAsset=1");
+  else
+	  hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"), "NewTransfer=1");
 
 	display_footer_exit();
 }
@@ -66,6 +79,7 @@ function handle_new_order()
 	}
 
 	$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
+  $_SESSION['transfer_items']->fixed_asset = isset($_GET['FixedAsset']);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -85,15 +99,8 @@ if (isset($_POST['Process']))
 		set_focus('stock_id');
 		$input_error = 1;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
+	if (!check_reference($_POST['ref'], ST_LOCTRANSFER))
 	{
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	} 
-	elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER)) 
-	{
-		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
 	} 
@@ -105,7 +112,7 @@ if (isset($_POST['Process']))
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('AdjDate');
 		$input_error = 1;
 	} 
@@ -137,7 +144,7 @@ if (isset($_POST['Process']))
 
 	$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 		$_POST['FromStockLocation'], $_POST['ToStockLocation'],
-		$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
+		$_POST['AdjDate'], $_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['transfer_items']->clear_items();
 	unset($_SESSION['transfer_items']);
@@ -149,7 +156,7 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!check_num('qty', 0))
+	if (!check_num('qty', 0) || input_num('qty') == 0)
 	{
 		display_error(_("The quantity entered must be a positive number."));
 		set_focus('qty');
@@ -162,13 +169,10 @@ function check_item_data()
 
 function handle_update_item()
 {
-    if($_POST['UpdateItem'] != "" && check_item_data())
-    {
-		$id = $_POST['LineNo'];
-    	if (!isset($_POST['std_cost']))
-    		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
-    	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
-    }
+	$id = $_POST['LineNo'];
+   	if (!isset($_POST['std_cost']))
+   		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
+   	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
 	line_start_focus();
 }
 
@@ -184,8 +188,6 @@ function handle_delete_item($id)
 
 function handle_new_item()
 {
-	if (!check_item_data())
-		return;
 	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = 0;
 	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
@@ -197,10 +199,10 @@ $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
 	
-if (isset($_POST['AddItem']))
+if (isset($_POST['AddItem']) && check_item_data())
 	handle_new_item();
 
-if (isset($_POST['UpdateItem']))
+if (isset($_POST['UpdateItem']) && check_item_data())
 	handle_update_item();
 
 if (isset($_POST['CancelItemChanges'])) {
@@ -210,6 +212,11 @@ if (isset($_POST['CancelItemChanges'])) {
 
 if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 {
+	if (isset($_GET['fixed_asset']))
+		check_db_has_disposable_fixed_assets(_("There are no fixed assets defined in the system."));
+	else
+		check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+
 	handle_new_order();
 }
 
@@ -233,4 +240,3 @@ submit_center_last('Process', _("Process Transfer"), '',  'default');
 end_form();
 end_page();
 
-?>

@@ -123,23 +123,6 @@ function delete_user($id)
 }
 
 //-----------------------------------------------------------------------------------------------
-//
-//	Obsolete, to be removed in 2.4. This function as been spleet into get_user_auth/get_user_by_login
-//	in FA 2.3.6
-//
-function get_user_for_login($user_id, $password)
-{
-	set_global_connection();
-
-// do not exclude inactive records or you lost access after source upgrade
-// on sites using pre 2.2 database
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
-		." password=".db_escape($password);
-
-	return db_query($sql, "could not get validate user login for $user_id");
-}
-
-//-----------------------------------------------------------------------------------------------
 
 function get_user_auth($user_id, $password)
 {
@@ -174,9 +157,9 @@ function check_user_activity($id)
 //-----------------------------------------------------------------------------------------------
 function show_users_online()
 {
-	global $show_users_online, $db, $GetText;
-	
-	if (!isset($show_users_online) || $show_users_online == 0 || !defined('TB_PREF') || 
+	global $db, $GetText, $SysPrefs;
+
+	if (!isset($SysPrefs->show_users_online) || $SysPrefs->show_users_online == 0 || !defined('TB_PREF') || 
 		!isset($GetText) || !isset($db))
 		return "";
 	$result = db_query("SHOW TABLES LIKE '".TB_PREF."useronline'");	
@@ -224,4 +207,3 @@ function show_users_online()
 	return "$users ".($users == 1 ? _("user online") : _("users online"));
 
 }
-?>

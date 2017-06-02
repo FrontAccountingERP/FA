@@ -10,10 +10,11 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_REORDER';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -21,8 +22,10 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Reorder Levels"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Reorder Levels"), false, false, "", $js);
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 
@@ -37,13 +40,16 @@ if (list_updated('stock_id'))
 	$Ajax->activate('reorders');
 }
 //------------------------------------------------------------------------------------
-if (!@$_GET['popup'])
-	start_form();
+
+$action = $_SERVER['PHP_SELF'];
+if ($page_nested)
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
@@ -69,12 +75,6 @@ $j = 1;
 $k=0; //row colour counter
 
 $result = get_loc_details($_POST['stock_id']);
-
-if (@$_GET['popup'])
-{
-	hidden('_tabs_sel', get_post('_tabs_sel'));
-	hidden('popup', @$_GET['popup']);
-}
 
 while ($myrow = db_fetch($result))
 {
@@ -110,9 +110,5 @@ end_table(1);
 div_end();
 submit_center('UpdateData', _("Update"), true, false, 'default');
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}
-?>
+end_form();
+end_page();

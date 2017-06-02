@@ -12,19 +12,18 @@
 $page_security = 'SA_WORKORDERCOST';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/inventory.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_bank_trans.inc");
-include_once($path_to_root . "/includes/db/inventory_db.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
 
@@ -67,16 +66,14 @@ if (strlen($wo_details[0]) == 0)
 
 //--------------------------------------------------------------------------------------------------
 
-function can_process()
+function can_process($wo_details)
 {
-	global $wo_details;
-
 	if (!check_num('costs', 0))
 	{
 		display_error(_("The amount entered is not a valid number or less then zero."));
 		set_focus('costs');
 		return false;
-	}	
+	}
 
 	if (!is_date($_POST['date_']))
 	{
@@ -86,7 +83,7 @@ function can_process()
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		return false;
 	}
@@ -102,32 +99,15 @@ function can_process()
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['process']) && can_process() == true)
+if (isset($_POST['process']) && can_process($wo_details) == true)
 {
 	$date = $_POST['date_'];
-	begin_transaction();
-	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
-		0, 0, $date.": ".$wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
-	$is_bank_to = is_bank_account($_POST['cr_acc']);
-	if ($is_bank_to)
-	{
-		add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
-			$_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], get_company_currency(),
-			"Cannot insert a destination bank transaction");
-	}
+	$memo = $_POST['memo'];
+	$ref  = $_POST['ref'];
 
-	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
-		$_POST['dim1'], $_POST['dim2'], $date.": ".$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
-			$_POST['PaymentType']);
-			
-	//Chaitanya : Apply the costs to manfuctured stock item as adjustement
-	$wo = get_work_order($_POST['selected_id']);
-	if ($_POST['PaymentType'] == 0)
-		add_labour_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
-	else
-		add_overhead_cost($wo['stock_id'], $wo['units_reqd'], $_POST['date_'], input_num('costs'), true);
-			
-	commit_transaction();	
+	add_wo_costs_journal($_POST['selected_id'], input_num('costs'), $_POST['PaymentType'], 
+		$_POST['cr_acc'], $date, $_POST['dim1'], $_POST['dim2'], $memo, $ref);
+
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);
 }
 
@@ -136,6 +116,9 @@ if (isset($_POST['process']) && can_process() == true)
 display_wo_details($_POST['selected_id']);
 
 //-------------------------------------------------------------------------------------
+
+if (!isset($_POST['ref']))
+	$_POST['ref'] = $Refs->get_next(ST_JOURNAL, null, Today());
 
 start_form();
 
@@ -146,22 +129,25 @@ start_table(TABLESTYLE2);
 
 br();
 
-yesno_list_row(_("Type:"), 'PaymentType', null,	$wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
 
 date_row(_("Date:"), 'date_');
+ref_row(_("Reference:"), 'ref', '');
 
-$item_accounts = get_stock_gl_code($wo_details['stock_id']);
-$_POST['db_acc'] = $item_accounts['assembly_account'];
+yesno_list_row(_("Type:"), 'PaymentType', null,	$wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR], true);
+if (list_updated('PaymentType'))
+	$Ajax->activate('costs');
+
+$item = get_item($wo_details['stock_id']);
 $r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r[0];
+$_POST['costs'] = price_format(get_post('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 
 amount_row(_("Additional Costs:"), 'costs');
-gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);
 gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);
-
+textarea_row(_("Memo:"), 'memo', null, 40, 5);
 end_table(1);
-hidden('dim1', $item_accounts["dimension_id"]);
-hidden('dim2', $item_accounts["dimension2_id"]);
+hidden('dim1', $item["dimension_id"]);
+hidden('dim2', $item["dimension2_id"]);
 
 submit_center('process', _("Process Additional Cost"), true, '', true);
 
@@ -169,4 +155,3 @@ end_form();
 
 end_page();
 
-?>

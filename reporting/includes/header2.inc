@@ -59,7 +59,6 @@
 		{
 			$this->LineTo($col += $width, $iline2,$col, $iline4);
 		}
-		$this->LineTo($right, $iline2 ,$right, $iline4);
 		$this->LineTo($this->leftMargin, $iline5 ,$this->leftMargin, $iline7);
 		if ($this->l['a_meta_dir'] == 'rtl') // avoid line overwrite in rtl language
 			$this->LineTo($this->cols[$cols - 2], $iline5 ,$this->cols[$cols - 2], $iline7);
@@ -161,7 +160,7 @@
 		$this->row = $temp;
 		$this->Text($mcol, $Addr2['name']);
 		$this->NewLine();
-		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $Addr2['address']);
+		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $Addr2['address'], 'left', 0, 0, NULL, 1);
 
 		// Auxiliary document information
 		$col = $this->leftMargin;
@@ -214,4 +213,3 @@
 
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;
-?>

@@ -14,12 +14,12 @@ $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
+page(_($help_context = "Suppliers"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
@@ -35,7 +35,8 @@ $supplier_id = get_post('supplier_id');
 //--------------------------------------------------------------------------------------------
 function supplier_settings(&$supplier_id)
 {
-
+	global $page_nested;
+	
 	start_outer_table(TABLESTYLE2);
 
 	table_section(1);
@@ -112,7 +113,7 @@ function supplier_settings(&$supplier_id)
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
 	//
 	// tax_included option from supplier record is used directly in update_average_cost() function,
-	// therefore we can't edit the option after any transaction waas done for the supplier.
+	// therefore we can't edit the option after any transaction was done for the supplier.
 	//
 	if (is_new_supplier($supplier_id))
 		check_row(_("Prices contain tax included:"), 'tax_included');
@@ -120,6 +121,9 @@ function supplier_settings(&$supplier_id)
 		hidden('tax_included');
 		label_row(_("Prices contain tax included:"), $_POST['tax_included'] ? _('Yes') : _('No'));
 	}
+
+	if (!$supplier_id) table_section(2);
+
 	table_section_title(_("Accounts"));
 	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
 	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account'],
@@ -127,11 +131,16 @@ function supplier_settings(&$supplier_id)
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
 	if (!$supplier_id) {
 		table_section_title(_("Contact Data"));
+		text_row(_("Contact Person:"), 'contact', null, 42, 40);
 		text_row(_("Phone Number:"), 'phone', null, 32, 30);
 		text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+		table_section_title(_("Contact Data"));
+		text_row(_("Fax Number:"), 'fax', null, 32, 30);
+		email_row(_("E-mail:"), 'email', null, 35, 55);
+		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
 	}
-
-	table_section(2);
+	else
+		table_section(2);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 	{
@@ -144,7 +153,8 @@ function supplier_settings(&$supplier_id)
 		hidden('dimension_id', 0);
 	if ($dim < 2)
 		hidden('dimension2_id', 0);
-
+	if (!$supplier_id)	
+		table_section(2);
 
 	table_section_title(_("Addresses"));
 	textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
@@ -154,20 +164,13 @@ function supplier_settings(&$supplier_id)
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 	if ($supplier_id)
 		record_status_list_row(_("Supplier status:"), 'inactive');
-	else {
-		table_section_title(_("Contact Data"));
-		text_row(_("Contact Person:"), 'contact', null, 42, 40);
-		text_row(_("Fax Number:"), 'fax', null, 32, 30);
-		email_row(_("E-mail:"), 'email', null, 35, 55);
-		languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
-	}
 	end_outer_table(1);
 
 	div_start('controls');
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
-		  _('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
+		  _('Update supplier data'), $page_nested ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);
@@ -283,7 +286,6 @@ start_form();
 if (db_has_suppliers()) 
 {
 	start_table(false, "", 3);
-//	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
 		  _('New supplier'), true, check_value('show_inactive'));
@@ -306,10 +308,8 @@ if (!$supplier_id)
 tabbed_content_start('tabs', array(
 		'settings' => array(_('&General settings'), $supplier_id),
 		'contacts' => array(_('&Contacts'), $supplier_id),
-		'transactions' => array(_('&Transactions'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
-		'orders' => array(_('Purchase &Orders'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
+		'transactions' => array(_('&Transactions'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
+		'orders' => array(_('Purchase &Orders'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -323,20 +323,15 @@ tabbed_content_start('tabs', array(
 			break;
 		case 'transactions':
 			$_GET['supplier_id'] = $supplier_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/purchasing/inquiry/supplier_inquiry.php");
 			break;
 		case 'orders':
 			$_GET['supplier_id'] = $supplier_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
 			break;
 	};
 br();
 tabbed_content_end();
-hidden('popup', @$_REQUEST['popup']);
 end_form();
+end_page();
 
-end_page(@$_REQUEST['popup']);
-
-?>

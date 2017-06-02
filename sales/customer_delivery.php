@@ -19,17 +19,16 @@ $path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 
 $js = "";
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
-if ($use_date_picker) {
+if (user_use_date_picker()) {
 	$js .= get_js_date_picker();
 }
 
@@ -58,7 +57,8 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 
-	hyperlink_params("$path_to_root/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
+	if (!isset($_GET['prepaid']))
+		hyperlink_params("$path_to_root/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 
 	hyperlink_params("$path_to_root/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 
@@ -77,7 +77,8 @@ if (isset($_GET['AddedID'])) {
 	display_note(print_document_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
 	display_note(print_document_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
-	hyperlink_params($path_to_root . "/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
+	if (!isset($_GET['prepaid']))
+		hyperlink_params($path_to_root . "/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 
 	hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 
@@ -88,13 +89,22 @@ if (isset($_GET['AddedID'])) {
 if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	$ord = new Cart(ST_SALESORDER, $_GET['OrderNumber'], true);
+	if ($ord->is_prepaid())
+		check_deferred_income_act(_("You have to set Deferred Income Account in GL Setup to entry prepayment invoices."));
 
 	if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different sales order to delivery"), "OutstandingOnly=1");
-		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
+		echo "<br><center><b>" . _("This order has no items. There is nothing to delivery.") .
+			"</center></b>";
+		display_footer_exit();
+	} else if (!$ord->is_released()) {
+		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",_("Select a different sales order to delivery"),
+			"OutstandingOnly=1");
+		echo "<br><center><b>"._("This prepayment order is not yet ready for delivery due to insufficient amount received.")
+			."</center></b>";
+		display_footer_exit();
 	}
-
  	// Adjust Shipping Charge based upon previous deliveries TAM
 	adjust_shipping_charge($ord, $_GET['OrderNumber']);
  
@@ -103,10 +113,11 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
+	check_is_editable(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
+	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
 
-	if ($_SESSION['Items']->count_items() == 0) {
-		hyperlink_params($path_to_root . "/sales/inquiry/customer_inquiry.php",
+	if (!$_SESSION['Items']->prepaid && $_SESSION['Items']->count_items() == 0) {
+		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
 			_("Select a different delivery"), "OutstandingOnly=1");
 		echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
 			"</center></b>";
@@ -126,7 +137,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	exit;
 
 } else {
-	check_edit_conflicts();
+	check_edit_conflicts(get_post('cart_id'));
 
 	if (!check_quantities()) {
 		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
@@ -150,7 +161,7 @@ function check_data()
 	}
 
 	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
-		display_error(_("The entered date of delivery is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DispatchDate');
 		return false;
 	}
@@ -162,7 +173,7 @@ function check_data()
 	}
 
 	if ($_SESSION['Items']->trans_no==0) {
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'], ST_CUSTDELIVERY)) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
@@ -191,7 +202,7 @@ function check_data()
 
 	if (!$SysPrefs->allow_negative_stock() && ($low_stock = $_SESSION['Items']->check_qoh()))
 	{
-		display_error(_("This document cannot be processed because there is insufficient quantity for: ").implode(',', $low_stock));
+		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
 
@@ -237,13 +248,13 @@ function check_quantities()
 	// Update cart delivery quantities/descriptions
 	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
 		if (isset($_POST['Line'.$line])) {
-		if($_SESSION['Items']->trans_no) {
-			$min = $itm->qty_done;
-			$max = $itm->quantity;
-		} else {
-			$min = 0;
-			$max = $itm->quantity - $itm->qty_done;
-		}
+			if($_SESSION['Items']->trans_no) {
+				$min = $itm->qty_done;
+				$max = $itm->quantity;
+			} else {
+				$min = 0;
+				$max = $itm->quantity - $itm->qty_done;
+			}
 
 			if (check_num('Line'.$line, $min, $max)) {
 				$_SESSION['Items']->line_items[$line]->qty_dispatched =
@@ -262,15 +273,12 @@ function check_quantities()
 			}
 		}
 	}
-// ...
-//	else
-//	  $_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
 	return $ok;
 }
+
 //------------------------------------------------------------------------------
 
-if (isset($_POST['process_delivery']) && check_data())
-{
+if (isset($_POST['process_delivery']) && check_data()) {
 	$dn = &$_SESSION['Items'];
 
 	if ($_POST['bo_policy']) {
@@ -292,11 +300,13 @@ if (isset($_POST['process_delivery']) && check_data())
 	}
 	else
 	{
+		$is_prepaid = $dn->is_prepaid() ? "&prepaid=Yes" : '';
+
 		processing_end();
 		if ($newdelivery) {
-			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no$is_prepaid");
 		} else {
-			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no$is_prepaid");
 		}
 	}
 }
@@ -319,11 +329,11 @@ label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableh
 end_row();
 start_row();
 
-//if (!isset($_POST['ref']))
-//	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
-
 if ($_SESSION['Items']->trans_no==0) {
-	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'", false, ST_CUSTDELIVERY,
+	array('customer' => $_SESSION['Items']->customer_id,
+			'branch' => $_SESSION['Items']->Branch,
+			'date' => get_post('DispatchDate')));
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
@@ -366,7 +376,7 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['DispatchDate']);
 }
 customer_credit_row($_SESSION['Items']->customer_id, $_SESSION['Items']->credit, "class='tableheader2'");
-// 2010-09-03 Joe Hunt
+
 $dim = get_company_pref('use_dimension');
 if ($dim > 0) {
 	start_row();
@@ -530,4 +540,3 @@ end_form();
 
 end_page();
 
-?>

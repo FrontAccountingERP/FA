@@ -167,4 +167,3 @@ function print_sales_summary_report()
 	$rep->End();
 }
 
-?>

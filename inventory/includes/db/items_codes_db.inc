@@ -10,8 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /*
-	item_codes table is used to store both multiply foreign codes and 
-	sale kits definition.
+	item_codes table is used to store both multiply foreign codes (aliases) and 
+	sales kits definition.
 */
 function update_item_code($id, $item_code, $stock_id, $description, $category, $qty, $foreign=0)
 {
@@ -113,7 +113,7 @@ function get_item_code_dflts($stock_id)
 function check_item_in_kit($old_id, $kit_code, $item_code, $recurse=false)
 {
 	$result = get_item_kit($kit_code);
-	if ($result != 0)
+	if ($result)
 	{
 		while ($myrow = db_fetch($result))
 		{
@@ -159,4 +159,3 @@ function get_where_used($item_code)
 			AND item_code!=".db_escape($item_code);
 	return db_query($sql, "where used query failed");
 }
-?>

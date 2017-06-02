@@ -21,15 +21,48 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
-page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
+
+if (isset($_GET['ModifyCredit']))
+	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyCredit']);
+
+//---------------------------------------------------------------------------------------------------
+
+if (isset($_GET['New']))
+{
+	if (isset( $_SESSION['supp_trans']))
+	{
+		unset ($_SESSION['supp_trans']->grn_items);
+		unset ($_SESSION['supp_trans']->gl_codes);
+		unset ($_SESSION['supp_trans']);
+	}
+
+	if (isset($_GET['invoice_no']))
+	{
+		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPINVOICE, $_GET['invoice_no']);
+		$_SESSION['supp_trans']->src_docs = array( $_GET['invoice_no'] => $_SESSION['supp_trans']->supp_reference);
+
+
+		$_SESSION['supp_trans']->trans_type = ST_SUPPCREDIT;
+		$_SESSION['supp_trans']->trans_no = 0;
+		$_SESSION['supp_trans']->supp_reference = '';
+		$help_context = "Supplier Credit Note";
+		$_SESSION['page_title'] = _("Supplier Credit Note");
+
+	} else {
+		$help_context = "Supplier Credit Note";
+		$_SESSION['page_title'] = _("Supplier Credit Note");
+		$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
+	}
+}
+page($_SESSION['page_title'], false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -47,26 +80,8 @@ if (isset($_GET['AddedID']))
 
     hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-	
+
 	display_footer_exit();
-}
-
-//---------------------------------------------------------------------------------------------------
-
-if (isset($_GET['New']))
-{
-	if (isset( $_SESSION['supp_trans']))
-	{
-		unset ($_SESSION['supp_trans']->grn_items);
-		unset ($_SESSION['supp_trans']->gl_codes);
-		unset ($_SESSION['supp_trans']);
-	}
-
-	$_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT);
-	if (isset($_GET['invoice_no']))
-	{
-		$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
-	}
 }
 
 function clear_fields()
@@ -100,7 +115,7 @@ if (isset($_POST['ClearFields']))
 	clear_fields();
 }
 
-if (isset($_POST['AddGLCodeToTrans'])){
+if (isset($_POST['AddGLCodeToTrans'])) {
 
 	$Ajax->activate('gl_items');
 	$input_error = false;
@@ -145,8 +160,8 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value, $Refs, $SysPrefs;
-	
+	global $SysPrefs;
+
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -154,24 +169,9 @@ function check_data()
 		return false;
 	}
 
-	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
+	if (!check_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT, $_SESSION['supp_trans']->trans_no))
 	{
-		display_error(_("You must enter an credit note reference."));
 		set_focus('reference');
-		return false;
-	}
-
-	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) 
-	{
-		display_error(_("The entered reference is already in use."));
-		set_focus('reference');
-		return false;
-	}
-
-	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
-	{
-		display_error(_("You must enter a supplier's credit note reference."));
-		set_focus('supp_reference');
 		return false;
 	}
 
@@ -183,7 +183,7 @@ function check_data()
 	} 
 	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('tran_date');
 		return false;
 	}
@@ -194,9 +194,17 @@ function check_data()
 		return false;
 	}
 
-	if ($_SESSION['supp_trans']->ov_amount < ($total_gl_value + $total_grn_value))
+	if (trim(get_post('supp_reference')) == false)
 	{
-		display_error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
+		display_error(_("You must enter a supplier's invoice reference."));
+		set_focus('supp_reference');
+		return false;
+	}
+
+	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference'], $_SESSION['supp_trans']->trans_no))
+	{ 	/*Transaction reference already entered */
+		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
+		set_focus('supp_reference');
 		return false;
 	}
 
@@ -342,9 +350,9 @@ invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
+	display_grn_items($_SESSION['supp_trans'], 1);
 
-	$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
+	display_gl_items($_SESSION['supp_trans'], 1);
 
 	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);
@@ -366,4 +374,3 @@ br();
 
 end_form();
 end_page();
-?>

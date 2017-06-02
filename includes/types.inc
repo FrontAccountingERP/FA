@@ -36,6 +36,11 @@ define('ST_WORKORDER', 26);
 define('ST_MANUISSUE', 28);
 define('ST_MANURECEIVE', 29);
 
+//
+//	Depreciation period types
+//
+define('FA_MONTHLY', 0);
+define('FA_YEARLY', 1);
 
 define('ST_SALESORDER', 30);
 define('ST_SALESQUOTE', 32);
@@ -125,14 +130,12 @@ function payment_person_name($type, $person_id, $full=true) {
 			return ($full ? $payment_person_types[$type] . " ":"") . $qe["description"];
 		case PT_WORKORDER :
 			global $wo_cost_types;
-			return $wo_cost_types[$person_id];
+			return get_trans_view_str(ST_WORKORDER, $person_id, _('Work Order').' '.$person_id);
 		case PT_CUSTOMER :
-			return ($full ?$payment_person_types[$type] . " ":"") . get_customer_name($person_id);
+			return ($full ?$payment_person_types[$type] . " ":"") . sprintf("[%05s] %s", $person_id, get_customer_name($person_id));
 		case PT_SUPPLIER :
-			return ($full ? $payment_person_types[$type] . " ":"") . get_supplier_name($person_id);
+			return ($full ? $payment_person_types[$type] . " ":"") . sprintf("[%05s] %s", $person_id, get_supplier_name($person_id));
 		default :
-			//DisplayDBerror("Invalid type sent to person_name");
-			//return;
 			return '';
 	}
 }
@@ -171,6 +174,7 @@ define('WO_ADVANCED', 2);
 
 define('WO_LABOUR', 0);
 define('WO_OVERHEAD', 1);
+define('WO_MATERIALS', 2);
 
 //----------------------------------------------------------------------------------
 //	GL account classes
@@ -185,8 +189,9 @@ define('CL_EXPENSE', 6);
 
 function get_class_type_convert($ctype)
 {
-	global $use_oldstyle_convert;
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	global $SysPrefs;
+
+	if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
 		return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
 	else	
 		return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
@@ -226,8 +231,24 @@ define('PTT_CASH', 2);
 define('PTT_DAYS', 3);
 define('PTT_FOLLOWING', 4);
 
+//----------------------------------------------------------------------------------
+// Tax calculation algorithms used in als and purchase (depends on supplier's invoicing software)
+
+define('TCA_TOTALS', 1); // taxes are calculated from respective net totals for all lines
+define('TCA_LINES', 2); // taxes calculated for every line, then summed
+//
+//	Bank account owner types
+//
+define('BO_UNKNOWN', 0);
+define('BO_COMPANY', 1);
+define('BO_CUSTBRANCH', 2);
+define('BO_SUPPLIER', 3);
+
 include_once($path_to_root . '/includes/sysnames.inc');
 
+// tax register type
+define('TR_OUTPUT', 0); // sales
+define('TR_INPUT', 1);	// purchase
 //---------------------------------------------------------------------------------
 // Constants optionally redefined locally
 //
@@ -251,5 +272,5 @@ defined('ICON_VIEW') || define('ICON_VIEW', 'view.gif');
 defined('ICON_SUBMIT') || define('ICON_SUBMIT', 'ok.gif');
 defined('ICON_ESCAPE') || define('ICON_ESCAPE', 'escape.png');
 defined('ICON_ALLOC') || define('ICON_ALLOC', 'alloc.png');
+defined('ICON_CLOSED') || define('ICON_CLOSED', 'closed.png');
 
-?>

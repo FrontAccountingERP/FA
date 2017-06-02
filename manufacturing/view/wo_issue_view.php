@@ -14,12 +14,11 @@ $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
@@ -54,11 +53,11 @@ function display_wo_issue($issue_no)
 	label_cell(sql2date($myrow["issue_date"]));
 	end_row();
 
-    comments_display_row(28, $issue_no);
+    comments_display_row(ST_MANUISSUE, $issue_no);
 
 	end_table(1);
 
-	is_voided_display(28, $issue_no, _("This issue has been voided."));
+	is_voided_display(ST_MANUISSUE, $issue_no, _("This issue has been voided."));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,7 +73,7 @@ function display_wo_issue_details($issue_no)
     else
     {
         start_table(TABLESTYLE);
-        $th = array(_("Component"), _("Quantity"), _("Units"));
+        $th = array(_("Component"), _("Quantity"), _("Units"), _("Unit Cost"));
 
         table_header($th);
 
@@ -91,6 +90,7 @@ function display_wo_issue_details($issue_no)
         	label_cell($myrow["stock_id"]  . " - " . $myrow["description"]);
             qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
 			label_cell($myrow["units"]);
+			amount_cell($myrow["unit_cost"]);
 			end_row();;
 
         	$j++;
@@ -120,6 +120,4 @@ display_wo_issue_details($wo_issue_no);
 echo "<br>";
 
 end_page(true, false, false, ST_MANUISSUE, $wo_issue_no);
-
-?>
 

@@ -10,10 +10,11 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_SALESPRICE';
-if (!@$_GET['popup'])
-	$path_to_root = "..";
-else	
+
+if (@$_GET['page_level'] == 1)
 	$path_to_root = "../..";
+else	
+	$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
@@ -22,8 +23,10 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (!@$_GET['popup'])
-	page(_($help_context = "Inventory Item Sales prices"));
+$js = "";
+if ($SysPrefs->use_popup_windows && $SysPrefs->use_popup_search)
+	$js .= get_js_open_window(900, 500);
+page(_($help_context = "Inventory Item Sales prices"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------
 
@@ -50,13 +53,15 @@ if (!isset($_POST['curr_abrev']))
 }
 
 //---------------------------------------------------------------------------------------------------
-if (!@$_GET['popup'])
-	start_form();
+$action = $_SERVER['PHP_SELF'];
+if ($page_nested)
+	$action .= "?stock_id=".get_post('stock_id');
+start_form(false, false, $action);
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-if (!@$_GET['popup'])
+if (!$page_nested)
 {
 	echo "<center>" . _("Item:"). "&nbsp;";
 	echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
@@ -181,11 +186,7 @@ if ($Mode == 'Edit')
 }
 
 hidden('selected_id', $selected_id);
-if (@$_GET['popup'])
-{
-	hidden('_tabs_sel', get_post('_tabs_sel'));
-	hidden('popup', @$_GET['popup']);
-}
+
 div_start('price_details');
 start_table(TABLESTYLE2);
 
@@ -208,9 +209,5 @@ if ($calculated)
 submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
-if (!@$_GET['popup'])
-{
-	end_form();
-	end_page(@$_GET['popup'], false, false);
-}	
-?>
+end_form();
+end_page();

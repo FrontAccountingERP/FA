@@ -52,20 +52,11 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	}
 } 
 
-function key_in_crm_contacts($id) // extra function for testing foreign concatenated key. Joe 02.09.2013.
-{
-	$row = get_crm_category($id);
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."crm_contacts WHERE type='".$row['type']."' AND action='".$row['action']."'";
-	$result = db_query($sql, "check relations for crm_contacts failed");
-	$contacts = db_fetch($result);
-	return $contacts[0];
-}
-
 if ($Mode == 'Delete')
 {
 	$cancel_delete = 0;
 
-	if (key_in_crm_contacts($selected_id))
+	if (is_crm_category_used($selected_id))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this category because there are contacts related to it."));
@@ -159,4 +150,3 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 end_form();
 
 end_page();
-?>

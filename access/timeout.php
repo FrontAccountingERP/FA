@@ -29,4 +29,3 @@ echo "<script>
 	}
 </script>";
 }
-?>

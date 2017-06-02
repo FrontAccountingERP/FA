@@ -12,19 +12,34 @@
 $page_security = 'SA_ITEM';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
+
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
-	
-page(_($help_context = "Items"), @$_REQUEST['popup'], false, "", $js);
+
+if (isset($_GET['FixedAsset'])) {
+  $page_security = 'SA_ASSET';
+  $_SESSION['page_title'] = _($help_context = "Fixed Assets");
+  $_POST['mb_flag'] = 'F';
+  $_POST['fixed_asset']  = 1;
+}
+else {
+  $_SESSION['page_title'] = _($help_context = "Items");
+	if (!get_post('fixed_asset'))
+		$_POST['fixed_asset']  = 0;
+}
+
+
+page($_SESSION['page_title'], false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 
 $user_comp = user_company();
 $new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
@@ -48,7 +63,7 @@ if (get_post('cancel')) {
 	set_focus('stock_id');
 	$Ajax->activate('_page_body');
 }
-if (list_updated('category_id') || list_updated('mb_flag')) {
+if (list_updated('category_id') || list_updated('mb_flag') || list_updated('fa_class_id') || list_updated('depreciation_method')) {
 	$Ajax->activate('details');
 }
 $upload_file = "";
@@ -63,13 +78,22 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		mkdir($filename);
 	}	
 	$filename .= "/".item_img_name($stock_id).".jpg";
+
+  if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
+    display_error(_('The file size is over the maximum allowed.'));
+		$upload_file ='No';
+  }
+  elseif ($_FILES['pic']['error'] > 0) {
+		display_error(_('Error uploading file.'));
+		$upload_file ='No';
+  }
 	
 	//But check for the worst 
 	if ((list($width, $height, $type, $attr) = getimagesize($_FILES['pic']['tmp_name'])) !== false)
 		$imagetype = $type;
 	else
 		$imagetype = false;
-	//$imagetype = exif_imagetype($_FILES['pic']['tmp_name']);
+
 	if ($imagetype != IMAGETYPE_GIF && $imagetype != IMAGETYPE_JPEG && $imagetype != IMAGETYPE_PNG)
 	{	//File type Check
 		display_warning( _('Only graphics files can be uploaded'));
@@ -80,10 +104,15 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 		display_warning(_('Only graphics files are supported - a file extension of .jpg, .png or .gif is expected'));
 		$upload_file ='No';
 	} 
-	elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024)) 
+	elseif ( $_FILES['pic']['size'] > ($SysPrefs->max_image_size * 1024)) 
 	{ //File Size Check
-		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $SysPrefs->max_image_size);
 		$upload_file ='No';
+	} 
+	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
+	{  //File type Check
+		display_warning( _('Only graphics files can be uploaded'));
+        $upload_file ='No';
 	} 
 	elseif (file_exists($filename))
 	{
@@ -103,7 +132,11 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
  /* EOF Add Image upload for New Item  - by Ori */
 }
 
-check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
+if (get_post('fixed_asset')) {
+	check_db_has_fixed_asset_categories(_("There are no fixed asset categories defined in the system. At least one fixed asset category is required to add a fixed asset."));
+	check_db_has_fixed_asset_classes(_("There are no fixed asset classes defined in the system. At least one fixed asset class is required to add a fixed asset."));
+} else
+	check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
 
 check_db_has_item_tax_types(_("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
 
@@ -119,6 +152,11 @@ function clear_data()
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
 	unset($_POST['no_sale']);
+	unset($_POST['no_purchase']);
+	unset($_POST['depreciation_method']);
+	unset($_POST['depreciation_rate']);
+	unset($_POST['depreciation_factor']);
+	unset($_POST['depreciation_start']);
 }
 
 //------------------------------------------------------------------------------------
@@ -157,6 +195,19 @@ if (isset($_POST['addupdate']))
 			set_focus('NewStockID');
 	}
 	
+  if (get_post('fixed_asset')) {
+    if ($_POST['depreciation_rate'] > 100) {
+      $_POST['depreciation_rate'] = 100;
+    }
+    elseif ($_POST['depreciation_rate'] < 0) {
+      $_POST['depreciation_rate'] = 0;
+    }
+    $move_row = get_fixed_asset_move($_POST['NewStockID'], ST_SUPPRECEIVE);
+    if (isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
+      display_warning(_('The depracation cannot start before the fixed asset purchase date'));
+    }
+  }
+	
 	if ($input_error != 1)
 	{
 		if (check_value('del_image'))
@@ -171,11 +222,14 @@ if (isset($_POST['addupdate']))
 			update_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], 
 				$_POST['tax_type_id'], get_post('units'),
-				get_post('mb_flag'), $_POST['sales_account'],
+				get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
-				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('fa_class_id'));
+
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -189,16 +243,18 @@ if (isset($_POST['addupdate']))
 
 			add_item($_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
+				$_POST['units'], get_post('fixed_asset') ? 'F' : get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
-				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'));
+				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('fa_class_id'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
-			$_POST['no_sale'] = $_POST['editable'] = 0;
+			$_POST['no_sale'] = $_POST['editable'] = $_POST['no_purchase'] =0;
 			set_focus('NewStockID');
 		}
 		$Ajax->activate('_page_body');
@@ -247,15 +303,15 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 	}
 }
 
-function item_settings(&$stock_id) 
+function item_settings(&$stock_id, $new_item) 
 {
-	global $SysPrefs, $path_to_root, $new_item, $pic_height;
+	global $SysPrefs, $path_to_root, $page_nested, $depreciation_methods;
 
 	start_outer_table(TABLESTYLE2);
 
 	table_section(1);
 
-	table_section_title(_("Item"));
+	table_section_title(_("General Settings"));
 
 	//------------------------------------------------------------------------------------
 	if ($new_item) 
@@ -279,15 +335,25 @@ function item_settings(&$stock_id)
 			$_POST['units']  = $myrow["units"];
 			$_POST['mb_flag']  = $myrow["mb_flag"];
 
+			$_POST['depreciation_method'] = $myrow['depreciation_method'];
+			$_POST['depreciation_rate'] = number_format2($myrow['depreciation_rate'], 1);
+			$_POST['depreciation_factor'] = number_format2($myrow['depreciation_factor'], 1);
+			$_POST['depreciation_start'] = sql2date($myrow['depreciation_start']);
+			$_POST['depreciation_date'] = sql2date($myrow['depreciation_date']);
+			$_POST['fa_class_id'] = $myrow['fa_class_id'];
+			$_POST['material_cost'] = $myrow['material_cost'];
+			$_POST['purchase_cost'] = $myrow['purchase_cost'];
+			
 			$_POST['sales_account'] =  $myrow['sales_account'];
 			$_POST['inventory_account'] = $myrow['inventory_account'];
 			$_POST['cogs_account'] = $myrow['cogs_account'];
 			$_POST['adjustment_account']	= $myrow['adjustment_account'];
-			$_POST['assembly_account']	= $myrow['assembly_account'];
+			$_POST['wip_account']	= $myrow['wip_account'];
 			$_POST['dimension_id']	= $myrow['dimension_id'];
 			$_POST['dimension2_id']	= $myrow['dimension2_id'];
 			$_POST['no_sale']	= $myrow['no_sale'];
-			$_POST['del_image'] = 0;	
+			$_POST['no_purchase']	= $myrow['no_purchase'];
+			$_POST['del_image'] = 0;
 			$_POST['inactive'] = $myrow["inactive"];
 			$_POST['editable'] = $myrow["editable"];
 		}
@@ -295,12 +361,13 @@ function item_settings(&$stock_id)
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
 	}
+	$fixed_asset = get_post('fixed_asset');
 
 	text_row(_("Name:"), 'description', null, 52, 200);
 
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
+	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item, $fixed_asset);
 
 	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 
@@ -313,10 +380,11 @@ function item_settings(&$stock_id)
 		$_POST['cogs_account'] = $category_record["dflt_cogs_act"];
 		$_POST['sales_account'] = $category_record["dflt_sales_act"];
 		$_POST['adjustment_account'] = $category_record["dflt_adjustment_act"];
-		$_POST['assembly_account'] = $category_record["dflt_assembly_act"];
+		$_POST['wip_account'] = $category_record["dflt_wip_act"];
 		$_POST['dimension_id'] = $category_record["dflt_dim1"];
 		$_POST['dimension2_id'] = $category_record["dflt_dim2"];
 		$_POST['no_sale'] = $category_record["dflt_no_sale"];
+		$_POST['no_purchase'] = $category_record["dflt_no_purchase"];
 		$_POST['editable'] = 0;
 
 	}
@@ -325,14 +393,60 @@ function item_settings(&$stock_id)
 
 	item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
+	if (!get_post('fixed_asset'))
+		stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 	check_row(_("Editable description:"), 'editable');
 
-	check_row(_("Exclude from sales:"), 'no_sale');
+	if (get_post('fixed_asset'))
+		hidden('no_sale', 0);
+	else
+		check_row(_("Exclude from sales:"), 'no_sale');
 
+	check_row(_("Exclude from purchases:"), 'no_purchase');
+
+	if (get_post('fixed_asset')) {
+		table_section_title(_("Depreciation"));
+
+		fixed_asset_classes_list_row(_("Fixed Asset Class").':', 'fa_class_id', null, false, true);
+
+		array_selector_row(_("Depreciation Method").":", "depreciation_method", null, $depreciation_methods, array('select_submit'=> true));
+
+		if (!isset($_POST['depreciation_rate']) || (list_updated('fa_class_id') || list_updated('depreciation_method'))) {
+			$class_row = get_fixed_asset_class($_POST['fa_class_id']);
+			$_POST['depreciation_rate'] = get_post('depreciation_method') == 'N' ? ceil(100/$class_row['depreciation_rate'])
+				: $class_row['depreciation_rate'];
+		}
+
+		if ($_POST['depreciation_method'] == 'O')
+		{
+			hidden('depreciation_rate', 100);
+			label_row(_("Depreciation Rate").':', "100 %");
+		}
+		elseif ($_POST['depreciation_method'] == 'N')
+		{
+			small_amount_row(_("Depreciation Years").':', 'depreciation_rate', null, null, _('years'), 0);
+		}
+		elseif ($_POST['depreciation_method'] == 'D')
+			small_amount_row(_("Base Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+		else
+			small_amount_row(_("Depreciation Rate").':', 'depreciation_rate', null, null, '%', user_percent_dec());
+
+		if ($_POST['depreciation_method'] == 'D')
+			small_amount_row(_("Rate multiplier").':', 'depreciation_factor', null, null, '', 2);
+
+		// do not allow to change the depreciation start after this item has been depreciated
+		if ($new_item || $_POST['depreciation_start'] == $_POST['depreciation_date'])
+			date_row(_("Depreciation Start").':', 'depreciation_start', null, null, 1 - date('j'));
+		else {
+			hidden('depreciation_start');
+			label_row(_("Depreciation Start").':', $_POST['depreciation_start']);
+			label_row(_("Last Depreciation").':', $_POST['depreciation_date']==$_POST['depreciation_start'] ? _("None") :  $_POST['depreciation_date']);
+		}
+		hidden('depreciation_date');
+	}
 	table_section(2);
 
 	$dim = get_company_pref('use_dimension');
@@ -353,7 +467,12 @@ function item_settings(&$stock_id)
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if (!is_service($_POST['mb_flag'])) 
+	if (get_post('fixed_asset')) {
+		gl_all_accounts_list_row(_("Asset account:"), 'inventory_account', $_POST['inventory_account']);
+		gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
+		gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
+	}
+	elseif (!is_service($_POST['mb_flag'])) 
 	{
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -368,9 +487,9 @@ function item_settings(&$stock_id)
 
 
 	if (is_manufactured($_POST['mb_flag']))
-		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
-		hidden('assembly_account', $_POST['assembly_account']);
+		hidden('wip_account', $_POST['wip_account']);
 
 	table_section_title(_("Other"));
 
@@ -382,10 +501,10 @@ function item_settings(&$stock_id)
 	if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
 		.item_img_name($_POST['NewStockID']).".jpg")) 
 	{
-	 // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	 // 31/08/08 - rand() call is necessary here to avoid caching problems.
 		$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
 			"]' src='".company_path().'/images/'.item_img_name($_POST['NewStockID']).
-			".jpg?nocache=".rand()."'"." height='$pic_height' border='0'>";
+			".jpg?nocache=".rand()."'"." height='".$SysPrefs->pic_height."' border='0'>";
 		$check_remove_image = true;
 	} 
 	else 
@@ -398,6 +517,16 @@ function item_settings(&$stock_id)
 		check_row(_("Delete Image:"), 'del_image');
 
 	record_status_list_row(_("Item status:"), 'inactive');
+	if (get_post('fixed_asset')) {
+		table_section_title(_("Values"));
+		if (!$new_item) {
+			hidden('material_cost');
+			hidden('purchase_cost');
+			label_row(_("Initial Value").":", price_format($_POST['purchase_cost']), "", "align='right'");
+			label_row(_("Depreciations").":", price_format($_POST['purchase_cost'] - $_POST['material_cost']), "", "align='right'");
+			label_row(_("Current Value").':', price_format($_POST['material_cost']), "", "align='right'");
+		}
+	}
 	end_outer_table(1);
 
 	div_start('controls');
@@ -408,7 +537,7 @@ function item_settings(&$stock_id)
 	else 
 	{
 		submit_center_first('addupdate', _("Update Item"), '', 
-			@$_REQUEST['popup'] ? true : 'default');
+			$page_nested ? true : 'default');
 		submit_return('select', get_post('stock_id'), 
 			_("Select this items and return to document entry."), 'default');
 		submit('clone', _("Clone This Item"), true, '', true);
@@ -428,7 +557,7 @@ if (db_has_stock_items())
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true, check_value('show_inactive'));
+	  _('New item'), true, check_value('show_inactive'), false, array('fixed_asset' => get_post('fixed_asset')));
 	$new_item = get_post('stock_id')=='';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
@@ -450,40 +579,41 @@ $stock_id = get_post('stock_id');
 if (!$stock_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
-tabbed_content_start('tabs', array(
+$tabs = (get_post('fixed_asset'))
+	? array(
 		'settings' => array(_('&General settings'), $stock_id),
-		'sales_pricing' => array(_('S&ales Pricing'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_SALESPRICE') ? $stock_id : null)),
-		'purchase_pricing' => array(_('&Purchasing Pricing'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_PURCHASEPRICING') ? $stock_id : null)),
-		'standard_cost' => array(_('Standard &Costs'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_STANDARDCOST') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), $stock_id) )
+	: array(
+		'settings' => array(_('&General settings'), $stock_id),
+		'sales_pricing' => array(_('S&ales Pricing'), (user_check_access('SA_SALESPRICE') ? $stock_id : null)),
+		'purchase_pricing' => array(_('&Purchasing Pricing'), (user_check_access('SA_PURCHASEPRICING') ? $stock_id : null)),
+		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
 		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
-			$_SESSION["wa_current_user"]->can_access_page('SA_REORDER') ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
-		'status' => array(_('&Status'), 
-			($_SESSION["wa_current_user"]->can_access_page('SA_ITEMSSTATVIEW') ? $stock_id : null)),
-	));
-	
+			user_check_access('SA_REORDER') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
+		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
+	);
+
+tabbed_content_start('tabs', $tabs);
+
 	switch (get_post('_tabs_sel')) {
 		default:
 		case 'settings':
-			item_settings($stock_id); 
+			item_settings($stock_id, $new_item); 
 			break;
 		case 'sales_pricing':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/prices.php");
 			break;
 		case 'purchase_pricing':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/purchasing_data.php");
 			break;
 		case 'standard_cost':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
+			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/cost_update.php");
 			break;
 		case 'reorder_level':
@@ -491,31 +621,32 @@ tabbed_content_start('tabs', array(
 			{
 				break;
 			}	
+			$_GET['page_level'] = 1;
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");
 			break;
 		case 'status':
 			$_GET['stock_id'] = $stock_id;
-			$_GET['popup'] = 1;
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
 	};
+
 br();
 tabbed_content_end();
 
 div_end();
 
+hidden('fixed_asset', get_post('fixed_asset'));
 
-hidden('popup', @$_REQUEST['popup']);
+if (get_post('fixed_asset'))
+	hidden('mb_flag', 'F');
+
 end_form();
 
 //------------------------------------------------------------------------------------
 
-end_page(@$_REQUEST['popup']);
-?>
+end_page();

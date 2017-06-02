@@ -37,7 +37,7 @@ function fetch_items($category=0)
 				units,
 				cat.description
 			FROM ".TB_PREF."stock_master stock LEFT JOIN ".TB_PREF."stock_category cat ON stock.category_id=cat.category_id
-				WHERE mb_flag <> 'D'";
+				WHERE mb_flag <> 'D' AND mb_flag <>'F'";
 		if ($category != 0)
 			$sql .= " AND cat.category_id = ".db_escape($category);
 		$sql .= " ORDER BY stock.category_id, stock_id";
@@ -104,14 +104,11 @@ function inventory_movements()
 	else
 		$cat = get_category_name($category);
 
-//	if ($location == ALL_TEXT)
-//		$location = '';
 	if ($location == '')
 		$loc = _('All');
 	else
 		$loc = get_location_name($location);
 
-	//$cols = array(0, 100, 300, 365, 440, 540, 640, 715);
 	$cols = array(0, 60, 220, 240, 310, 380, 450, 520);
 
 	$headers = array(_('Category'), _('Description'),	_('UOM'),	_('Opening'), _('Quantity In'), _('Quantity Out'), _('Balance'));
@@ -171,4 +168,3 @@ function inventory_movements()
     $rep->End();
 }
 
-?>

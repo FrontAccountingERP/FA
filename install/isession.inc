@@ -39,21 +39,33 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_specials_encode($str)
+{
+	return htmlspecialchars($str, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
+}
+
 function html_cleanup(&$parms)
 {
 	foreach($parms as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+			$parms[$name] = html_specials_encode($value);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
 
-
 function check_page_security($page_security)
 {
+}
+
+/*
+ Ensure file is re-read on next request if php caching is active
+*/
+function cache_invalidate($filename)
+{
+    if (function_exists('opcache_invalidate')) // OpCode extension
+        opcache_invalidate($filename);
 }
 //============================================================================
 if (!isset($path_to_root))
@@ -70,7 +82,7 @@ include_once($path_to_root . "/includes/errors.inc");
 set_error_handler('error_handler' /*, errtypes */);
 
 include_once($path_to_root . "/includes/current_user.inc");
-include_once($path_to_root . "/includes/lang/language.php");
+include_once($path_to_root . "/includes/lang/language.inc");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
@@ -82,6 +94,9 @@ session_start();
 header("Cache-control: private");
 
 include_once($path_to_root . "/config.default.php");
+
+$_SESSION['SysPrefs'] = new sys_prefs();
+$SysPrefs = &$_SESSION['SysPrefs'];
 
 $inst_langs = array(
   'C' => array ( 'name' => 'English',	'code' => 'C',		'encoding' => 'iso-8859-1'),
@@ -116,6 +131,7 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 	$l = array_search_value($i_lang, $inst_langs,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
 	 isset($l['rtl']) ? 'rtl' : 'ltr');
+
 }
 if (!isset($installed_languages))
 	$installed_languages = array();
@@ -147,10 +163,7 @@ html_cleanup($_POST);
 html_cleanup($_REQUEST);
 html_cleanup($_SERVER);
 
-$SysPrefs = &$_SESSION['SysPrefs'];
-
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);
 
-?>

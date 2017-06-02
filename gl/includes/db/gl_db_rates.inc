@@ -14,7 +14,7 @@ include_once($path_to_root . "/includes/remote_url.inc");
 function get_exchange_rate($rate_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
-	$result = db_query($sql, "could not get exchange rate for $rate_id");	
+	$result = db_query($sql, "could not get exchange rate for $rate_id");
 
 	return db_fetch($result);
 }
@@ -23,14 +23,37 @@ function get_exchange_rate($rate_id)
 function get_date_exchange_rate($curr_code, $date_)
 {
 	$date = date2sql($date_);
-	$sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code=".db_escape($curr_code)
-	." AND date_='$date'";
-	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");	
+	$sql = "SELECT rate_buy
+			FROM ".TB_PREF."exchange_rates
+			WHERE curr_code=".db_escape($curr_code)
+				." AND date_='$date'";
+	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");
 
 	if(db_num_rows($result) == 0) 
 		return 0;
 	$row = db_fetch($result);
 		return $row[0];
+}
+
+/*
+	Return last exchange rate of $currency not later than $date.
+*/
+function get_last_exchange_rate($curr_code, $date_)
+{
+	$date = date2sql($date_);
+
+	$sql = "SELECT rate_buy, max(date_) as date_
+			FROM ".TB_PREF."exchange_rates
+			WHERE curr_code = ".db_escape($curr_code)."
+				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
+
+	$result = db_query($sql, "could not query exchange rates");
+
+
+	if (db_num_rows($result) == 0)
+		return false;
+
+	return db_fetch_assoc($result);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -91,9 +114,11 @@ function delete_exchange_rate($rate_id)
 //
 function retrieve_exrate($curr_b, $date)
 {
-	global $xr_providers, $dflt_xr_provider;
-	$xchg_rate_provider = ((isset($xr_providers) && isset($dflt_xr_provider)) ? $xr_providers[$dflt_xr_provider] : 'ECB');
-	
+	global $SysPrefs;
+
+	$xchg_rate_provider = ((isset($SysPrefs->xr_providers) && isset($SysPrefs->dflt_xr_provider)) 
+		? $SysPrefs->xr_providers[$SysPrefs->dflt_xr_provider] : 'ECB');
+
 	$rate = hook_retrieve_exrate($curr_b, $date);
 	if (is_numeric($rate))
 		return $rate;
@@ -119,15 +144,12 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/d/quotes.csv?s={$curr_a}{$curr_b}=X&f=sl1d1t1ba&e=.csv"; // new URL's for YAHOO
 		$site = "download.finance.yahoo.com";
-        //$filename = "/q?s={$curr_a}{$curr_b}=X"; // Let old code be here for a while, Joe.
- 		//$site = "finance.yahoo.com";
 		$site_ip="203.84.220.151";
 	}
 	elseif ($provider == 'GOOGLE')
 	{
 		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
 		$site = "www.google.com";
-		$site_ip = "74.125.23.147";
 	}
 	elseif ($provider == 'BLOOMBERG')
 	{
@@ -140,17 +162,17 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{	// first check with curl as we can set short timeout;
 		$retry = 1;
 	 	do {
-	       $ch = curl_init();
-    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
-	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
-    	   curl_setopt ($ch, CURLOPT_HEADER, 0);
-	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	       // prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
-		   if (!ini_get('safe_mode') && !ini_get('open_basedir'))
-    	   	curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
-    	   $contents = curl_exec ($ch);
-	       curl_close($ch);
+	       	$ch = curl_init();
+    	   	curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
+	       	curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
+    	   	curl_setopt ($ch, CURLOPT_HEADER, 0);
+	       	curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+	       	// prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
+		   	if (!ini_get('safe_mode') && !ini_get('open_basedir'))
+    	   		curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       	curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
+    	   	$contents = curl_exec ($ch);
+	       	curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
 		   $site=$site_ip;
@@ -186,14 +208,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$val = $array[1];
 		if ($val != 0)
 			$val = 1 / $val;
-		/* Let old code be here for a while, Joe.
-		//if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
-			$val = strip_tags($matches[1]);
-			$val = str_replace(',', '', $val);
-			if ($val != 0)
-				$val = 1 / $val;
-		}
-		*/
 	}
 	elseif ($provider == 'GOOGLE')
 	{
@@ -224,12 +238,11 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 
 //-----------------------------------------------------------------------------
 
-function get_sql_for_exchange_rates()
+function get_sql_for_exchange_rates($curr)
 {
-	$sql = "SELECT date_, rate_buy, id FROM "
-		.TB_PREF."exchange_rates "
-		."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
+	$sql = "SELECT date_, rate_buy, id
+		FROM ".TB_PREF."exchange_rates "
+		."WHERE curr_code=".db_escape($curr)."
 		 ORDER BY date_ DESC";
 	return $sql;	 
 }
-?>

@@ -25,9 +25,9 @@ include_once($path_to_root . "/gl/includes/gl_ui.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 $js = '';
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['NewPayment'])) {
@@ -47,6 +47,9 @@ page($_SESSION['page_title'], false, false, '', $js);
 
 //-----------------------------------------------------------------------------------------------
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+
+if (isset($_GET['ModifyDeposit']) || isset($_GET['ModifyPayment']))
+	check_is_editable($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
 
 //----------------------------------------------------------------------------------------
 if (list_updated('PersonDetailID')) {
@@ -150,7 +153,8 @@ function create_cart($type, $trans_no)
 		$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
 		$_POST['bank_account'] = $bank_trans["bank_act"];
 		$_POST['PayType'] = $bank_trans["person_type_id"];
-		
+		$cart->reference = $bank_trans["ref"];
+
 		if ($bank_trans["person_type_id"] == PT_CUSTOMER)
 		{
 			$trans = get_customer_trans($trans_no, $type);	
@@ -171,7 +175,6 @@ function create_cart($type, $trans_no)
 
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->tran_date = sql2date($bank_trans['trans_date']);
-		$cart->reference = $Refs->get($type, $trans_no);
 
 		$cart->original_amount = $bank_trans['amount'];
 		$result = get_gl_trans($type, $trans_no);
@@ -182,7 +185,6 @@ function create_cart($type, $trans_no)
 					// so we have to restore it from original gl amounts
 					$ex_rate = $bank_trans['amount']/$row['amount'];
 				} else {
-					$date = $row['tran_date'];
 					$cart->add_gl_item( $row['account'], $row['dimension_id'],
 						$row['dimension2_id'], $row['amount'], $row['memo_']);
 				}
@@ -192,9 +194,9 @@ function create_cart($type, $trans_no)
 		// apply exchange rate
 		foreach($cart->gl_items as $line_no => $line)
 			$cart->gl_items[$line_no]->amount *= $ex_rate;
-		
+
 	} else {
-		$cart->reference = $Refs->get_next($cart->trans_type);
+		$cart->reference = $Refs->get_next($cart->trans_type, null, $cart->tran_date);
 		$cart->tran_date = new_doc_date();
 		if (!is_date_in_fiscalyear($cart->tran_date))
 			$cart->tran_date = end_fiscalyear();
@@ -243,15 +245,8 @@ function check_trans()
 		set_focus('amount');
 		$input_error = 1;
 	}
-	if (!$Refs->is_valid($_POST['ref']))
+	if (!check_reference($_POST['ref'], $_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id))
 	{
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	}
-	elseif ($_POST['ref'] != $_SESSION['pay_items']->reference && !is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
-	{
-		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
 	}
@@ -263,7 +258,7 @@ function check_trans()
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('date_');
 		$input_error = 1;
 	} 
@@ -421,4 +416,3 @@ end_form();
 
 end_page();
 
-?>

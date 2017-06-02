@@ -468,7 +468,8 @@ function get_languages_list()
 		else
 			$pkgs[$l['package']] = array_merge($pkgs[$l['package']], $l);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------
@@ -531,7 +532,8 @@ function get_extensions_list($type = null)
 //		else
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //
@@ -558,8 +560,8 @@ function get_themes_list()
 		}
 	}
 	// TODO: Add other themes from themes directory
-	
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------
@@ -592,7 +594,8 @@ function get_charts_list()
 		else
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 	}
-	ksort($pkgs);
+	if ($pkgs)
+		ksort($pkgs);
 	return $pkgs;
 }
 //---------------------------------------------------------------------------------------------
@@ -668,12 +671,6 @@ function install_extension($pkg_name)
 				'active' => @$pkg['DefaultStatus'] == 'active' ? true : false,
 				'path' => $pkg['InstallPath'],
 			);
-//			if (isset($pkg['MenuTabs']))
-//				$ext['tabs'] = $pkg['MenuTabs'];
-//			if (isset($pkg['MenuEntries']))
-//				$ext['entries'] = $pkg['MenuEntries'];
-//			if (isset($pkg['AccessExtensions']))
-//				$ext['acc_file'] = $pkg['AccessExtensions'];
 			if (isset($pkg['SqlScript']))
 				$ext['sql'] = $pkg['SqlScript'];
 
@@ -725,4 +722,21 @@ function get_package_info($pkg, $type=null, $filter=array(), $outkey=null, $down
 	return get_pkg_or_list($type, $pkg, $filter, null, false);
 }
 
-?>
+/*
+	Check basic extension source compatibility.
+*/
+function check_src_ext_version($ext_v)
+{
+	global $src_version;
+
+	$compat_levels = 2;	// current policy is keeping compatibility on major version level.
+	$app = explode('.', substr($src_version, 0, strspn($src_version, "0123456789.")));
+	$pkg = explode('.', substr($ext_v, 0, strspn($ext_v, "0123456789.")));
+
+	for ($i=0; $i < min($compat_levels, count($app)); $i++)
+		if ($pkg[$i] < $app[$i])
+			return false;
+
+	return true;
+}
+

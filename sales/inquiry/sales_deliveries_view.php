@@ -18,9 +18,9 @@ include($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 600);
-if ($use_date_picker)
+if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
@@ -36,14 +36,12 @@ else
 
 if (isset($_GET['selected_customer']))
 {
-	$selected_customer = $_GET['selected_customer'];
+	$_POST['customer_id'] = $_GET['selected_customer'];
 }
 elseif (isset($_POST['selected_customer']))
 {
-	$selected_customer = $_POST['selected_customer'];
+	$_POST['customer_id'] = $_POST['selected_customer'];
 }
-else
-	$selected_customer = -1;
 
 if (isset($_POST['BatchInvoice']))
 {
@@ -101,7 +99,7 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['Outst
 start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
-date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
+date_cells(_("from:"), 'DeliveryAfterDate', '', null, -user_transaction_days());
 date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
@@ -124,17 +122,6 @@ end_row();
 end_table(1);
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != ALL_TEXT))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	$selected_stock_item = null;
-}
-
-//---------------------------------------------------------------------------------------------
 function trans_view($trans, $trans_no)
 {
 	return get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
@@ -153,8 +140,7 @@ function batch_checkbox($row)
 function edit_link($row)
 {
 	return $row["Outstanding"]==0 ? '' :
-		pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery="
-			.$row['trans_no'], ICON_EDIT);
+		trans_editor_link(ST_CUSTDELIVERY, $row['trans_no']);
 }
 
 function prt_link($row)
@@ -175,7 +161,8 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item, $_POST['customer_id']);
+$sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post('DeliveryToDate'), get_post('customer_id'),	
+	get_post('SelectStockFromList'), get_post('StockLocation'), get_post('DeliveryNumber'), get_post('OutstandingOnly'));
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view'), 
@@ -213,6 +200,4 @@ display_db_pager($table);
 
 end_form();
 end_page();
-
-?>
 

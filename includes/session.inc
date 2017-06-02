@@ -148,12 +148,12 @@ function password_reset_fail()
 {
 	global $path_to_root;
 	
-  echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
-  echo "<b>" . _("The email address does not exist in the system, or is used by more than one user.") . "<b><br><br>";
+  	echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Email") . "<b></font><br><br>";
+  	echo "<b>" . _("The email address does not exist in the system, or is used by more than one user.") . "<b><br><br>";
 
-  echo _("Plase try again or contact your system administrator to obtain new password.");
-  echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
-  echo "</center>";
+  	echo _("Plase try again or contact your system administrator to obtain new password.");
+  	echo "<br><a href='$path_to_root/index.php?reset=1'>" . _("Try again") . "</a>";
+  	echo "</center>";
 
 	kill_login();
 	die();
@@ -163,11 +163,11 @@ function password_reset_success()
 {
 	global $path_to_root;
 
-  echo "<center><br><br><font size='5' color='green'><b>" . _("New password sent") . "<b></font><br><br>";
-  echo "<b>" . _("A new password has been sent to your mailbox.") . "<b><br><br>";
+  	echo "<center><br><br><font size='5' color='green'><b>" . _("New password sent") . "<b></font><br><br>";
+  	echo "<b>" . _("A new password has been sent to your mailbox.") . "<b><br><br>";
 
-  echo "<br><a href='$path_to_root/index.php'>" . _("Login here") . "</a>";
-  echo "</center>";
+  	echo "<br><a href='$path_to_root/index.php'>" . _("Login here") . "</a>";
+  	echo "</center>";
 	
 	kill_login();
 	die();
@@ -175,22 +175,32 @@ function password_reset_success()
 
 function check_faillog()
 {
-	global $login_delay, $login_faillog, $login_max_attempts;
+	global $SysPrefs, $login_faillog;
 
 	$user = $_SESSION["wa_current_user"]->user;
 
-	if (@$login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$login_max_attempts) && (time() < $login_faillog[$user]['last'] + $login_delay))
+	if (@$SysPrefs->login_delay && (@$login_faillog[$user][$_SERVER['REMOTE_ADDR']] >= @$SysPrefs->login_max_attempts) && (time() < $login_faillog[$user]['last'] + $SysPrefs->login_delay))
 		return true;
 
 	return false;
 }
+
+/*
+	Ensure file is re-read on next request if php caching is active
+*/
+function cache_invalidate($filename)
+{
+	if (function_exists('opcache_invalidate'))	// OpCode extension
+		opcache_invalidate($filename);
+}
+
 /*
 	Simple brute force attack detection is performed before connection to company database is open. Therefore access counters have to be stored in file.
 	Login attempts counter is created for every new user IP, which partialy prevent DOS attacks.
 */
 function write_login_filelog($login, $result)
 {
-	global $login_faillog, $login_max_attempts, $path_to_root;
+	global $login_faillog, $SysPrefs, $path_to_root;
 
 	$user = $_SESSION["wa_current_user"]->user;
 
@@ -201,7 +211,7 @@ function write_login_filelog($login, $result)
 
  	if (!$result)
 	{
-		if ($login_faillog[$user][$ip] < @$login_max_attempts) {
+		if ($login_faillog[$user][$ip] < @$SysPrefs->login_max_attempts) {
 
  			$login_faillog[$user][$ip]++;
  		} else {
@@ -219,9 +229,10 @@ function write_login_filelog($login, $result)
 
 	$filename = $path_to_root."/tmp/faillog.php";
 
-	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
+	if ((!file_exists($filename) && is_writable($path_to_root.'/tmp')) || is_writable($filename))
 	{
 		file_put_contents($filename, $msg);
+		cache_invalidate($filename);
 	}
 }
 
@@ -240,7 +251,8 @@ function check_page_security($page_security)
 			 _("Security settings have not been defined for your user account.")
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) {
+	} elseif (!$SysPrefs->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) 
+	{
 		$msg = _('Access to application has been blocked until database upgrade is completed by system administrator.');
 	}
 	
@@ -261,7 +273,7 @@ function check_page_security($page_security)
 		end_page(@$_REQUEST['popup']);
 		exit;
 	}
-	if (!$_SESSION['SysPrefs']->db_ok 
+	if (!$SysPrefs->db_ok 
 		&& !in_array($page_security, array('SA_SOFTWAREUPGRADE', 'SA_OPEN', 'SA_BACKUP')))
 	{
 		display_error(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
@@ -309,14 +321,25 @@ function strip_quotes($data)
 	return $data;
 }
 
+/*
+	htmlspecialchars does not support certain encodings.
+	ISO-8859-2 fortunately has the same special characters positions as 
+	ISO-8859-1, so fix is easy. If any other unsupported encoding is used,
+	add workaround here.
+*/
+function html_specials_encode($str)
+{
+	return htmlspecialchars($str, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ?
+		 'ISO-8859-1' : $_SESSION['language']->encoding);
+}
+
 function html_cleanup(&$parms)
 {
 	foreach($parms as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
 		if (is_array($value))
 			html_cleanup($parms[$name]);
 		else
-			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
+			$parms[$name] = html_specials_encode($value);
 	}
 	reset($parms); // needed for direct key() usage later throughout the sources
 }
@@ -342,16 +365,6 @@ if (!isset($path_to_root))
 	$path_to_root = ".";
 }
 
-//----------------------------------------------------------------------------------------
-// set to reasonable values if not set in config file (pre-2.3.12 installations)
-
-if ((!isset($login_delay)) || ($login_delay < 0))
-    $login_delay = 10;
-
-if ((!isset($login_max_attempts)) || ($login_max_attempts < 0))
-    $login_max_attempts = 3; 
-
-
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
@@ -363,7 +376,7 @@ set_error_handler('error_handler' /*, errtypes */);
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
-include_once($path_to_root . "/includes/lang/language.php");
+include_once($path_to_root . "/includes/lang/language.inc");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
@@ -378,6 +391,33 @@ foreach ($installed_extensions as $ext)
 	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
 		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
+$Session_manager = new SessionManager();
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
+
+$_SESSION['SysPrefs'] = new sys_prefs();
+
+$SysPrefs = &$_SESSION['SysPrefs'];
+
+//----------------------------------------------------------------------------------------
+// set to reasonable values if not set in config file (pre-2.3.12 installations)
+
+if ((!isset($SysPrefs->login_delay)) || ($SysPrefs->login_delay < 0))
+    $SysPrefs->login_delay = 10;
+
+if ((!isset($SysPrefs->login_max_attempts)) || ($SysPrefs->login_max_attempts < 0))
+    $SysPrefs->login_max_attempts = 3; 
+
+if ($SysPrefs->go_debug > 0)
+	error_reporting(-1);
+else
+	error_reporting(E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE);
+ini_set("display_errors", "On");
+
+if ($SysPrefs->error_logfile != '') {
+	ini_set("error_log", $SysPrefs->error_logfile);
+	ini_set("ignore_repeated_errors", "On");
+	ini_set("log_errors", "On");
+}
 
 /*
 	Uncomment the setting below when using FA on shared hosting
@@ -388,20 +428,19 @@ foreach ($installed_extensions as $ext)
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
-$Session_manager = new SessionManager();
-$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
+hook_session_start(@$_POST["company_login_name"]);
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
-include_once($path_to_root . "/config.php");
 get_text_init();
 
-if ($login_delay > 0)
+if ($SysPrefs->login_delay > 0)
 	@include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
-if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) 
+if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
+	|| !isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language'))
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
@@ -414,6 +453,7 @@ $_SESSION['language']->set_language($_SESSION['language']->code);
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
+include_once($path_to_root . "/includes/app_entries.inc");
 
 // Ajax communication object
 $Ajax = new Ajax();
@@ -446,13 +486,13 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 	login_timeout();
 
 	if (!$_SESSION["wa_current_user"]->old_db)
-		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+		include($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	install_hooks();
 
 	if (!$_SESSION["wa_current_user"]->logged_in())
 	{
-      if (@$allow_password_reset && !$allow_demo_mode
+      if (@$SysPrefs->allow_password_reset && !$SysPrefs->allow_demo_mode
         && (isset($_GET['reset']) || isset($_POST['email_entry_field']))) {
 		  if (!isset($_POST["email_entry_field"])) {
         include($path_to_root . "/access/password_reset.php");
@@ -484,8 +524,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2'
-						 ? 'ISO-8859-1' : $_SESSION['language']->encoding)), 
+					'', html_specials_encode($_SERVER['REQUEST_URI'])),
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");
@@ -524,18 +563,20 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			$lang->set_language($_SESSION['language']->code);
 		}
 	} else
+	{
 		set_global_connection();
 
+		if (db_fixed())
+			db_set_encoding($_SESSION['language']->encoding);
+
+		$SysPrefs->refresh();
+	}
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
 		$_SESSION["App"]->init();
 	}
 }
 
-$SysPrefs = &$_SESSION['SysPrefs'];
-
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 $_POST = strip_quotes($_POST);
-
-?>

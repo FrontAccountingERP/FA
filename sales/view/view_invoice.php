@@ -18,7 +18,7 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
-if ($use_popup_windows)
+if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 page(_($help_context = "View Sales Invoice"), true, false, "", $js);
 
@@ -35,12 +35,14 @@ elseif (isset($_POST["trans_no"]))
 // 3 different queries to get the information - what a JOKE !!!!
 
 $myrow = get_customer_trans($trans_id, ST_SALESINVOICE);
+$paym = get_payment_terms($myrow['payment_terms']);
 
 $branch = get_branch($myrow["branch_code"]);
 
 $sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
-display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
+display_heading(sprintf($myrow['prep_amount'] > 0 ? (
+	$paym['days_before_due']>=0 ? _("FINAL INVOICE #%d") : _("PREPAYMENT INVOICE #%d")) : _("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
 start_table(TABLESTYLE2, "width='95%'");
@@ -73,7 +75,6 @@ echo "</td><td>"; // outer table
 start_table(TABLESTYLE, "width='100%'");
 $th = array(_("Payment Terms"));
 table_header($th); 
-$paym = get_payment_terms($myrow['payment_terms']);
 label_row(null, $paym["terms"], "nowrap");
 end_table();
 
@@ -92,10 +93,11 @@ label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
-label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
-	get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
+if ($myrow['prep_amount']==0)
+	label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
+		get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
+label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();
@@ -151,13 +153,13 @@ if (db_num_rows($result) > 0)
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);
 
-
 /*Print out the invoice text entered */
 if ($myrow['ov_freight'] != 0.0)
 {
 	$display_freight = price_format($myrow["ov_freight"]);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 }
+
 $tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
@@ -176,4 +178,3 @@ if (!$voided)
 
 end_page(true, false, false, ST_SALESINVOICE, $trans_id);
 
-?>

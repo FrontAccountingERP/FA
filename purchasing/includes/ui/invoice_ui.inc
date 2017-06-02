@@ -19,6 +19,9 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
+    $_POST['dimension'] = $supp_trans->dimension;
+    $_POST['dimension2'] = $supp_trans->dimension2;
+
 	$_POST['_ex_rate'] = $supp_trans->ex_rate;
 	if (isset($supp_trans->tax_overrides))
 	    foreach($supp_trans->tax_overrides as $id => $value)
@@ -34,6 +37,9 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
+   	$supp_trans->dimension = @$_POST['dimension'];
+	$supp_trans->dimension2 =  @$_POST['dimension2'];
+
 	$supp_trans->ex_rate = input_num('_ex_rate', null);
 
 	$supp_trans->ov_amount = $supp_trans->ov_discount = 0; /* for starters */
@@ -57,7 +63,6 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->gl_codes as $gl_line)
 		{
-			////////// 2009-08-18 Joe Hunt
 			if (!is_tax_account($gl_line->gl_code) || $supp_trans->tax_included)
 				$supp_trans->ov_amount += $gl_line->amount;
 		}
@@ -78,19 +83,23 @@ function invoice_header(&$supp_trans)
 
 	table_section(1);
 
-	if (isset($_POST['invoice_no']))
+	if ($supp_trans->trans_type == ST_SUPPCREDIT && $supp_trans->src_docs)
 	{
-		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
-		$_POST['supplier_id'] = $trans['supplier_id'];
-		$supp = $trans['supplier_name'] . " - " . $trans['curr_code'];
+		$_POST['supplier_id'] = $supp_trans->supplier_id;
+		$supp = $supp_trans->supplier_name." - ".$supp_trans->currency;
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
-	}	
+	}
 	else
 	{
     	if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
     		$_POST['supplier_id'] = get_global_supplier();
 
-		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+		if (!$supp_trans->trans_no)
+			supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+		else
+			label_row(_("Supplier:"), $supp_trans->supplier_name
+			.($supp_trans->currency ? ' - '.$supp_trans->currency  : '')
+			.hidden('supplier_id', $_POST['supplier_id'], false));
 	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
@@ -102,18 +111,19 @@ function invoice_header(&$supp_trans)
 		copy_from_trans($supp_trans);
 	}
 
-   	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type));
+   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 
-	if (isset($_POST['invoice_no']))
+   	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type, null, 
+   		array('supplier' => get_post('supplier_id'), 'date' => get_post('tran_date'))), false, $supp_trans->trans_type);
+
+	if ($supp_trans->trans_type == ST_SUPPCREDIT)
 	{
-		label_row(_("Supplier's Ref.:"), $_POST['invoice_no'].hidden('invoice_no', $_POST['invoice_no'], false).hidden('supp_reference', $_POST['invoice_no'], false));
-	}	
-	else
-   		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 60);
+		label_row(_("Source Invoices:"), implode(',' , $supp_trans->src_docs),'','','src_docs');
+	}
+		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 60);
 
 	table_section(2, "33%");
 
-   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
 		$Ajax->activate('_ex_rate');
 		$supp_trans->tran_date = $_POST['tran_date'];
@@ -125,6 +135,12 @@ function invoice_header(&$supp_trans)
     date_row(_("Due Date") . ":", 'due_date');
 
     label_row(_("Terms:"), $supp_trans->terms['description']);
+
+	if (get_company_pref('use_dimension'))
+		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
+
+	if (get_company_pref('use_dimension') == 2)
+		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
 
 	table_section(3, "33%");
 
@@ -150,10 +166,13 @@ function invoice_header(&$supp_trans)
 
 function invoice_totals(&$supp_trans)
 {
+	global $Ajax;
+
 	copy_to_trans($supp_trans);
 
 	$dim = get_company_pref('use_dimension');
  	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
+ 	div_start('tax_table');
    	start_table(TABLESTYLE, "width='95%'");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
@@ -173,6 +192,7 @@ function invoice_totals(&$supp_trans)
     start_table(TABLESTYLE2);
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
     end_table(1);
+	div_end();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -192,7 +212,7 @@ function display_gl_controls(&$supp_trans, $k)
 	amount_cells(null, 'amount');
 	if ($dim < 1)	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension_id', 0, false).hidden('dimension2_id', 0, false));
-	else if ($dim < 2)	
+	elseif ($dim < 2)	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension2_id', 0, false));
 	else	
 		text_cells_ex(null, 'memo_', 35, 50, null, null, null);
@@ -256,7 +276,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
     	$th = array(_("Account"), _("Name"), _("Dimension")." 1", _("Dimension")." 2", _("Amount"), _("Memo"));
-	else if ($dim == 1)
+	elseif ($dim == 1)
     	$th = array(_("Account"), _("Name"), _("Dimension"), _("Amount"), _("Memo"));
     else
     	$th = array(_("Account"), _("Name"), _("Amount"), _("Memo"));
@@ -299,7 +319,6 @@ function display_gl_items(&$supp_trans, $mode=0)
 				label_cell("");
 			}	
 			end_row();
-			/////////// 2009-08-18 Joe Hunt
 			if ($mode > 1) {
 				if ($supp_trans->tax_included || !is_tax_account($entered_gl_code->gl_code))
 					$total_gl_value += $entered_gl_code->amount;
@@ -332,25 +351,23 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 function display_grn_items_for_selection(&$supp_trans, $k)
 {
-
-	if ($supp_trans->trans_type == ST_SUPPINVOICE)
-		$result = get_grn_items(0, $supp_trans->supplier_id, true);
+	if ($supp_trans->trans_type == ST_SUPPINVOICE)	// outstanding grns and eventually for selected invoice
+		$result = get_grn_items(0, $supp_trans->supplier_id, true, false, $supp_trans->trans_no);
 	else
-	{
+	{ // only invoiced
 		if (isset($_POST['receive_begin']) && isset($_POST['receive_end']))
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
-		else if (isset($_POST['invoice_no']))
-			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
-		else	
+		elseif ($supp_trans->src_docs)
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, array_keys($supp_trans->src_docs));
+		else
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
 	}
     if (db_num_rows($result) == 0)
     {
     	return false;
     }
-    
-    /*Set up a table to show the outstanding GRN items for selection */
 
+    /*Set up a table to show the outstanding GRN items for selection */
     while ($myrow = db_fetch($result))
     {
 		$grn_already_on_invoice = false;
@@ -362,21 +379,20 @@ function display_grn_items_for_selection(&$supp_trans, $k)
     			$grn_already_on_invoice = true;
     		}
     	}
+
     	if ($grn_already_on_invoice == false)
     	{
-
 			alt_table_row_color($k);
 
 			$n = $myrow["id"];
-    		label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]).
-           	hidden('qty_recd'.$n, $myrow["qty_recd"], false).
-           	hidden('item_code'.$n, $myrow["item_code"], false).
-           	hidden('item_description'.$n, $myrow["description"], false).
-           	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv'], false).
-           	hidden('order_price'.$n, $myrow['unit_price'], false).
-           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
-           	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false).
-           	hidden('location'.$n, $myrow["loc_code"], false));
+			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
+		   	hidden('qty_recd'.$n, $myrow["qty_recd"]);
+           	hidden('item_code'.$n, $myrow["item_code"]);
+           	hidden('item_description'.$n, $myrow["description"]);
+           	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv']);
+           	hidden('order_price'.$n, $myrow['unit_price']);
+           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit']);
+           	hidden('po_detail_item'.$n, $myrow['po_detail_item']);
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
@@ -387,10 +403,10 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
             	qty_cells(null, 'this_quantity_inv'.$n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
             		null, null, $dec);
-            else		
+            else
             	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
             		null, null, $dec);
-            $dec2 = 0; 		
+            $dec2 = 0;
             if ($supp_trans->trans_type == ST_SUPPINVOICE)
             {
             	amount_cells(null, 'ChgPrice'.$n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2);
@@ -408,7 +424,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
     		if (($supp_trans->trans_type == ST_SUPPINVOICE) && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {	// Added 2008-10-18 by Joe Hunt. Special access rights needed.
         		submit_cells('void_item_id'.$n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 				submit_js_confirm('void_item_id'.$n,
-					_('You are about to remove all yet non-invoiced items from selected delivery line. This operation also irreversibly changes related order line. Do you want to continue ?'));
+					sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 			}
 			end_row();
     	}
@@ -452,28 +468,29 @@ function display_grn_items(&$supp_trans, $mode=0)
 			$heading = _("Received Items Charged on this Invoice");
 		else
 			$heading = _("Received Items Credited on this Note");
-	}		
+	}
 
 	display_heading($heading);
 
 	if ($mode == 1)
 	{
-		if ($supp_trans->trans_type == ST_SUPPCREDIT && !isset($_POST['invoice_no']))
+		if ($supp_trans->trans_type == ST_SUPPCREDIT)
 		{
 			echo "</td>";
-			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
+			date_cells(_("Received between"), 'receive_begin', "", null, 
+				-user_transaction_days(), 0, 0, "valign=middle");
 			date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
 			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 			echo "<td>";
-		}	
-			
+		}
+
 		if ($heading2 != "")
 		{
 			display_note($heading2, 0, 0, "class='overduefg'");
-		}	
+		}
 		echo "</td><td width='10%' align='right'>";
 		submit('InvGRNAll', _("Add All Items"), true, false,true);
-	}	
+	}
 
 	end_outer_table(0, false);
 
@@ -509,12 +526,13 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(ST_SUPPRECEIVE,$grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
     		if ($mode == 1)
     		{
-				$row = get_grn_batch($grn_batch);
-				label_cell($row['purch_order_no']); // PO
-			}
+//				label_cell($entered_grn->id);
+ 				$row = get_grn_batch($grn_batch);
+				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"])); // PO
+			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
             $dec = get_qty_dec($entered_grn->item_code);
@@ -598,4 +616,3 @@ function get_duedate_from_terms(&$trans)
 
 //--------------------------------------------------------------------------------------------------
 
-?>

@@ -14,10 +14,10 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root."/includes/packages.inc");
 
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js = get_js_open_window(900, 500);
 }
-page(_($help_context = "Install/Activate extensions"));
+page(_($help_context = "Install/Activate extensions"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
@@ -94,7 +94,7 @@ function fmt_titles($defs)
 //
 // Display list of all extensions - installed and available from repository
 //
-function display_extensions()
+function display_extensions($mods)
 {
 	global $installed_extensions;
 	
@@ -106,7 +106,6 @@ function display_extensions()
 	table_header($th);
 
 	$k = 0;
-	$mods = get_extensions_list('extension');
 
 	foreach($mods as $pkg_name => $ext)
 	{
@@ -211,8 +210,14 @@ if (get_post('Refresh')) {
 
 	$result = true;
 	foreach($exts as $i => $ext) {
-		if ($ext['package'] && ($ext['active'] ^ check_value('Active'.$i)))
+		if ($ext['package'] && ($ext['active'] ^ check_value('Active'.$i))) 
 		{
+			if (check_value('Active'.$i) && !check_src_ext_version($ext['version']))
+			{
+				display_warning(sprintf(_("Package '%s' is incompatible with current application version and cannot be activated.\n")
+					. _("Check Install/Activate page for newer package version."), $ext['name']));
+				continue;
+			}
 			$activated = activate_hooks($ext['package'], $comp, !$ext['active']);	// change active state
 
 			if ($activated !== null)
@@ -256,12 +261,16 @@ echo extset_list('extset', null, true);
 echo "</center><br>";
 
 if ($set == -1) 
-	display_extensions();
-else 
+{
+	$mods = get_extensions_list('extension');
+	if (!$mods)
+		display_note(_("No optional extension module is currently available."));
+	else
+		display_extensions($mods);
+} else 
 	company_extensions($set);
 
 //---------------------------------------------------------------------------------------------
 end_form();
 
 end_page();
-?>

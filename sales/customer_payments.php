@@ -21,10 +21,10 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
-if ($use_popup_windows) {
+if ($SysPrefs->use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
-if ($use_date_picker) {
+if (user_use_date_picker()) {
 	$js .= get_js_date_picker();
 }
 add_js_file('payalloc.js');
@@ -54,6 +54,7 @@ if (!isset($_POST['bank_account'])) { // first page call
 		if($inv) {
 			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
 			$_SESSION['alloc']->read();
+			$_POST['BranchID'] = $inv['branch_code'];
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
 			foreach($_SESSION['alloc']->allocs as $line => $trans) {
 				if ($trans->type == ST_SALESINVOICE && $trans->type_no == $_GET['SInvoice']) {
@@ -153,27 +154,12 @@ function can_process()
 		set_focus('DateBanked');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['DateBanked'])) {
-		display_error(_("The entered date is not in fiscal year."));
+		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
 		set_focus('DateBanked');
 		return false;
 	}
 
-	if (!$Refs->is_valid($_POST['ref'])) {
-		display_error(_("You must enter a reference."));
-		set_focus('ref');
-		return false;
-	}
-
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	if (isset($_POST['trans_no']) && $_POST['trans_no'] == 0 && (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT))) {
-		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
-		return false;
-	}
-	//Avoid duplicate reference while modifying
-	elseif ($_POST['ref'] != $_POST['old_ref'] && !is_new_reference($_POST['ref'], ST_CUSTPAYMENT))
-	{
-		display_error( _("The entered reference is already in use."));
+	if (!check_reference($_POST['ref'], ST_CUSTPAYMENT, @$_POST['trans_no'])) {
 		set_focus('ref');
 		return false;
 	}
@@ -190,20 +176,13 @@ function can_process()
 		return false;
 	}
 	if (isset($_POST['charge']) && input_num('charge') > 0) {
-		$charge_acct = get_company_pref('bank_charge_act');
+		$charge_acct = get_bank_charge_account($_POST['bank_account']);
 		if (get_gl_account($charge_acct) == false) {
 			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 			set_focus('charge');
 			return false;
 		}	
 	}
-
-//	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
-//	{
-//		display_error(_("The exchange rate must be numeric and greater than zero."));
-//		set_focus('_ex_rate');
-//		return false;
-//	}
 
 	if (@$_POST['discount'] == "") 
 	{
@@ -216,7 +195,6 @@ function can_process()
 		return false;
 	}
 
-	//if ((input_num('amount') - input_num('discount') <= 0)) {
 	if (input_num('amount') <= 0) {
 		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
@@ -247,9 +225,6 @@ if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
 }
-//if (isset($_POST['_DateBanked_changed'])) {
-//  $Ajax->activate('_ex_rate');
-//}
 
 //----------------------------------------------------------------------------------------------
 
@@ -280,17 +255,17 @@ function read_customer_data()
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	//If page is called first time and New entry fetch the nex reference number
+	// To support Edit feature
+	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
-		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT, null, array(
+			'customer' => get_post('customer_id'), 'date' => get_post('DateBanked')));
 }
 
 //----------------------------------------------------------------------------------------------
 $new = 1;
-$old_ref = 0;
 
-//Chaitanya : 13-OCT-2011 - To support Edit feature
+// To support Edit feature
 if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 {
 	$_POST['trans_no'] = $_GET['trans_no'];
@@ -302,7 +277,6 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['BranchID'] = $myrow["branch_code"];
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
-	$old_ref = $myrow["reference"];
 	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
 	$_POST['charge'] =  price_format($charge);
 	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
@@ -316,7 +290,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,$_POST['trans_no']);
 	else
 	{
-		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
+		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, $_POST['trans_no']);
 		$Ajax->activate('alloc_tbl');
 	}
 }
@@ -325,87 +299,91 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 $new = !$_SESSION['alloc']->trans_no;
 start_form();
 
-	hidden('trans_no');
-	hidden('old_ref', $old_ref);
+hidden('trans_no');
 
-	start_outer_table(TABLESTYLE2, "width='60%'", 5);
+start_outer_table(TABLESTYLE2, "width='60%'", 5);
 
-	table_section(1);
+table_section(1);
 
-	bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
-	if ($new)
-		customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
-	else {
-		label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
-		hidden('customer_id', $_POST['customer_id']);
-	}
+if ($new)
+	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
+else {
+	label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
+	hidden('customer_id', $_POST['customer_id']);
+}
 
-	if (db_customer_has_branches($_POST['customer_id'])) {
-		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	} else {
-		hidden('BranchID', ANY_NUMERIC);
-	}
+if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+	$_SESSION['alloc']->read();
+	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+	$Ajax->activate('alloc_tbl');
+}
 
-	if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-		$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
-		$_SESSION['alloc']->read();
-		$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-		$Ajax->activate('alloc_tbl');
-	}
+if (db_customer_has_branches($_POST['customer_id'])) {
+	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
+} else {
+	hidden('BranchID', ANY_NUMERIC);
+}
 
-	read_customer_data();
+if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
+	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+	$_SESSION['alloc']->read();
+	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
+	$Ajax->activate('alloc_tbl');
+}
 
-	set_global_customer($_POST['customer_id']);
-	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
-		display_warning(_("This customer account is on hold."));
-	$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
+read_customer_data();
 
-	table_section(2);
+set_global_customer($_POST['customer_id']);
+if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
+	display_warning(_("This customer account is on hold."));
+$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
-	date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+table_section(2);
 
-	ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
+date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-	table_section(3);
+ref_row(_("Reference:"), 'ref','' , null, '', ST_CUSTPAYMENT);
 
-	$comp_currency = get_company_currency();
-	$cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
-	if (!$cust_currency)
-		$cust_currency = $comp_currency;
-	$_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST['bank_account']);
+table_section(3);
 
-	if ($cust_currency != $bank_currency)
-	{
-		amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
-	}
+$comp_currency = get_company_currency();
+$cust_currency = $_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
+if (!$cust_currency)
+	$cust_currency = $comp_currency;
+$_SESSION['alloc']->currency = $bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
+if ($cust_currency != $bank_currency)
+{
+	amount_row(_("Payment Amount:"), 'bank_amount', null, '', $bank_currency);
+}
 
-	end_outer_table(1);
+amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
-	div_start('alloc_tbl');
-	show_allocatable(false);
-	div_end();
+end_outer_table(1);
 
-	start_table(TABLESTYLE, "width='60%'");
+div_start('alloc_tbl');
+show_allocatable(false);
+div_end();
 
-	label_row(_("Customer prompt payment discount :"), $display_discount_percent);
+start_table(TABLESTYLE, "width='60%'");
 
-	amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-	amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
+amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
 
-	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
-	end_table(1);
+amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
 
-	if ($new)
-		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
-	else
-		submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
+textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+end_table(1);
 
-	br();
+if ($new)
+	submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
+else
+	submit_center('AddPaymentItem', _("Update Payment"), true, '', 'default');
+
+br();
 
 end_form();
 end_page();
-?>

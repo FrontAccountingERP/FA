@@ -12,9 +12,9 @@
 /*
 	Update main or gl company setup.
 */
-function update_company_prefs( $params, $pref = TB_PREF )
+function update_company_prefs($params)
 {
-	$sql = "UPDATE {$pref}sys_prefs SET value = ";
+	$sql = "UPDATE ".TB_PREF."sys_prefs SET value = ";
 	foreach($params as $name => $value) {
 		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
 			 "The company prefferences could not be updated "))
@@ -30,38 +30,14 @@ function update_company_prefs( $params, $pref = TB_PREF )
 	$prefs can be preference name, array of names, or null for all preferences.
 	
 */
-function get_company_pref($prefs = null, $tbpref = null)
+function get_company_pref($prefs = null)
 {
 	global $SysPrefs, $db_version;
-	
-	static $cached; // retrieve values from db once a request. Some values can't be cached between requests
-					// to ensure prefs integrity for all usrs (e.g. gl_close_date).
-	
- 	if (!$cached || !isset($_SESSION['SysPrefs'])) { // cached preferences
 
-		$_SESSION['SysPrefs'] = new sys_prefs();
+	if (!isset($SysPrefs->prefs))	 // just after first login or reset
+		$SysPrefs->refresh();
 
-		if (!isset($tbpref))
-			$tbpref = TB_PREF;
-
-		$sql = "SELECT name, value FROM {$tbpref}sys_prefs";
-		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
-
-		if(!$result)
-			return null;
-
-		while($pref = db_fetch_assoc($result)) {
-			$_SESSION['SysPrefs']->prefs[$pref['name']] = $pref['value'];
-		}
-
-		$SysPrefs = &$_SESSION['SysPrefs'];
-
-		// update current db status for info in log file
-		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $db_version;
-		$cached = true;
-	}
-
-	$all = $_SESSION['SysPrefs']->prefs;
+	$all = $SysPrefs->prefs;
 
 	if (!$prefs)
 		return $all;
@@ -72,26 +48,19 @@ function get_company_pref($prefs = null, $tbpref = null)
 	foreach($prefs as $name)
 		$ret[$name] = $all[$name];
 
-		return $ret;
+	return $ret;
 }
 
-function get_company_prefs($tbpref = TB_PREF)
+function get_company_prefs()
 {
-	return get_company_pref(null, $tbpref);
+	return get_company_pref(null);
 }
 
 function set_company_pref($pref, $category, $type, $length, $value)
 {
-	$sql = "REPLACE ".TB_PREF."sys_prefs SET name=".db_escape($pref).", category=".db_escape($category)
-		.", type=".db_escape($type).", length=".db_escape($length).", value=".db_escape($value);
+	$sql = "REPLACE `".TB_PREF."sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
+		.", `type`=".db_escape($type).", `length`=".db_escape($length).", `value`=".db_escape($value);
 	return db_query($sql, "cannot set company pref");
-}
-
-function refresh_sys_prefs()
-{
-	flush_dir(company_path().'/js_cache'); // clear cache
-	unset($_SESSION['SysPrefs']);
-	get_company_prefs();
 }
 
 function get_base_sales_type()
@@ -200,4 +169,24 @@ function key_in_foreign_table($id, $tables, $stdkey)
 	return $count[0];
 }
 
-?>
+//---------------------------------------------------------------------------------------------
+//
+// Resets $theme references in users records to 'default'.
+//
+function clean_user_themes($theme)
+{
+	global $db_connections, $db;
+
+	$comp = user_company();
+
+	$connections = $db_connections;	// do not use db_connections directly here, or script will hang due to db_connections usage inside the loop
+	foreach ($connections as $n => $conn) {
+		$db = $_SESSION["wa_current_user"]->set_db_connection($n);
+		$sql = "UPDATE {$conn['tbpref']}users SET theme='default' WHERE theme='$theme'";
+		if (!db_query($sql, 'Cannot update user theme settings'))
+			return false;
+	}
+	$db = $_SESSION["wa_current_user"]->set_db_connection($comp);
+	$_SESSION['wa_current_user']->prefs->theme = 'default';
+	return true;
+}
