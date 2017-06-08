@@ -71,7 +71,7 @@ function error_handler($errno, $errstr, $file, $line) {
 		}
 	}
 
-	$bt = $SysPrefs->go_debug>1 ? get_backtrace(true, 1) : array();
+	$bt = isset($SysPrefs) && $SysPrefs->go_debug>1 ? get_backtrace(true, 1) : array();
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting()) {
