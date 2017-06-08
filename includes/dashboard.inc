@@ -157,12 +157,15 @@ function display_all()
 	table_one();
 	$title = customer_top($today, 3, 66, $pg);
 	source_graphic($today, $title, _("Customer"), $pg, _("Sales"));
+	$pg = new graph();
 	$title = supplier_top($today, 3, 66, $pg);
 	source_graphic($today, $title, _("Supplier"), $pg, _("Purchases"));
+	$pg = new graph();
 	$title = stock_top($today, 3, 66, 0, $pg);
 	source_graphic($today, $title, _("Items"), $pg, _("Sales"), _("Costs"));
 	table_two();
 	dimension_top($today, 3, 66);
+	$pg = new graph();
 	$title = gl_top($today, 66, $pg);
 	source_graphic($today, $title, _("Class"), $pg, _("Amount"), null, 5);
 	stock_top($today, 3, 66, 2);
