@@ -106,6 +106,9 @@ function edit_link($row)
 {
 	global $page_nested;
 
+	if (is_prepaid_order_open($row['order_no']))
+		return '';
+
 	return $page_nested ? '' : trans_editor_link($row['trans_type'], $row['order_no']);
 }
 

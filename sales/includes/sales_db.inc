@@ -279,7 +279,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 					@$myrow["src_id"]);
 			}
 		}
-		$cart->prepayments = get_payments_for($trans_no, $doc_type);
+		$cart->prepayments = get_payments_for($trans_no, $doc_type, $myrow["debtor_no"]);
 
 	} // !newdoc
 

@@ -218,7 +218,8 @@ class cart
 				read_sales_order($trans_no[0], $this, $type);
 			} else {	// other type of sales transaction
 				read_sales_trans($type, $trans_no, $this);
-				$this->prepayments = get_payments_for($trans_no[0], $type);
+				$this->prepayments = get_payments_for($trans_no[0], $type, $this->customer_id);
+				$this->update_payments();
 				if ($this->order_no) { // free hand credit notes have no order_no
 					$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
 					$this->cust_ref = $sodata["customer_ref"];

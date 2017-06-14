@@ -160,16 +160,15 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	}
 	else {
 		$order_no = $_GET['InvoicePrepayments'];
-		$payments =  get_payments_for($_GET['InvoicePrepayments'], ST_SALESORDER);
 	}
 	processing_start();
 
-	$_SESSION['Items'] = new Cart(ST_SALESORDER, $order_no, ST_SALESINVOICE);
+	$_SESSION['Items'] = new cart(ST_SALESORDER, $order_no, ST_SALESINVOICE);
 	$_SESSION['Items']->order_no = $order_no;
 	$_SESSION['Items']->src_docs = array($order_no);
 	$_SESSION['Items']->trans_no = 0;
 	$_SESSION['Items']->trans_type = ST_SALESINVOICE;
-	$_SESSION['Items']->prepayments = $payments;
+
 	$_SESSION['Items']->update_payments();
 
 	copy_from_cart();

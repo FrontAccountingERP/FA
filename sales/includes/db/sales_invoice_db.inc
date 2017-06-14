@@ -40,6 +40,12 @@ function write_sales_invoice(&$invoice)
 
 	if (!$invoice->is_prepaid())
 		update_customer_trans_version(get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
+    elseif (count($invoice->prepayments)) {	// partial invoice
+		$last_payment = end($invoice->prepayments);
+		$gl_date = sql2date($last_payment['tran_date']);
+	} else {	// final invoice
+		$gl_date = $invoice->document_date;
+	}
 
 	$ov_gst = 0;
 	$taxes = $invoice->get_taxes(); // all taxes with freight_tax
@@ -63,12 +69,12 @@ function write_sales_invoice(&$invoice)
 			$sales_order = $sales_order[0]; // assume all crucial SO data are same for every delivery
 
 	if ($trans_no) {
-		$allocs = get_payments_for($trans_no, ST_SALESINVOICE);
+		$allocs = get_payments_for($trans_no, ST_SALESINVOICE, $invoice->customer_id);
 		delete_comments(ST_SALESINVOICE, $trans_no);
 		void_gl_trans(ST_SALESINVOICE, $trans_no, true);
 		void_trans_tax_details(ST_SALESINVOICE, $trans_no);
 	} else
-		$allocs = get_payments_for($invoice->order_no, ST_SALESORDER);
+		$allocs = get_payments_for($invoice->order_no, ST_SALESORDER, $invoice->customer_id);
 
 	if ($invoice->is_prepaid()) // selected prepayment is already in cart
 	{
@@ -204,7 +210,7 @@ function write_sales_invoice(&$invoice)
 			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $invoice->customer_id);
 		}
 	}
-	reallocate_payments($invoice_no, ST_SALESINVOICE, $date_, $to_allocate, $allocs);
+	reallocate_payments($invoice_no, ST_SALESINVOICE, $date_, $to_allocate, $allocs, $invoice->customer_id);
 	hook_db_postwrite($invoice, ST_SALESINVOICE);
 
 	commit_transaction();
