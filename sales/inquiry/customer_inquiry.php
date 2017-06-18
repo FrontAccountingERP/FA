@@ -135,23 +135,13 @@ function gl_view($row)
 	return get_gl_view_str($row["type"], $row["trans_no"]);
 }
 
-function fmt_debit($row)
+function fmt_amount($row)
 {
 	$value =
 	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
-
+    return price_format($value);
 }
-
-function fmt_credit($row)
-{
-	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL) ?
-		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
-}
-
 
 function credit_link($row)
 {
@@ -208,8 +198,7 @@ $cols = array(
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 
 	_("Currency") => array('align'=>'center'),
-	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
-	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
+	_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
 	_("RB") => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		array('insert'=>true, 'fun'=>'credit_link'),

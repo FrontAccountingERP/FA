@@ -136,17 +136,10 @@ function credit_link($row)
 			: '';
 }
 
-function fmt_debit($row)
+function fmt_amount($row)
 {
 	$value = $row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
-
-}
-
-function fmt_credit($row)
-{
-	$value = -$row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
+	return price_format($value);
 }
 
 function prt_link($row)
@@ -182,8 +175,7 @@ $cols = array(
 			_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'), 
 			_("Due Date") => array('type'=>'date', 'fun'=>'due_date'), 
 			_("Currency") => array('align'=>'center'),
-			_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
-			_("Credit") => array('align'=>'right', 'insert'=>true,'fun'=>'fmt_credit'), 
+			_("Amount") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 			array('insert'=>true, 'fun'=>'gl_view'),
 			array('insert'=>true, 'fun'=>'credit_link'),
 			array('insert'=>true, 'fun'=>'prt_link'),

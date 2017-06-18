@@ -318,33 +318,36 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 		branch.br_name,
 		debtor.curr_code,
 		debtor.debtor_no,
-		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+		IF(prep_amount, prep_amount, trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
    	if ($filter != ALL_TEXT)
-		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
+		$sql .= "@bal := @bal+IF(prep_amount, prep_amount, trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 
 //	else
 //		$sql .= "IF(trans.type=".ST_CUSTDELIVERY.",'', IF(trans.type=".ST_SALESINVOICE." OR trans.type=".ST_BANKPAYMENT.",@bal := @bal+
 //			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), @bal := @bal-
 //			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount))) , ";
 		$sql .= "trans.alloc AS Allocated,
-		((trans.type = ".ST_SALESINVOICE.")
+		((trans.type = ".ST_SALESINVOICE." || trans.type = ".ST_JOURNAL.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue ,
 		Sum(line.quantity-line.qty_done) AS Outstanding,
-		Sum(line.qty_done) AS HasChild
+		Sum(line.qty_done) AS HasChild,
+		prep_amount
 		FROM "
 			.TB_PREF."debtor_trans as trans
 			LEFT JOIN ".TB_PREF."debtor_trans_details as line
 				ON trans.trans_no=line.debtor_trans_no AND trans.type=line.debtor_trans_type
 			LEFT JOIN ".TB_PREF."voided as v
 				ON trans.trans_no=v.id AND trans.type=v.type
+                        LEFT JOIN ".TB_PREF."audit_trail as audit ON (trans.type=audit.type AND trans.trans_no=audit.trans_no)
+                        LEFT JOIN ".TB_PREF."users as user ON (audit.user=user.id)
 			LEFT JOIN ".TB_PREF."cust_branch as branch ON trans.branch_code=branch.branch_code,"
 			.TB_PREF."debtors_master as debtor
 		WHERE debtor.debtor_no = trans.debtor_no
 			AND trans.tran_date >= '$date_after'
-			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code
-			AND ISNULL(v.date_)";
+			AND trans.tran_date <= '$date_to'"
+			// exclude voided transactions and self-balancing (journal) transactions:
+    	. " AND ISNULL(v.date_) AND (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) != 0";
 
    	if ($cust_id != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($cust_id);
@@ -381,6 +384,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
     	}
    	}
+
 	$sql .= " GROUP BY trans.trans_no, trans.type";
 
    	return $sql;
