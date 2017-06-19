@@ -175,7 +175,7 @@ $cols = array(
 			_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'), 
 			_("Due Date") => array('type'=>'date', 'fun'=>'due_date'), 
 			_("Currency") => array('align'=>'center'),
-			_("Amount") => array('align'=>'right', 'fun'=>'fmt_debit'), 
+			_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
 			array('insert'=>true, 'fun'=>'gl_view'),
 			array('insert'=>true, 'fun'=>'credit_link'),
 			array('insert'=>true, 'fun'=>'prt_link'),
