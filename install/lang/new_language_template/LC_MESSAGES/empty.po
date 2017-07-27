@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-26 10:48+0200\n"
+"POT-Creation-Date: 2017-07-27 20:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,7 @@ msgid "Description"
 msgstr ""
 
 #: install/index.php:49 install/index.php:76 install/index.php:403
+#: install/index.php:404
 msgid "Install"
 msgstr ""
 
@@ -121,7 +122,8 @@ msgid ""
 msgstr ""
 
 #: install/index.php:336 install/index.php:365 install/index.php:372
-#: install/index.php:379
+#: install/index.php:379 install/index.php:366 install/index.php:373
+#: install/index.php:380
 msgid "Continue >>"
 msgstr ""
 
@@ -150,6 +152,7 @@ msgstr ""
 #: install/index.php:353
 msgid "Database Name:"
 msgstr ""
+
 #: install/index.php:354
 msgid "Database User:"
 msgstr ""
@@ -203,59 +206,60 @@ msgid ""
 msgstr ""
 
 #: install/index.php:364 install/index.php:371 install/index.php:378
-#: install/index.php:402
+#: install/index.php:402 install/index.php:365 install/index.php:372
+#: install/index.php:379 install/index.php:403
 msgid "<< Back"
 msgstr ""
 
-#: install/index.php:369
+#: install/index.php:369 install/index.php:370
 msgid "User Interface Languages Selection"
 msgstr ""
 
-#: install/index.php:376
+#: install/index.php:376 install/index.php:377
 msgid "Charts of Accounts Selection"
 msgstr ""
 
-#: install/index.php:393
+#: install/index.php:393 install/index.php:394
 msgid "Company Settings"
 msgstr ""
 
-#: install/index.php:395
+#: install/index.php:395 install/index.php:396
 msgid "Company Name:"
 msgstr ""
 
-#: install/index.php:396
+#: install/index.php:396 install/index.php:397
 msgid "Admin Login:"
 msgstr ""
 
-#: install/index.php:397
+#: install/index.php:397 install/index.php:398
 msgid "Admin Password:"
 msgstr ""
 
-#: install/index.php:398
+#: install/index.php:398 install/index.php:399
 msgid "Reenter Password:"
 msgstr ""
 
-#: install/index.php:399
+#: install/index.php:399 install/index.php:400
 msgid "Select Chart of Accounts:"
 msgstr ""
 
-#: install/index.php:400
+#: install/index.php:400 install/index.php:401
 msgid "Select Default Language:"
 msgstr ""
 
-#: install/index.php:403
+#: install/index.php:403 install/index.php:404
 msgid "Start installation process"
 msgstr ""
 
-#: install/index.php:407
+#: install/index.php:407 install/index.php:408
 msgid "FrontAccounting ERP has been installed successsfully."
 msgstr ""
 
-#: install/index.php:408
+#: install/index.php:408 install/index.php:409
 msgid "Please do not forget to remove install wizard folder."
 msgstr ""
 
-#: install/index.php:411
+#: install/index.php:411 install/index.php:412
 msgid "Click here to start."
 msgstr ""
 
@@ -530,4 +534,8 @@ msgstr ""
 #: includes/packages.inc:641 includes/packages.inc:696
 #, php-format
 msgid "Package '%s' not found."
+msgstr ""
+
+#: install/index.php:364
+msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-14 23:29+0200\n"
+"POT-Creation-Date: 2017-07-27 20:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,8 +71,8 @@ msgid "Password:"
 msgstr ""
 
 #: access/login.php:106 access/login.php:112 access/password_reset.php:69
-#: access/password_reset.php:75 admin/create_coy.php:240
-#: admin/create_coy.php:316 admin/inst_upgrade.php:63
+#: access/password_reset.php:75 admin/create_coy.php:247
+#: admin/create_coy.php:327 admin/inst_upgrade.php:63
 #: includes/sysnames.inc:208
 msgid "Company"
 msgstr ""
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Type:"
 msgstr ""
 
-#: admin/attachments.php:186 admin/create_coy.php:261
+#: admin/attachments.php:186 admin/create_coy.php:269
 #: admin/crm_categories.php:106 admin/fiscalyears.php:164
 #: admin/inst_lang.php:100 admin/payment_terms.php:142 admin/printers.php:96
 #: admin/shipping_companies.php:106 admin/tags.php:140 admin/users.php:153
@@ -181,7 +181,7 @@ msgstr ""
 #: sales/manage/sales_points.php:99 sales/manage/sales_types.php:121
 #: sales/includes/ui/sales_credit_ui.inc:192
 #: sales/includes/ui/sales_order_ui.inc:196 taxes/item_tax_types.php:139
-#: taxes/tax_groups.php:137 taxes/tax_types.php:132
+#: taxes/tax_groups.php:140 taxes/tax_types.php:132
 msgid "Edit"
 msgstr ""
 
@@ -193,7 +193,7 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: admin/attachments.php:201 admin/create_coy.php:264
+#: admin/attachments.php:201 admin/create_coy.php:272
 #: admin/crm_categories.php:110 admin/fiscalyears.php:166
 #: admin/inst_chart.php:83 admin/inst_lang.php:109 admin/inst_module.php:142
 #: admin/inst_theme.php:87 admin/payment_terms.php:143 admin/printers.php:97
@@ -222,7 +222,7 @@ msgstr ""
 #: sales/manage/sales_points.php:100 sales/manage/sales_types.php:122
 #: sales/includes/ui/sales_credit_ui.inc:194
 #: sales/includes/ui/sales_order_ui.inc:198 taxes/item_tax_types.php:140
-#: taxes/tax_groups.php:138 taxes/tax_types.php:133
+#: taxes/tax_groups.php:141 taxes/tax_types.php:133
 msgid "Delete"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 #: purchasing/inquiry/po_search_completed.php:110
 #: purchasing/inquiry/po_search.php:117
 #: purchasing/inquiry/supplier_allocation_inquiry.php:137
-#: purchasing/inquiry/supplier_inquiry.php:178
+#: purchasing/inquiry/supplier_inquiry.php:171
 #: purchasing/allocations/supplier_allocation_main.php:95
 #: reporting/rep101.php:132 reporting/rep201.php:107 reporting/rep203.php:88
 #: reporting/rep306.php:141 reporting/rep601.php:79 reporting/rep602.php:80
@@ -255,7 +255,7 @@ msgstr ""
 #: sales/view/view_sales_order.php:109 sales/view/view_sales_order.php:142
 #: sales/view/view_sales_order.php:179
 #: sales/inquiry/customer_allocation_inquiry.php:147
-#: sales/inquiry/customer_inquiry.php:203
+#: sales/inquiry/customer_inquiry.php:193
 msgid "#"
 msgstr ""
 
@@ -280,7 +280,7 @@ msgstr ""
 #: sales/create_recurrent_invoices.php:203 sales/manage/credit_status.php:97
 #: sales/manage/recurrent_invoices.php:128
 #: sales/inquiry/sales_orders_view.php:284
-#: sales/inquiry/sales_orders_view.php:288 taxes/tax_groups.php:123
+#: sales/inquiry/sales_orders_view.php:288 taxes/tax_groups.php:126
 #: taxes/tax_types.php:115
 msgid "Description"
 msgstr ""
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Database backup failed."
 msgstr ""
 
-#: admin/backups.php:102 admin/create_coy.php:260 admin/fiscalyears.php:155
+#: admin/backups.php:102 admin/create_coy.php:268 admin/fiscalyears.php:155
 #: admin/inst_lang.php:85 admin/inst_lang.php:97
 #: dimensions/inquiry/search_dimensions.php:106
 #: gl/manage/bank_accounts.php:130 gl/manage/currencies.php:162
@@ -746,109 +746,109 @@ msgstr ""
 msgid "Database port has to be numeric or empty."
 msgstr ""
 
-#: admin/create_coy.php:53
+#: admin/create_coy.php:59
 msgid "This database settings are already used by another company."
 msgstr ""
 
-#: admin/create_coy.php:58
+#: admin/create_coy.php:64
 msgid ""
 "You cannot have table set without prefix together with prefixed sets in the "
 "same database."
 msgstr ""
 
-#: admin/create_coy.php:117
+#: admin/create_coy.php:124
 msgid "Error creating Database: "
 msgstr ""
 
-#: admin/create_coy.php:117
+#: admin/create_coy.php:124
 msgid ", Please create it manually"
 msgstr ""
 
-#: admin/create_coy.php:123
+#: admin/create_coy.php:130
 msgid "Cannot create new company due to bugs in sql file."
 msgstr ""
 
-#: admin/create_coy.php:141 admin/create_coy.php:209
+#: admin/create_coy.php:148 admin/create_coy.php:216
 msgid "Cannot open the configuration file - "
 msgstr ""
 
-#: admin/create_coy.php:143 admin/create_coy.php:211
+#: admin/create_coy.php:150 admin/create_coy.php:218
 msgid "Cannot write to the configuration file - "
 msgstr ""
 
-#: admin/create_coy.php:145 admin/create_coy.php:181 admin/create_coy.php:213
+#: admin/create_coy.php:152 admin/create_coy.php:188 admin/create_coy.php:220
 msgid "The configuration file "
 msgstr ""
 
-#: admin/create_coy.php:145 admin/create_coy.php:181 admin/create_coy.php:213
-#: admin/db/maintenance_db.inc:251
+#: admin/create_coy.php:152 admin/create_coy.php:188 admin/create_coy.php:220
+#: admin/db/maintenance_db.inc:253
 msgid ""
 " is not writable. Change its permissions so it is, then re-run the operation."
 msgstr ""
 
-#: admin/create_coy.php:157
+#: admin/create_coy.php:164
 msgid "New company has been created."
 msgstr ""
 
-#: admin/create_coy.php:157
+#: admin/create_coy.php:164
 msgid "Company has been updated."
 msgstr ""
 
-#: admin/create_coy.php:174
+#: admin/create_coy.php:181
 msgid ""
 "Broken company subdirectories system. You have to remove this company "
 "manually."
 msgstr ""
 
-#: admin/create_coy.php:190
+#: admin/create_coy.php:197
 msgid "Cannot rename subdirectory to temporary name."
 msgstr ""
 
-#: admin/create_coy.php:196
+#: admin/create_coy.php:203
 msgid "Cannot rename company subdirectory"
 msgstr ""
 
-#: admin/create_coy.php:202
+#: admin/create_coy.php:209
 msgid "Error removing Database: "
 msgstr ""
 
-#: admin/create_coy.php:202
+#: admin/create_coy.php:209
 msgid ", please remove it manually"
 msgstr ""
 
-#: admin/create_coy.php:222
+#: admin/create_coy.php:229
 msgid "Cannot remove temporary renamed company data directory "
 msgstr ""
 
-#: admin/create_coy.php:225
+#: admin/create_coy.php:232
 msgid "Selected company has been deleted"
 msgstr ""
 
-#: admin/create_coy.php:240
+#: admin/create_coy.php:247
 msgid "Database Host"
 msgstr ""
 
-#: admin/create_coy.php:240
+#: admin/create_coy.php:247
 msgid "Database Port"
 msgstr ""
 
-#: admin/create_coy.php:240 admin/create_coy.php:321 admin/create_coy.php:331
+#: admin/create_coy.php:247 admin/create_coy.php:333 admin/create_coy.php:344
 msgid "Database User"
 msgstr ""
 
-#: admin/create_coy.php:241 admin/create_coy.php:323 admin/create_coy.php:332
+#: admin/create_coy.php:248 admin/create_coy.php:335 admin/create_coy.php:345
 msgid "Database Name"
 msgstr ""
 
-#: admin/create_coy.php:241 admin/create_coy.php:325 admin/create_coy.php:333
+#: admin/create_coy.php:248 admin/create_coy.php:337 admin/create_coy.php:347
 msgid "Table Pref"
 msgstr ""
 
-#: admin/create_coy.php:241
+#: admin/create_coy.php:248
 msgid "Charset"
 msgstr ""
 
-#: admin/create_coy.php:241 admin/inst_lang.php:36
+#: admin/create_coy.php:248 admin/inst_lang.php:36
 #: admin/print_profiles.php:161 includes/ui/class.reflines_crud.inc:38
 #: purchasing/includes/ui/invoice_ui.inc:140
 #: purchasing/includes/ui/invoice_ui.inc:143
@@ -856,7 +856,7 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: admin/create_coy.php:260 admin/create_coy.php:337 admin/fiscalyears.php:159
+#: admin/create_coy.php:268 admin/create_coy.php:351 admin/fiscalyears.php:159
 #: admin/inst_lang.php:85 admin/inst_lang.php:97
 #: dimensions/inquiry/search_dimensions.php:106
 #: gl/manage/bank_accounts.php:128 gl/manage/currencies.php:162
@@ -875,7 +875,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: admin/create_coy.php:266
+#: admin/create_coy.php:274
 #, php-format
 msgid ""
 "You are about to remove company \\'%s\\'.\n"
@@ -896,23 +896,23 @@ msgstr ""
 msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr ""
 
-#: admin/create_coy.php:320 admin/create_coy.php:331 admin/printers.php:84
+#: admin/create_coy.php:331 admin/create_coy.php:342 admin/printers.php:84
 msgid "Host"
 msgstr ""
 
-#: admin/create_coy.php:332
+#: admin/create_coy.php:332 admin/create_coy.php:343 admin/printers.php:135
 msgid "Port"
 msgstr ""
 
-#: admin/create_coy.php:322
+#: admin/create_coy.php:334
 msgid "Database Password"
 msgstr ""
 
-#: admin/create_coy.php:324
+#: admin/create_coy.php:336 admin/create_coy.php:346
 msgid "Database Collation:"
 msgstr ""
 
-#: admin/create_coy.php:325 admin/inst_chart.php:71 admin/inst_chart.php:73
+#: admin/create_coy.php:337 admin/inst_chart.php:71 admin/inst_chart.php:73
 #: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:125
 #: admin/inst_theme.php:76 admin/inst_theme.php:78
 #: gl/manage/gl_account_types.php:189 includes/db/audit_trail_db.inc:127
@@ -920,15 +920,15 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: admin/create_coy.php:326 admin/create_coy.php:335 admin/create_coy.php:337
+#: admin/create_coy.php:338 admin/create_coy.php:349 admin/create_coy.php:351
 msgid "Default Company"
 msgstr ""
 
-#: admin/create_coy.php:327
+#: admin/create_coy.php:339
 msgid "Database Script"
 msgstr ""
 
-#: admin/create_coy.php:328
+#: admin/create_coy.php:340
 msgid "New script Admin Password"
 msgstr ""
 
@@ -1373,7 +1373,7 @@ msgstr ""
 #: purchasing/inquiry/po_search_completed.php:111
 #: purchasing/inquiry/po_search.php:118
 #: purchasing/inquiry/supplier_allocation_inquiry.php:138
-#: purchasing/inquiry/supplier_inquiry.php:179
+#: purchasing/inquiry/supplier_inquiry.php:172
 #: purchasing/allocations/supplier_allocation_main.php:96
 #: reporting/rep501.php:87 reporting/rep601.php:79 reporting/rep602.php:80
 #: reporting/rep702.php:53 reporting/includes/doctext.inc:220
@@ -1384,7 +1384,7 @@ msgstr ""
 #: sales/view/view_dispatch.php:85 sales/view/view_invoice.php:85
 #: sales/view/view_receipt.php:39 sales/view/view_sales_order.php:94
 #: sales/inquiry/customer_allocation_inquiry.php:148
-#: sales/inquiry/customer_inquiry.php:205
+#: sales/inquiry/customer_inquiry.php:195
 #: sales/inquiry/sales_deliveries_view.php:173
 #: sales/includes/ui/sales_credit_ui.inc:81
 #: sales/includes/ui/sales_credit_ui.inc:83
@@ -1896,7 +1896,7 @@ msgstr ""
 #: manufacturing/includes/manufacturing_ui.inc:295
 #: manufacturing/includes/manufacturing_ui.inc:346
 #: purchasing/inquiry/supplier_allocation_inquiry.php:136
-#: purchasing/inquiry/supplier_inquiry.php:177 reporting/rep102.php:130
+#: purchasing/inquiry/supplier_inquiry.php:170 reporting/rep102.php:130
 #: reporting/rep202.php:137 reporting/rep402.php:103 reporting/rep501.php:87
 #: reporting/rep601.php:79 reporting/rep602.php:80 reporting/rep702.php:60
 #: reporting/rep704.php:82 reporting/rep704.php:85 reporting/rep704.php:88
@@ -1905,7 +1905,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:161 reporting/includes/doctext.inc:202
 #: reporting/includes/doctext.inc:221
 #: sales/inquiry/customer_allocation_inquiry.php:146
-#: sales/inquiry/customer_inquiry.php:202
+#: sales/inquiry/customer_inquiry.php:192
 msgid "Type"
 msgstr ""
 
@@ -1977,10 +1977,6 @@ msgstr ""
 
 #: admin/printers.php:134
 msgid "Host name or IP"
-msgstr ""
-
-#: admin/printers.php:135
-msgid "Port"
 msgstr ""
 
 #: admin/printers.php:137
@@ -2369,7 +2365,7 @@ msgstr ""
 #: admin/view_print_transaction.php:43 admin/view_print_transaction.php:45
 #: admin/view_print_transaction.php:129 includes/ui/ui_controls.inc:213
 #: purchasing/inquiry/po_search_completed.php:43
-#: purchasing/inquiry/po_search.php:94 sales/inquiry/customer_inquiry.php:186
+#: purchasing/inquiry/po_search.php:94 sales/inquiry/customer_inquiry.php:176
 #: sales/inquiry/sales_deliveries_view.php:148
 #: sales/inquiry/sales_orders_view.php:102
 msgid "Print"
@@ -2442,7 +2438,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:114
 #: purchasing/includes/ui/po_ui.inc:312 purchasing/view/view_po.php:140
 #: purchasing/inquiry/supplier_allocation_inquiry.php:141
-#: purchasing/inquiry/supplier_inquiry.php:182
+#: purchasing/inquiry/supplier_inquiry.php:175
 #: purchasing/allocations/supplier_allocation_main.php:97
 #: reporting/rep101.php:132 reporting/rep107.php:203 reporting/rep201.php:107
 #: reporting/rep306.php:141 reporting/rep402.php:103 reporting/rep501.php:87
@@ -2456,7 +2452,7 @@ msgstr ""
 #: sales/view/view_credit.php:69 sales/view/view_sales_order.php:109
 #: sales/view/view_sales_order.php:142 sales/view/view_sales_order.php:179
 #: sales/inquiry/customer_allocation_inquiry.php:150
-#: sales/inquiry/customer_inquiry.php:206
+#: sales/inquiry/customer_inquiry.php:196
 msgid "Date"
 msgstr ""
 
@@ -2593,44 +2589,44 @@ msgstr ""
 msgid "Open Balance"
 msgstr ""
 
-#: admin/db/maintenance_db.inc:152
+#: admin/db/maintenance_db.inc:154
 #, php-format
 msgid "Cannot open the extension setup file '%s' for writing."
 msgstr ""
 
-#: admin/db/maintenance_db.inc:160
+#: admin/db/maintenance_db.inc:162
 #, php-format
 msgid "Cannot write to the extensions setup file '%s'."
 msgstr ""
 
-#: admin/db/maintenance_db.inc:179
+#: admin/db/maintenance_db.inc:181
 msgid "Cannot update system extensions list."
 msgstr ""
 
-#: admin/db/maintenance_db.inc:197
+#: admin/db/maintenance_db.inc:199
 #, php-format
 msgid "Cannot update extensions list for company '%s'."
 msgstr ""
 
-#: admin/db/maintenance_db.inc:233
+#: admin/db/maintenance_db.inc:235
 msgid "Cannot open the languages file - "
 msgstr ""
 
-#: admin/db/maintenance_db.inc:240
+#: admin/db/maintenance_db.inc:242
 msgid "Cannot write to the language file - "
 msgstr ""
 
-#: admin/db/maintenance_db.inc:251
+#: admin/db/maintenance_db.inc:253
 msgid "The language files folder "
 msgstr ""
 
-#: admin/db/maintenance_db.inc:400
+#: admin/db/maintenance_db.inc:402
 msgid ""
 "This is new format backup file which cannot be restored on database not "
 "migrated to utf8."
 msgstr ""
 
-#: admin/db/maintenance_db.inc:484
+#: admin/db/maintenance_db.inc:486
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
@@ -3431,11 +3427,10 @@ msgstr ""
 #: gl/includes/ui/gl_journal_ui.inc:106 gl/includes/ui/gl_journal_ui.inc:109
 #: manufacturing/view/wo_costs_view.php:61
 #: purchasing/inquiry/supplier_allocation_inquiry.php:144
-#: purchasing/inquiry/supplier_inquiry.php:185 reporting/rep601.php:80
-#: reporting/rep602.php:81 reporting/rep702.php:54 reporting/rep704.php:83
-#: reporting/rep704.php:86 reporting/rep704.php:89 reporting/rep708.php:192
-#: reporting/rep708.php:193 sales/inquiry/customer_allocation_inquiry.php:154
-#: sales/inquiry/customer_inquiry.php:211
+#: reporting/rep601.php:80 reporting/rep602.php:81 reporting/rep702.php:54
+#: reporting/rep704.php:83 reporting/rep704.php:86 reporting/rep704.php:89
+#: reporting/rep708.php:192 reporting/rep708.php:193
+#: sales/inquiry/customer_allocation_inquiry.php:154
 msgid "Debit"
 msgstr ""
 
@@ -3449,11 +3444,10 @@ msgstr ""
 #: gl/includes/ui/gl_journal_ui.inc:106 gl/includes/ui/gl_journal_ui.inc:109
 #: includes/sysnames.inc:90 manufacturing/view/wo_costs_view.php:61
 #: purchasing/inquiry/supplier_allocation_inquiry.php:145
-#: purchasing/inquiry/supplier_inquiry.php:186 reporting/rep601.php:80
-#: reporting/rep602.php:81 reporting/rep702.php:54 reporting/rep704.php:83
-#: reporting/rep704.php:86 reporting/rep704.php:89 reporting/rep708.php:192
-#: reporting/rep708.php:193 sales/inquiry/customer_allocation_inquiry.php:155
-#: sales/inquiry/customer_inquiry.php:212
+#: reporting/rep601.php:80 reporting/rep602.php:81 reporting/rep702.php:54
+#: reporting/rep704.php:83 reporting/rep704.php:86 reporting/rep704.php:89
+#: reporting/rep708.php:192 reporting/rep708.php:193
+#: sales/inquiry/customer_allocation_inquiry.php:155
 msgid "Credit"
 msgstr ""
 
@@ -3508,7 +3502,7 @@ msgstr ""
 #: reporting/rep306.php:130 reporting/rep306.php:135 reporting/rep307.php:103
 #: reporting/rep307.php:108 reporting/rep308.php:212 reporting/rep308.php:217
 #: reporting/rep309.php:93 reporting/rep402.php:87 reporting/rep402.php:95
-#: reporting/rep451.php:57 reporting/rep451.php:64 reporting/rep702.php:61
+#: reporting/rep451.php:67 reporting/rep451.php:74 reporting/rep702.php:61
 #: reporting/rep710.php:86 reporting/rep710.php:87
 msgid "All"
 msgstr ""
@@ -3549,7 +3543,7 @@ msgstr ""
 #: purchasing/view/view_supp_credit.php:48
 #: purchasing/view/view_supp_invoice.php:52
 #: purchasing/inquiry/supplier_allocation_inquiry.php:142
-#: purchasing/inquiry/supplier_inquiry.php:183 reporting/rep101.php:132
+#: purchasing/inquiry/supplier_inquiry.php:176 reporting/rep101.php:132
 #: reporting/rep201.php:107 reporting/rep203.php:88 reporting/rep501.php:87
 #: reporting/includes/doctext.inc:111 reporting/includes/doctext.inc:143
 #: reporting/includes/doctext.inc:164 reporting/includes/doctext.inc:166
@@ -3557,7 +3551,7 @@ msgstr ""
 #: sales/customer_invoice.php:492 sales/view/view_dispatch.php:97
 #: sales/view/view_invoice.php:96
 #: sales/inquiry/customer_allocation_inquiry.php:151
-#: sales/inquiry/customer_inquiry.php:207
+#: sales/inquiry/customer_inquiry.php:197
 #: sales/includes/ui/sales_order_ui.inc:588
 msgid "Due Date"
 msgstr ""
@@ -3755,12 +3749,13 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282
 #: purchasing/view/view_supp_payment.php:60
-#: purchasing/view/view_supp_payment.php:72 reporting/rep102.php:242
+#: purchasing/view/view_supp_payment.php:72
+#: purchasing/inquiry/supplier_inquiry.php:178 reporting/rep102.php:242
 #: reporting/rep107.php:205 reporting/rep107.php:270 reporting/rep109.php:197
 #: reporting/rep110.php:194 reporting/rep111.php:194 reporting/rep113.php:183
 #: reporting/rep202.php:250 reporting/rep209.php:199 reporting/rep706.php:308
 #: reporting/rep707.php:326 reporting/rep710.php:78
-#: sales/view/view_receipt.php:44
+#: sales/view/view_receipt.php:44 sales/inquiry/customer_inquiry.php:201
 msgid "Amount"
 msgstr ""
 
@@ -4175,7 +4170,7 @@ msgstr ""
 #: reporting/rep306.php:176 reporting/rep306.php:196 reporting/rep306.php:212
 #: reporting/rep306.php:261 reporting/rep306.php:276 reporting/rep306.php:287
 #: reporting/rep308.php:304 reporting/rep309.php:125 reporting/rep309.php:152
-#: reporting/rep451.php:107 reporting/rep451.php:142 reporting/rep702.php:142
+#: reporting/rep451.php:120 reporting/rep451.php:155 reporting/rep702.php:142
 #: reporting/rep705.php:152 reporting/rep705.php:312 reporting/rep706.php:106
 #: reporting/rep706.php:255 reporting/rep706.php:290 reporting/rep707.php:115
 #: reporting/rep707.php:297 reporting/rep708.php:253
@@ -4479,7 +4474,7 @@ msgstr ""
 
 #: gl/inquiry/gl_trial_balance.php:206 gl/manage/gl_account_types.php:127
 #: includes/dashboard.inc:147 includes/dashboard.inc:170
-#: reporting/rep451.php:70 reporting/rep451.php:76
+#: reporting/rep451.php:80 reporting/rep451.php:86
 msgid "Class"
 msgstr ""
 
@@ -4529,7 +4524,7 @@ msgstr ""
 #: purchasing/view/view_supp_invoice.php:48
 #: purchasing/inquiry/po_search_completed.php:114
 #: purchasing/inquiry/po_search.php:121
-#: purchasing/inquiry/supplier_inquiry.php:181
+#: purchasing/inquiry/supplier_inquiry.php:174
 #: reporting/includes/doctext.inc:163 reporting/includes/doctext.inc:186
 msgid "Supplier's Reference"
 msgstr ""
@@ -4650,8 +4645,8 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:143
 #: purchasing/inquiry/supplier_allocation_inquiry.php:153
 #: purchasing/inquiry/supplier_inquiry.php:74
-#: purchasing/inquiry/supplier_inquiry.php:184
-#: purchasing/inquiry/supplier_inquiry.php:196
+#: purchasing/inquiry/supplier_inquiry.php:177
+#: purchasing/inquiry/supplier_inquiry.php:188
 #: purchasing/allocations/supplier_allocation_main.php:99
 #: purchasing/allocations/supplier_allocation_main.php:107
 #: reporting/rep101.php:142 reporting/rep102.php:129 reporting/rep102.php:135
@@ -4666,8 +4661,8 @@ msgstr ""
 #: sales/inquiry/customer_allocation_inquiry.php:153
 #: sales/inquiry/customer_allocation_inquiry.php:163
 #: sales/inquiry/customer_inquiry.php:76
-#: sales/inquiry/customer_inquiry.php:210
-#: sales/inquiry/customer_inquiry.php:223
+#: sales/inquiry/customer_inquiry.php:200
+#: sales/inquiry/customer_inquiry.php:212
 #: sales/inquiry/sales_deliveries_view.php:178
 #: sales/inquiry/sales_orders_view.php:262
 #: sales/inquiry/sales_orders_view.php:276
@@ -6299,8 +6294,8 @@ msgstr ""
 #: sales/manage/recurrent_invoices.php:128 sales/view/view_credit.php:47
 #: sales/inquiry/customer_allocation_inquiry.php:152
 #: sales/inquiry/customer_allocation_inquiry.php:162
-#: sales/inquiry/customer_inquiry.php:208
-#: sales/inquiry/customer_inquiry.php:222 sales/inquiry/customers_list.php:41
+#: sales/inquiry/customer_inquiry.php:198
+#: sales/inquiry/customer_inquiry.php:211 sales/inquiry/customers_list.php:41
 #: sales/inquiry/customers_list.php:54
 #: sales/inquiry/sales_deliveries_view.php:169
 #: sales/inquiry/sales_orders_view.php:254
@@ -6328,8 +6323,8 @@ msgstr ""
 #: purchasing/inquiry/po_search.php:119
 #: purchasing/inquiry/supplier_allocation_inquiry.php:139
 #: purchasing/inquiry/supplier_allocation_inquiry.php:152
-#: purchasing/inquiry/supplier_inquiry.php:180
-#: purchasing/inquiry/supplier_inquiry.php:195
+#: purchasing/inquiry/supplier_inquiry.php:173
+#: purchasing/inquiry/supplier_inquiry.php:187
 #: purchasing/inquiry/suppliers_list.php:41
 #: purchasing/inquiry/suppliers_list.php:53
 #: purchasing/allocations/supplier_allocation_main.php:98
@@ -6458,7 +6453,7 @@ msgstr ""
 #: sales/manage/customers.php:295 sales/manage/recurrent_invoices.php:128
 #: sales/view/view_credit.php:58 sales/inquiry/customer_branches_list.php:37
 #: sales/inquiry/customer_branches_list.php:49
-#: sales/inquiry/customer_inquiry.php:209
+#: sales/inquiry/customer_inquiry.php:199
 #: sales/inquiry/sales_deliveries_view.php:171
 #: sales/inquiry/sales_orders_view.php:255
 #: sales/inquiry/sales_orders_view.php:269
@@ -7828,7 +7823,7 @@ msgstr ""
 #: includes/ui/ui_input.inc:971 includes/ui/ui_lists.inc:2330
 #: reporting/rep301.php:224 reporting/rep302.php:168 reporting/rep303.php:178
 #: reporting/rep304.php:184 reporting/rep304.php:188 reporting/rep306.php:235
-#: reporting/rep306.php:242 reporting/rep451.php:130
+#: reporting/rep306.php:242 reporting/rep451.php:143
 #: sales/manage/customer_branches.php:292
 msgid "Inactive"
 msgstr ""
@@ -8490,7 +8485,7 @@ msgstr ""
 #: reporting/rep105.php:120 reporting/rep301.php:171 reporting/rep302.php:130
 #: reporting/rep303.php:133 reporting/rep304.php:136 reporting/rep306.php:150
 #: reporting/rep307.php:121 reporting/rep308.php:231 reporting/rep402.php:103
-#: reporting/rep402.php:109 reporting/rep451.php:77
+#: reporting/rep402.php:109 reporting/rep451.php:87
 #: reporting/reports_main.php:212 reporting/reports_main.php:219
 #: reporting/reports_main.php:225 reporting/reports_main.php:238
 #: reporting/reports_main.php:254 reporting/reports_main.php:264
@@ -8933,7 +8928,7 @@ msgstr ""
 #: manufacturing/manage/work_centres.php:138
 #: sales/create_recurrent_invoices.php:179 sales/manage/credit_status.php:145
 #: sales/manage/recurrent_invoices.php:191 taxes/item_tax_types.php:173
-#: taxes/tax_groups.php:162 taxes/tax_types.php:158
+#: taxes/tax_groups.php:165 taxes/tax_types.php:158
 msgid "Description:"
 msgstr ""
 
@@ -9078,7 +9073,7 @@ msgstr ""
 msgid "Values"
 msgstr ""
 
-#: inventory/manage/items.php:526 reporting/rep451.php:70
+#: inventory/manage/items.php:526 reporting/rep451.php:80
 msgid "Depreciations"
 msgstr ""
 
@@ -11041,9 +11036,9 @@ msgstr ""
 
 #: purchasing/view/view_po.php:100
 #: purchasing/inquiry/supplier_allocation_inquiry.php:158
-#: purchasing/inquiry/supplier_inquiry.php:201
+#: purchasing/inquiry/supplier_inquiry.php:193
 #: sales/inquiry/customer_allocation_inquiry.php:167
-#: sales/inquiry/customer_inquiry.php:229
+#: sales/inquiry/customer_inquiry.php:218
 #: sales/inquiry/sales_deliveries_view.php:195
 #: sales/inquiry/sales_orders_view.php:311
 msgid "Marked items are overdue."
@@ -11380,7 +11375,7 @@ msgstr ""
 
 #: purchasing/inquiry/supplier_inquiry.php:74 reporting/rep102.php:121
 #: reporting/rep102.php:239 reporting/rep108.php:154 reporting/rep202.php:128
-#: reporting/rep202.php:247 reporting/rep451.php:70
+#: reporting/rep202.php:247 reporting/rep451.php:80
 #: sales/inquiry/customer_inquiry.php:76
 msgid "Current"
 msgstr ""
@@ -11392,11 +11387,11 @@ msgid "Total Balance"
 msgstr ""
 
 #: purchasing/inquiry/supplier_inquiry.php:133
-#: sales/inquiry/customer_inquiry.php:163
+#: sales/inquiry/customer_inquiry.php:153
 msgid "Credit This"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:155
+#: purchasing/inquiry/supplier_inquiry.php:148
 msgid "Print Remittance"
 msgstr ""
 
@@ -11512,7 +11507,7 @@ msgstr ""
 #: reporting/rep201.php:232 reporting/rep202.php:233 reporting/rep203.php:176
 #: reporting/rep204.php:148 reporting/rep301.php:249 reporting/rep304.php:212
 #: reporting/rep305.php:193 reporting/rep306.php:293 reporting/rep309.php:157
-#: reporting/rep451.php:151
+#: reporting/rep451.php:164
 msgid "Grand Total"
 msgstr ""
 
@@ -11529,7 +11524,7 @@ msgid "Detailed Report"
 msgstr ""
 
 #: reporting/rep102.php:127 reporting/rep202.php:134 reporting/rep203.php:94
-#: reporting/rep301.php:169 reporting/rep451.php:75
+#: reporting/rep301.php:169 reporting/rep451.php:85
 #: reporting/reports_main.php:37 reporting/reports_main.php:46
 #: reporting/reports_main.php:67 reporting/reports_main.php:83
 #: reporting/reports_main.php:92 reporting/reports_main.php:154
@@ -11640,7 +11635,7 @@ msgstr ""
 
 #: reporting/rep104.php:109 reporting/rep301.php:164 reporting/rep303.php:120
 #: reporting/rep303.php:126 reporting/rep307.php:114 reporting/rep308.php:223
-#: reporting/rep451.php:70
+#: reporting/rep451.php:80
 msgid "UOM"
 msgstr ""
 
@@ -11670,7 +11665,7 @@ msgstr ""
 
 #: reporting/rep105.php:109 reporting/rep204.php:84
 #: sales/inquiry/customer_allocation_inquiry.php:149
-#: sales/inquiry/customer_inquiry.php:204
+#: sales/inquiry/customer_inquiry.php:194
 msgid "Order"
 msgstr ""
 
@@ -11863,7 +11858,7 @@ msgstr ""
 msgid "Total ex. Tax"
 msgstr ""
 
-#: reporting/rep114.php:95 reporting/rep709.php:117 taxes/tax_groups.php:171
+#: reporting/rep114.php:95 reporting/rep709.php:117 taxes/tax_groups.php:174
 msgid "Tax"
 msgstr ""
 
@@ -12096,11 +12091,11 @@ msgstr ""
 msgid "WORK ORDER"
 msgstr ""
 
-#: reporting/rep451.php:70
+#: reporting/rep451.php:80
 msgid "Initial"
 msgstr ""
 
-#: reporting/rep451.php:79
+#: reporting/rep451.php:89
 msgid "Fixed Assets Valuation Report"
 msgstr ""
 
@@ -14017,7 +14012,7 @@ msgid ""
 msgstr ""
 
 #: sales/sales_order_entry.php:756 sales/sales_order_entry.php:765
-msgid "You are about to void this Document.\nDo you want to continue?"
+msgid "You are about to void this Document.\\nDo you want to continue?"
 msgstr ""
 
 #: sales/sales_order_entry.php:759
@@ -14026,7 +14021,7 @@ msgstr ""
 
 #: sales/sales_order_entry.php:763
 msgid ""
-"You are about to cancel undelivered part of this order.\nDo you want to "
+"You are about to cancel undelivered part of this order.\\nDo you want to "
 "continue?"
 msgstr ""
 
@@ -14861,12 +14856,12 @@ msgstr ""
 msgid "CUSTOMER ACCOUNT IS ON HOLD"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:182
+#: sales/inquiry/customer_inquiry.php:172
 msgid "Print Receipt"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:213
-#: sales/inquiry/customer_inquiry.php:226
+#: sales/inquiry/customer_inquiry.php:202
+#: sales/inquiry/customer_inquiry.php:215
 msgid "RB"
 msgstr ""
 
@@ -15211,34 +15206,34 @@ msgstr ""
 msgid "The tax group name cannot be empty."
 msgstr ""
 
-#: taxes/tax_groups.php:60
+#: taxes/tax_groups.php:63
 msgid "Selected tax group has been updated"
 msgstr ""
 
-#: taxes/tax_groups.php:65
+#: taxes/tax_groups.php:68
 msgid "New tax group has been added"
 msgstr ""
 
-#: taxes/tax_groups.php:80
+#: taxes/tax_groups.php:83
 msgid ""
 "Cannot delete this tax group because customer branches been created "
 "referring to it."
 msgstr ""
 
-#: taxes/tax_groups.php:86
+#: taxes/tax_groups.php:89
 msgid ""
 "Cannot delete this tax group because suppliers been created referring to it."
 msgstr ""
 
-#: taxes/tax_groups.php:103
+#: taxes/tax_groups.php:106
 msgid "Selected tax group has been deleted"
 msgstr ""
 
-#: taxes/tax_groups.php:166
+#: taxes/tax_groups.php:169
 msgid "Select the taxes that are included in this group."
 msgstr ""
 
-#: taxes/tax_groups.php:171
+#: taxes/tax_groups.php:174
 msgid "Shipping Tax"
 msgstr ""
 
