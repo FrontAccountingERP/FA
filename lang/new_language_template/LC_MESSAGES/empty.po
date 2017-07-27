@@ -742,6 +742,10 @@ msgstr ""
 msgid "Database settings are not specified."
 msgstr ""
 
+#: admin/create_coy.php:48
+msgid "Database port has to be numeric or empty."
+msgstr ""
+
 #: admin/create_coy.php:53
 msgid "This database settings are already used by another company."
 msgstr ""
@@ -824,6 +828,10 @@ msgstr ""
 msgid "Database Host"
 msgstr ""
 
+#: admin/create_coy.php:240
+msgid "Database Port"
+msgstr ""
+
 #: admin/create_coy.php:240 admin/create_coy.php:321 admin/create_coy.php:331
 msgid "Database User"
 msgstr ""
@@ -874,18 +882,26 @@ msgid ""
 "Do you want to continue ?"
 msgstr ""
 
-#: admin/create_coy.php:274
+#: admin/create_coy.php:282
 msgid "The marked company is the current company which cannot be deleted."
 msgstr ""
 
-#: admin/create_coy.php:275
+#: admin/create_coy.php:283
 msgid ""
 "If no Admin Password is entered, the new Admin Password will be "
 "'<b>password</b>' by default "
 msgstr ""
 
-#: admin/create_coy.php:320 admin/create_coy.php:330 admin/printers.php:84
+#: admin/create_coy.php:284
+msgid "Set Only Port value if you cannot use the default port 3306."
+msgstr ""
+
+#: admin/create_coy.php:320 admin/create_coy.php:331 admin/printers.php:84
 msgid "Host"
+msgstr ""
+
+#: admin/create_coy.php:332
+msgid "Port"
 msgstr ""
 
 #: admin/create_coy.php:322

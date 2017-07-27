@@ -25,9 +25,13 @@ function set_global_connection($company=-1)
 	$_SESSION["wa_current_user"]->cur_con = $company;
 
 	$connection = $db_connections[$company];
+	
+	$server = $connection["host"];
+	if (!empty($connection["port"]))
+		$server .= ":".$connection["port"];
 
-	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
-		mysql_select_db($connection["dbname"], $db);
+	$db = mysql_connect($server, $connection["dbuser"], $connection["dbpassword"]);
+	mysql_select_db($connection["dbname"], $db);
 	///// From MySql release 5.6.6 the sql_mode is no longer empty as it was prior to
 	///// this release. Just for safety we make it empty for all 5.6 release and higher.
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
@@ -197,8 +201,10 @@ function db_set_collation($db, $fa_collation)
 */
 function db_create_db($connection)
 {
-	$db = mysql_connect($connection["host"] ,
-		$connection["dbuser"], $connection["dbpassword"]);
+	$server = $connection["host"];
+	if (!empty($connection["port"]))
+		$server .= ":".$connection["port"];
+	$db = mysql_connect($server, $connection["dbuser"], $connection["dbpassword"]);
 
 	if (!mysql_select_db($connection["dbname"], $db))
 	{
