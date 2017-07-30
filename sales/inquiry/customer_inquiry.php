@@ -186,7 +186,7 @@ $sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransT
 	get_post('customer_id'), get_post('filterType'));
 
 //------------------------------------------------------------------------------------------------
-db_query("set @bal:=0");
+//db_query("set @bal:=0");
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name', 'ord'=>''),
@@ -199,7 +199,7 @@ $cols = array(
 	_("Branch") => array('ord'=>''), 
 	_("Currency") => array('align'=>'center'),
 	_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
-	_("RB") => array('align'=>'right', 'type'=>'amount'),
+//	_("RB") => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
