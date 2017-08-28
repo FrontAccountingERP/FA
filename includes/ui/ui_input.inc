@@ -728,7 +728,7 @@ function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit
 		if (empty($_POST[$name.'_list'])) // restore refline id
 			$_POST[$name.'_list'] = $Refs->reflines->find_refline_id(empty($_POST[$name]) ? $init : $_POST[$name], $type);
 
-		if (empty($_POST[$name]) || ($_SERVER['REQUEST_METHOD'] == 'GET')) // initialization
+		if (empty($_POST[$name])) // initialization
 		{
 			if (isset($init))
 			{
@@ -740,7 +740,7 @@ function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit
 		}
 
 		if (check_ui_refresh($name)) { // call context changed
-			$_POST[$name] = $Refs->normalize($init, $type, $context, $_POST[$name.'_list']);
+			$_POST[$name] = $Refs->normalize($_POST[$name], $type, $context, $_POST[$name.'_list']);
 			$Ajax->addUpdate(true, $name, $_POST[$name]);
 		}
 
