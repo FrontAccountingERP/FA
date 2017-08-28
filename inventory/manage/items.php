@@ -536,10 +536,11 @@ function item_settings(&$stock_id, $new_item)
 	} 
 	else 
 	{
+		if (@$_REQUEST['popup']) hidden('popup', 1);
 		submit_center_first('addupdate', _("Update Item"), '', 
 			$page_nested ? true : 'default');
 		submit_return('select', get_post('stock_id'), 
-			_("Select this items and return to document entry."), 'default');
+			_("Select this items and return to document entry."));
 		submit('clone', _("Clone This Item"), true, '', true);
 		submit('delete', _("Delete This Item"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
