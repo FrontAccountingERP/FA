@@ -39,7 +39,7 @@ if (isset($_SESSION['View']))
 	unset ($_SESSION['View']);
 }
 
-$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
+$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no']);
 
 start_table(TABLESTYLE2, "width='95%'", 5);
 
@@ -93,7 +93,7 @@ label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
 label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
 label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
-;label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
+label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
 	"class='tableheader2'", "colspan=3");
 label_row(_("Comments"), nl2br($_SESSION['View']->Comments), "class='tableheader2'", "colspan=3");
 end_table();
