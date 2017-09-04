@@ -127,6 +127,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$config_allocation_settled_allowance = 0.005;
 
+	/* Show company logo on reports */
+	$show_company_logo_report = 0;	
+	
 	/* Show average costed values instead of fixed standard cost in report, Inventory Valuation Report */
 	$use_costed_values = 1;	
 	
