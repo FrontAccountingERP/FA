@@ -314,7 +314,7 @@ class FrontReport extends Cpdf
 		$this->Font();
 		$this->fontSize -= 4;
 		$logo = company_path() . "/images/" . $this->company['coy_logo'];
-		if (!empty($SysPrefs->show_company_logo_report) && $this->company['coy_logo'] != '' && file_exists($logo))
+		if (!empty($SysPrefs->prefs['company_logo_report']) && $this->company['coy_logo'] != '' && file_exists($logo))
 		{
 			$this->row -= ($this->lineHeight + 3);
 			$this->AddImage($logo, $companyCol, $this->row, 0, 30);
