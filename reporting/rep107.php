@@ -267,7 +267,7 @@ function print_invoices()
 						$first = false;
     				}
     				else
-						$rep->TextCol(3, 7, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
+						$rep->TextCol(3, 6, _("Included") . " " . $tax_type_name . _("Amount") . ": " . $DisplayTax, -2);
 				}
     			else
     			{
