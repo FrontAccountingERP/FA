@@ -20,7 +20,7 @@ class fa2_4 extends fa_patch {
 	
 	function fa2_4() {
 		parent::fa_patch();
-		$this->description = _('Upgrade from version 2.3 to 2.4RC1');
+		$this->description = _('Upgrade from version 2.3 to 2.4');
 	}
 	
     /*
@@ -71,6 +71,9 @@ class fa2_4 extends fa_patch {
 		if (get_company_pref('suppress_tax_rates') === null) { // available from 2.3.14, can be not defined on pre-2.4 installations
 			set_company_pref('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
 		}
+		if (get_company_pref('company_logo_report') === null) { // available from 2.4.2, during updates
+			set_company_pref('company_logo_report', 'setup.company', 'tinyint', 1, '0');
+		}
 
 		$result = $this->update_workorders()  && $this->update_grn_rates() && $this->switch_database_to_utf($pref);
 
@@ -108,7 +111,7 @@ class fa2_4 extends fa_patch {
 				'tax_algorithm', 'grn_clearing_act', 'default_receival_required',
 				'default_quote_valid_days',	'no_zero_lines_amount',	'show_po_item_codes', 'accounts_alpha',
 				'loc_notification', 'print_invoice_no', 'allow_negative_prices', 'print_item_images_on_quote',
-				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates')");
+				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates', 'company_logo_report')");
 	}
 
 	function update_workorders()
