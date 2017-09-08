@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_GLANALYTIC';
@@ -33,7 +33,7 @@ $pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show')) 
+if (get_post('Show'))
 {
 	$Ajax->activate('balance_tbl');
 }
@@ -51,6 +51,7 @@ function gl_inquiry_controls()
 		$_POST['TransToDate'] = end_month($date);
 	if (!isset($_POST['TransFromDate']))
 		$_POST['TransFromDate'] = add_days(end_month($date), -user_transaction_days());
+	start_row();	
     date_cells(_("From:"), 'TransFromDate');
 	date_cells(_("To:"), 'TransToDate');
 	if ($dim >= 1)
@@ -59,8 +60,8 @@ function gl_inquiry_controls()
 		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 	check_cells(_("No zero values"), 'NoZero', null);
 	check_cells(_("Only balances"), 'Balance', null);
-
 	submit_cells('Show',_("Show"),'','', 'default');
+	end_row();
     end_table();
     end_form();
 }
@@ -84,9 +85,19 @@ function display_trial_balance($type, $typename)
 		$begin = $_POST['TransFromDate'];
 	$begin = add_days($begin, -1);
 
+	$Apdeb=$pdeb;
+	$Apcre=$pcre;
+	$Acdeb=$cdeb;
+	$Accre=$ccre;
+	$Atdeb=$tdeb;
+	$Atcre=$tcre;
+	$Apbal=$pbal;
+	$Acbal=$cbal;
+	$Atbal=$tbal;
+
 	while ($account = db_fetch($accounts))
 	{
-		//Print Type Title if it has atleast one non-zero account	
+		//Print Type Title if it has atleast one non-zero account
 		if (!$printtitle)
 		{
 			start_row("class='inquirybg' style='font-weight:bold'");
@@ -136,7 +147,7 @@ function display_trial_balance($type, $typename)
 			$ccre += $curr['credit'];
 			$tdeb += $tot['debit'];
 			$tcre += $tot['credit'];
-		}	
+		}
 		$pbal += $prev['balance'];
 		$cbal += $curr['balance'];
 		$tbal += $tot['balance'];
@@ -158,6 +169,26 @@ function display_trial_balance($type, $typename)
 		}
 		display_trial_balance($accounttype["id"], $accounttype["name"].' ('.$typename.')');
 	}
+
+	start_row("class='inquirybg' style='font-weight:bold'");
+	label_cell(_("Total") ." - ".$typename, "colspan=2");
+
+	if (!check_value('Balance'))
+	{
+		amount_cell($pdeb-$Apdeb );
+		amount_cell($pcre-$Apcre);
+		amount_cell($cdeb-$Acdeb );
+		amount_cell($ccre-$Accre );
+		amount_cell($tdeb-$Atdeb );
+		amount_cell($tcre-$Atcre);
+	}
+	else
+	{
+		display_debit_or_credit_cells($pbal-$Apbal);
+		display_debit_or_credit_cells($cbal-$Acbal );
+		display_debit_or_credit_cells($tbal-$Atbal);
+	}
+	end_row();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -214,29 +245,29 @@ while ($class = db_fetch($classresult))
 	}
 }
 
-	if (!check_value('Balance'))
-	{
-		start_row("class='inquirybg' style='font-weight:bold'");
-		label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
-		amount_cell($pdeb);
-		amount_cell($pcre);
-		amount_cell($cdeb);
-		amount_cell($ccre);
-		amount_cell($tdeb);
-		amount_cell($tcre);
-		end_row();
-	}	
+if (!check_value('Balance'))
+{
 	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
-	display_debit_or_credit_cells($pbal);
-	display_debit_or_credit_cells($cbal);
-	display_debit_or_credit_cells($tbal);
+	label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
+	amount_cell($pdeb);
+	amount_cell($pcre);
+	amount_cell($cdeb);
+	amount_cell($ccre);
+	amount_cell($tdeb);
+	amount_cell($tcre);
 	end_row();
+}
+start_row("class='inquirybg' style='font-weight:bold'");
+label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
+display_debit_or_credit_cells($pbal);
+display_debit_or_credit_cells($cbal);
+display_debit_or_credit_cells($tbal);
+end_row();
 
-	end_table(1);
-	if (($pbal = round2($pbal, user_price_dec())) != 0 && $_POST['Dimension'] == 0 && $_POST['Dimension2'] == 0)
-		display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
-	div_end();
+end_table(1);
+if (($pbal = round2($pbal, user_price_dec())) != 0 && $_POST['Dimension'] == 0 && $_POST['Dimension2'] == 0)
+	display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+div_end();
 
 //----------------------------------------------------------------------------------------------------
 

@@ -114,7 +114,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'use_dimension', 'curr_default', 'f_year', 
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
-				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
+				'time_zone' => 0, 'company_logo_report' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
 				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
 				'use_manufacturing', 'use_fixed_assets'))
 		);
@@ -149,6 +149,12 @@ $_POST['no_supplier_list']  = $myrow["no_supplier_list"];
 $_POST['curr_default']  = $myrow["curr_default"];
 $_POST['f_year']  = $myrow["f_year"];
 $_POST['time_zone']  = $myrow["time_zone"];
+if (!isset($myrow["company_logo_report"]))
+{
+	set_company_pref("company_logo_report", "setup.company", "tinyint", 1, '0');
+	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
+}
+$_POST['company_logo_report']  = $myrow["company_logo_report"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
 $_POST['login_tout'] = $myrow['login_tout'];
@@ -188,6 +194,7 @@ check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 
 check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POST['auto_curr_reval']);
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
+check_row(_("Company Logo on Reports"), 'company_logo_report', $_POST['company_logo_report']);
 label_row(_("Database Scheme Version"), $_POST['version_id']);
 
 table_section(2);

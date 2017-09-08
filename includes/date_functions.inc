@@ -383,10 +383,10 @@ and converts to a yyyy/mm/dd format */
 	$how = user_date_format();
 	$sep = $SysPrefs->dateseps[user_date_sep()];
 
+	$date_ = trim($date_);
 	if ($date_ == null || strlen($date_) == 0)
 		return "";
 
-	$date_ = trim($date_);
     $year = $month = $day = 0;
     // Split up the date by the separator based on "how" to split it
     if ($how == 0 || $how == 3) // MMDDYYYY or MmmDDYYYY

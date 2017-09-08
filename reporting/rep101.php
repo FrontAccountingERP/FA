@@ -203,7 +203,13 @@ function print_customer_balances()
 		}
 		while ($trans = db_fetch($res))
 		{
-			if ($no_zeros && floatcmp($trans['TotalAmount'], $trans['Allocated']) == 0) continue;
+            if ($no_zeros) {
+                if ($show_balance) {
+                    if ($trans['TotalAmount'] == 0) continue;
+                } else {
+                    if (floatcmp($trans['TotalAmount'], $trans['Allocated']) == 0) continue;
+                }
+            }
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);

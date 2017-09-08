@@ -141,8 +141,7 @@ function add_grn(&$po)
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
-			 	$order_line->receive_qty, $order_line->standard_cost,		
-			 	$po->supplier_id, 1, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);
+			 	$order_line->receive_qty, $order_line->standard_cost, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);		
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */

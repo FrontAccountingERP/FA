@@ -75,10 +75,12 @@ function write_config_db($new = false)
 	$msg .= "/*Connection Information for the database\n";
 	$msg .= "\$def_coy - the default company that is pre-selected on login\n\n";
 	$msg .= "'host' - the computer ip address or name where the database is. The default is 'localhost' assuming that the web server is also the sql server.\n\n";
+	$msg .= "'port' - the computer port where the database is. The default is '3306'. Set empty for default.\n\n";
 	$msg .= "'dbuser' - the user name under which the company database should be accessed.\n";
 	$msg .= "  NB it is not secure to use root as the dbuser with no password - a user with appropriate privileges must be set up.\n\n";
 	$msg .= "'dbpassword' - the password required for the dbuser to authorise the above database user.\n\n";
 	$msg .= "'dbname' - the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
+	$msg .= "'collation' - the character set used for the database.\n";
 	$msg .= "'tbpref' - prefix on table names, or '' if not used. Always use non-empty prefixes if multiply company use the same database.\n";
 	$msg .= "*/\n\n\n";
 

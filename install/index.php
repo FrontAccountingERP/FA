@@ -144,6 +144,7 @@ function do_install() {
 		$db_connections = array (0=> array (
 		 'name' => $con['name'],
 		 'host' => $con['host'],
+		 'port' => $con['port'],
 		 'dbname' => $con['dbname'],
 		 'collation' => $con['collation'],
 		 'tbpref' => $table_prefix,
@@ -190,6 +191,7 @@ function do_install() {
 if (!isset($_SESSION['inst_set']))  // default settings
 	$_SESSION['inst_set'] = array(
 		'host'=>'localhost', 
+		'port' => '', // 3306
 		'dbuser' => 'root',
 		'dbpassword' => '',
 		'username' => 'admin',
@@ -216,6 +218,10 @@ elseif (isset($_POST['db_test'])) {
 		display_error(_('Host name cannot be empty.'));
 		set_focus('host');
 	}
+	elseif ($_POST['port'] != '' && !is_numeric($_POST['port'])) {
+		display_error(_('Database port have to be numeric or empty.'));
+		set_focus('port');
+	}
 	elseif ($_POST['dbuser']=='') {
 		display_error(_('Database user name cannot be empty.'));
 		set_focus('dbuser');
@@ -227,6 +233,7 @@ elseif (isset($_POST['db_test'])) {
 	else {
 		$_SESSION['inst_set'] = array_merge($_SESSION['inst_set'], array(
 			'host' => $_POST['host'],
+			'port' => $_POST['port'],
 			'dbuser' => $_POST['dbuser'],
 			'dbpassword' => $_POST['dbpassword'],
 			'dbname' => $_POST['dbname'],
@@ -342,6 +349,7 @@ start_form();
 			subpage_title(_('Database Server Settings'));
 			start_table(TABLESTYLE);
 			text_row_ex(_("Server Host:"), 'host', 30, 60);
+			text_row_ex(_("Server Port:"), 'port', 30, 60);
 			text_row_ex(_("Database Name:"), 'dbname', 30);
 			text_row_ex(_("Database User:"), 'dbuser', 30);
 			text_row_ex(_("Database Password:"), 'dbpassword', 30);
@@ -353,6 +361,7 @@ start_form();
 			display_note(_("Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."));
 			display_note(_("Use table prefix if you share selected database for more than one FA company using the same collation."));
 			display_note(_("Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."));
+			display_note(_("Set Only Port value if you cannot use the default port 3306."));
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('db_test', _('Continue >>'));
 			break;

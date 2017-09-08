@@ -503,7 +503,7 @@ function tab_visible($name, $tab)
 */
 $popup_editors = array(
 	'customer' => array('/sales/manage/customers.php?debtor_no=', 
-		113,	_("Customers"), 900, 500),
+		113,	_("Customers"), 900, 600),
 	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
 		114, _("Branches"), 900, 700),
 	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 

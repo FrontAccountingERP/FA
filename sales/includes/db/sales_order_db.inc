@@ -130,7 +130,7 @@ function update_sales_order($order)
 	hook_db_prewrite($order, $order->trans_type);
 
 	if ($order->trans_type == ST_SALESORDER)
-		$allocs = get_payments_for($order_no, $myrow['trans_type'], $order->customer_id);
+		$allocs = get_payments_for($order_no, $order->trans_type, $order->customer_id);
 
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
