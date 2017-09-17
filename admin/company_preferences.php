@@ -111,7 +111,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		update_company_prefs(
 			get_post( array('coy_name','coy_no','gst_no','tax_prd','tax_last',
 				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
-				'use_dimension', 'curr_default', 'f_year', 
+				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
 				'time_zone' => 0, 'company_logo_report' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
@@ -143,6 +143,12 @@ $_POST['coy_logo']  = $myrow["coy_logo"];
 $_POST['domicile']  = $myrow["domicile"];
 $_POST['use_dimension']  = $myrow["use_dimension"];
 $_POST['base_sales']  = $myrow["base_sales"];
+if (!isset($myrow["shortname_name_in_list"]))
+{
+	set_company_pref("shortname_name_in_list", "setup.company", "tinyint", 1, '0');
+	$myrow["shortname_name_in_list"] = get_company_pref("shortname_name_in_list");
+}
+$_POST['shortname_name_in_list']  = $myrow["shortname_name_in_list"];
 $_POST['no_item_list']  = $myrow["no_item_list"];
 $_POST['no_customer_list']  = $myrow["no_customer_list"];
 $_POST['no_supplier_list']  = $myrow["no_supplier_list"];
@@ -223,6 +229,7 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 
 table_section_title(_("User Interface Options"));
 
+check_row(_("Short Name and Name in List"), 'shortname_name_in_list', $_POST['shortname_name_in_list']);
 check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);

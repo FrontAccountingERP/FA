@@ -74,6 +74,9 @@ class fa2_4 extends fa_patch {
 		if (get_company_pref('company_logo_report') === null) { // available from 2.4.2, during updates
 			set_company_pref('company_logo_report', 'setup.company', 'tinyint', 1, '0');
 		}
+		if (get_company_pref('shortname_name_in_list') === null) { // available from 2.4.2, during updates
+			set_company_pref('shortname_name_in_list', 'setup.company', 'tinyint', 1, '0');
+		}
 
 		$result = $this->update_workorders()  && $this->update_grn_rates() && $this->switch_database_to_utf($pref);
 
