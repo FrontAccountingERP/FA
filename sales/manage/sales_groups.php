@@ -93,7 +93,7 @@ while ($myrow = db_fetch($result))
 	
 	alt_table_row_color($k);
 		
-	label_cell($myrow["id"]);
+	label_cell($myrow["id"], "nowrap align='right'");
 	label_cell($myrow["description"]);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
