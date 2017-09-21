@@ -165,7 +165,7 @@ $sql = get_sql_for_sales_deliveries_view(get_post('DeliveryAfterDate'), get_post
 	get_post('SelectStockFromList'), get_post('StockLocation'), get_post('DeliveryNumber'), get_post('OutstandingOnly'));
 
 $cols = array(
-		_("Delivery #") => array('fun'=>'trans_view'), 
+		_("Delivery #") => array('fun'=>'trans_view', 'align'=>'right'), 
 		_("Customer"), 
 		'branch_code' => 'skip',
 		_("Branch") => array('ord'=>''), 

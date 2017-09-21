@@ -154,7 +154,7 @@ while ($myrow = db_fetch($result))
 
 	label_cell($type_name);
 
-	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
+	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]), "nowrap align='right'");
 
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
 

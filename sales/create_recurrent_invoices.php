@@ -215,7 +215,7 @@ while ($myrow = db_fetch($result))
 		alt_table_row_color($k);
 
 	label_cell($myrow["description"]);
-	label_cell(get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
+	label_cell(get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]), "nowrap align='right'");
 	if ($myrow["debtor_no"] == 0)
 	{
 		label_cell("");

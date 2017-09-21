@@ -298,7 +298,7 @@ function show_allocatable($show_totals) {
 		    {
 				alt_table_row_color($k);
     			label_cell($systypes_array[$alloc_item->type]);
-	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
+	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no), "nowrap align='right'");
 		   		label_cell($alloc_item->ref);
     			label_cell($alloc_item->date_, "align=right");
     			label_cell($alloc_item->due_date, "align=right");

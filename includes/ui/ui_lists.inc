@@ -180,11 +180,14 @@ $opts = array(		// default options
 	$found = false;
 	$lastcat = null;
 	$edit = false;
+	$pname = false;
+	if (($type === "customer" || $type === "supplier") && !empty($SysPrefs->prefs['shortname_name_in_list']))
+		$pname = true;
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
-				call_user_func($opts['format'], $contact_row);
+				call_user_func($opts['format'], $contact_row, $pname);
 			$sel = '';
  		 	if (get_post($search_button) && ($txt == $value)) {
  		 		$selected_id[] = $value;
@@ -478,7 +481,7 @@ function array_selector_row($label, $name, $selected_id, $items, $options=null)
 }
 
 //----------------------------------------------------------------------------------------------
-function _format_add_curr($row)
+function _format_add_curr($row, $pname=false)
 {
 	static $company_currency;
 
@@ -486,8 +489,14 @@ function _format_add_curr($row)
 	{
 		$company_currency = get_company_currency();
 	}
-	return $row[1] . ($row[2] == $company_currency ?
-		'' : ("&nbsp;-&nbsp;" . $row[2]));
+	if (!$pname)
+	{
+		return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
+	}		
+	else
+	{
+		return $row[1] . "&nbsp;-&nbsp;" . $row[2] . ($row[3] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[3]));
+	}		
 }
 
 function add_edit_combo($type)
@@ -508,8 +517,11 @@ function add_edit_combo($type)
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
 	$all=false, $editkey = false)
 {
-
-	$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM ".TB_PREF."suppliers ";
+	global $SysPrefs;
+	if (!empty($SysPrefs->prefs['shortname_name_in_list']))
+		$sql = "SELECT supplier_id, supp_ref, supp_name, curr_code, inactive FROM ".TB_PREF."suppliers ";
+	else	
+		$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM ".TB_PREF."suppliers ";
 
 	$mode = get_company_pref('no_supplier_list');
 
@@ -558,8 +570,11 @@ function supplier_list_row($label, $name, $selected_id=null, $all_option = false
 function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false, 
 	$show_inactive=false, $editkey = false)
 {
-
-	$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM ".TB_PREF."debtors_master ";
+	global $SysPrefs;
+	if (!empty($SysPrefs->prefs['shortname_name_in_list']))
+		$sql = "SELECT debtor_no, debtor_ref, name, curr_code, inactive FROM ".TB_PREF."debtors_master ";
+	else	
+		$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM ".TB_PREF."debtors_master ";
 
 	$mode = get_company_pref('no_customer_list');
 

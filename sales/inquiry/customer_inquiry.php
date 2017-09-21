@@ -190,8 +190,8 @@ $sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransT
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name', 'ord'=>''),
-	_("#") => array('fun'=>'trans_view', 'ord'=>''),
-	_("Order") => array('fun'=>'order_view'), 
+	_("#") => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'),
+	_("Order") => array('fun'=>'order_view', 'align'=>'right'), 
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),

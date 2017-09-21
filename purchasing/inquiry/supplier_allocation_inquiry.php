@@ -134,7 +134,7 @@ $sql = get_sql_for_supplier_allocation_inquiry(get_post('TransAfterDate'),get_po
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'view_link', 'ord'=>''),
+	_("#") => array('fun'=>'view_link', 'ord'=>'', 'align'=>'right'),
 	_("Reference"), 
 	_("Supplier") => array('ord'=>''), 
 	_("Supp Reference"),

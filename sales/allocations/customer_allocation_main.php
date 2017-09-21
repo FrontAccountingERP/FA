@@ -85,7 +85,7 @@ $sql = get_allocatable_from_cust_sql($customer_id, $settled);
 
 $cols = array(
 	_("Transaction Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'trans_view'),
+	_("#") => array('fun'=>'trans_view', 'align'=>'right'),
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Customer") => array('ord'=>''),

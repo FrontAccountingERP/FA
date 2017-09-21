@@ -168,7 +168,7 @@ $sql = get_sql_for_supplier_inquiry(get_post('filterType'), get_post('TransAfter
 
 $cols = array(
 			_("Type") => array('fun'=>'systype_name', 'ord'=>''), 
-			_("#") => array('fun'=>'trans_view', 'ord'=>''), 
+			_("#") => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'), 
 			_("Reference"), 
 			_("Supplier"),
 			_("Supplier's Reference"), 
