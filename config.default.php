@@ -70,9 +70,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* This has been superseded with built in Audit Trail */
 	$use_audit_trail = 0;
 
-	/* $show_voiced_gl_trans = 0, setting this to 1 will show the voided gl trans */
-	$show_voided_gl_trans = 0;
-
 	/* use old style convert (income and expense in BS, PL) */
 	$use_oldstyle_convert = 0;
 

@@ -141,9 +141,8 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 		WHERE coa.account_code=gl.account
 		AND ISNULL(v.date_)
 		AND gl.tran_date >= '$from'
-		AND gl.tran_date <= '$to'";
-	if (isset($SysPrefs->show_voided_gl_trans) && $SysPrefs->show_voided_gl_trans == 0)
-		$sql .= " AND gl.amount <> 0"; 
+		AND gl.tran_date <= '$to'
+		AND gl.amount <> 0"; 
 
 	if ($person_id)
 		$sql .= " AND gl.person_id=".db_escape($person_id); 
