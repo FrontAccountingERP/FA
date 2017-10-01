@@ -683,10 +683,12 @@ function array_append(&$array, $elements)
 //
 function array_search_value($needle, $haystack, $valuekey=null)
 {
-	foreach($haystack as $key => $value) {
-		$val = isset($valuekey) ? @$value[$valuekey] : $value;
-		if ($needle == $val){
-			return $value;
+	if (is_array($haystack)) {
+		foreach($haystack as $key => $value) {
+			$val = isset($valuekey) ? @$value[$valuekey] : $value;
+			if ($needle == $val){
+				return $value;
+			}
 		}
 	}
 	return null;
@@ -698,13 +700,14 @@ function array_search_value($needle, $haystack, $valuekey=null)
 function array_search_keys($needle, $haystack, $valuekey=null)
 {
 	$keys = array();
-	if($haystack)
+	if (is_array($haystack)) {
 		foreach($haystack as $key => $value) {
 			$val = isset($valuekey) ? @$value[$valuekey] : $value;
 			if ($needle == $val){
 				$keys[] = $key;
 			}
 		}
+	}	
 	return $keys;
 }
 //
