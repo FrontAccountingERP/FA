@@ -175,7 +175,8 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	       	curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
-		   $site=$site_ip;
+			if (isset($site_ip))
+		   		$site=$site_ip;
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
