@@ -255,7 +255,7 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
 			$pars[0] = set_icon($icon, $pars[0]);
--		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;

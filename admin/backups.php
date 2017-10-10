@@ -134,6 +134,7 @@ $backup_path = $SysPrefs->backup_dir() . $backup_name;
 if (get_post('creat')) {
 	generate_backup($conn, get_post('comp'), get_post('comments'));
 	$Ajax->activate('backups');
+	$SysPrefs->refresh(); // re-read system setup
 };
 
 if (get_post('restore')) {

@@ -278,7 +278,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 
 	if ($from_currency != $to_currency)
 	{
-	 	$rate = get_post('_ex_rate');
+	 	$rate = input_num('_ex_rate');
 	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
 			$comp_currency = get_company_currency();
 			if ($from_currency == $comp_currency)
