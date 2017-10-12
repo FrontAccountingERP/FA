@@ -347,9 +347,7 @@ function select_button_cell($name, $value, $title=false)
 
 function check_value($name)
 {
-    if (!isset($_POST[$name]) || ($_POST[$name]+0) === 0)
-		return 0;
-	return 1;
+    return (empty($_POST[$name]) ? 0 : 1);
 }
 
 function checkbox($label, $name, $value=null, $submit_on_change=false, $title=false)
