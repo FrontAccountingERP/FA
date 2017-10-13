@@ -65,7 +65,7 @@ class db_pager {
 	//  	array('select' => 'SUM(quantity)', 'from' => TB_PREF."stock_moves", 'group' => 'location')
 	//
 	//	$name is base name for pager controls
-	function db_pager($sql, $name, $table = null, $page_len=0) 
+	function __construct($sql, $name, $table = null, $page_len=0) 
 	{
 		$this->width = "95%";
 		if ($page_len == 0) $page_len = user_query_size();

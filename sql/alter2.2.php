@@ -18,7 +18,7 @@ class fa2_2 extends fa_patch  {
 	var $preconf = true;
 	var $beta = false; // upgrade from 2.1 or 2.2beta; set in prepare()
 	
-	function fa2_2() {
+	function __construct() {
 		global $security_groups;
 		$this->beta = !isset($security_groups);
 		$this->description = _('Upgrade from version 2.1/2.2beta to 2.2');

@@ -11,9 +11,9 @@
 ***********************************************************************/
 class customers_app extends application 
 {
-	function customers_app() 
+	function __construct() 
 	{
-		$this->application("orders", _($this->help_context = "&Sales"));
+		parent::__construct("orders", _($this->help_context = "&Sales"));
 	
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Sales &Quotation Entry"),

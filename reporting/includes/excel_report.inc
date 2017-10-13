@@ -60,7 +60,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	
 	var $sheet;
 
-	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
+	function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 	{
 		global $SysPrefs, $page_security;
 

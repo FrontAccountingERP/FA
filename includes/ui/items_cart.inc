@@ -40,7 +40,7 @@ class items_cart
 
 	var $fixed_asset;
 
-	function items_cart($type, $trans_no=0)
+	function __construct($type, $trans_no=0)
 	{
 		$this->trans_type = $type;
 		$this->order_id = $trans_no;
@@ -465,7 +465,7 @@ class line_item
 	var $price;
 	var $standard_cost;
 
-	function line_item ($stock_id, $qty, $standard_cost=null, $description=null)
+	function __construct($stock_id, $qty, $standard_cost=null, $description=null)
 	{
 		$item_row = get_item($stock_id);
 

@@ -26,7 +26,7 @@ class simple_crud {
 	var $dec;
 	//
 	//
-	function simple_crud($name, $fields = null)
+	function __construct($name, $fields = null)
 	{
 		$this->name = $name;
 		$this->pre_handlers = array(

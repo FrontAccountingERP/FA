@@ -11,9 +11,9 @@
 ***********************************************************************/
 class suppliers_app extends application 
 {
-	function suppliers_app() 
+	function __construct() 
 	{
-		$this->application("AP", _($this->help_context = "&Purchases"));
+		parent::__construct("AP", _($this->help_context = "&Purchases"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Purchase &Order Entry"),
