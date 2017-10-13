@@ -372,6 +372,7 @@ if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 include_once($path_to_root . "/includes/errors.inc");
 // colect all error msgs
 set_error_handler('error_handler' /*, errtypes */);
+set_exception_handler('exception_handler');
 
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");

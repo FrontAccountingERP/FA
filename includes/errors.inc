@@ -87,6 +87,13 @@ function error_handler($errno, $errstr, $file, $line) {
 	
     return true;
 }
+
+function exception_handler($exception)
+{
+	error_handler(E_ERROR, sprintf(_("Unhandled exception [%s]: %s."), $exception->getCode(), $exception->getMessage()),
+		 $exception->getFile(), $exception->getLine());
+	end_page();
+}
 //------------------------------------------------------------------------------
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
