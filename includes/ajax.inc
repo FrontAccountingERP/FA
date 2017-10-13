@@ -16,9 +16,9 @@ class Ajax extends JsHttpRequest {
 	var $aCommands = array();
 	var $triggers = array();
 	
-    function Ajax() 
+    function __construct() 
     {
-	  $this->JsHttpRequest(@$_SESSION['language']->encoding);
+	  parent::__construct(@$_SESSION['language']->encoding);
     }
 	//
 	//	This function is used in ctrl routines to activate

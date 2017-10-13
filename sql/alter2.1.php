@@ -15,7 +15,7 @@ class fa2_1 extends fa_patch {
 	var $description;
 	var $sql = 'alter2.1.sql';
 
-	function fa2_1() {
+	function __construct() {
 		$this->description = _('Upgrade from version 2.0 to 2.1');
 	}
 	//

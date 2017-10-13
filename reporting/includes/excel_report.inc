@@ -60,7 +60,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	
 	var $sheet;
 
-	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
+	function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 	{
 		global $SysPrefs, $page_security;
 
@@ -84,7 +84,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->filename = $filename.".xls";
 		$this->unique_name = random_id().".xls";
 		$this->path = company_path(). '/pdf_files';
-		$this->Spreadsheet_Excel_Writer_Workbook($this->path."/".$this->unique_name);
+		parent::__construct($this->path."/".$this->unique_name);
 		if ($this->code != "iso-8859-1")
 			$this->setVersion(8); // set biff version to 8 (0x0006 internal)
 		$this->sheet = $this->addWorksheet($this->worksheetNameGenerator($this->title));

@@ -30,7 +30,7 @@ class allocation
 
 	var $allocs; /*array of transactions allocated to */
 
-	function allocation($type, $trans_no, $person_id = null, $person_type_id=null)
+	function __construct($type, $trans_no, $person_id = null, $person_type_id=null)
 	{
 		$this->allocs = array();
 		
@@ -254,7 +254,7 @@ class allocation_item
 	
 	var $current_allocated;
 	
-	function allocation_item ($type, $type_no, $date_, $due_date, $amount, 
+	function __construct($type, $type_no, $date_, $due_date, $amount, 
 		$amount_allocated, $current_allocated, $ref)
 	{
 

@@ -178,7 +178,7 @@ class ole_pps
     # _new (OLE::Storage_Lite::PPS)
     #   for OLE::Storage_Lite
     #------------------------------------------------------------------------------
-    function ole_pps($iNo, $sNm, $iType, $iPrev, $iNext, $iDir,
+    function __construct($iNo, $sNm, $iType, $iPrev, $iNext, $iDir,
                      $raTime1st, $raTime2nd, $iStart, $iSize,
                      $sData=false, $raChild=false) 
     {
@@ -315,7 +315,7 @@ class ole_pps
 
 class ole_pps_file extends ole_pps 
 {
-    function ole_pps_file($sNm, $sData=false, $sFile=false) 
+    function __construct($sNm, $sData=false, $sFile=false) 
     {
         $this->No         = false;
         $this->Name       = $sNm;
@@ -366,7 +366,7 @@ class ole_pps_file extends ole_pps
 
 class ole_pps_root extends ole_pps 
 {
-    function ole_pps_root($raTime1st=false, $raTime2nd=false, $raChild=false) 
+    function __construct($raTime1st=false, $raTime2nd=false, $raChild=false) 
     {
         $this->No         = false;
         $this->Name       = Asc2Ucs('Root Entry');
@@ -948,7 +948,7 @@ class Spreadsheet_Excel_Writer_BIFFwriter
     *
     * @access public
     */
-    function Spreadsheet_Excel_Writer_BIFFwriter()
+    function __construct()
     {
         $this->_byte_order = '';
         $this->_data       = '';
@@ -1136,7 +1136,7 @@ class Spreadsheet_Excel_Writer_Validator
     */
     var $_parser;
 
-    function Spreadsheet_Excel_Writer_Validator(&$parser)
+    function __construct(&$parser)
     {
         $this->_parser       = $parser;
         $this->_type         = 0x01; // FIXME: add method for setting datatype
@@ -1469,7 +1469,7 @@ class Spreadsheet_Excel_Writer_Format
     * @param integer $index the XF index for the format.
     * @param array   $properties array with properties to be set on initialization.
     */
-    function Spreadsheet_Excel_Writer_Format($BIFF_version, $index = 0, $properties =  array())
+    function __construct($BIFF_version, $index = 0, $properties =  array())
     {
         $this->_xf_index       = $index;
         $this->_BIFF_version   = $BIFF_version;
@@ -2387,7 +2387,7 @@ class Spreadsheet_Excel_Writer_Parser
     * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
                                  (optional). 1 => big endian, 0 (default) little endian.
     */
-    function Spreadsheet_Excel_Writer_Parser($byte_order, $biff_version)
+    function __construct($byte_order, $biff_version)
     {
         $this->_current_char  = 0;
         $this->_BIFF_version  = $biff_version;
@@ -4143,14 +4143,14 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
     * @param mixed   &$parser      The formula parser created for the Workbook
     * @access private
     */
-    function Spreadsheet_Excel_Writer_Worksheet($BIFF_version, $name,
+    function 					__construct($BIFF_version, $name,
                                                 $index, &$activesheet,
                                                 &$firstsheet, &$str_total,
                                                 &$str_unique, &$str_table,
                                                 &$url_format, &$parser)
     {
         // It needs to call its parent's constructor explicitly
-        $this->Spreadsheet_Excel_Writer_BIFFwriter();
+        parent::__construct();
         $this->_BIFF_version   = $BIFF_version;
         $rowmax                = 65536; // 16384 in Excel 5
         $colmax                = 256;
@@ -7412,10 +7412,10 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     * @param string filename for storing the workbook. "-" for writing to stdout.
     * @access public
     */
-    function Spreadsheet_Excel_Writer_Workbook($filename)
+    function __construct($filename)
     {
         // It needs to call its parent's constructor explicitly
-        $this->Spreadsheet_Excel_Writer_BIFFwriter();
+        parent::__construct();
 
         $this->_filename         = $filename;
         $this->_parser           = new Spreadsheet_Excel_Writer_Parser($this->_byte_order, $this->_BIFF_version);

@@ -36,7 +36,7 @@ class current_user
 	var $prefs;
 	var $cur_con; // current db connection (can be different from $company for superuser)
 
-	function current_user()
+	function __construct()
 	{
 		global $def_coy;
 		
@@ -305,6 +305,8 @@ function number_format2($number, $decimals=0)
 	$tsep = $SysPrefs->thoseps[user_tho_sep()];
 	$dsep = $SysPrefs->decseps[user_dec_sep()];
 
+	if ($number == '')
+		$number = 0;
 	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
 	else {
@@ -511,7 +513,7 @@ function user_date_sep()
 {
 	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_sep() : $SysPrefs->dflt_date_sep;
+	return isset($_SESSION["wa_current_user"]->prefs->date_sep) ? $_SESSION["wa_current_user"]->prefs->date_sep() : $SysPrefs->dflt_date_sep;
 }
 
 function user_tho_sep()

@@ -19,7 +19,8 @@ define('PUBKEY_PATH', $path_to_root);
 // FrontAccounting package class
 //
 class package extends gzip_file {
-	function package($filename, $basedir=null)
+
+	function __construct($filename, $basedir=null)
 	{
 		global $path_to_root;
 
@@ -30,7 +31,7 @@ class package extends gzip_file {
 			} else
 			mkdir($basedir);
 		}
-		$this->archive($filename);
+		parent::__construct($filename);
 		$this->set_options(array('basedir'=> $basedir));
 		$this->options['type'] = "pkg";
 	}

@@ -70,7 +70,7 @@ class FrontReport extends Cpdf
 	
 	var $dest;	// destination: email or printer
 	
-	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
+	function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 	{
 		global $page_security;
 
@@ -222,7 +222,7 @@ class FrontReport extends Cpdf
 		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 		$this->SetHeaderType('Header'); // default
 
-		$this->Cpdf($size, $_SESSION['language']->code, $orientation);
+		parent::__construct($size, $_SESSION['language']->code, $orientation);
 	}
 	
 	/*

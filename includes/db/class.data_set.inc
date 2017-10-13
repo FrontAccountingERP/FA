@@ -37,7 +37,7 @@ abstract class record_set {
 		$this->errors = array();
 	}
 
-	function record_set($name, $fields, $key, $subset=null)
+	function __construct($name, $fields, $key, $subset=null)
 	{
 		$this->name = $name;
 		$this->fields = $fields;
@@ -253,9 +253,9 @@ abstract class record_set {
 
 class data_set extends record_set {
 
-	function data_set($name, $fields, $key, $subset=null)
+	function __construct($name, $fields, $key, $subset=null)
 	{
-		$this->record_set($name, $fields, $key, $subset);
+		parent::__construct($name, $fields, $key, $subset);
 	}
 
 	//
@@ -417,11 +417,11 @@ class array_set extends record_set {
 
 	var $object_class;	// name of record object class or null for arrays
 
-	function array_set($name, $fields, $key=null, &$arr=array(), $class = null)
+	function __construct($name, $fields, $key=null, &$arr=array(), $class = null)
 	{
 		$this->array = &$arr;
 		$this->object_class = $class;
-		$this->record_set($name, $fields, $key);
+		parent::__construct($name, $fields, $key);
 	}
 
 	//===========================================================================

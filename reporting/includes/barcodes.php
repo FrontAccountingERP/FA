@@ -81,7 +81,7 @@ class TCPDFBarcode {
 	 * @param string $code code to print
  	 * @param string $type type of barcode: <ul><li>C39 : CODE 39</li><li>C39+ : CODE 39 with checksum</li><li>C39E : CODE 39 EXTENDED</li><li>C39E+ : CODE 39 EXTENDED with checksum</li><li>I25 : Interleaved 2 of 5</li><li>C128A : CODE 128 A</li><li>C128B : CODE 128 B</li><li>C128C : CODE 128 C</li><li>EAN13 : EAN 13</li><li>UPCA : UPC-A</li><li>POSTNET : POSTNET</li><li>CODABAR : CODABAR</li></ul>
 	 */
-	function TCPDFBarcode($code, $type) {
+	function __construct($code, $type) {
 		$this->setBarcode($code, $type);
 	}
 	
