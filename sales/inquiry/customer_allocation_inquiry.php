@@ -87,7 +87,7 @@ function due_date($row)
 
 function fmt_balance($row)
 {
-	return $row["TotalAmount"] - $row["Allocated"];
+	return ($row["type"] == ST_JOURNAL && $row["TotalAmount"] < 0 ? -$row["TotalAmount"] : $row["TotalAmount"]) - $row["Allocated"];
 }
 
 function alloc_link($row)
