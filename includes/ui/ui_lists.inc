@@ -2121,7 +2121,7 @@ function journal_types_list_cells($label, $name, $value=null, $submit_on_change=
 	echo "</td>\n";
 }
 
-function cust_allocations_list_cells($label, $name, $selected=null)
+function cust_allocations_list_cells($label, $name, $selected=null, $submit_on_change=false)
 {
 
 	if ($label != null)
@@ -2130,12 +2130,12 @@ function cust_allocations_list_cells($label, $name, $selected=null)
 	$allocs = array( 
 		ALL_TEXT=>_("All Types"),
 		'1'=> _("Sales Invoices"),
-		'2'=> _("Overdue Invoices"),
+		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
 		'5' => _("Delivery Notes")
 	);
-	echo array_selector($name, $selected, $allocs);
+	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
 	echo "</td>\n";
 }
 
@@ -2155,7 +2155,7 @@ function supp_allocations_list_cell($name, $selected=null)
 	echo "</td>\n";
 }
 
-function supp_transactions_list_cell($name, $selected=null)
+function supp_transactions_list_cell($name, $selected=null, $submit_on_change=false)
 {
 
 	echo "<td>\n";
@@ -2163,13 +2163,13 @@ function supp_transactions_list_cell($name, $selected=null)
 		ALL_TEXT=>_("All Types"),
 		'6'=>_("GRNs"),
 		'1'=> _("Invoices"),
-		'2'=> _("Overdue Invoices"),
+		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
 		'5' => _("Overdue Credit Notes")
 	);
 
-	echo array_selector($name, $selected, $allocs);
+	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
 	echo "</td>\n";
 }
 

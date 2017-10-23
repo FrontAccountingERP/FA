@@ -475,10 +475,9 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => Today()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
+			unset($_POST['ref']); // force refresh reference
 			display_error(_("The reference number field has been increased. Please save the document again."));
-			$_POST['ref'] = $_SESSION['Items']->reference = $ref;
-			$Ajax->activate('ref');
-		}	
+		}
 		set_focus('ref');
 	}
 	else
