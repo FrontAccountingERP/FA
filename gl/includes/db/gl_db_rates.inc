@@ -149,7 +149,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	elseif ($provider == 'GOOGLE')
 	{
 		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
-		$site = "www.google.com";
+		$site = "finance.google.com";
 	}
 	elseif ($provider == 'BLOOMBERG')
 	{
