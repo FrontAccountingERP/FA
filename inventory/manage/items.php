@@ -530,13 +530,13 @@ function item_settings(&$stock_id, $new_item)
 	end_outer_table(1);
 
 	div_start('controls');
+	if (@$_REQUEST['popup']) hidden('popup', 1);
 	if (!isset($_POST['NewStockID']) || $new_item) 
 	{
 		submit_center('addupdate', _("Insert New Item"), true, '', 'default');
 	} 
 	else 
 	{
-		if (@$_REQUEST['popup']) hidden('popup', 1);
 		submit_center_first('addupdate', _("Update Item"), '', 
 			$page_nested ? true : 'default');
 		submit_return('select', get_post('stock_id'), 
