@@ -224,14 +224,16 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
     	trans.tran_date, 
 		trans.due_date,
 		supplier.curr_code, 
-    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount,
+
+    	IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT."
+  	OR (trans.type=".ST_JOURNAL." AND (trans.ov_amount + trans.ov_gst + trans.ov_discount)>0), 1, -1)*
+    		(ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc) Balance,
 		trans.alloc AS Allocated,
 		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
     	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount) - trans.alloc <= ".FLOAT_COMP_DELTA.") AS Settled
     	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
-     	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
 
 	$sql2 = "SELECT ".ST_SUPPRECEIVE." as type, 
@@ -242,15 +244,21 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
     	delivery_date as tran_date, 
 		'' as due_date,
 		supplier.curr_code, 
+		0 as Balance, 
     	'' AS TotalAmount,
 		'' AS Allocated,
 		0 as OverDue,
     	1 as Settled
     	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier, ".TB_PREF."purch_orders as po
     	WHERE supplier.supplier_id = trans.supplier_id
-    	AND trans.purch_order_no = po.order_no
-     	AND trans.delivery_date >= '$date_after'
-    	AND trans.delivery_date <= '$date_to'";
+    	AND trans.purch_order_no = po.order_no";
+
+	if ($filter == '2')
+		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc>".FLOAT_COMP_DELTA;
+	else {
+		$sql .= " AND trans.tran_date >= '$date_after'
+			AND trans.tran_date <= '$date_to'";
+	}
 
    	if ($supplier_id != ALL_TEXT) {
    		$sql .= " AND trans.supplier_id = ".db_escape($supplier_id);
@@ -260,7 +268,7 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 	{
 			$sql = $sql2;
 	} 
-	elseif (!isset($filter) || $filter == ALL_TEXT || $filter == '6') {
+	elseif (!isset($filter) || $filter == ALL_TEXT) {
 		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr WHERE 1";
    	}
 
@@ -269,10 +277,6 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
    		if (($filter == '1')) 
    		{
    			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
-   		} 
-   		elseif (($filter == '2')) 
-   		{
-   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		} 
    		elseif ($filter == '3') 
    		{

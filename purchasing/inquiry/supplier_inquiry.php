@@ -37,30 +37,6 @@ if (isset($_GET['ToDate'])){
 
 //------------------------------------------------------------------------------------------------
 
-start_form();
-
-if (!isset($_POST['supplier_id']))
-	$_POST['supplier_id'] = get_global_supplier();
-
-start_table(TABLESTYLE_NOBORDER);
-start_row();
-
-if (!$page_nested)
-	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, false, false, true);
-
-date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
-date_cells(_("To:"), 'TransToDate');
-
-supp_transactions_list_cell("filterType", null, true);
-
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
-
-end_row();
-end_table();
-set_global_supplier($_POST['supplier_id']);
-
-//------------------------------------------------------------------------------------------------
-
 function display_supplier_summary($supplier_record)
 {
 	$past1 = get_company_pref('past_due_days');
@@ -86,21 +62,6 @@ function display_supplier_summary($supplier_record)
     end_row();
     end_table(1);
 }
-//------------------------------------------------------------------------------------------------
-
-div_start('totals_tbl');
-if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT))
-{
-	$supplier_record = get_supplier_details($_POST['supplier_id'], $_POST['TransToDate']);
-    display_supplier_summary($supplier_record);
-}
-div_end();
-
-if(get_post('RefreshInquiry'))
-{
-	$Ajax->activate('totals_tbl');
-}
-
 //------------------------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
@@ -164,6 +125,48 @@ function edit_link($row)
 }
 //------------------------------------------------------------------------------------------------
 
+start_form();
+
+if (!isset($_POST['supplier_id']))
+	$_POST['supplier_id'] = get_global_supplier();
+
+start_table(TABLESTYLE_NOBORDER);
+start_row();
+
+if (!$page_nested)
+	supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true, true, false, true);
+
+supp_transactions_list_cell("filterType", null, true);
+
+if ($_POST['filterType'] != '2')
+{
+	date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
+	date_cells(_("To:"), 'TransToDate');
+}
+
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
+
+end_row();
+end_table();
+set_global_supplier($_POST['supplier_id']);
+
+//------------------------------------------------------------------------------------------------
+
+div_start('totals_tbl');
+if ($_POST['supplier_id'] != ALL_TEXT && $_POST['filterType'] == '2')
+{
+	$supplier_record = get_supplier_details(get_post('supplier_id'), get_post('TransToDate'));
+    display_supplier_summary($supplier_record);
+}
+div_end();
+
+if (get_post('RefreshInquiry') || list_updated('filterType'))
+{
+	$Ajax->activate('_page_body');
+}
+
+//------------------------------------------------------------------------------------------------
+
 $sql = get_sql_for_supplier_inquiry(get_post('filterType'), get_post('TransAfterDate'), get_post('TransToDate'), get_post('supplier_id'));
 
 $cols = array(
@@ -176,6 +179,7 @@ $cols = array(
 			_("Due Date") => array('type'=>'date', 'fun'=>'due_date'), 
 			_("Currency") => array('align'=>'center'),
 			_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
+			_("Balance") => array('align'=>'right', 'type'=>'amount'),
 			array('insert'=>true, 'fun'=>'gl_view'),
 			array('insert'=>true, 'fun'=>'credit_link'),
 			array('insert'=>true, 'fun'=>'prt_link'),
@@ -187,6 +191,8 @@ if ($_POST['supplier_id'] != ALL_TEXT)
 	$cols[_("Supplier")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
+if ($_POST['filterType'] != '2')
+	$cols[_("Balance")] = 'skip';
 
 /*show a table of the transactions returned by the sql */
 $table =& new_db_pager('trans_tbl', $sql, $cols);
