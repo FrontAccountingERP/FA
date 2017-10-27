@@ -211,7 +211,6 @@ class hooks {
 			return true;
 		}
 		return array($qoh, 'stockmankobg');
-		return array($line_item->qty_dispatched, 'stockmankobg');
 	}
 
 }
