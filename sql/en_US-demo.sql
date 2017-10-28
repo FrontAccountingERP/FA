@@ -2069,7 +2069,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `rate` double NOT NULL DEFAULT '1',
   `alloc` double NOT NULL DEFAULT '0',
   `tax_included` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`type`,`trans_no`,`debtor_no`),
+  PRIMARY KEY (`type`,`trans_no`,`supplier_id`),
   KEY `supplier_id` (`supplier_id`),
   KEY `tran_date` (`tran_date`)
 ) ENGINE=InnoDB;
