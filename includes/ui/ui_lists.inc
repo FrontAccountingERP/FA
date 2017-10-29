@@ -1232,25 +1232,28 @@ function tax_groups_list_row($label, $name, $selected_id=null, $none_option=fals
 
 //------------------------------------------------------------------------------------
 
-function item_tax_types_list($name, $selected_id=null)
+function item_tax_types_list($name, $selected_id=null, $show_inactive = false)
 {
 	$sql ="SELECT id, name FROM ".TB_PREF."item_tax_types";
+	if (!$show_inactive)
+		$sql .= " WHERE !inactive";
+
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id') );
 }
 
-function item_tax_types_list_cells($label, $name, $selected_id=null)
+function item_tax_types_list_cells($label, $name, $selected_id=null, $show_inactive = false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo item_tax_types_list($name, $selected_id);
+	echo item_tax_types_list($name, $selected_id, $show_inactive);
 	echo "</td>\n";
 }
 
-function item_tax_types_list_row($label, $name, $selected_id=null)
+function item_tax_types_list_row($label, $name, $selected_id=null, $show_inactive = false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	item_tax_types_list_cells(null, $name, $selected_id);
+	item_tax_types_list_cells(null, $name, $selected_id, $show_inactive);
 	echo "</tr>\n";
 }
 
