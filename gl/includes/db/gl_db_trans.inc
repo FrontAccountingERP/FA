@@ -513,15 +513,15 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*
+				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
-					." || ((trans_type IN(".ST_SUPPINVOICE.",".ST_SUPPCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
 					), net_amount*ex_rate,0)
 				) net_output,
 
-				SUM(IF(trans_type=".ST_SUPPCREDIT.",-1,1)*
+				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
-					." || ((trans_type IN(".ST_SUPPINVOICE.",".ST_SUPPCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
 					), amount*ex_rate,0)) payable,
 
 				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
