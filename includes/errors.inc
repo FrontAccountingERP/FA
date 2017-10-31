@@ -32,7 +32,7 @@ function get_backtrace($html = false, $skip=0)
 		}
 		$str .= $tr['function'].'(';
 		
-		if(is_array($tr['args'])) {
+		if(isset($tr['args']) && is_array($tr['args'])) {
 			$args = array();
 			foreach($tr['args'] as $n=>$a) {
 				if (is_object($tr['args'][$n]))

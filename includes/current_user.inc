@@ -511,7 +511,7 @@ function user_date_sep()
 {
 	global $SysPrefs;
 
-	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->prefs->date_sep() : $SysPrefs->dflt_date_sep;
+	return isset($_SESSION["wa_current_user"]->prefs->date_sep) ? $_SESSION["wa_current_user"]->prefs->date_sep() : $SysPrefs->dflt_date_sep;
 }
 
 function user_tho_sep()
