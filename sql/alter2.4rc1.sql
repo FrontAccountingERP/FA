@@ -49,3 +49,13 @@ UPDATE `0_bank_trans` SET person_id=trans_no WHERE person_type_id=26;
 
 ALTER TABLE `0_budget_trans` CHANGE `counter` `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `0_sys_prefs` CHANGE `value` `value` text NOT NULL default '';
+
+ALTER TABLE `0_debtor_trans`
+	CHANGE `debtor_no` `debtor_no` int(11) unsigned NOT NULL,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`type`,`trans_no`,`debtor_no`);
+	
+ALTER TABLE `0_supp_trans`
+	CHANGE `supplier_id` `supplier_id` int(11) unsigned NOT NULL,
+	DROP PRIMARY KEY,
+	ADD PRIMARY KEY (`type`,`trans_no`,`supplier_id`);
