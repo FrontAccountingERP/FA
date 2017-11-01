@@ -552,7 +552,6 @@ function db_backup($conn, $ext='no', $comm='', $path='')
 
 	return db_export($conn, $path . clean_file_name($filename), $ext, $comm);
 }
-//
 // Generates a dump of $db database
 //
 function db_export($conn, $filename, $zip='no', $comment='')
@@ -565,8 +564,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
     $max_size = 1048576 * 2; // 2 MB
     // changes max size if value can be retrieved
     if (ini_get("memory_limit"))
-    	$max_size = 900000 * ini_get("memory_limit");
-
+    	$max_size = 1048576 * (int)ini_get("memory_limit");
     // set backupfile name
     if ($zip == "gzip")
     	$backupfile = $filename . ".gz";
