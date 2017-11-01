@@ -21,7 +21,8 @@ function get_backtrace($html = false, $skip=0)
 	foreach($trace as $trn => $tr) {
 		if ($trn <= $skip) continue;
 		if ($html) $str .= '<tr><td>';
-		$str .= $tr['file'].':'.$tr['line'].': ';
+		if (isset($tr['file']) && isset($tr['line']))
+			$str .= $tr['file'].':'.$tr['line'].': ';
 		if ($html) $str .= '</td><td>';
 		if (isset($tr['type'])) {
 	 		if($tr['type'] == '::') {

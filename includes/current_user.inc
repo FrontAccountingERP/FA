@@ -305,6 +305,8 @@ function number_format2($number, $decimals=0)
 	$tsep = $SysPrefs->thoseps[user_tho_sep()];
 	$dsep = $SysPrefs->decseps[user_dec_sep()];
 
+	if ($number == '')
+		$number = 0;
 	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
 	else {
