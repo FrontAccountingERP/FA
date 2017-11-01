@@ -509,7 +509,7 @@ class gl_item
 	var $branch_id;
 	var $date;
 
-	function gl_item($code_id=null, $dimension_id=0, $dimension2_id=0, $amount=0, $memo='',
+	function __construct($code_id=null, $dimension_id=0, $dimension2_id=0, $amount=0, $memo='',
 		$act_descr=null, $person_id=null, $date=null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";

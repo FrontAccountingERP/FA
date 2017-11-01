@@ -25,7 +25,7 @@ class contacts extends simple_crud {
 		$fields = array('ref','name','name2','address', 'phone', 'phone2','fax',
 			'email','lang','notes', 'assgn' =>array('fld'=>'contacts'));
 
-		$this->simple_crud($name, $fields);
+		parent::__construct($name, $fields);
 		$this->class = $class;
 		$this->subclass = $subclass;
 		$this->entity = $id;
