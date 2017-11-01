@@ -167,6 +167,7 @@ function supplier_settings(&$supplier_id)
 	end_outer_table(1);
 
 	div_start('controls');
+	if (@$_REQUEST['popup']) hidden('popup', 1);
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
@@ -278,6 +279,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 		unset($_SESSION['supplier_id']);
 		$supplier_id = '';
 		$Ajax->activate('_page_body');
+		display_notification("#" . $_POST['supplier_id'] . " " . _("Supplier has been deleted."));
 	} //end if Delete supplier
 }
 

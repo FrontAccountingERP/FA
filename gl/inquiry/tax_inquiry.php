@@ -88,7 +88,7 @@ function show_results()
 	{
 
 		$payable = $tx['payable'];
-		$collectible = $tx['collectible'];
+		$collectible = -$tx['collectible'];
 		$net = $collectible + $payable;
 		$total += $net;
 		alt_table_row_color($k);
@@ -101,7 +101,7 @@ function show_results()
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
 		label_cell(_("Paid on purchases") . " (" . _("Input Tax")."):");
 		amount_cell($collectible);
-		amount_cell($tx['net_input']);
+		amount_cell(-$tx['net_input']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell("<b>".$tx['name'] . " " . $tx['rate'] . "%</b>");

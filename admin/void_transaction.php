@@ -319,6 +319,7 @@ if (isset($_POST['ProcessVoiding']))
 if (isset($_POST['ConfirmVoiding']))
 {
 	handle_void_transaction();
+	$selected_id = '';
 	$Ajax->activate('_page_body');
 }
 

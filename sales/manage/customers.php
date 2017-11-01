@@ -301,6 +301,7 @@ function customer_settings($selected_id)
 	end_outer_table(1);
 
 	div_start('controls');
+	if (@$_REQUEST['popup']) hidden('popup', 1);
 	if (!$selected_id)
 	{
 		submit_center('submit', _("Add New Customer"), true, '', 'default');
