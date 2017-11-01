@@ -31,7 +31,7 @@ class package extends gzip_file {
 			} else
 			mkdir($basedir);
 		}
-		$this->archive($filename);
+		parent::__construct($filename);
 		$this->set_options(array('basedir'=> $basedir));
 		$this->options['type'] = "pkg";
 	}
