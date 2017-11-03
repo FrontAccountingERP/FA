@@ -568,7 +568,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	if ($mode == 1)
 	{
 		$ret = display_grn_items_for_selection($supp_trans, $k);
-    	$colspan = 10;
+    	$colspan = 9;
 	}
 	else
 		$colspan = 5;
