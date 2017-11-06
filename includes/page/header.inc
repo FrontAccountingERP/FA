@@ -40,9 +40,10 @@ function help_url($context=null)
 	if ($clean)
 		$help_page_url = access_string($help_page_url, true);
 
-	return htmlspecialchars($SysPrefs->help_base_url
+	return html_specials_encode(
+		$SysPrefs->help_base_url
 		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
-		.'&ctxhelp=1&lang='.$country, ENT_QUOTES);
+		.'&ctxhelp=1&lang='.$country);
 }
 
 function send_css($css = '')
