@@ -129,7 +129,7 @@ $_POST['past_due_days'] = $myrow['past_due_days'];
 
 $_POST['grn_clearing_act'] = $myrow['grn_clearing_act'];
 
-$_POST['default_credit_limit'] = $myrow['default_credit_limit'];
+$_POST['default_credit_limit'] = price_format($myrow['default_credit_limit']);
 $_POST['legal_text'] = $myrow['legal_text'];
 $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 
@@ -177,7 +177,7 @@ text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['defa
 
 table_section_title(_("Customers and Sales"));
 
-text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
+amount_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit']);
 
 yesno_list_row(_("Invoice Identification:"), 'print_invoice_no', $_POST['print_invoice_no'], $name_yes=_("Number"), $name_no=_("Reference"));
 
