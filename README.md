@@ -12,7 +12,7 @@ SourceForge project page: http://sourceforge.net/projects/frontaccounting/
 
 Central users forum: http://frontaccounting.com/punbb/index.php
 
-Main code repository: http://git.code.sf.net/p/frontaccounting/git
+Main code repository: https://sourceforge.net/p/frontaccounting/git/ci/master/tree/
 
 GitHub mirror: http://github.com/FrontAccountingERP/FA
 
