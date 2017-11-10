@@ -311,7 +311,7 @@ function number_format2($number, $decimals=0)
 		$dec = 15 - floor(log10(abs($number)));
 	else {
 		$delta = ($number < 0 ? -.0000000001 : .0000000001);
-		$number += $delta;
+		@$number += $delta;
 		$dec = $decimals;
 	}
 
