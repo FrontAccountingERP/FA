@@ -436,8 +436,8 @@ header("Cache-control: private");
 
 get_text_init();
 
-if ($SysPrefs->login_delay > 0)
-	@include_once($path_to_root . "/tmp/faillog.php");
+if ($SysPrefs->login_delay > 0 && file_exists($path_to_root . "/tmp/faillog.php"))
+	include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
@@ -486,7 +486,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 
 	login_timeout();
 
-	if (!$_SESSION["wa_current_user"]->old_db)
+	if (!$_SESSION["wa_current_user"]->old_db && file_exists($path_to_root . '/company/'.user_company().'/installed_extensions.php'))
 		include($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	install_hooks();

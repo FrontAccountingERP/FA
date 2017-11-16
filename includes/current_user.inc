@@ -732,6 +732,8 @@ function recalculate_cols(&$cols)
 
 function flush_dir($path, $wipe = false) 
 {
+	if (!file_exists($path))
+		return;
 	$dir = @opendir($path);
 	if(!$dir)
 		return;

@@ -235,11 +235,13 @@ function install_hooks()
 		unset($code, $hook_class);
 	}
 	// install hooks provided by active extensions
-	foreach($installed_extensions as $ext) {
-		$hook_class = 'hooks_'.$ext['package'];
-		if ($ext['active'] && class_exists($hook_class)) {
-			$Hooks[$ext['package']] = new $hook_class;
-		}
+	if (isset($installed_extensions) && !empty($installed_extensions)) {
+		foreach($installed_extensions as $ext) {
+			$hook_class = 'hooks_'.$ext['package'];
+			if ($ext['active'] && class_exists($hook_class)) {
+				$Hooks[$ext['package']] = new $hook_class;
+			}
+		}	
 	}
 }
 /*
