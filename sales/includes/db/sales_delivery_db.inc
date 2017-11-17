@@ -73,11 +73,11 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$qty = $delivery_line->qty_dispatched;
 		$line_price = $delivery_line->line_price();
 		$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
-			$delivery_line->price*$qty, 0, $delivery->tax_included
+			$delivery_line->price*$qty, 0, $delivery->tax_included,
 			$delivery->tax_group_array);
 
 		$line_tax = get_full_price_for_item(ST_CUSTDELIVERY, $delivery_line->stock_id,
-				$delivery_line->price * $qty, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price
+				0, $delivery_line->price * $qty, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
 		$delivery_line->standard_cost = get_unit_cost($delivery_line->stock_id);
 
