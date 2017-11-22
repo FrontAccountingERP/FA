@@ -79,7 +79,7 @@ class TCPDFBarcode {
 	 * <li>$arrcode["bcode"][$k]["h"] bar height in units.</li>
 	 * <li>$arrcode["bcode"][$k]["p"] bar top position (0 = top, 1 = middle)</li></ul>
 	 * @param string $code code to print
- 	 * @param string $type type of barcode: <ul><li>C39 : CODE 39</li><li>C39+ : CODE 39 with checksum</li><li>C39E : CODE 39 EXTENDED</li><li>C39E+ : CODE 39 EXTENDED with checksum</li><li>I25 : Interleaved 2 of 5</li><li>C128A : CODE 128 A</li><li>C128B : CODE 128 B</li><li>C128C : CODE 128 C</li><li>EAN13 : EAN 13</li><li>UPCA : UPC-A</li><li>POSTNET : POSTNET</li><li>CODABAR : CODABAR</li></ul>
+ 	 * @param string $type type of barcode: <ul><li>C39 : CODE 39</li><li>C39+ : CODE 39 with checksum</li><li>C39E : CODE 39 EXTENDED</li><li>C39E+ : CODE 39 EXTENDED with checksum</li><li>I25 : Interleaved 2 of 5</li><li>C128A : CODE 128 A</li><li>C128B : CODE 128 B</li><li>C128C : CODE 128 C</li><li>EAN2 : 2-Digits UPC-Based Extension</li><li>EAN5 : 5-Digits UPC-Based Extension</li><li>EAN8 : EAN 8</li><li>EAN13 : EAN 13</li><li>UPCA : UPC-A</li><li>UPCE : UPC-E</li><li>POSTNET : POSTNET</li><li>CODABAR : CODABAR</li></ul>
 	 */
 	function __construct($code, $type) {
 		$this->setBarcode($code, $type);
@@ -96,7 +96,7 @@ class TCPDFBarcode {
 	/** 
 	 * Set the barcode.
 	 * @param string $code code to print
- 	 * @param string $type type of barcode: <ul><li>C39 : CODE 39</li><li>C39+ : CODE 39 with checksum</li><li>C39E : CODE 39 EXTENDED</li><li>C39E+ : CODE 39 EXTENDED with checksum</li><li>I25 : Interleaved 2 of 5</li><li>C128A : CODE 128 A</li><li>C128B : CODE 128 B</li><li>C128C : CODE 128 C</li><li>EAN13 : EAN 13</li><li>UPCA : UPC-A</li><li>POSTNET : POSTNET</li><li>CODABAR : CODABAR</li></ul>
+ 	 * @param string $type type of barcode: <ul><li>C39 : CODE 39</li><li>C39+ : CODE 39 with checksum</li><li>C39E : CODE 39 EXTENDED</li><li>C39E+ : CODE 39 EXTENDED with checksum</li><li>I25 : Interleaved 2 of 5</li><li>C128A : CODE 128 A</li><li>C128B : CODE 128 B</li><li>C128C : CODE 128 C</li><li>EAN2 : 2-Digits UPC-Based Extension</li><li>EAN5 : 5-Digits UPC-Based Extension</li><li>EAN8 : EAN 8</li><li>EAN13 : EAN 13</li><li>UPCA : UPC-A</li><li>UPCE : UPC-E</li><li>POSTNET : POSTNET</li><li>CODABAR : CODABAR</li></ul>
  	 * @return array
 	 */
 	function setBarcode($code, $type) {
@@ -133,12 +133,28 @@ class TCPDFBarcode {
 				$arrcode = $this->barcode_c128($code, "C");
 				break;
 			}
-			case "EAN13": { // EAN 13
-				$arrcode = $this->barcode_ean13($code, 13);
+			case 'EAN2': { // 2-Digits UPC-Based Extension
+				$arrcode = $this->barcode_eanext($code, 2);
 				break;
 			}
-			case "UPCA": { // UPC-A
-				$arrcode = $this->barcode_ean13($code, 12);
+			case 'EAN5': { // 5-Digits UPC-Based Extension
+				$arrcode = $this->barcode_eanext($code, 5);
+				break;
+			}
+			case 'EAN8': { // EAN 8
+				$arrcode = $this->barcode_eanupc($code, 8);
+				break;
+			}
+			case 'EAN13': { // EAN 13
+				$arrcode = $this->barcode_eanupc($code, 13);
+				break;
+			}
+			case 'UPCA': { // UPC-A
+				$arrcode = $this->barcode_eanupc($code, 12);
+				break;
+			}
+			case 'UPCE': { // UPC-E
+				$arrcode = $this->barcode_eanupc($code, 6);
 				break;
 			}
 			case "POSTNET": { // POSTNET
@@ -570,49 +586,84 @@ class TCPDFBarcode {
 		}
 		return $bararray;		
 	}
-	
+
 	/**
 	 * EAN13 and UPC-A barcodes.
-	 * @param string $code code to represent.
-	 * @param string $len barcode type: 13 = EAN13, 12 = UPC-A
+	 * EAN13: European Article Numbering international retail product code
+	 * UPC-A: Universal product code seen on almost all retail products in the USA and Canada
+	 * UPC-E: Short version of UPC symbol
+	 * @param $code (string) code to represent.
+	 * @param $len (string) barcode type: 6 = UPC-E, 8 = EAN8, 13 = EAN13, 12 = UPC-A
 	 * @return array barcode representation.
-	 * @access protected
+	 * @protected
 	 */
-	function barcode_ean13($code, $len=13) {
-		//Padding
-		$code = str_pad($code, $len-1, '0', STR_PAD_LEFT);
-		if($len == 12) {
-			$code = '0'.$code;
+	protected function barcode_eanupc($code, $len=13) {
+		$upce = false;
+		if ($len == 6) {
+			$len = 12; // UPC-A
+			$upce = true; // UPC-E mode
 		}
-		// add check digit
-		if(strlen($code) == 12) {
-			$sum=0;
-			for($i=1;$i<=11;$i+=2) {
-				$sum += (3 * $code{$i});
-			}
-			for($i=0; $i <= 10; $i+=2) {
-				$sum += ($code{$i});
-			}
-			$r = $sum % 10;
-			if($r > 0) {
-				$r = (10 - $r);
-			}
+		$data_len = $len - 1;
+		//Padding
+		$code = str_pad($code, $data_len, '0', STR_PAD_LEFT);
+		$code_len = strlen($code);
+		// calculate check digit
+		$sum_a = 0;
+		for ($i = 1; $i < $data_len; $i+=2) {
+			$sum_a += $code{$i};
+		}
+		if ($len > 12) {
+			$sum_a *= 3;
+		}
+		$sum_b = 0;
+		for ($i = 0; $i < $data_len; $i+=2) {
+			$sum_b += ($code{$i});
+		}
+		if ($len < 13) {
+			$sum_b *= 3;
+		}
+		$r = ($sum_a + $sum_b) % 10;
+		if($r > 0) {
+			$r = (10 - $r);
+		}
+		if ($code_len == $data_len) {
+			// add check digit
 			$code .= $r;
-		} else { // test checkdigit
-			$sum = 0;
-			for($i=1; $i <= 11; $i+=2) {
-				$sum += (3 * $code{$i});
-			}
-			for($i=0; $i <= 10; $i+=2) {
-				$sum += $code{$i};
-			}
-			if ((($sum + $code{12}) % 10) != 0) {
-				return false;
+		} elseif ($r !== intval($code{$data_len})) {
+			// wrong checkdigit
+			return false;
+		}
+		if ($len == 12) {
+			// UPC-A
+			$code = '0'.$code;
+			++$len;
+		}
+		if ($upce) {
+			// convert UPC-A to UPC-E
+			$tmp = substr($code, 4, 3);
+			if (($tmp == '000') OR ($tmp == '100') OR ($tmp == '200')) {
+				// manufacturer code ends in 000, 100, or 200
+				$upce_code = substr($code, 2, 2).substr($code, 9, 3).substr($code, 4, 1);
+			} else {
+				$tmp = substr($code, 5, 2);
+				if ($tmp == '00') {
+					// manufacturer code ends in 00
+					$upce_code = substr($code, 2, 3).substr($code, 10, 2).'3';
+				} else {
+					$tmp = substr($code, 6, 1);
+					if ($tmp == '0') {
+						// manufacturer code ends in 0
+						$upce_code = substr($code, 2, 4).substr($code, 11, 1).'4';
+					} else {
+						// manufacturer code does not end in zero
+						$upce_code = substr($code, 2, 5).substr($code, 11, 1);
+					}
+				}
 			}
 		}
 		//Convert digits to bars
 		$codes = array(
-			'A'=>array(
+			'A'=>array( // left odd parity
 				'0'=>'0001101',
 				'1'=>'0011001',
 				'2'=>'0010011',
@@ -623,7 +674,7 @@ class TCPDFBarcode {
 				'7'=>'0111011',
 				'8'=>'0110111',
 				'9'=>'0001011'),
-			'B'=>array(
+			'B'=>array( // left even parity
 				'0'=>'0100111',
 				'1'=>'0110011',
 				'2'=>'0011011',
@@ -634,7 +685,7 @@ class TCPDFBarcode {
 				'7'=>'0010001',
 				'8'=>'0001001',
 				'9'=>'0010111'),
-			'C'=>array(
+			'C'=>array( // right
 				'0'=>'1110010',
 				'1'=>'1100110',
 				'2'=>'1101100',
@@ -658,38 +709,78 @@ class TCPDFBarcode {
 			'8'=>array('A','B','A','B','B','A'),
 			'9'=>array('A','B','B','A','B','A')
 		);
-		
-		$bararray = array("code" => $code, "maxw" => 0, "maxh" => 1, "bcode" => array());
+		$upce_parities = array();
+		$upce_parities[0] = array(
+			'0'=>array('B','B','B','A','A','A'),
+			'1'=>array('B','B','A','B','A','A'),
+			'2'=>array('B','B','A','A','B','A'),
+			'3'=>array('B','B','A','A','A','B'),
+			'4'=>array('B','A','B','B','A','A'),
+			'5'=>array('B','A','A','B','B','A'),
+			'6'=>array('B','A','A','A','B','B'),
+			'7'=>array('B','A','B','A','B','A'),
+			'8'=>array('B','A','B','A','A','B'),
+			'9'=>array('B','A','A','B','A','B')
+		);
+		$upce_parities[1] = array(
+			'0'=>array('A','A','A','B','B','B'),
+			'1'=>array('A','A','B','A','B','B'),
+			'2'=>array('A','A','B','B','A','B'),
+			'3'=>array('A','A','B','B','B','A'),
+			'4'=>array('A','B','A','A','B','B'),
+			'5'=>array('A','B','B','A','A','B'),
+			'6'=>array('A','B','B','B','A','A'),
+			'7'=>array('A','B','A','B','A','B'),
+			'8'=>array('A','B','A','B','B','A'),
+			'9'=>array('A','B','B','A','B','A')
+		);
 		$k = 0;
-		$seq = '101';
-		$p = $parities[$code{0}];
-		for($i=1; $i < 7; $i++) {
-			$seq .= $codes[$p[$i-1]][$code{$i}];
+		$seq = '101'; // left guard bar
+		if ($upce) {
+			$bararray = array('code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+			$p = $upce_parities[$code[1]][$r];
+			for ($i = 0; $i < 6; ++$i) {
+				$seq .= $codes[$p[$i]][$upce_code{$i}];
+			}
+			$seq .= '010101'; // right guard bar
+		} else {
+			$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+			$half_len = intval(ceil($len / 2));
+			if ($len == 8) {
+				for ($i = 0; $i < $half_len; ++$i) {
+					$seq .= $codes['A'][$code{$i}];
+				}
+			} else {
+				$p = $parities[$code[0]];
+				for ($i = 1; $i < $half_len; ++$i) {
+					$seq .= $codes[$p[$i-1]][$code{$i}];
+				}
+			}
+			$seq .= '01010'; // center guard bar
+			for ($i = $half_len; $i < $len; ++$i) {
+				$seq .= $codes['C'][$code{$i}];
+			}
+			$seq .= '101'; // right guard bar
 		}
-		$seq .= '01010';
-		for($i=7; $i < 13; $i++) {
-			$seq .= $codes['C'][$code{$i}];
-		}
-		$seq .= '101';
-		$len = strlen($seq);
+		$clen = strlen($seq);
 		$w = 0;
-		for($i=0; $i < $len; $i++) {
+		for ($i = 0; $i < $clen; ++$i) {
 			$w += 1;
-			if (($i == ($len - 1)) OR (($i < ($len - 1)) AND ($seq{$i} != $seq{($i+1)}))) {
+			if (($i == ($clen - 1)) OR (($i < ($clen - 1)) AND ($seq{$i} != $seq{($i+1)}))) {
 				if ($seq{$i} == '1') {
 					$t = true; // bar
 				} else {
 					$t = false; // space
 				}
-				$bararray["bcode"][$k] = array("t" => $t, "w" => $w, "h" => 1, "p" => 0);
-				$bararray["maxw"] += $w;
-				$k++;
+				$bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
+				$bararray['maxw'] += $w;
+				++$k;
 				$w = 0;
 			}
 		}
 		return $bararray;
 	}
-	
+
 	/**
 	 * POSTNET barcodes.
 	 * @param string $code zip code to represent. Must be a string containing a zip code of the form DDDDD or DDDDD-DDDD.
