@@ -222,6 +222,15 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 			if ($val != 0)
 				$val = 1 / $val;
 		}
+		if (empty($val)) {
+            $filename = "/finance/converter?a=1&from={$curr_b}&to={$curr_a}";
+            $regexp = "%([\d|.]+)\s+{$curr_b}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_a}\s*</span>%s";
+            $contents = url_get_contents("http://".$site.$filename);
+            if (preg_match($regexp, $contents, $matches))  {
+                $val = $matches[3];
+                $val = str_replace(',', '', $val);
+            }
+        }
     }    
 	elseif ($provider == 'BLOOMBERG')
 	{
