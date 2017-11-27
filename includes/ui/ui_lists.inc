@@ -1805,7 +1805,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$cells=false, $all_option=false, $submit_on_change=false, $all=false)
+	$cells=false, $all_option=false, $submit_on_change=false, $all=false, $type_id=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
@@ -1818,6 +1818,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
+	if ($type_id ) $sql .= " AND chart.account_type=".db_escape($type_id);
 
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 		array(
@@ -1845,22 +1846,22 @@ function _format_account($row)
 
 function gl_all_accounts_list_cells($label, $name, $selected_id=null, 
 	$skip_bank_accounts=false, $cells=false, $all_option=false, 
-	$submit_on_change=false, $all=false)
+	$submit_on_change=false, $all=false, $type_id=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
 	echo gl_all_accounts_list($name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all);
+		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all, $type_id);
 	echo "</td>\n";
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id=null, 
-	$skip_bank_accounts=false, $cells=false, $all_option=false)
+	$skip_bank_accounts=false, $cells=false, $all_option=false, $type_id=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	gl_all_accounts_list_cells(null, $name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option);
+		$skip_bank_accounts, $cells, $all_option, $type_id);
 	echo "</tr>\n";
 }
 
