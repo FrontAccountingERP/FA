@@ -159,6 +159,7 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 					if ($icon===false) $icon=ICON_ESCAPE; break;
 
 				case 'nonajax':
+				case 'download':
 					$atype = false;
 			}
 		}
