@@ -24,7 +24,10 @@ function tst_mysql()
 	$test['descr'] = _('MySQL version'). ' >=4.1';
 	$test['type'] = 3;
 	$test['test'] = db_get_version();
-	$test['result'] = $test['test']>='4.1' || explode('-', $test['test'])[1] == 'MariaDB';
+	if (!($test['result'] = ($test['test']>='4.1'))) {
+		$db_str = explode('-', $test['test']);
+		$test['result'] = ($db_str[1] == 'MariaDB');
+	}
 	$test['comments'] = _('Upgrade MySQL server to version at least 4.1');
 
 	return $test;
