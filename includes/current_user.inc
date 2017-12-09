@@ -353,7 +353,7 @@ function price_decimal_format($number, &$dec)
 	if ($pos !== false)
 	{
 		$len = strlen(substr($str, $pos + 1));
-		if ($len > $dec)
+		if ($len > $dec && $len < ini_get('precision')-3)
 			$dec = $len;
 	}
 	return number_format2($number, $dec);
