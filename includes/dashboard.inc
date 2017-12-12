@@ -272,7 +272,7 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 			SUM(qty) AS qty FROM ".TB_PREF."stock_master AS s, ".TB_PREF."stock_moves AS m 
 			WHERE s.stock_id=m.stock_id ";
 		if ($type == 1)
-			$sql .= "AND s.mb_flag='M' ";
+			$sql .= "AND s.mb_flag='M' AND m.type <> ".ST_CUSTDELIVERY." AND m.type <> ".ST_CUSTCREDIT." ";
 		elseif ($type == 2)	
 			$sql .= "AND s.mb_flag='F' ";
 	}

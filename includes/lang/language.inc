@@ -25,7 +25,7 @@ class language
 	var $version; // lang package version
 	var $is_locale_file;
 	
-	function language($name, $code, $encoding, $dir = 'ltr') 
+	function __construct($name, $code, $encoding, $dir = 'ltr') 
 	{
 		global $dflt_lang;
 		

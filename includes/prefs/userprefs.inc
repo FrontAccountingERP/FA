@@ -41,7 +41,7 @@ class user_prefs
 	var $def_print_destination; // default print destination. 0 = PDF/Printer, 1 = Excel
 	var $def_print_orientation; // default print orientation. 0 = Portrait. 1 = Landscape
 
-	function user_prefs($user=null)
+	function __construct($user=null)
 	{
 		if ($user == null) { 
 			// set default values, used before login

@@ -24,7 +24,7 @@ define('MENU_SYSTEM', 'menu_system');
 		var $label;
 		var $link;
 		
-		function menu_item($label, $link) 
+		function __construct($label, $link) 
 		{
 			$this->label = $label;
 			$this->link = $link;
@@ -36,7 +36,7 @@ define('MENU_SYSTEM', 'menu_system');
 		var $title;
 		var $items;
 		
-		function menu($title) 
+		function __construct($title) 
 		{
 			$this->title = $title;
 			$this->items = array();
@@ -58,7 +58,7 @@ define('MENU_SYSTEM', 'menu_system');
 		var $access;
         var $category;
 		
-		function app_function($label,$link,$access='SA_OPEN',$category='')
+		function __construct($label,$link,$access='SA_OPEN',$category='')
 		{
 			$this->label = $label;
 			$this->link = $link;
@@ -74,7 +74,7 @@ define('MENU_SYSTEM', 'menu_system');
 		var $lappfunctions;
 		var $rappfunctions;
 		
-		function module($name,$icon = null) 
+		function __construct($name,$icon = null) 
 		{
 			$this->name = $name;
 			$this->icon = $icon;
@@ -107,7 +107,7 @@ define('MENU_SYSTEM', 'menu_system');
 		var $modules;
 		var $enabled;
 		
-		function application($id, $name, $enabled=true) 
+		function __construct($id, $name, $enabled=true) 
 		{
 			$this->id = $id;
 			$this->name = $name;

@@ -1,3 +1,350 @@
+2017-11-06 12:21:25 +0100 Janusz Dobrowolski 
+Workaround for segfaults in some buggy php encoding library versions.
+M	includes/db/connect_db_mysqli.inc
+M	includes/page/header.inc
+M	includes/ui/ui_input.inc
+M	inventory/manage/item_units.php
+
+2017-11-02 00:46:09 +0100 Janusz Dobrowolski 
+Fixed memory limit during database export.
+M	admin/db/maintenance_db.inc
+
+2017-10-13 21:18:19 +0200 Janusz Dobrowolski 
+PHP7 compatibility fixes.
+M	admin/includes/fa_patch.class.inc
+M	applications/application.php
+M	applications/customers.php
+M	applications/dimensions.php
+M	applications/fixed_assets.php
+M	applications/generalledger.php
+M	applications/inventory.php
+M	applications/manufacturing.php
+M	applications/setup.php
+M	applications/suppliers.php
+M	frontaccounting.php
+M	includes/JsHttpRequest.php
+M	includes/ajax.inc
+M	includes/archive.inc
+M	includes/current_user.inc
+M	includes/db/class.data_set.inc
+M	includes/db/class.reflines_db.inc
+M	includes/db_pager.inc
+M	includes/errors.inc
+M	includes/lang/language.inc
+M	includes/packages.inc
+M	includes/prefs/sysprefs.inc
+M	includes/prefs/userprefs.inc
+M	includes/references.inc
+M	includes/session.inc
+M	includes/ui/allocation_cart.inc
+M	includes/ui/class.crud_view.inc
+M	includes/ui/class.reflines_crud.inc
+M	includes/ui/contacts_view.inc
+M	includes/ui/items_cart.inc
+M	includes/ui/simple_crud_class.inc
+M	purchasing/includes/po_class.inc
+M	purchasing/includes/supp_trans_class.inc
+M	reporting/includes/Workbook.php
+M	reporting/includes/barcodes.php
+M	reporting/includes/class.graphic.inc
+M	reporting/includes/class.mail.inc
+M	reporting/includes/class.pdf.inc
+M	reporting/includes/excel_report.inc
+M	reporting/includes/fpdi/decoders/ASCII85Decode.php
+M	reporting/includes/fpdi/decoders/LZWDecode.php
+M	reporting/includes/fpdi/fpdi_pdf_parser.php
+M	reporting/includes/fpdi/pdf_context.php
+M	reporting/includes/fpdi/pdf_parser.php
+M	reporting/includes/pdf_report.inc
+M	reporting/includes/printer_class.inc
+M	reporting/includes/reports_classes.inc
+M	reporting/includes/tcpdf.php
+M	sales/includes/cart_class.inc
+M	sql/alter2.1.php
+M	sql/alter2.2.php
+M	sql/alter2.3.php
+M	sql/alter2.4.php
+M	sql/alter2.4rc1.php
+
+2017-11-07 15:27:29 +0100 Joe Hunt 
+Rerun of Manufactored Items, Dashboard. Produced Items.
+M	includes/dashboard.inc
+
+2017-11-07 14:26:49 +0100 Joe Hunt 
+Top manufactored dashboard shows wrong statistics. Fixed
+M	includes/dashboard.inc
+
+2017-11-07 08:21:07 +0100 Joe Hunt 
+Default Credit Limit should be changed to price format.
+M	admin/gl_setup.php
+
+2017-11-01 13:07:21 +0100 Joe Hunt 
+Wrong colspan in supplier credit note. Fixed.
+M	purchasing/includes/ui/invoice_ui.inc
+
+2017-11-01 11:46:11 +0100 Joe Hunt 
+Fixing bug in Customer Inquiry and Supplier Inquiry
+M	purchasing/inquiry/supplier_inquiry.php
+M	sales/inquiry/customer_inquiry.php
+
+2017-10-31 09:58:09 +0100 Joe Hunt 
+Merge branch 'master' of https://git.code.sf.net/p/frontaccounting/git
+2017-10-31 09:57:56 +0100 Joe Hunt 
+Fixed Tax Report on Screen.
+M	gl/includes/db/gl_db_trans.inc
+M	gl/inquiry/tax_inquiry.php
+
+2017-10-31 09:11:36 +0100 Janusz Dobrowolski 
+Change on debtor_trans/supp_trans keys added in 2.4/2.4rc upgrade scripts
+M	sql/alter2.4.sql
+M	sql/alter2.4rc1.sql
+
+2017-10-30 22:19:52 +0100 Janusz Dobrowolski 
+Set NOT NULL on debtor_trans/supp_trans primary key fields.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2017-10-30 21:36:46 +0100 Joe Hunt 
+Voiding cleanup.
+M	admin/void_transaction.php
+
+2017-10-29 12:01:31 +0100 Janusz Dobrowolski 
+Items: fixed item tax type selector to exclude inactive item tax types.
+M	includes/ui/ui_lists.inc
+M	inventory/manage/items.php
+M	taxes/db/item_tax_types_db.inc
+
+2017-10-29 10:51:03 +0100 Joe Hunt 
+On the fly editing (F2, F3 and F4) fix.
+M	purchasing/manage/suppliers.php
+M	sales/manage/customers.php
+
+2017-10-28 10:27:23 +0200 Janusz Dobrowolski 
+Fixed supp_trans primary keys, rerun.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2017-10-27 12:30:06 +0200 Janusz Dobrowolski 
+Fixed supp_trans primary key.
+M	sql/en_US-demo.sql
+
+2017-10-27 09:06:42 +0200 Janusz Dobrowolski 
+Fixed debtor_trans primary key to allow multiply AR accounts in journal transactions.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2017-10-27 08:59:58 +0200 Janusz Dobrowolski 
+Removed sparse code line in hooks.inc
+M	includes/hooks.inc
+
+2017-10-27 01:03:42 +0200 Joe Hunt 
+Add Items on the Fly. Behavior Changed in FA24. Fixed.
+M	inventory/manage/items.php
+
+2017-10-26 05:36:59 +0200 Joe Hunt 
+Merge branch 'master' of https://git.code.sf.net/p/frontaccounting/git
+2017-10-26 05:36:30 +0200 Joe Hunt 
+Fixed FA2.4.2 error getting exchange rate from Google
+M	gl/includes/db/gl_db_rates.inc
+
+2017-10-13 10:31:04 +0200 Janusz Dobrowolski 
+Supplier Inquiry/Customer Inquiry: removed inconsistency in unsettled/overdue transactions.
+M	includes/ui/ui_lists.inc
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	purchasing/includes/db/supp_trans_db.inc
+M	purchasing/includes/db/suppliers_db.inc
+M	purchasing/inquiry/supplier_inquiry.php
+M	sales/includes/db/cust_trans_db.inc
+M	sales/includes/db/customers_db.inc
+M	sales/inquiry/customer_inquiry.php
+
+2017-10-13 11:04:22 +0200 Janusz Dobrowolski 
+Added prepayment amount invoiced in Prepayment Invoice view.
+M	sales/view/view_invoice.php
+
+2017-10-13 16:10:17 +0200 Joe Hunt 
+A bug in Customer Allocations fixed.
+M	sales/allocations/customer_allocate.php
+M	sales/allocations/customer_allocation_main.php
+M	sales/includes/db/custalloc_db.inc
+M	sales/inquiry/customer_allocation_inquiry.php
+M	sales/inquiry/customer_inquiry.php
+
+2017-10-12 17:05:21 +0200 Joe Hunt 
+Fixed Bug in includes\ui\ui_input.inc
+M	includes/ui/ui_input.inc
+
+2017-10-10 10:04:33 +0200 Janusz Dobrowolski 
+Fixed reference number referesh on conflict during concurrent sales documents entry.
+M	sales/sales_order_entry.php
+
+2017-10-09 15:20:35 +0200 Joe Hunt 
+Fixed Undefined variable: site_ip in file.
+M	gl/includes/db/gl_db_rates.inc
+
+2017-10-09 10:21:21 +0200 Janusz Dobrowolski 
+Fixed bug in exchange rate display helper.
+M	includes/ui/ui_view.inc
+
+2017-10-04 22:07:19 +0200 Joe Hunt 
+Searching Journal Inquiry by user not working? FA 2.4.2.
+M	gl/inquiry/journal_inquiry.php
+
+2017-10-03 00:11:33 +0200 Joe Hunt 
+Fixed After successful Backup, loader.gif still present
+M	admin/backups.php
+
+2017-10-02 14:37:18 +0200 Joe Hunt 
+Fixed Bug in includes\ui\ui_controls.inc
+M	includes/ui/ui_controls.inc
+
+2017-10-02 07:57:45 +0200 Joe Hunt 
+Optimised get_company_pref()
+M	admin/db/company_db.inc
+
+2017-10-01 23:03:41 +0200 Joe Hunt 
+Fixed user config values unavailable error generated before user login
+M	includes/current_user.inc
+
+2017-09-29 13:29:49 +0200 Joe Hunt 
+Test for open_ssl in extensions.
+M	includes/packages.inc
+
+2017-09-28 18:06:56 +0200 Joe Hunt 
+Cleanup in gl_db_trans.inc
+M	gl/includes/db/gl_db_trans.inc
+
+2017-09-28 00:40:59 +0200 Joe Hunt 
+The variable $show_voided_gl_trans has been removed. Not used in 2.4.
+M	config.default.php
+
+2017-09-27 23:53:16 +0200 Joe Hunt 
+Better wrapping on comments in documents.
+M	reporting/rep107.php
+M	reporting/rep109.php
+M	reporting/rep110.php
+M	reporting/rep111.php
+M	reporting/rep113.php
+M	reporting/rep209.php
+M	sales/includes/sales_ui.inc
+
+2017-09-22 23:36:38 +0200 Joe Hunt 
+Bug in presenting ST_JOURNAL in AR/AP Reports.
+M	reporting/rep108.php
+M	sales/includes/db/customers_db.inc
+
+2017-09-21 00:38:26 +0200 Joe Hunt 
+Right align numbers in inquiries and lists.
+M	includes/ui/allocation_cart.inc
+M	inventory/inquiry/stock_movements.php
+M	purchasing/allocations/supplier_allocation_main.php
+M	purchasing/includes/ui/invoice_ui.inc
+M	purchasing/inquiry/po_search_completed.php
+M	purchasing/inquiry/supplier_allocation_inquiry.php
+M	purchasing/inquiry/supplier_inquiry.php
+M	sales/allocations/customer_allocation_main.php
+M	sales/create_recurrent_invoices.php
+M	sales/inquiry/customer_allocation_inquiry.php
+M	sales/inquiry/sales_deliveries_view.php
+M	sales/inquiry/sales_orders_view.php
+M	sales/manage/recurrent_invoices.php
+M	sales/manage/sales_groups.php
+
+2017-09-20 20:23:38 +0200 Janusz Dobrowolski 
+Fixed bug in reallocation payments during purchase invoice edition.
+M	purchasing/includes/db/invoice_db.inc
+
+2017-09-20 16:16:14 +0200 Joe Hunt 
+Right align numbers in customer inquiry.
+M	sales/inquiry/customer_inquiry.php
+
+2017-09-19 08:18:16 +0200 Joe Hunt 
+Bug in rep108 (and 101) when using Journal Entry for making entries in AR account.
+M	includes/ui/items_cart.inc
+
+2017-09-17 11:52:23 +0200 Joe Hunt 
+New Company Option for showing both Short Names and Names in Customer/Supplier lists.
+M	admin/company_preferences.php
+M	includes/ui/ui_lists.inc
+M	sql/alter2.4.php
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2017-09-09 13:58:40 +0200 Joe Hunt 
+Profit and Loss Statement. Compensate for to-date = leap-year in period compare.
+M	reporting/rep707.php
+
+2017-09-08 09:52:57 +0200 Joe Hunt 
+Added the new Company Logo on Reports in default files.
+M	sql/alter2.4.php
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2017-09-07 14:30:30 +0200 Janusz Dobrowolski 
+Sales Invoice: fixed tax included amount position.
+M	reporting/rep107.php
+
+2017-09-05 11:30:54 +0200 Joe Hunt 
+Rerun company_preferences.php. Company Logo on Reports.
+M	admin/company_preferences.php
+
+2017-09-05 08:58:11 +0200 Joe Hunt 
+Option for showing company logo on reports. On company base.
+M	admin/company_preferences.php
+M	config.default.php
+M	reporting/includes/pdf_report.inc
+
+2017-09-04 23:16:49 +0200 Joe Hunt 
+Option for Logo on Reports.
+M	config.default.php
+M	reporting/includes/pdf_report.inc
+
+2017-09-02 23:15:40 +0200 Janusz Dobrowolski 
+Fixed bug in product average cost calculations.
+M	manufacturing/includes/db/work_order_produce_items_db.inc
+
+2017-08-31 21:37:57 +0200 Joe Hunt 
+Group Total in Trial Balance on Screen.
+M	gl/inquiry/gl_trial_balance.php
+
+2017-08-30 08:26:50 +0200 Joe Hunt 
+Old Sales Quote Reference Fix
+M	sales/includes/cart_class.inc
+M	sales/view/view_sales_order.php
+
+2017-08-29 17:01:23 +0200 Joe Hunt 
+Fixed Logical Bug in Customer Balances Report.
+M	reporting/rep101.php
+
+2017-08-28 21:16:12 +0200 Joe Hunt 
+Fix for too many parameters in submit_return.
+M	inventory/manage/items.php
+
+2017-08-28 21:15:36 +0200 Joe Hunt 
+Fix in Popup Customer Window. Extended width to 700.
+M	includes/ui/ui_controls.inc
+
+2017-08-28 21:13:47 +0200 Joe Hunt 
+Fix in date2sql function.
+M	includes/date_functions.inc
+
+2017-08-28 13:23:22 +0200 Janusz Dobrowolski 
+Fixed invalid reference number update in document edition.
+M	includes/ui/ui_input.inc
+
+2017-08-04 18:30:32 +0200 Janusz Dobrowolski 
+[0003964] Fixed bug in voiding GRN.
+M	admin/void_transaction.php
+
+2017-07-31 10:35:03 +0200 Joe Hunt 
+db_version was changed by mistake. Should remain at 2.4.1.
+M	version.php
+
+2017-07-30 15:47:59 +0200 Joe Hunt 
+Release 2.4.2
+M	CHANGELOG.txt
+M	version.php
+
 2017-07-30 13:15:04 +0200 Joe Hunt 
 0003954: RB not correct in Customer Transactions Inquiry. Removed RB from customer transactions.
 M	sales/includes/db/cust_trans_db.inc

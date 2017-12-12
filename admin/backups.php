@@ -24,14 +24,21 @@ if (get_post('view')) {
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
-		    header('Content-type: text/plain');
-    		header('Content-Length: '.filesize($filename));
+			header('Content-type: text/plain');
+			header('Content-Length: '.filesize($filename));
 			header("Content-Disposition: inline; filename=".basename($filename));
-    		readfile($filename);
+			if (substr($filename, -3, 3) == '.gz')
+				header("Content-Encoding: gzip");
+
+			if (substr($filename, -4, 4) == '.zip')
+				echo db_unzip('', $filename);
+			else
+				readfile($filename);
 			exit();
 		}
 	}
 };
+
 if (get_post('download')) {
 	if (get_post('backups')) {
 		download_file($SysPrefs->backup_dir().clean_file_name(get_post('backups')));
@@ -180,7 +187,7 @@ if (get_post('upload'))
 
 }
 //-------------------------------------------------------------------------------
-start_form(true, true);
+start_form(false, true);
 start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Create backup"));
@@ -196,7 +203,7 @@ table_section_title(_("Backup scripts maintenance"));
 	echo "<td style='padding-left:20px' valign='top'>";
 	start_table();
 	submit_row('view',_("View Backup"), false, '', '', false);
-	submit_row('download',_("Download Backup"), false, '', '', false);
+	submit_row('download',_("Download Backup"), false, '', '', 'download');
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
 	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
 

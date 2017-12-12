@@ -372,6 +372,7 @@ if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 include_once($path_to_root . "/includes/errors.inc");
 // colect all error msgs
 set_error_handler('error_handler' /*, errtypes */);
+set_exception_handler('exception_handler');
 
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
@@ -435,8 +436,8 @@ header("Cache-control: private");
 
 get_text_init();
 
-if ($SysPrefs->login_delay > 0)
-	@include_once($path_to_root . "/tmp/faillog.php");
+if ($SysPrefs->login_delay > 0 && file_exists($path_to_root . "/tmp/faillog.php"))
+	include_once($path_to_root . "/tmp/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()
@@ -485,7 +486,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 
 	login_timeout();
 
-	if (!$_SESSION["wa_current_user"]->old_db)
+	if (!$_SESSION["wa_current_user"]->old_db && file_exists($path_to_root . '/company/'.user_company().'/installed_extensions.php'))
 		include($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	install_hooks();

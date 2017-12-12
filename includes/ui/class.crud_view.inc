@@ -43,7 +43,7 @@ class user_view {
 	var $dec;
 	var $name;
 
-	function user_view($name)
+	function __construct($name)
 	{
 		$this->name = $name;
 	}
@@ -269,9 +269,9 @@ class simple_crud_view extends user_view {
 	var $display_both = false; //when set to true both list and editor are displayed all the time (eventually set in sub classes)
 	//
 	//
-	function simple_crud_view($name, $data_set = null, $options=array())
+	function __construct($name, $data_set = null, $options=array())
 	{
-		$this->user_view($name);
+		parent::__construct($name);
 
 		$this->options = array_merge($this->options, $options);
 
@@ -596,10 +596,10 @@ class simple_crud_view extends user_view {
 
 class selector_crud_view extends simple_crud_view {
 
-	function selector_crud_view($name, $data_set = null, $options=array())
+	function __construct($name, $data_set = null, $options=array())
 	{
 		$this->display_both = true;
-		$this->simple_crud_view($name, $data_set, $options);
+		parent::__construct($name, $data_set, $options);
 	}
 
 	function _check_mode()
@@ -650,10 +650,10 @@ class table_crud_view extends simple_crud_view {
 
 	var $title;
 
-	function table_crud_view($name, &$data_set = null, $options=array())
+	function __construct($name, &$data_set = null, $options=array())
 	{
 		$this->display_both = true;
-		$this->simple_crud_view($name, $data_set, $options);
+		parent::__construct($name, $data_set, $options);
 	}
 	/**
 	*

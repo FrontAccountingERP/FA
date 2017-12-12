@@ -21,7 +21,8 @@ function get_backtrace($html = false, $skip=0)
 	foreach($trace as $trn => $tr) {
 		if ($trn <= $skip) continue;
 		if ($html) $str .= '<tr><td>';
-		$str .= $tr['file'].':'.$tr['line'].': ';
+		if (isset($tr['file']) && isset($tr['line']))
+			$str .= $tr['file'].':'.$tr['line'].': ';
 		if ($html) $str .= '</td><td>';
 		if (isset($tr['type'])) {
 	 		if($tr['type'] == '::') {
@@ -32,7 +33,7 @@ function get_backtrace($html = false, $skip=0)
 		}
 		$str .= $tr['function'].'(';
 		
-		if(is_array($tr['args'])) {
+		if(isset($tr['args']) && is_array($tr['args'])) {
 			$args = array();
 			foreach($tr['args'] as $n=>$a) {
 				if (is_object($tr['args'][$n]))
@@ -86,6 +87,13 @@ function error_handler($errno, $errstr, $file, $line) {
 	}
 	
     return true;
+}
+
+function exception_handler($exception)
+{
+	error_handler(E_ERROR, sprintf(_("Unhandled exception [%s]: %s."), $exception->getCode(), $exception->getMessage()),
+		 $exception->getFile(), $exception->getLine());
+	end_page();
 }
 //------------------------------------------------------------------------------
 //	Formats system messages before insert them into message <div>

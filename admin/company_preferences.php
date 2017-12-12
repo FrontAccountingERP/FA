@@ -114,8 +114,8 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
-				'time_zone' => 0, 'company_logo_report' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
-				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
+				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'add_pct', 'round_to', 'login_tout', 
+				'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
 				'use_manufacturing', 'use_fixed_assets'))
 		);
 
@@ -161,6 +161,12 @@ if (!isset($myrow["company_logo_report"]))
 	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
 }
 $_POST['company_logo_report']  = $myrow["company_logo_report"];
+if (!isset($myrow["barcodes_on_stock"]))
+{
+	set_company_pref("barcodes_on_stock", "setup.company", "tinyint", 1, '0');
+	$myrow["barcodes_on_stock"] = get_company_pref("barcodes_on_stock");
+}
+$_POST['barcodes_on_stock']  = $myrow["barcodes_on_stock"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
 $_POST['login_tout'] = $myrow['login_tout'];
@@ -201,6 +207,7 @@ check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POST['auto_curr_reval']);
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
 check_row(_("Company Logo on Reports"), 'company_logo_report', $_POST['company_logo_report']);
+check_row(_("Use Barcodes on Stocks"), 'barcodes_on_stock', $_POST['barcodes_on_stock']);
 label_row(_("Database Scheme Version"), $_POST['version_id']);
 
 table_section(2);

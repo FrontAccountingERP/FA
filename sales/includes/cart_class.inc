@@ -90,7 +90,7 @@ class Cart
 	//  $trans_no!=0 && $prepare_child==true => prepare for child doc entry
 	//	$prepare_child is set to ST_SALESINVOICE for prepayment invoices
 	//
-	function Cart($type, $trans_no=0, $prepare_child=false) {
+	function __construct($type, $trans_no=0, $prepare_child=false) {
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
@@ -693,7 +693,7 @@ class line_details
 	var $qty_old = 0;
 
 
-	function line_details ($stock_id, $qty, $prc, $disc_percent,
+	function __construct($stock_id, $qty, $prc, $disc_percent,
 		$qty_done, $standard_cost, $description, $id=0, $src_no=0, $src_id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */

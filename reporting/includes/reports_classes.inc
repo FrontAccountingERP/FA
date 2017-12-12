@@ -462,7 +462,7 @@ class Report
 	var $ar_params;
 	var $controls;
 	
-	function Report($id, $name, $ar_params = null)
+	function __construct($id, $name, $ar_params = null)
 	{
 		$this->id = $id;
 		$this->name = $name;

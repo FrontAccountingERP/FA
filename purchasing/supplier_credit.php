@@ -28,8 +28,6 @@ if (user_use_date_picker())
 
 //----------------------------------------------------------------------------------------
 
-check_db_has_suppliers(_("There are no suppliers defined in the system."));
-
 if (isset($_GET['ModifyCredit']))
 	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyCredit']);
 
@@ -63,6 +61,8 @@ if (isset($_GET['New']))
 	}
 }
 page($_SESSION['page_title'], false, false, "", $js);
+
+check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
 

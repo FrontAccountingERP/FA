@@ -159,6 +159,7 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 					if ($icon===false) $icon=ICON_ESCAPE; break;
 
 				case 'nonajax':
+				case 'download':
 					$atype = false;
 			}
 		}
@@ -304,7 +305,7 @@ function button($name, $value, $title=false, $icon=false,  $aspect='')
 		if ($value == _("Delete")) // Helper during implementation
 			$icon = ICON_DELETE;
 		return "<button type='submit' class='editbutton' name='"
-			.htmlentities(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
+			.html_specials_encode(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
 			)))
 			."' value='1'" . ($title ? " title='$title'":" title='$value'")
 			. ($aspect ? " aspect='$aspect'" : '')

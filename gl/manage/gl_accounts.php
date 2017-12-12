@@ -26,6 +26,9 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 
+if (isset($_GET["id"]))
+	$_POST["id"] = $_GET["id"];	
+
 //-------------------------------------------------------------------------------------
 
 if (isset($_POST['_AccountList_update'])) 
@@ -190,6 +193,7 @@ if (isset($_POST['delete']))
 } 
 
 //-------------------------------------------------------------------------------------
+$filter_id = (isset($_POST["id"]));
 
 start_form();
 
@@ -197,8 +201,10 @@ if (db_has_gl_accounts())
 {
 	start_table(TABLESTYLE_NOBORDER);
 	start_row();
-    gl_all_accounts_list_cells(null, 'AccountList', null, false, false,
-		_('New account'), true, check_value('show_inactive'));
+	if ($filter_id)
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, check_value('show_inactive'), $_POST['id']);
+	else
+		gl_all_accounts_list_cells(null, 'AccountList', null, false, false, _('New account'), true, check_value('show_inactive'));
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
@@ -240,6 +246,7 @@ else
 		$_POST['account_code'] = $_POST['account_code2'] = '';
 		$_POST['account_name']	= $_POST['account_type'] = '';
  		$_POST['inactive'] = 0;
+		if ($filter_id) $_POST['account_type'] = $_POST['id'];
 	}
 	text_row_ex(_("Account Code:"), 'account_code', 15);
 }

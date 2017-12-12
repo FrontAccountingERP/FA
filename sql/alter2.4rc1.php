@@ -18,8 +18,8 @@ class fa2_4rc1 extends fa_patch {
 	var $preconf = true;
 	var	$max_upgrade_time = 900;	// table recoding is really long process
 
-	function fa2_4rc1() {
-		parent::fa_patch();
+	function __construct() {
+		parent::__construct();
 		$this->description = _('Upgrade from version 2.4beta to 2.4RC1');
 	}
 

@@ -1112,7 +1112,7 @@ if (!class_exists('TCPDF')) {
 		 * @param boolean $unicode TRUE means that the input text is unicode (default = true)
 		 * @param String $encoding charset encoding; default is UTF-8
 		 */
-		function TCPDF($orientation='P', $unit='mm', $format='A4', $uni=true, $encoding="UTF-8") {
+		function __construct($orientation='P', $unit='mm', $format='A4', $uni=true, $encoding="UTF-8") {
 			if ($uni) // Fix for FrontAccounting
 			{
 				global $unicode, $unicode_mirror, $unicode_arlet, $laa_array, $diacritics;

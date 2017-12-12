@@ -149,7 +149,7 @@ class graph
 	var $fontfile = "";
 	var $encoding;
 	
-    function graph()
+    function __construct()
     {
     	global $SysPrefs;
 		$this->encoding = strtoupper($_SESSION['language']->encoding);

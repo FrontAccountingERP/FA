@@ -11,9 +11,9 @@
 ***********************************************************************/
 class assets_app extends application
 {
-	function assets_app()
+	function __construct()
 	{
-		$this->application("assets", _($this->help_context = "&Fixed Assets"));
+		parent::__construct("assets", _($this->help_context = "&Fixed Assets"));
 			
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Fixed Assets &Purchase"),

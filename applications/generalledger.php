@@ -11,9 +11,9 @@
 ***********************************************************************/
 class general_ledger_app extends application
 {
-	function general_ledger_app()
+	function __construct()
 	{
-		$this->application("GL", _($this->help_context = "&Banking and General Ledger"));
+		parent::__construct("GL", _($this->help_context = "&Banking and General Ledger"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("&Payments"),
