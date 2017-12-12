@@ -133,6 +133,8 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	if ($date != Today())	// no historical rates available
 		return 0;
 
+	$contents = '';
+	$proto = 'http://';
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
 	{
@@ -155,32 +157,33 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/quote/{$curr_b}{$curr_a}:CUR";
 		$site = "www.bloomberg.com";
-		$site_ip = "23.35.88.72";
+		$proto = 'https://';
+		$contents=file_get_contents($proto.$site.$filename);
 	}
-	$contents = '';
-	if (function_exists('curl_init'))
-	{	// first check with curl as we can set short timeout;
-		$retry = 1;
-	 	do {
-	       	$ch = curl_init();
-    	   	curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
-	       	curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
-    	   	curl_setopt ($ch, CURLOPT_HEADER, 0);
-	       	curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	       	// prevent warning while safe_mode/open_basedir on (redireciton doesn't occur at least on ECB page)
-		   	if (!ini_get('safe_mode') && !ini_get('open_basedir'))
-    	   		curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-	       	curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
-    	   	$contents = curl_exec ($ch);
-	       	curl_close($ch);
-			// due to resolver bug in some curl versions (e.g. 7.15.5) 
-			// try again for constant IP.
-			if (isset($site_ip))
-		   		$site=$site_ip;
-	   } while( ($contents == '') && $retry--);
-	   
-	} else {
-		$contents = url_get_contents("http://".$site.$filename);
+	if (empty($contents)) {
+		if (function_exists('curl_init'))
+		{	// first check with curl as we can set short timeout;
+			$retry = 1;
+	 		do {
+	       		$ch = curl_init();
+    	   		curl_setopt ($ch, CURLOPT_URL, $proto.$site.$filename);
+	       		curl_setopt ($ch, CURLOPT_COOKIEJAR, "$path_to_root/tmp/cookie.txt");
+    	   		curl_setopt ($ch, CURLOPT_HEADER, 0);
+	       		curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+	       		// prevent warning while safe_mode/open_basedir on (redirection doesn't occur at least on ECB page)
+		   		if (!ini_get('safe_mode') && !ini_get('open_basedir'))
+    	   			curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       		curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
+    	   		$contents = curl_exec ($ch);
+	       		curl_close($ch);
+				// due to resolver bug in some curl versions (e.g. 7.15.5) 
+				// try again for constant IP.
+				if (isset($site_ip))
+		   			$site=$site_ip;
+	   		} while( ($contents == '') && $retry--);
+		} else {
+			$contents = url_get_contents($proto.$site.$filename);
+		}
 	}
 	if ($provider == 'ECB')
 	{
@@ -225,7 +228,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		if (empty($val)) {
             $filename = "/finance/converter?a=1&from={$curr_b}&to={$curr_a}";
             $regexp = "%([\d|.]+)\s+{$curr_b}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_a}\s*</span>%s";
-            $contents = url_get_contents("http://".$site.$filename);
+            $contents = url_get_contents($proto.$site.$filename);
             if (preg_match($regexp, $contents, $matches))  {
                 $val = $matches[3];
                 $val = str_replace(',', '', $val);
@@ -235,11 +238,11 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$val = '';
-		$stmask = '<div class="price">';
+		$stmask = ',"price":';
 		$val = strstr($contents, $stmask);
 		$val = trim($val);
 		$val = substr($val, strlen($stmask));
-		$stmask = '</div>';
+		$stmask = ',"';
 		$val = strtok($val, $stmask); 
 		$val = trim($val);
     }    
