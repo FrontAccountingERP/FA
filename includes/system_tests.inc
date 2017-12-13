@@ -378,8 +378,8 @@ function tst_extconfig($install)
 	$themedir = opendir($fname);
 	while (false !== ($fname = readdir($themedir)))
 	{
-		if ($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path_to_root.'/themes/'.$fname)
-			&& !in_array($fname, array('aqua', 'cool', 'default')))
+		if ($fname!='.' && $fname!='..' && is_dir($path_to_root.'/themes/'.$fname)
+			&& !in_array($fname, array('canvas', 'default', 'dropdown')))
 		{
 			$test['test'][] = $fname;
 			$test['result'] = is_writable($path_to_root.'/themes/'.$fname);
