@@ -732,16 +732,15 @@ function get_package_info($pkg, $type=null, $filter=array(), $outkey=null, $down
 */
 function check_src_ext_version($ext_v)
 {
-	global $src_version;
+    global $src_version;
+    if ($ext_v != '-') {
+        $compat_levels = 2;    // current policy is keeping compatibility on major version level.
+        $app = explode('.', substr($src_version, 0, strspn($src_version, "0123456789.")));
+        $pkg = explode('.', substr($ext_v, 0, strspn($ext_v, "0123456789.")));
 
-	$compat_levels = 2;	// current policy is keeping compatibility on major version level.
-	$app = explode('.', substr($src_version, 0, strspn($src_version, "0123456789.")));
-	$pkg = explode('.', substr($ext_v, 0, strspn($ext_v, "0123456789.")));
-
-	for ($i=0; $i < min($compat_levels, count($app)); $i++)
-		if ($pkg[$i] < $app[$i])
-			return false;
-
-	return true;
+        for ($i=0; $i < min($compat_levels, count($app)); $i++)
+            if ($pkg[$i] < $app[$i])
+                return false;
+    }
+    return true;
 }
-
