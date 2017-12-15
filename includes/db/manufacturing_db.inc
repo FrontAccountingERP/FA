@@ -149,29 +149,14 @@ function get_on_porder_qty($stock_id, $location)
 
 function get_on_worder_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM((wo.units_reqd-wo.units_issued) * (req.units_req-req.units_issued)) AS qoo
-		FROM ".TB_PREF."wo_requirements req
-			INNER JOIN ".TB_PREF."workorders wo	ON req.workorder_id=wo.id
-		WHERE req.stock_id=".db_escape($stock_id)
-			." AND wo.released=1";
-	if ($location != "")
-		$sql .= " AND req.loc_code=".db_escape($location);
-
-	$qoo_result = db_query($sql,"could not receive quantity on order for item");
-	if (db_num_rows($qoo_result) == 1)
-	{
-		$qoo_row = db_fetch_row($qoo_result);
-		$qoo =  $qoo_row[0];
-	}
-	else
-		$qoo = 0.0;
+ 	$qoo = 0.0;
 	$flag = get_mb_flag($stock_id);
 	if ($flag == 'M')
 	{
 		$sql = "SELECT SUM((units_reqd-units_issued)) AS qoo
 			FROM ".TB_PREF."workorders
 			WHERE stock_id=".db_escape($stock_id)
-				." AND released=1";
+				." AND released AND NOT closed";
 
 		if ($location != "")
 			$sql .= " AND loc_code=".db_escape($location);
@@ -180,7 +165,7 @@ function get_on_worder_qty($stock_id, $location)
 		if (db_num_rows($qoo_result) == 1)
 		{
 			$qoo_row = db_fetch_row($qoo_result);
-			$qoo +=  $qoo_row[0];
+			$qoo = $qoo_row[0];
 		}
 	}
 	return $qoo;
