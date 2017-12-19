@@ -42,8 +42,18 @@ function local_extension($id)
 			'active' => false
 	);
 
-	if (file_exists($path_to_root.'/modules/'.clean_file_name($id).'/hooks.php')) {
-		include_once($path_to_root.'/modules/'.clean_file_name($id).'/hooks.php');
+	$local_module_path = $path_to_root.'/modules/'.clean_file_name($id);
+	$local_config_file = $local_module_path.'/_init/config';
+	$local_hook_file = $local_module_path.'/hooks.php';
+
+	if (file_exists($local_config_file)) {
+		$ctrl = get_control_file($local_config_file);
+		if (key_exists('Name', $ctrl)) $exts[$next_extension_id-1]['name'] = $ctrl['Name'];
+		if (key_exists('Version', $ctrl)) $exts[$next_extension_id-1]['version'] = $ctrl['Version'];
+	}
+	if (file_exists($local_hook_file)) {
+		include_once($local_hook_file);
+
 	}
 	$hooks_class = 'hooks_'.$id;
 	if (class_exists($hooks_class, false)) {
@@ -123,7 +133,7 @@ function display_extensions($mods)
 		label_cell($entries);
 
 		label_cell($id === null ? _("None") :
-			($available && $installed ? $installed : _("Unknown")));
+			(($installed && ($installed != '-' || $installed != '')) ? $installed : _("Unknown")));
 		label_cell($available ? $available : _("Unknown"));
 
 		if (!$available && $ext['type'] == 'extension')	{// third-party plugin
