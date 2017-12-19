@@ -9,6 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+define('VARLIB_PATH', $path_to_root.'/tmp');
+define('VARLOG_PATH', $path_to_root.'/tmp');
+
 function output_html($text)
 {
 	global $before_box, $Ajax, $messages;

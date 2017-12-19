@@ -282,7 +282,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 	// and check remote signature with local copy of public key
 	//
 	$loclist = PKG_CACHE_PATH.'/Release.gz';
-	$target_dir = $download==true ? "$path_to_root/tmp/" : $download;
+	$target_dir = $download==true ? VARLIB_PATH."/" : $download;
 
 	if (isset($type) && !is_array($type)) {
 		$type = array($type);
@@ -622,7 +622,7 @@ function install_language($pkg_name)
 				uninstall_package($old_pkg);
 		}
 
-		$package = new package("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
+		$package = new package(VARLIB_PATH."/".$pkg['Filename'].'.pkg');
 		if ($package->install()) {
 			$lang = array(
 				'name' => $pkg['Name'],
@@ -636,7 +636,7 @@ function install_language($pkg_name)
 				$lang['rtl'] = true;
 			$installed_languages[$i] = $lang;
 			write_lang($installed_languages);
-			unlink("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
+			unlink(VARLIB_PATH."/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('lang_tbl');
 		} else {
 			display_error(implode('<br>', $package->error));
@@ -657,7 +657,7 @@ function install_extension($pkg_name)
 	
 	$pkg = get_pkg_or_list(array('extension', 'theme', 'chart'), $pkg_name);
 	if ($pkg) {
-		$package = new package("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
+		$package = new package(VARLIB_PATH."/".$pkg['Filename'].'.pkg');
 		$local_exts = get_company_extensions();
 		if ($package->install()) {
 			$ext_id = array_search_key($pkg['Package'], $local_exts, 'package');
@@ -690,7 +690,7 @@ function install_extension($pkg_name)
 					activate_hooks($ext['package'], $comp);
 			}
 
-			unlink("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
+			unlink(VARLIB_PATH."/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('ext_tbl');
 			return $ret;
 		} else {
