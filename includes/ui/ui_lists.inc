@@ -2637,12 +2637,12 @@ function subledger_list($name, $account, $selected_id=null)
 		FROM "
 		.TB_PREF."debtors_master d,"
 		.TB_PREF."cust_branch c
-		WHERE d.debtor_no=c.debtor_no AND c.receivables_account=".db_escape($account);
+		WHERE d.debtor_no=c.debtor_no AND NOT d.inactive AND c.receivables_account=".db_escape($account);
 	else
 		$sql = "SELECT supplier_id as id, supp_ref as name 
 		FROM "
 		.TB_PREF."suppliers s
-		WHERE s.payable_account=".db_escape($account);
+		WHERE NOT s.inactive AND s.payable_account=".db_escape($account);
 
 	$mode = get_company_pref('no_customer_list');
 
