@@ -430,7 +430,7 @@ class BoxReports
 					return sales_types_list($name);
 
 				case 'AREAS':
-					return sales_areas_list($name);
+					return sales_areas_list($name, null, _("No Areas Filter"));
 
 				case 'SALESMEN':
 					return sales_persons_list($name, null, _("No Sales Folk Filter"));
