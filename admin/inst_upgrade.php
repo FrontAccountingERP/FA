@@ -50,7 +50,7 @@ if (get_post('Upgrade'))
 $i = find_submit('Clear');
 if ($i != -1)
 {
-  unlink($path_to_root.'/tmp/upgrade.'.$i.'.log');
+  unlink(VARLOG_PATH.'/upgrade.'.$i.'.log');
   $Ajax->activate('_page_body');
 }
 if (get_post('_select_comp_update'))
@@ -77,7 +77,7 @@ foreach($site_status as $i => $comp)
 
 	label_cell($comp['version'], 'align=center' .($status ? '':' class=redfg')/*, 'class='.( $status ? 'ok' : 'error')*/);
 
-	$log = $path_to_root.'/tmp/upgrade.'.$i.'.log';
+	$log = VARLOG_PATH.'/upgrade.'.$i.'.log';
 	if (file_exists($log))
 	{
 		label_cell(viewer_link(_('View log'), "admin/view/view_upgrade_log.php?id=$i", null, $i, 'log.png')

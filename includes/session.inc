@@ -9,6 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+define('VARLIB_PATH', $path_to_root.'/tmp');
+define('VARLOG_PATH', $path_to_root.'/tmp');
 
 class SessionManager
 {
@@ -227,9 +229,9 @@ function write_login_filelog($login, $result)
 	$msg .= "*/\n";
 	$msg .= "\$login_faillog = " .var_export($login_faillog, true). ";\n";
 
-	$filename = $path_to_root."/tmp/faillog.php";
+	$filename = VARLIB_PATH."/faillog.php";
 
-	if ((!file_exists($filename) && is_writable($path_to_root.'/tmp')) || is_writable($filename))
+	if ((!file_exists($filename) && is_writable(VARLIB_PATH)) || is_writable($filename))
 	{
 		file_put_contents($filename, $msg);
 		cache_invalidate($filename);
@@ -425,7 +427,7 @@ if ($SysPrefs->error_logfile != '') {
 	to avoid unexpeced session timeouts.
 	Make sure this directory exists and is writable!
 */
-// ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
+// ini_set('session.save_path', VARLIB_PATH.'/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
@@ -436,8 +438,8 @@ header("Cache-control: private");
 
 get_text_init();
 
-if ($SysPrefs->login_delay > 0 && file_exists($path_to_root . "/tmp/faillog.php"))
-	include_once($path_to_root . "/tmp/faillog.php");
+if ($SysPrefs->login_delay > 0 && file_exists(VARLIB_PATH."/faillog.php"))
+	include_once(VARLIB_PATH."/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()

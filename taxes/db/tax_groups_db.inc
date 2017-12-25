@@ -125,7 +125,7 @@ function get_tax_group_items_as_array($id)
 	return $ret_tax_array;
 }
 
-function get_shipping_tax_as_array($id)
+function get_shipping_tax_as_array($id=null)
 {
 	$ret_tax_array = array();
 

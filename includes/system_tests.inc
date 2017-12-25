@@ -224,7 +224,7 @@ function tst_tmpdir()
 	
 	$test['descr'] = _('Temporary directory');
 	$test['type'] = 3;
-	$test['test'] = $path_to_root.'/tmp';
+	$test['test'] = VARLIB_PATH;
 	$test['result'] = is_dir($test['test']) && is_writable($test['test']);
 	$test['comments'][] = sprintf(_("'%s' is not writeable"), $test['test']);
 	return $test;

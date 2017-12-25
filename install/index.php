@@ -352,7 +352,7 @@ start_form();
 			text_row_ex(_("Server Port:"), 'port', 30, 60);
 			text_row_ex(_("Database Name:"), 'dbname', 30);
 			text_row_ex(_("Database User:"), 'dbuser', 30);
-			text_row_ex(_("Database Password:"), 'dbpassword', 30);
+			password_row(_("Database Password:"), 'dbpassword', '');
 			collations_list_row(_("Database Collation:"), 'collation');
 			yesno_list_row(_("Use '0_' Table Prefix:"), 'tbpref', 1, _('Yes'), _('No'), false);
 			check_row(_("Install Additional Language Packs from FA Repository:"), 'sel_langs');
