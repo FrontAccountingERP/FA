@@ -187,7 +187,7 @@ if (get_post('upload'))
 
 }
 //-------------------------------------------------------------------------------
-start_form(false, true);
+start_form(true, true);
 start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Create backup"));
