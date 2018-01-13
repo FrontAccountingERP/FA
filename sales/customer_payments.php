@@ -51,8 +51,9 @@ if (!isset($_POST['bank_account'])) { // first page call
 		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
 		$dflt_act = get_default_bank_account($inv['curr_code']);
 		$_POST['bank_account'] = $dflt_act['id'];
-		if($inv) {
-			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
+		if ($inv) {
+			$_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->set_person($inv['debtor_no'], PT_CUSTOMER);
 			$_SESSION['alloc']->read();
 			$_POST['BranchID'] = $inv['branch_code'];
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
@@ -81,8 +82,11 @@ if (list_updated('BranchID')) {
 }
 
 if (!isset($_POST['customer_id'])) {
-	$_SESSION['alloc']->person_id = $_POST['customer_id'] = get_global_customer(false);
+	$_POST['customer_id'] = get_global_customer(false);
+	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 	$_SESSION['alloc']->read();
+	$dflt_act = get_default_bank_account($_SESSION['alloc']->person_curr);
+	$_POST['bank_account'] = $dflt_act['id'];
 }
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
@@ -322,8 +326,10 @@ if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
 	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 	$_SESSION['alloc']->read();
 	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-	if (list_updated('customer_id'))
-		$_POST['bank_account'] = get_default_bank_account($_SESSION['alloc']->person_curr);
+	if (list_updated('customer_id')) {
+		$dflt_act = get_default_bank_account($_SESSION['alloc']->person_curr);
+		$_POST['bank_account'] = $dflt_act['id'];
+	}
 	$Ajax->activate('_page_body');
 }
 
