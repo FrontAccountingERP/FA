@@ -36,8 +36,7 @@ function get_invoice_range($from, $to)
 			LEFT JOIN ".TB_PREF."voided voided ON trans.type=voided.type AND trans.trans_no=voided.id
 		WHERE trans.type=".ST_SALESINVOICE
 			." AND ISNULL(voided.id)"
-			." AND trans.reference>=".db_escape(get_reference(ST_SALESINVOICE, $from))
-			." AND trans.reference<=".db_escape(get_reference(ST_SALESINVOICE, $to))
+ 			." AND trans.trans_no BETWEEN ".db_escape($from)." AND ".db_escape($to)			
 		." ORDER BY trans.tran_date, trans.$ref";
 
 	return db_query($sql, "Cant retrieve invoice range");
