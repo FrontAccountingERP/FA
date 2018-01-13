@@ -305,19 +305,11 @@ start_outer_table(TABLESTYLE2, "width='60%'", 5);
 
 table_section(1);
 
-bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-
 if ($new)
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 else {
 	label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
 	hidden('customer_id', $_POST['customer_id']);
-}
-
-if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-	$_SESSION['alloc']->read();
-	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-	$Ajax->activate('alloc_tbl');
 }
 
 if (db_customer_has_branches($_POST['customer_id'])) {
@@ -330,8 +322,12 @@ if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
 	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 	$_SESSION['alloc']->read();
 	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-	$Ajax->activate('alloc_tbl');
+	if (list_updated('customer_id'))
+		$_POST['bank_account'] = get_default_bank_account($_SESSION['alloc']->person_curr);
+	$Ajax->activate('_page_body');
 }
+
+bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 read_customer_data();
 
