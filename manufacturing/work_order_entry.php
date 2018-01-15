@@ -133,7 +133,7 @@ function can_process()
     	}
 	}
 
-	if (!check_num('quantity', 0))
+	if (!check_num('quantity', 1))
 	{
 		display_error( _("The quantity entered is invalid or less than zero."));
 		set_focus('quantity');

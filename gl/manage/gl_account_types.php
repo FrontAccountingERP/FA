@@ -19,6 +19,9 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
+if (isset($_GET["cid"]))
+	$_POST["cid"] = $_GET["cid"];	
+
 simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
@@ -119,8 +122,11 @@ if ($Mode == 'RESET')
 	unset($_POST['class_id']);
 }
 //-----------------------------------------------------------------------------------
-
-$result = get_account_types(check_value('show_inactive'));
+$filter_cid = (isset($_POST["cid"]));
+if ($filter_cid)
+	$result = get_account_types(check_value('show_inactive'), $_POST["cid"]);
+else
+	$result = get_account_types(check_value('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
@@ -146,7 +152,7 @@ while ($myrow = db_fetch($result))
 	}
 
 	label_cell($myrow["id"]);
-	label_cell($myrow["name"]);
+	label_cell('<a href="./gl_accounts.php?id='.$myrow["id"].'">'.$myrow["name"].'</a>');
 	label_cell($parent_text);
 	label_cell($bs_text);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
@@ -188,7 +194,10 @@ text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 
-class_list_row(_("Class:"), 'class_id', null);
+if ($filter_cid)
+	class_list_row(_("Class:"), 'class_id', $_POST['cid']);
+else
+	class_list_row(_("Class:"), 'class_id', null);
 
 end_table(1);
 

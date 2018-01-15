@@ -30,7 +30,7 @@ class allocation
 
 	var $allocs; /*array of transactions allocated to */
 
-	function allocation($type, $trans_no, $person_id = null, $person_type_id=null)
+	function __construct($type, $trans_no, $person_id = null, $person_type_id=null)
 	{
 		$this->allocs = array();
 		
@@ -254,7 +254,7 @@ class allocation_item
 	
 	var $current_allocated;
 	
-	function allocation_item ($type, $type_no, $date_, $due_date, $amount, 
+	function __construct($type, $type_no, $date_, $due_date, $amount, 
 		$amount_allocated, $current_allocated, $ref)
 	{
 
@@ -298,7 +298,7 @@ function show_allocatable($show_totals) {
 		    {
 				alt_table_row_color($k);
     			label_cell($systypes_array[$alloc_item->type]);
-	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
+	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no), "nowrap align='right'");
 		   		label_cell($alloc_item->ref);
     			label_cell($alloc_item->date_, "align=right");
     			label_cell($alloc_item->due_date, "align=right");

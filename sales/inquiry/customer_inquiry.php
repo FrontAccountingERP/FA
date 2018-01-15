@@ -25,85 +25,6 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
 
-if (isset($_GET['customer_id']))
-{
-	$_POST['customer_id'] = $_GET['customer_id'];
-}
-
-//------------------------------------------------------------------------------------------------
-
-start_form();
-
-if (!isset($_POST['customer_id']))
-	$_POST['customer_id'] = get_global_customer();
-
-start_table(TABLESTYLE_NOBORDER);
-start_row();
-
-if (!$page_nested)
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, false, false, true);
-
-date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
-date_cells(_("To:"), 'TransToDate', '', null);
-
-if (!isset($_POST['filterType']))
-	$_POST['filterType'] = 0;
-
-cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
-
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
-end_row();
-end_table();
-
-set_global_customer($_POST['customer_id']);
-
-//------------------------------------------------------------------------------------------------
-
-function display_customer_summary($customer_record)
-{
-	$past1 = get_company_pref('past_due_days');
-	$past2 = 2 * $past1;
-    if ($customer_record["dissallow_invoices"] != 0)
-    {
-    	echo "<center><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></center>";
-    }
-
-	$nowdue = "1-" . $past1 . " " . _('Days');
-	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-
-    start_table(TABLESTYLE, "width='80%'");
-    $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-    	$pastdue1, $pastdue2, _("Total Balance"));
-    table_header($th);
-
-	start_row();
-    label_cell($customer_record["curr_code"]);
-    label_cell($customer_record["terms"]);
-	amount_cell($customer_record["Balance"] - $customer_record["Due"]);
-	amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
-	amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
-	amount_cell($customer_record["Overdue2"]);
-	amount_cell($customer_record["Balance"]);
-	end_row();
-
-	end_table();
-}
-//------------------------------------------------------------------------------------------------
-
-div_start('totals_tbl');
-if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT)
-{
-	$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
-    display_customer_summary($customer_record);
-    echo "<br>";
-}
-div_end();
-
-if(get_post('RefreshInquiry'))
-{
-	$Ajax->activate('totals_tbl');
-}
 //------------------------------------------------------------------------------------------------
 
 function systype_name($dummy, $type)
@@ -135,23 +56,13 @@ function gl_view($row)
 	return get_gl_view_str($row["type"], $row["trans_no"]);
 }
 
-function fmt_debit($row)
+function fmt_amount($row)
 {
 	$value =
-	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
-
+    return price_format($value);
 }
-
-function fmt_credit($row)
-{
-	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT || $row['type']==ST_JOURNAL) ?
-		-$row["TotalAmount"] : $row["TotalAmount"];
-	return $value>0 ? price_format($value) : '';
-}
-
 
 function credit_link($row)
 {
@@ -192,25 +103,104 @@ function check_overdue($row)
 		&& floatcmp($row["TotalAmount"], $row["Allocated"]) != 0;
 }
 //------------------------------------------------------------------------------------------------
+
+function display_customer_summary($customer_record)
+{
+	$past1 = get_company_pref('past_due_days');
+	$past2 = 2 * $past1;
+    if ($customer_record["dissallow_invoices"] != 0)
+    {
+    	echo "<center><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></center>";
+    }
+
+	$nowdue = "1-" . $past1 . " " . _('Days');
+	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
+	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+
+    start_table(TABLESTYLE, "width='80%'");
+    $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
+    	$pastdue1, $pastdue2, _("Total Balance"));
+    table_header($th);
+
+	start_row();
+    label_cell($customer_record["curr_code"]);
+    label_cell($customer_record["terms"]);
+	amount_cell($customer_record["Balance"] - $customer_record["Due"]);
+	amount_cell($customer_record["Due"] - $customer_record["Overdue1"]);
+	amount_cell($customer_record["Overdue1"] - $customer_record["Overdue2"]);
+	amount_cell($customer_record["Overdue2"]);
+	amount_cell($customer_record["Balance"]);
+	end_row();
+
+	end_table();
+}
+
+if (isset($_GET['customer_id']))
+{
+	$_POST['customer_id'] = $_GET['customer_id'];
+}
+
+//------------------------------------------------------------------------------------------------
+
+start_form();
+
+if (!isset($_POST['customer_id']))
+	$_POST['customer_id'] = get_global_customer();
+
+start_table(TABLESTYLE_NOBORDER);
+start_row();
+
+if (!$page_nested)
+	customer_list_cells(_("Select a customer: "), 'customer_id', null, true, true, false, true);
+
+cust_allocations_list_cells(null, 'filterType', null, true, true);
+
+if ($_POST['filterType'] != '2')
+{
+	date_cells(_("From:"), 'TransAfterDate', '', null, -user_transaction_days());
+	date_cells(_("To:"), 'TransToDate', '', null);
+}
+
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
+end_row();
+end_table();
+
+set_global_customer($_POST['customer_id']);
+
+//------------------------------------------------------------------------------------------------
+
+div_start('totals_tbl');
+if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT)
+{
+	$customer_record = get_customer_details(get_post('customer_id'), get_post('TransToDate'));
+    display_customer_summary($customer_record);
+    echo "<br>";
+}
+div_end();
+
+if (get_post('RefreshInquiry') || list_updated('filterType'))
+{
+	$Ajax->activate('_page_body');
+}
+//------------------------------------------------------------------------------------------------
 $sql = get_sql_for_customer_inquiry(get_post('TransAfterDate'), get_post('TransToDate'),
 	get_post('customer_id'), get_post('filterType'));
 
 //------------------------------------------------------------------------------------------------
-db_query("set @bal:=0");
+//db_query("set @bal:=0");
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name', 'ord'=>''),
-	_("#") => array('fun'=>'trans_view', 'ord'=>''),
-	_("Order") => array('fun'=>'order_view'), 
+	_("#") => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'),
+	_("Order") => array('fun'=>'order_view', 'align'=>'right'), 
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 
 	_("Currency") => array('align'=>'center'),
-	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
-	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
-	_("RB") => array('align'=>'right', 'type'=>'amount'),
+	_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
+	_("Balance") => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
@@ -222,8 +212,8 @@ if ($_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
-if ($_POST['filterType'] == ALL_TEXT)
-	$cols[_("RB")] = 'skip';
+if ($_POST['filterType'] != '2')
+	$cols[_("Balance")] = 'skip';
 
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));

@@ -156,7 +156,7 @@ function print_po()
 		if ($myrow['comments'] != "")
 		{
 			$rep->NewLine();
-			$rep->TextColLines(1, 5, $myrow['comments'], -2);
+			$rep->TextColLines(1, 4, $myrow['comments'], -2);
 		}
 		$DisplaySubTot = number_format2($SubTotal,$dec);
 

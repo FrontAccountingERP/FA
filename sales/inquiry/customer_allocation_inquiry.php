@@ -87,7 +87,7 @@ function due_date($row)
 
 function fmt_balance($row)
 {
-	return $row["TotalAmount"] - $row["Allocated"];
+	return ($row["type"] == ST_JOURNAL && $row["TotalAmount"] < 0 ? -$row["TotalAmount"] : $row["TotalAmount"]) - $row["Allocated"];
 }
 
 function alloc_link($row)
@@ -144,9 +144,9 @@ $sql = get_sql_for_customer_allocation_inquiry(get_post('TransAfterDate'), get_p
 //------------------------------------------------------------------------------------------------
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'view_link'),
+	_("#") => array('fun'=>'view_link', 'align'=>'right'),
 	_("Reference"), 
-	_("Order") => array('fun'=>'order_link', 'ord'=>''), 
+	_("Order") => array('fun'=>'order_link', 'ord'=>'', 'align'=>'right'), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Customer") => array('name' =>'name',  'ord'=>'asc'), 

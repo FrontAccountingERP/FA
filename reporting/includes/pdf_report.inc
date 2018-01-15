@@ -70,7 +70,7 @@ class FrontReport extends Cpdf
 	
 	var $dest;	// destination: email or printer
 	
-	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
+	function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 	{
 		global $page_security;
 
@@ -222,7 +222,7 @@ class FrontReport extends Cpdf
 		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 		$this->SetHeaderType('Header'); // default
 
-		$this->Cpdf($size, $_SESSION['language']->code, $orientation);
+		parent::__construct($size, $_SESSION['language']->code, $orientation);
 	}
 	
 	/*
@@ -296,6 +296,8 @@ class FrontReport extends Cpdf
 	//
 	function Header()
 	{
+		global $SysPrefs;
+		
 		$companyCol = $this->endLine - 150;
 		$titleCol = $this->leftMargin + 100;
 
@@ -311,9 +313,20 @@ class FrontReport extends Cpdf
 		$this->Text($this->leftMargin, $this->title, $companyCol);
 		$this->Font();
 		$this->fontSize -= 4;
-		$this->Text($companyCol, $this->company['coy_name']);
-		$this->row -= ($this->lineHeight + 4);
-
+		$logo = company_path() . "/images/" . $this->company['coy_logo'];
+		if (!empty($SysPrefs->prefs['company_logo_report']) && $this->company['coy_logo'] != '' && file_exists($logo))
+		{
+			$size = getimagesize($logo);
+			$height = $size[0] > 150 ? $size[1] * 150 / $size[0] : 30; 
+			$this->row -= ($height / 2);
+			$this->AddImage($logo, $companyCol, $this->row, 0, $height);
+			$this->row -= 6;
+		}
+		else
+		{
+			$this->Text($companyCol, $this->company['coy_name']);
+			$this->row -= ($this->lineHeight + 4);
+		}
 		$str = _("Print Out Date") . ':';
 		$this->Text($this->leftMargin, $str, $titleCol);
 		$str = Today() . '   ' . Now();

@@ -135,7 +135,7 @@ function add_supp_invoice(&$supp_trans)
 	$tax_total = 0;
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 	if ($trans_no) {
-		$allocs = get_payments_for($trans_no, $trans_type); // save allocations
+		$allocs = get_payments_for($trans_no, $trans_type, $supp_trans->supplier_id); // save allocations
 		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
 		$Refs->restore_last($trans_type, $trans_no);
 	} else
@@ -393,11 +393,7 @@ function add_supp_invoice(&$supp_trans)
 		}
 	}
 
-//_vd($allocs);
-	reallocate_payments($invoice_id, ST_SUPPINVOICE, $date_, $to_allocate, $allocs);
-//_vd(get_payments_for($sales_order, ST_PURCHORDER));
-//_vd(get_payments_for($invoice_id, ST_SUPPINVOICE));
-//exit;
+	reallocate_payments($invoice_id, ST_SUPPINVOICE, $date_, $to_allocate, $allocs, $supp_trans->supplier_id);
 	$supp_trans->trans_no = $invoice_id;
 	hook_db_postwrite($supp_trans, $supp_trans->trans_type);
     commit_transaction();

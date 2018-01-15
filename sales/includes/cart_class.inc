@@ -21,7 +21,7 @@ iv)  a delivery note
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/taxes/tax_calc.inc");
 
-class cart
+class Cart
 {
 	var $trans_type; // invoice, order, quotation, delivery note ...
 	var $trans_no = array();// array (num1=>ver1,..) or 0 for new
@@ -90,7 +90,7 @@ class cart
 	//  $trans_no!=0 && $prepare_child==true => prepare for child doc entry
 	//	$prepare_child is set to ST_SALESINVOICE for prepayment invoices
 	//
-	function Cart($type, $trans_no=0, $prepare_child=false) {
+	function __construct($type, $trans_no=0, $prepare_child=false) {
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
@@ -218,7 +218,8 @@ class cart
 				read_sales_order($trans_no[0], $this, $type);
 			} else {	// other type of sales transaction
 				read_sales_trans($type, $trans_no, $this);
-				$this->prepayments = get_payments_for($trans_no[0], $type);
+				$this->prepayments = get_payments_for($trans_no[0], $type, $this->customer_id);
+				$this->update_payments();
 				if ($this->order_no) { // free hand credit notes have no order_no
 					$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
 					$this->cust_ref = $sodata["customer_ref"];
@@ -692,7 +693,7 @@ class line_details
 	var $qty_old = 0;
 
 
-	function line_details ($stock_id, $qty, $prc, $disc_percent,
+	function __construct($stock_id, $qty, $prc, $disc_percent,
 		$qty_done, $standard_cost, $description, $id=0, $src_no=0, $src_id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */

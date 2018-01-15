@@ -280,6 +280,16 @@ $reports->addReport(RC_INVENTORY, 309,_('Item &Sales Summary Report'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));				
+$reports->addReport(RC_INVENTORY, 310, _('Inventory Purchasing - &Transaction Based'),
+	array(	_('Start Date') => 'DATEBEGINM',
+			_('End Date') => 'DATEENDM',
+			_('Inventory Category') => 'CATEGORIES',
+			_('Location') => 'LOCATIONS',
+			_('Supplier') => 'SUPPLIERS_NO_FILTER',
+			_('Items') => 'ITEMS_P',
+			_('Comments') => 'TEXTBOX',
+			_('Orientation') => 'ORIENTATION',
+			_('Destination') => 'DESTINATION'));
 if (get_company_pref('use_manufacturing'))
 {
 	$reports->addReportClass(_('Manufacturing'), RC_MANUFACTURE);

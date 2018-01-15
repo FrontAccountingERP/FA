@@ -29,7 +29,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).
 	//$error_logfile = '';
-	$error_logfile = $path_to_root.'/tmp/errors.log';
+	$error_logfile = VARLOG_PATH.'/errors.log';
 	$debug 			= 1;	// show sql on database errors
 
 	$show_sql 		= 0;	// show all sql queries in page footer for debugging purposes
@@ -69,9 +69,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* This variable is deprecated. Setting this to 1, will stamp the user name in the memo fields in GL */
 	/* This has been superseded with built in Audit Trail */
 	$use_audit_trail = 0;
-
-	/* $show_voiced_gl_trans = 0, setting this to 1 will show the voided gl trans */
-	$show_voided_gl_trans = 0;
 
 	/* use old style convert (income and expense in BS, PL) */
 	$use_oldstyle_convert = 0;
@@ -128,7 +125,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$config_allocation_settled_allowance = 0.005;
 
 	/* Show average costed values instead of fixed standard cost in report, Inventory Valuation Report */
-	$use_costed_values = 0;	
+	$use_costed_values = 1;	
 	
 	/* Show menu category icons in core themes */
 	$show_menu_category_icons = 1;

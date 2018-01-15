@@ -68,7 +68,7 @@ if (strlen($wo_details[0]) == 0)
 
 function can_process($wo_details)
 {
-	if (!check_num('costs', 0))
+	if (input_num('costs')<=0)
 	{
 		display_error(_("The amount entered is not a valid number or less then zero."));
 		set_focus('costs');

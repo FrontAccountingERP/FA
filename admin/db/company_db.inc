@@ -39,16 +39,13 @@ function get_company_pref($prefs = null)
 
 	$all = $SysPrefs->prefs;
 
-	if (!$prefs)
-		return $all;
-	elseif (is_string($prefs))
+	if ($prefs && is_string($prefs))
 		return @$all[$prefs];
 
-	$ret = array();
-	foreach($prefs as $name)
-		$ret[$name] = $all[$name];
+	if (!is_array($all))
+		$all = array();
 
-	return $ret;
+	return $all;
 }
 
 function get_company_prefs()

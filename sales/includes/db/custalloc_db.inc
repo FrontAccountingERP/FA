@@ -119,8 +119,9 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 	 	.TB_PREF."debtor_trans as trans, "
 		.TB_PREF."debtors_master as debtor"
 	." WHERE trans.debtor_no=debtor.debtor_no
-		AND (((type=".ST_CUSTPAYMENT." OR type=".ST_BANKDEPOSIT.") AND (trans.ov_amount > 0))"
-		." OR ( (type=".ST_CUSTCREDIT. " OR type=".ST_JOURNAL. ") AND (ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)>0))";
+		AND (((type=".ST_CUSTPAYMENT." OR type=".ST_BANKDEPOSIT.") AND (trans.ov_amount > 0))
+		 OR (type=".ST_CUSTCREDIT. " AND (ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)>0)
+		 OR (type=".ST_JOURNAL. " AND (trans.ov_amount < 0)))";
 
 	if (!$settled)
 		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc),6) > 0)";
@@ -216,7 +217,7 @@ function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=nul
 					AND round(-IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)-alloc,6) > 0
 					OR
 				  	trans.type = '". ST_JOURNAL."'
-					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount<0
+					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0
 					OR
 				  	trans.type = '". ST_BANKPAYMENT."'
 					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0

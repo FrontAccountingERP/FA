@@ -144,7 +144,7 @@ function print_deliveries()
 			if ($memo != "")
 			{
 				$rep->NewLine();
-				$rep->TextColLines(1, 5, $memo, -2);
+				$rep->TextColLines(1, 3, $memo, -2);
 			}
 
    			$DisplaySubTot = number_format2($SubTotal,$dec);

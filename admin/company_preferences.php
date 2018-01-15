@@ -111,11 +111,11 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		update_company_prefs(
 			get_post( array('coy_name','coy_no','gst_no','tax_prd','tax_last',
 				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
-				'use_dimension', 'curr_default', 'f_year', 
+				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 
-				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout', 'auto_curr_reval',
-				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
+				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'add_pct', 'round_to', 'login_tout', 
+				'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
 				'use_manufacturing', 'use_fixed_assets'))
 		);
 
@@ -143,12 +143,30 @@ $_POST['coy_logo']  = $myrow["coy_logo"];
 $_POST['domicile']  = $myrow["domicile"];
 $_POST['use_dimension']  = $myrow["use_dimension"];
 $_POST['base_sales']  = $myrow["base_sales"];
+if (!isset($myrow["shortname_name_in_list"]))
+{
+	set_company_pref("shortname_name_in_list", "setup.company", "tinyint", 1, '0');
+	$myrow["shortname_name_in_list"] = get_company_pref("shortname_name_in_list");
+}
+$_POST['shortname_name_in_list']  = $myrow["shortname_name_in_list"];
 $_POST['no_item_list']  = $myrow["no_item_list"];
 $_POST['no_customer_list']  = $myrow["no_customer_list"];
 $_POST['no_supplier_list']  = $myrow["no_supplier_list"];
 $_POST['curr_default']  = $myrow["curr_default"];
 $_POST['f_year']  = $myrow["f_year"];
 $_POST['time_zone']  = $myrow["time_zone"];
+if (!isset($myrow["company_logo_report"]))
+{
+	set_company_pref("company_logo_report", "setup.company", "tinyint", 1, '0');
+	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
+}
+$_POST['company_logo_report']  = $myrow["company_logo_report"];
+if (!isset($myrow["barcodes_on_stock"]))
+{
+	set_company_pref("barcodes_on_stock", "setup.company", "tinyint", 1, '0');
+	$myrow["barcodes_on_stock"] = get_company_pref("barcodes_on_stock");
+}
+$_POST['barcodes_on_stock']  = $myrow["barcodes_on_stock"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
 $_POST['login_tout'] = $myrow['login_tout'];
@@ -188,6 +206,8 @@ check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 
 check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POST['auto_curr_reval']);
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
+check_row(_("Company Logo on Reports"), 'company_logo_report', $_POST['company_logo_report']);
+check_row(_("Use Barcodes on Stocks"), 'barcodes_on_stock', $_POST['barcodes_on_stock']);
 label_row(_("Database Scheme Version"), $_POST['version_id']);
 
 table_section(2);
@@ -216,6 +236,7 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 
 table_section_title(_("User Interface Options"));
 
+check_row(_("Short Name and Name in List"), 'shortname_name_in_list', $_POST['shortname_name_in_list']);
 check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);

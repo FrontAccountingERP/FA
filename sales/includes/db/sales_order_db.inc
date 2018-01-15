@@ -130,7 +130,7 @@ function update_sales_order($order)
 	hook_db_prewrite($order, $order->trans_type);
 
 	if ($order->trans_type == ST_SALESORDER)
-		$allocs = get_payments_for($order_no, ST_SALESORDER);
+		$allocs = get_payments_for($order_no, $order->trans_type, $order->customer_id);
 
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
@@ -207,7 +207,7 @@ function update_sales_order($order)
 	} /* inserted line items into sales order details */
 
 	if ($order->trans_type == ST_SALESORDER)
-		reallocate_payments($order_no, ST_SALESORDER, $ord_date, $total, $allocs);
+		reallocate_payments($order_no, ST_SALESORDER, $ord_date, $total, $allocs, $order->customer_id);
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
 	$Refs->save($order->trans_type, $order_no, $order->reference, null, $order->fixed_asset);
 
@@ -330,7 +330,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 	$order->alloc = $myrow['alloc'];
 	$order->sum_paid = $myrow["sum_paid"]; // sum of all prepayments to so (also invoiced)
 	$order->prep_amount = $myrow["prep_amount"];
-	$order->prepayments = get_payments_for($order_no, $myrow['trans_type']);
+	$order->prepayments = get_payments_for($order_no, $myrow['trans_type'], $myrow['debtor_no']);
 
 	$result = get_sales_order_details($order_no, $order->trans_type);
 	if (db_num_rows($result) > 0)
@@ -602,4 +602,27 @@ function sales_order_set_template($id, $status)
 {
   	$sql = "UPDATE ".TB_PREF."sales_orders SET type = ".db_escape($status)." WHERE order_no=".db_escape($id);
   	db_query($sql, "Can't change sales order type");
+}
+
+/*
+	Check whether sales order is issued in prepaid mode and already opened
+*/
+
+function is_prepaid_order_open($order_no)
+{
+	$sql = "SELECT count(*)
+		FROM ".TB_PREF."sales_orders o,
+		((SELECT trans_no_to FROM ".TB_PREF."cust_allocations
+				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no).")
+		UNION
+		  (SELECT order_ FROM ".TB_PREF."debtor_trans 
+			WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no).")) related
+	WHERE
+		o.prep_amount>0
+		AND o.trans_type = ".ST_SALESORDER."
+		AND o.order_no = " . db_escape($order_no);
+
+	$result = db_fetch(db_query($sql, "cannot check prepaid order open"));
+
+	return $result[0];
 }

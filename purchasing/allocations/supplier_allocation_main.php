@@ -92,7 +92,7 @@ $sql = get_allocatable_from_supp_sql($supplier_id, $settled);
 
 $cols = array(
 	_("Transaction Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'trans_view'),
+	_("#") => array('fun'=>'trans_view', 'align'=>'right'),
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Supplier") => array('ord'=>''),

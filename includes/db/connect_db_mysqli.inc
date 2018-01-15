@@ -29,8 +29,10 @@ function set_global_connection($company=-1)
 
 	$connection = $db_connections[$company];
 
-	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
-		mysqli_select_db($db, $connection["dbname"]);
+	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"], "", 
+		!empty($connection["port"]) ? $connection["port"] : 3306); // default port in mysql is 3306
+		
+	mysqli_select_db($db, $connection["dbname"]);
 	///// From mysqli release 5.6.6 the sql_mode is no longer empty as it was prior to
 	///// this release. Just for safety we make it empty for all 5.6 release and higher.
 	///// This non empty sql_mode values can interphere with FA, so all is set empty during
@@ -133,8 +135,8 @@ function db_num_fields($result)
 function db_escape($value = "", $nullify = false)
 {
 	global $db;
-	
-	$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+
+	$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
 	$value = html_specials_encode($value);
 
   	//reset default if second parameter is skipped
@@ -200,7 +202,8 @@ function db_create_db($connection)
 {
 	global $db;
 
-	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"], "",
+		!empty($connection["port"]) ? $connection["port"] : 3306); // default port in mysql is 3306
 
 	if (!mysqli_select_db($db, $connection["dbname"]))
 	{

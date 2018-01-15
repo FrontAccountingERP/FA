@@ -13,6 +13,7 @@ include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/config.php");
+define('MAX_ROW_SHEET', 65530);
 // xls version
 class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 {
@@ -59,7 +60,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	
 	var $sheet;
 
-	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
+	function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 	{
 		global $SysPrefs, $page_security;
 
@@ -83,10 +84,10 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->filename = $filename.".xls";
 		$this->unique_name = random_id().".xls";
 		$this->path = company_path(). '/pdf_files';
-		$this->Spreadsheet_Excel_Writer_Workbook($this->path."/".$this->unique_name);
+		parent::__construct($this->path."/".$this->unique_name);
 		if ($this->code != "iso-8859-1")
 			$this->setVersion(8); // set biff version to 8 (0x0006 internal)
-		$this->sheet =& $this->addWorksheet($this->worksheetNameGenerator($this->title));
+		$this->sheet = $this->addWorksheet($this->worksheetNameGenerator($this->title));
 		if ($this->code != "iso-8859-1")
 			$this->sheet->setInputEncoding($this->code); // set sheet encoding
 		if ($rtl)
@@ -641,6 +642,17 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	function NewLine($l=1, $np=0, $h=NULL)
 	{
 		$this->y += $l;
+		if ($this->y > MAX_ROW_SHEET)
+		{
+			$this->y = 0;
+			$this->sheet = $this->addWorksheet();
+			if ($this->code != "iso-8859-1")
+				$this->sheet->setInputEncoding($this->code); // set sheet encoding
+			if ($_SESSION['language']->dir == 'rtl')
+				$this->sheet->setRTL();
+			for ($i = 0; $i < $this->numcols; $i++)
+				$this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
+		}
 	}
 	
 	function NewPage()

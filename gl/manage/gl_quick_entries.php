@@ -294,8 +294,8 @@ if ($selected_id != -1)
 				label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
 			else
 				amount_cell($myrow['amount']);
-			label_cell($myrow['memo']);
 		}
+		label_cell($myrow['memo']);
    		if ($dim >= 1)
 			label_cell(get_dimension_string($myrow['dimension_id'], true));
    		if ($dim > 1)

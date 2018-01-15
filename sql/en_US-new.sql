@@ -619,7 +619,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `trans_no` int(11) unsigned NOT NULL default '0',
   `type` smallint(6) unsigned NOT NULL default '0',
   `version` tinyint(1) unsigned NOT NULL default '0',
-  `debtor_no` int(11) unsigned default NULL,
+  `debtor_no` int(11) unsigned NOT NULL,
   `branch_code` int(11) NOT NULL default '-1',
   `tran_date` date NOT NULL default '0000-00-00',
   `due_date` date NOT NULL default '0000-00-00',
@@ -639,7 +639,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `dimension2_id` int(11) NOT NULL default '0',
   `payment_terms` int(11) default NULL,
   `tax_included` tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY (`type`,`trans_no`),
+  PRIMARY KEY (`type`,`trans_no`,`debtor_no`),
   KEY `debtor_no` (`debtor_no`,`branch_code`),
   KEY `tran_date` (`tran_date`),
   KEY `order_` (`order_`)
@@ -746,7 +746,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES (1, '2016-01-01', '2016-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES (1, '2018-01-01', '2018-12-31', 0);
 
 -- --------------------------------------------------------
 
@@ -1785,7 +1785,7 @@ DROP TABLE IF EXISTS `0_supp_trans`;
 CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `trans_no` int(11) unsigned NOT NULL default '0',
   `type` smallint(6) unsigned NOT NULL default '0',
-  `supplier_id` int(11) unsigned default NULL,
+  `supplier_id` int(11) unsigned NOT NULL,
   `reference` tinytext NOT NULL,
   `supp_reference` varchar(60) NOT NULL default '',
   `tran_date` date NOT NULL default '0000-00-00',
@@ -1796,7 +1796,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
   `tax_included` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY (`type`,`trans_no`),
+  PRIMARY KEY (`type`,`trans_no`,`supplier_id`),
   KEY `supplier_id` (`supplier_id`),
   KEY `tran_date` (`tran_date`)
 ) ENGINE=InnoDB;
@@ -1840,6 +1840,7 @@ INSERT INTO `0_sys_prefs` VALUES ('domicile', 'setup.company', 'varchar', 55, ''
 INSERT INTO `0_sys_prefs` VALUES ('curr_default', 'setup.company', 'char', 3, 'USD');
 INSERT INTO `0_sys_prefs` VALUES ('use_dimension', 'setup.company', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES ('f_year', 'setup.company', 'int', 11, '1');
+INSERT INTO `0_sys_prefs` VALUES ('shortname_name_in_list','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('no_item_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('no_customer_list', 'setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('no_supplier_list', 'setup.company', 'tinyint', 1, '0');
@@ -1892,6 +1893,8 @@ INSERT INTO `0_sys_prefs` VALUES ('print_invoice_no','glsetup.sales', 'tinyint',
 INSERT INTO `0_sys_prefs` VALUES ('allow_negative_prices','glsetup.inventory', 'tinyint', 1, '1');
 INSERT INTO `0_sys_prefs` VALUES ('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES ('company_logo_report','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES ('barcodes_on_stock','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
 INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
 INSERT INTO `0_sys_prefs` VALUES ('use_manufacturing','setup.company', 'tinyint', 1, '1');

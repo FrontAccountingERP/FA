@@ -167,6 +167,9 @@ $display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_a
 
 label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
+if ($myrow['prep_amount'])
+	label_row(_("PREPAYMENT AMOUNT INVOICED"), '<b>'.price_format($myrow['prep_amount']).'</b>', "colspan=6 align=right",
+		"nowrap align=right");
 end_table(1);
 
 $voided = is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));

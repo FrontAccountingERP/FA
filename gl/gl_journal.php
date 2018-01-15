@@ -140,8 +140,8 @@ function create_cart($type=0, $trans_no=0)
 		{
 			$tax_id = $detail['tax_type_id'];
 			$tax_info['net_amount'][$tax_id] = $detail['net_amount']; // we can two records for the same tax_id, but in this case net_amount is the same
-			$tax_info['tax_date'] = sql2date($detail['effective_date']);
-			$tax_info['tax_group'] = $detail['tax_group_id'];
+			$tax_info['tax_date'] = sql2date($detail['tran_date']);
+			//$tax_info['tax_group'] = $detail['tax_group_id'];
 
 		}
 		if (isset($tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
@@ -316,7 +316,7 @@ if (isset($_POST['Process']))
 	{
 		// complete tax register data
 		$cart->tax_info['tax_date'] = $_POST['tax_date'];
-		$cart->tax_info['tax_group'] = $_POST['tax_group'];
+		//$cart->tax_info['tax_group'] = $_POST['tax_group'];
 		$taxes = get_all_tax_types();
 		while ($tax = db_fetch($taxes))
 		{
@@ -467,7 +467,7 @@ if (tab_closed('tabs', 'gl'))
 {
 	$cart = &$_SESSION['journal_items'];
 	$cart->tax_info['tax_date'] = $_POST['tax_date'];
-	$cart->tax_info['tax_group'] = $_POST['tax_group'];
+	//$cart->tax_info['tax_group'] = $_POST['tax_group'];
 	$taxes = get_all_tax_types();
 	while ($tax = db_fetch($taxes))
 	{
@@ -536,10 +536,12 @@ tabbed_content_start('tabs', array(
 
 		case 'tax':
 			update_tax_info();
+			br();
 			display_heading(_("Tax register record"));
+			br();
 			start_table(TABLESTYLE2, "width=40%");
 			date_row(_("VAT date:"), 'tax_date', '', "colspan='3'");
-			tax_groups_list_row(_("Tax group:"), 'tax_group');
+			//tax_groups_list_row(_("Tax group:"), 'tax_group');
 			end_table(1);
 
 			start_table(TABLESTYLE2, "width=60%");

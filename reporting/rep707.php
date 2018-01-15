@@ -252,6 +252,8 @@ function print_profit_and_loss_statement()
 	{
 		$begin = add_months($from, -12);
 		$end = add_months($to, -12);
+		if (date_comp($to, end_month($to)) == 0) // compensate for leap years. If to-date equal end month 
+			$end = end_month($end);				 // then the year-1 should also be end month	
 		$headers[3] = _('Period Y-1');
 	}
 

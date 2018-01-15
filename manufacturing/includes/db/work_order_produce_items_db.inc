@@ -81,10 +81,11 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 
 		$unit_cost = $total_cost/($product['units_issued']+$quantity);
 
+		// first update material cost
+		update_material_cost($product['stock_id'], $product['units_issued']+$quantity, $unit_cost, $date_);
+
 		add_stock_move(ST_WORKORDER, $product["stock_id"], $woid,
 			$product["loc_code"], $date_, $ref, $product['units_issued']+$quantity, $unit_cost);
-
-		update_material_cost($product['stock_id'], $product['units_issued']+$quantity, $unit_cost, $date_);
 	}
 
 	if ($memo)

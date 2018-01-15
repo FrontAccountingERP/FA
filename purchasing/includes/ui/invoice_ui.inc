@@ -385,7 +385,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 			alt_table_row_color($k);
 
 			$n = $myrow["id"];
-			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]));
+			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["grn_batch_id"]), "nowrap align='right'");
 		   	hidden('qty_recd'.$n, $myrow["qty_recd"]);
            	hidden('item_code'.$n, $myrow["item_code"]);
            	hidden('item_description'.$n, $myrow["description"]);
@@ -393,7 +393,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
            	hidden('order_price'.$n, $myrow['unit_price']);
            	hidden('std_cost_unit'.$n, $myrow['std_cost_unit']);
            	hidden('po_detail_item'.$n, $myrow['po_detail_item']);
-        	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
+        	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]), "nowrap align='right'");
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
             label_cell(sql2date($myrow["delivery_date"]));
@@ -568,7 +568,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	if ($mode == 1)
 	{
 		$ret = display_grn_items_for_selection($supp_trans, $k);
-    	$colspan = 10;
+    	$colspan = 9;
 	}
 	else
 		$colspan = 5;

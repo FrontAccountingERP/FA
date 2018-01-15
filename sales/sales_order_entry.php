@@ -101,6 +101,11 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 page($_SESSION['page_title'], false, false, "", $js);
 
+if (isset($_GET['ModifyOrderNumber']) && is_prepaid_order_open($_GET['ModifyOrderNumber']))
+{
+	display_error(_("This order cannot be edited because there are invoices or payments related to it, and prepayment terms were used."));
+	end_page(); exit;
+}
 if (isset($_GET['ModifyOrderNumber']))
 	check_is_editable(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 elseif (isset($_GET['ModifyQuotationNumber']))
@@ -470,10 +475,9 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 		$ref = $Refs->get_next($_SESSION['Items']->trans_type, null, array('date' => Today()));
 		if ($ref != $_SESSION['Items']->reference)
 		{
+			unset($_POST['ref']); // force refresh reference
 			display_error(_("The reference number field has been increased. Please save the document again."));
-			$_POST['ref'] = $_SESSION['Items']->reference = $ref;
-			$Ajax->activate('ref');
-		}	
+		}
 		set_focus('ref');
 	}
 	else

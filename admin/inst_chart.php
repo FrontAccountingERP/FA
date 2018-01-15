@@ -42,6 +42,11 @@ if ($id = find_submit('Update', false))
 	install_extension($id);
 
 //---------------------------------------------------------------------------------------------
+
+function sortByOption($a, $b) {
+    return strcmp($a['name'], $b['name']);
+}
+
 start_form(true);
 
 	div_start('ext_tbl');
@@ -52,6 +57,8 @@ start_form(true);
 		display_note(_("No optional chart of accounts is currently available."));
 	else
 	{
+        uasort($mods, 'sortByOption');
+
 		$th = array(_("Chart"),  _("Installed"), _("Available"), _("Encoding"), "", "");
 		$k = 0;
 

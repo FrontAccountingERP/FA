@@ -112,6 +112,7 @@ function print_stock_check()
 		$short = _('No');
 		$available = _('Available');
 	}
+	$barcodes = !empty($SysPrefs->prefs['barcodes_on_stock']);
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
 	if ($check)
@@ -127,12 +128,33 @@ function print_stock_check()
 		$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
 	}
 
+    $params =   array(
+		0 => $comments,
+    	1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
+    	2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
+    	3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''),
+		4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
+	);
 
-    	$params =   array( 	0 => $comments,
-    				1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-    				2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-    				3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''),
-					4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+	if ($barcodes)
+	{
+    	// define barcode style
+    	$style = array(
+    		'position' => 'L', // If blank string, barcode starts on left edge of page
+    		'stretch' => false,
+    		'fitwidth' => true,
+    		'cellfitalign' => '',
+    		'border' => false,
+    		'padding' => 3,
+    		'fgcolor' => array(0,0,0),
+    		'bgcolor' => false, //array(255,255,255),
+    		'text' => true,
+    		'font' => 'helvetica',
+    		'fontsize' => 8,
+    		'stretchtext' => 4
+    	);
+    	// write1DBarcode($code, $type, $x='', $y='', $w='', $h='', $xres=0.4, $style='', $align='')
+    }	
 
    	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
@@ -153,9 +175,7 @@ function print_stock_check()
 		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
 		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
 		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
-		$flag = get_mb_flag($trans['stock_id']);
-		if ($flag == 'M')
-			$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
 		if ($no_zeros && $trans['QtyOnHand'] == 0 && $demandqty == 0 && $onorder == 0)
 			continue;
 		if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0)
@@ -191,19 +211,29 @@ function print_stock_check()
 			$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
 			$rep->AmountCol(6, 7, $onorder, $dec);
 		}
-		if ($pictures)
+		if ($pictures || $barcodes)
 		{
-			$image = company_path() . '/images/'
-				. item_img_name($trans['stock_id']) . '.jpg';
-			if (file_exists($image))
+			$rep->NewLine();
+			if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
+				$rep->NewPage();
+			$firstcol = 1;	
+			if ($barcodes)
 			{
-				$rep->NewLine();
-				if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
-					$rep->NewPage();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
-				$rep->row -= $SysPrefs->pic_height;
-				$rep->NewLine();
-			}
+				$bar_y = $rep->GetY();
+				$barcode = str_pad($trans['stock_id'], 7, '0', STR_PAD_LEFT);
+				$barcode = substr($barcode, 0, 8); // EAN 8 Check digit is auto computed and barcode printed
+				$rep->write1DBarcode($barcode, 'EAN8', $rep->cols[$firstcol++], $bar_y + 22, 22, $SysPrefs->pic_height, 1.2, $style, 'N');
+			}	
+			if ($pictures)
+			{
+				$image = company_path() . '/images/' . item_img_name($trans['stock_id']) . '.jpg';
+				if (file_exists($image))
+				{
+					$rep->AddImage($image, $rep->cols[$firstcol], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
+				}
+			}	
+			$rep->row -= $SysPrefs->pic_height;
+			$rep->NewLine();
 		}
 	}
 	$rep->Line($rep->row - 4);

@@ -49,8 +49,11 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 		while (($id = find_submit('tax_type_id'))!=-1)
 		{
-       		$taxes[] = $id;
-			$tax_shippings[] = check_value('tax_shipping'.$id);
+			if (check_value('tax_type_id'.$id) != 0)
+			{
+       			$taxes[] = $id;
+				$tax_shippings[] = check_value('tax_shipping'.$id);
+			}	
 			unset($_POST['tax_type_id' . $id]);
 			unset($_POST['tax_shipping' . $id]);
 		}

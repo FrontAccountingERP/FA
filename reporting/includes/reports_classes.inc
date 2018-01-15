@@ -430,7 +430,7 @@ class BoxReports
 					return sales_types_list($name);
 
 				case 'AREAS':
-					return sales_areas_list($name);
+					return sales_areas_list($name, null, _("No Areas Filter"));
 
 				case 'SALESMEN':
 					return sales_persons_list($name, null, _("No Sales Folk Filter"));
@@ -462,7 +462,7 @@ class Report
 	var $ar_params;
 	var $controls;
 	
-	function Report($id, $name, $ar_params = null)
+	function __construct($id, $name, $ar_params = null)
 	{
 		$this->id = $id;
 		$this->name = $name;

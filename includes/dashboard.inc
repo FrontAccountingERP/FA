@@ -157,12 +157,15 @@ function display_all()
 	table_one();
 	$title = customer_top($today, 3, 66, $pg);
 	source_graphic($today, $title, _("Customer"), $pg, _("Sales"));
+	$pg = new graph();
 	$title = supplier_top($today, 3, 66, $pg);
 	source_graphic($today, $title, _("Supplier"), $pg, _("Purchases"));
+	$pg = new graph();
 	$title = stock_top($today, 3, 66, 0, $pg);
 	source_graphic($today, $title, _("Items"), $pg, _("Sales"), _("Costs"));
 	table_two();
 	dimension_top($today, 3, 66);
+	$pg = new graph();
 	$title = gl_top($today, 66, $pg);
 	source_graphic($today, $title, _("Class"), $pg, _("Amount"), null, 5);
 	stock_top($today, 3, 66, 2);
@@ -269,7 +272,7 @@ function stock_top($today, $limit=10, $width="33", $type=0, &$pg=null)
 			SUM(qty) AS qty FROM ".TB_PREF."stock_master AS s, ".TB_PREF."stock_moves AS m 
 			WHERE s.stock_id=m.stock_id ";
 		if ($type == 1)
-			$sql .= "AND s.mb_flag='M' ";
+			$sql .= "AND s.mb_flag='M' AND m.type <> ".ST_CUSTDELIVERY." AND m.type <> ".ST_CUSTCREDIT." ";
 		elseif ($type == 2)	
 			$sql .= "AND s.mb_flag='F' ";
 	}

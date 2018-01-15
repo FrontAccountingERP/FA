@@ -26,6 +26,16 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fa_classes_db.inc");
 
+function find_last_location($stock_id, $end_date)
+{
+	$end_date = date2sql($end_date);
+	$sql = "SELECT loc_code FROM ".TB_PREF."stock_moves WHERE stock_id = ".db_escape($stock_id)." AND
+		tran_date <= '$end_date' ORDER BY tran_date DESC LIMIT 1";
+	$res = db_query($sql,"No stock moves were returned");
+	$row = db_fetch_row($res);
+	return $row[0];
+}
+
 //----------------------------------------------------------------------------------------------------
 
 print_fixed_assets_valuation_report();
@@ -91,6 +101,9 @@ function print_fixed_assets_valuation_report()
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
+		$loc = find_last_location($trans['stock_id'], $date);
+		if ($location != 'all' && $location != $loc)
+			continue;
 		$purchase = get_fixed_asset_purchase($trans['stock_id']);
 		$d = sql2date($purchase['tran_date']);
 		if (date1_greater_date2($d, $date))

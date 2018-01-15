@@ -17,13 +17,13 @@ include_once 'class.data_set.inc';
 **/
 
 class reflines_db extends data_set {
-	function reflines_db()
+	function __construct()
 	{
 		$this->set_validator('prefix:ui:_check_prefix', _("This prefix conflicts with another one already defined. Prefix have to be unambigous."));
 		$this->set_validator('prefix:ui:_check_template', _("Invalid template format."));
 		$this->set_validator('trans_type:ui:required', _("Transaction type cannot be empty."));
 		$this->set_validator('pattern:ui:required', _("Next reference cannot be empty."));
-		$this->data_set('reflines', 
+		parent::__construct('reflines', 
 			array('trans_type', 'prefix', 'description', 'default', 'pattern', 'id', 'inactive'), 
 			'id');
 	}

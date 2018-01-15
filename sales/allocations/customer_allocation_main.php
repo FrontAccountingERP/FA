@@ -70,9 +70,14 @@ function alloc_link($row)
 			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 }
 
+function amount_total($row)
+{
+	return price_format($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"]);
+}
+
 function amount_left($row)
 {
-	return price_format($row["Total"]-$row["alloc"]);
+	return price_format(($row['type'] == ST_JOURNAL && $row["Total"] < 0 ? -$row["Total"] : $row["Total"])-$row["alloc"]);
 }
 
 function check_settled($row)
@@ -85,12 +90,12 @@ $sql = get_allocatable_from_cust_sql($customer_id, $settled);
 
 $cols = array(
 	_("Transaction Type") => array('fun'=>'systype_name'),
-	_("#") => array('fun'=>'trans_view'),
+	_("#") => array('fun'=>'trans_view', 'align'=>'right'),
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Customer") => array('ord'=>''),
 	_("Currency") => array('align'=>'center'),
-	_("Total") => 'amount', 
+	_("Total") => array('align'=>'right','fun'=>'amount_total'), 
 	_("Left to Allocate") => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);

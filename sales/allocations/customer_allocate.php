@@ -46,7 +46,12 @@ function edit_allocations_for_transaction($type, $trans_no)
 	global $systypes_array;
 
 	$cart = $_SESSION['alloc'];
-
+	
+	if ($cart->type == ST_JOURNAL && $cart->bank_amount < 0)
+	{
+		$cart->bank_amount = -$cart->bank_amount;
+		$cart->amount = -$cart->amount;
+	}	
     display_heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$cart->type], $cart->trans_no));
 
     display_heading($cart->person_name);

@@ -119,7 +119,7 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["cid"]);
-	label_cell($myrow['class_name']);
+	label_cell('<a href="./gl_account_types.php?cid='.$myrow["cid"].'">'.$myrow['class_name'].'</a>');
 	if (isset($SysPrefs->use_oldstyle_convert) && $SysPrefs->use_oldstyle_convert == 1)
 	{
 		$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);

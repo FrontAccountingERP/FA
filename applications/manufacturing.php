@@ -11,9 +11,9 @@
 ***********************************************************************/
 class manufacturing_app extends application
 {
-	function manufacturing_app()
+	function __construct()
 	{
-		$this->application("manuf", _($this->help_context = "&Manufacturing"));
+		parent::__construct("manuf", _($this->help_context = "&Manufacturing"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Work &Order Entry"),

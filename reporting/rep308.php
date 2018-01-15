@@ -111,7 +111,7 @@ function avg_unit_cost($stock_id, $location=null, $to_date)
 				LEFT JOIN ".TB_PREF."debtor_trans cust_trans ON cust_trans.trans_no=move.trans_no AND cust_trans.type=move.type
 				LEFT JOIN ".TB_PREF."debtors_master debtor ON cust_trans.debtor_no=debtor.debtor_no
 			WHERE stock_id=".db_escape($stock_id)."
-			AND move.tran_date < '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
+			AND move.tran_date <= '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
 
 	if ($location != '')
 		$sql .= " AND move.loc_code = ".db_escape($location);

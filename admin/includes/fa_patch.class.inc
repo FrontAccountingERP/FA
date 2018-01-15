@@ -26,7 +26,7 @@ class fa_patch {
 	var $errors = array();
 	var	$max_upgrade_time = 300;
 
-	function fa_patch()
+	function __construct()
 	{
 		global $path_to_root;
 
@@ -115,7 +115,7 @@ class fa_patch {
 		$this->errors = array();
 		$this->backup = null;
 
-		$this->save_log = ini_set('error_log', dirname(__FILE__).'/../../tmp/upgrade.'.$this->cur_company.'.log');
+		$this->save_log = ini_set('error_log', VARLOG_PATH.'/upgrade.'.$this->cur_company.'.log');
 		$this->log_error(sprintf(_("Upgrade started for company %s."), $this->cur_company), 'Info');
 
 		if (!set_global_connection($this->cur_company))

@@ -180,11 +180,14 @@ $opts = array(		// default options
 	$found = false;
 	$lastcat = null;
 	$edit = false;
+	$pname = false;
+	if (($type === "customer" || $type === "supplier") && !empty($SysPrefs->prefs['shortname_name_in_list']))
+		$pname = true;
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
-				call_user_func($opts['format'], $contact_row);
+				call_user_func($opts['format'], $contact_row, $pname);
 			$sel = '';
  		 	if (get_post($search_button) && ($txt == $value)) {
  		 		$selected_id[] = $value;
@@ -478,7 +481,7 @@ function array_selector_row($label, $name, $selected_id, $items, $options=null)
 }
 
 //----------------------------------------------------------------------------------------------
-function _format_add_curr($row)
+function _format_add_curr($row, $pname=false)
 {
 	static $company_currency;
 
@@ -486,8 +489,14 @@ function _format_add_curr($row)
 	{
 		$company_currency = get_company_currency();
 	}
-	return $row[1] . ($row[2] == $company_currency ?
-		'' : ("&nbsp;-&nbsp;" . $row[2]));
+	if (!$pname)
+	{
+		return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
+	}		
+	else
+	{
+		return $row[1] . "&nbsp;-&nbsp;" . $row[2] . ($row[3] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[3]));
+	}		
 }
 
 function add_edit_combo($type)
@@ -508,8 +517,11 @@ function add_edit_combo($type)
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
 	$all=false, $editkey = false)
 {
-
-	$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM ".TB_PREF."suppliers ";
+	global $SysPrefs;
+	if (!empty($SysPrefs->prefs['shortname_name_in_list']))
+		$sql = "SELECT supplier_id, supp_ref, supp_name, curr_code, inactive FROM ".TB_PREF."suppliers ";
+	else	
+		$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM ".TB_PREF."suppliers ";
 
 	$mode = get_company_pref('no_supplier_list');
 
@@ -558,8 +570,11 @@ function supplier_list_row($label, $name, $selected_id=null, $all_option = false
 function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false, 
 	$show_inactive=false, $editkey = false)
 {
-
-	$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM ".TB_PREF."debtors_master ";
+	global $SysPrefs;
+	if (!empty($SysPrefs->prefs['shortname_name_in_list']))
+		$sql = "SELECT debtor_no, debtor_ref, name, curr_code, inactive FROM ".TB_PREF."debtors_master ";
+	else	
+		$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM ".TB_PREF."debtors_master ";
 
 	$mode = get_company_pref('no_customer_list');
 
@@ -1217,25 +1232,28 @@ function tax_groups_list_row($label, $name, $selected_id=null, $none_option=fals
 
 //------------------------------------------------------------------------------------
 
-function item_tax_types_list($name, $selected_id=null)
+function item_tax_types_list($name, $selected_id=null, $show_inactive = false)
 {
 	$sql ="SELECT id, name FROM ".TB_PREF."item_tax_types";
+	if (!$show_inactive)
+		$sql .= " WHERE !inactive";
+
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id') );
 }
 
-function item_tax_types_list_cells($label, $name, $selected_id=null)
+function item_tax_types_list_cells($label, $name, $selected_id=null, $show_inactive = false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo item_tax_types_list($name, $selected_id);
+	echo item_tax_types_list($name, $selected_id, $show_inactive);
 	echo "</td>\n";
 }
 
-function item_tax_types_list_row($label, $name, $selected_id=null)
+function item_tax_types_list_row($label, $name, $selected_id=null, $show_inactive = false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	item_tax_types_list_cells(null, $name, $selected_id);
+	item_tax_types_list_cells(null, $name, $selected_id, $show_inactive);
 	echo "</tr>\n";
 }
 
@@ -1293,25 +1311,27 @@ function sales_persons_list_row($label, $name, $selected_id=null, $spec_opt=fals
 
 //------------------------------------------------------------------------------------
 
-function sales_areas_list($name, $selected_id=null)
+function sales_areas_list($name, $selected_id=null, $special_option=false)
 {
 	$sql = "SELECT area_code, description, inactive FROM ".TB_PREF."areas";
-	return combo_input($name, $selected_id, $sql, 'area_code', 'description', array());
+	return combo_input($name, $selected_id, $sql, 'area_code', 'description', 
+		array('spec_option' => $special_option===true ? ' ' : $special_option,
+		'order' => 'description', 'spec_id' => 0));
 }
 
-function sales_areas_list_cells($label, $name, $selected_id=null)
+function sales_areas_list_cells($label, $name, $selected_id=null, $special_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo sales_areas_list($name, $selected_id);
+	echo sales_areas_list($name, $selected_id, $special_option);
 	echo "</td>\n";
 }
 
-function sales_areas_list_row($label, $name, $selected_id=null)
+function sales_areas_list_row($label, $name, $selected_id=null, $special_option=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	sales_areas_list_cells(null, $name, $selected_id);
+	sales_areas_list_cells(null, $name, $selected_id, $special_option);
 	echo "</tr>\n";
 }
 
@@ -1787,7 +1807,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$cells=false, $all_option=false, $submit_on_change=false, $all=false)
+	$cells=false, $all_option=false, $submit_on_change=false, $all=false, $type_id=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
@@ -1800,6 +1820,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
+	if ($type_id ) $sql .= " AND chart.account_type=".db_escape($type_id);
 
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 		array(
@@ -1827,22 +1848,22 @@ function _format_account($row)
 
 function gl_all_accounts_list_cells($label, $name, $selected_id=null, 
 	$skip_bank_accounts=false, $cells=false, $all_option=false, 
-	$submit_on_change=false, $all=false)
+	$submit_on_change=false, $all=false, $type_id=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
 	echo gl_all_accounts_list($name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all);
+		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all, $type_id);
 	echo "</td>\n";
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id=null, 
-	$skip_bank_accounts=false, $cells=false, $all_option=false)
+	$skip_bank_accounts=false, $cells=false, $all_option=false, $type_id=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	gl_all_accounts_list_cells(null, $name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option);
+		$skip_bank_accounts, $cells, $all_option, $type_id);
 	echo "</tr>\n";
 }
 
@@ -2106,7 +2127,7 @@ function journal_types_list_cells($label, $name, $value=null, $submit_on_change=
 	echo "</td>\n";
 }
 
-function cust_allocations_list_cells($label, $name, $selected=null)
+function cust_allocations_list_cells($label, $name, $selected=null, $submit_on_change=false)
 {
 
 	if ($label != null)
@@ -2115,12 +2136,12 @@ function cust_allocations_list_cells($label, $name, $selected=null)
 	$allocs = array( 
 		ALL_TEXT=>_("All Types"),
 		'1'=> _("Sales Invoices"),
-		'2'=> _("Overdue Invoices"),
+		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
 		'5' => _("Delivery Notes")
 	);
-	echo array_selector($name, $selected, $allocs);
+	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
 	echo "</td>\n";
 }
 
@@ -2140,7 +2161,7 @@ function supp_allocations_list_cell($name, $selected=null)
 	echo "</td>\n";
 }
 
-function supp_transactions_list_cell($name, $selected=null)
+function supp_transactions_list_cell($name, $selected=null, $submit_on_change=false)
 {
 
 	echo "<td>\n";
@@ -2148,13 +2169,13 @@ function supp_transactions_list_cell($name, $selected=null)
 		ALL_TEXT=>_("All Types"),
 		'6'=>_("GRNs"),
 		'1'=> _("Invoices"),
-		'2'=> _("Overdue Invoices"),
+		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
 		'5' => _("Overdue Credit Notes")
 	);
 
-	echo array_selector($name, $selected, $allocs);
+	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
 	echo "</td>\n";
 }
 
@@ -2618,12 +2639,12 @@ function subledger_list($name, $account, $selected_id=null)
 		FROM "
 		.TB_PREF."debtors_master d,"
 		.TB_PREF."cust_branch c
-		WHERE d.debtor_no=c.debtor_no AND c.receivables_account=".db_escape($account);
+		WHERE d.debtor_no=c.debtor_no AND NOT d.inactive AND c.receivables_account=".db_escape($account);
 	else
 		$sql = "SELECT supplier_id as id, supp_ref as name 
 		FROM "
 		.TB_PREF."suppliers s
-		WHERE s.payable_account=".db_escape($account);
+		WHERE NOT s.inactive AND s.payable_account=".db_escape($account);
 
 	$mode = get_company_pref('no_customer_list');
 

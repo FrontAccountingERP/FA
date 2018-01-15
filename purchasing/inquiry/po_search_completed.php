@@ -107,7 +107,7 @@ $sql = get_sql_for_po_search_completed(get_post('OrdersAfterDate'), get_post('Or
 	get_post('SelectStockFromList'), get_post('also_closed'));
 
 $cols = array(
-		_("#") => array('fun'=>'trans_view', 'ord'=>''), 
+		_("#") => array('fun'=>'trans_view', 'ord'=>'', 'align'=>'right'), 
 		_("Reference"), 
 		_("Supplier") => array('ord'=>''),
 		_("Location"),

@@ -17,7 +17,7 @@ class fa2_3 extends fa_patch {
 	var $preconf = true;
 	var $beta = false; // upgrade from 2.2 or 2.3beta;
 	
-	function fa2_3() {
+	function __construct() {
 		$this->description = _('Upgrade from version 2.2 to 2.3');
 	}
 	

@@ -29,7 +29,7 @@ class LZWDecode {
     var $nextBits = 0;
     var $andTable = array(511, 1023, 2047, 4095);
 
-    function LZWDecode(&$fpdi) {
+    function __construct(&$fpdi) {
         $this->fpdi =& $fpdi;
     }
 

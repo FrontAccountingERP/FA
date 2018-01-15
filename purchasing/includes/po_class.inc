@@ -47,7 +47,7 @@ class purch_order
 
 	var $fixed_asset = false;
 
-	function purch_order()
+	function __construct()
 	{
 		/*Constructor function initialises a new purchase order object */
 		$this->line_items = array();
@@ -216,7 +216,7 @@ class po_line_details
 	var $standard_cost;
 	var $descr_editable;
 
-	function po_line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
+	function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
 		$qty_inv, $qty_recd, $grn_item_id=0)
 	{
 

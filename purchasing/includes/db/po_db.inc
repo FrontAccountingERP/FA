@@ -148,7 +148,7 @@ function update_po(&$po_obj)
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
-	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->orig_order_date, $po_obj->get_trans_total(), $po_obj->prepayments);
+	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->orig_order_date, $po_obj->get_trans_total(), $po_obj->prepayments, $po_obj->supplier_id);
 
 	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
@@ -192,7 +192,7 @@ function read_po_header($order_no, &$order)
       	$order->delivery_address = $myrow["delivery_address"];
       	$order->alloc = $myrow["alloc"];
       	$order->prep_amount = $myrow["prep_amount"];
-      	$order->prepayments = get_payments_for($order_no, ST_PURCHORDER);
+      	$order->prepayments = get_payments_for($order_no, ST_PURCHORDER, $myrow["supplier_id"]);
 
       	return true;
 	}

@@ -106,6 +106,9 @@ function edit_link($row)
 {
 	global $page_nested;
 
+	if (is_prepaid_order_open($row['order_no']))
+		return '';
+
 	return $page_nested ? '' : trans_editor_link($row['trans_type'], $row['order_no']);
 }
 
@@ -246,7 +249,7 @@ $sql = get_sql_for_sales_orders_view($trans_type, get_post('OrderNumber'), get_p
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
-		_("Order #") => array('fun'=>'view_link'),
+		_("Order #") => array('fun'=>'view_link', 'align'=>'right'),
 		_("Ref") => array('type' => 'sorder.reference', 'ord' => '') ,
 		_("Customer") => array('type' => 'debtor.name' , 'ord' => '') ,
 		_("Branch"), 
@@ -260,7 +263,7 @@ if ($trans_type == ST_SALESORDER)
 	);
 else
 	$cols = array(
-		_("Quote #") => array('fun'=>'view_link'),
+		_("Quote #") => array('fun'=>'view_link', 'align'=>'right'),
 		_("Ref"),
 		_("Customer"),
 		_("Branch"), 

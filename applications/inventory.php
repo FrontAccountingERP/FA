@@ -11,9 +11,9 @@
 ***********************************************************************/
 class inventory_app extends application
 {
-	function inventory_app()
+	function __construct()
 	{
-		$this->application("stock", _($this->help_context = "&Items and Inventory"));
+		parent::__construct("stock", _($this->help_context = "&Items and Inventory"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Inventory Location &Transfers"),

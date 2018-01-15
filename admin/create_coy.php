@@ -43,6 +43,12 @@ function check_data($selected_id)
 			display_error(_("Database settings are not specified."));
 	 		return false;
 		}
+		if ($_POST['port'] != '' && !is_numeric($_POST['port'])) 
+		{
+			display_error(_('Database port has to be numeric or empty.'));
+			return false;
+		}
+	
 		foreach($db_connections as $id=>$con)
 		{
 		 if($id != $selected_id && $_POST['host'] == $con['host'] 
@@ -96,6 +102,7 @@ function handle_submit($selected_id)
 	$db_connections[$selected_id]['name'] = $_POST['name'];
 	if ($new) {
 		$db_connections[$selected_id]['host'] = $_POST['host'];
+		$db_connections[$selected_id]['port'] = $_POST['port'];
 		$db_connections[$selected_id]['dbuser'] = $_POST['dbuser'];
 		$db_connections[$selected_id]['dbpassword'] = html_entity_decode($_POST['dbpassword'], ENT_QUOTES, 
 			$_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding);
@@ -237,7 +244,7 @@ function display_companies()
 
 	start_table(TABLESTYLE);
 
-	$th = array(_("Company"), _("Database Host"), _("Database User"),
+	$th = array(_("Company"), _("Database Host"), _("Database Port"), _("Database User"),
 		_("Database Name"), _("Table Pref"), _("Charset"), _("Default"), "", "");
 	table_header($th);
 
@@ -253,10 +260,11 @@ function display_companies()
 
 		label_cell($conn[$i]['name']);
 		label_cell($conn[$i]['host']);
+		label_cell(isset($conn[$i]['port']) ? $conn[$i]['port'] : '');
 		label_cell($conn[$i]['dbuser']);
 		label_cell($conn[$i]['dbname']);
 		label_cell($conn[$i]['tbpref']);
-		label_cell($supported_collations[$conn[$i]['collation']]);
+		label_cell(isset($conn[$i]['collation']) ? $supported_collations[$conn[$i]['collation']] : '');
 		label_cell($i == $def_coy ? _("Yes") : _("No"));
 	 	edit_button_cell("Edit".$i, _("Edit"));
 		if ($i != $coyno)
@@ -273,6 +281,7 @@ function display_companies()
 	end_table();
     display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
     display_note(_("If no Admin Password is entered, the new Admin Password will be '<b>password</b>' by default "));
+    display_note(_("Set Only Port value if you cannot use the default port 3306."));
 }
 
 //---------------------------------------------------------------------------------------------
@@ -288,13 +297,14 @@ function display_company_edit($selected_id)
 		$conn = $db_connections[$selected_id];
 		$_POST['name'] = $conn['name'];
 		$_POST['host']  = $conn['host'];
+		$_POST['port'] = isset($conn['port']) ? $conn['port'] : '';
 		$_POST['dbuser']  = $conn['dbuser'];
 		$_POST['dbpassword']  = $conn['dbpassword'];
 		$_POST['dbname']  = $conn['dbname'];
 		$_POST['tbpref']  = $conn['tbpref'];
 		$_POST['def'] = $selected_id == $def_coy;
 		$_POST['dbcreate']  = false;
-		$_POST['collation']  = $conn['collation'];
+		$_POST['collation']  = isset($conn['collation']) ? $conn['collation'] : '';
 		hidden('tbpref', $_POST['tbpref']);
 		hidden('dbpassword', $_POST['dbpassword']);
 	}
@@ -306,10 +316,11 @@ function display_company_edit($selected_id)
 		$conn = $db_connections[user_company()];
 		$_POST['name'] = '';
 		$_POST['host']  = $conn['host'];
+		$_POST['port']  = isset($conn['port']) ? $conn['port'] : '';
 		$_POST['dbuser']  = $conn['dbuser'];
 		$_POST['dbpassword']  = $conn['dbpassword'];
 		$_POST['dbname']  = $conn['dbname'];
-		$_POST['collation']  = $conn['collation'];
+		$_POST['collation']  = isset($conn['collation']) ? $conn['collation'] : '';
 		unset($_POST['def']);
 	}
 
@@ -318,6 +329,7 @@ function display_company_edit($selected_id)
 	if ($selected_id == -1)
 	{
 		text_row_ex(_("Host"), 'host', 30, 60);
+		text_row_ex(_("Port"), 'port', 30, 60);
 		text_row_ex(_("Database User"), 'dbuser', 30);
 		text_row_ex(_("Database Password"), 'dbpassword', 30);
 		text_row_ex(_("Database Name"), 'dbname', 30);
@@ -328,8 +340,10 @@ function display_company_edit($selected_id)
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 	} else {
 		label_row(_("Host"), $_POST['host']);
+		label_row(_("Port"), $_POST['port']);
 		label_row(_("Database User"), $_POST['dbuser']);
 		label_row(_("Database Name"), $_POST['dbname']);
+		collations_list_row(_("Database Collation:"), 'collation');
 		label_row(_("Table Pref"), $_POST['tbpref']);
 		if (!get_post('def'))
 			check_row(_("Default Company"), 'def');

@@ -21,7 +21,7 @@ class sys_prefs
 	var $prefs;
 	var $db_ok; // check whether database has been upgraded after src update.
 
-	function sys_prefs()
+	function __construct()
 	{
 		global $path_to_root;
 

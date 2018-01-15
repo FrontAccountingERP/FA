@@ -105,7 +105,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["abbr"]);
 	label_cell($myrow["name"]);
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
-	$id = htmlentities($myrow["abbr"]);
+	$id = html_specials_encode($myrow["abbr"]);
 	inactive_control_cell($id, $myrow["inactive"], 'item_units', 'abbr');
  	edit_button_cell("Edit".$id, _("Edit"));
  	delete_button_cell("Delete".$id, _("Delete"));

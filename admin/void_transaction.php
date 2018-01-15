@@ -73,7 +73,7 @@ function exist_transaction($type, $type_no)
 			return false;
 
 		case ST_SUPPRECEIVE : // it's a GRN
-			if (exists_grn($type_no))
+			if (!exists_grn($type_no))
 				return false;
 			break;
 
@@ -319,6 +319,7 @@ if (isset($_POST['ProcessVoiding']))
 if (isset($_POST['ConfirmVoiding']))
 {
 	handle_void_transaction();
+	$selected_id = '';
 	$Ajax->activate('_page_body');
 }
 

@@ -70,20 +70,21 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	}
 	foreach ($delivery->line_items as $line_no => $delivery_line) {
 
+		$qty = $delivery_line->qty_dispatched;
 		$line_price = $delivery_line->line_price();
 		$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
-			$delivery_line->price, 0, $delivery->tax_included,
+			$delivery_line->price*$qty, 0, $delivery->tax_included,
 			$delivery->tax_group_array);
 
-		$line_tax = get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
-			0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
+		$line_tax = get_full_price_for_item($delivery_line->stock_id,
+				$delivery_line->price * $qty, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
 		$delivery_line->standard_cost = get_unit_cost($delivery_line->stock_id);
 
 		/* add delivery details for all lines */
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 			$delivery_line->item_description, $delivery_line->qty_dispatched,
-			$delivery_line->line_price(), $line_tax,
+			$delivery_line->line_price(), $qty ? $line_tax/$qty : 0,
 			$delivery_line->discount_percent, $delivery_line->standard_cost, $delivery_line->src_id,
 			$trans_no ? $delivery_line->id : 0);
 
@@ -119,8 +120,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
 
 				$total += add_gl_trans_customer(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $sales_account, $dim, $dim2,
-					-$line_taxfree_price*$delivery_line->qty_dispatched, // FIXME - calculation order should be exactly like in invoice to minimalize roundings
-					$delivery->customer_id, "The sales price GL posting could not be inserted");
+					-$line_taxfree_price, $delivery->customer_id, "The sales price GL posting could not be inserted");
 			}
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 			

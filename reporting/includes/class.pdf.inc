@@ -63,9 +63,9 @@ include_once (dirname(__FILE__).'/fpdi/fpdi.php');
 
 class Cpdf extends FPDI {
 
-	function Cpdf($pageSize='A4', $lang=null, $pageOrientation='P')
+	function __construct($pageSize='A4', $lang=null, $pageOrientation='P')
 	{
-		$this->TCPDF($pageOrientation, 'pt', $pageSize);//, $uni, $enc);
+		parent::__construct($pageOrientation, 'pt', $pageSize);//, $uni, $enc);
 		$this->SetLang($lang);
 		$this->setPrintHeader(false);
 		$this->setPrintFooter(false);

@@ -157,7 +157,7 @@ function vertical_space($params='')
 	echo "</td></tr><tr><td valign=center $params>";
 }
 
-function meta_forward($forward_to, $params="", $timeout=0)
+function meta_forward($forward_to, $params="", $timeout=0, $return=false)
 {
     global $Ajax;
 	echo "<meta http-equiv='Refresh' content='".$timeout."; url=$forward_to?$params'>\n";
@@ -165,7 +165,7 @@ function meta_forward($forward_to, $params="", $timeout=0)
 	echo " " . _("If this does not happen") . " " . "<a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
 	if ($params !='') $params = '?'.$params;
 	$Ajax->redirect($forward_to.$params);
-	exit;
+	if (!$return) exit;
 }
 
 //-----------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
 			$pars[0] = set_icon($icon, $pars[0]);
--		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -503,7 +503,7 @@ function tab_visible($name, $tab)
 */
 $popup_editors = array(
 	'customer' => array('/sales/manage/customers.php?debtor_no=', 
-		113,	_("Customers"), 900, 500),
+		113,	_("Customers"), 900, 600),
 	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
 		114, _("Branches"), 900, 700),
 	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 

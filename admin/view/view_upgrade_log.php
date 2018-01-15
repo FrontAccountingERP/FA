@@ -30,7 +30,7 @@ br();
   start_table();
 	start_row();
 
-	$log = strtr(file_get_contents($path_to_root.'/tmp/upgrade.'.$_GET['id'].'.log'), 
+	$log = strtr(file_get_contents(VARLOG_PATH.'/upgrade.'.$_GET['id'].'.log'), 
 		  array('Fatal error' => 'Fatal  error')); // prevent misinterpretation in output_handler
     label_cells(null, nl2br(html_specials_encode($log)));
 	end_row();
