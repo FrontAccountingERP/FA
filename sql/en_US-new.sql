@@ -746,7 +746,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES (1, '2016-01-01', '2016-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES (1, '2018-01-01', '2018-12-31', 0);
 
 -- --------------------------------------------------------
 
