@@ -301,6 +301,7 @@ INSERT INTO `0_chart_master` VALUES ('1825', '', 'Accum. Amort. -Furn. &amp; Equ
 INSERT INTO `0_chart_master` VALUES ('1840', '', 'Vehicle', '3', 0);
 INSERT INTO `0_chart_master` VALUES ('1845', '', 'Accum. Amort. -Vehicle', '3', 0);
 INSERT INTO `0_chart_master` VALUES ('2100', '', 'Accounts Payable', '4', 0);
+INSERT INTO `0_chart_master` VALUES ('2105', '', 'Deferred Income', '4', 0);
 INSERT INTO `0_chart_master` VALUES ('2110', '', 'Accrued Income Tax - Federal', '4', 0);
 INSERT INTO `0_chart_master` VALUES ('2120', '', 'Accrued Income Tax - State', '4', 0);
 INSERT INTO `0_chart_master` VALUES ('2130', '', 'Accrued Franchise Tax', '4', 0);
@@ -1213,6 +1214,7 @@ INSERT INTO `0_payment_terms` VALUES (1, 'Due 15th Of the Following Month', 0, 1
 INSERT INTO `0_payment_terms` VALUES (2, 'Due By End Of The Following Month', 0, 30, 0);
 INSERT INTO `0_payment_terms` VALUES (3, 'Payment due within 10 days', 10, 0, 0);
 INSERT INTO `0_payment_terms` VALUES (4, 'Cash Only', 0, 0, 0);
+INSERT INTO `0_payment_terms` VALUES (5, 'Prepaid', -1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -2159,7 +2161,7 @@ INSERT INTO `0_sys_prefs` VALUES ('version_id', 'system', 'varchar', 11, '2.4.1'
 INSERT INTO `0_sys_prefs` VALUES ('auto_curr_reval', 'setup.company', 'smallint', 6, '1');
 INSERT INTO `0_sys_prefs` VALUES ('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550');
 INSERT INTO `0_sys_prefs` VALUES ('bcc_email', 'setup.company', 'varchar', 100, '');
-INSERT INTO `0_sys_prefs` VALUES ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '');
+INSERT INTO `0_sys_prefs` VALUES ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '2105');
 INSERT INTO `0_sys_prefs` VALUES ('gl_closing_date','setup.closing_date', 'date', 8, '');
 INSERT INTO `0_sys_prefs` VALUES ('alternative_tax_include_on_docs','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('no_zero_lines_amount','glsetup.sales', 'tinyint', 1, '1');
