@@ -183,7 +183,7 @@ function print_sales_quotations()
 					if ($first)
 					{
 						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-						$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+						$rep->TextCol(6, 7,	number_format2($tax_item['net_amount'], $dec), -2);
 						$rep->NewLine();
 					}
 					$rep->TextCol(3, 6, $tax_type_name, -2);
