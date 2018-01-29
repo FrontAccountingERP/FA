@@ -135,7 +135,6 @@ function print_order_status_list()
 	$grand_total = 0;
 
 	$result = GetSalesOrders($from, $to, $category, $location, $backorder);
-	
 	while ($myrow=db_fetch($result))
 	{
 		$rep->NewLine(0, 2, false, $orderno);
@@ -154,7 +153,7 @@ function print_order_status_list()
 			$rep->DateCol(5, 6,	$myrow['delivery_date'], true);
 			$rep->TextCol(6, 7,	$myrow['from_stk_loc']);
 			$rep->NewLine(1);
-			$rep->TextCol(6, 7, number_format2($myrow['total'], $dec));
+			$rep->AmountCol(6, 7, $myrow['total']);
 			$rep->NewLine(1);
 			$grand_total += $myrow['total'];		
 			$orderno = $myrow['order_no'];
@@ -175,8 +174,8 @@ function print_order_status_list()
 	}
 	$rep->Line($rep->row);
 	$rep->NewLine();
-	$rep->TextCol(1, 6, _("Total")); 
-	$rep->TextCol(6, 7, number_format2($grand_total, $dec));
+	$rep->TextCol(1, 6, _("Grand Total")); 
+	$rep->AmountCol(6, 7, $grand_total);
 	$rep->Line($rep->row - 5);
 	$rep->End();
 }
