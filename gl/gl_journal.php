@@ -129,7 +129,6 @@ function create_cart($type=0, $trans_no=0)
 		}
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->reference = $header['reference'];
-
 		// update net_amounts from tax register
 
 		// retrieve tax details
@@ -327,6 +326,15 @@ if (isset($_POST['Process']))
 	} else
 		$cart->tax_info = false;
 	$trans_no = write_journal_entries($cart);
+
+        // retain the reconciled status if desired by user
+        if (isset($_POST['reconciled'])
+            && $_POST['reconciled'] == 1) {
+            $sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".db_escape($_POST['reconciled_date'])
+                ." WHERE type=" . ST_JOURNAL . " AND trans_no=".db_escape($trans_no);
+
+            db_query($sql, "Can't change reconciliation status");
+        }
 
 	$cart->clear_items();
 	new_doc_date($_POST['date_']);

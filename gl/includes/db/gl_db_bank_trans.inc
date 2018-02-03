@@ -76,13 +76,13 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 				 LEFT JOIN ".TB_PREF."suppliers supplier ON supplier.supplier_id = st.supplier_id,
 			 ".TB_PREF."bank_accounts act
 		WHERE act.id=bt.bank_act ";
-	if ($type != null)
+	if (isset($type))
 		$sql .= " AND bt.type=".db_escape($type);
-	if ($trans_no != null)
+	if (isset($trans_no))
 		$sql .= " AND bt.trans_no = ".db_escape($trans_no);
-	if ($person_type_id != null)
+	if (isset($person_type_id))
 		$sql .= " AND bt.person_type_id = ".db_escape($person_type_id);
-	if ($person_id != null)
+	if (isset($person_id))
 		$sql .= " AND bt.person_id = ".db_escape($person_id);
 	$sql .= " ORDER BY trans_date, bt.id";
 
