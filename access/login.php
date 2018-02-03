@@ -116,7 +116,7 @@ function defaultCompany()
 		end_row();
 	}; 
 	end_table(1);
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".fallback_mode()."' >\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".!fallback_mode()."' >\n";
 	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
 		." onclick='set_fullmode();'".(isset($blocked_msg) ? " disabled" : '')." ></center>\n";
 
