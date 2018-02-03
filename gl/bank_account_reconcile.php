@@ -90,6 +90,12 @@ function fmt_person($trans)
 	return get_counterparty_name($trans["type"], $trans["trans_no"]);
 }
 
+function fmt_memo($row)
+{
+	$value = $row["memo_"];
+	return $value;
+}
+
 function update_data()
 {
 	global $Ajax;
@@ -124,6 +130,26 @@ function change_tpl_flag($reconcile_id)
 	return true;
 }
 
+function set_tpl_flag($reconcile_id)
+{
+	global	$Ajax;
+
+	if (check_value("rec_".$reconcile_id))
+		return;
+
+	if (get_post('bank_date')=='')	// new reconciliation
+		$Ajax->activate('bank_date');
+
+	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+	$reconcile_value =  ("'".$_POST['bank_date'] ."'");
+	
+	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
+		input_num('end_balance'), $_POST['bank_account']);
+		
+	$Ajax->activate('reconciled');
+	$Ajax->activate('difference');
+}
+
 if (!isset($_POST['reconcile_date'])) { // init page
 	$_POST['reconcile_date'] = new_doc_date();
 //	$_POST['bank_date'] = date2sql(Today());
@@ -148,11 +174,21 @@ $id = find_submit('_rec_');
 if ($id != -1) 
 	change_tpl_flag($id);
 
+
 if (isset($_POST['Reconcile'])) {
 	set_focus('bank_date');
 	foreach($_POST['last'] as $id => $value)
 		if ($value != check_value('rec_'.$id))
 			if(!change_tpl_flag($id)) break;
+
+    $Ajax->activate('_page_body');
+}
+
+if (isset($_POST['ReconcileAll'])) {
+	set_focus('bank_date');
+	foreach($_POST['last'] as $id => $value)
+		set_tpl_flag($id);
+
     $Ajax->activate('_page_body');
 }
 
@@ -234,6 +270,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
 	    _("Person/Item") => array('fun'=>'fmt_person'), 
+		_("Memo") => array('fun'=>'fmt_memo'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
 	   );
@@ -243,8 +280,10 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 	display_db_pager($table);
 
 br(1);
-submit_center('Reconcile', _("Reconcile"), true, '', null);
-
+echo '<center>';
+submit('Reconcile', _("Reconcile"), true, '', null);
+submit('ReconcileAll', _("Reconcile All"), true, '');
+echo '</center>';
 end_form();
 
 //------------------------------------------------------------------------------------------------
