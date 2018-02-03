@@ -149,7 +149,7 @@ function get_supplier_name($supplier_id)
 
 function get_supplier_accounts($supplier_id)
 {
-	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
+	$sql = "SELECT payable_account,purchase_account,payment_discount_account, dimension_id, dimension2_id FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 

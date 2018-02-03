@@ -218,11 +218,6 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $id);
-		echo gl_all_accounts_list('code_id', null, true, true);
-		if ($dim >= 1)
-			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
-		if ($dim > 1)
-			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
 	    $Ajax->activate('items_table');
 	}
 	else
@@ -233,30 +228,36 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		if(isset($_POST['_code_id_update'])) {
 			    $Ajax->activate('code_id');
 		}
-
-		if ($_POST['PayType'] == PT_CUSTOMER)
+		if (list_updated('PayType') || list_updated('person_id'))
 		{
-			$acc = get_branch_accounts($_POST['PersonDetailID']);
-			$_POST['code_id'] = $acc['receivables_account'];
+			if ($_POST['PayType'] == PT_CUSTOMER)
+			{
+				$acc = get_branch_accounts($_POST['PersonDetailID']);
+				$_POST['code_id'] = $acc['receivables_account'];
+			}
+			elseif ($_POST['PayType'] == PT_SUPPLIER)
+			{
+				$acc = get_supplier_accounts($_POST['person_id']);
+				$_POST['code_id'] = $acc['payable_account'];
+				$_POST['dimension_id'] = $acc['dimension_id'];
+				$_POST['dimension2_id'] = $acc['dimension2_id'];
+			}
+			else {
+				$_POST['code_id'] =
+					get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
+			}
+		$Ajax->activate('dimension_id');
+		$Ajax->activate('dimension2_id');
 		}
-		elseif ($_POST['PayType'] == PT_SUPPLIER)
-		{
-			$acc = get_supplier_accounts($_POST['person_id']);
-			$_POST['code_id'] = $acc['payable_account'];
-		}
-		else {
-			$_POST['code_id'] =
-				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
-		}
-		echo gl_all_accounts_list('code_id', null, true, true);
-		if ($dim >= 1)
-			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
-		if ($dim > 1)
-			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
 	}
-	if ($dim < 1)
+	echo gl_all_accounts_list('code_id', null, true, true);
+	if ($dim >= 1)
+		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+	else
 		hidden('dimension_id', 0);
-	if ($dim < 2)
+	if ($dim > 1)
+		dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+	else
 		hidden('dimension2_id', 0);
 
 	amount_cells(null, 'amount');
