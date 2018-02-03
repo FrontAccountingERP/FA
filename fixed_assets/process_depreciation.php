@@ -132,8 +132,8 @@ function show_gl_rows() {
 function show_gl_controls() {
   global $Ajax;
 
-  check_db_has_stock_items('There are no active fixed asset defined in the system.');
-
+  check_db_has_depreciable_fixed_assets('There are no active fixed asset defined in the system.');
+ 
   start_table(TABLESTYLE_NOBORDER);
   start_row();
   stock_depreciable_fa_list_cells(_("Select an item:"), 'stock_id', null,
