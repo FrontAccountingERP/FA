@@ -105,7 +105,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 
 function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$account=null, $dimension=0, $dimension2=0, $filter_type=null,
-	$amount_min=null, $amount_max=null, $person_id=null)
+        $amount_min=null, $amount_max=null, $person_id=null, $memo='')
 {
 	global $SysPrefs;
 
@@ -115,6 +115,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$sql = "SELECT gl.*, j.event_date, j.doc_date, a.gl_seq, u.user_id, st.supp_reference, gl.person_id subcode,
 			IFNULL(IFNULL(sup.supp_name, debt.name), bt.person_id) as person_name, 
 			IFNULL(gl.person_id, IFNULL(sup.supplier_id, debt.debtor_no)) as person_id,
+                        IF(gl.person_id, gl.person_type_id, IF(sup.supplier_id,".  PT_SUPPLIER . "," .  "IF(debt.debtor_no," . PT_CUSTOMER . ", -1))) as person_type_id,
 			IFNULL(st.tran_date, IFNULL(dt.tran_date, IFNULL(bt.trans_date, IFNULL(grn.delivery_date, gl.tran_date)))) as doc_date,
 			coa.account_name, ref.reference
 			 FROM "
@@ -153,10 +154,10 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	if ($account != null)
 		$sql .= " AND gl.account = ".db_escape($account);
 
-	if ($dimension > 0)
+	if ($dimension != 0)
 		$sql .= " AND gl.dimension_id = ".($dimension<0 ? 0 : db_escape($dimension));
 
-	if ($dimension2 > 0)
+	if ($dimension2 != 0)
 		$sql .= " AND gl.dimension2_id = ".($dimension2<0 ? 0 : db_escape($dimension2));
 
 	if ($filter_type != null AND is_numeric($filter_type))
@@ -167,6 +168,10 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	
 	if ($amount_max != null)
 		$sql .= " AND ABS(gl.amount) <= ABS(".db_escape($amount_max).")";
+
+        if ($memo) {
+                $sql .= " AND gl.memo_ LIKE ". db_escape("%$memo%");
+        }
 
 	$sql .= " ORDER BY tran_date, counter";
 
