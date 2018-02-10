@@ -1062,6 +1062,7 @@ function CC() {
   var selectedYear = 0;
   var selectedMonth = 0;
   var selectedDay = 0;
+  var toDate = false;
   var months = ['$months[0]','$months[1]','$months[2]','$months[3]','$months[4]','$months[5]','$months[6]','$months[7]','$months[8]','$months[9]','$months[10]','$months[11]'];
   var wdays = ['$wdays[0]', '$wdays[1]', '$wdays[2]', '$wdays[3]', '$wdays[4]', '$wdays[5]', '$wdays[6]'];
   var tmonths = ['$tmonths[0]','$tmonths[1]','$tmonths[2]','$tmonths[3]','$tmonths[4]','$tmonths[5]','$tmonths[6]','$tmonths[7]','$tmonths[8]','$tmonths[9]','$tmonths[10]','$tmonths[11]','$tmonths[12]'];
@@ -1307,19 +1308,19 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    if (dateField.name.indexOf(\"After\") != -1) {
-        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+thisYear+\",\"+1+\",\"+1+\")\\\">\"+\"$yearstart</a></td></tr>\";
-        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+lastYear+\",\"+1+\",\"+1+\")\\\">\"+\"$lastyearstart</a></td></tr>\";
-    }
-    if (dateField.name.indexOf(\"To\") != -1) {
+    if (toDate) {
         table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+thisYear+\",\"+12+\",\"+31+\")\\\">\"+\"$yearend</a></td></tr>\";
         table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+lastYear+\",\"+12+\",\"+31+\")\\\">\"+\"$lastyearend</a></td></tr>\";
+    } else {
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+thisYear+\",\"+1+\",\"+1+\")\\\">\"+\"$yearstart</a></td></tr>\";
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+lastYear+\",\"+1+\",\"+1+\")\\\">\"+\"$lastyearstart</a></td></tr>\";
     }
     table += \"</table>\";
     return table;
   }
   this.show = show;
-  function show(field) {
+  function show(field, todate) {
+    toDate = todate;
     can_hide = 0;
     if (dateField == field) {
       return;
@@ -1399,7 +1400,7 @@ function CC() {
     lastYear = thisYear - 1;
     if(document.getElementById){
       calendar = document.getElementById(calendarId);
-      calendar.innerHTML = calendarDrawTable(currentYear, currentMonth);
+      calendar.innerHTML = calendarDrawTable();
       var fieldPos = new positionInfo(dateField);
       var calendarPos = new positionInfo(calendarId);
       var x = fieldPos.getElementLeft();
@@ -1432,11 +1433,11 @@ function CC() {
   var can_hide = 0;
 }
 var cC = new CC();
-function date_picker(textField) {
+function date_picker(textField, todate = (textField.name.indexOf(\"To\") != -1)) {
   if (cC.visible()) {
     cC.hide();
   } else
-    cC.show(textField);
+    cC.show(textField, todate);
 }
 function hideCC() {
   if (cC.visible()) {
