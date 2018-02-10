@@ -87,7 +87,7 @@ function fmt_credit($row)
 
 function fmt_person($trans)
 {
-	return get_counterparty_name($trans["type"], $trans["trans_no"]);
+     return payment_person_name($trans["person_type_id"],$trans["person_id"]);
 }
 
 function fmt_memo($row)
