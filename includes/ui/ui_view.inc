@@ -982,7 +982,10 @@ function get_js_date_picker()
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
 	$wno = _("W"); // week no
-	$back = _("Back");
+	$yearstart = _("Start Of Year");
+	$yearend = _("End Of Year");
+	$lastyearstart = _("Start Of Last Year");
+	$lastyearend = _("End Of Last Year");
 	if ($date_system == 1)
 		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
 	elseif ($date_system == 2)
@@ -1304,7 +1307,14 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
+    if (dateField.name.indexOf(\"After\") != -1) {
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+thisYear+\",\"+1+\",\"+1+\")\\\">\"+\"$yearstart</a></td></tr>\";
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+lastYear+\",\"+1+\",\"+1+\")\\\">\"+\"$lastyearstart</a></td></tr>\";
+    }
+    if (dateField.name.indexOf(\"To\") != -1) {
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+thisYear+\",\"+12+\",\"+31+\")\\\">\"+\"$yearend</a></td></tr>\";
+        table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href=\\\"javascript:setCCDate(\"+lastYear+\",\"+12+\",\"+31+\")\\\">\"+\"$lastyearend</a></td></tr>\";
+    }
     table += \"</table>\";
     return table;
   }
@@ -1383,6 +1393,10 @@ function CC() {
     currentMonth = selectedMonth;
     currentDay = selectedDay;
     currentYear = selectedYear;
+    thisMonth = getCurrentMonth();
+    thisYear = getCurrentYear();
+    endMonth =  getDaysInMonth(thisYear, thisMonth);
+    lastYear = thisYear - 1;
     if(document.getElementById){
       calendar = document.getElementById(calendarId);
       calendar.innerHTML = calendarDrawTable(currentYear, currentMonth);
@@ -1419,7 +1433,10 @@ function CC() {
 }
 var cC = new CC();
 function date_picker(textField) {
-  cC.show(textField);
+  if (cC.visible()) {
+    cC.hide();
+  } else
+    cC.show(textField);
 }
 function hideCC() {
   if (cC.visible()) {
