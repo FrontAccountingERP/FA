@@ -136,7 +136,7 @@ function check_data()
 		return false;
 	}
 	$id = array_search_value($_POST['code'], $installed_languages, 'code');
-	if ($id !== null && $installed_languages[$id]['package'] != null) {
+	if ($id !== null && $id['package'] != null) {
 		display_error(_('Standard package for this language is already installed. If you want to install this language manually, uninstall standard language package first.'));
 		return false;
 	}
