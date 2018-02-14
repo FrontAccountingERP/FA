@@ -13,6 +13,7 @@ function display_bank_header(&$order)
 {
 	global $Ajax;
 	$payment = $order->trans_type == ST_BANKPAYMENT;
+        $new = $order->order_id==0;
 
 	$customer_error = false;
 	div_start('pmt_header');
@@ -118,6 +119,17 @@ function display_bank_header(&$order)
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 	exchange_rate_display(get_company_currency(), $bank_currency, $_POST['date_']);
+
+        // Query the user to retain the reconciled status
+        if (!$new) {
+            $result = get_bank_trans($order->trans_type, $order->order_id);
+            $row = db_fetch($result);
+            if ($row
+                && $row['reconciled'] != "") {
+                check_row(_('Reconciled:'), 'reconciled', 1, true);
+                hidden('reconciled_date', $row['reconciled']);
+            }
+        }
 
 	end_outer_table(1); // outer table
 
