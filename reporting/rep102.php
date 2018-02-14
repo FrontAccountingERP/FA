@@ -55,8 +55,8 @@ function get_invoices($customer_id, $to, $all=true)
 			AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > " . FLOAT_COMP_DELTA;
 
 	if (!$all)
-		$sql .= "AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc) > " . FLOAT_COMP_DELTA;
-	$sql .= "ORDER BY tran_date";
+                $sql .= " AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc) > " . FLOAT_COMP_DELTA;
+        $sql .= " ORDER BY tran_date";
 
 	return db_query($sql, "The customer transactions could not be retrieved");
 }
