@@ -92,6 +92,20 @@ function gl_inquiry_controls()
     end_form();
 }
 
+function edit_link($row)
+{
+
+        $ok = true;
+        if ($row['type'] == ST_SALESINVOICE)
+        {
+                $myrow = get_customer_trans($row["type_no"], $row["type"]);
+                if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE,
+ $row["type_no"]) !== false)
+                        $ok = false;
+        }
+        return $ok ? trans_editor_link( $row["type"], $row["type_no"]) : '';
+}
+
 //----------------------------------------------------------------------------------------------------
 
 function show_results()
@@ -199,10 +213,7 @@ function show_results()
 		if ($myrow['memo_'] == "")
 			$myrow['memo_'] = get_comments_string($myrow['type'], $myrow['type_no']);
     	label_cell($myrow['memo_']);
-        if ($myrow["type"] == ST_JOURNAL)
-            echo "<td>" . trans_editor_link( $myrow["type"], $myrow["type_no"]) . "</td>";
-        else
-            label_cell("");
+        echo "<td>" . edit_link($myrow) . "</td>";
     	end_row();
 
     	$j++;
