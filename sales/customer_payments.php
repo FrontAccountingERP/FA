@@ -237,10 +237,11 @@ if (get_post('AddPaymentItem') && can_process()) {
 	new_doc_date($_POST['DateBanked']);
 
 	$new_pmt = !$_SESSION['alloc']->trans_no;
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
+        $row = get_customer($_POST['customer_id']);
 	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
+                input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')), $row['dimension_id'], $row[$dimension2_id]);
+
 
 	$_SESSION['alloc']->trans_no = $payment_no;
 	$_SESSION['alloc']->write();
