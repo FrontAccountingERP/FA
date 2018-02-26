@@ -286,6 +286,20 @@ function print_balance_sheet()
 	$rep->AmountCol(4, 5, $calc_open + $calc_period, $dec);
 	$rep->NewLine(2);
 
+        if ($equity_open != 0 || $equity_period != 0) {
+            //Print Class Summary      
+            $rep->row += 6;
+            $rep->Line($rep->row);
+            $rep->NewLine();
+            $rep->Font('bold');
+            $rep->TextCol(0, 2,        _('Total') . " " . _('Equities'));
+            $rep->AmountCol(2, 3, $calc_open + $class_open_total * $econvert, $dec);
+            $rep->AmountCol(3, 4, $calc_period + $class_period_total * $econvert, $dec);
+            $rep->AmountCol(4, 5, ($calc_open + $calc_period + ($class_open_total + $class_period_total) * $econvert), $dec);
+            $rep->Font();
+            $rep->NewLine(2);
+        }
+
 	$rep->Font('bold');	
 	$rep->TextCol(0, 2,	_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
 	$topen = $equity_open * $econvert + $liability_open * $lconvert + $calc_open;
