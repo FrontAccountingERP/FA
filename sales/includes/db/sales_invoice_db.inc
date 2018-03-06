@@ -204,7 +204,7 @@ function write_sales_invoice(&$invoice)
 					'branch' => $invoice->Branch, 'date' => $date_)),
 				$amount-$discount, $discount,
 				$invoice->pos['pos_name'].' #'.$invoice_no,
-                                0,0,0,$dim, $dim2);
+                                0,0,0,$invoice->dimension_id, $invoice->dimension2_id);
 			add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no, $invoice->customer_id, $date_);
 
 			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $invoice->customer_id);
