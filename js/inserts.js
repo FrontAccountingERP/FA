@@ -153,6 +153,8 @@ function _set_combo_select(e) {
 				 var sname = '_'+s.name+'_update';
 				 var update = document.getElementsByName(sname)[0];
 				 if(update) {
+                        if (typeof changeVar === "function")
+                            changeVar();
 					    JsHttpRequest.request(update);
 				}
 			}
@@ -335,6 +337,9 @@ var inserts = {
 	function(e) {
 			e.onclick = function() {
 				if (validate(e)) {
+                    if (typeof changeVar === "function")
+                        changeVar();
+
 					save_focus(e);
 					var asp = e.getAttribute('aspect')
 					if (asp && (asp.indexOf('process') !== -1))
