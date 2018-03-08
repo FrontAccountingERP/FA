@@ -113,7 +113,7 @@ function show_results()
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
     	input_num('amount_min'), input_num('amount_max'), null, $_POST['Memo']);
 
-	$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
+	$colspan = ($dim == 2 ? "7" : ($dim == 1 ? "6" : "5"));
 
 	if ($_POST["account"] != null)
 		display_heading($_POST["account"]. "&nbsp;&nbsp;&nbsp;".$act_name);
@@ -125,7 +125,7 @@ function show_results()
 		
 	start_table(TABLESTYLE);
 	
-	$first_cols = array(_("Type"), _("#"), _("Date"));
+	$first_cols = array(_("Type"), _("#"), _("Reference"), _("Date"));
 	
 	if ($_POST["account"] == null)
 	    $account_col = array(_("Account"));
@@ -183,6 +183,7 @@ function show_results()
 
     	label_cell($systypes_array[$myrow["type"]]);
 		label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
+		label_cell(get_trans_view_str($myrow["type"],$myrow["type_no"],$myrow['reference']));
     	label_cell($trandate);
     	
     	if ($_POST["account"] == null)
