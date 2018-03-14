@@ -142,7 +142,7 @@ function item_in_foreign_codes($stock_id)
 	 _('Cannot delete this item record because there are bills of material that require this part as a component.'),
 	"SELECT COUNT(*) FROM "
 		.TB_PREF."sales_order_details WHERE stk_code=".db_escape($stock_id) =>
-	 _('Cannot delete this item because there are existing purchase order items for it.'),
+	 _('Cannot delete this item because there are existing sales order items for it.'),
 	"SELECT COUNT(*) FROM "
 		.TB_PREF."purch_order_details WHERE item_code=".db_escape($stock_id)=>
 	 _('Cannot delete this item because there are existing purchase order items for it.')
