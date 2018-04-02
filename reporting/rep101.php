@@ -41,7 +41,7 @@ function get_open_balance($debtorno, $to)
 
     $sql .= "SUM(IF(t.type != ".ST_SALESINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.")), t.alloc * -1, t.alloc)) AS Allocated,";
 
- 	$sql .=	"SUM(IF(t.type = ".ST_SALESINVOICE.", 1, -1) *
+ 	$sql .=	"SUM(IF(t.type = ".ST_SALESINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0), 1, -1) *
  			(abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) - abs(t.alloc))) AS OutStanding
 		FROM ".TB_PREF."debtor_trans t
     	WHERE t.debtor_no = ".db_escape($debtorno)
@@ -117,6 +117,9 @@ function print_customer_balances()
 		$cust = get_customer_name($fromcust);
     	$dec = user_price_dec();
 
+	if ($show_balance) $sb = _('Yes');
+	else $sb = _('No');
+
 	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
@@ -140,8 +143,9 @@ function print_customer_balances()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
     				    2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
-    				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
-						4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+    				    3 => array('text' => _('Show Balance'), 'from' => $sb,   	'to' => ''),
+    				    4 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+						5 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
