@@ -26,7 +26,7 @@ class BoxReports
 	var $ar_reports;
 	var $ctrl_handlers = array();
 
-	function ReportClasses()
+	function __construct()
 	{
 		$this->ar_classes = array();
 	}
