@@ -77,6 +77,9 @@ class fa2_4 extends fa_patch {
 		if (get_company_pref('barcodes_on_stock') === null) { // available from 2.4.3, during updates
 			set_company_pref('barcodes_on_stock', 'setup.company', 'tinyint', 1, '0');
 		}
+		if (get_company_pref('ref_no_auto_increase') === null) { // available from 2.4.4, during updates
+			set_company_pref('ref_no_auto_increase', 'setup.company', 'tinyint', 1, '0');
+		}
 		if (get_company_pref('shortname_name_in_list') === null) { // available from 2.4.2, during updates
 			set_company_pref('shortname_name_in_list', 'setup.company', 'tinyint', 1, '0');
 		}
@@ -118,7 +121,7 @@ class fa2_4 extends fa_patch {
 				'default_quote_valid_days',	'no_zero_lines_amount',	'show_po_item_codes', 'accounts_alpha',
 				'loc_notification', 'print_invoice_no', 'allow_negative_prices', 'print_item_images_on_quote',
 				'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates', 'company_logo_report',
-				'barcodes_on_stock')");
+				'barcodes_on_stock', 'ref_no_auto_increase')");
 	}
 
 	function update_workorders()
