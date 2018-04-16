@@ -113,7 +113,7 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
 				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
-				'no_supplier_list' =>0, 'base_sales', 
+				'no_supplier_list' =>0, 'base_sales', 'ref_no_auto_increase' => 0,
 				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'add_pct', 'round_to', 'login_tout', 
 				'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
 				'use_manufacturing', 'use_fixed_assets'))
@@ -161,6 +161,12 @@ if (!isset($myrow["company_logo_report"]))
 	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
 }
 $_POST['company_logo_report']  = $myrow["company_logo_report"];
+if (!isset($myrow["ref_no_auto_increase"]))
+{
+	set_company_pref("ref_no_auto_increase", "setup.company", "tinyint", 1, '0');
+	$myrow["ref_no_auto_increase"] = get_company_pref("ref_no_auto_increase");
+}
+$_POST['ref_no_auto_increase']  = $myrow["ref_no_auto_increase"];
 if (!isset($myrow["barcodes_on_stock"]))
 {
 	set_company_pref("barcodes_on_stock", "setup.company", "tinyint", 1, '0');
@@ -208,6 +214,7 @@ check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POS
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
 check_row(_("Company Logo on Reports"), 'company_logo_report', $_POST['company_logo_report']);
 check_row(_("Use Barcodes on Stocks"), 'barcodes_on_stock', $_POST['barcodes_on_stock']);
+check_row(_("Auto Increase of Document References"), 'ref_no_auto_increase', $_POST['ref_no_auto_increase']);
 label_row(_("Database Scheme Version"), $_POST['version_id']);
 
 table_section(2);
