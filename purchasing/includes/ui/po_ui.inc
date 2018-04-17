@@ -211,11 +211,15 @@ function display_po_items(&$order, $editable=true)
     div_start('items_table');
     start_table(TABLESTYLE, "width='80%'");
 
-   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
-		_("Received"), _("Unit"),
-   		_("Required Delivery Date"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Line Total"), "");
+	$new = $order->order_no == 0;
+
+   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Received"),
+   		_("Unit"), _("Required Delivery Date"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Line Total"), "");
+
 	if ($order->trans_type != ST_PURCHORDER)
 		array_remove($th, 5);
+	if ($new)
+		array_remove($th, 3);
 
 	if (count($order->line_items)) $th[] = '';
 
@@ -236,8 +240,8 @@ function display_po_items(&$order, $editable=true)
     		    label_cell(1);
          	else
             	qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
-
-            qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
+			if (!$new)
+	            qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     		label_cell($po_line->units);
 			if ($order->trans_type == ST_PURCHORDER)
         	    label_cell($po_line->req_del_date);
@@ -353,6 +357,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
    global $Ajax, $SysPrefs;
 
 	alt_table_row_color($rowcounter);
+	$new = $order->order_no == 0;
 
 	$dec2 = 0;
 	$id = find_submit('Edit');
@@ -415,7 +420,8 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	} else
 		qty_cells(null, 'qty', null, null, null, $dec);
 
-	qty_cell($qty_rcvd, false, $dec);
+	if (!$new)
+		qty_cell($qty_rcvd, false, $dec);
 
 	label_cell($_POST['units'], '', 'units');
 	if ($order->trans_type == ST_PURCHORDER)
