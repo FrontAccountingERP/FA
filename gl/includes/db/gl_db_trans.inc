@@ -133,7 +133,6 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 			LEFT JOIN ".TB_PREF."bank_trans bt ON bt.type=gl.type AND bt.trans_no=gl.type_no AND bt.amount!=0
 				 AND (bt.person_id != '' AND !ISNULL(bt.person_id))
-				 AND bt.person_type_id=gl.person_type_id AND bt.person_id=gl.person_id
 
 			LEFT JOIN ".TB_PREF."journal j ON j.type=gl.type AND j.trans_no=gl.type_no
 			LEFT JOIN ".TB_PREF."audit_trail a ON a.type=gl.type AND a.trans_no=gl.type_no AND NOT ISNULL(gl_seq)
