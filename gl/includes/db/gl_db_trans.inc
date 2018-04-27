@@ -114,8 +114,9 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 	$sql = "SELECT gl.*, j.event_date, j.doc_date, a.gl_seq, u.user_id, st.supp_reference, gl.person_id subcode,
 			IFNULL(IFNULL(sup.supp_name, debt.name), bt.person_id) as person_name, 
-			IFNULL(gl.person_id, IFNULL(sup.supplier_id, debt.debtor_no)) as person_id,
-                        IF(gl.person_id, gl.person_type_id, IF(sup.supplier_id,".  PT_SUPPLIER . "," .  "IF(debt.debtor_no," . PT_CUSTOMER . ", -1))) as person_type_id,
+			IFNULL(gl.person_id, IFNULL(sup.supplier_id, IFNULL(debt.debtor_no, bt.person_id))) as person_id,
+            IF(gl.person_id, gl.person_type_id, IF(sup.supplier_id,".  PT_SUPPLIER . "," .  "IF(debt.debtor_no," . PT_CUSTOMER . "," . 
+            "IF(bt.person_id != '' AND !ISNULL(bt.person_id), bt.person_type_id, -1)))) as person_type_id,
 			IFNULL(st.tran_date, IFNULL(dt.tran_date, IFNULL(bt.trans_date, IFNULL(grn.delivery_date, gl.tran_date)))) as doc_date,
 			coa.account_name, ref.reference
 			 FROM "
@@ -131,6 +132,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 			LEFT JOIN ".TB_PREF."debtors_master debt ON dt.debtor_no=debt.debtor_no
 
 			LEFT JOIN ".TB_PREF."bank_trans bt ON bt.type=gl.type AND bt.trans_no=gl.type_no AND bt.amount!=0
+				 AND (bt.person_id != '' AND !ISNULL(bt.person_id))
 				 AND bt.person_type_id=gl.person_type_id AND bt.person_id=gl.person_id
 
 			LEFT JOIN ".TB_PREF."journal j ON j.type=gl.type AND j.trans_no=gl.type_no
@@ -172,7 +174,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
         if ($memo) {
                 $sql .= " AND gl.memo_ LIKE ". db_escape("%$memo%");
         }
-
+	$sql .= " GROUP BY counter";
 	$sql .= " ORDER BY tran_date, counter";
 
 	return db_query($sql, "The transactions for could not be retrieved");
