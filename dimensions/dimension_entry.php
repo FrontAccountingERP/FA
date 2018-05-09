@@ -92,11 +92,11 @@ if (isset($_GET['ReopenedID']))
 
 function safe_exit()
 {
-	global $path_to_root;
+	global $path_to_root, $id;
 
 	hyperlink_no_params("", _("Enter a &new dimension"));
-	echo "<br>";
 	hyperlink_no_params($path_to_root . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
+    hyperlink_no_params($path_to_root . "/admin/attachments.php?filterType=40&trans_no=$id", _("&Add Attachment"));
 
 	display_footer_exit();
 }
