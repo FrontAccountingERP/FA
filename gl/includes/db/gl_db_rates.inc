@@ -150,7 +150,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'GOOGLE')
 	{
-		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
+		$filename = "/bctzjpnsun/converter?a=1&from={$curr_a}&to={$curr_b}";;
 		$site = "finance.google.com";
 	}
 	elseif ($provider == 'BLOOMBERG')
@@ -218,7 +218,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$val = getInnerStr($contents, '<span class=bld>', ' ');
 		if (empty($val) || $val+0 <= 0.0001) {
 			// reverse lookup on could not convert for too small values 
-            $filename = "/finance/converter?a=1&from={$curr_b}&to={$curr_a}";
+            $filename = "/bctzjpnsun/converter?a=1&from={$curr_b}&to={$curr_a}";
             $contents = url_get_contents($proto.$site.$filename);
             $val = getInnerStr($contents, '<span class=bld>', ' ');
 		} else {
