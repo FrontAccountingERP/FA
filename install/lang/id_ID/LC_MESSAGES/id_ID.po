@@ -572,3 +572,9 @@ msgstr "Paket '%s' tidak ditemukan."
 msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr ""
 "Atur nilai Port hanya jika Anda tidak dapat menggunakan port default 3306."
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

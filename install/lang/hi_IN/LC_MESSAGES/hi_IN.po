@@ -568,3 +568,9 @@ msgstr "पैकेज '%s' नहीं मिला"
 msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr ""
 "केवल पोर्ट मान सेट करें यदि आप डिफ़ॉल्ट पोर्ट 3306 का उपयोग नहीं कर सकते हैं"
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

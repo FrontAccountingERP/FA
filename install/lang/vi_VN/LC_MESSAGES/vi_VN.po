@@ -566,3 +566,9 @@ msgstr "Gói '%s' không tìm thấy."
 #: install/index.php:364
 msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr "Chỉ đặt giá trị Port nếu bạn không thể sử dụng cổng mặc định 3306."
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

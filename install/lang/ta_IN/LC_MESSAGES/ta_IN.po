@@ -573,3 +573,9 @@ msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr ""
 "3306 முன்னிருப்பு துறைமுகத்தை நீங்கள் பயன்படுத்த முடியாவிட்டால் மட்டுமே, "
 "போர்ட் மதிப்பு அமைக்கவும்."
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

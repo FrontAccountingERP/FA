@@ -504,3 +504,9 @@ msgstr "ALERTA DE SEGURANÇA: pacote '%s' danificado no repositório. Por favor, i
 #, php-format
 msgid "Package '%s' not found."
 msgstr "Pacote '%s' não encontrado."
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

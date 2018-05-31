@@ -567,3 +567,9 @@ msgstr "لم يتم العثور على الحزمة '%s'."
 #: install/index.php:364
 msgid "Set Only Port value if you cannot use the default port 3306."
 msgstr "تعيين قيمة المنفذ فقط إذا لم تتمكن من استخدام المنفذ الافتراضي 3306."
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""
