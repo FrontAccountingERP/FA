@@ -357,7 +357,7 @@ function update_bank_transfer(
 {
 	begin_transaction();
 	delete_comments(ST_BANKTRANSFER, $trans_no);
-	void_bank_trans(ST_BANKTRANSFER, $trans_no, true);
+	void_transaction(ST_BANKTRANSFER, $trans_no, Today(), _("Document reentered."));
 	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
 	$new_trans_no = add_bank_transfer(
 		$from_account, $to_account, $date_, $amount,
