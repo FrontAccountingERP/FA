@@ -832,7 +832,7 @@ function _number_to_words($number)
         "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
         "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", 
         "Nineteen"); 
-    $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", 
+    $tens = array("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", 
         "Seventy", "Eighty", "Ninety"); 
 
     if ($Dn || $n) 
