@@ -303,6 +303,7 @@ if (get_company_pref('use_manufacturing'))
 		array(	_('Items') => 'ITEMS_ALL',
 				_('Location') => 'LOCATIONS',
 				_('Outstanding Only') => 'YES_NO',
+				_('Show GL Rows') => 'YES_NO',
 				_('Comments') => 'TEXTBOX',
 				_('Orientation') => 'ORIENTATION',
 				_('Destination') => 'DESTINATION'));
