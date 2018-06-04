@@ -72,12 +72,12 @@ function print_gl_rows(&$rep, $result, $title)
 
     if (db_num_rows($result))
     {
-		$rep->Line($rep->row - 2);
+		$rep->Line($rep->row -= 4);
 		$rep->NewLine();
 		$rep->Font('italic');
 		$rep->TextCol(3, 11, $title);
 		$rep->Font();
-		$rep->Line($rep->row - 2);
+		$rep->Line($rep->row -= 4);
 		while($myrow = db_fetch($result)) {
 			$rep->NewLine();
 			$rep->TextCol(0, 2, $systypes_array[$myrow['type']] . ' ' . $myrow['type_no'], -2);
