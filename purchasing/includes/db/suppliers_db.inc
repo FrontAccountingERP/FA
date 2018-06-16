@@ -93,7 +93,7 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
     else	
     	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT."
   	OR (trans.type=".ST_JOURNAL." AND (trans.ov_amount + trans.ov_gst + trans.ov_discount)>0), 1, -1)*
-    		ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc)";
+    		ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc";
 
 	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
     $sql = "SELECT supp.supp_name, supp.curr_code, ".TB_PREF."payment_terms.terms,
