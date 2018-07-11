@@ -350,6 +350,7 @@ function delete_this_fiscalyear($selected_id)
 
 	$last_account='';
 	$new = false;
+	$total = 0.0;
 	while ($row = db_fetch($result))
 	{
 		if ($last_account != $row['account']) // deletes all subledgers postings, so do it once for account
@@ -364,6 +365,8 @@ function delete_this_fiscalyear($selected_id)
 				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']}, "
 				.db_escape($row['person_type_id'], true).", ".db_escape($row['person_id'], true).")";
 			db_query($sql, "Could not insert gl trans");
+			if ($row['amount'] > 0.0)
+				$total += $row['amount'];
 			$new = true;
 		}
 	}
