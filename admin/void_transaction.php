@@ -222,7 +222,24 @@ function voiding_controls()
 		}	
  		else
  		{
-    		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+           	if ($_POST['filterType'] == ST_SUPPRECEIVE) { 
+                $result = get_grn_items($_POST['trans_no']);
+                if (db_num_rows($result) > 0) {
+                    while ($myrow = db_fetch($result)) {
+                        if (is_inventory_item($myrow["item_code"])) {
+                            if (check_negative_stock($myrow["item_code"], -$myrow["qty_recd"], null, $_POST['date_'])) {
+                                $stock = get_item($myrow["item_code"]);
+                                display_error(_("The void cannot be processed because there is an insufficient quantity for item:") .
+                                    " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+                                    _("Quantity On Hand") . " = " . number_format2(get_qoh_on_date($stock['stock_id'], null, 
+                                    $_POST['date_']), get_qty_dec($stock['stock_id'])));
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+       		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
    			br();
     		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
     		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
