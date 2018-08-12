@@ -155,11 +155,11 @@ function inventory_movements()
 		$inward += trans_qty($myrow['stock_id'], $location, $from_date, $to_date);
 		$outward += trans_qty($myrow['stock_id'], $location, $from_date, $to_date, false);
 
-		$rep->AmountCol(3, 4, $qoh_start, get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(4, 5, $inward, get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(5, 6, $outward, get_qty_dec($myrow['stock_id']));
-		$rep->AmountCol(6, 7, $qoh_end, get_qty_dec($myrow['stock_id']));
-		
+		$stock_qty_dec = get_qty_dec($myrow['stock_id']);
+		$rep->AmountCol(3, 4, $qoh_start, $stock_qty_dec);
+		$rep->AmountCol(4, 5, $inward, $stock_qty_dec);
+		$rep->AmountCol(5, 6, $outward, $stock_qty_dec);
+		$rep->AmountCol(6, 7, $qoh_end, $stock_qty_dec);
 		$rep->NewLine(0, 1);
 	}
 	$rep->Line($rep->row  - 4);
