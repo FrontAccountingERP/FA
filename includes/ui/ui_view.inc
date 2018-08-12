@@ -908,13 +908,23 @@ function get_js_lookup_window() {
 function get_js_select_combo_item() {
 	$js = "function selectComboItem(doc, client_id, value){
     	var element = doc.getElementById(client_id);
-		var options = element.options;
-		for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
-			if (options[i].value == value) {
-				element.selectedIndex = i;
-        		element.onchange();
+		if (typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT' ){
+			var options = element.options;
+			for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+				if (options[i].value == value) {
+					element.selectedIndex = i;
+	        		element.onchange();
+				}
 			}
-		}
+		} else {			
+			var stock_element = doc.getElementsByName('stock_id');
+	    	if( stock_element.length > 0) {
+				stock_element.value = value;	
+				var stock_id = doc.getElementById('_stock_id_edit'); 
+				stock_id.value=value;
+				stock_id.onblur();		
+			}
+		}			
 		window.close();
 	}";
 	return $js;
@@ -923,14 +933,24 @@ function get_js_select_combo_item() {
 function get_js_set_combo_item() {
 	$js = "function setComboItem(doc, client_id, value, text){
     	var element = doc.getElementById(client_id);
- 		var options = element.options;
- 		options.length = 0;
- 		var option = doc.createElement('option');
-		option.value = value;
-		option.text = text;
-    	element.add(option, 0);
-		element.selectedIndex = 0;
-        element.onchange();
+  		if(typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT') {
+	 		var options = element.options;
+	 		options.length = 0;
+	 		var option = doc.createElement('option');
+			option.value = value;
+			option.text = text;
+	   		element.add(option, 0);
+			element.selectedIndex = 0;
+	        element.onchange();
+	    } else {
+			var stock_element = doc.getElementsByName('stock_id');
+	    	if( stock_element.length > 0) {
+				stock_element[0].value = value;	
+				var stock_id = doc.getElementById('_stock_id_edit'); 
+				stock_id.value=value;
+				stock_id.onblur();					
+			}
+ 		}
 		window.close();
 	}";
 	return $js;
