@@ -299,7 +299,6 @@ class BoxReports
 
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
-					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER')
 						return customer_list($name, null, _("No Customer Filter"));
 					else
@@ -307,7 +306,6 @@ class BoxReports
 
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
-					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER')
 						return supplier_list($name, null, _("No Supplier Filter"));
 					else
