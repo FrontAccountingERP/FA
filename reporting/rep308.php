@@ -111,7 +111,7 @@ function avg_unit_cost($stock_id, $location=null, $to_date)
 				LEFT JOIN ".TB_PREF."debtor_trans cust_trans ON cust_trans.trans_no=move.trans_no AND cust_trans.type=move.type
 				LEFT JOIN ".TB_PREF."debtors_master debtor ON cust_trans.debtor_no=debtor.debtor_no
 			WHERE stock_id=".db_escape($stock_id)."
-			AND move.tran_date <= '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
+			AND move.tran_date < '$to_date' AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
 
 	if ($location != '')
 		$sql .= " AND move.loc_code = ".db_escape($location);
@@ -158,7 +158,7 @@ function trans_qty_unit_cost($stock_id, $location=null, $from_date, $to_date, $i
 				LEFT JOIN ".TB_PREF."debtor_trans cust_trans ON cust_trans.trans_no=move.trans_no AND cust_trans.type=move.type
 				LEFT JOIN ".TB_PREF."debtors_master debtor ON cust_trans.debtor_no=debtor.debtor_no
 		WHERE stock_id=".db_escape($stock_id)."
-		AND move.tran_date <= '$to_date' AND standard_cost > 0.001 AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
+		AND move.tran_date >= '$from_date' AND move.tran_date <= '$to_date' AND qty <> 0 AND move.type <> ".ST_LOCTRANSFER;
 
 	if ($location != '')
 		$sql .= " AND move.loc_code = ".db_escape($location);
@@ -218,7 +218,7 @@ function inventory_movements()
 	else
 		$loc = get_location_name($location);
 
-	$cols = array(0, 60, 130, 160, 185, 215, 250, 275, 305, 340, 365, 395, 430, 455, 485, 520);
+	$cols = array(0, 60, 134, 160, 185, 215, 250, 275, 305, 340, 365, 395, 430, 455, 485, 520);
 
 	$headers = array(_('Category'), _('Description'),	_('UOM'), '', '', _('OpeningStock'), '', '',_('StockIn'), '', '', _('Delivery'), '', '', _('ClosingStock'));
 	$headers2 = array("", "", "", _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"), _("QTY"), _("Rate"), _("Value"));
@@ -265,7 +265,7 @@ function inventory_movements()
 			continue;
 		$rep->NewLine();
 		$rep->TextCol(0, 1,	$myrow['stock_id']);
-		$rep->TextCol(1, 2, $myrow['name']);
+		$rep->TextCol(1, 2, substr($myrow['name'], 0, 24) . ' ');
 		$rep->TextCol(2, 3, $myrow['units']);
 		$rep->AmountCol(3, 4, $qoh_start, get_qty_dec($myrow['stock_id']));
 		$rep->AmountCol(4, 5, $openCost, $dec);
@@ -301,10 +301,13 @@ function inventory_movements()
 	}
 	$rep->Line($rep->row  - 4);
 	$rep->NewLine(2);
-	$rep->TextCol(0, 1,	_("Total"));
+	$rep->TextCol(0, 1,	_("Total Movement"));
 	$rep->AmountCol(5, 6, $totval_open);
 	$rep->AmountCol(8, 9, $totval_in);
 	$rep->AmountCol(11, 12, $totval_out);
+	$rep->AmountCol(14, 15, $totval_open + $totval_in - $totval_out);
+	$rep->NewLine(1);
+	$rep->TextCol(0, 1,	_("Total Out"));
 	$rep->AmountCol(14, 15, $totval_close);
 	$rep->Line($rep->row  - 4);
 
