@@ -163,6 +163,7 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 {
 	global $SysPrefs, $path_to_root;
 
+	$memo = "";
 	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/sales/includes/cart_class.inc");
