@@ -222,9 +222,6 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
-		$_POST['amount'] = price_format(0);
-		$_POST['dimension_id'] = 0;
-		$_POST['dimension2_id'] = 0;
 		if(isset($_POST['_code_id_update'])) {
 			    $Ajax->activate('code_id');
 		}
@@ -246,8 +243,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 				$_POST['code_id'] =
 					get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 			}
-		$Ajax->activate('dimension_id');
-		$Ajax->activate('dimension2_id');
+			$Ajax->activate('dimension_id');
+			$Ajax->activate('dimension2_id');
 		}
 	}
 	echo gl_all_accounts_list('code_id', null, true, true);
