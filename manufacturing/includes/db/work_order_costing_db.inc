@@ -105,9 +105,9 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 
 	if ($qty > 0 && ($qoh != -$qty)) {
 		if ($qoh == 0 && $avg_cost != 0)
-        	$avg_cost = ($avg_cost + ($unit_cost*$qty_new)/($qoh+$qty))/2;
-    	else
-        	$avg_cost = ($avg_cost*($qoh+$qty_delayed)+$unit_cost*$qty_new)/($qoh+$qty);
+			$avg_cost = ($avg_cost + ($unit_cost*$qty_new)/$qty)/2;
+		else
+			$avg_cost = ($avg_cost*($qoh+$qty_delayed)+$unit_cost*$qty_new)/($qoh+$qty);
 	}
 
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($avg_cost)."
