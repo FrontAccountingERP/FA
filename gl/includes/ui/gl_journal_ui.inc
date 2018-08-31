@@ -256,6 +256,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
 			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+		$_POST['LineMemo'] = "";			
 	}
 
 	if (get_post('_code_id_update'))
