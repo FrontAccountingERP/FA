@@ -560,8 +560,8 @@ function display_allocations($alloc_result, $total, $title, $show_summary=true)
     	if ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT)
     		$alloc_row['Total'] = -$alloc_row['Total'];
     	amount_cell($alloc_row['Total']);
-   		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
     	amount_cell($alloc_row['amt']);
+   		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
     	end_row();
 
     	$total_allocated += $alloc_row['amt'];
