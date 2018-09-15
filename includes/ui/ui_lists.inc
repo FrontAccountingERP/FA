@@ -551,10 +551,11 @@ function supplier_list_cells($label, $name, $selected_id=null, $all_option=false
 	$submit_on_change=false, $all=false, $editkey = false)
 {
 	if ($label != null)
-		echo "<td>$label</td><td>\n";
-		echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
+		echo "<td>$label</td>\n";
+	echo "<td>";	
+	echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
 		$all, $editkey);
-		echo "</td>\n";
+	echo "</td>\n";
 }
 
 function supplier_list_row($label, $name, $selected_id=null, $all_option = false, 
