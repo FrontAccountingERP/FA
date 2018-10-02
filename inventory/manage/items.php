@@ -602,7 +602,8 @@ $tabs = (get_post('fixed_asset'))
 		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
 		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
 			user_check_access('SA_REORDER') ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
+			$stock_id : null)),
 		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 	);
 
@@ -630,14 +631,14 @@ tabbed_content_start('tabs', $tabs);
 			break;
 		case 'reorder_level':
 			if (!is_inventory_item($stock_id))
-			{
 				break;
-			}	
 			$_GET['page_level'] = 1;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
+			if (!is_inventory_item($stock_id))
+				break;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");
 			break;
