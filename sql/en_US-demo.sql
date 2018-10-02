@@ -498,7 +498,7 @@ INSERT INTO `0_crm_categories` VALUES (12, 'supplier', 'invoice', 'Invoices', 'I
 DROP TABLE IF EXISTS `0_crm_contacts`;
 CREATE TABLE IF NOT EXISTS `0_crm_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` int(11) NOT NULL DEFAULT '0' COMMENT 'foreign key to crm_contacts',
+  `person_id` int(11) NOT NULL DEFAULT '0' COMMENT 'foreign key to crm_persons',
   `type` varchar(20) NOT NULL COMMENT 'foreign key to crm_categories',
   `action` varchar(20) NOT NULL COMMENT 'foreign key to crm_categories',
   `entity_id` varchar(11) DEFAULT NULL COMMENT 'entity id in related class table',
