@@ -32,15 +32,22 @@ print_statements();
 
 function getTransactions($debtorno, $date, $show_also_allocated)
 {
-    $sql = "SELECT *,
-    			(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
-				((type = ".ST_SALESINVOICE.") AND due_date < '$date') AS OverDue
-			FROM ".TB_PREF."debtor_trans
-			WHERE tran_date <= '$date' AND debtor_no = ".db_escape($debtorno)."
-   				AND type <> ".ST_CUSTDELIVERY."
-				AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > ". FLOAT_COMP_DELTA;
-
-	if (!$show_also_allocated)
+    $sql = "SELECT trans.type,
+        trans.trans_no,
+        trans.order_,
+        trans.reference,
+        trans.tran_date,
+        trans.due_date,
+        (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
+		((trans.type = ".ST_SALESINVOICE.") AND due_date < '$date') AS OverDue
+		FROM ".TB_PREF."debtor_trans trans
+		LEFT JOIN ".TB_PREF."voided as v
+            ON trans.trans_no=v.id AND trans.type=v.type
+        WHERE tran_date <= '$date' AND debtor_no = ".db_escape($debtorno)."
+			AND trans.type <> ".ST_CUSTDELIVERY." AND ISNULL(v.date_)
+			AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > ". FLOAT_COMP_DELTA;
+	
+  	if (!$show_also_allocated)
 		$sql .= " AND ABS(ABS(ov_amount + ov_gst + ov_freight +	ov_freight_tax + ov_discount) - alloc) > ". FLOAT_COMP_DELTA;
 	$sql .= " ORDER BY tran_date";
 
@@ -77,8 +84,6 @@ function print_statements()
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
-	if ($email == 0)
-		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
     	recalculate_cols($cols);
 
@@ -103,6 +108,8 @@ function print_statements()
 		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)
 			continue;
+        if ($email == 0 && !isset($rep))
+            $rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize(), 9, $orientation);
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
@@ -170,7 +177,10 @@ function print_statements()
 			$rep->End($email, _("Statement") . " " . _("as of") . " " . sql2date($date));
 
 	}
-	if ($email == 0)
+
+    if (!isset($rep))
+        display_notification("No customers with outstanding balances found");
+	else if ($email == 0)
 		$rep->End();
 }
 
