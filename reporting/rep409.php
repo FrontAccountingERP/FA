@@ -62,7 +62,7 @@ function print_workorders()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_work_order($i);
+		$myrow = get_work_order($i, true);
 		if ($myrow === false)
 			continue;
 		if ($email == 1)
