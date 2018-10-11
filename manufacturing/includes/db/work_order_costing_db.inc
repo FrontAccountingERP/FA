@@ -48,8 +48,8 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 {
 	global $Refs;
 
-	$product = get_item($stock_id);
-	$avg_cost =  $product['material_cost'];
+	$item = get_item($stock_id);
+	$avg_cost =  $item['material_cost'];
 
 	$qoh = get_qoh_on_date($stock_id, null, $date);
 
