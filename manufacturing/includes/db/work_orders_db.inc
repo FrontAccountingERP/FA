@@ -312,11 +312,13 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 		workorder.released,
 		workorder.stock_id,
 		unit.decimals
-		FROM ".TB_PREF."workorders as workorder,"
+		FROM ".TB_PREF."workorders as workorder
+			LEFT JOIN ".TB_PREF."voided v ON v.id=workorder.id and v.type=".ST_WORKORDER.","
 			.TB_PREF."stock_master as item,"
 			.TB_PREF."item_units as unit,"
 			.TB_PREF."locations as location
-		WHERE workorder.stock_id=item.stock_id 
+		WHERE ISNULL(v.id)
+			AND workorder.stock_id=item.stock_id 
 			AND workorder.loc_code=location.loc_code
 			AND item.units=unit.abbr";
 
