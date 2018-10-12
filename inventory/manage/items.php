@@ -44,6 +44,16 @@ include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 $user_comp = user_company();
 $new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
 //------------------------------------------------------------------------------------
+function set_edit($stock_id)
+{
+	$_POST = array_merge($_POST, get_item($stock_id));
+
+	$_POST['depreciation_rate'] = number_format2($_POST['depreciation_rate'], 1);
+	$_POST['depreciation_factor'] = number_format2($_POST['depreciation_factor'], 1);
+	$_POST['depreciation_start'] = sql2date($_POST['depreciation_start']);
+	$_POST['depreciation_date'] = sql2date($_POST['depreciation_date']);
+	$_POST['del_image'] = 0;
+}
 
 if (isset($_GET['stock_id']))
 {
@@ -262,6 +272,7 @@ if (isset($_POST['addupdate']))
 }
 
 if (get_post('clone')) {
+	set_edit($_POST['stock_id']); // restores data for disabled inputs too
 	unset($_POST['stock_id']);
 	$stock_id = '';
 	unset($_POST['inactive']);
@@ -335,37 +346,7 @@ function item_settings(&$stock_id, $new_item)
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 
 			$_POST['NewStockID'] = $_POST['stock_id'];
-
-			$myrow = get_item($_POST['NewStockID']);
-
-			$_POST['long_description'] = $myrow["long_description"];
-			$_POST['description'] = $myrow["description"];
-			$_POST['category_id']  = $myrow["category_id"];
-			$_POST['tax_type_id']  = $myrow["tax_type_id"];
-			$_POST['units']  = $myrow["units"];
-			$_POST['mb_flag']  = $myrow["mb_flag"];
-
-			$_POST['depreciation_method'] = $myrow['depreciation_method'];
-			$_POST['depreciation_rate'] = number_format2($myrow['depreciation_rate'], 1);
-			$_POST['depreciation_factor'] = number_format2($myrow['depreciation_factor'], 1);
-			$_POST['depreciation_start'] = sql2date($myrow['depreciation_start']);
-			$_POST['depreciation_date'] = sql2date($myrow['depreciation_date']);
-			$_POST['fa_class_id'] = $myrow['fa_class_id'];
-			$_POST['material_cost'] = $myrow['material_cost'];
-			$_POST['purchase_cost'] = $myrow['purchase_cost'];
-			
-			$_POST['sales_account'] =  $myrow['sales_account'];
-			$_POST['inventory_account'] = $myrow['inventory_account'];
-			$_POST['cogs_account'] = $myrow['cogs_account'];
-			$_POST['adjustment_account']	= $myrow['adjustment_account'];
-			$_POST['wip_account']	= $myrow['wip_account'];
-			$_POST['dimension_id']	= $myrow['dimension_id'];
-			$_POST['dimension2_id']	= $myrow['dimension2_id'];
-			$_POST['no_sale']	= $myrow['no_sale'];
-			$_POST['no_purchase']	= $myrow['no_purchase'];
-			$_POST['del_image'] = 0;
-			$_POST['inactive'] = $myrow["inactive"];
-			$_POST['editable'] = $myrow["editable"];
+			set_edit($_POST['stock_id']);
 		}
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
@@ -379,7 +360,7 @@ function item_settings(&$stock_id, $new_item)
 
 	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item, $fixed_asset);
 
-	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
+	if ($new_item && (list_updated('category_id') || !isset($_POST['sales_account']))) { // changed category for new item or first page view
 
 		$category_record = get_item_category($_POST['category_id']);
 
