@@ -224,7 +224,7 @@ class items_cart
 	{
 		foreach ($this->gl_items as $gl_item)
 		{
-			if ($gl_item->person_id)
+			if (is_subledger_account($gl_item->code_id))
 				return true;
 		}
 		return false;
