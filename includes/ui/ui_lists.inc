@@ -1203,7 +1203,7 @@ function tax_types_list_row($label, $name, $selected_id=null, $none_option=false
 function tax_groups_list($name, $selected_id=null,
 	$none_option=false, $submit_on_change=false)
 {
-	$sql = "SELECT id, name FROM ".TB_PREF."tax_groups";
+	$sql = "SELECT id, name, inactive FROM ".TB_PREF."tax_groups";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 		array(
