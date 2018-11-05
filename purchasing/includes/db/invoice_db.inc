@@ -70,10 +70,10 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 		$sql = "SELECT act_price, unit_price FROM ".TB_PREF."purch_order_details WHERE
 			po_detail_item = ".db_escape($po_detail_item);
 		$result = db_query($sql, "The old actual price of the purchase order line could not be retrieved");
-		$row = db_fetch_row($result);
-		$ret = $row[0];
+		$row = db_fetch($result);
+		$ret = $row['act_price'];
 
-		$unit_price = $row[1]; //Added by Rasmus
+		$unit_price = $row['unit_price']; //Added by Rasmus
 
 		$sql = "SELECT delivery_date 
 			FROM ".TB_PREF."grn_batch grn,"
@@ -81,8 +81,8 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 			WHERE
 				grn.id = line.grn_batch_id AND line.id=".db_escape($id);
 		$result = db_query($sql, "The old delivery date from the received record cout not be retrieved");
-		$row = db_fetch_row($result);
-		$date = $row[0];
+		$row = db_fetch($result);
+		$date = $row['delivery_date'];
 	}
 	else
 	{

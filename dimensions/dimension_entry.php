@@ -217,9 +217,9 @@ start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {
-	$myrow = get_dimension($selected_id);
+	$myrow = get_dimension($selected_id, true);
 
-	if (strlen($myrow[0]) == 0) 
+	if ($myrow === false) 
 	{
 		display_error(_("The dimension sent is not valid."));
 		display_footer_exit();
