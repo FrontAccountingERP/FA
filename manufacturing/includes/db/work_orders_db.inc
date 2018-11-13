@@ -130,11 +130,11 @@ function get_work_order($woid, $allow_null=false)
 		AND wo.id=".db_escape($woid)."
 		GROUP BY wo.id";
 
-	$result = db_query($sql, "The work order issues could not be retrieved");
+	$result = db_query($sql, "The work order could not be retrieved");
 
 	if (!$allow_null && db_num_rows($result) == 0)
 	{
-		display_db_error("Could not find work order $woid", $sql);
+		display_db_error("Could not find work order ".(int)$woid, $sql);
 		return false;
 	}
 

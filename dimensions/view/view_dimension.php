@@ -42,9 +42,9 @@ if (isset($_POST['Show']))
 display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
 
 br(1);
-$myrow = get_dimension($id);
+$myrow = get_dimension($id, true);
 
-if (strlen($myrow[0]) == 0)
+if ($myrow == false)
 {
 	echo _("The dimension number sent is not valid.");
     exit;

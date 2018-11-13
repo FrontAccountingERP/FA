@@ -122,7 +122,7 @@ function get_item($stock_id)
 		AND stock_id=".db_escape($stock_id);
 	$result = db_query($sql,"an item could not be retreived");
 
-	return db_fetch($result);
+	return db_fetch_assoc($result);
 }
 
 function get_items($fixed_asset = 0)
