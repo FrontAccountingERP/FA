@@ -36,6 +36,30 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		display_error(_("The company name must be entered."));
 		set_focus('coy_name');
 	}
+	if (!check_num('tax_prd', 1))
+	{
+		display_error(_("Tax Periods must be positive number."));
+		set_focus('tax_prd');
+		$input_error = 1;
+	}
+	if (!check_num('tax_last', 1))
+	{
+		display_error(_("Tax Last Periods must be positive number."));
+		set_focus('tax_last');
+		$input_error = 1;
+	}
+	if (!check_num('round_to', 1))
+	{
+		display_error(_("Round Calculated field must be a positive number."));
+		set_focus('round_to');
+		$input_error = 1;
+	}
+	if ($_POST['add_pct'] != "" && !is_numeric($_POST['add_pct']))
+	{
+		display_error(_("Add Price from Std Cost field must be number."));
+		set_focus('add_pct');
+		$input_error = 1;
+	}	
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
     if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
@@ -121,9 +145,9 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
 		display_notification_centered(_("Company setup has been updated."));
+		set_focus('coy_name');
+		$Ajax->activate('_page_body');
 	}
-	set_focus('coy_name');
-	$Ajax->activate('_page_body');
 } /* end of if submit */
 
 start_form(true);
