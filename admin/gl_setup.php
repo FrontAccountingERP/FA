@@ -29,7 +29,42 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 function can_process()
 {
-	if (!check_num('po_over_receive', 0, 100))
+    if (!check_num('past_due_days', 0, 100))
+    {
+        display_error(_("The past due days interval allowance must be between 0 and 100."));
+        set_focus('past_due_days');
+        return false;
+    }
+
+    if (!check_num('default_quote_valid_days', 0))
+    {
+        display_error(_("Quote Valid Days is not valid number."));
+        set_focus('default_quote_valid_days');
+        return false;
+    }
+
+    if (!check_num('default_delivery_required', 0))
+    {
+        display_error(_("Delivery Required By is not valid number."));
+        set_focus('default_delivery_required');
+        return false;
+    }
+
+    if (!check_num('default_receival_required', 0))
+    {
+        display_error(_("Receival Required By is not valid number."));
+        set_focus('default_receival_required');
+        return false;
+    }
+
+    if (!check_num('default_workorder_required', 0))
+    {
+        display_error(_("Work Order Required By After is not valid number."));
+        set_focus('default_workorder_required');
+        return false;
+    }	
+
+    if (!check_num('po_over_receive', 0, 100))
 	{
 		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
 		set_focus('po_over_receive');
