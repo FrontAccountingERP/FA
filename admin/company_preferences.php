@@ -138,9 +138,9 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
 				'no_supplier_list' =>0, 'base_sales', 'ref_no_auto_increase' => 0,
-				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'add_pct', 'round_to', 'login_tout', 
-				'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
-				'use_manufacturing', 'use_fixed_assets'))
+				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'print_dialog_direct' => 0, 
+				'add_pct', 'round_to', 'login_tout', 'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 
+				'suppress_tax_rates', 'use_manufacturing', 'use_fixed_assets'))
 		);
 
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
@@ -197,6 +197,12 @@ if (!isset($myrow["barcodes_on_stock"]))
 	$myrow["barcodes_on_stock"] = get_company_pref("barcodes_on_stock");
 }
 $_POST['barcodes_on_stock']  = $myrow["barcodes_on_stock"];
+if (!isset($myrow["print_dialog_direct"]))
+{
+	set_company_pref("print_dialog_direct", "setup.company", "tinyint", 1, '0');
+	$myrow["print_dialog_direct"] = get_company_pref("print_dialog_direct");
+}
+$_POST['print_dialog_direct']  = $myrow["print_dialog_direct"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
 $_POST['login_tout'] = $myrow['login_tout'];
@@ -268,6 +274,7 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 table_section_title(_("User Interface Options"));
 
 check_row(_("Short Name and Name in List"), 'shortname_name_in_list', $_POST['shortname_name_in_list']);
+check_row(_("Open Print Dialog Direct on Reports"), 'print_dialog_direct', null);
 check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);

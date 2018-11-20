@@ -952,6 +952,9 @@ class FrontReport extends Cpdf
 	{
 		global $SysPrefs, $path_to_root;
 
+		if (!empty($SysPrefs->prefs['print_dialog_direct']))		
+			$this->includeJS("print();"); // force to open print dialog
+
 		if ($SysPrefs->pdf_debug == 1)
 		{
 			$pdfcode = $this->Output('','S');

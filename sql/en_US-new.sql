@@ -1897,6 +1897,7 @@ INSERT INTO `0_sys_prefs` VALUES ('print_item_images_on_quote','glsetup.inventor
 INSERT INTO `0_sys_prefs` VALUES ('suppress_tax_rates','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('company_logo_report','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('barcodes_on_stock','setup.company', 'tinyint', 1, '0');
+INSERT INTO `0_sys_prefs` VALUES ('print_dialog_direct','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('ref_no_auto_increase','setup.company', 'tinyint', 1, '0');
 INSERT INTO `0_sys_prefs` VALUES ('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660');
 INSERT INTO `0_sys_prefs` VALUES ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1');
