@@ -50,10 +50,10 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
 		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
-    		$diff, null, $person_type_id, $person_id);
+    		-$diff, null, $person_type_id, $person_id);
 
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
-    		_("Exchange Variance"),	-$diff, null, $person_type_id, $person_id);
+    		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
 		commit_transaction();
 		return true;
 	}
