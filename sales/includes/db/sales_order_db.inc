@@ -632,7 +632,7 @@ function last_sales_order_detail($order, $field)
         $sql = "SELECT $field
             FROM ".TB_PREF."sales_order_details d
             WHERE order_no =
-            (SELECT order_no FROM 1_sales_orders o
+            (SELECT order_no FROM ".TB_PREF."sales_orders o
             WHERE debtor_no=" . db_escape($order->customer_id) . "
             ORDER BY order_no DESC LIMIT 1)
             ORDER BY d.id DESC LIMIT 1";        
