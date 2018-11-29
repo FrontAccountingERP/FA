@@ -309,7 +309,7 @@ class items_cart
 		if (!isset($tax_info['tax_reg']) && isset($tax_info['person_type']))
 			$tax_info['tax_reg'] = $tax_info['person_type']==PT_CUSTOMER ? TR_OUTPUT : TR_INPUT;
 
-		if (count(@$tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
+		if (count_array(@$tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
 		{
 			$ex_net = abs($net_sum) - @array_sum($tax_info['net_amount']);
 			if ($ex_net != 0)

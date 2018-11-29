@@ -134,7 +134,7 @@ class contacts extends simple_crud {
 			set_focus('ref');
 			return false;
 		}
-		if (count(@$_POST['assgn']) == 0) {
+		if (count_array(@$_POST['assgn']) == 0) {
 			display_error(_("You have to select at least one category."));
 			set_focus('assgn');
 			return false;
