@@ -34,7 +34,7 @@ class BoxReports
 	function addReportClass($class_name, $class_id=null)
 	{
 		if (!$class_id)
-			$class_id = is_array($this->ar_classes) ? count($this->ar_classes) : 0;
+			$class_id = count_array($this->ar_classes);
 		$this->ar_classes[$class_id] = $class_name;
 
 		return $class_id;

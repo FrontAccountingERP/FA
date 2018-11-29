@@ -368,7 +368,7 @@ function get_sales_child_documents($trans_type, $trans_no)
 	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
 	// at least one line from related invoice
 
-	if (!count($trans_no))
+	if (!count_array($trans_no))
 		return false;
 	$childs = get_sales_child_numbers($trans_type, $trans_no, false);
 	if (!count($childs))

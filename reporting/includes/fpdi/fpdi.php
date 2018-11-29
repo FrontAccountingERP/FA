@@ -486,7 +486,7 @@ class FPDI extends FPDF_TPL {
      * close all files opened by parsers
      */
     function _closeParsers() {
-        if ($this->state > 2 && count($this->parsers) > 0) {
+        if ($this->state > 2 && is_array($this->parsers) && count($this->parsers) > 0) {
           	foreach ($this->parsers as $k => $_){
             	$this->parsers[$k]->closeFile();
             	$this->parsers[$k] = null;

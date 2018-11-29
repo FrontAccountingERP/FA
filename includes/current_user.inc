@@ -315,7 +315,7 @@ function number_format2($number, $decimals=0)
 		$dec = $decimals;
 	}
 
-	$num = number_format($number, $dec, $dsep, $tsep);
+	$num = number_format($number, intval($dec), $dsep, $tsep);
 
 	return $decimals==='max' ? rtrim($num, '0') : $num;
 
