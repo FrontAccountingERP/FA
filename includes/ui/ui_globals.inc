@@ -64,7 +64,7 @@ function get_global_curr_code()
 
 function count_array($array)
 {
-    return (is_array($array)) ? count($array) : 1;
+	return (is_array($array)) ? count($array) : (($array === NULL) ? 0 : 1);
 }
 
 //--------------------------------------------------------------------------------------
