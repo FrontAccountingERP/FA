@@ -160,6 +160,13 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 		$proto = 'https://';
 		$contents=file_get_contents($proto.$site.$filename);
 	}
+	elseif ($provider == 'EXCHANGE-RATES.ORG')
+	{
+		$filename = "/converter/{$curr_b}/{$curr_a}/1";
+		$site = "exchange-rates.org";
+		$proto = 'https://';
+		$contents=file_get_contents($proto.$site.$filename);
+	}
 	if (empty($contents)) {
 		if (function_exists('curl_init'))
 		{	// first check with curl as we can set short timeout;
@@ -230,6 +237,10 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$val = getInnerStr($contents, ',"price":', ',"');
     }    
+    elseif ($provider == 'EXCHANGE-RATES.ORG')
+	{
+		$val = getInnerStr($contents, '<span id="ctl00_M_lblToAmount">', '<');
+    }  
 	return $val;
 }  /* end function get_extern_rate */
 
