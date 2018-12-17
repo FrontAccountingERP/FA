@@ -211,7 +211,7 @@ function print_aged_supplier_analysis()
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)
-					$trans[$i] *= $rate;
+					$trans[$i] = (float)$trans[$i] * $rate;
 				$str = array($trans["Balance"] - $trans["Due"],
 					$trans["Due"]-$trans["Overdue1"],
 					$trans["Overdue1"]-$trans["Overdue2"],
