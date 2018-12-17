@@ -181,7 +181,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	$credits_total = 0;
 
-	if (get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
+	if ($result = get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
 		$k = 0;
 
 		while ($credits_row = db_fetch($result))
