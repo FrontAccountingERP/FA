@@ -88,10 +88,11 @@ function edit_link($row)
 	if ($row['trans_type'] == ST_SALESINVOICE)
 	{
 		$myrow = get_customer_trans($row["trans_no"], $row["trans_type"]);
-		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
+		if ($myrow['alloc'] != $myrow['Total'] || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
 			$ok = false;
 	}
-	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '';
+	
+	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '--';
 }
 
 function invoice_supp_reference($row)

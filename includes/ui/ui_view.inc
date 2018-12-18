@@ -1562,7 +1562,7 @@ function trans_editor_link($type, $trans_no)
 	//   35=> Cost Update,
 	);
 
-	return !isset($editor_url[$type]) ? '' :
+	return !isset($editor_url[$type]) ? '--' :
 		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
 			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
 }
