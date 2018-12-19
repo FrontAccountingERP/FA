@@ -345,7 +345,9 @@ $opts = array(		// default options
         			$img_title = _("Search suppliers");
         			break;
       			case "account":
-        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+      			case "account2";
+      				$skip = strtolower($type) == "account" ? false : true;
+        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
         			$img_title = _("Search GL accounts");
         			break;
     		}
@@ -1822,7 +1824,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
 	if ($type_id ) $sql .= " AND chart.account_type=".db_escape($type_id);
-
+	$account = ($skip_bank_accounts ? "account2" : "account");
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 		array(
 			'format' => '_format_account',
@@ -1839,7 +1841,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'async' => false,
 			'category' => 2,
 			'show_inactive' => $all
-		), "account" );
+		), $account );
 }
 
 function _format_account($row)
