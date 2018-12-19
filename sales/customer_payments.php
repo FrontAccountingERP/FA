@@ -174,7 +174,7 @@ function can_process()
 		return false;
 	}
 
-	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+	if (isset($_POST['charge']) && (!check_num('charge', 0) || $_POST['charge'] == $_POST['amount'])) {
 		display_error(_("The entered amount is invalid or negative and cannot be processed."));
 		set_focus('charge');
 		return false;
