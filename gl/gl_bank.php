@@ -216,7 +216,7 @@ function create_cart($type, $trans_no)
 
 function check_trans()
 {
-	global $Refs;
+	global $Refs, $systypes_array;
 
 	$input_error = 0;
 
@@ -244,10 +244,12 @@ function check_trans()
 	}
 	if ($trans = check_bank_account_history($amnt_chg, $_POST['bank_account'], $_POST['date_'])) {
 
-		display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
-			$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
-		set_focus('amount');
-		$input_error = 1;
+		if (isset($trans['trans_no'])) {
+			display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+				$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
+			set_focus('amount');
+			$input_error = 1;
+		}	
 	}
 	if (!check_reference($_POST['ref'], $_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id))
 	{

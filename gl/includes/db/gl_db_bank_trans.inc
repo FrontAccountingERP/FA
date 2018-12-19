@@ -188,7 +188,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 
 	$balance += $delta_amount;
 
-	$sql = "SELECT sum(amount) as amount, trans_date
+	$sql = "SELECT sum(amount) as amount, trans_date, trans_no, type
 			FROM ".TB_PREF."bank_trans
 			WHERE bank_act=".db_escape($bank_account);
 	if ($date)
@@ -202,7 +202,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 
 	while ($trans = db_fetch($history)) {
 		$balance += $trans['amount'];
-		if ($balance < 0)
+		if (round2($balance, user_price_dec()) < 0)
 		{
 			$trans['amount'] = $balance;
 			return $trans;
