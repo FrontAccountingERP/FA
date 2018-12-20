@@ -137,11 +137,13 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	$proto = 'http://';
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
-	{
-		$filename = "/stats/eurofxref/eurofxref-daily.xml";
-		$site = "www.ecb.europa.eu";
-		$site_ip="172.230.157.137";
-	}
+    {
+        $filename = "/stats/eurofxref/eurofxref-daily.xml";
+        $site = "www.ecb.europa.eu";
+        $proto = 'https://';
+        $site_ip="172.230.157.137";
+        $contents=file_get_contents($proto.$site.$filename);
+    }
 	elseif ($provider == 'YAHOO')
 	{
 		$filename = "/d/quotes.csv?s={$curr_a}{$curr_b}=X&f=sl1d1t1ba&e=.csv"; // new URL's for YAHOO
@@ -164,6 +166,13 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/converter/{$curr_b}/{$curr_a}/1";
 		$site = "exchange-rates.org";
+		$proto = 'https://';
+		$contents=file_get_contents($proto.$site.$filename);
+	}
+	elseif ($provider == 'CCA')
+	{
+		$filename = "/api/v6/convert?q={$curr_b}_{$curr_a}&compact=y&callback=sampleCallback";
+		$site = "free.currencyconverterapi.com";
 		$proto = 'https://';
 		$contents=file_get_contents($proto.$site.$filename);
 	}
@@ -240,7 +249,11 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
     elseif ($provider == 'EXCHANGE-RATES.ORG')
 	{
 		$val = getInnerStr($contents, '<span id="ctl00_M_lblToAmount">', '<');
-    }  
+    }
+    elseif ($provider == 'CCA')
+    {
+        $val = getInnerStr($contents, '"val":', '}');
+    }
 	return $val;
 }  /* end function get_extern_rate */
 
