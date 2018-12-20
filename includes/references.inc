@@ -165,6 +165,7 @@ class references
 		$type_fld = $db_info[1];
 		$tno_fld = $db_info[2];
 		$ref_fld = $db_info[3];
+		$type = db_escape($type);
 
 		// retrieve last ref number in the refline from original transaction table
 		$sql = "SELECT MAX(CAST(SUBSTR($ref_fld, ".(strlen($prefix)+1).",LENGTH($ref_fld)-".(strlen($postfix)+strlen($prefix)).") AS UNSIGNED))"
