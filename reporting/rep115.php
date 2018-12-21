@@ -158,7 +158,7 @@ function print_customer_balances()
 
     $cols = array(0, 70, 140, 180, 230, 270, 350, 445, 495, 555);
 
-    $headers = array(_('Name'), '', '', _('Opening Bal'), '', _('Debits'), _('Credits'), '', _('Balance'));
+    $headers = array(_('Name'), '', '', _('Open Balance'), '', _('Debit'), _('Credit'), '', _('Balance'));
 
     $aligns = array('left', 'left', 'left', 'right', 'left', 'right', 'right', 'right', 'right');
 
