@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
+    Copyright (C) FrontAccounting Team.
 	Released under the terms of the GNU General Public License, GPL, 
 	as published by the Free Software Foundation, either version 3 
 	of the License, or (at your option) any later version.
@@ -13,8 +13,8 @@ $page_security = 'SA_SUPPLIERANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
-// date_:	2005-05-19
-// Title:	Supplier Balances
+// date_:	2018-12-21
+// Title:	Supplier Trial Balances
 // ----------------------------------------------------------------
 $path_to_root="..";
 
