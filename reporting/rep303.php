@@ -217,7 +217,7 @@ function print_stock_check()
 			if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 				$rep->NewPage();
 			$firstcol = 1;	
-			if ($barcodes)
+			if ($barcodes && is_numeric($trans['stock_id']))
 			{
 				$bar_y = $rep->GetY();
 				$barcode = str_pad($trans['stock_id'], 7, '0', STR_PAD_LEFT);
