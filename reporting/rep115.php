@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) Boxygen, LLC, and FrontAccounting Team.
+    Copyright (C) FrontAccounting Team.
     Released under the terms of the GNU General Public License, GPL,
     as published by the Free Software Foundation, either version 3
     of the License, or (at your option) any later version.
@@ -114,7 +114,6 @@ function print_customer_balances()
     $folk = $_POST['PARAM_4'];  // added by Faisal to filter by sales person
     $currency = $_POST['PARAM_5'];
     $no_zeros = $_POST['PARAM_6'];
-    $hide_trans = 1;
     $comments = $_POST['PARAM_7'];
     $orientation = $_POST['PARAM_8'];
     $destination = $_POST['PARAM_9'];
@@ -165,8 +164,10 @@ function print_customer_balances()
     $params =   array(  0 => $comments,
                         1 => array('text' => _('Period'), 'from' => $from,   'to' => $to),
                         2 => array('text' => _('Customer'), 'from' => $cust, 'to' => ''),
-                        3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
-                        4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+    				    3 => array('text' => _('Sales Areas'), 'from' => $sarea, 		'to' => ''),
+    				    4 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 	'to' => ''),
+                        5 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+                        6 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Customer Trial Balance'), "CustomerTB", user_pagesize(), 9, $orientation);
     if ($orientation == 'L')
@@ -230,8 +231,6 @@ function print_customer_balances()
             $grandtotal[$i] += $init[$i];
         }
 
-        if ($no_zeros && $init[3] == 0) continue;
-
         if (db_num_rows($res) == 0) 
         {
 		    $rep->TextCol(0, 2, $myrow['name']);
@@ -277,7 +276,7 @@ function print_customer_balances()
             }
             $total[3] = $total[0] - $total[1];
         }
-
+		if ($no_zeros && $total[3] == 0.0 && $curr_db == 0.0 && $curr_cr == 0.0) continue;
         $rep->TextCol(0, 2, $myrow['name']);
         $rep->AmountCol(3, 4, $total[3] + $curr_cr - $curr_db, $dec);
         $rep->AmountCol(5, 6, $curr_db, $dec);

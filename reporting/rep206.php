@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) Boxygen, LLC, and FrontAccounting Team.
+    Copyright (C) FrontAccounting Team.
     Released under the terms of the GNU General Public License, GPL,
     as published by the Free Software Foundation, either version 3
     of the License, or (at your option) any later version.
@@ -165,8 +165,6 @@ function print_supplier_balances()
             $grandtotal[$i] += $init[$i];
         }
 
-        if ($no_zeros && $init[3] == 0) continue;
-
         if (db_num_rows($res) == 0) 
         {
             $rep->TextCol(0, 2, $myrow['name']);
@@ -210,6 +208,7 @@ function print_supplier_balances()
             }
             $total[3] = $total[1] - $total[0];
         }
+		if ($no_zeros && $total[3] == 0.0 && $curr_db == 0.0 && $curr_cr == 0.0) continue;
         $rep->TextCol(0, 2, $myrow['name']);
         $rep->AmountCol(3, 4, $total[3] + $curr_cr - $curr_db, $dec);
         $rep->AmountCol(5, 6, $curr_cr, $dec);
