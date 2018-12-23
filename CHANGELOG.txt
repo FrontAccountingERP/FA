@@ -1,3 +1,90 @@
+2018-12-24 00:38:18 +0100 Joe Hunt 
+Release 2.4.6
+M	version.php
+
+2018-12-24 00:32:42 +0100 Joe Hunt 
+Report Stock Check Sheet is now testing for valid barcodes of EAN, EAN-8, EAN-13, GTIN-8, GTIN-12, GTIN-14, UPC, UPC-12 coupon code, JAN if 'Using Barcodes' is enabled.
+M	reporting/rep303.php
+
+2018-12-22 11:54:46 +0100 Joe Hunt 
+Barcodes in report Stock Check Sheets should only print numeric stock id's.
+M	reporting/rep303.php
+
+2018-12-22 10:00:00 +0100 Joe Hunt 
+Rerun of rep115.php and rep206. Wrong $no_zeroes check and missing parameters in rep115.php.
+M	reporting/rep115.php
+M	reporting/rep206.php
+
+2018-12-21 17:34:10 +0100 Joe Hunt 
+Rerun of rep115.php, Customer Trial Balance.
+M	reporting/rep115.php
+
+2018-12-21 17:01:03 +0100 Joe Hunt 
+Added 2 new reports, Customer Trial Balance and Supplier Trial Balance. @boxygen.
+A	reporting/rep115.php
+M	reporting/rep201.php
+A	reporting/rep206.php
+M	reporting/reports_main.php
+
+2018-12-20 13:01:02 +0100 Joe Hunt 
+No exchange rate working in FA now. Fixed ECB, CCA and EXCHANGE-RATES.ORG. @notrinos.
+M	config.default.php
+M	gl/includes/db/gl_db_rates.inc
+
+2018-12-19 13:22:55 +0100 Joe Hunt 
+4821: banking overdraft message has php errors. Fixed. @Braathwaathe
+M	gl/gl_bank.php
+M	gl/includes/db/gl_db_bank_trans.inc
+
+2018-12-19 11:56:34 +0100 Joe Hunt 
+4811: magnifying glass select on deposits/payments erroneously shows bank account gl accounts. Fixed, @Braathwaathe.
+M	gl/includes/db/gl_db_accounts.inc
+M	gl/inquiry/accounts_list.php
+M	includes/ui/ui_lists.inc
+
+2018-12-19 11:52:47 +0100 Joe Hunt 
+4796: Entering customer payment with a bank charge equal to the total amount results in database error. Fixed. @Braathwaate.
+M	sales/customer_payments.php
+
+2018-12-18 12:53:37 +0100 Joe Hunt 
+Changed Journal # to GL # in GL Trans View.
+M	gl/inquiry/journal_inquiry.php
+M	gl/view/gl_trans_view.php
+M	includes/ui/ui_view.inc
+
+2018-12-17 23:14:19 +0100 Joe Hunt 
+New reliable currency rate provider, EXCHANGE-RATES.ORG added as default. @notrinos.
+M	config.default.php
+M	gl/includes/db/gl_db_rates.inc
+
+2018-12-17 15:56:32 +0100 Joe Hunt 
+Credit Notes were never seen in View Sales Order. Fixed.
+M	sales/view/view_sales_order.php
+
+2018-12-17 09:41:08 +0100 Joe Hunt 
+Foxed a non well formed numeric value encountered rep202.php. @apmuthu.
+M	reporting/rep202.php
+
+2018-12-16 23:25:40 +0100 Joe Hunt 
+Pressing the Batch button in Invoice against Deliveries got a missing indes. Fixed. @notrinos.
+M	sales/inquiry/sales_deliveries_view.php
+
+2018-12-16 23:23:26 +0100 Joe Hunt 
+Fixed a non well formed numeric value encountered rep102.php
+M	reporting/rep102.php
+
+2018-12-16 16:12:38 +0100 Joe Hunt 
+Rerun of last php 7.2 count() buf.
+M	includes/ui/ui_globals.inc
+
+2018-12-16 08:32:32 +0100 Joe Hunt 
+Fixed Bug in count_array(), /includes/ui/ui_globals.inc.
+M	includes/ui/ui_globals.inc
+
+2018-12-06 21:19:01 +0100 Joe Hunt 
+New CHANGELOG.txt file.
+M	CHANGELOG.txt
+
 2018-12-06 21:16:27 +0100 Joe Hunt 
 Release 2.4.5
 M	version.php
