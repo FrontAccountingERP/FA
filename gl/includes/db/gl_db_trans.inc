@@ -476,19 +476,15 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 
 function get_trans_tax_details($trans_type, $trans_no)
 {
-	$sql = "SELECT tax_details.*,
-				tax_type.name AS tax_type_name,
-				tax_details.rate AS effective_rate,
-				tax_type.rate AS rate
-		FROM ".TB_PREF."trans_tax_details tax_details,
-			".TB_PREF."tax_types tax_type
-		WHERE 
-			trans_type = ".db_escape($trans_type)."
-		AND trans_no = ".db_escape($trans_no)."
-		AND (net_amount != 0 OR amount != 0)
-		AND tax_type.id = tax_details.tax_type_id";
+    $sql = "SELECT tax_details.*, tax_type.name AS tax_type_name, tax_type.rate AS rate
+        FROM ".TB_PREF."trans_tax_details tax_details INNER JOIN 
+        ".TB_PREF."tax_types tax_type ON tax_type.id = tax_details.tax_type_id
+        WHERE 
+                trans_type = ".db_escape($trans_type)."
+            AND trans_no = ".db_escape($trans_no)."
+            AND (net_amount != 0 OR amount != 0)";
 
-	return db_query($sql, "The transaction tax details could not be retrieved");
+    return db_query($sql, "The transaction tax details could not be retrieved");
 }
 
 //----------------------------------------------------------------------------------------
