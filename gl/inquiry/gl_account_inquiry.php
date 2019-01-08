@@ -111,7 +111,7 @@ function show_results()
     	$_POST['Dimension2'] = 0;
 	$result = get_gl_transactions($_POST['TransFromDate'], $_POST['TransToDate'], -1,
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
-    	input_num('amount_min'), input_num('amount_max'), null, $_POST['Memo']);
+    	input_num('amount_min'), input_num('amount_max'), null, null, $_POST['Memo']);
 
 	$colspan = ($dim == 2 ? "7" : ($dim == 1 ? "6" : "5"));
 
