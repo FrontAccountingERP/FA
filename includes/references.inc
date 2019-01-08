@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/includes/db/class.reflines_db.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/types.inc");
 //---------------------------------------------------------------------------------------------
 // 2.4 - further changes toward removing refs table introduced:
@@ -56,6 +57,8 @@ $refline_placeholders = array(
 	'MM' => 'date',
 	'YY' => 'date',
 	'YYYY' => 'date',
+	'FF' => 'date', // fiscal year
+	'FFFF' => 'date',
 	'UU' => 'user',
  	'P' => 'pos',
 //	 FIXME:  for placeholders below all the code should work, but as the ref length is variable,
@@ -120,6 +123,11 @@ class references
 						case 'YYYY':
 							list($day, $month, $year) = explode_date_to_dmy($context['date']);
 							$out .= $ph == 'MM' ? sprintf('%02d', $month) : ($ph == 'YY' ? sprintf('%02d', $year%100): sprintf('%04d', $year));
+							break;
+						case 'FF':
+						case 'FFFF':
+							list($day, $month, $year) = explode_date_to_dmy(get_fiscalyear_begin_for_date($context['date']));
+							$out .= $ph == 'FF' ? sprintf('%02d', $year%100): sprintf('%04d', $year);
 							break;
 						case 'C':
 							$out .= sprintf('%d', $context['customer']);
@@ -286,11 +294,16 @@ class references
 		{
 			list($year4, $month, $day) = explode("-", date2sql($context['date']));
 			$year2 = substr($year4, 2);
+			$f_year = explode("-", date2sql(get_fiscalyear_begin_for_date($context['date'])));
+			$f_year2 = substr($f_year[0], 2);
+			$f_year4 = $f_year[0];
 		} else
 		{
 			$month = '\d{2,}';
 			$year2 = '\d{2,}';
 			$year4 = '\d{4,}';
+			$f_year2 = '\d{2,}';
+			$f_year4 = '\d{4,}';
 		}
 		$cust = @$context['customer'] ? $context['customer'] : '\d+';
 		$supp = @$context['supplier'] ? $context['supplier'] : '\d+';
@@ -306,6 +319,8 @@ class references
 				'/\{MM\}/',
 				'/\{YY\}/',
 				'/\{YYYY\}/',
+				'/\{FF\}/',
+				'/\{FFFF\}/',
 				'/\{C\}/',
 				'/\{B\}/',
 				'/\{S\}/',
@@ -320,6 +335,8 @@ class references
 				$month,
 				$year2,
 				$year4,
+				$f_year2,
+				$f_year4,
 				$cust,
 				$branch,
 				$supp,
