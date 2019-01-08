@@ -158,8 +158,14 @@ class current_user
 			$hash = md5($password);
 
 			update_user_password($user['id'], $user['user_id'], $hash);
+			
+			$sender = get_company_pref('email');
+			if (empty($sender))
+				$header = "";
+			else
+				$header = "From: $sender";
 
-			mail($email, _("New password for")." ".$SysPrefs->app_title, $password);
+			mail($email, _("New password for")." ".$SysPrefs->app_title, $password, $header);
 
 			return true;
 		}
