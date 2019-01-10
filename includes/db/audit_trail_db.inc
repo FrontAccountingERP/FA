@@ -16,17 +16,17 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 
 	$date = date2sql($trans_date);
 	$sql = "INSERT INTO ".TB_PREF."audit_trail"
-		. " (type, trans_no, user, gl_date, description)
+		. " (type, trans_no, user, gl_date, description, stamp)
 			VALUES(".db_escape($trans_type).", ".db_escape($trans_no).","
 			. $_SESSION["wa_current_user"]->user . ","
-			. "'$date',". db_escape($descr). ")";
+			. "'$date',". db_escape($descr). ", CURRENT_TIMESTAMP)";
 
 	db_query($sql, "Cannot add audit info");
 	// all audit records beside just inserted one should have gl_seq set to NULL
 	// to avoid need for subqueries (not existing in MySQL 3) all over the code
 	$sql = "UPDATE ".TB_PREF."audit_trail audit LEFT JOIN ".TB_PREF."fiscal_year year ON year.begin<='$date' AND year.end>='$date'
 		SET audit.gl_seq = IF(audit.id=".db_insert_id().", 0, NULL),"
-		."audit.fiscal_year=year.id"
+		."audit.fiscal_year=year.id, stamp=CURRENT_TIMESTAMP"
 		. " WHERE type=".db_escape($trans_type)." AND trans_no="
 		. db_escape($trans_no);
 
