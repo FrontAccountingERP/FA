@@ -40,7 +40,7 @@ if (isset($_POST['setprefs']))
 			array('prices_dec', 'qty_dec', 'rates_dec', 'percent_dec',
 			'date_format', 'date_sep', 'tho_sep', 'dec_sep', 'print_profile', 
 			'theme', 'page_size', 'language', 'startup_tab',
-			'query_size' => 10.0, 'transaction_days' => 30, 'save_report_selections' => 0,
+			'query_size' => 10, 'transaction_days' => 30, 'save_report_selections' => 0,
 			'def_print_destination' => 0, 'def_print_orientation' => 0)));
 
 		set_user_prefs(check_value(
