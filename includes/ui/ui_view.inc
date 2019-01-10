@@ -1497,7 +1497,7 @@ if (!function_exists('_vd'))
 
 function _vl($mixed, $title = '', $exit = false)
 {
-	error_log((!empty($title) ? ($title .':') : '') . var_export($mixed, true));
+	error_log((!empty($title) ? ($title .':') : '') . print_r($mixed, true));
 	if ($exit)
 		exit;
 }

@@ -74,8 +74,8 @@ class Cart
 	var $payment_terms; // cached payment terms
 	var $credit;
 	// prepayment mode:
-	var $prepaid;		// true for documents issued in prepayment mode
-	var $prep_amount;	// prepayment required for SO, invoiced amount for prepaiament invoice
+	var $prepaid=false;	// true for documents issued in prepayment mode
+	var $prep_amount=0;	// prepayment required for SO, invoiced amount for prepaiament invoice
 	var $sum_paid; 		// sum of all allocated prepayments both to order and related invoices
 	var $alloc; 		// sum of payments allocated to this document
 	var $prepayments = array(); // allocation records for this document

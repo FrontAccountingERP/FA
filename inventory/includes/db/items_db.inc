@@ -41,7 +41,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 	if ($mb_flag != '')
 		$sql .= ", mb_flag=".db_escape($mb_flag);
 
-	if ($depreciation_start != '') {
+	if (isset($depreciation_start)) {
 		$sql .= ", depreciation_start='".date2sql($depreciation_start)."'"
 			.", depreciation_date='".date2sql($depreciation_start)."'";
 	}
@@ -63,8 +63,9 @@ function add_item($stock_id, $description, $long_description, $category_id,
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
 		adjustment_account, wip_account, dimension_id, dimension2_id, no_sale, no_purchase, editable,
-		depreciation_method, depreciation_rate, depreciation_factor, depreciation_start, depreciation_date, fa_class_id)
-		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
+		depreciation_method, depreciation_rate, depreciation_factor"
+		.(isset($depreciation_start) ? ", depreciation_start, depreciation_date, fa_class_id" : "")
+		.") VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		".db_escape($category_id).", ".db_escape($tax_type_id).", "
 		.db_escape($units).", ".db_escape($mb_flag).",
 		".db_escape($sales_account).", ".db_escape($inventory_account)
@@ -74,9 +75,9 @@ function add_item($stock_id, $description, $long_description, $category_id,
 		.db_escape($no_sale).","
 		.db_escape($no_purchase).","
 		.db_escape($editable).","
-		.db_escape($depreciation_method).",".db_escape($depreciation_rate).",".db_escape($depreciation_factor).",'"
-		.date2sql($depreciation_start)."','".date2sql($depreciation_start)."',"
-		.db_escape($fa_class_id).")";
+		.db_escape($depreciation_method).",".db_escape($depreciation_rate).",".db_escape($depreciation_factor)
+		.(isset($depreciation_start) ? ",'".date2sql($depreciation_start)."','".date2sql($depreciation_start)."',".db_escape($fa_class_id) : "")
+		.")";
 
 	db_query($sql, "The item could not be added");
 

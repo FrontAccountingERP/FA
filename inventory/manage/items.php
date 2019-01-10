@@ -237,7 +237,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
 				get_post('fa_class_id'));
 
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -258,7 +258,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
 				get_post('fa_class_id'));
 
 			display_notification(_("A new item has been added."));
@@ -464,7 +464,7 @@ function item_settings(&$stock_id, $new_item)
 		gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
 		gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
-	elseif (!is_service($_POST['mb_flag'])) 
+	elseif (!is_service(get_post('mb_flag')))
 	{
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -478,7 +478,7 @@ function item_settings(&$stock_id, $new_item)
 	}
 
 
-	if (is_manufactured($_POST['mb_flag']))
+	if (is_manufactured(get_post('mb_flag')))
 		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
 		hidden('wip_account', $_POST['wip_account']);
