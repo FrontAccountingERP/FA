@@ -345,7 +345,7 @@ $opts = array(		// default options
         			$img_title = _("Search suppliers");
         			break;
       			case "account":
-      			case "account2";
+      			case "account2":
       				$skip = strtolower($type) == "account" ? false : true;
         			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
         			$img_title = _("Search GL accounts");
