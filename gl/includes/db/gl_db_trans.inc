@@ -148,7 +148,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
         AND gl.amount <> 0"; 
 
     if ($trans_no > 0)
-        $sql .= " AND gl.type_no LIKE ".db_escape('%'.$trans_no);;
+        $sql .= " AND gl.type_no LIKE ".db_escape('%'.$trans_no);
 
     if ($account != null)
         $sql .= " AND gl.account = ".db_escape($account);
