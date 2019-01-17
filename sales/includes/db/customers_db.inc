@@ -55,7 +55,7 @@ function delete_customer($customer_id)
 	begin_transaction();
 	delete_entity_contacts('customer', $customer_id);
 
-	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);;
+	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 	db_query($sql,"cannot delete customer");
 	commit_transaction();
 }

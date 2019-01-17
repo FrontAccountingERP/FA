@@ -87,7 +87,7 @@ function can_process()
 	global $Refs;
 
 	if (!is_date($_POST['CreditDate'])) {
-		display_error(_("The entered date is invalid."));;
+		display_error(_("The entered date is invalid."));
 		set_focus('CreditDate');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['CreditDate']))	{
@@ -98,14 +98,14 @@ function can_process()
 
     if ($_SESSION['Items']->trans_no==0) {
 		if (!$Refs->is_valid($_POST['ref'], ST_CUSTCREDIT)) {
-			display_error(_("You must enter a reference."));;
+			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
 		}
 
     }
 	if (!check_num('ChargeFreightCost', 0)) {
-		display_error(_("The entered shipping cost is invalid or less than zero."));;
+		display_error(_("The entered shipping cost is invalid or less than zero."));
 		set_focus('ChargeFreightCost');
 		return false;
 	}
