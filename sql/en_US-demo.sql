@@ -117,7 +117,7 @@ CREATE TABLE `0_bank_accounts` (
   `bank_account_name` varchar(60) NOT NULL DEFAULT '',
   `bank_account_number` varchar(100) NOT NULL DEFAULT '',
   `bank_name` varchar(60) NOT NULL DEFAULT '',
-  `bank_address` tinytext COLLATE utf8_unicode_ci,
+  `bank_address` tinytext,
   `bank_curr_code` char(3) NOT NULL DEFAULT '',
   `dflt_curr_act` tinyint(1) NOT NULL DEFAULT '0',
   `id` smallint(6) NOT NULL AUTO_INCREMENT,
@@ -214,7 +214,6 @@ CREATE TABLE `0_budget_trans` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_budget_trans` --
-
 
 -- Structure of table `0_chart_class` --
 
@@ -353,9 +352,6 @@ CREATE TABLE `0_chart_types` (
 
 INSERT INTO `0_chart_types` VALUES
 ('1', 'Current Assets', '1', '', '0'),
-('10', 'Cost of Goods Sold', '4', '', '0'),
-('11', 'Payroll Expenses', '4', '', '0'),
-('12', 'General &amp; Administrative expenses', '4', '', '0'),
 ('2', 'Inventory Assets', '1', '', '0'),
 ('3', 'Capital Assets', '1', '', '0'),
 ('4', 'Current Liabilities', '2', '', '0'),
@@ -363,7 +359,10 @@ INSERT INTO `0_chart_types` VALUES
 ('6', 'Share Capital', '2', '', '0'),
 ('7', 'Retained Earnings', '2', '', '0'),
 ('8', 'Sales Revenue', '3', '', '0'),
-('9', 'Other Revenue', '3', '', '0');
+('9', 'Other Revenue', '3', '', '0'),
+('10', 'Cost of Goods Sold', '4', '', '0'),
+('11', 'Payroll Expenses', '4', '', '0'),
+('12', 'General &amp; Administrative expenses', '4', '', '0');
 
 -- Structure of table `0_comments` --
 
@@ -373,7 +372,7 @@ CREATE TABLE `0_comments` (
   `type` int(11) NOT NULL DEFAULT '0',
   `id` int(11) NOT NULL DEFAULT '0',
   `date_` date DEFAULT '0000-00-00',
-  `memo_` tinytext COLLATE utf8_unicode_ci,
+  `memo_` tinytext,
   KEY `type_and_id` (`type`,`id`)
 ) ENGINE=InnoDB ;
 
@@ -474,7 +473,7 @@ CREATE TABLE `0_crm_persons` (
   `ref` varchar(30) NOT NULL,
   `name` varchar(60) NOT NULL,
   `name2` varchar(60) DEFAULT NULL,
-  `address` tinytext COLLATE utf8_unicode_ci,
+  `address` tinytext,
   `phone` varchar(30) DEFAULT NULL,
   `phone2` varchar(30) DEFAULT NULL,
   `fax` varchar(30) DEFAULT NULL,
@@ -640,7 +639,7 @@ CREATE TABLE `0_debtor_trans_details` (
   `debtor_trans_no` int(11) DEFAULT NULL,
   `debtor_trans_type` int(11) DEFAULT NULL,
   `stock_id` varchar(20) NOT NULL DEFAULT '',
-  `description` tinytext COLLATE utf8_unicode_ci,
+  `description` tinytext,
   `unit_price` double NOT NULL DEFAULT '0',
   `unit_tax` double NOT NULL DEFAULT '0',
   `quantity` double NOT NULL DEFAULT '0',
@@ -679,7 +678,7 @@ CREATE TABLE `0_debtors_master` (
   `debtor_no` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `debtor_ref` varchar(30) NOT NULL,
-  `address` tinytext COLLATE utf8_unicode_ci,
+  `address` tinytext,
   `tax_id` varchar(55) NOT NULL DEFAULT '',
   `curr_code` char(3) NOT NULL DEFAULT '',
   `sales_type` int(11) NOT NULL DEFAULT '1',
@@ -881,7 +880,7 @@ CREATE TABLE `0_grn_items` (
   `grn_batch_id` int(11) DEFAULT NULL,
   `po_detail_item` int(11) NOT NULL DEFAULT '0',
   `item_code` varchar(20) NOT NULL DEFAULT '',
-  `description` tinytext COLLATE utf8_unicode_ci,
+  `description` tinytext,
   `qty_recd` double NOT NULL DEFAULT '0',
   `quantity_inv` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -957,7 +956,6 @@ CREATE TABLE `0_item_tax_type_exemptions` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_item_tax_type_exemptions` --
-
 
 -- Structure of table `0_item_tax_types` --
 
@@ -1187,7 +1185,7 @@ CREATE TABLE `0_purch_order_details` (
   `po_detail_item` int(11) NOT NULL AUTO_INCREMENT,
   `order_no` int(11) NOT NULL DEFAULT '0',
   `item_code` varchar(20) NOT NULL DEFAULT '',
-  `description` tinytext COLLATE utf8_unicode_ci,
+  `description` tinytext,
   `delivery_date` date NOT NULL DEFAULT '0000-00-00',
   `qty_invoiced` double NOT NULL DEFAULT '0',
   `unit_price` double NOT NULL DEFAULT '0',
@@ -1216,10 +1214,10 @@ DROP TABLE IF EXISTS `0_purch_orders`;
 CREATE TABLE `0_purch_orders` (
   `order_no` int(11) NOT NULL AUTO_INCREMENT,
   `supplier_id` int(11) NOT NULL DEFAULT '0',
-  `comments` tinytext COLLATE utf8_unicode_ci,
+  `comments` tinytext,
   `ord_date` date NOT NULL DEFAULT '0000-00-00',
   `reference` tinytext NOT NULL,
-  `requisition_no` tinytext COLLATE utf8_unicode_ci,
+  `requisition_no` tinytext,
   `into_stock_location` varchar(5) NOT NULL DEFAULT '',
   `delivery_address` tinytext NOT NULL,
   `total` double NOT NULL DEFAULT '0',
@@ -1400,7 +1398,7 @@ CREATE TABLE `0_sales_order_details` (
   `order_no` int(11) NOT NULL DEFAULT '0',
   `trans_type` smallint(6) NOT NULL DEFAULT '30',
   `stk_code` varchar(20) NOT NULL DEFAULT '',
-  `description` tinytext COLLATE utf8_unicode_ci,
+  `description` tinytext,
   `qty_sent` double NOT NULL DEFAULT '0',
   `unit_price` double NOT NULL DEFAULT '0',
   `quantity` double NOT NULL DEFAULT '0',
@@ -1439,7 +1437,7 @@ CREATE TABLE `0_sales_orders` (
   `branch_code` int(11) NOT NULL DEFAULT '0',
   `reference` varchar(100) NOT NULL DEFAULT '',
   `customer_ref` tinytext NOT NULL,
-  `comments` tinytext COLLATE utf8_unicode_ci,
+  `comments` tinytext,
   `ord_date` date NOT NULL DEFAULT '0000-00-00',
   `order_type` int(11) NOT NULL DEFAULT '0',
   `ship_via` int(11) NOT NULL DEFAULT '0',
@@ -1455,7 +1453,7 @@ CREATE TABLE `0_sales_orders` (
   `prep_amount` double NOT NULL DEFAULT '0',
   `alloc` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`trans_type`,`order_no`)
-) ENGINE=InnoDB ;
+) ENGINE=InnoDB;
 
 -- Data of table `0_sales_orders` --
 
@@ -1541,8 +1539,8 @@ CREATE TABLE `0_security_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role` varchar(30) NOT NULL,
   `description` varchar(50) DEFAULT NULL,
-  `sections` text COLLATE utf8_unicode_ci,
-  `areas` text COLLATE utf8_unicode_ci,
+  `sections` text,
+  `areas` text,
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `role` (`role`)
@@ -1645,7 +1643,6 @@ CREATE TABLE `0_stock_fa_class` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_stock_fa_class` --
-
 
 -- Structure of table `0_stock_master` --
 
@@ -1755,7 +1752,6 @@ CREATE TABLE `0_supp_allocations` (
 
 -- Data of table `0_supp_allocations` --
 
-
 -- Structure of table `0_supp_invoice_items` --
 
 DROP TABLE IF EXISTS `0_supp_invoice_items`;
@@ -1768,11 +1764,11 @@ CREATE TABLE `0_supp_invoice_items` (
   `grn_item_id` int(11) DEFAULT NULL,
   `po_detail_item_id` int(11) DEFAULT NULL,
   `stock_id` varchar(20) NOT NULL DEFAULT '',
-  `description` tinytext COLLATE utf8_unicode_ci,
+  `description` tinytext,
   `quantity` double NOT NULL DEFAULT '0',
   `unit_price` double NOT NULL DEFAULT '0',
   `unit_tax` double NOT NULL DEFAULT '0',
-  `memo_` tinytext COLLATE utf8_unicode_ci,
+  `memo_` tinytext,
   `dimension_id` int(11) NOT NULL DEFAULT '0',
   `dimension2_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -1868,118 +1864,81 @@ CREATE TABLE `0_sys_prefs` (
 -- Data of table `0_sys_prefs` --
 
 INSERT INTO `0_sys_prefs` VALUES
-('coy_name', 'setup.company', 'varchar', '60', 'Training Co'),
-('gst_no', 'setup.company', 'varchar', '25', '33445566'),
-('accounts_alpha', 'glsetup.general', 'tinyint', '1', '0'),
-('accumulate_shipping', 'glsetup.customer', 'tinyint', '1', '0'),
-('add_pct', 'setup.company', 'int', '5', '-1'),
-('allow_negative_prices', 'glsetup.inventory', 'tinyint', '1', '1'),
-('allow_negative_stock', 'glsetup.inventory', 'tinyint', '1', '0'),
-('alternative_tax_include_on_docs', 'setup.company', 'tinyint', '1', ''),
-('auto_curr_reval', 'setup.company', 'smallint', '6', '1'),
-('bank_charge_act', 'glsetup.general', 'varchar', '15', '5690'),
-('barcodes_on_stock', 'setup.company', 'tinyint', '1', '0'),
-('base_sales', 'setup.company', 'int', '11', '1'),
-('bcc_email', 'setup.company', 'varchar', '100', ''),
-('company_logo_report', 'setup.company', 'tinyint', '1', '0'),
-('coy_logo', 'setup.company', 'varchar', '100', 'logo_frontaccounting.jpg'),
-('coy_no', 'setup.company', 'varchar', '25', ''),
-('creditors_act', 'glsetup.purchase', 'varchar', '15', '2100'),
-('curr_default', 'setup.company', 'char', '3', 'USD'),
-('debtors_act', 'glsetup.sales', 'varchar', '15', '1200'),
-('default_adj_act', 'glsetup.items', 'varchar', '15', '5040'),
-('default_cogs_act', 'glsetup.items', 'varchar', '15', '5010'),
-('default_credit_limit', 'glsetup.customer', 'int', '11', '1000'),
-('default_delivery_required', 'glsetup.sales', 'smallint', '6', '1'),
-('default_dim_required', 'glsetup.dims', 'int', '11', '20'),
-('default_inv_sales_act', 'glsetup.items', 'varchar', '15', '4010'),
-('default_inventory_act', 'glsetup.items', 'varchar', '15', '1510'),
-('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660'),
-('default_prompt_payment_act', 'glsetup.sales', 'varchar', '15', '4500'),
-('default_quote_valid_days', 'glsetup.sales', 'smallint', '6', '30'),
-('default_receival_required', 'glsetup.purchase', 'smallint', '6', '10'),
-('default_sales_act', 'glsetup.sales', 'varchar', '15', '4010'),
-('default_sales_discount_act', 'glsetup.sales', 'varchar', '15', '4510'),
-('default_wip_act', 'glsetup.items', 'varchar', '15', '1530'),
-('default_workorder_required', 'glsetup.manuf', 'int', '11', '20'),
+('coy_name', 'setup.company', 'varchar', 60, 'Company name'),
+('gst_no', 'setup.company', 'varchar', 25, ''),
+('coy_no', 'setup.company', 'varchar', 25, ''),
+('tax_prd', 'setup.company', 'int', 11, '1'),
+('tax_last', 'setup.company', 'int', 11, '1'),
+('postal_address', 'setup.company', 'tinytext', 0, 'N/A'),
+('phone', 'setup.company', 'varchar', 30, ''),
+('fax', 'setup.company', 'varchar', 30, ''),
+('email', 'setup.company', 'varchar', 100, ''),
+('coy_logo', 'setup.company', 'varchar', 100, ''),
+('domicile', 'setup.company', 'varchar', 55, ''),
+('curr_default', 'setup.company', 'char', 3, 'USD'),
+('use_dimension', 'setup.company', 'tinyint', 1, '1'),
+('f_year', 'setup.company', 'int', 11, '2'),
+('shortname_name_in_list','setup.company', 'tinyint', 1, '0'),
+('no_item_list', 'setup.company', 'tinyint', 1, '0'),
+('no_customer_list', 'setup.company', 'tinyint', 1, '0'),
+('no_supplier_list', 'setup.company', 'tinyint', 1, '0'),
+('base_sales', 'setup.company', 'int', 11, '1'),
+('time_zone', 'setup.company', 'tinyint', 1, '0'),
+('add_pct', 'setup.company', 'int', 5, '-1'),
+('round_to', 'setup.company', 'int', 5, '1'),
+('login_tout', 'setup.company', 'smallint', 6, '600'),
+('past_due_days', 'glsetup.general', 'int', 11, '30'),
+('profit_loss_year_act', 'glsetup.general', 'varchar', 15, '9990'),
+('retained_earnings_act', 'glsetup.general', 'varchar', 15, '3590'),
+('bank_charge_act', 'glsetup.general', 'varchar', 15, '5690'),
+('exchange_diff_act', 'glsetup.general', 'varchar', 15, '4450'),
+('tax_algorithm', 'glsetup.customer', 'tinyint', 1, '1'),
+('default_credit_limit', 'glsetup.customer', 'int', 11, '1000'),
+('accumulate_shipping', 'glsetup.customer', 'tinyint', 1, '0'),
+('legal_text', 'glsetup.customer', 'tinytext', 0, ''),
+('freight_act', 'glsetup.customer', 'varchar', 15, '4430'),
+('debtors_act', 'glsetup.sales', 'varchar', 15, '1200'),
+('default_sales_act', 'glsetup.sales', 'varchar', 15, '4010'),
+('default_sales_discount_act', 'glsetup.sales', 'varchar', 15, '4510'),
+('default_prompt_payment_act', 'glsetup.sales', 'varchar', 15, '4500'),
+('default_delivery_required', 'glsetup.sales', 'smallint', 6, '1'),
+('default_receival_required', 'glsetup.purchase', 'smallint', 6, '10'),
+('default_quote_valid_days', 'glsetup.sales', 'smallint', 6, '30'),
+('default_dim_required', 'glsetup.dims', 'int', 11, '20'),
+('pyt_discount_act', 'glsetup.purchase', 'varchar', 15, '5060'),
+('creditors_act', 'glsetup.purchase', 'varchar', 15, '2100'),
+('po_over_receive', 'glsetup.purchase', 'int', 11, '10'),
+('po_over_charge', 'glsetup.purchase', 'int', 11, '10'),
+('allow_negative_stock', 'glsetup.inventory', 'tinyint', 1, '0'),
+('default_inventory_act', 'glsetup.items', 'varchar', 15, '1510'),
+('default_cogs_act', 'glsetup.items', 'varchar', 15, '5010'),
+('default_adj_act', 'glsetup.items', 'varchar', 15, '5040'),
+('default_inv_sales_act', 'glsetup.items', 'varchar', 15, '4010'),
+('default_wip_act', 'glsetup.items', 'varchar', 15, '1530'),
+('default_workorder_required', 'glsetup.manuf', 'int', 11, '20'),
+('version_id', 'system', 'varchar', 11, '2.4.1'),
+('auto_curr_reval', 'setup.company', 'smallint', 6, '1'),
+('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550'),
+('bcc_email', 'setup.company', 'varchar', 100, ''),
 ('deferred_income_act', 'glsetup.sales', 'varchar', '15', '2105'),
+('gl_closing_date','setup.closing_date', 'date', 8, ''),
+('alternative_tax_include_on_docs','setup.company', 'tinyint', 1, '0'),
+('no_zero_lines_amount','glsetup.sales', 'tinyint', 1, '1'),
+('show_po_item_codes','glsetup.purchase', 'tinyint', 1, '0'),
+('accounts_alpha','glsetup.general', 'tinyint', 1, '0'),
+('loc_notification','glsetup.inventory', 'tinyint', 1, '0'),
+('print_invoice_no','glsetup.sales', 'tinyint', 1, '0'),
+('allow_negative_prices','glsetup.inventory', 'tinyint', 1, '1'),
+('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0'),
+('suppress_tax_rates','setup.company', 'tinyint', 1, '0'),
+('company_logo_report','setup.company', 'tinyint', 1, '0'),
+('barcodes_on_stock','setup.company', 'tinyint', 1, '0'),
+('print_dialog_direct','setup.company', 'tinyint', 1, '0'),
+('ref_no_auto_increase','setup.company', 'tinyint', 1, '0'),
+('default_loss_on_asset_disposal_act', 'glsetup.items', 'varchar', '15', '5660'),
 ('depreciation_period', 'glsetup.company', 'tinyint', '1', '1'),
-('domicile', 'setup.company', 'varchar', '55', ''),
-('email', 'setup.company', 'varchar', '100', 'delta@delta.com'),
-('exchange_diff_act', 'glsetup.general', 'varchar', '15', '4450'),
-('f_year', 'setup.company', 'int', '11', '2'),
-('fax', 'setup.company', 'varchar', '30', ''),
-('freight_act', 'glsetup.customer', 'varchar', '15', '4430'),
-('gl_closing_date', 'setup.closing_date', 'date', '8', '2018-12-31'),
-('grn_clearing_act', 'glsetup.purchase', 'varchar', '15', '1550'),
-('legal_text', 'glsetup.customer', 'tinytext', '0', ''),
-('loc_notification', 'glsetup.inventory', 'tinyint', '1', '0'),
-('login_tout', 'setup.company', 'smallint', '6', '600'),
-('no_customer_list', 'setup.company', 'tinyint', '1', '0'),
-('no_item_list', 'setup.company', 'tinyint', '1', '0'),
-('no_supplier_list', 'setup.company', 'tinyint', '1', '0'),
-('no_zero_lines_amount', 'glsetup.sales', 'tinyint', '1', '1'),
-('past_due_days', 'glsetup.general', 'int', '11', '30'),
-('phone', 'setup.company', 'varchar', '30', ''),
-('po_over_charge', 'glsetup.purchase', 'int', '11', '10'),
-('po_over_receive', 'glsetup.purchase', 'int', '11', '10'),
-('postal_address', 'setup.company', 'tinytext', '0', 'N/A'),
-('print_dialog_direct', 'setup.company', 'tinyint', '1', '0'),
-('print_invoice_no', 'glsetup.sales', 'tinyint', '1', '0'),
-('print_item_images_on_quote', 'glsetup.inventory', 'tinyint', '1', '0'),
-('profit_loss_year_act', 'glsetup.general', 'varchar', '15', '9990'),
-('pyt_discount_act', 'glsetup.purchase', 'varchar', '15', '5060'),
-('ref_no_auto_increase', 'setup.company', 'tinyint', '1', '0'),
-('retained_earnings_act', 'glsetup.general', 'varchar', '15', '3590'),
-('round_to', 'setup.company', 'int', '5', '1'),
-('shortname_name_in_list', 'setup.company', 'tinyint', '1', ''),
-('show_po_item_codes', 'glsetup.purchase', 'tinyint', '1', '0'),
-('suppress_tax_rates', 'setup.company', 'tinyint', '1', ''),
-('tax_algorithm', 'glsetup.customer', 'tinyint', '1', '1'),
-('tax_last', 'setup.company', 'int', '11', '1'),
-('tax_prd', 'setup.company', 'int', '11', '1'),
-('time_zone', 'setup.company', 'tinyint', '1', '0'),
-('use_dimension', 'setup.company', 'tinyint', '1', '1'),
-('use_fixed_assets', 'setup.company', 'tinyint', '1', '1'),
-('use_manufacturing', 'setup.company', 'tinyint', '1', '1'),
-('version_id', 'system', 'varchar', '11', '2.4.1');
-
--- Structure of table `0_sys_types` --
-
-DROP TABLE IF EXISTS `0_sys_types`;
-
-CREATE TABLE `0_sys_types` (
-  `type_id` smallint(6) NOT NULL DEFAULT '0',
-  `type_no` int(11) NOT NULL DEFAULT '1',
-  `next_reference` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB ;
-
--- Data of table `0_sys_types` --
-
-INSERT INTO `0_sys_types` VALUES
-('0', '19', '3'),
-('1', '8', '2'),
-('2', '5', '2'),
-('4', '3', '1'),
-('10', '19', '4'),
-('11', '3', '2'),
-('12', '6', '1'),
-('13', '5', '2'),
-('16', '2', '1'),
-('17', '2', '1'),
-('18', '1', '3'),
-('20', '8', '3'),
-('21', '1', '1'),
-('22', '4', '2'),
-('25', '1', '2'),
-('26', '1', '8'),
-('28', '1', '1'),
-('29', '1', '2'),
-('30', '5', '6'),
-('32', '0', '1'),
-('35', '1', '1'),
-('40', '1', '3');
+('use_manufacturing','setup.company', 'tinyint', 1, '1'),
+('use_fixed_assets','setup.company', 'tinyint', 1, '1');
 
 -- Structure of table `0_tag_associations` --
 
@@ -1992,7 +1951,6 @@ CREATE TABLE `0_tag_associations` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_tag_associations` --
-
 
 -- Structure of table `0_tags` --
 
@@ -2009,7 +1967,6 @@ CREATE TABLE `0_tags` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_tags` --
-
 
 -- Structure of table `0_tax_group_items` --
 
@@ -2079,7 +2036,7 @@ CREATE TABLE `0_trans_tax_details` (
   `included_in_price` tinyint(1) NOT NULL DEFAULT '0',
   `net_amount` double NOT NULL DEFAULT '0',
   `amount` double NOT NULL DEFAULT '0',
-  `memo` tinytext COLLATE utf8_unicode_ci,
+  `memo` tinytext,
   `reg_type` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Type_and_Number` (`trans_type`,`trans_no`),
@@ -2197,7 +2154,6 @@ CREATE TABLE `0_wo_costing` (
 
 -- Data of table `0_wo_costing` --
 
-
 -- Structure of table `0_wo_issue_items` --
 
 DROP TABLE IF EXISTS `0_wo_issue_items`;
@@ -2230,7 +2186,6 @@ CREATE TABLE `0_wo_issues` (
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_wo_issues` --
-
 
 -- Structure of table `0_wo_manufacture` --
 
