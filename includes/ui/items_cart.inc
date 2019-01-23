@@ -101,7 +101,7 @@ class items_cart
 
 		$low_stock = array();
 
-    	if (!$SysPrefs->allow_negative_stock() || is_fixed_asset($line_item->mb_flag))
+    	if (!$SysPrefs->allow_negative_stock())
     	{
 			foreach ($this->line_items as $line_no => $line_item)
 				if (has_stock_holding($line_item->mb_flag) || is_fixed_asset($line_item->mb_flag))
