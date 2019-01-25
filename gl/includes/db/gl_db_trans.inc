@@ -468,8 +468,10 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
 			included_in_price, net_amount, amount, memo, reg_type)
 		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
-				.date2sql($tran_date)."',".db_escape($tax_id).","
-				.db_escape($rate).",".db_escape($ex_rate).",".($included ? 1:0).","
+				.date2sql($tran_date)."',"
+				.(int)($tax_id).","
+				.(float)($rate).","
+				.(float)($ex_rate).",".($included ? 1:0).","
 				.db_escape($net_amount).","
 				.db_escape($amount).",".db_escape($memo).",".db_escape($reg_type, true).")";
 
