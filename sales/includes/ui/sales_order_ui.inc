@@ -508,8 +508,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 			$Ajax->activate('units');
 			$Ajax->activate('qty');
 			$Ajax->activate('line_total');
-		} else
-			sales_items_list_cells(null,'stock_id', last_sales_order_detail($order, 'stk_code'), false, true, true);
+		} 
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$units = $item_info["units"];
