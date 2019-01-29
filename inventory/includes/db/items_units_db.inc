@@ -45,7 +45,7 @@ function get_unit_descr($unit)
 {
 	$sql = "SELECT name FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
 
-	$result = db_query($sql, "could not unit description");
+	$result = db_query($sql, "could not retrieve unit description");
 
 	$row = db_fetch_row($result);
 	return $row[0];
