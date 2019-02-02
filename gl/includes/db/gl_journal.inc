@@ -41,7 +41,7 @@ function update_journal($type, $trans_no, $amount, $tran_date, $currency, $refer
 	  ."`source_ref`=".db_escape($source_ref).","
 	  ."`tran_date`="."'".date2sql($tran_date)."',"
 	  ."`event_date`="."'".date2sql($event_date)."',"
-	  ."`doc_date`="."'".date2sql($doc_date)."')
+	  ."`doc_date`="."'".date2sql($doc_date)."'
 	   WHERE `type`=".db_escape($type)." AND " ."`trans_no`=".db_escape($trans_no);
 
 	return db_query($sql, 'cannot update journal entry');

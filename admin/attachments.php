@@ -169,7 +169,7 @@ function viewing_controls()
 	start_row();
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
 	if (list_updated('filterType'))
-		$selected_id = -1;;
+		$selected_id = -1;
 
 	end_row();
     end_table(1);

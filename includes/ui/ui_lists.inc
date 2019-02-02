@@ -345,7 +345,9 @@ $opts = array(		// default options
         			$img_title = _("Search suppliers");
         			break;
       			case "account":
-        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+      			case "account2":
+      				$skip = strtolower($type) == "account" ? false : true;
+        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
         			$img_title = _("Search GL accounts");
         			break;
     		}
@@ -551,10 +553,11 @@ function supplier_list_cells($label, $name, $selected_id=null, $all_option=false
 	$submit_on_change=false, $all=false, $editkey = false)
 {
 	if ($label != null)
-		echo "<td>$label</td><td>\n";
-		echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
+		echo "<td>$label</td>\n";
+	echo "<td>";	
+	echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
 		$all, $editkey);
-		echo "</td>\n";
+	echo "</td>\n";
 }
 
 function supplier_list_row($label, $name, $selected_id=null, $all_option = false, 
@@ -1202,7 +1205,7 @@ function tax_types_list_row($label, $name, $selected_id=null, $none_option=false
 function tax_groups_list($name, $selected_id=null,
 	$none_option=false, $submit_on_change=false)
 {
-	$sql = "SELECT id, name FROM ".TB_PREF."tax_groups";
+	$sql = "SELECT id, name, inactive FROM ".TB_PREF."tax_groups";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 		array(
@@ -1821,7 +1824,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
 	if ($type_id ) $sql .= " AND chart.account_type=".db_escape($type_id);
-
+	$account = ($skip_bank_accounts ? "account2" : "account");
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 		array(
 			'format' => '_format_account',
@@ -1838,7 +1841,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'async' => false,
 			'category' => 2,
 			'show_inactive' => $all
-		), "account" );
+		), $account );
 }
 
 function _format_account($row)

@@ -22,7 +22,7 @@ function get_post($name, $dflt='')
 		$ret = array();
 		foreach($name as $key => $dflt)
 			if (!is_numeric($key)) {
-				$ret[$key] = is_float($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
+				$ret[$key] = is_numeric($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
 			} else {
 				$ret[$dflt] = get_post($dflt, null);
 			}

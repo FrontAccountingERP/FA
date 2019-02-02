@@ -197,6 +197,8 @@
 			$this->title = _("RECEIPT");
 			$this->formData['document_name'] =_("Receipt No.");
 			$Addr1['title'] = _("With thanks from");
+			if ($this->formData['order_'] == "0")
+				$this->formData['order_'] = "";
 			$aux_info = array(
 				_("Customer's Reference") => $this->formData["debtor_ref"],
 				_("Type") =>$systypes_array[$this->formData["type"]],

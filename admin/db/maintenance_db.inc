@@ -183,7 +183,7 @@ function update_extensions($extensions) {
 	}
 
 	// update per company files
- 	$cnt = max(1, count($db_connections));
+ 	$cnt = max(1, count_array($db_connections));
 	for($i = 0; $i < $cnt; $i++) 
 	{
 		$newexts = $extensions;
@@ -309,6 +309,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 
 	ini_set("max_execution_time", max("180", ini_get("max_execution_time")));
 	db_query("SET foreign_key_checks=0");
+	db_query("SET sql_mode=''");
 
 	if (isset($connection['collation']))
 		db_set_collation($db, $connection['collation']);

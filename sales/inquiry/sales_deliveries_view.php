@@ -47,23 +47,24 @@ if (isset($_POST['BatchInvoice']))
 {
 	// checking batch integrity
     $del_count = 0;
-    foreach($_POST['Sel_'] as $delivery => $branch) {
-	  	$checkbox = 'Sel_'.$delivery;
-	  	if (check_value($checkbox))	{
-	    	if (!$del_count) {
-				$del_branch = $branch;
-	    	}
-	    	else {
-				if ($del_branch != $branch)	{
-		    		$del_count=0;
-		    		break;
+    if (isset($_POST['Sel_'])) {
+		foreach($_POST['Sel_'] as $delivery => $branch) {
+			$checkbox = 'Sel_'.$delivery;
+			if (check_value($checkbox))	{
+				if (!$del_count) {
+					$del_branch = $branch;
 				}
-	    	}
-	    	$selected[] = $delivery;
-	    	$del_count++;
-	  	}
-    }
-
+				else {
+					if ($del_branch != $branch)	{
+						$del_count=0;
+						break;
+					}
+				}
+				$selected[] = $delivery;
+				$del_count++;
+			}
+		}
+	}
     if (!$del_count) {
 		display_error(_('For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to

@@ -277,9 +277,9 @@ function display_wo_details($woid, $suppress_view_link=false)
 {
 	global $wo_types_array;
 
-	$myrow = get_work_order($woid);
+	$myrow = get_work_order($woid, true);
 
-    if (strlen($myrow[0]) == 0)
+    if ($myrow == false)
     {
     	display_note(_("The work order number sent is not valid."));
     	exit;
@@ -333,9 +333,9 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 {
 	global $wo_types_array;
 
-	$myrow = get_work_order($woid);
+	$myrow = get_work_order($woid, true);
 
-    if (strlen($myrow[0]) == 0)
+    if ($myrow === false)
     {
     	display_note(_("The work order number sent is not valid."));
     	exit;

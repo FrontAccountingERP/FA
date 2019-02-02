@@ -358,6 +358,7 @@ start_form();
 			check_row(_("Install Additional Language Packs from FA Repository:"), 'sel_langs');
 			check_row(_("Install Additional COAs from FA Repository:"), 'sel_coas');
 			end_table(1);
+			display_note(_("Use database user/password with permissions to create new database, or use proper credentials for previously created empty database."));
 			display_note(_("Select collation you want to use. If you are unsure or you will use various languages, select unicode collation."));
 			display_note(_("Use table prefix if you share selected database for more than one FA company using the same collation."));
 			display_note(_("Do not select additional langs nor COAs if you have no working internet connection right now. You can install them later."));

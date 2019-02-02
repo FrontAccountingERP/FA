@@ -60,11 +60,15 @@ if (list_updated('PersonDetailID')) {
 
 //--------------------------------------------------------------------------------------------------
 function line_start_focus() {
-  global 	$Ajax;
+  	global 	$Ajax;
 
-  $Ajax->activate('items_table');
-  $Ajax->activate('footer');
-  set_focus('_code_id_edit');
+    unset($_POST['amount']);
+    unset($_POST['dimension_id']);
+    unset($_POST['dimension2_id']);
+    unset($_POST['LineMemo']);
+  	$Ajax->activate('items_table');
+  	$Ajax->activate('footer');
+  	set_focus('_code_id_edit');
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -212,7 +216,7 @@ function create_cart($type, $trans_no)
 
 function check_trans()
 {
-	global $Refs;
+	global $Refs, $systypes_array;
 
 	$input_error = 0;
 
@@ -240,10 +244,12 @@ function check_trans()
 	}
 	if ($trans = check_bank_account_history($amnt_chg, $_POST['bank_account'], $_POST['date_'])) {
 
-		display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
-			$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
-		set_focus('amount');
-		$input_error = 1;
+		if (isset($trans['trans_no'])) {
+			display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+				$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
+			set_focus('amount');
+			$input_error = 1;
+		}	
 	}
 	if (!check_reference($_POST['ref'], $_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id))
 	{
@@ -380,7 +386,7 @@ if (isset($_POST['AddItem']))
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
-if (isset($_POST['CancelItemChanges']))
+if (isset($_POST['CancelItemChanges']) || isset($_POST['Index']))
 	line_start_focus();
 
 if (isset($_POST['go']))

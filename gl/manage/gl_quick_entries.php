@@ -124,13 +124,13 @@ if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2')
 	elseif ($selected_id2 != -1) 
 	{
 		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['memo']);
+			$_POST['dimension_id'], $_POST['dimension2_id'], get_post('memo'));
 		display_notification(_('Selected quick entry line has been updated'));
 	} 
 	else 
 	{
 		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
-			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['memo']);
+			$_POST['dimension_id'], $_POST['dimension2_id'], get_post('memo'));
 		display_notification(_('New quick entry line has been added'));
 	}
 	$Mode2 = 'RESET2';

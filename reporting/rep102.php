@@ -204,7 +204,7 @@ function print_aged_customer_analysis()
 				}
 
 				foreach ($trans as $i => $value)
-					$trans[$i] *= $rate;
+					$trans[$i] = (float)$trans[$i] * $rate;
 				$str = array($trans["Balance"] - $trans["Due"],
 					$trans["Due"]-$trans["Overdue1"],
 					$trans["Overdue1"]-$trans["Overdue2"],

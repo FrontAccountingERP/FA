@@ -36,7 +36,7 @@ function display_gl_heading($myrow)
 
     start_table(TABLESTYLE, "width='95%'");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
-    	_("Transaction Date"), _("Journal #"));
+    	_("Transaction Date"), _("GL #"));
 
 	if ($_GET['type_id'] == ST_JOURNAL)
 		array_insert($th, 3, array(_("Document Date"), _("Event Date")));

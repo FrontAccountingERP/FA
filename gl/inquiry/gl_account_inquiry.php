@@ -13,6 +13,7 @@ $page_security = 'SA_GLTRANSVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
+include($path_to_root . "/includes/db_pager.inc");
 
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -80,6 +81,7 @@ function gl_inquiry_controls()
 	if ($dim > 1)
 		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 
+	ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 	small_amount_cells(_("Amount min:"), 'amount_min', null, " ");
 	small_amount_cells(_("Amount max:"), 'amount_max', null, " ");
 	submit_cells('Show',_("Show"),'','', 'default');
@@ -109,9 +111,9 @@ function show_results()
     	$_POST['Dimension2'] = 0;
 	$result = get_gl_transactions($_POST['TransFromDate'], $_POST['TransToDate'], -1,
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
-    	input_num('amount_min'), input_num('amount_max'));
+    	input_num('amount_min'), input_num('amount_max'), null, null, $_POST['Memo']);
 
-	$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
+	$colspan = ($dim == 2 ? "7" : ($dim == 1 ? "6" : "5"));
 
 	if ($_POST["account"] != null)
 		display_heading($_POST["account"]. "&nbsp;&nbsp;&nbsp;".$act_name);
@@ -123,7 +125,7 @@ function show_results()
 		
 	start_table(TABLESTYLE);
 	
-	$first_cols = array(_("Type"), _("#"), _("Date"));
+	$first_cols = array(_("Type"), _("#"), _("Reference"), _("Date"));
 	
 	if ($_POST["account"] == null)
 	    $account_col = array(_("Account"));
@@ -138,9 +140,9 @@ function show_results()
 		$dim_cols = array();
 	
 	if ($show_balances)
-	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
+	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"), "");
 	else
-	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
+	    $remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"), "");
 	    
 	$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
 			
@@ -181,6 +183,7 @@ function show_results()
 
     	label_cell($systypes_array[$myrow["type"]]);
 		label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
+		label_cell(get_trans_view_str($myrow["type"],$myrow["type_no"],$myrow['reference']));
     	label_cell($trandate);
     	
     	if ($_POST["account"] == null)
@@ -197,6 +200,10 @@ function show_results()
 		if ($myrow['memo_'] == "")
 			$myrow['memo_'] = get_comments_string($myrow['type'], $myrow['type_no']);
     	label_cell($myrow['memo_']);
+        if ($myrow["type"] == ST_JOURNAL)
+            echo "<td>" . trans_editor_link( $myrow["type"], $myrow["type_no"]) . "</td>";
+        else
+            label_cell("");
     	end_row();
 
     	$j++;

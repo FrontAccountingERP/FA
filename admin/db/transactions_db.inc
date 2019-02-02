@@ -35,7 +35,7 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
  	if ($type_name)
 		$sql .= ", t.$type_name as type";
 	$sql .= " FROM $table_name t LEFT JOIN ".TB_PREF."voided v ON"
-		." t.$trans_no_name=v.id AND v.type=$filtertype";
+		." t.$trans_no_name=v.id AND v.type=".db_escape($filtertype);
 
 	$sql .= " WHERE ISNULL(v.`memo_`)";
 	if ($from != null && $to != null)

@@ -158,7 +158,7 @@ function print_deliveries()
 				$rep->NewLine();
 				if ($myrow['ov_freight'] != 0.0)
 				{
-					$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
+					$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
 					$rep->TextCol(3, 6, _("Shipping"), -2);
 					$rep->TextCol(6, 7,	$DisplayFreight, -2);
 					$rep->NewLine();

@@ -393,7 +393,7 @@ class FPDI extends FPDF_TPL {
 
     			reset ($value[1]);
 
-    			while (list($k, $v) = each($value[1])) {
+    			foreach ($value[1] as $k => $v) {
     				$this->_out($k . " ",false);
     				$this->pdf_write_value($v);
     			}
@@ -486,7 +486,7 @@ class FPDI extends FPDF_TPL {
      * close all files opened by parsers
      */
     function _closeParsers() {
-        if ($this->state > 2 && count($this->parsers) > 0) {
+        if ($this->state > 2 && is_array($this->parsers) && count($this->parsers) > 0) {
           	foreach ($this->parsers as $k => $_){
             	$this->parsers[$k]->closeFile();
             	$this->parsers[$k] = null;

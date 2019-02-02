@@ -174,7 +174,7 @@ function can_process()
 		return false;
 	}
 
-	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+	if (isset($_POST['charge']) && (!check_num('charge', 0) || $_POST['charge'] == $_POST['amount'])) {
 		display_error(_("The entered amount is invalid or negative and cannot be processed."));
 		set_focus('charge');
 		return false;
@@ -243,6 +243,7 @@ if (get_post('AddPaymentItem') && can_process()) {
 		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	$_SESSION['alloc']->trans_no = $payment_no;
+	$_SESSION['alloc']->date_ = $_POST['DateBanked'];
 	$_SESSION['alloc']->write();
 
 	unset($_SESSION['alloc']);

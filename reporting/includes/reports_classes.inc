@@ -26,7 +26,7 @@ class BoxReports
 	var $ar_reports;
 	var $ctrl_handlers = array();
 
-	function ReportClasses()
+	function __construct()
 	{
 		$this->ar_classes = array();
 	}
@@ -34,7 +34,7 @@ class BoxReports
 	function addReportClass($class_name, $class_id=null)
 	{
 		if (!$class_id)
-			$class_id = count($this->ar_classes);
+			$class_id = count_array($this->ar_classes);
 		$this->ar_classes[$class_id] = $class_name;
 
 		return $class_id;
@@ -299,7 +299,6 @@ class BoxReports
 
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
-					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER')
 						return customer_list($name, null, _("No Customer Filter"));
 					else
@@ -307,7 +306,6 @@ class BoxReports
 
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
-					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER')
 						return supplier_list($name, null, _("No Supplier Filter"));
 					else
@@ -410,7 +408,8 @@ class BoxReports
 				case 'WORKORDER':
 					$sql = "SELECT wo.id, concat(wo.id, '-', item.description) as IName
 						FROM ".TB_PREF."stock_master item,"
-							.TB_PREF."workorders wo
+							.TB_PREF."workorders wo 
+							LEFT JOIN ".TB_PREF."voided v ON wo.id=v.id and v.type=".ST_WORKORDER."
 						WHERE item.stock_id=wo.stock_id
 						ORDER BY wo.id DESC";
 					return combo_input($name, '', $sql, 'id', 'IName',array('order'=>false));

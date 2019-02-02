@@ -29,6 +29,108 @@ include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 
 print_stock_check();
 
+/**
+ * Bar codes checker - Checks if a barcode can be valid and returns type of barcode
+ * 
+ * @link		http://www.phpclasses.org/package/8560-PHP-Detect-type-and-check-EAN-and-UPC-barcodes.html
+ * @type tests	EAN, EAN-8, EAN-13, GTIN-8, GTIN-12, GTIN-14, UPC, UPC-12 coupon code, JAN 
+ * @author		Ferry Bouwhuis
+ * @version		1.0.1
+ * @LastChange	2014-04-13
+ */
+
+function barcode_check($code, $return_value = false, $get_type = false)
+{
+	//Setting return value
+	/*
+	 * If true it will retun al barcodes as 14 digit strings
+	 * If false it will return only what is needed UPC -> 12 / EAN -> 13 / 
+	 */
+
+	//Filter UPC coupon codes
+	/*
+	 * If true it will return false on UPC coupon codes
+	 * Type will always return UPC coupon code
+	 */
+	$skip_coupon_codes = true;
+
+	//Trims parsed string to remove unwanted whitespace or characters
+	$code = (string)trim($code); 
+	if (preg_match('/[^0-9]/', $code))
+		return false;
+
+	if (!is_string($code))
+		$code = strval($code);
+	$code = trim($code);	
+	$length = strlen($code);
+	if(($length > 11 && $length <= 14) || $length == 8)
+	{	
+		$zeroes = 18 - $length;
+		$fill = "";
+		for ($i = 0; $i < $zeroes; $i++)
+			$fill .= "0";
+		$code = $fill . $code;
+		
+		$calc = 0;
+		for ($i = 0; $i < (strlen($code) - 1); $i++)
+			$calc += ($i % 2 ? $code[$i] * 1 :  $code[$i] * 3);
+
+		if (substr(10 - (substr($calc, -1)), -1) != substr($code, -1))
+			return false;
+		elseif (substr($code, 5, 1) > 2)
+		{
+			//EAN / JAN / EAN-13 code
+			if ($get_type)
+				return 'EAN';
+			else
+				return (string)substr($code, ($return_value ? -14 : -13));
+		}
+		elseif (substr($code, 6, 1) == 0 && substr($code, 0, 10) == 0)
+		{
+			//EAN-8 / GTIN-8 code
+			if ($get_type)
+				return 'EAN-8';
+			else
+				return (string)substr($code, ($return_value ? -14 : -8));
+		}
+		elseif (substr($code, 5, 1) <= 0)
+		{
+			//UPC / UCC-12 GTIN-12 code
+			if ($get_type)
+			{
+				if (substr($code, 6, 1) == 5)
+					return 'UPC coupon code';
+				else
+					return 'UPC';
+			}
+			else
+			{
+				if ($skip_coupon_codes && substr($code, 6, 1) == 5)
+					return false;
+				return (string)substr($code, ($return_value ? -14 : -12));
+			}
+		}
+		elseif (substr($code, 0, 6) == 0)
+		{
+			//GTIN-14
+			if ($get_type)
+				return 'GTIN-14';
+			else
+				return (string)substr($code, -14);
+		}
+		else
+		{
+			//EAN code
+			if ($get_type)
+				return 'EAN';
+			else
+				return (string)substr($code,($return_value ? -14 : -13));
+		}
+	}
+	else
+		return false;
+}
+	
 function getTransactions($category, $location, $item_like)
 {
 	$sql = "SELECT item.category_id,
@@ -217,8 +319,10 @@ function print_stock_check()
 			if ($rep->row - $SysPrefs->pic_height < $rep->bottomMargin)
 				$rep->NewPage();
 			$firstcol = 1;	
-			if ($barcodes)
+			$adjust = false;
+			if ($barcodes && barcode_check($trans['stock_id']))
 			{
+				$adjust = true;
 				$bar_y = $rep->GetY();
 				$barcode = str_pad($trans['stock_id'], 7, '0', STR_PAD_LEFT);
 				$barcode = substr($barcode, 0, 8); // EAN 8 Check digit is auto computed and barcode printed
@@ -226,14 +330,15 @@ function print_stock_check()
 			}	
 			if ($pictures)
 			{
+				$adjust = true;
 				$image = company_path() . '/images/' . item_img_name($trans['stock_id']) . '.jpg';
 				if (file_exists($image))
 				{
 					$rep->AddImage($image, $rep->cols[$firstcol], $rep->row - $SysPrefs->pic_height, 0, $SysPrefs->pic_height);
 				}
-			}	
-			$rep->row -= $SysPrefs->pic_height;
-			$rep->NewLine();
+			}
+			if ($adjust)
+				$rep->row -= $SysPrefs->pic_height;
 		}
 	}
 	$rep->Line($rep->row - 4);

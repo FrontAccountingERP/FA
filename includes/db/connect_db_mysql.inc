@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 define('DB_DUPLICATE_ERROR', 1062);
-define('SQL_MODE', ''); // STRICT_ALL_TABLES,NO_ZERO_IN_DATE ?
+define('SQL_MODE', 'STRICT_ALL_TABLES'); // prevents SQL injection with silent field content truncation
 
 function set_global_connection($company=-1)
 {

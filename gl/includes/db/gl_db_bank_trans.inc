@@ -76,13 +76,13 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 				 LEFT JOIN ".TB_PREF."suppliers supplier ON supplier.supplier_id = st.supplier_id,
 			 ".TB_PREF."bank_accounts act
 		WHERE act.id=bt.bank_act ";
-	if ($type != null)
+	if (isset($type))
 		$sql .= " AND bt.type=".db_escape($type);
-	if ($trans_no != null)
+	if (isset($trans_no))
 		$sql .= " AND bt.trans_no = ".db_escape($trans_no);
-	if ($person_type_id != null)
+	if (isset($person_type_id))
 		$sql .= " AND bt.person_type_id = ".db_escape($person_type_id);
-	if ($person_id != null)
+	if (isset($person_id))
 		$sql .= " AND bt.person_id = ".db_escape($person_id);
 	$sql .= " ORDER BY trans_date, bt.id";
 
@@ -188,7 +188,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 
 	$balance += $delta_amount;
 
-	$sql = "SELECT sum(amount) as amount, trans_date
+	$sql = "SELECT sum(amount) as amount, trans_date, trans_no, type
 			FROM ".TB_PREF."bank_trans
 			WHERE bank_act=".db_escape($bank_account);
 	if ($date)
@@ -202,7 +202,7 @@ function check_bank_account_history($delta_amount, $bank_account, $date=null, $u
 
 	while ($trans = db_fetch($history)) {
 		$balance += $trans['amount'];
-		if ($balance < 0)
+		if (round2($balance, user_price_dec()) < 0)
 		{
 			$trans['amount'] = $balance;
 			return $trans;

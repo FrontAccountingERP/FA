@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
+    Copyright (C) FrontAccounting Team.
 	Released under the terms of the GNU General Public License, GPL, 
 	as published by the Free Software Foundation, either version 3 
 	of the License, or (at your option) any later version.
@@ -13,8 +13,8 @@ $page_security = 'SA_SUPPLIERANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
-// date_:	2005-05-19
-// Title:	Supplier Balances
+// date_:	2018-12-21
+// Title:	Supplier Trial Balances
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -29,17 +29,25 @@ print_supplier_balances();
 
 function get_open_balance($supplier_id, $to)
 {
-	$to = date2sql($to);
+    if ($to)
+        $to = date2sql($to);
 
-    $sql = "SELECT
-    	SUM(IF(type IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount), 0)) AS charges,
-    	SUM(IF(type NOT IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount), 0)) AS credits,
-		SUM(IF(type NOT IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."),alloc * -1, alloc)) AS Allocated,
-		SUM(IF(type IN(".ST_SUPPINVOICE.",".ST_BANKDEPOSIT."), (ov_amount + ov_gst + ov_discount - alloc),
-				(ov_amount + ov_gst + ov_discount + alloc))) AS OutStanding
-		FROM ".TB_PREF."supp_trans
-    	WHERE tran_date < '$to'
-		AND supplier_id = '$supplier_id' GROUP BY supplier_id";
+    $sql = "SELECT SUM(IF(t.type = ".ST_SUPPINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
+        -abs(t.ov_amount + t.ov_gst + t.ov_discount), 0)) AS charges,";
+
+    $sql .= "SUM(IF(t.type != ".ST_SUPPINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
+        abs(t.ov_amount + t.ov_gst + t.ov_discount) * -1, 0)) AS credits,";
+
+    $sql .= "SUM(IF(t.type != ".ST_SUPPINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.")), t.alloc * -1, t.alloc)) 
+        AS Allocated,";
+
+    $sql .= "SUM(IF(t.type = ".ST_SUPPINVOICE.", 1, -1) *
+        (abs(t.ov_amount + t.ov_gst + t.ov_discount) - abs(t.alloc))) AS OutStanding
+        FROM ".TB_PREF."supp_trans t
+        WHERE t.supplier_id = ".db_escape($supplier_id);
+    if ($to)
+        $sql .= " AND t.tran_date < '$to'";
+    $sql .= " GROUP BY supplier_id";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);

@@ -50,10 +50,10 @@ function add_exchange_variation($trans_no, $date_, $acc_id, $account,
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
 		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
-    		$diff, null, $person_type_id, $person_id);
+    		-$diff, null, $person_type_id, $person_id);
 
     	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
-    		_("Exchange Variance"),	-$diff, null, $person_type_id, $person_id);
+    		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
 		commit_transaction();
 		return true;
 	}
@@ -357,7 +357,7 @@ function update_bank_transfer(
 {
 	begin_transaction();
 	delete_comments(ST_BANKTRANSFER, $trans_no);
-	void_bank_trans(ST_BANKTRANSFER, $trans_no, true);
+	void_transaction(ST_BANKTRANSFER, $trans_no, Today(), _("Document reentered."));
 	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
 	$new_trans_no = add_bank_transfer(
 		$from_account, $to_account, $date_, $amount,

@@ -160,8 +160,8 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			$fully_exempt = false;
 		$ret_tax_array[$k]['Net'] = 0;
 	}
-
-	$ret_tax_array['exempt'] = array('Value'=>0, 'Net'=>0, 'rate' => null, 'tax_type_id' => '');
+	
+	$ret_tax_array['exempt'] = array('Value'=>0, 'Net'=>0, 'rate' => null, 'tax_type_id' => '', 'sales_gl_code' => '');
 	$dec = user_price_dec();
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)

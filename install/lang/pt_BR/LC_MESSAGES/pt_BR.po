@@ -501,3 +501,9 @@ msgstr ""
 #, php-format
 msgid "Package '%s' not found."
 msgstr ""
+
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

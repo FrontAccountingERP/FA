@@ -71,7 +71,7 @@ function print_GL_transactions()
 	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize(), 9, $orientation);
 	$dec = user_price_dec();
 
-	$cols = array(0, 65, 105, 125, 175, 230, 290, 345, 405, 465, 525);
+	$cols = array(0, 65, 105, 125, 175, 230, 272, 345, 405, 465, 525);
 	//------------0--1---2---3----4----5----6----7----8----9----10-------
 	//-----------------------dim1-dim2-----------------------------------
 	//-----------------------dim1----------------------------------------

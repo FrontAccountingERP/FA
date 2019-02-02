@@ -142,6 +142,12 @@ function ref_view($row)
 	return $row['ref'];
 }
 
+function is_selected($row) // Function added by faisal
+{
+	global $selected_id;
+	return $row['trans_no'] == $selected_id ? true : false;
+}
+
 function voiding_controls()
 {
 	global $selected_id;
@@ -177,14 +183,16 @@ function voiding_controls()
 		return;
 
 	$cols = array(
-		_("#") => array('insert'=>true, 'fun'=>'view_link'), 
-		_("Reference") => array('fun'=>'ref_view'), 
+		_("#") => array('insert'=>true, 'fun'=>'view_link'),
+		_("Reference") => array('fun'=>'ref_view'),
 		_("Date") => array('type'=>'date', 'fun'=>'date_view'),
 		_("GL") => array('insert'=>true, 'fun'=>'gl_view'),
-		_("Select") => array('insert'=>true, 'fun'=>'select_link') 
+		_("Select") => array('insert'=>true, 'fun'=>'select_link')
 	);
 
 	$table =& new_db_pager('transactions', $sql, $cols);
+	$table->set_marker('is_selected', _("Marked transactions will be voided.")); //Added by Faisal
+
 	$table->width = "40%";
 	display_db_pager($table);
 
@@ -222,7 +230,24 @@ function voiding_controls()
 		}	
  		else
  		{
-    		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+           	if ($_POST['filterType'] == ST_SUPPRECEIVE) { 
+                $result = get_grn_items($_POST['trans_no']);
+                if (db_num_rows($result) > 0) {
+                    while ($myrow = db_fetch($result)) {
+                        if (is_inventory_item($myrow["item_code"])) {
+                            if (check_negative_stock($myrow["item_code"], -$myrow["qty_recd"], null, $_POST['date_'])) {
+                                $stock = get_item($myrow["item_code"]);
+                                display_error(_("The void cannot be processed because there is an insufficient quantity for item:") .
+                                    " " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+                                    _("Quantity On Hand") . " = " . number_format2(get_qoh_on_date($stock['stock_id'], null, 
+                                    $_POST['date_']), get_qty_dec($stock['stock_id'])));
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+       		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
    			br();
     		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
     		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
@@ -290,7 +315,6 @@ function handle_void_transaction()
 			display_notification_centered(_("Selected transaction has been voided."));
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
-			unset($_POST['date_']);
 		}
 		else {
 			display_error($msg);

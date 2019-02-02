@@ -36,6 +36,30 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		display_error(_("The company name must be entered."));
 		set_focus('coy_name');
 	}
+	if (!check_num('tax_prd', 1))
+	{
+		display_error(_("Tax Periods must be positive number."));
+		set_focus('tax_prd');
+		$input_error = 1;
+	}
+	if (!check_num('tax_last', 1))
+	{
+		display_error(_("Tax Last Periods must be positive number."));
+		set_focus('tax_last');
+		$input_error = 1;
+	}
+	if (!check_num('round_to', 1))
+	{
+		display_error(_("Round Calculated field must be a positive number."));
+		set_focus('round_to');
+		$input_error = 1;
+	}
+	if ($_POST['add_pct'] != "" && !is_numeric($_POST['add_pct']))
+	{
+		display_error(_("Add Price from Std Cost field must be number."));
+		set_focus('add_pct');
+		$input_error = 1;
+	}	
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
     if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
@@ -113,17 +137,17 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
 				'use_dimension', 'curr_default', 'f_year', 'shortname_name_in_list',
 				'no_item_list' => 0, 'no_customer_list' => 0, 
-				'no_supplier_list' =>0, 'base_sales', 
-				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'add_pct', 'round_to', 'login_tout', 
-				'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 'suppress_tax_rates',
-				'use_manufacturing', 'use_fixed_assets'))
+				'no_supplier_list' =>0, 'base_sales', 'ref_no_auto_increase' => 0,
+				'time_zone' => 0, 'company_logo_report' => 0, 'barcodes_on_stock' => 0, 'print_dialog_direct' => 0, 
+				'add_pct', 'round_to', 'login_tout', 'auto_curr_reval', 'bcc_email', 'alternative_tax_include_on_docs', 
+				'suppress_tax_rates', 'use_manufacturing', 'use_fixed_assets'))
 		);
 
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
 		display_notification_centered(_("Company setup has been updated."));
+		set_focus('coy_name');
+		$Ajax->activate('_page_body');
 	}
-	set_focus('coy_name');
-	$Ajax->activate('_page_body');
 } /* end of if submit */
 
 start_form(true);
@@ -161,12 +185,24 @@ if (!isset($myrow["company_logo_report"]))
 	$myrow["company_logo_report"] = get_company_pref("company_logo_report");
 }
 $_POST['company_logo_report']  = $myrow["company_logo_report"];
+if (!isset($myrow["ref_no_auto_increase"]))
+{
+	set_company_pref("ref_no_auto_increase", "setup.company", "tinyint", 1, '0');
+	$myrow["ref_no_auto_increase"] = get_company_pref("ref_no_auto_increase");
+}
+$_POST['ref_no_auto_increase']  = $myrow["ref_no_auto_increase"];
 if (!isset($myrow["barcodes_on_stock"]))
 {
 	set_company_pref("barcodes_on_stock", "setup.company", "tinyint", 1, '0');
 	$myrow["barcodes_on_stock"] = get_company_pref("barcodes_on_stock");
 }
 $_POST['barcodes_on_stock']  = $myrow["barcodes_on_stock"];
+if (!isset($myrow["print_dialog_direct"]))
+{
+	set_company_pref("print_dialog_direct", "setup.company", "tinyint", 1, '0');
+	$myrow["print_dialog_direct"] = get_company_pref("print_dialog_direct");
+}
+$_POST['print_dialog_direct']  = $myrow["print_dialog_direct"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
 $_POST['login_tout'] = $myrow['login_tout'];
@@ -208,6 +244,7 @@ check_row(_("Automatic Revaluation Currency Accounts"), 'auto_curr_reval', $_POS
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
 check_row(_("Company Logo on Reports"), 'company_logo_report', $_POST['company_logo_report']);
 check_row(_("Use Barcodes on Stocks"), 'barcodes_on_stock', $_POST['barcodes_on_stock']);
+check_row(_("Auto Increase of Document References"), 'ref_no_auto_increase', $_POST['ref_no_auto_increase']);
 label_row(_("Database Scheme Version"), $_POST['version_id']);
 
 table_section(2);
@@ -237,6 +274,7 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 table_section_title(_("User Interface Options"));
 
 check_row(_("Short Name and Name in List"), 'shortname_name_in_list', $_POST['shortname_name_in_list']);
+check_row(_("Open Print Dialog Direct on Reports"), 'print_dialog_direct', null);
 check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);

@@ -231,7 +231,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 	} else {
 		// read header data from first document
 		$myrow = get_customer_trans($trans_no[0],$doc_type);
-		if (count($trans_no)>1)
+		if (count_array($trans_no)>1)
 			$cart->trans_no = get_customer_trans_version($doc_type, $trans_no);
 		else
 			$cart->trans_no = array($trans_no[0]=>$myrow["version"]);
@@ -368,10 +368,10 @@ function get_sales_child_documents($trans_type, $trans_no)
 	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
 	// at least one line from related invoice
 
-	if (!count($trans_no))
+	if (!count_array($trans_no))
 		return false;
 	$childs = get_sales_child_numbers($trans_type, $trans_no, false);
-	if (!count($childs))
+	if (!count_array($childs))
 		return false;
 		
 	$sql = "SELECT * FROM ".TB_PREF."debtor_trans

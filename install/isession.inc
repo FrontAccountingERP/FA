@@ -109,6 +109,7 @@ $inst_langs = array(
   'el_GR' => array ( 'name' => 'Greek',	'code' => 'el_GR',	'encoding' => 'utf-8'),
   'es_MX' => array ( 'name' => 'Spanish',	'code' => 'es_MX',	'encoding' => 'iso-8859-1'),
   'fr_FR' => array ( 'name' => 'Français',	'code' => 'fr_FR',	'encoding' => 'iso-8859-1'),
+  'hi_IN' => array ( 'name' => 'Hindi',	'code' => 'hi_IN',	'encoding' => 'utf-8'),
   'id_ID' => array ( 'name' => 'Indonesian','code' => 'id_ID',	'encoding' => 'iso-8859-1'),
   'it_IT' => array ( 'name' => 'Italian','code' => 'it_IT',	'encoding' => 'iso-8859-1'),
   'ka_GE' => array ( 'name' => 'Georgian','code' => 'ka_GE',	'encoding' => 'utf-8'),
@@ -117,6 +118,8 @@ $inst_langs = array(
   'pt_BR' => array ( 'name' => 'Português (Brasilia)','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
   'pt_PT' => array ( 'name' => 'Português','code' => 'pt_PT',	'encoding' => 'iso-8859-1'),
   'sv_SE' => array ( 'name' => 'Svenska',	'code' => 'sv_SE',	'encoding' => 'iso-8859-1'),
+  'ta_IN' => array ( 'name' => 'Tamil',	'code' => 'ta_IN',	'encoding' => 'utf-8'),
+  'vi_VN' => array ( 'name' => 'Vietnamese',	'code' => 'vi_VN',	'encoding' => 'utf-8'),
   'zh_CN' => array ( 'name' => 'Chinese Simplifed',	'code' => 'zh_CN',	'encoding' => 'utf-8'),
 );
 

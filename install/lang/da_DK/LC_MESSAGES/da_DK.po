@@ -551,10 +551,8 @@ msgstr ""
 msgid "Package '%s' not found."
 msgstr "Pakke '%s' findes ikke."
 
-#~ msgid ""
-#~ "Use table prefix if you share selected database for more than one FA "
-#~ "company."
-#~ msgstr "Brug tabel prefix hvis du deler databasen med flere FA firmaer."
-
-#~ msgid "Upgrade PHP to version at least 4.3.3"
-#~ msgstr "Opgrader PHP til mindst 4.3.3"
+#: install/index.php:361
+msgid ""
+"Use database user/password with permissions to create new database, or use "
+"proper credentials for previously created empty database."
+msgstr ""

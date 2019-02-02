@@ -139,7 +139,7 @@ while ($myrow = db_fetch($result))
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
-	end_row();;
+	end_row();
 }
 
 inactive_control_row($th);
