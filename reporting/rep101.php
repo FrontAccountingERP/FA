@@ -168,7 +168,7 @@ function print_customer_balances()
 		
 		$accumulate = 0;
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
-		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
+		$bal = get_open_balance($myrow['debtor_no'], $from);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']*$rate), $dec);
 		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
