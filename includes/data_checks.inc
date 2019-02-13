@@ -348,15 +348,16 @@ function db_has_fixed_asset_classes()
 function db_has_depreciable_fixed_assets()
 {
 	$year = get_current_fiscalyear();
-	$y = date('Y', strtotime($year['end']));
+	$begin = date2sql(add_months(sql2date($year['begin']), -1));
+	$end = date2sql(add_months(sql2date($year['end']), -1));
 
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master 
 	    WHERE mb_flag='F'
 		    AND material_cost > 0
     		AND stock_id IN ( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE type=".ST_SUPPRECEIVE." AND qty!=0 )
 		    AND stock_id NOT IN	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )
-		    AND depreciation_date < '".$y."-12-01'
-    		AND depreciation_date >= '".($y-1)."-12-01'");
+		    AND depreciation_date <= '".$end."'
+    		AND depreciation_date >='".$begin."'");
 }
 
 function check_db_has_depreciable_fixed_assets($msg)

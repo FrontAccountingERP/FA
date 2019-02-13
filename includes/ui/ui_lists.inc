@@ -1152,11 +1152,12 @@ function stock_depreciable_fa_list_cells($label, $name, $selected_id=null,
     	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
 
 	$year = get_current_fiscalyear();
-	$y = date('Y', strtotime($year['end']));
+	$begin = date2sql(add_months(sql2date($year['begin']), -1));
+	$end = date2sql(add_months(sql2date($year['end']), -1));
 
 	// check if current fiscal year
-	$where_opts[] = "depreciation_date < '".$y."-12-01'";
-	$where_opts[] = "depreciation_date >= '".($y-1)."-12-01'";
+	$where_opts[] = "depreciation_date <= '".$end."'";
+	$where_opts[] = "depreciation_date >= '".$begin."'";
 
 	$where_opts[] = "material_cost > 0";
 	$where_opts[] = "mb_flag='F'";
