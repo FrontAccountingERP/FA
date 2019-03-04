@@ -1366,7 +1366,6 @@ CREATE TABLE `0_refs` (
 -- Data of table `0_refs` --
 
 INSERT INTO `0_refs` VALUES
-('1', '0', '001/2012'),
 ('1', '1', '001/2018'),
 ('1', '10', '001/2018'),
 ('5', '10', '001/2019'),
@@ -1947,7 +1946,7 @@ DROP TABLE IF EXISTS `0_tag_associations`;
 CREATE TABLE `0_tag_associations` (
   `record_id` varchar(15) NOT NULL,
   `tag_id` int(11) NOT NULL,
-  UNIQUE KEY `record_id` (`record_id`,`tag_id`)
+  PRIMARY KEY (`record_id`,`tag_id`)
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_tag_associations` --
