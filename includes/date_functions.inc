@@ -396,12 +396,12 @@ and converts to a yyyy/mm/dd format */
     else // $how == 2 || $how == 5, YYYYMMDD or YYYYMmmDD
         list($year, $month, $day) = explode($sep, $date_);
 
+	if ($how > 2)
+	{
+		global $tmonths;
+		$month = array_search($month, $tmonths);
+	}
 	if ($year+$day+$month) {
-		if ($how > 2)
-		{
-			global $tmonths;
-			$month = array_search($month, $tmonths);
-		}
 		//to modify assumption in 2030
 		if ($SysPrefs->date_system == 0 || $SysPrefs->date_system == 3)
 		{
