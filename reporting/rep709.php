@@ -35,10 +35,13 @@ function getTaxTransactions($from, $to)
 
 	$sql = "SELECT tt.name as taxname, taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
-				IF(taxrec.trans_type=".ST_BANKPAYMENT." OR taxrec.trans_type=".ST_BANKDEPOSIT.", 
-					IF(gl.person_type_id<>".PT_MISC.", gl.memo_, gl.person_id), 
-					IF(ISNULL(supp.supp_name), debt.name, supp.supp_name)) as name,
-				branch.br_name
+                IF(ISNULL(supp.supp_name),
+                    IF(ISNULL(debt.name),
+                        IF(gl.person_type_id<>".PT_MISC.", gl.memo_, bt.person_id), debt.name),
+                        supp.supp_name) as name,
+				branch.br_name,
+                bt.bank_act,
+                gl.memo_ as gl_memo
 		FROM ".TB_PREF."trans_tax_details taxrec
 		LEFT JOIN ".TB_PREF."tax_types tt
 			ON taxrec.tax_type_id=tt.id
@@ -52,10 +55,18 @@ function getTaxTransactions($from, $to)
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
 		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
+		LEFT JOIN ".TB_PREF."bank_trans as bt ON taxrec.trans_type=bt.type AND taxrec.trans_no=bt.trans_no
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
-			AND !ISNULL(taxrec.reg_type)
-			AND taxrec.tran_date >= '$fromdate'
+            AND taxrec.trans_type <> ".ST_CUSTDELIVERY;
+
+        // display of bank payments/deposits in tax history is optional in FA
+        if (!get_company_pref("tax_bank_payments"))
+            $sql .= " AND taxrec.trans_type <> ".ST_BANKPAYMENT."
+                AND taxrec.trans_type <> ".ST_BANKDEPOSIT;
+
+        $sql .= " AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
+        GROUP BY taxrec.id
 		ORDER BY taxrec.trans_type, taxrec.tran_date, taxrec.trans_no, taxrec.ex_rate";
 
     return db_query($sql,"No transactions were returned");
@@ -140,9 +151,7 @@ function print_tax_report()
 		if (!$summaryOnly)
 		{
 			$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
-			if ($trans['memo'] == '')
-				$trans['memo'] = get_reference($trans['trans_type'], $trans['trans_no']);
-			$rep->TextCol(1, 2,	$trans['memo']);
+            $rep->TextCol(1, 2,	get_reference($trans['trans_type'], $trans['trans_no']));
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			$rep->TextCol(3, 4,	$trans['name']);
 			$rep->TextCol(4, 5,	$trans['br_name']);
@@ -154,6 +163,12 @@ function print_tax_report()
 			$rep->TextCol(9, 10, $trans['taxname']);
 
 			$rep->NewLine();
+            if (in_array($trans['trans_type'], array(ST_BANKPAYMENT, ST_BANKDEPOSIT))) {
+                $rep->TextCol(1, 3,	get_bank_account($trans['bank_act'])['bank_account_name']);
+                $rep->TextCol(3, 4,	$trans['memo']);
+                $rep->TextCol(4, 8,	$trans['gl_memo']);
+                $rep->NewLine();
+            }
 
 			if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 			{
@@ -173,7 +188,7 @@ function print_tax_report()
 		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$tax_type]['taxout'] += $trans['amount'];
 			$taxes[$tax_type]['out'] += $trans['net_amount'];
-		} elseif ($trans['reg_type'] !== NULL) {
+		} elseif ($trans['reg_type'] !== NULL || in_array($trans['trans_type'], array(ST_SUPPINVOICE, ST_BANKPAYMENT))) {
 			$taxes[$tax_type]['taxin'] += $trans['amount'];
 			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}

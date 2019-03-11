@@ -213,7 +213,8 @@ INSERT IGNORE INTO `0_sys_prefs` VALUES
 	('accounts_alpha', 'glsetup.general', 'tinyint', 1, '0'),
 	('bcc_email', 'setup.company', 'varchar', 100, ''),
 	('alternative_tax_include_on_docs', 'setup.company', 'tinyint', 1, '0'),
-	('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0');
+	('suppress_tax_rates', 'setup.company', 'tinyint', 1, '0'),
+	('tax_bank_payments', 'setup.company', 'tinyint', 1, '0');
 
 # stock_moves.visible field is obsolete
 # removing obsolete moves for writeoffs
