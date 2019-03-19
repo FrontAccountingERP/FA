@@ -199,8 +199,9 @@ function invoice_totals(&$supp_trans)
 function display_gl_controls(&$supp_trans, $k)
 {
 	$accs = get_supplier_accounts($supp_trans->supplier_id);
-	$_POST['gl_code'] = $accs['purchase_account'] ? 
-		$accs['purchase_account'] : get_company_pref('default_cogs_act');
+    if (!isset($_POST['gl_code']))
+		$_POST['gl_code'] = $accs['purchase_account'] ? 
+			$accs['purchase_account'] : get_company_pref('default_cogs_act');
 
 	alt_table_row_color($k);
 	echo gl_all_accounts_list('gl_code', null, true, true);
@@ -316,7 +317,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 			{
 				delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
 					  _('Remove line from document'));
-				label_cell("");
+                edit_button_cell("Edit" . $entered_gl_code->Counter, _("Edit"),
+                      _('Edit line from document'));
 			}	
 			end_row();
 			if ($mode > 1) {
