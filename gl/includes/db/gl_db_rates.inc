@@ -152,8 +152,9 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'GOOGLE')
 	{
-		$filename = "/bctzjpnsun/converter?a=1&from={$curr_a}&to={$curr_b}";
-		$site = "finance.google.com";
+		$filename = "/search?q={$curr_b}+to+{$curr_a}";
+		$site = "https://www.google.com";
+		$contents = file_get_contents($site.$filename);
 	}
 	elseif ($provider == 'BLOOMBERG')
 	{
@@ -166,13 +167,6 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	{
 		$filename = "/converter/{$curr_b}/{$curr_a}/1";
 		$site = "exchange-rates.org";
-		$proto = 'https://';
-		$contents=file_get_contents($proto.$site.$filename);
-	}
-	elseif ($provider == 'CCA')
-	{
-		$filename = "/api/v6/convert?q={$curr_b}_{$curr_a}&compact=y&callback=sampleCallback";
-		$site = "free.currencyconverterapi.com";
 		$proto = 'https://';
 		$contents=file_get_contents($proto.$site.$filename);
 	}
@@ -231,17 +225,12 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'GOOGLE')
 	{
-		$val = getInnerStr($contents, '<span class=bld>', ' ');
-		if (empty($val) || $val+0 <= 0.0001) {
-			// reverse lookup on could not convert for too small values 
-            $filename = "/bctzjpnsun/converter?a=1&from={$curr_b}&to={$curr_a}";
-            $contents = url_get_contents($proto.$site.$filename);
-            $val = getInnerStr($contents, '<span class=bld>', ' ');
-		} else {
-			if ($val != 0)
-				$val = 1 / $val;
-		}
-    }    
+		$data = preg_split('/\D\s(.*?)\s=\s/', $contents);
+		$array = explode(" ", $data[1]);
+		$exRate = $array[0];
+
+		$val = str_replace (',', '', $exRate);
+    }
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$val = getInnerStr($contents, ',"price":', ',"');
@@ -249,10 +238,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
     elseif ($provider == 'EXCHANGE-RATES.ORG')
 	{
 		$val = getInnerStr($contents, '<span id="ctl00_M_lblToAmount">', '<');
-    }
-    elseif ($provider == 'CCA')
-    {
-        $val = getInnerStr($contents, '"val":', '}');
+		$val = str_replace (',', '', $val);
     }
 	return $val;
 }  /* end function get_extern_rate */
