@@ -147,8 +147,9 @@ function add_grn(&$po)
 	} /*end of order_line loop */
 
 	if ($clearing_act && $total != 0.0) {
+		$accs = get_supplier_accounts($po->supplier_id);
 		$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $clearing_act,
-			0, 0, -$total, null);
+			$accs['dimension_id'], $accs['dimension2_id'], -$total, null);
 	}
 	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 

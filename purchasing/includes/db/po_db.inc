@@ -13,7 +13,7 @@
 
 function get_supplier_details_to_order(&$order, $supplier_id)
 {
-	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included,
+	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included, dimension_id, dimension2_id,
 			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
 				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit,
 				terms.terms, terms.days_before_due, terms.day_in_following_month
@@ -36,6 +36,8 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 	$_POST['supplier_id'] = $supplier_id;
 	$_POST['supplier_name'] = $myrow["supp_name"];
 	$_POST['curr_code'] = $myrow["curr_code"];
+	$_POST['dimension'] = $myrow["dimension_id"];
+	$_POST['dimension2'] = $myrow["dimension2_id"];
 
 	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
 		$myrow["tax_group_id"], $myrow["tax_included"]);
