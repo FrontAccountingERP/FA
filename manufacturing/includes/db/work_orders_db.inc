@@ -122,10 +122,12 @@ function get_work_order($woid, $allow_null=false)
 {
     $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
     		l.delivery_address,l.email, l.contact, st.inventory_account, st.wip_account
-		FROM ".TB_PREF."workorders wo, "
+			FROM ".TB_PREF."workorders wo
+			LEFT JOIN ".TB_PREF."voided v ON v.id=wo.id and v.type=".ST_WORKORDER.","
 			.TB_PREF."stock_master st, "
 			.TB_PREF."locations l
-		WHERE st.stock_id=wo.stock_id
+		WHERE ISNULL(v.id)
+		AND st.stock_id=wo.stock_id
 		AND	l.loc_code=wo.loc_code
 		AND wo.id=".db_escape($woid)."
 		GROUP BY wo.id";
