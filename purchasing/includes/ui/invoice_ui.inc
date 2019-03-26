@@ -204,7 +204,7 @@ function display_gl_controls(&$supp_trans, $k)
 			$accs['purchase_account'] : get_company_pref('default_cogs_act');
 
 	alt_table_row_color($k);
-	echo gl_all_accounts_list('gl_code', null, true, true);
+	echo gl_all_accounts_list('gl_code', null, false, true);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
