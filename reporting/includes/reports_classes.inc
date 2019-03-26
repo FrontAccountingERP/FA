@@ -412,7 +412,6 @@ class BoxReports
 							LEFT JOIN ".TB_PREF."voided v ON wo.id=v.id and v.type=".ST_WORKORDER."
 						WHERE ISNULL(v.id)
 						AND item.stock_id=wo.stock_id
-						WHERE item.stock_id=wo.stock_id
 						ORDER BY wo.id DESC";
 					return combo_input($name, '', $sql, 'id', 'IName',array('order'=>false));
 
