@@ -188,7 +188,7 @@ function print_tax_report()
 		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$tax_type]['taxout'] += $trans['amount'];
 			$taxes[$tax_type]['out'] += $trans['net_amount'];
-		} elseif ($trans['reg_type'] !== NULL || in_array($trans['trans_type'], array(ST_SUPPINVOICE, ST_BANKPAYMENT))) {
+		} elseif ($trans['reg_type'] !== NULL || in_array($trans['trans_type'], array(ST_SUPPINVOICE, ST_SUPPCREDIT, ST_BANKPAYMENT))) {
 			$taxes[$tax_type]['taxin'] += $trans['amount'];
 			$taxes[$tax_type]['in'] += $trans['net_amount'];
 		}
