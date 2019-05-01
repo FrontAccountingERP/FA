@@ -60,8 +60,9 @@ function print_receipts()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
-	$comments = $_POST['PARAM_3'];
-	$orientation = $_POST['PARAM_4'];
+    $email = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
+	$orientation = $_POST['PARAM_5'];
 
 	if (!$from || !$to) return;
 
@@ -82,12 +83,10 @@ function print_receipts()
 
 	$cur = get_company_Pref('curr_default');
 
-	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
+	if ($email == 0)
+		$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize(), 9, $orientation);
    	if ($orientation == 'L')
     	recalculate_cols($cols);
-	$rep->currency = $cur;
-	$rep->Font();
-	$rep->Info($params, $cols, null, $aligns);
 
 	for ($i = $from; $i <= $to; $i++)
 	{
@@ -106,6 +105,16 @@ function print_receipts()
 			$res = get_bank_trans($j, $i);
 			$baccount = db_fetch($res);
 			$params['bankaccount'] = $baccount['bank_act'];
+
+			if ($email == 1)
+			{
+				$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+				$rep->title = _('RECEIPT');
+				$rep->filename = "Receipt" . $i . ".pdf";
+			}
+			$rep->currency = $cur;
+			$rep->Font();
+			$rep->Info($params, $cols, null, $aligns);
 
 			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
@@ -180,8 +189,13 @@ function print_receipts()
 			$rep->TextCol(4, 5, _("Branch"), - 2);
 			$rep->TextCol(5, 6, "__________________", - 2);
 			$rep->TextCol(6, 7, "__________________");
+			if ($email == 1)
+			{
+				$rep->End($email);
+			}
 		}
 	}
-	$rep->End();
+    if ($email == 0)
+		$rep->End();
 }
 
