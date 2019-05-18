@@ -178,7 +178,7 @@ function print_supplier_balances()
         $curr_db = $curr_cr = 0;
         while ($trans=db_fetch($res))
         {
-            if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
+            //if ($no_zeros && floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
             $item[0] = $item[1] = 0.0;
             if ($trans['TotalAmount'] > 0.0)
             {
