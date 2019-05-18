@@ -155,11 +155,12 @@ function print_customer_balances()
     if ($no_zeros) $nozeros = _('Yes');
     else $nozeros = _('No');
 
-    $cols = array(0, 70, 140, 180, 230, 270, 350, 445, 495, 555);
+    $cols = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
+    //$cols = array(0, 70, 140, 180, 230, 270, 350, 445, 495, 555);
 
-    $headers = array(_('Name'), '', '', _('Open Balance'), '', _('Debit'), _('Credit'), '', _('Balance'));
+    $headers = array(_('Name'), '', '', _('Open Balance'), _('Debit'), _('Credit'), '', _('Balance'));
 
-    $aligns = array('left', 'left', 'left', 'right', 'left', 'right', 'right', 'right', 'right');
+    $aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
 
     $params =   array(  0 => $comments,
                         1 => array('text' => _('Period'), 'from' => $from,   'to' => $to),
@@ -231,11 +232,11 @@ function print_customer_balances()
             $grandtotal[$i] += $init[$i];
         }
 
-        if (db_num_rows($res) == 0) 
+        if (db_num_rows($res) == 0 && !no_zeroes) 
         {
 		    $rep->TextCol(0, 2, $myrow['name']);
             $rep->AmountCol(3, 4, $init[3], $dec);
-            $rep->AmountCol(8, 9, $init[3], $dec);
+            $rep->AmountCol(7, 8, $init[3], $dec);
             //$rep->Line($rep->row  - 2);
             $rep->NewLine(1);
             continue;
@@ -279,9 +280,9 @@ function print_customer_balances()
 		if ($no_zeros && $total[3] == 0.0 && $curr_db == 0.0 && $curr_cr == 0.0) continue;
         $rep->TextCol(0, 2, $myrow['name']);
         $rep->AmountCol(3, 4, $total[3] + $curr_cr - $curr_db, $dec);
-        $rep->AmountCol(5, 6, $curr_db, $dec);
-        $rep->AmountCol(6, 7, $curr_cr, $dec);
-        $rep->AmountCol(8, 9, $total[3], $dec);
+        $rep->AmountCol(4, 5, $curr_db, $dec);
+        $rep->AmountCol(5, 6, $curr_cr, $dec);
+        $rep->AmountCol(7, 8, $total[3], $dec);
         //$rep->Line($rep->row  - 2);
         $rep->NewLine(1);
     }
@@ -293,9 +294,9 @@ function print_customer_balances()
     $grandtotal[3] = $grandtotal[0] - $grandtotal[1];
 
     $rep->AmountCol(3, 4, $grandtotal[3] - $tot_cur_db + $tot_cur_cr, $dec);
-    $rep->AmountCol(5, 6, $tot_cur_db, $dec);
-    $rep->AmountCol(6, 7, $tot_cur_cr, $dec);
-    $rep->AmountCol(8, 9, $grandtotal[3], $dec);
+    $rep->AmountCol(4, 5, $tot_cur_db, $dec);
+    $rep->AmountCol(5, 6, $tot_cur_cr, $dec);
+    $rep->AmountCol(7, 8, $grandtotal[3], $dec);
     $rep->Line($rep->row - 6, 1);
     $rep->NewLine();
     $rep->End();

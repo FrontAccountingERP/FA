@@ -165,7 +165,7 @@ function print_supplier_balances()
             $grandtotal[$i] += $init[$i];
         }
 
-        if (db_num_rows($res) == 0) 
+        if (db_num_rows($res) == 0 && !$no_zeros) 
         {
             $rep->TextCol(0, 2, $myrow['name']);
             $rep->AmountCol(3, 4, $init[3], $dec);
@@ -211,8 +211,8 @@ function print_supplier_balances()
 		if ($no_zeros && $total[3] == 0.0 && $curr_db == 0.0 && $curr_cr == 0.0) continue;
         $rep->TextCol(0, 2, $myrow['name']);
         $rep->AmountCol(3, 4, $total[3] + $curr_cr - $curr_db, $dec);
-        $rep->AmountCol(5, 6, $curr_cr, $dec);
         $rep->AmountCol(4, 5, $curr_db, $dec);
+        $rep->AmountCol(5, 6, $curr_cr, $dec);
         $rep->AmountCol(7, 8, $total[3], $dec);
         for ($i = 2; $i < 4; $i++)
         {
