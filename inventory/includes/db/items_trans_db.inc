@@ -70,7 +70,6 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 			$cart->add_gl_item($stock_gl_code["inventory_account"], 0, 0, $value_of_change);
 
 			write_journal_entries($cart);
-			change_stock_moves_std_cost($stock_id, $date_, $new_cost - $last_cost);	
 		}
    	}
 
@@ -79,14 +78,4 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	commit_transaction();
 
 	return $update_no;
-}
-
-//-------------------------------------------------------------------------------------------------------------
-
-function change_stock_moves_std_cost($stock_id, $date, $diff_cost)
-{
-	$date = date2sql($date);
-	$sql = "UPDATE ".TB_PREF."stock_moves SET standard_cost = standard_cost + ".db_escape($diff_cost). " WHERE stock_id = "
-			.db_escape($stock_id)." AND tran_date <= '$date' AND qty <> 0 AND standard_cost > 0.001 AND type <> ".ST_LOCTRANSFER;
-	db_query($sql,"The stock moves cost details for the inventory item could not be updated");
 }
