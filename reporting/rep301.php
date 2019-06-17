@@ -30,17 +30,23 @@ print_inventory_valuation_report();
 
 function get_domestic_price($myrow, $stock_id)
 {
-	$price = $myrow['price'];
-	if ($myrow['person_id'] > 0)
-	{
-		// Do we have foreign currency?
-		$supp = get_supplier($myrow['person_id']);
-		$currency = $supp['curr_code'];
-		$ex_rate = get_exchange_rate_to_home_currency($currency, sql2date($myrow['tran_date']));
-		$price /= $ex_rate;
-	}	
-	return $price;
-}	
+    if ($myrow['type'] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT || $myrow['type'] == ST_INVADJUST)
+     {
+        $price = $myrow['price'];
+        if ($myrow['person_id'] > 0)
+        {
+            // Do we have foreign currency?
+            $supp = get_supplier($myrow['person_id']);
+            $currency = $supp['curr_code'];
+            $ex_rate = $myrow['ex_rate'];
+            $price *= $ex_rate;
+        }
+    }
+    else
+        $price = $myrow['standard_cost']; //pick standard_cost for sales deliveries
+
+    return $price;
+}
 
 function getAverageCost($stock_id, $location, $to_date)
 {
@@ -49,7 +55,7 @@ function getAverageCost($stock_id, $location, $to_date)
 
 	$to_date = date2sql($to_date);
 
-  	$sql = "SELECT move.*, IF(ISNULL(supplier.supplier_id), debtor.debtor_no, supplier.supplier_id) person_id
+  	$sql = "SELECT move.*, supplier.supplier_id person_id, IF(ISNULL(grn.rate), credit.rate, grn.rate) ex_rate
   		FROM ".TB_PREF."stock_moves move
 				LEFT JOIN ".TB_PREF."supp_trans credit ON credit.trans_no=move.trans_no AND credit.type=move.type
 				LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=move.trans_no AND 25=move.type
