@@ -39,7 +39,6 @@ function getTransactions($category, $location, $fromsupp, $item, $from, $to)
 			item.description, item.inactive,
 			move.loc_code,
 			supplier.supplier_id , IF(ISNULL(grn.rate), credit.rate, grn.rate) ex_rate,
-			supplier.supplier_id,
 			supplier.supp_name AS supplier_name,
 			move.tran_date,
 			move.qty AS qty,
@@ -225,9 +224,7 @@ function print_inventory_purchase()
 		}
 		
 		$curr = get_supplier_currency($trans['supplier_id']);
-		//$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
-		$rate = $trans['ex_rate'];
-		$trans['price'] *= $rate;
+		$trans['price'] *= $trans['ex_rate'];
 		$rep->NewLine();
 		$trans['supp_reference'] = get_supp_inv_reference($trans['supplier_id'], $trans['stock_id'], $trans['tran_date']);
 		$rep->fontSize -= 2;
