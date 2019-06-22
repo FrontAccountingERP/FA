@@ -15,7 +15,6 @@ class fa2_4rc1 extends fa_patch {
 	var $version = '2.4.1';	// version installed
 	var $description;
 	var $sql = ''; // 'alter2.4rc1.sql';
-	var $preconf = true;
 	var	$max_upgrade_time = 900;	// table recoding is really long process
 
 	function __construct() {

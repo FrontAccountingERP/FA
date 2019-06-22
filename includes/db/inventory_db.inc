@@ -229,14 +229,14 @@ function get_deliveries_from_trans($stock_id, $move_id)
         WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
             trans_id>='$move_id' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
-	$row = db_fetch_row($result);
+	$row = db_fetch_row($result);   // fetch quantity and cost of all deliveries including move_id
 	
     $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)
         FROM ".TB_PREF."stock_moves
         WHERE stock_id=".db_escape($stock_id)
             ." AND trans_id ='$move_id'";
     $result = db_query($sql, "The deliveries could not be updated");
-    $cost = db_fetch_row($result);
+    $cost = db_fetch_row($result);      // fetch unit cost at move_id
 
 	// Adjusting QOH valuation 
 	$sql = "SELECT SUM(qty)
@@ -244,9 +244,10 @@ function get_deliveries_from_trans($stock_id, $move_id)
 		WHERE stock_id=".db_escape($stock_id)." AND
 			trans_id<'$move_id' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
-	$qoh = db_fetch_row($result);
+	$qoh = db_fetch_row($result);   // find qoh before inventory went negative
 
-	$qty = $row[0] - $qoh[0]; //QOH prior to -ve stock is subtracted
+        // adjust cost and quantity for part of move_id transaction on positive inventory
+	$qty = $row[0] - $qoh[0]; // QOH prior to -ve stock is subtracted
 	$final_cost = $row[1] - $qoh[0]*$cost[0];
 	
 	return array($qty,$final_cost); 
@@ -340,6 +341,7 @@ function get_stock_gl_code($stock_id)
 
 function get_purchase_value($stock_id)
 {
+
 	$sql = "SELECT purchase_cost FROM
 		".TB_PREF."stock_master WHERE stock_id = ".db_escape($stock_id);
 

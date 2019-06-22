@@ -9,7 +9,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//------------------- update average material cost ---------------------------------------------- 
+/*
+    Update average inventory item cost.
+*/
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
 	// probably this function should be optimized
@@ -40,20 +42,18 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
     // Skip negative inventory adjustment for case of adjust_only
     if (is_inventory_item($stock_id) && !$adj_only) 
         handle_negative_inventory($stock_id, $qty, $price_in_home_currency, $date);
-	
-	$sql = "SELECT mb_flag, material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$material_cost = $myrow['material_cost'];
-	
-	$cost_adjust = false;
+
+	$item = get_item($stock_id);
+	$avg_cost =  $item['material_cost'];
 
 	$qoh = get_qoh_on_date($stock_id);
+
+	$cost_adjust = false;
 
 	if ($adj_only)
 	{
 		if ($qoh > 0)
-			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
+			$avg_cost = ($qoh * $avg_cost + $qty * $price_in_home_currency) / $qoh;
 	}
 	else
 	{
@@ -64,16 +64,17 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			$qoh = 0;
 		}
 		if ($qoh + $qty > 0)
-			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+			$avg_cost = ($qoh * $avg_cost + $qty * $price_in_home_currency) / ($qoh + $qty);
 	}
 
 	if ($cost_adjust) // Material_cost replaced with price
 		adjust_deliveries($stock_id, $price_in_home_currency_, $date);
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
+
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($avg_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 
 	db_query($sql,"The cost details for the inventory item could not be updated");
-	return $material_cost;
+	return $avg_cost;
 }
 
 //-------------------------------------------------------------------------------------------------------------
