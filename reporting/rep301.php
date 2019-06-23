@@ -30,7 +30,7 @@ print_inventory_valuation_report();
 
 function get_domestic_price($myrow, $stock_id)
 {
-    if ($myrow['type'] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT || $myrow['type'] == ST_INVADJUST)
+    if ($myrow['type'] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
      {
         $price = $myrow['price'];
         if ($myrow['person_id'] > 0)
