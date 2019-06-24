@@ -1,3 +1,316 @@
+2019-06-23 22:49:00 +0200 Janusz Dobrowolski 
+Fixed inventory cost calculation for fiscal year deletion.
+M	admin/db/fiscalyears_db.inc
+
+2019-06-23 12:23:53 +0200 Janusz Dobrowolski 
+Reverted latest changes in inventory adjustment to ensure database consistency.
+M	inventory/includes/db/items_adjust_db.inc
+M	reporting/rep301.php
+M	reporting/rep308.php
+
+2019-06-20 09:17:13 +0200 Joe Hunt 
+Rerun rep306. Fixed dupplicated rows.
+M	reporting/rep306.php
+
+2019-06-20 09:11:13 +0200 Joe Hunt 
+Fixed Inventory Purchasing Report with physical rate from line.
+M	reporting/rep306.php
+
+2019-06-17 09:54:59 +0200 Joe Hunt 
+Rerun of items_adjust_db.inc. @itronics.
+M	inventory/includes/db/items_adjust_db.inc
+
+2019-06-17 08:25:43 +0200 Joe Hunt 
+Anomaly created by Cost Update in Inventory Sales Report (rep304). Updated bugfix. @boxygen.
+M	inventory/includes/db/items_adjust_db.inc
+M	reporting/rep301.php
+M	reporting/rep308.php
+
+2019-06-16 09:44:09 +0200 Joe Hunt 
+General Leger - List of journal entries - change in memo fields. @Braath Waate.
+M	reporting/rep702.php
+
+2019-06-16 08:55:00 +0200 Joe Hunt 
+Fixing Get_domestic_price in rep301 and rep308. @boxygen.
+M	reporting/rep301.php
+M	reporting/rep308.php
+
+2019-06-15 11:02:24 +0200 Janusz Dobrowolski 
+Rolled back invalid update of stock_move costs on cost update.
+M	inventory/includes/db/items_trans_db.inc
+
+2019-06-04 08:11:17 +0200 Joe Hunt 
+Bug 4896: Standard Cost is not Updated in debtor_trans_detail table if Customer Credit Note is processed. @boxygen.
+M	sales/includes/db/sales_credit_db.inc
+
+2019-06-04 07:58:40 +0200 Joe Hunt 
+Fixed Supplier Allocation Inquiry - Due Date. @poncho1234.
+M	purchasing/inquiry/supplier_allocation_inquiry.php
+
+2019-06-02 18:29:32 +0200 Joe Hunt 
+Wrong Presentation of supp balance in forms. @JimmyC
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/db/po_db.inc
+
+2019-05-18 15:45:11 +0200 Joe Hunt 
+Rerun fix Supplier Trial Balance.
+M	reporting/rep206.php
+
+2019-05-18 15:35:34 +0200 Joe Hunt 
+Buxfix in Customer and Supplier Trial Balance Report and margin fixes. @boxygen.
+M	reporting/rep115.php
+M	reporting/rep206.php
+
+2019-05-01 10:00:31 +0200 Joe Hunt 
+Fixed Email Receipt to customer.
+M	reporting/includes/reporting.inc
+M	reporting/rep112.php
+M	reporting/reports_main.php
+M	sales/customer_payments.php
+
+2019-04-22 10:07:25 +0200 Joe Hunt 
+New Soluton to sales_order_ui.inc has a bug. @kvvaradha.
+M	sales/includes/ui/sales_order_ui.inc
+
+2019-04-19 16:40:04 +0200 Joe Hunt 
+Rerun: user_list_cells Real name sometimes shows empty. @apmuthu
+M	includes/ui/ui_lists.inc
+
+2019-04-14 23:30:50 +0200 Joe Hunt 
+user_list_cells Real name shows empty when not entered in user table. @kvvaradha.
+M	includes/ui/ui_lists.inc
+
+2019-04-13 09:52:25 +0200 Joe Hunt 
+rerun of sales_order_ui.inc has a bug. @Braath Waate and @kvvaradha.
+M	sales/includes/ui/sales_order_ui.inc
+
+2019-04-07 08:48:16 +0200 Joe Hunt 
+Recurrent Invoices in 2.4 is not sending. Fixed by @Braath Waate.
+M	sales/create_recurrent_invoices.php
+
+2019-03-26 16:57:32 +0100 Joe Hunt 
+4863: Dimension not defaulted on po entry, po modify. @Braath Waate and @joe fixed
+M	purchasing/includes/db/grn_db.inc
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/db/po_db.inc
+
+2019-03-26 11:17:08 +0100 Joe Hunt 
+4867: supplier quick entry g/l account list should show the bank accounts in the line.
+M	purchasing/includes/ui/invoice_ui.inc
+
+2019-03-26 10:51:56 +0100 Joe Hunt 
+Rerun /reporting/includes/report_classes.inc
+M	reporting/includes/reports_classes.inc
+
+2019-03-26 10:42:35 +0100 Joe Hunt 
+4869: Work order listing and print work orders reports should omit voided orders. @Braath Waate fixed.
+M	manufacturing/includes/db/work_orders_db.inc
+M	reporting/includes/reports_classes.inc
+M	reporting/rep402.php
+
+2019-03-26 01:42:25 +0100 Joe Hunt 
+Sometimes when amount tax details was zero and net amount was set an empty gl transaction was made. @JimmyC and @joe fixed it.
+M	sales/includes/db/sales_invoice_db.inc
+
+2019-03-24 18:07:25 +0100 Joe Hunt 
+Rerun of sales_order_entry.php.
+M	sales/sales_order_entry.php
+
+2019-03-24 18:02:00 +0100 Joe Hunt 
+Fixing bug in Sales Invoice and Sales Delivery when Cash Sales and document date is earlier then todays date. Due date should be the same.
+M	sales/sales_order_entry.php
+
+2019-03-23 10:50:42 +0100 Joe Hunt 
+Presentation bug in Sales Order View when reference is 'auto'.
+M	sales/view/view_sales_order.php
+
+2019-03-21 22:28:35 +0100 Joe Hunt 
+Removed CCA, (currencyconverterapi.com) is no longer working. Updated url from google api. @notrinos.
+M	config.default.php
+M	gl/includes/db/gl_db_rates.inc
+
+2019-03-19 21:40:45 +0100 Joe Hunt 
+No edit in supplier invoice quick entry fixed. @Braath Waate.
+M	purchasing/includes/ui/invoice_ui.inc
+M	purchasing/supplier_invoice.php
+
+2019-03-06 22:55:17 +0100 Joe Hunt 
+PHP 7.X produces A non-numeric value encountered in \includes\date_functions.inc when using date format 5 (YYYY/MM/D.
+M	includes/date_functions.inc
+
+2019-03-04 08:42:29 +0100 Joe Hunt 
+Clean up in en_US-demo.sql and en_US-new.sql. @apmuthu.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2019-02-22 23:30:45 +0100 Joe Hunt 
+4859: The Outstanding in Customer Balance is Not Ok with Journal Entry. Fixed by @boxygen.
+M	reporting/rep101.php
+
+2019-02-22 10:01:34 +0100 Joe Hunt 
+0004847: FA allows reconciliation of closed transactions. Fixed by @Braath Waathe.
+M	gl/bank_account_reconcile.php
+
+2019-02-22 09:49:28 +0100 Joe Hunt 
+Display of newlines in memo show as html during purchase order modify. Fixed by @Braath Waathe-
+M	purchasing/includes/db/po_db.inc
+
+2019-02-19 08:28:59 +0100 Joe Hunt 
+Fixed users Last Visit Date with Time. @kvvaradha and @apmuthu.
+M	admin/users.php
+
+2019-02-13 16:05:42 +0100 Janusz Dobrowolski 
+Process Depreciation: hardcoded fiscal years constraint removed.
+M	includes/data_checks.inc
+M	includes/ui/ui_lists.inc
+
+2019-02-13 15:48:50 +0100 Joe Hunt 
+Customer balance Report rep101.php has one extra parameter. Fixed @kvvaradha.
+M	reporting/rep101.php
+
+2019-01-29 15:10:00 +0100 Joe Hunt 
+Bad english language in db error msg.
+M	inventory/includes/db/items_units_db.inc
+
+2019-01-27 15:57:06 +0100 Joe Hunt 
+Fixed small bug item units db by @anoopmb.
+M	inventory/includes/db/items_units_db.inc
+
+2019-01-25 21:27:35 +0100 Janusz Dobrowolski 
+Additional sql strict mode related fix in add_trans_tax_details().
+M	gl/includes/db/gl_db_trans.inc
+
+2019-01-25 10:20:55 +0100 Joe Hunt 
+Rerun of sales_order_ui.inc has a bug.
+M	sales/includes/ui/sales_order_ui.inc
+
+2019-01-24 23:28:25 +0100 Joe Hunt 
+Bugs in sales_db.inc and sales_order_ui.inc fixed by @kvvaradha.
+M	sales/includes/sales_db.inc
+M	sales/includes/ui/sales_order_ui.inc
+
+2019-01-23 11:26:41 +0100 Joe Hunt 
+items_cart class has a logical bug, fixed by @kvvaradha.
+M	includes/ui/items_cart.inc
+
+2019-01-22 12:29:08 +0100 Joe Hunt 
+Redesign of the 2 core COAs. They are similar now except the demo data in the demo variant.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2019-01-21 23:09:30 +0100 Joe Hunt 
+Rerun2 of updated en_US-demo.sql.
+M	sql/en_US-demo.sql
+
+2019-01-21 13:41:03 +0100 Joe Hunt 
+Rerun of en_US-demo COA. Cleaning.
+M	sql/en_US-demo.sql
+
+2019-01-21 11:45:47 +0100 Joe Hunt 
+Updated en_US-demo to contain 2018 and a couple of transes in 2019.
+M	sql/en_US-demo.sql
+
+2019-01-20 20:20:31 +0100 Janusz Dobrowolski 
+Relaxed sql_mode set on database initialization to provide backward compatibility during backup restartion.
+M	admin/db/maintenance_db.inc
+
+2019-01-17 08:25:14 +0100 Joe Hunt 
+Double semicolon line endings fixed by @apmuthu.
+M	admin/attachments.php
+M	fixed_assets/includes/fa_classes_db.inc
+M	inventory/view/view_transfer.php
+M	js/behaviour.js
+M	manufacturing/view/wo_issue_view.php
+M	purchasing/view/view_po.php
+M	reporting/rep451.php
+M	sales/customer_credit_invoice.php
+M	sales/includes/db/customers_db.inc
+M	taxes/tax_groups.php
+
+2019-01-16 22:37:09 +0100 Joe Hunt 
+Double Semi Colon in this line. Please remove one by £boxygen
+M	gl/includes/db/gl_db_trans.inc
+
+2019-01-16 22:24:19 +0100 Joe Hunt 
+Placeholders Not Allowed for Dimensions. Fixed by @boxygen
+M	includes/references.inc
+
+2019-01-14 17:29:25 +0100 Joe Hunt 
+wrong command symbol in ui_list.inc by @notrinos.
+M	includes/ui/ui_lists.inc
+
+2019-01-11 08:29:58 +0100 Joe Hunt 
+Rerun of Update Material Cost Function. $notrinos.
+M	manufacturing/includes/db/work_order_costing_db.inc
+
+2019-01-10 20:04:20 +0100 Janusz Dobrowolski 
+Fixed get_post() support for numeric fields.
+M	admin/display_prefs.php
+M	includes/ui/ui_controls.inc
+
+2019-01-10 18:00:25 +0100 Janusz Dobrowolski 
+Quick Entries: fixed false warning.
+M	gl/manage/gl_quick_entries.php
+
+2019-01-10 16:29:01 +0100 Janusz Dobrowolski 
+Fixed allocation date for customer payments entry, additional fixes for strict sql mode.
+M	includes/db/audit_trail_db.inc
+M	sales/customer_payments.php
+
+2019-01-10 10:17:14 +0100 Janusz Dobrowolski 
+Activated strict SQL mode, minor SQL injection fix, fixed _vl() debug helper.
+M	admin/display_prefs.php
+M	includes/date_functions.inc
+M	includes/db/class.reflines_db.inc
+M	includes/db/connect_db_mysql.inc
+M	includes/db/connect_db_mysqli.inc
+M	includes/ui/class.crud_view.inc
+M	includes/ui/class.reflines_crud.inc
+M	includes/ui/ui_input.inc
+M	includes/ui/ui_view.inc
+M	inventory/includes/db/items_db.inc
+M	inventory/manage/items.php
+M	inventory/manage/locations.php
+M	purchasing/manage/suppliers.php
+M	sales/includes/cart_class.inc
+
+2019-01-09 23:15:27 +0100 Joe Hunt 
+Rollback. Update material cost when quantity on hand is zero. @notrinos.
+M	manufacturing/includes/db/work_order_costing_db.inc
+
+2019-01-08 23:42:04 +0100 Joe Hunt 
+Merge branch 'master' of https://git.code.sf.net/p/frontaccounting/git
+2019-01-08 23:41:40 +0100 Joe Hunt 
+Password reset mail could take several hours. After fix only a couple of seconds. Using From: email in header.
+M	includes/current_user.inc
+
+2019-01-08 23:40:09 +0100 Joe Hunt 
+Bug 4817: g/l account inquiry can timeout due to slow sql. @Braath Waate.
+M	gl/includes/db/gl_db_trans.inc
+M	gl/inquiry/gl_account_inquiry.php
+
+2019-01-08 20:44:35 +0100 Janusz Dobrowolski 
+New transaction reference formats {FF}/{FFFF} for fiscal years starting on other day than January 1st.
+M	includes/references.inc
+
+2019-01-07 17:31:09 +0100 Joe Hunt 
+Optimized function get_trans_tax_details() by @apmuthu.
+M	gl/includes/db/gl_db_trans.inc
+
+2019-01-05 10:42:24 +0100 Joe Hunt 
+Date Picker close when clicked outside of the datepicker. @kvvaradha and @apmuthu.
+M	includes/ui/ui_view.inc
+
+2019-01-02 09:12:17 +0100 Joe Hunt 
+Supplier Transaction Inquiry for GRN did not filter on date. Fixed by @notrinos.
+M	purchasing/includes/db/supp_trans_db.inc
+
+2018-12-24 00:41:51 +0100 Joe Hunt 
+Merge branch 'master' of https://git.code.sf.net/p/frontaccounting/git
+2018-12-24 00:41:14 +0100 Joe Hunt 
+New CHANGELOG.txt file.
+M	CHANGELOG.txt
+
 2018-12-24 00:38:18 +0100 Joe Hunt 
 Release 2.4.6
 M	version.php
@@ -5,6 +318,22 @@ M	version.php
 2018-12-24 00:32:42 +0100 Joe Hunt 
 Report Stock Check Sheet is now testing for valid barcodes of EAN, EAN-8, EAN-13, GTIN-8, GTIN-12, GTIN-14, UPC, UPC-12 coupon code, JAN if 'Using Barcodes' is enabled.
 M	reporting/rep303.php
+
+2018-12-23 15:39:52 +0100 Janusz Dobrowolski 
+Update README.md, removed obsolete install/update info, added list of contributors.
+M	README.md
+M	doc/license.txt
+D	install.html
+D	update.html
+
+2018-12-23 10:57:11 +0100 Janusz Dobrowolski 
+Gettext template update.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2018-12-20 21:09:08 +0100 Janusz Dobrowolski 
+Attach Documents: fixed SQL injection vulnerability.
+M	admin/db/transactions_db.inc
+M	includes/references.inc
 
 2018-12-22 11:54:46 +0100 Joe Hunt 
 Barcodes in report Stock Check Sheets should only print numeric stock id's.
