@@ -168,7 +168,7 @@ function print_customer_balances()
 		
 		$accumulate = 0;
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
-		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
+		$bal = get_open_balance($myrow['debtor_no'], $from);
 		$init[0] = $init[1] = 0.0;
 		$init[0] = round2(abs($bal['charges']*$rate), $dec);
 		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
@@ -239,7 +239,7 @@ function print_customer_balances()
 				$item[2] = round2($trans['Allocated'] * $rate, $dec) * -1;
 			}
 			$rep->AmountCol(6, 7, $item[2], $dec);
-			if ($trans['type'] == ST_JOURNAL || $trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT)
+			if (($trans['type'] == ST_JOURNAL && $item[0]) || $trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT)
 				$item[3] = $item[0] - $item[2];
 			else	
 				$item[3] = -$item[1] - $item[2];

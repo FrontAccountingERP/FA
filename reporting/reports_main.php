@@ -156,6 +156,7 @@ $reports->addReport(RC_CUSTOMER, 112, _('Print Receipts'),
 	array(	_('From') => 'RECEIPT',
 			_('To') => 'RECEIPT',
 			_('Currency Filter') => 'CURRENCY',
+            _('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
 

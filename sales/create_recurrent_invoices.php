@@ -143,9 +143,8 @@ if ($id != -1)
 	if (count($invs) > 0)
 	{
 		$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
-			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => user_def_print_orientation());
+			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => "", 'PARAM_7' => user_def_print_orientation());
 		display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
-		$ar['PARAM_6'] = 1; // orygina³
 		$ar['PARAM_3'] = 1; // email
 		display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 	}

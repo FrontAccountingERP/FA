@@ -322,8 +322,9 @@ function delete_this_fiscalyear($selected_id)
 		db_query($sql, "Could not delete workorders");
 		delete_attachments_and_comments(ST_WORKORDER, $row['id']);
 	}
-	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by 
-		loc_code, stock_id";
+	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty,"
+	    ." SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)) AS std_cost"
+	    ." FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by loc_code, stock_id";
 	$result = db_query($sql, "Could not retrieve stock moves");
 	while ($row = db_fetch($result))
 	{

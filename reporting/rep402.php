@@ -43,10 +43,12 @@ function getTransactions($items, $open_only, $location)
 		workorder.required_by,
 		workorder.closed,
 		workorder.stock_id
-		FROM ".TB_PREF."workorders as workorder,"
-			.TB_PREF."stock_master as item,"
+		FROM ".TB_PREF."workorders as workorder
+			LEFT JOIN ".TB_PREF."voided v ON v.id=workorder.id and v.type=".ST_WORKORDER.","
+ 			.TB_PREF."stock_master as item,"
 			.TB_PREF."locations as location
-		WHERE workorder.stock_id=item.stock_id 
+		WHERE ISNULL(v.id)
+			AND workorder.stock_id=item.stock_id 
 			AND workorder.loc_code=location.loc_code";
 
 	if ($open_only != 0)

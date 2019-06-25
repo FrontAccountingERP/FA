@@ -352,6 +352,20 @@ if ($id4 != -1)
 	$Ajax->activate('gl_items');
 }
 
+$id5 = find_submit('Edit');
+if ($id5 != -1)
+{
+    $_POST['gl_code'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_code;
+    $_POST['dimension_id'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_dim;
+    $_POST['dimension2_id'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_dim2;
+    $_POST['amount'] = $_SESSION['supp_trans']->gl_codes[$id5]->amount;
+    $_POST['memo_'] = $_SESSION['supp_trans']->gl_codes[$id5]->memo_;
+
+       $_SESSION['supp_trans']->remove_gl_codes_from_trans($id5);
+       reset_tax_input();
+       $Ajax->activate('gl_items');
+}
+
 $id2 = -1;
 if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
 {

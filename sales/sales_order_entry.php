@@ -453,6 +453,10 @@ function can_process() {
 		display_error("Invoice total amount cannot be less than zero.");
 		return false;
 	}
+
+	if ($_SESSION['Items']->payment_terms['cash_sale'] && 
+		($_SESSION['Items']->trans_type == ST_CUSTDELIVERY || $_SESSION['Items']->trans_type == ST_SALESINVOICE)) 
+		$_SESSION['Items']->due_date = $_SESSION['Items']->document_date;
 	return true;
 }
 

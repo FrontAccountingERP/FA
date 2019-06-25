@@ -176,7 +176,7 @@ function write_sales_invoice(&$invoice)
 			add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $prepaid_factor*$taxitem['Value'],
 				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT);
-			if (isset($taxitem['sales_gl_code']))
+			if (isset($taxitem['sales_gl_code']) && !empty($taxitem['sales_gl_code']) && $taxitem['Value'] != 0)
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id,
 					"A tax GL posting could not be inserted");
