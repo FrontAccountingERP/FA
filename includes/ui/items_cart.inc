@@ -52,13 +52,13 @@ class items_cart
 
 	// --------------- line item functions
 
-	function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description=null)
+	function add_to_cart($line_no, $stock_id, $qty, $unit_cost, $description=null)
 	{
 
 		if (isset($stock_id) && $stock_id != "" && isset($qty))
 		{
 			$this->line_items[$line_no] = new line_item($stock_id, $qty,
-				$standard_cost, $description);
+				$unit_cost, $description);
 			return true;
 		}
 		else
@@ -79,10 +79,10 @@ class items_cart
 		return null;
 	}
 
-	function update_cart_item($line_no, $qty, $standard_cost)
+	function update_cart_item($line_no, $qty, $unit_cost)
 	{
 		$this->line_items[$line_no]->quantity = $qty;
-		$this->line_items[$line_no]->standard_cost = $standard_cost;
+		$this->line_items[$line_no]->unit_cost = $unit_cost;
 	}
 
 	function remove_from_cart($line_no)
@@ -463,9 +463,9 @@ class line_item
 
 	var $quantity;
 	var $price;
-	var $standard_cost;
+	var $unit_cost;
 
-	function __construct($stock_id, $qty, $standard_cost=null, $description=null)
+	function __construct($stock_id, $qty, $unit_cost=null, $description=null)
 	{
 		$item_row = get_item($stock_id);
 
@@ -480,10 +480,10 @@ class line_item
 		else
 			$this->item_description = $description;
 
-		if ($standard_cost == null)
-			$this->standard_cost = $item_row["purchase_cost"];
+		if ($unit_cost == null)
+			$this->unit_cost = $item_row["purchase_cost"];
 		else
-			$this->standard_cost = $standard_cost;
+			$this->unit_cost = $unit_cost;
 
 		$this->stock_id = $stock_id;
 		$this->quantity = $qty;

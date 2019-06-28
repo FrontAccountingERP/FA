@@ -62,7 +62,7 @@ while ($adjustment = db_fetch($adjustment_items))
     label_cell($adjustment['description']);
     qty_cell($adjustment['qty'], false, get_qty_dec($adjustment['stock_id']));
     label_cell($adjustment['units']);
-    amount_decimal_cell($adjustment['standard_cost']);
+    amount_decimal_cell($adjustment['unit_cost']);
     end_row();
 }
 

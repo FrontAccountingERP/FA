@@ -209,7 +209,7 @@ function get_deliveries_between($stock_id, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
+	$sql = "SELECT SUM(-qty), SUM(-qty*unit_cost) FROM ".TB_PREF."stock_moves
 		WHERE type=".ST_CUSTDELIVERY." AND stock_id=".db_escape($stock_id)." AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
 
@@ -224,14 +224,14 @@ function get_deliveries_from_trans($stock_id, $move_id)
 {
 	// -ve qty is delivery either by ST_CUSTDELIVERY or inventory adjustment
     //Price for GRN and SUPPCREDIT and std_cost for other trans_types
-    $sql = "SELECT SUM(-qty), SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost))
+    $sql = "SELECT SUM(-qty), SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, unit_cost))
         FROM ".TB_PREF."stock_moves
         WHERE stock_id=".db_escape($stock_id)." AND qty < 0 AND
             trans_id>='$move_id' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	$row = db_fetch_row($result);   // fetch quantity and cost of all deliveries including move_id
 	
-    $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)
+    $sql = "SELECT IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, unit_cost)
         FROM ".TB_PREF."stock_moves
         WHERE stock_id=".db_escape($stock_id)
             ." AND trans_id ='$move_id'";
@@ -259,7 +259,7 @@ function get_deliveries_from_trans($stock_id, $move_id)
 function get_purchases_from_trans($stock_id, $move_id)
 {
 	// Calculate All inward stock moves i.e. qty > 0
-	$sql = "SELECT SUM(qty), SUM(qty*standard_cost)
+	$sql = "SELECT SUM(qty), SUM(qty*unit_cost)
 		FROM ".TB_PREF."stock_moves
 		WHERE stock_id=".db_escape($stock_id)." AND qty > 0 AND 
 			trans_id>'$move_id' GROUP BY stock_id";
@@ -359,7 +359,7 @@ function update_purchase_value($stock_id, $price)
 }	
 //-----------------------------------------------------------------------------------------
 
-function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
+function handle_negative_inventory($stock_id, $quantity, $unit_cost, $date_)
 {
 	//If negative adjustment result in negative or zero inventory
 	//then difference should be adjusted
@@ -371,7 +371,7 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 
 		$id = get_next_trans_no(ST_JOURNAL);
 		$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
-		$diff = round($qoh*get_unit_cost($stock_id) + $quantity*$standard_cost, user_price_dec());
+		$diff = round($qoh*get_unit_cost($stock_id) + $quantity*$unit_cost, user_price_dec());
 
 		if ($diff != 0)
 		{
@@ -407,16 +407,16 @@ function handle_negative_inventory($stock_id, $quantity, $standard_cost, $date_)
 // $price - in transaction currency
 
 function add_stock_move($type, $stock_id, $trans_no, $location,
-    $date_, $reference, $quantity, $std_cost, $price=0)
+    $date_, $reference, $quantity, $unit_cost, $price=0)
 {
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
-		tran_date, reference, qty, standard_cost, price) VALUES ("
+		tran_date, reference, qty, unit_cost, price) VALUES ("
 		.db_escape($stock_id).", ".db_escape($trans_no).", "
 		.db_escape($type).", ".db_escape($location).", '$date', "
 		.db_escape($reference).", "
-		.db_escape($quantity).", ".db_escape($std_cost)."," .db_escape($price).")";
+		.db_escape($quantity).", ".db_escape($unit_cost)."," .db_escape($price).")";
 
 	db_query($sql, "The stock movement record cannot be inserted");
 
@@ -425,11 +425,11 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
 
 function update_stock_move($type, $trans_no, $stock_id, $cost)
 {
-	$sql = "UPDATE ".TB_PREF."stock_moves SET standard_cost=".db_escape($cost)
+	$sql = "UPDATE ".TB_PREF."stock_moves SET unit_cost=".db_escape($cost)
 			." WHERE type=".db_escape($type)
 			."	AND trans_no=".db_escape($trans_no)
 			."	AND stock_id=".db_escape($stock_id);
-	db_query($sql, "The stock movement standard_cost cannot be updated");
+	db_query($sql, "The stock movement unit_cost cannot be updated");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -467,12 +467,12 @@ function void_stock_move($type, $type_no)
 		if (is_inventory_item($row["stock_id"]))
 		{
 			// The cost has to be adjusted.
-			// Transaction rates are stored either as price or standard_cost depending on types
+			// Transaction rates are stored either as price or unit_cost depending on types
 			$types = array(ST_SUPPCREDIT, ST_SUPPRECEIVE);
 			if (in_array($type, $types))
 				$unit_cost = $row["price"];
 			else
-				$unit_cost = $row["standard_cost"];
+				$unit_cost = $row["unit_cost"];
 
 			update_average_material_cost($row["supplier_id"], $row["stock_id"],
 				$unit_cost, -$row["qty"], sql2date($row["tran_date"]));

@@ -79,13 +79,13 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$line_tax = get_full_price_for_item($delivery_line->stock_id,
 				$delivery_line->price * $qty, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
-		$delivery_line->standard_cost = get_unit_cost($delivery_line->stock_id);
+		$delivery_line->unit_cost = get_unit_cost($delivery_line->stock_id);
 
 		/* add delivery details for all lines */
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 			$delivery_line->item_description, $delivery_line->qty_dispatched,
 			$delivery_line->line_price(), $qty ? $line_tax/$qty : 0,
-			$delivery_line->discount_percent, $delivery_line->standard_cost, $delivery_line->src_id,
+			$delivery_line->discount_percent, $delivery_line->unit_cost, $delivery_line->src_id,
 			$trans_no ? $delivery_line->id : 0);
 
 	// Now update sales_order_details for the quantity delivered
@@ -96,7 +96,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		if ($delivery_line->qty_dispatched != 0) {
 			add_stock_move(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no,
 				$delivery->Location, $delivery->document_date, $delivery->reference,
-				-$delivery_line->qty_dispatched, $delivery_line->standard_cost,
+				-$delivery_line->qty_dispatched, $delivery_line->unit_cost,
 				 $line_price*(1-$delivery_line->discount_percent));
 
 			$mb_flag = get_mb_flag($delivery_line->stock_id);
@@ -128,7 +128,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				// Fixed Assets
 				if ($delivery->fixed_asset) {
 				    $fa_purchase_cost = get_purchase_cost($delivery_line->stock_id);
-					$fa_depreciation = $fa_purchase_cost - $delivery_line->standard_cost;
+					$fa_depreciation = $fa_purchase_cost - $delivery_line->unit_cost;
 					/*first remove depreciation*/
 					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
 						$delivery->document_date, $stock_gl_code["adjustment_account"], $dim, $dim2, "",
@@ -149,18 +149,18 @@ function write_sales_delivery(&$delivery,$bo_policy)
 						"The stock side of the cost of sales GL posting could not be inserted");
 				}
 				// Invetory Items
-				else if ($delivery_line->standard_cost != 0) {
+				else if ($delivery_line->unit_cost != 0) {
 					/*first the cost of sales entry*/
 					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
 						$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
-						$delivery_line->standard_cost * $delivery_line->qty_dispatched,
+						$delivery_line->unit_cost * $delivery_line->qty_dispatched,
 						PT_CUSTOMER, $delivery->customer_id,
 						"The cost of sales GL posting could not be inserted");
 
 					/*now the stock entry*/
 					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
 						$stock_gl_code["inventory_account"], 0, 0, "",
-						(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
+						(-$delivery_line->unit_cost * $delivery_line->qty_dispatched),
 						PT_CUSTOMER, $delivery->customer_id,
 						"The stock side of the cost of sales GL posting could not be inserted");
 				}				

@@ -14,12 +14,12 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 //--------------------------------------------------------------------------------
 
-function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
+function add_to_order(&$order, $new_item, $new_item_qty, $unit_cost)
 {
     if ($order->find_cart_item($new_item))
          display_error(_("For Part :") . $new_item . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
 	else
-         $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $standard_cost);
+         $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $unit_cost);
 }
 
 //--------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ function display_adjustment_items($title, &$order)
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
-		$total += ($stock_item->standard_cost * $stock_item->quantity);
+		$total += ($stock_item->unit_cost * $stock_item->quantity);
 
 		if ($id != $line_no)
 		{
@@ -87,13 +87,13 @@ function display_adjustment_items($title, &$order)
 			label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 			label_cell($stock_item->units);
-			amount_decimal_cell($stock_item->standard_cost);
+			amount_decimal_cell($stock_item->unit_cost);
 
 			if ($order->fixed_asset) {
     	   		$price = get_purchase_value($stock_item->stock_id);
 				amount_cell($price);
       		} else
-				amount_cell($stock_item->standard_cost * $stock_item->quantity);
+				amount_cell($stock_item->unit_cost * $stock_item->quantity);
 
       		if (!$order->fixed_asset) {
       			if ($id == -1)
@@ -143,8 +143,8 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 			$_POST['stock_id'] = $order->line_items[$line_no]->stock_id;
 			$_POST['qty'] = qty_format($order->line_items[$line_no]->quantity, 
 				$order->line_items[$line_no]->stock_id, $dec);
-		//$_POST['std_cost'] = price_format($order->line_items[$line_no]->standard_cost);
-			$_POST['std_cost'] = price_decimal_format($order->line_items[$line_no]->standard_cost, $dec2);
+		//$_POST['std_cost'] = price_format($order->line_items[$line_no]->unit_cost);
+			$_POST['std_cost'] = price_decimal_format($order->line_items[$line_no]->unit_cost, $dec2);
 		}
 		$_POST['units'] = $order->line_items[$line_no]->units;
 		hidden('stock_id', $_POST['stock_id']);

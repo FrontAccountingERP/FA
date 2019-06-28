@@ -580,7 +580,7 @@ $tabs = (get_post('fixed_asset'))
 		'settings' => array(_('&General settings'), $stock_id),
 		'sales_pricing' => array(_('S&ales Pricing'), (user_check_access('SA_SALESPRICE') ? $stock_id : null)),
 		'purchase_pricing' => array(_('&Purchasing Pricing'), (user_check_access('SA_PURCHASEPRICING') ? $stock_id : null)),
-		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
+		'unit_cost' => array(_('Unit &Cost'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
 		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
 			user_check_access('SA_REORDER') ? $stock_id : null)),
 		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
@@ -605,7 +605,7 @@ tabbed_content_start('tabs', $tabs);
 			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/purchasing_data.php");
 			break;
-		case 'standard_cost':
+		case 'unit_cost':
 			$_GET['stock_id'] = $stock_id;
 			$_GET['page_level'] = 1;
 			include_once($path_to_root."/inventory/cost_update.php");

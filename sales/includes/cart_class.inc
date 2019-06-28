@@ -394,11 +394,11 @@ class Cart
 			$this->freight_cost = $freight_cost;
 	}
 
-	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0,
+	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $unit_cost=0, $description=null, $id=0, $src_no=0,
 		$src_id=0)
 	{
 		$line = new line_details($stock_id, $qty, $price, $disc,
-			$qty_done,  $standard_cost, $description, $id, $src_no, $src_id);
+			$qty_done,  $unit_cost, $description, $id, $src_no, $src_id);
 
 		if ($line->valid) {
 			$this->line_items[$line_no] = $line;
@@ -669,7 +669,7 @@ class line_details
 	var $price;
 	var $discount_percent;
 	
-	var $standard_cost;
+	var $unit_cost;
 	var $descr_editable;
 
 	var $valid; // validation in constructor
@@ -701,7 +701,7 @@ class line_details
 
 
 	function __construct($stock_id, $qty, $prc, $disc_percent,
-		$qty_done, $standard_cost, $description, $id=0, $src_no=0, $src_id=0)
+		$qty_done, $unit_cost, $description, $id=0, $src_no=0, $src_id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */
 
@@ -728,7 +728,7 @@ class line_details
 		$this->price = $prc;
 		$this->discount_percent = $disc_percent;
 		$this->qty_done = $qty_done;
-		$this->standard_cost = $standard_cost;
+		$this->unit_cost = $unit_cost;
 		$this->valid = true;
 	}
 

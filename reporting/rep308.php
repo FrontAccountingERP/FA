@@ -45,7 +45,7 @@ function get_domestic_price($myrow, $stock_id)
         }
     }
     else
-        $price = $myrow['standard_cost']; //pick standard_cost for sales deliveries
+        $price = $myrow['unit_cost']; //pick unit_cost for sales deliveries
 
     return $price;
 }

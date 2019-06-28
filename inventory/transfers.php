@@ -171,7 +171,7 @@ function handle_update_item()
 {
 	$id = $_POST['LineNo'];
    	if (!isset($_POST['std_cost']))
-   		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
+   		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->unit_cost;
    	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
 	line_start_focus();
 }

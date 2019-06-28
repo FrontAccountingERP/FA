@@ -16,7 +16,7 @@ set by item. And the dimension(s) are saved on the cust_trans table.
 To be used when going from delivery to invoice, so there is a match between the
 2 links.
 
-These dimension(s) goes to the GL trans. If delivery and there are standard_cost 
+These dimension(s) goes to the GL trans. If delivery and there are unit_cost 
 values they will show up on all COGS accounts.
 
 If invoicing the dimensions will go to the SALES accounts, so it is easy to 

@@ -14,12 +14,12 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 //--------------------------------------------------------------------------------
 
-function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost)
+function add_to_issue(&$order, $new_item, $new_item_qty, $unit_cost)
 {
     if ($order->find_cart_item($new_item))
          display_error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
 	else
-         $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $standard_cost);
+         $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $unit_cost);
 }
 //---------------------------------------------------------------------------------
 
@@ -55,8 +55,8 @@ function display_issue_items($title, &$order)
 			label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 			label_cell($stock_item->units);
-			amount_cell($stock_item->standard_cost);
-//			amount_cell($stock_item->standard_cost * $stock_item->quantity);
+			amount_cell($stock_item->unit_cost);
+//			amount_cell($stock_item->unit_cost * $stock_item->quantity);
 
 			edit_button_cell("Edit$line_no", _("Edit"),
 				_('Edit document line'));
@@ -92,7 +92,7 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, 
 			$order->line_items[$id]->stock_id, $dec);
-		$std_cost = $order->line_items[$id]->standard_cost;
+		$std_cost = $order->line_items[$id]->unit_cost;
 		$_POST['units'] = $order->line_items[$id]->units;
 
 		hidden('stock_id', $_POST['stock_id']);

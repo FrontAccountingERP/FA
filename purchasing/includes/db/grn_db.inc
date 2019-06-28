@@ -126,7 +126,7 @@ function add_grn(&$po)
 			{
 				/*This must be the first receipt of goods against this line */
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
-			   	$order_line->standard_cost = get_unit_cost($order_line->stock_id);
+			   	$order_line->unit_cost = get_unit_cost($order_line->stock_id);
 			}
 			// Update the purchase data table
 			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
@@ -137,12 +137,12 @@ function add_grn(&$po)
 				$order_line->quantity = $order_line->receive_qty + $order_line->qty_received;
 			$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec,
 				$order_line->stock_id, $order_line->item_description,
-				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price, $order_line->quantity);
+				$order_line->unit_cost,	$order_line->receive_qty, $order_line->price, $order_line->quantity);
 
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
-			 	$order_line->receive_qty, $order_line->standard_cost, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);		
+			 	$order_line->receive_qty, $order_line->unit_cost, $order_line->taxfree_charge_value($po)/$order_line->receive_qty);		
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */

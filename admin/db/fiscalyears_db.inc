@@ -323,7 +323,7 @@ function delete_this_fiscalyear($selected_id)
 		delete_attachments_and_comments(ST_WORKORDER, $row['id']);
 	}
 	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty,"
-	    ." SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, standard_cost)) AS std_cost"
+	    ." SUM(-qty*IF(type=".ST_SUPPRECEIVE." OR type=".ST_SUPPCREDIT.", price, unit_cost)) AS cost"
 	    ." FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by loc_code, stock_id";
 	$result = db_query($sql, "Could not retrieve stock moves");
 	while ($row = db_fetch($result))
@@ -331,9 +331,9 @@ function delete_this_fiscalyear($selected_id)
 		$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
 		db_query($sql, "Could not delete stock moves");
 		$qty = $row['qty'];
-		$std_cost = ($qty == 0 ? 0 : round2($row['std_cost'] / $qty, user_price_dec()));
-		$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
-			('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";   
+		$std_cost = ($qty == 0 ? 0 : round2($row['cost'] / $qty, user_price_dec()));
+		$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, loc_code, tran_date, reference, qty, unit_cost) VALUES
+			('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $cost)";   
 		db_query($sql, "Could not insert stock move");
 	}		
 	$sql = "DELETE FROM ".TB_PREF."voided WHERE date_ <= '$to'";

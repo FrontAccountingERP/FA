@@ -1,11 +1,11 @@
 -- MySQL dump of database 'en_US-demo' on host 'localhost'
 -- Backup Date and Time: 2019-01-21 11:16
--- Built by FrontAccounting 2.4.6
+-- Built by FrontAccounting 2.5.0
 -- http://frontaccounting.com
 -- Company: Training Co.
 -- User: Administrator
 
--- Compatibility: 2.4.1
+-- Compatibility: 2.5.0
 
 
 SET NAMES latin1;
@@ -644,7 +644,7 @@ CREATE TABLE `0_debtor_trans_details` (
   `unit_tax` double NOT NULL DEFAULT '0',
   `quantity` double NOT NULL DEFAULT '0',
   `discount_percent` double NOT NULL DEFAULT '0',
-  `standard_cost` double NOT NULL DEFAULT '0',
+  `unit_cost` double NOT NULL DEFAULT '0',
   `qty_done` double NOT NULL DEFAULT '0',
   `src_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -1703,7 +1703,7 @@ CREATE TABLE `0_stock_moves` (
   `price` double NOT NULL DEFAULT '0',
   `reference` char(40) NOT NULL DEFAULT '',
   `qty` double NOT NULL DEFAULT '1',
-  `standard_cost` double NOT NULL DEFAULT '0',
+  `unit_cost` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`trans_id`),
   KEY `type` (`type`,`trans_no`),
   KEY `Move` (`stock_id`,`loc_code`,`tran_date`)
@@ -1915,7 +1915,7 @@ INSERT INTO `0_sys_prefs` VALUES
 ('default_inv_sales_act', 'glsetup.items', 'varchar', 15, '4010'),
 ('default_wip_act', 'glsetup.items', 'varchar', 15, '1530'),
 ('default_workorder_required', 'glsetup.manuf', 'int', 11, '20'),
-('version_id', 'system', 'varchar', 11, '2.4.1'),
+('version_id', 'system', 'varchar', 11, '2.5.0'),
 ('auto_curr_reval', 'setup.company', 'smallint', 6, '1'),
 ('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, '1550'),
 ('bcc_email', 'setup.company', 'varchar', 100, ''),

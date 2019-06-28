@@ -274,7 +274,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 				$cart->line_items[$line_no] = new line_details(
 					$myrow["stock_id"],$myrow["quantity"],
 					$myrow["unit_price"], $myrow["discount_percent"],
-					$myrow["qty_done"], $myrow["standard_cost"],
+					$myrow["qty_done"], $myrow["unit_cost"],
 					$myrow["StockDescription"],$myrow["id"], $myrow["debtor_trans_no"],
 					@$myrow["src_id"]);
 			}

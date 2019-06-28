@@ -115,7 +115,7 @@ function write_sales_invoice(&$invoice)
 		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
 			$invoice_line->item_description, $invoice_line->qty_dispatched,
 			$invoice_line->line_price(), $qty ? $line_tax/$qty : 0, $invoice_line->discount_percent,
-			$invoice_line->standard_cost, $invoice_line->src_id,
+			$invoice_line->unit_cost, $invoice_line->src_id,
 			$trans_no ? $invoice_line->id : 0);
 
 		// Update delivery items for the quantity invoiced

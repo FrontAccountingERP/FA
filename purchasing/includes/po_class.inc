@@ -213,7 +213,7 @@ class po_line_details
 	var $receive_qty;	// current/entry GRN quantity
 	var $qty_received;	// quantity already received against this line
 
-	var $standard_cost;
+	var $unit_cost;
 	var $descr_editable;
 
 	function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
@@ -242,7 +242,7 @@ class po_line_details
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
 		$this->receive_qty = 0;	/*initialise these last two only */
-		$this->standard_cost =0;
+		$this->unit_cost =0;
 		$this->grn_item_id = $grn_item_id;
 	}
 	

@@ -61,7 +61,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $refer
 // add 2 stock_moves entries for a stock transfer
 // $date_ is display date (not sql)
 // std_cost is in HOME currency
-// it seems the standard_cost field is not used at all
+// it seems the unit_cost field is not used at all
 
 function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $location_to,
 	$date_, $reference, $quantity)
