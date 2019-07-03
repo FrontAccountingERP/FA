@@ -365,7 +365,7 @@ $opts = array(		// default options
 		$selector .= ' '.$opts['editlink'];
 
 	if ($search_box && $opts['cells'])
-		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
+		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td nowrap>$selector$img</td>";
 	else
 		$str = $edit_entry.$selector.$img;
 	return $str;
