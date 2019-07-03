@@ -242,7 +242,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
             if ($order->add_to_order($order->lines_on_order, $myrow["item_code"],
             	$myrow["quantity_ordered"],$myrow["description"],
             	$myrow["unit_price"],$units, sql2date($myrow["delivery_date"]),
-            	$myrow["qty_invoiced"], $myrow["quantity_received"])) {
+            	$myrow["qty_invoiced"], $myrow["quantity_received"], $myrow["quantity_ordered"])) {
 				$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
 			}
         } /* line po from purchase order details */

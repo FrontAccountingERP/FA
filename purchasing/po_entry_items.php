@@ -39,21 +39,21 @@ if (user_use_date_picker())
 if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'];
-	create_new_po(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
+	create_cart(ST_PURCHORDER, $_GET['ModifyOrderNumber']);
 	copy_from_cart();
 } elseif (isset($_GET['NewOrder'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Purchase Order Entry");
-	create_new_po(ST_PURCHORDER, 0);
+	create_cart(ST_PURCHORDER, 0);
 	copy_from_cart();
 } elseif (isset($_GET['NewGRN'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct GRN Entry");
-	create_new_po(ST_SUPPRECEIVE, 0);
+	create_cart(ST_SUPPRECEIVE, 0);
 	copy_from_cart();
 } elseif (isset($_GET['NewInvoice'])) {
 
-	create_new_po(ST_SUPPINVOICE, 0);
+	create_cart(ST_SUPPINVOICE, 0);
 	copy_from_cart();
 
 	if (isset($_GET['FixedAsset'])) {

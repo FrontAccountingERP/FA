@@ -64,7 +64,7 @@ function copy_to_cart()
 
 //---------------------------------------------------------------------------------------------------
 
-function create_new_po($trans_type, $trans_no)
+function create_cart($trans_type, $trans_no)
 {
 	global $Refs;
 
@@ -72,20 +72,28 @@ function create_new_po($trans_type, $trans_no)
 		unset ($_SESSION['PO']->line_items, $_SESSION['PO']);
 
 	$cart = new purch_order;
-	$_POST['OrderDate'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['OrderDate']))
-		$_POST['OrderDate'] = end_fiscalyear();
-	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
-
 	$cart->trans_type = $trans_type;
-	$cart->order_no = $trans_no;
-	/*read in all the selected order into the Items cart  */
-	if ($trans_no) {
-		read_po($trans_no, $cart);
+
+	if ($trans_type == ST_SUPPRECEIVE && $trans_no != 0) {
+		read_grn($trans_no, $cart);
+		foreach($cart->line_items as &$line) {
+			$line->qty_old = $line->quantity; // for concurrency checks
+			$line->qty_received -= $line->quantity;
+		}
+	} else {
 		$cart->order_no = $trans_no;
-	} else
-		$cart->reference = $Refs->get_next($trans_type, null,
-			array('supplier_id' => $cart->supplier_id, 'date' => get_post('OrderDate')));
+		$_POST['OrderDate'] = new_doc_date();
+		if (!is_date_in_fiscalyear($_POST['OrderDate']))
+			$_POST['OrderDate'] = end_fiscalyear();
+		$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
+		/* read in all the selected order into the Items cart  */
+		if ($trans_no) {
+			read_po($trans_no, $cart);
+			$cart->order_no = $trans_no;
+		} else
+			$cart->reference = $Refs->get_next($trans_type, null,
+				array('supplier_id' => $cart->supplier_id, 'date' => get_post('OrderDate')));
+	}
 	$_SESSION['PO'] = &$cart;
 }
 

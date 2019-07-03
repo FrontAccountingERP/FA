@@ -60,9 +60,8 @@ function edit_grn_summary(&$po)
 
 	table_section(2);
     	if (!isset($_POST['ref']))
-    	    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE, null, array('supplier' => $po->supplier_id, 'date' => Today()));
-    	ref_row(_("Reference"), 'ref', '', null);
-
+   		    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE, null, array('supplier' => $po->supplier_id, 'date' => Today()));
+   		ref_row(_("Reference"), 'ref', '', null);
         if (!isset($_POST['Location']))
         	$_POST['Location'] = $po->Location;
 

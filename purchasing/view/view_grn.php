@@ -48,8 +48,7 @@ $overdue_items = false;
 
 foreach ($purchase_order->line_items as $stock_item)
 {
-
-	$line_total = $stock_item->qty_received * $stock_item->price;
+	$line_total = $stock_item->quantity * $stock_item->price;
 
 	// if overdue and outstanding quantities, then highlight as so
 	if (date1_greater_date2($purchase_order->orig_order_date, $stock_item->req_del_date))
@@ -66,7 +65,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	label_cell($stock_item->item_description);
 	label_cell($stock_item->req_del_date, "nowrap align=right");
 	$dec = get_qty_dec($stock_item->stock_id);
-	qty_cell($stock_item->qty_received, false, $dec);
+	qty_cell($stock_item->quantity, false, $dec);
 	label_cell($stock_item->units);
 	amount_decimal_cell($stock_item->price);
 	amount_cell($line_total);

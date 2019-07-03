@@ -172,9 +172,8 @@ function add_direct_supp_trans($cart)
 		$cart->reference = $ref;
 	if ($cart->trans_type != ST_SUPPINVOICE)
 		$cart->Comments = $cart->reference; //grn does not hold supp_ref
-	foreach($cart->line_items as $key => $line)
-		$cart->line_items[$key]->receive_qty = $line->quantity;
-	$grn_no = add_grn($cart);
+
+	$grn_no = write_grn($cart);
 	if ($cart->trans_type == ST_SUPPRECEIVE) {
 		commit_transaction(); // save PO+GRN
 		return $grn_no;
@@ -196,9 +195,9 @@ function add_direct_supp_trans($cart)
 	$total = 0;
 		foreach($cart->line_items as $key => $line) {
 		$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
-			$line->item_description, $line->receive_qty, 0, $line->receive_qty,
+			$line->item_description, $line->quantity, 0, $line->quantity,
 			$line->price, $line->price, true, get_unit_cost($line->stock_id), '');
-		$total += round2(($line->receive_qty * $line->price), user_price_dec());
+		$total += round2(($line->quantity * $line->price), user_price_dec());
 	}
 	$inv->tax_overrides = $cart->tax_overrides;
 	if (!$inv->tax_included) {

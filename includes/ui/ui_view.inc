@@ -1566,7 +1566,7 @@ function trans_editor_link($type, $trans_no)
 		ST_SUPPCREDIT =>  "/purchasing/supplier_credit.php?ModifyCredit=%d",
 //   21=> Supplier Credit Note,
 //   22=> Supplier Payment,
-//   25=> Purchase Order Delivery,
+		ST_SUPPRECEIVE => "/purchasing/po_receive_items.php?ModifyGRN=%d",
 		ST_PURCHORDER => "/purchasing/po_entry_items.php?ModifyOrderNumber=%d",
 //   28=> Work Order Issue,
 //   29=> Work Order Production",

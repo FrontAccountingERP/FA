@@ -46,6 +46,7 @@ class purch_order
 	var $prepayments = array();
 
 	var $fixed_asset = false;
+	var $grn_id ;	// grn batch id used in edition only
 
 	function __construct()
 	{
@@ -64,12 +65,12 @@ class purch_order
 		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 	}
 	
-	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd)
+	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
 	{
 		if (isset($qty) && $qty != 0)
 		{
 			$this->line_items[$line_no] = new po_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
-				$req_del_date, $qty_inv, $qty_recd);
+				$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id);
 			$this->lines_on_order++;
 			return 1;
 		}
@@ -149,7 +150,7 @@ class purch_order
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
-			$prices[] = round($ln_itm->price * ($receival ? $ln_itm->receive_qty : $ln_itm->quantity),  user_price_dec());
+			$prices[] = round($ln_itm->price * $ln_itm->quantity,  user_price_dec());
 		}
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
 		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
@@ -208,18 +209,17 @@ class po_line_details
 	var $tax_type;
 	var $tax_type_name;
 
-	var $quantity;		// current/entry quantity of PO line
-	var $qty_inv;	// quantity already invoiced against this line
-	var $receive_qty;	// current/entry GRN quantity
-	var $qty_received;	// quantity already received against this line
+	var $quantity;		// this document line quantity
+	var $qty_inv;	// quantity already invoiced against this line (all PIs)
+	var $qty_received;	// quantity already received against this line (all GRNs)
+	var $qty_ordered;	// quantity on order (not used on PO entry)
 
 	var $unit_cost;
 	var $descr_editable;
 
 	function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
-		$qty_inv, $qty_recd, $grn_item_id=0)
+		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
 	{
-
 		/* Constructor function to add a new LineDetail object with passed params */
 		$this->line_no = $line_no;
 		$this->stock_id = $stock_item;
@@ -241,9 +241,9 @@ class po_line_details
 		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
-		$this->receive_qty = 0;	/*initialise these last two only */
 		$this->unit_cost =0;
 		$this->grn_item_id = $grn_item_id;
+		$this->qty_ordered = $qty_ordered;
 	}
 	
 	// Deprecated, use with care. If you need line value as it is calculated in invoice, use taxfree_charge_value below.
@@ -258,7 +258,7 @@ class po_line_details
 	//
 	function taxfree_charge_value($po)
 	{
-		return get_tax_free_price_for_item($this->stock_id, $this->receive_qty*$this->price,
+		return get_tax_free_price_for_item($this->stock_id, $this->quantity*$this->price,
 		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
 	}
 }

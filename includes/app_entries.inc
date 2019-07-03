@@ -41,7 +41,7 @@ $trans_editors = array(
 
 	//ST_SUPPCREDIT =>  ,
 	//ST_SUPPAYMENT =>  ,
-	//ST_SUPPRECEIVE => ,
+	ST_SUPPRECEIVE => "/purchasing/po_receive_items.php?ModifyGRN=%d",
 
 	//ST_WORKORDER =>  ,
 	//ST_MANUISSUE =>  ,
