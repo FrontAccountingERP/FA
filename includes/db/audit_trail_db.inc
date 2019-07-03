@@ -26,7 +26,7 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 	// to avoid need for subqueries (not existing in MySQL 3) all over the code
 	$sql = "UPDATE ".TB_PREF."audit_trail audit LEFT JOIN ".TB_PREF."fiscal_year year ON year.begin<='$date' AND year.end>='$date'
 		SET audit.gl_seq = IF(audit.id=".db_insert_id().", 0, NULL),"
-		."audit.fiscal_year=year.id, stamp=CURRENT_TIMESTAMP"
+		."audit.fiscal_year=year.id"
 		. " WHERE type=".db_escape($trans_type)." AND trans_no="
 		. db_escape($trans_no);
 
