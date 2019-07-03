@@ -24,7 +24,7 @@ class purch_order
 	var $Location;
 	var $supplier_id;
 	var $supplier_name;
-	var $orig_order_date;
+	var $tran_date;
 	var $due_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order = 0;

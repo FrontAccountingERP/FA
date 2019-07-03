@@ -596,7 +596,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 //--------------------------------------------------------------------------------------------------
 function get_duedate_from_terms(&$trans)
 {
-	$date = get_class($trans) == 'purch_order' ? $trans->orig_order_date : $trans->tran_date;
+	$date = $trans->tran_date;
 
 	if (!is_date($date))
 	{

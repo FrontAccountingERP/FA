@@ -202,15 +202,15 @@ function can_process()
     	return false;
 	}
 
-	if (!is_date($_POST['DefaultReceivedDate']))
+	if (!is_date($_POST['tran_date']))
 	{
 		display_error(_("The entered date is invalid."));
-		set_focus('DefaultReceivedDate');
+		set_focus('tran_date');
 		return false;
 	}
-	if (!is_date_in_fiscalyear($_POST['DefaultReceivedDate'])) {
+	if (!is_date_in_fiscalyear($_POST['tran_date'])) {
 		display_error(_("The entered date is out of fiscal year or is closed for further data entry."));
-		set_focus('DefaultReceivedDate');
+		set_focus('tran_date');
 		return false;
 	}
 
@@ -291,7 +291,7 @@ function process_receive_po()
 	}
 	
 	$grn = &$_SESSION['PO'];
-	$grn->orig_order_date = $_POST['DefaultReceivedDate'];
+	$grn->tran_date = $_POST['tran_date'];
 	$grn->reference = $_POST['ref'];
 	$grn->Location = $_POST['Location'];
 	$grn->ex_rate = input_num('_ex_rate', null);
@@ -299,7 +299,7 @@ function process_receive_po()
 	$trans_no = write_grn($grn);
 	$new = $grn->grn_id == 0;
 
-	new_doc_date($_POST['DefaultReceivedDate']);
+	new_doc_date($_POST['tran_date']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
 
@@ -322,8 +322,8 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 		if (!check_num($line->line_no))
 			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 
-		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
-			$_POST['DefaultReceivedDate'] = new_doc_date();
+		if (!isset($_POST['tran_date']) || $_POST['tran_date'] == "")
+			$_POST['tran_date'] = new_doc_date();
 
 		$_SESSION['PO']->line_items[$line->line_no]->quantity = input_num($line->line_no);
 

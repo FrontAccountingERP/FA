@@ -74,7 +74,7 @@ function add_po(&$po_obj)
      	requisition_no, into_stock_location, delivery_address, total, tax_included, prep_amount) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
-         date2sql($po_obj->orig_order_date) . "', " .
+         date2sql($po_obj->tran_date) . "', " .
 		 db_escape($po_obj->reference) . ", " .
          db_escape($po_obj->supp_ref) . ", " .
          db_escape($po_obj->Location) . ", " .
@@ -103,7 +103,7 @@ function add_po(&$po_obj)
 
 	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 
-	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
+	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->tran_date);
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
 	commit_transaction();
 
@@ -121,7 +121,7 @@ function update_po(&$po_obj)
     $sql = "UPDATE ".TB_PREF."purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
 		requisition_no= ". db_escape( $po_obj->supp_ref). ",
 		into_stock_location=" . db_escape($po_obj->Location). ",
-		ord_date='" . date2sql($po_obj->orig_order_date) . "',
+		ord_date='" . date2sql($po_obj->tran_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address).",
 		total=". db_escape($po_obj->get_trans_total()).",
 		prep_amount=". db_escape($po_obj->prep_amount).",
@@ -149,7 +149,7 @@ function update_po(&$po_obj)
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
-	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->orig_order_date, $po_obj->get_trans_total(), $po_obj->prepayments, $po_obj->supplier_id);
+	reallocate_payments($po_obj->order_no, ST_PURCHORDER, $po_obj->tran_date, $po_obj->get_trans_total(), $po_obj->prepayments, $po_obj->supplier_id);
 
 	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
 	hook_db_postwrite($po_obj, ST_PURCHORDER);
@@ -185,7 +185,7 @@ function read_po_header($order_no, &$order)
 
 		$order->credit = get_current_supp_credit($order->supplier_id);
 
-      	$order->orig_order_date = sql2date($myrow["ord_date"]);
+      	$order->tran_date = sql2date($myrow["ord_date"]);
       	$order->Comments = $myrow["comments"];
       	$order->Location = $myrow["into_stock_location"];
       	$order->supp_ref = $myrow["requisition_no"];

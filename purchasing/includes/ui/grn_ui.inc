@@ -25,7 +25,7 @@ function display_grn_summary(&$po)
     label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
     	"class='tableheader2'");
 
-	label_cells(_("Delivery Date"), $po->orig_order_date, "class='tableheader2'"); // FIXME: delivery date
+	label_cells(_("Delivery On"), $po->tran_date, "class='tableheader2'");
 	end_row();
 
    	start_row();
@@ -56,7 +56,7 @@ function edit_grn_summary(&$po)
 
 	    label_row(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no));
 
-		label_row(_("Ordered On"), $po->orig_order_date);
+		label_row(_("Ordered On"), $po->tran_date);
 
 	table_section(2);
     	if (!isset($_POST['ref']))
@@ -67,10 +67,10 @@ function edit_grn_summary(&$po)
 
         locations_list_row(_("Deliver Into Location"), "Location", $_POST['Location']);
 
-    	if (!isset($_POST['DefaultReceivedDate']))
-     	  	$_POST['DefaultReceivedDate'] = new_doc_date();
+    	if (!isset($_POST['tran_date']))
+     	  	$_POST['tran_date'] = new_doc_date();
 
-    	date_row(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, '', true);
+    	date_row(_("Date Items Received"), 'tran_date', '', true, 0, 0, 0, '', true);
 
 	table_section(3);
 		label_row(_("Supplier's Reference"), $po->supp_ref);
@@ -81,7 +81,7 @@ function edit_grn_summary(&$po)
     		label_row(_("Order Comments"), $po->Comments, "class='tableheader2'", "colspan=9");
 
 	    if (!is_company_currency($po->curr_code))
-			exchange_rate_display(get_company_currency(), $po->curr_code, get_post('DefaultReceivedDate'));
+			exchange_rate_display(get_company_currency(), $po->curr_code, get_post('tran_date'));
 	end_outer_table(1);
 }
 

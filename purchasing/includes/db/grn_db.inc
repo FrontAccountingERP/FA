@@ -85,7 +85,7 @@ function write_grn(&$po)
 {
 	global $Refs;
 
-	$date_ = $po->orig_order_date;
+	$date_ = $po->tran_date;
 	$grn = $po->grn_id;
 
 	begin_transaction();
@@ -404,7 +404,7 @@ function read_grn($grn_batch, &$order)
 	{
 
 		$order->trans_type = ST_SUPPRECEIVE;
-		$order->orig_order_date = sql2date($row["delivery_date"]);
+		$order->tran_date = sql2date($row["delivery_date"]);
 		$order->Location = $row["loc_code"];
 		$order->reference = $row["reference"];
 		$order->grn_id = $grn_batch;

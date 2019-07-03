@@ -18,7 +18,7 @@ function copy_from_cart()
 	$cart = &$_SESSION['PO'];
 
 	$_POST['supplier_id'] = $cart->supplier_id;
-	$_POST['OrderDate'] = $cart->orig_order_date;
+	$_POST['OrderDate'] = $cart->tran_date;
 	if ($cart->trans_type == ST_SUPPINVOICE)
 		$_POST['due_date'] = $cart->due_date;
     $_POST['supp_ref'] = $cart->supp_ref;
@@ -40,7 +40,7 @@ function copy_to_cart()
 	$cart = &$_SESSION['PO'];
 
 	$cart->supplier_id = $_POST['supplier_id'];	
-	$cart->orig_order_date = $_POST['OrderDate'];
+	$cart->tran_date = $_POST['OrderDate'];
 	if ($cart->trans_type == ST_SUPPINVOICE)
 	{
 		$cart->due_date = $_POST['due_date'];
@@ -85,7 +85,7 @@ function create_cart($trans_type, $trans_no)
 		$_POST['OrderDate'] = new_doc_date();
 		if (!is_date_in_fiscalyear($_POST['OrderDate']))
 			$_POST['OrderDate'] = end_fiscalyear();
-		$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
+		$cart->due_date = $cart->tran_date = $_POST['OrderDate'];
 		/* read in all the selected order into the Items cart  */
 		if ($trans_no) {
 			read_po($trans_no, $cart);
@@ -145,7 +145,7 @@ function display_po_header(&$order)
 		'OrderDate', '', true, 0, 0, 0, null, true);
 
 	if (isset($_POST['_OrderDate_changed'])) {
-		$order->orig_order_date = $_POST['OrderDate'];
+		$order->tran_date = $_POST['OrderDate'];
 	    get_duedate_from_terms($order);
 	    $_POST['due_date'] = $order->due_date;
 		$Ajax->activate('due_date');
@@ -321,7 +321,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
     }
 	end_row();
 	start_row();
-    label_cells(_("Date"), $po->orig_order_date, "class='tableheader2'");
+    label_cells(_("Date"), $po->tran_date, "class='tableheader2'");
 
     if ($editable)
     {

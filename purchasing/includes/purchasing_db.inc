@@ -153,7 +153,7 @@ function add_direct_supp_trans($cart)
 	if ($cart->trans_type != ST_PURCHORDER) {
 		// for direct grn/invoice set same dates for lines as for whole document
 		foreach ($cart->line_items as $line_no =>$line)
-			$cart->line_items[$line_no]->req_del_date = $cart->orig_order_date;
+			$cart->line_items[$line_no]->req_del_date = $cart->tran_date;
 	}
 
 	$ref = $cart->reference;
@@ -182,7 +182,7 @@ function add_direct_supp_trans($cart)
 	$inv = new supp_trans(ST_SUPPINVOICE);
 	$inv->Comments = $cart->Comments;
 	$inv->supplier_id = $cart->supplier_id;
-	$inv->tran_date = $cart->orig_order_date;
+	$inv->tran_date = $cart->tran_date;
 	$inv->due_date = $cart->due_date;
 	$inv->dimension = $cart->dimension;
 	$inv->dimension2 = $cart->dimension2;
