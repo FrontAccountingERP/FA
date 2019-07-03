@@ -168,7 +168,6 @@ $security_areas =array(
 	'SA_PURCHASEORDER' => array(SS_PURCH|3, _("Purchase order entry")),
 	'SA_GRN' => array(SS_PURCH|4, _("Purchase receive")),
 	'SA_SUPPLIERINVOICE' => array(SS_PURCH|5, _("Supplier invoices")),
-	'SA_GRNDELETE' => array(SS_PURCH|9, _("Deleting GRN items during invoice entry")),
 	'SA_SUPPLIERCREDIT' => array(SS_PURCH|6, _("Supplier credit notes")),
 	'SA_SUPPLIERPAYMNT' => array(SS_PURCH|7, _("Supplier payments")),
 	'SA_SUPPLIERALLOC' => array(SS_PURCH|8, _("Supplier payments allocations")),

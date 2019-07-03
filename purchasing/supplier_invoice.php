@@ -356,18 +356,6 @@ if ($id5 != -1)
        $Ajax->activate('gl_items');
 }
 
-$id2 = -1;
-if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
-{
-	$id2 = find_submit('void_item_id');
-	if ($id2 != -1) 
-	{
-		remove_not_invoice_item($id2);
-		display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
-
-	}
-}
-
 if (isset($_POST['go']))
 {
 	$Ajax->activate('gl_items');
@@ -395,7 +383,7 @@ else {
 
 //-----------------------------------------------------------------------------------------
 
-if ($id != -1 || $id2 != -1)
+if ($id != -1)
 {
 	$Ajax->activate('grn_items');
 	$Ajax->activate('inv_tot');
