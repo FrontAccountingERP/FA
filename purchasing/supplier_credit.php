@@ -29,7 +29,7 @@ if (user_use_date_picker())
 //----------------------------------------------------------------------------------------
 
 if (isset($_GET['ModifyCredit']))
-	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyCredit']);
+	check_is_editable(ST_SUPPCREDIT, $_GET['ModifyCredit']);
 
 //---------------------------------------------------------------------------------------------------
 
