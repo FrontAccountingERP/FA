@@ -13,9 +13,8 @@ function add_journal($type, $trans_no, $amount, $tran_date, $currency, $referenc
 	 $event_date='', $doc_date='')
 {
 	$sql = "INSERT INTO ".TB_PREF."journal(
-	   `type`,`trans_no`, `amount`, `currency`, `rate`, `reference`, `source_ref`, `tran_date`,
-	   `event_date`, `doc_date`)
-	   VALUES("
+	   `type`,`trans_no`, `amount`, `currency`, `rate`, `reference`, `source_ref`, `tran_date`,`event_date`,`doc_date`)
+	  VALUES("
 	  .db_escape($type).","
 	  .db_escape($trans_no).","
 	  .db_escape($amount).","
@@ -23,9 +22,9 @@ function add_journal($type, $trans_no, $amount, $tran_date, $currency, $referenc
 	  .db_escape($rate).","
 	  .db_escape($reference).","
 	  .db_escape($source_ref).","
-	  ."'".date2sql($tran_date)."',"
-	  ."'".date2sql($event_date)."',"
-	  ."'".date2sql($doc_date)."')";
+	  ."'".date2sql($tran_date)."','"
+	  . ($event_date === '' ? '0000-00-00' : date2sql($event_date))."','"
+	  . ($doc_date === '' ? '0000-00-00' : date2sql($doc_date))."')";
 
 	return db_query($sql, 'cannot add journal entry');
 }
@@ -39,9 +38,9 @@ function update_journal($type, $trans_no, $amount, $tran_date, $currency, $refer
 	  ."`rate`=".db_escape($rate).","
 	  ."`reference`=".db_escape($reference).","
 	  ."`source_ref`=".db_escape($source_ref).","
-	  ."`tran_date`="."'".date2sql($tran_date)."',"
-	  ."`event_date`="."'".date2sql($event_date)."',"
-	  ."`doc_date`="."'".date2sql($doc_date)."'
+	  ."`tran_date`='".date2sql($tran_date)."',"
+	  ."`event_date`='".($event_date === '' ? '0000-00-00' : date2sql($event_date))."',"
+	  ."`doc_date`='".($doc_date === '' ? '0000-00-00' : date2sql($doc_date))."'
 	   WHERE `type`=".db_escape($type)." AND " ."`trans_no`=".db_escape($trans_no);
 
 	return db_query($sql, 'cannot update journal entry');
