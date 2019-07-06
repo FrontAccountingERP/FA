@@ -393,7 +393,6 @@ function display_grn_items_for_selection(&$supp_trans, $k)
            	hidden('item_description'.$n, $myrow["description"]);
            	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv']);
            	hidden('order_price'.$n, $myrow['unit_price']);
-           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit']);
            	hidden('po_detail_item'.$n, $myrow['po_detail_item']);
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]), "nowrap align='right'");
             label_cell($myrow["item_code"]);
