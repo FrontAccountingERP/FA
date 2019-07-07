@@ -71,7 +71,7 @@ function add_po(&$po_obj)
 
      /*Insert to purchase order header record */
      $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, 
-     	requisition_no, into_stock_location, delivery_address, total, tax_included, prep_amount) VALUES(";
+     	supp_reference, into_stock_location, delivery_address, total, tax_included, prep_amount) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->tran_date) . "', " .
@@ -119,7 +119,7 @@ function update_po(&$po_obj)
 
     /*Update the purchase order header with any changes */
     $sql = "UPDATE ".TB_PREF."purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
-		requisition_no= ". db_escape( $po_obj->supp_ref). ",
+		supp_reference= ". db_escape( $po_obj->supp_ref). ",
 		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->tran_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address).",
@@ -188,7 +188,7 @@ function read_po_header($order_no, &$order)
       	$order->tran_date = sql2date($myrow["ord_date"]);
       	$order->Comments = $myrow["comments"];
       	$order->Location = $myrow["into_stock_location"];
-      	$order->supp_ref = $myrow["requisition_no"];
+      	$order->supp_ref = $myrow["supp_reference"];
       	$order->reference = $myrow["reference"];
       	$order->delivery_address = $myrow["delivery_address"];
       	$order->alloc = $myrow["alloc"];
@@ -290,7 +290,7 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 		porder.reference, 
 		supplier.supp_name, 
 		location.location_name,
-		porder.requisition_no, 
+		porder.supp_reference, 
 		porder.ord_date, 
 		supplier.curr_code, 
 		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
@@ -352,7 +352,7 @@ function get_sql_for_po_search($from, $to, $supplier_id=ALL_TEXT, $location=ALL_
 		porder.reference,
 		supplier.supp_name, 
 		location.location_name,
-		porder.requisition_no, 
+		porder.supp_reference, 
 		porder.ord_date,
 		supplier.curr_code,
 		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,

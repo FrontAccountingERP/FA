@@ -16,33 +16,35 @@ class purch_order
 {
 
 	var $trans_type; // order/grn/invoice (direct)
+	var $supplier_id;
+	var $Comments;
+	var $tran_date;
+	var $reference;
+	var $supp_ref;
+	var $Location;
+	var $delivery_address;
+
+	var $prep_amount = 0; // prepayment required
+	var $alloc; // sum of payments allocated
+	var $tax_included; // type of prices
+
 	var $line_items;
 	var $curr_code;
-	var $supp_ref;
-	var $delivery_address;
-	var $Comments;
-	var $Location;
-	var $supplier_id;
 	var $supplier_name;
-	var $tran_date;
 	var $due_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order = 0;
 	var $credit;
 	var $tax_group_id;
 	var $tax_group_array = null; // saves db queries
-	var $tax_included; // type of prices
 	var $terms;
 	var $ex_rate;
 	var $cash_account;
 	var $dimension,
 		$dimension2;
 
-	var $reference;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry (direct invoice)
-	
-	var $prep_amount = 0; // prepayment required
-	var $alloc; // sum of payments allocated
+
 	var $prepayments = array();
 
 	var $fixed_asset = false;
@@ -206,8 +208,6 @@ class po_line_details
 	var $price;
 	var $units;
 	var $req_del_date;
-	var $tax_type;
-	var $tax_type_name;
 
 	var $quantity;		// this document line quantity
 	var $qty_inv;	// quantity already invoiced against this line (all PIs)
@@ -236,8 +236,6 @@ class po_line_details
 		$this->req_del_date = $req_del_date;
 		$this->price = $prc;
 //		$this->units = $uom;
-		$this->tax_type = $item_row["tax_type_id"];
-		$this->tax_type_name = $item_row["tax_type_name"];
 		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
@@ -246,13 +244,6 @@ class po_line_details
 		$this->qty_ordered = $qty_ordered;
 	}
 	
-	// Deprecated, use with care. If you need line value as it is calculated in invoice, use taxfree_charge_value below.
- 	function taxfree_charge_price($po)
-	{
-		return get_tax_free_price_for_item($this->stock_id, $this->price, 
-		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
-	}
-
 	//
 	// GRN line tax free value.
 	//
