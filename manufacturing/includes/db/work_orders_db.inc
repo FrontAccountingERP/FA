@@ -289,8 +289,7 @@ function void_work_order($woid)
 	void_wo_requirements($woid);
 
 	// close workorder
-	// FIXME: due to bug in 2.4 db scheme (conflicting wo_ref unique key) we have to fix wo_ref here:
-	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0, wo_ref=CONCAT(wo_ref, ' ', '".uniqid()."') WHERE id = "
+	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 		.db_escape($woid);
 	db_query($sql, "The work order couldn't be voided");
 

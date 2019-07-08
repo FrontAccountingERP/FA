@@ -2269,14 +2269,13 @@ CREATE TABLE `0_workorders` (
   `units_issued` double NOT NULL DEFAULT '0',
   `closed` tinyint(1) NOT NULL DEFAULT '0',
   `released` tinyint(1) NOT NULL DEFAULT '0',
-  `additional_costs` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `wo_ref` (`wo_ref`)
+  KEY `wo_ref` (`wo_ref`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 ;
 
 -- Data of table `0_workorders` --
 
 INSERT INTO `0_workorders` VALUES
-('1', '001/2018', 'DEF', '2', '201', '2018-05-05', '0', '2018-05-05', '2018-05-05', '2', '1', '1', '0'),
-('2', '002/2018', 'DEF', '5', '201', '2018-05-07', '2', '2018-05-27', '2018-05-07', '0', '0', '1', '0'),
-('3', '003/2018', 'DEF', '5', '201', '2018-05-07', '2', '2018-05-27', '0000-00-00', '0', '0', '0', '0');
+('1', '001/2018', 'DEF', '2', '201', '2018-05-05', '0', '2018-05-05', '2018-05-05', '2', '1', '1'),
+('2', '002/2018', 'DEF', '5', '201', '2018-05-07', '2', '2018-05-27', '2018-05-07', '0', '0', '1'),
+('3', '003/2018', 'DEF', '5', '201', '2018-05-07', '2', '2018-05-27', '0000-00-00', '0', '0', '0');

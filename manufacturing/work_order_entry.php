@@ -344,7 +344,6 @@ if (isset($selected_id))
 	$_POST['RequDate'] = sql2date($myrow["required_by"]);
 	$_POST['released_date'] = sql2date($myrow["released_date"]);
 	$_POST['units_issued'] = $myrow["units_issued"];
-	$_POST['Costs'] = price_format($myrow["additional_costs"]);
 
 	$_POST['memo_'] = get_comments_string(ST_WORKORDER, $selected_id);
 

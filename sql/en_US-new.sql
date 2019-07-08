@@ -1917,9 +1917,8 @@ CREATE TABLE `0_workorders` (
   `units_issued` double NOT NULL DEFAULT '0',
   `closed` tinyint(1) NOT NULL DEFAULT '0',
   `released` tinyint(1) NOT NULL DEFAULT '0',
-  `additional_costs` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `wo_ref` (`wo_ref`)
+  KEY `wo_ref` (`wo_ref`)
 ) ENGINE=InnoDB;
 
 -- Data of table `0_workorders` --
