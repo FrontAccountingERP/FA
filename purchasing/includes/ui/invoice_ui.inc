@@ -146,14 +146,12 @@ function invoice_header(&$supp_trans)
 
 	set_global_supplier($_POST['supplier_id']);
 
-	$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
-
 	$company_currency = get_company_currency();
 
-	if ($supplier_currency != $company_currency)
+	if ($supp_trans->currency != $company_currency)
 	{
-        label_row(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
-		exchange_rate_display($company_currency, $supplier_currency, $_POST['tran_date']);
+        label_row(_("Supplier's Currency:"), "<b>" . $supp_trans->currency . "</b>");
+		exchange_rate_display($company_currency, $supp_trans->currency, $_POST['tran_date']);
 	}
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);

@@ -270,7 +270,7 @@ function check_ui_refresh($name=null)
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
+function exchange_rate_display($from_currency=null, $to_currency=null, $date_, $force_edit=false)
 {
     global $Ajax, $SysPrefs;
 
@@ -281,6 +281,12 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 	 	$rate = input_num('_ex_rate');
 	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
 			$comp_currency = get_company_currency();
+
+	 		if (!isset($from_currency))
+	 			$from_currency = $comp_currency;
+	 		if (!isset($to_currency))
+	 			$to_currency = $comp_currency;
+
 			if ($from_currency == $comp_currency)
 				$currency = $to_currency;
 			else
