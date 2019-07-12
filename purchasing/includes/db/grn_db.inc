@@ -25,7 +25,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$currency = null;
 
 	if ($supp['tax_included'])
-		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+		$price = get_tax_free_price_for_item(ST_SUPPINVOICE, // ?
+		$stock_id, $price, $supp['tax_group_id'],
 			$supp['tax_included']);
 
 	if ($currency != null)

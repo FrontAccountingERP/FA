@@ -104,11 +104,11 @@ function write_sales_invoice(&$invoice)
 
 	foreach ($invoice->line_items as $line_no => $invoice_line) {
 		$qty = $invoice_line->qty_dispatched;
-		$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
-			$invoice_line->price * $qty, 0, $invoice->tax_included,
+		$line_taxfree_price = get_tax_free_price_for_item(ST_SALESINVOICE, $invoice_line->stock_id,
+			$invoice_line->price * $qty, $invoice->tax_group_id, $invoice->tax_included,
 			$invoice->tax_group_array);
 
-		$line_tax = get_full_price_for_item($invoice_line->stock_id,
+		$line_tax = get_full_price_for_item(ST_SALESINVOICE, $invoice_line->stock_id,
 			$invoice_line->price * $qty, 0, $invoice->tax_included,
 			$invoice->tax_group_array) - $line_taxfree_price;
 
@@ -175,7 +175,7 @@ function write_sales_invoice(&$invoice)
 			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($invoice->customer_id), $date_);
 			add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $prepaid_factor*$taxitem['Value'],
-				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT);
+				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT, $invoice->tax_group_id);
 			if (isset($taxitem['sales_gl_code']) && !empty($taxitem['sales_gl_code']) && $taxitem['Value'] != 0)
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id,
@@ -271,7 +271,6 @@ function void_sales_invoice($type, $type_no)
 	// do this last because other voidings can depend on it - especially voiding
 	// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 	void_customer_trans($type, $type_no);
-
 	commit_transaction();
 }
 

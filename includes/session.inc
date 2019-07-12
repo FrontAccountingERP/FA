@@ -460,6 +460,7 @@ include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
 include_once($path_to_root . "/includes/app_entries.inc");
+include_once($path_to_root . "/taxes/tax_rules.inc");
 
 // Ajax communication object
 $Ajax = new Ajax();
@@ -472,6 +473,7 @@ $Editors = array();
 $Pagehelp = array();
 
 $Refs = new references();
+$TS = new tax_system();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');

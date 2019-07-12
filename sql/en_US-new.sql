@@ -1327,6 +1327,7 @@ CREATE TABLE `0_stock_category` (
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
   `dflt_no_sale` tinyint(1) NOT NULL DEFAULT '0',
   `dflt_no_purchase` tinyint(1) NOT NULL DEFAULT '0',
+  `vat_category` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `description` (`description`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 ;
@@ -1334,10 +1335,10 @@ CREATE TABLE `0_stock_category` (
 -- Data of table `0_stock_category` --
 
 INSERT INTO `0_stock_category` VALUES
-('1', 'Components', '1', 'each', 'B', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0'),
-('2', 'Charges', '1', 'each', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0'),
-('3', 'Systems', '1', 'each', 'M', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0'),
-('4', 'Services', '1', 'hr', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0');
+('1', 'Components', '1', 'each', 'B', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
+('2', 'Charges', '1', 'each', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
+('3', 'Systems', '1', 'each', 'M', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
+('4', 'Services', '1', 'hr', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0');
 
 -- Structure of table `0_stock_fa_class` --
 
@@ -1388,6 +1389,7 @@ CREATE TABLE `0_stock_master` (
   `depreciation_start` date NOT NULL DEFAULT '0000-00-00',
   `depreciation_date` date NOT NULL DEFAULT '0000-00-00',
   `fa_class_id` varchar(20) NOT NULL DEFAULT '',
+  `vat_category` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`stock_id`)
 ) ENGINE=InnoDB;
 
@@ -1663,6 +1665,7 @@ DROP TABLE IF EXISTS `0_tax_groups`;
 CREATE TABLE `0_tax_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(60) NOT NULL DEFAULT '',
+  `tax_area` tinyint(1) NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
@@ -1671,8 +1674,8 @@ CREATE TABLE `0_tax_groups` (
 -- Data of table `0_tax_groups` --
 
 INSERT INTO `0_tax_groups` VALUES
-('1', 'Tax', '0'),
-('2', 'Tax Exempt', '0');
+('1', 'Tax', '0', '0'),
+('2', 'Export/Import', '1', '0');
 
 -- Structure of table `0_tax_types` --
 
@@ -1710,6 +1713,8 @@ CREATE TABLE `0_trans_tax_details` (
   `amount` double NOT NULL DEFAULT '0',
   `memo` tinytext,
   `reg_type` tinyint(1) DEFAULT NULL,
+  `vat_category` int(11) NOT NULL DEFAULT '0',
+  `tax_group_id` tinyint(2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Type_and_Number` (`trans_type`,`trans_no`),
   KEY `tran_date` (`tran_date`)

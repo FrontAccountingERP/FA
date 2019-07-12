@@ -2568,6 +2568,26 @@ function payment_services($name)
 		));
 }
 
+function vat_category_list_row($label, $name, $selected_id=null, $enabled = true, $submit_on_change=false, $show_obsolete=false)
+{
+	global $vat_categories;
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td class='label'>$label</td>\n";
+	echo "<td>";
+        
+	$categories = $vat_categories;
+	if (!$show_obsolete)
+	  unset($categories[VC_MEDIA]); // obsolete category removed to avoid mistake usage
+
+	echo array_selector($name, $selected_id, $categories,
+		array( 'select_submit'=> $submit_on_change, 
+			'disabled' => !$enabled));
+	echo "</td></tr>\n";
+
+}
+
 function tax_algorithm_list($name, $value=null, $submit_on_change = false)
 {
 	global $tax_algorithms;
@@ -2722,3 +2742,20 @@ function collations_list_row($label, $name, $selected_id=null)
 		array('select_submit'=> false) );
 	echo "</td></tr>\n";
 }
+
+function vat_areas_list_row($label, $name, $selected_id=null, $enabled=true)
+{
+	global $tax_area_types;
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td class='label'>$label</td>\n";
+	echo "<td>";
+
+	echo array_selector($name, $selected_id, $tax_area_types,
+		array(
+			'select_submit'=> true,
+			'disabled' => !$enabled) );
+	echo "</td></tr>\n";
+}
+

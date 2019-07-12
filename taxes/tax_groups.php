@@ -59,12 +59,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		}
     	if ($selected_id != -1) 
     	{
-	   		update_tax_group($selected_id, $_POST['name'], $taxes, $tax_shippings);
+	   		update_tax_group($selected_id, $_POST['name'], $taxes, $tax_shippings, get_post('tax_area'));
 			display_notification(_('Selected tax group has been updated'));
     	} 
     	else 
     	{
-	   		add_tax_group($_POST['name'], $taxes, $tax_shippings);
+	   		add_tax_group($_POST['name'], $taxes, $tax_shippings, get_post('tax_area'));
 			display_notification(_('New tax group has been added'));
     	}
 
@@ -123,7 +123,7 @@ $result = get_all_tax_groups(check_value('show_inactive'));
 start_form();
 
 start_table(TABLESTYLE);
-$th = array(_("Description"), "", "");
+$th = array(_("Description"), _("Tax Area Type"), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -135,6 +135,7 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["name"]);
+	label_cell($tax_area_types[$myrow['tax_area']]);
 
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
@@ -157,12 +158,14 @@ if ($selected_id != -1)
     	$group = get_tax_group($selected_id);
 
     	$_POST['name']  = $group["name"];
+    	$_POST['tax_area']  = $group["tax_area"];
 
 	}
 	hidden('selected_id', $selected_id);
 
 }
 text_row_ex(_("Description:"), 'name', 40);
+vat_areas_list_row(_("Tax Area Type:"), 'tax_area');
 
 end_table();
 

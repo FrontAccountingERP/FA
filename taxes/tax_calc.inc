@@ -14,50 +14,280 @@ include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 
 //---------------------------------------------------------------------------------
+// Returns basic fiscal parameters for transaction item which depend on stock type and customer/supplier tax area.
+//
+// vat_category => stock tax category 
+// tax_area => cust/supp tax area
+// taxes => all taxes applicable:
+// 	tax_type_id1 => (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
+// 	tax_type_id2 => ...
+
+function get_base_taxdata($stock_id, $group_id)
+{
+	static $last_group = null, $group_data;
+
+	if ($last_group != $group_id) {	// cache group data for better performance
+		$last_group = $group_id;
+		$group_data = get_tax_group_data($group_id);
+	}
+
+	$taxdata = array('tax_area' => $group_data['tax_area'], 'taxes' => null);
+
+	if ($stock_id===null) // shipping special case
+	{
+		$taxdata['vat_category'] = VC_SERVICES;
+		$taxdata['taxes'] = get_tax_group_items_as_array(null);
+		return $taxdata;
+	}
+
+	$item_tax_type = get_item_tax_type_for_item($stock_id);	// get item tax data
+	$taxdata['vat_category'] = $item_tax_type['vat_category'];
+
+	// if the item is exempt from all taxes thats all
+	if ($item_tax_type["exempt"])
+		return $taxdata;
+
+	$taxdata['taxes'] = array();
+
+	// get the exemptions for this item tax type
+	$item_tax_type_exemptions_db = get_item_tax_type_exemptions($item_tax_type["id"]);
+
+	// read them all into an array to minimize db querying
+	$item_tax_type_exemptions = array();
+	while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db)) 
+	{
+		$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
+	}
+
+	$tax_group_items_array = $group_data['taxes'];
+	// if any of the taxes of the tax group are in the exemptions, then skip
+	foreach ($tax_group_items_array as $tax_group_item) 
+	{
+
+		$skip = false;
+
+		// if it's in the exemptions, skip
+		if (is_null($tax_group_item['rate']))
+			$skip = true;
+		else
+			foreach ($item_tax_type_exemptions as $exemption) 
+			{
+				if (($tax_group_item['tax_type_id'] == $exemption)) 
+				{
+    				$skip = true;
+	    			break;
+				}
+			}
+
+		if (!$skip) 
+		{
+			$index = $tax_group_item['tax_type_id'];
+			$taxdata['taxes'][$index] = $tax_group_item;
+		}
+	}
+
+	return $taxdata;
+}
+
+/*
+	Main tax procedure splitting transaction item value according to item tax rules applicable:
+		$stock_id - stock item code; special case is '' for shipping
+		$amount - price/value to be splitted
+		$tax_group - entity tax group
+		$tax_included - whether value includes all taxes
+		$vat_factor - 0-1; tax deduction factor
+		$allow_reverse - option for invoice - whether to honour reverse charging
+
+	Returned array contains calculated values for GL postings and tax registration:
+		'Net' - value without tax,
+		'Tax' - tax sum,
+		'Cost' - cost value (can be higher then Net value) used in parallel postings,
+		'vat_category' -  stock tax category
+	and detailed info for any tax applicable tax (any array with numeric key):
+		'tax_type_id' - tax type id
+		'Value' - charged tax value
+		'Deductible' - tax deductible (can be lower than Value for special goods)
+		'Payable' - tax payable
+		'Adjust' - additional adjustemnt to deductible tax due to sales structure factor
+		'rate' - tax rate
+		'sales_gl_code' - sales tax GL account
+		'purchasing_gl_code' - purchase tax GL account
+		'tax_type_name' - name of tax type
+*/
+function split_item_price($stock_id, $amount, $group_id, $tax_included=false, $trans_type=ST_SUPPINVOICE, $vat_factor = 1, 
+	$allow_reverse=true, $date=null)
+{
+	global $TS;
+
+	$dec = user_price_dec();
+
+	$itemdata = get_base_taxdata($stock_id, $group_id);
+	$vat_category = $itemdata['vat_category'];
+	$item_taxes = $itemdata['taxes'];
+
+	$taxopt = $TS->options($trans_type, $itemdata['tax_area'], $vat_category, $allow_reverse);
+
+	if (empty($item_taxes))
+	{
+		  $ret_array['Net'] = $amount;
+		  $ret_array['Cost'] = $amount;
+		  $ret_array['Tax'] = 0;
+		  if (!is_null($item_taxes))	// register empty taxes only for not fully exempt items
+				$ret_array[] = array('Value'=>0, 'rate' => null, 'tax_type_id' => null, 'Deductible'=>0, 'Adjust' => 0, 'Payable' => 0);
+	}
+	else
+	{
+		$ret_array['Net'] = $ret_array['Cost'] = $ret_array['Tax'] = 0;
+
+		$tax_multiplier = 0;
+
+		if ($taxopt&TAX_CHARGED)	// divide tax for net and tax only if charged on document
+			foreach ($item_taxes as $taxitem) 
+				$tax_multiplier += $taxitem['rate'];
+
+		$partial_vat_percent = get_company_pref('partial_vat_percent');
+
+		foreach ($item_taxes as $tax_id => $item_tax) 
+		{
+				if ($item_tax['rate'] !== null)
+				{
+
+					// effective vat for some special purchases is lower than nominal
+					$factor = $vat_category == VC_NONDEDUCT ? 0 : ($vat_category==VC_PARTIAL ? $partial_vat_percent/100.0 : 1);
+
+					$net_value = $amount;
+					if ($tax_included == true) {
+						$vat_value = round($amount*$item_tax['rate']/(100+$tax_multiplier), 2);
+
+						if ($taxopt&TAX_CHARGED)
+							$net_value -= $vat_value;
+
+					} else {
+
+						$vat_value = round($amount * $item_tax['rate'] / 100, 2);
+					}
+
+					$ret_array['Net'] = round2($net_value, $dec);
+			    	$ret_array['Cost'] = $ret_array['Net'];
+
+					$tax = array('Value' => 0, 'Deductible' => 0, 'Adjust' => 0, 'Payable' => 0);
+
+			    	$tax['purchasing_gl_code'] = $item_tax['purchasing_gl_code'];
+			    	$tax['sales_gl_code'] = $item_tax['sales_gl_code'];
+			    	$tax['rate'] = $item_tax['rate'];
+					$tax['tax_type_id'] = $item_tax['tax_type_id'];
+					$tax['tax_type_name'] = $item_tax['tax_type_name'];
+
+					if ($taxopt & TAX_CHARGED)			 				// tax is charged on document
+						$tax['Value'] =  round2($vat_value, $dec);
+
+					if ($taxopt & TAX_PAYABLE)							 // transaction is taxable
+						$tax['Payable'] =  round2($vat_value, $dec);
+
+			    	if ($taxopt & TAX_DEDUCTIBLE) // tax is deductible
+			    	{
+						$tax['Deductible'] = round2($vat_value*$factor, 2); // [4815] To avoid rounding issues if $dec > 2 decimal places
+	  					$tax['Adjust'] = round2(-(1-$vat_factor)*$factor*$vat_value, $dec); // adjustment due to mixed taxed/exmpt sales activity
+				    } else {
+						$tax['Deductible'] = 0;
+	  					$tax['Adjust'] = 0;
+					}
+			    	$ret_array['Cost'] += $tax['Value'] + ($tax['Payable'] - $tax['Deductible']);// - $tax['Adjust'];
+
+			    	$ret_array[] = $tax;
+					$ret_array['Tax'] += $tax['Value'];
+				}
+		}
+	}
+    $ret_array['vat_category'] = $vat_category;
+	return $ret_array;
+}
+
+//-----------------------------------------------------------------------------------
+// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value, Net)
+//
+// $vat_factors - effective part of vat values included in tax; calculated but not included vat is added to net value
+//
+function get_tax_for_items($trans_type, $items, $prices, $shipping_cost, $tax_group, $tax_included=null,
+	$tax_algorithm = null, $vat_factors = null, $allow_reverse = true)
+{
+
+	// if shipping cost is passed, just add to the prices/items tables
+	if ($shipping_cost != 0)
+	{
+		$items[] = null;
+		$prices[] = $shipping_cost;
+		if ($vat_factors)
+			$vat_factors[] = 1;
+	}
+
+	// calculate tax sums
+	$ret_tax_array = array();
+	foreach($items as $i => $stock_id)
+	{
+		$taxdata = split_item_price($stock_id, $prices[$i], $tax_group, $tax_included, $trans_type,
+			 $vat_factors ? $vat_factors[$i] : 1, $allow_reverse, $date=null); // FIXME: $date
+
+		foreach ($taxdata as $key => $data)
+		{
+			if (is_numeric($key))
+			{
+				$tax_id = isset($data['tax_type_id']) ? $data['tax_type_id'] : 'exempt';
+
+				if (!isset($ret_tax_array[$tax_id]))
+				{
+					$ret_tax_array[$tax_id] = $data;
+					$ret_tax_array[$tax_id]['Net'] = $taxdata['Net'];
+					$ret_tax_array[$tax_id]['vat_category'] = $taxdata['vat_category'];
+				}
+				else
+				{
+					foreach(array('Value', 'Payable', 'Deductible', 'Adjust') as $amt)
+						$ret_tax_array[$tax_id][$amt] += $data[$amt];
+					$ret_tax_array[$tax_id]['Net'] += $taxdata['Net'];
+				}
+			}
+		}
+	}
+
+	if (!$tax_algorithm)
+		$tax_algorithm = get_company_pref('tax_algorithm');
+
+	if ($tax_algorithm == TCA_TOTALS) { // ?
+		$dec = user_price_dec();
+		// update taxes with 
+		foreach($ret_tax_array as $index => $item_tax) {
+			if ($ret_tax_array[$index]['Value'])
+				$ret_tax_array[$index]['Value'] = round2($item_tax['Net'] * $item_tax['rate'] / 100, $dec);
+		}
+	}
+
+	return $ret_tax_array;
+}
+
+
+//---------------------------------------------------------------------------------
 
 // returns the price of a given item minus any included taxes
-// for item $stock_id with line price $price,
-// with applicable tax rates $tax_group_array or group id $tax_group
+// for item $stock_id with line price $price and supplier/customer group_id $tax_group
 
-function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array=null)
+function get_tax_free_price_for_item($trans_type, $stock_id, $price, $tax_group, $tax_included, $allow_reverse = true)
 {
 	// if price is zero, then can't be taxed !
 	if ($price == 0)
 		return 0;
 
 	if ($tax_included==0) return $price;
-	
-	// if array already read, then make a copy and use that
-	if ($tax_group_array)
-		$ret_tax_array = $tax_group_array;
-	else
-		$ret_tax_array = get_tax_group_items_as_array($tax_group);
-	
-	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
 
-	// if no exemptions or taxgroup is empty, then no included/excluded taxes
-	if ($tax_array == null)
-		return $price;
+	$taxdata = split_item_price($stock_id, $price, $tax_group, $tax_included, $trans_type, 1, $allow_reverse);
 
-	// to avoid rounding errors we have to just subtract taxes from tax_included price.
-	$tax_multiplier = 0;
-	foreach ($tax_array as $taxitem) 
-	{
-		$tax_multiplier += $taxitem["rate"];
-	}
-
-	$tax = 0;
-	foreach ($tax_array as $taxitem)
-	{
-		$tax += round($price*$taxitem['rate']/(100+$tax_multiplier), user_price_dec());
-	}
-	return $price-$tax;
+	return $taxdata['Net'];
 }
 //
-//	Full price (incl. VAT) for item $stock_id with line price $price,
-//	with tax rates $tax_group_array or applicable group $tax_group
+//	Full price (incl. VAT) for item $stock_id
+// 	calculated for line price $price, and applicable group $tax_group
 //
-function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array=null)
+function get_full_price_for_item($trans_type, $stock_id, $price, $tax_group, $tax_included, $allow_reverse = true)
 {
 	// if price is zero, then can't be taxed !
 	if ($price == 0)
@@ -65,176 +295,7 @@ function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $
 
 	if ($tax_included==1) return $price;
 
-	// if array already read, then make a copy and use that
-	if ($tax_group_array)
-		$ret_tax_array = $tax_group_array;
-	else
-		$ret_tax_array = get_tax_group_items_as_array($tax_group);
-	
-	//print_r($ret_tax_array);
+	$taxdata = split_item_price($stock_id, $price, $tax_group, $tax_included, $trans_type, 1, $allow_reverse);
 
-	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
-	// if no exemptions or taxgroup is empty, then no included/excluded taxes
-	if ($tax_array == null)
-		return $price;
-	
-	$tax_multiplier = 0;
-
-	// loop for all items
-
-	foreach ($tax_array as $taxitem) 
-	{
-			$tax_multiplier += $taxitem["rate"];
-	}
-	
-	return round($price * (1 + ($tax_multiplier / 100)),  user_price_dec());
+	return $taxdata['Net'] + $taxdata['Tax'];
 }
-
-//---------------------------------------------------------------------------------
-// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
-
-function get_taxes_for_item($stock_id, $tax_group_items_array)
-{
-	$item_tax_type = get_item_tax_type_for_item($stock_id);
-	
-	// if the item is exempt from all taxes then return 0
-	if ($item_tax_type["exempt"])
-		return null;
-		
-	// get the exemptions for this item tax type
-	$item_tax_type_exemptions_db = get_item_tax_type_exemptions($item_tax_type["id"]);
-	
-	// read them all into an array to minimize db querying
-	$item_tax_type_exemptions = array();
-	while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db)) 
-	{
-		$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
-	}
-	
-	$ret_tax_array = array();
-	
-	// if any of the taxes of the tax group are in the exemptions, then skip
-	foreach ($tax_group_items_array as $tax_group_item) 
-	{ 
-		
-		$skip = false;
-		
-		// if it's in the exemptions, skip
-		foreach ($item_tax_type_exemptions as $exemption) 
-		{
-			if (($tax_group_item['tax_type_id'] == $exemption)) 
-			{
-    			$skip = true;
-    			break;
-			}
-		}
-		
-		if (!$skip) 
-		{
-			$index = $tax_group_item['tax_type_id'];
-			$ret_tax_array[$index] = $tax_group_item;
-		}
-	}
-	
-	return $ret_tax_array;
-}
-//-----------------------------------------------------------------------------------
-// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value) 
-
-function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null, $tax_algorithm = null)
-{
-	if (!$tax_algorithm)
-		$tax_algorithm = get_company_pref('tax_algorithm');
-	// first create and set an array with all the tax types of the tax group
-	if($tax_items_array!=null)
-	  	$ret_tax_array = $tax_items_array;
-	else
-	  	$ret_tax_array = get_tax_group_items_as_array($tax_group);
-
-	$dec = user_price_dec();
-
-	$fully_exempt = true;
-	foreach($ret_tax_array as $k=>$t)
-	{
-		if ($t['rate'] !== null)
-			$fully_exempt = false;
-		$ret_tax_array[$k]['Net'] = 0;
-	}
-	
-	$ret_tax_array['exempt'] = array('Value'=>0, 'Net'=>0, 'rate' => null, 'tax_type_id' => '', 'sales_gl_code' => '');
-	$dec = user_price_dec();
-	// loop for all items
-	for ($i = 0; $i < count($items); $i++)
-	{
-		$item_taxes = get_taxes_for_item($items[$i], $ret_tax_array);
-		if ($item_taxes == null || $fully_exempt) 
-		{
-			  $ret_tax_array['exempt']['Value'] += round2(0, $dec);
-			  $ret_tax_array['exempt']['Net'] += $prices[$i];
-		}
-		else
-		{
-			$tax_multiplier = 0;
-			foreach ($item_taxes as $taxitem) 
-			{
-				$tax_multiplier += $taxitem['rate'];
-			}
-			foreach ($item_taxes as $item_tax) 
-			{
-				if ($item_tax['rate'] !== null) {
-					$index = $item_tax['tax_type_id'];
-					if ($tax_included == 1) {
-					  	$ret_tax_array[$index]['Value'] += round2($prices[$i]*$item_tax['rate']/(100+$tax_multiplier), $dec);
-					  	$ret_tax_array[$index]['Net'] += round2($prices[$i]*100/(100+$tax_multiplier), $dec);
-					} else {
-					  	$ret_tax_array[$index]['Value'] += round2($prices[$i] * $item_tax['rate'] / 100, $dec);
-					  	$ret_tax_array[$index]['Net'] += $prices[$i];
-					}
-				}
-			}
-		}
-	}
-	// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
-	if ($shipping_cost != 0) 
-	{
-		$item_taxes = get_shipping_tax_as_array($tax_group);
-		if ($item_taxes != null) 
-		{
-			if ($tax_included == 1)
-			{
-				$tax_rate = 0;
-				foreach ($item_taxes as $item_tax)
-				{
-					$index = $item_tax['tax_type_id'];
-					if(isset($ret_tax_array[$index])) {
-						$tax_rate += $item_tax['rate'];
-					}
-				}
-				$shipping_net = round2($shipping_cost*100/(100+$tax_rate), $dec);
-			}
-			foreach ($item_taxes as $item_tax) 
-			{
-				$index = $item_tax['tax_type_id'];
-				if ($item_tax['rate'] !== null && $ret_tax_array[$index]['rate'] !== null) {
-					if($tax_included==1) {
-					   	$ret_tax_array[$index]['Value'] += round2($shipping_cost*$item_tax['rate']/(100+$tax_rate), $dec);
-					   	$ret_tax_array[$index]['Net'] += $shipping_net;
-					} else {
-						$ret_tax_array[$index]['Value'] += round2($shipping_cost * $item_tax['rate'] / 100, $dec);
-					   	$ret_tax_array[$index]['Net'] += $shipping_cost;
-					}
-				}
-			}
-		}
-	}
-
-	if ($tax_algorithm == TCA_TOTALS ) {
-		// update taxes with 
-		foreach($ret_tax_array as $index => $item_tax) {
-			$ret_tax_array[$index]['Value'] = round2($item_tax['Net'] * $item_tax['rate'] / 100, $dec);
-		}
-	}
-
-	return $ret_tax_array;
-}
-

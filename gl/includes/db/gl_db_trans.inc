@@ -429,7 +429,7 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0, $net_amount = null)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0, $net_amount = null, $tax_group_id=null)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
@@ -447,7 +447,7 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 		}
 	}
 	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
-		$amount, $net_amount, $ex_rate, $date, $memo, null);
+		$amount, $net_amount, $ex_rate, $date, $memo, null, $tax_group_id);
 
 }
 
@@ -457,7 +457,7 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 //	actual tax type rate.
 //
 function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
-	$amount, $net_amount, $ex_rate, $tran_date, $memo, $reg_type=null)
+	$amount, $net_amount, $ex_rate, $tran_date, $memo, $reg_type=null, $tax_group_id=null, $vat_category=0)
 {
 	// guess tax register if not set
 	if (!isset($reg_type))
@@ -466,14 +466,18 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
-			included_in_price, net_amount, amount, memo, reg_type)
+			included_in_price, net_amount, amount, memo, reg_type, tax_group_id, vat_category)
 		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
 				.date2sql($tran_date)."',"
 				.(int)($tax_id).","
 				.(float)($rate).","
 				.(float)($ex_rate).",".($included ? 1:0).","
 				.db_escape($net_amount).","
-				.db_escape($amount).",".db_escape($memo).",".db_escape($reg_type, true).")";
+				.db_escape($amount).","
+				.db_escape($memo).","
+				.db_escape($reg_type, true).","
+				.db_escape($tax_group_id).","
+				.db_escape($vat_category).")";
 
 	db_query($sql, "Cannot save trans tax details");
 
@@ -524,27 +528,33 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
 					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
-					), net_amount*ex_rate,0)
+						AND (tgroup.tax_area=".TA_EU." OR (tgroup.tax_area=".TA_EXPORT." AND taxrec.vat_category=".VC_SERVICES.")
+						OR taxrec.vat_category=".VC_REVERSE."))"
+						.($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate")
+					."), net_amount*ex_rate,0)
 				) net_output,
 
 				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
 					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+						AND (tgroup.tax_area=".TA_EU." OR (tgroup.tax_area=".TA_EXPORT." AND taxrec.vat_category=".VC_SERVICES.")
+						OR taxrec.vat_category=".VC_REVERSE.")
 					), amount*ex_rate,0)) payable,
 
 				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
 				IF(reg_type=".TR_INPUT
 					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate")
-					.", net_amount*ex_rate, 0)) net_input,
+					." AND vat_category!=".VC_NONDEDUCT.", net_amount*ex_rate, 0)) net_input,
 
 				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
 				IF(reg_type=".TR_INPUT
 					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate ") 
-					.", amount*ex_rate, 0)) collectible,
+					." AND vat_category!=".VC_NONDEDUCT.", amount*ex_rate, 0)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
 		FROM ".TB_PREF."trans_tax_details taxrec LEFT JOIN ".TB_PREF."tax_types ttype ON taxrec.tax_type_id=ttype.id
+			LEFT JOIN ".TB_PREF."tax_groups tgroup ON taxrec.tax_group_id=tgroup.id
 		WHERE taxrec.trans_type IN (".implode(',',
 			array(ST_SALESINVOICE, ST_CUSTCREDIT, ST_SUPPINVOICE, ST_SUPPCREDIT, ST_JOURNAL)).")
 			AND taxrec.tran_date >= '$fromdate'

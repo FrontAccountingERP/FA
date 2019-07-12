@@ -292,7 +292,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	if (count($supp_trans->gl_codes) > 0)
 	{
 
-		foreach ($supp_trans->gl_codes as $entered_gl_code)
+		foreach ($supp_trans->gl_codes as $n => $entered_gl_code)
 		{
 
 			alt_table_row_color($k);
@@ -313,9 +313,9 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
+				delete_button_cell("Delete2" . $n, _("Delete"),
 					  _('Remove line from document'));
-                edit_button_cell("Edit" . $entered_gl_code->Counter, _("Edit"),
+                edit_button_cell("Edit" . $n, _("Edit"),
                       _('Edit line from document'));
 			}	
 			end_row();

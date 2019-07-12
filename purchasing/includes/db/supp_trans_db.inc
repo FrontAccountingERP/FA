@@ -47,6 +47,19 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 
 	return $trans_no;
 }
+/*
+	Helper for final supplier trans header summaries update.
+*/
+function update_supp_trans_sums($trans_type, $trans_no, $amount, $tax, $discount=0)
+{
+	$sql = "UPDATE ".TB_PREF."supp_trans 
+		SET	ov_amount=".db_escape($amount).",
+			ov_gst=".db_escape($tax).",
+			ov_discount=".db_escape($discount)."
+		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
+
+	return db_query($sql, "Cannot update supplier transaction summaries");
+}
 
 //-------------------------------------------------------------------------------------------------------------
 

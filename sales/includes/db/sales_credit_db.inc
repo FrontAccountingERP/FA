@@ -108,10 +108,10 @@ function write_credit_note(&$credit_note, $write_off_acc)
 					-$credit_line->qty_old));
 		}
 
-		$line_taxfree_price = get_tax_free_price_for_item($credit_line->stock_id, $credit_line->price,
+		$line_taxfree_price = get_tax_free_price_for_item(ST_CUSTCREDIT, $credit_line->stock_id, $credit_line->price,
 		  0, $credit_note->tax_included, $credit_note->tax_group_array);
 
-		$line_tax = get_full_price_for_item($credit_line->stock_id, $credit_line->price,
+		$line_tax = get_full_price_for_item(ST_CUSTCREDIT, $credit_line->stock_id, $credit_line->price,
 		  0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
 
 		$credit_line->unit_cost = get_unit_cost($credit_line->stock_id); 
@@ -153,7 +153,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 			add_trans_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate,
-				$credit_note->document_date, $credit_note->reference, TR_OUTPUT);
+				$credit_note->document_date, $credit_note->reference, TR_OUTPUT, $credit_note->tax_group_id);
 
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0,
 				$taxitem['Value'], $credit_note->customer_id,
@@ -237,10 +237,10 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	if ($order_line->line_price() != 0) {
 
 		$line_taxfree_price =
-		get_tax_free_price_for_item($order_line->stock_id, $order_line->price,
+		get_tax_free_price_for_item(ST_CUSTCREDIT, $order_line->stock_id, $order_line->price,
 		  0, $order->tax_included, $order->tax_group_array);
 
-		$line_tax = get_full_price_for_item($order_line->stock_id, $order_line->price,
+		$line_tax = get_full_price_for_item(ST_CUSTCREDIT, $order_line->stock_id, $order_line->price,
 		  0, $order->tax_included, $order->tax_group_array) - $line_taxfree_price;
 
 

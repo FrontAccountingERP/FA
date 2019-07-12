@@ -138,9 +138,10 @@ function create_cart($type=0, $trans_no=0)
 		while ($detail = db_fetch($taxes))
 		{
 			$tax_id = $detail['tax_type_id'];
+			$cart->vat_category = $tax_info['tax_category'] = $detail['vat_category'];
 			$tax_info['net_amount'][$tax_id] = $detail['net_amount']; // we can two records for the same tax_id, but in this case net_amount is the same
 			$tax_info['tax_date'] = sql2date($detail['tran_date']);
-			//$tax_info['tax_group'] = $detail['tax_group_id'];
+			$tax_info['tax_group'] = $detail['tax_group_id'];
 
 		}
 		if (isset($tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
@@ -178,6 +179,8 @@ function create_cart($type=0, $trans_no=0)
 
 function update_tax_info()
 {
+
+	$_SESSION['journal_items']->vat_category = get_post('tax_category');
 
 	if (!isset($_SESSION['journal_items']->tax_info) || list_updated('tax_category'))
 		$_SESSION['journal_items']->tax_info = $_SESSION['journal_items']->collect_tax_info();
@@ -475,7 +478,8 @@ if (tab_closed('tabs', 'gl'))
 {
 	$cart = &$_SESSION['journal_items'];
 	$cart->tax_info['tax_date'] = $_POST['tax_date'];
-	//$cart->tax_info['tax_group'] = $_POST['tax_group'];
+	$cart->tax_info['tax_category'] = $_POST['tax_category'];
+	$cart->tax_info['tax_group'] = $_POST['tax_group'];
 	$taxes = get_all_tax_types();
 	while ($tax = db_fetch($taxes))
 	{
@@ -489,6 +493,9 @@ if (tab_opened('tabs', 'gl'))
 	$_POST['memo_'] = $_SESSION['journal_items']->memo_;
 } elseif (tab_opened('tabs', 'tax'))
 {
+	$_POST['tax_category'] = $_SESSION['journal_items']->vat_category;
+	$_SESSION['journal_items']->collect_tax_info();
+	$_POST['tax_group'] = $_SESSION['journal_items']->tax_info['tax_group'];
 	set_focus('tax_date');
 }
 
@@ -549,7 +556,8 @@ tabbed_content_start('tabs', array(
 			br();
 			start_table(TABLESTYLE2, "width=40%");
 			date_row(_("VAT date:"), 'tax_date', '', "colspan='3'");
-			//tax_groups_list_row(_("Tax group:"), 'tax_group');
+			tax_groups_list_row(_("Tax group:"), 'tax_group');
+			vat_category_list_row(_("VAT category:"), 'tax_category', null, true, true);
 			end_table(1);
 
 			start_table(TABLESTYLE2, "width=60%");

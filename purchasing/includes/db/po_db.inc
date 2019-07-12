@@ -15,10 +15,11 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 {
 	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included, dimension_id, dimension2_id,
 			supp.credit_limit - Sum((ov_amount + ov_gst + ov_discount)) as cur_credit,
-				terms.terms, terms.days_before_due, terms.day_in_following_month
+				terms.terms, terms.days_before_due, terms.day_in_following_month, tg.tax_area
 		FROM ".TB_PREF."suppliers supp
 			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
 			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.terms_indicator
+			 LEFT JOIN ".TB_PREF."tax_groups tg ON supp.tax_group_id=tg.id
 		WHERE supp.supplier_id = ".db_escape($supplier_id)."
 		GROUP BY
 			  supp.supp_name";
@@ -39,7 +40,7 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 	$_POST['dimension2'] = $myrow["dimension2_id"];
 
 	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
-		$myrow["tax_group_id"], $myrow["tax_included"]);
+		$myrow["tax_group_id"], $myrow["tax_included"], $myrow["tax_area"]);
 }
 
 //----------------------------------------------------------------------------------------
@@ -162,9 +163,10 @@ function update_po(&$po_obj)
 
 function read_po_header($order_no, &$order)
 {
-    	$sql = "SELECT po.*, supplier.*, loc.location_name 
+    	$sql = "SELECT po.*, tg.tax_area, supplier.*, loc.location_name 
 		FROM ".TB_PREF."purch_orders po,"
-			.TB_PREF."suppliers supplier,"
+			.TB_PREF."suppliers supplier
+			LEFT JOIN ".TB_PREF."tax_groups tg ON supplier.tax_group_id=tg.id,"
 			.TB_PREF."locations loc
 		WHERE po.supplier_id = supplier.supplier_id
 		AND loc.loc_code = into_stock_location
@@ -181,7 +183,7 @@ function read_po_header($order_no, &$order)
       	$order->order_no = $order_no;
 
       	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
-      		$myrow['tax_group_id'], $myrow["tax_included"]);
+      		$myrow['tax_group_id'], $myrow["tax_included"], $myrow["tax_area"]);
 
 		$order->credit = get_current_supp_credit($order->supplier_id);
 

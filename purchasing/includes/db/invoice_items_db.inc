@@ -12,7 +12,7 @@
 //-------------------------------------------------------------------------------------------------------------
 
 function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $description,
-	$gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_, $dim_id=0, $dim2_id=0)
+	$gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_="", $dim_id=0, $dim2_id=0)
 {
 	$sql = "INSERT INTO ".TB_PREF."supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 	  	grn_item_id, po_detail_item_id, memo_, dimension_id, dimension2_id) ";

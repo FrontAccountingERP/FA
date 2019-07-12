@@ -642,3 +642,14 @@ function last_sales_order_detail($order, $field)
         return $row[0];
 }
 
+function get_sales_vat_category($trans_no, $type=ST_SALESINVOICE)
+{
+	$sql = "SELECT vat_category
+			FROM ".TB_PREF."debtor_trans_details line
+			LEFT JOIN ".TB_PREF."stock_master stock ON line.stock_id=stock.stock_id
+		WHERE debtor_trans_type=".db_escape($type)." AND debtor_trans_no=".db_escape($trans_no);
+	$result = db_query($sql, 'cannot check invoice category');
+  $line = db_fetch($result);
+	return $line['vat_category'];
+}
+

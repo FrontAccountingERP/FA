@@ -62,15 +62,16 @@ function get_item_tax_type($id)
 
 function get_item_tax_type_for_item($stock_id)
 {
-	$sql = "SELECT item_tax_type.*
-		FROM ".TB_PREF."item_tax_types item_tax_type,"
+	$sql = "SELECT tax_type.*, item.vat_category
+		FROM ".TB_PREF."item_tax_types tax_type,"
 			.TB_PREF."stock_master item
-		WHERE item.stock_id=".db_escape($stock_id)."
-		AND item_tax_type.id=item.tax_type_id";
-	
+		WHERE 
+			item.stock_id=".db_escape($stock_id)."
+			AND tax_type.id=item.tax_type_id";
+
 	$result = db_query($sql, "could not get item tax type");
-	
-	return db_fetch($result);	
+
+	return db_fetch($result);
 }
 
 function delete_item_tax_type($id)

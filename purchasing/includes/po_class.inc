@@ -36,7 +36,6 @@ class purch_order
 	var $lines_on_order = 0;
 	var $credit;
 	var $tax_group_id;
-	var $tax_group_array = null; // saves db queries
 	var $terms;
 	var $ex_rate;
 	var $cash_account;
@@ -52,19 +51,19 @@ class purch_order
 
 	function __construct()
 	{
-		/*Constructor function initialises a new purchase order object */
 		$this->line_items = array();
 		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
+		$this->tax_group_id = find_domestic_tax_group(); // prevent tax errors until supplier is selected
 	}
 	
-	function set_supplier($supplier_id, $supplier_name, $curr_code, $tax_group_id, $tax_included)
+	function set_supplier($supplier_id, $supplier_name, $curr_code, $tax_group_id, $tax_included, $tax_area)
 	{
 		$this->supplier_id = $supplier_id;
 		$this->supplier_name = $supplier_name;
 		$this->curr_code = $curr_code;
 		$this->tax_group_id = $tax_group_id;
 		$this->tax_included = $tax_included;
-		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
+		$this->tax_area = $tax_area;
 	}
 	
 	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
@@ -154,8 +153,8 @@ class purch_order
 			$items[] = $ln_itm->stock_id;
 			$prices[] = round($ln_itm->price * $ln_itm->quantity,  user_price_dec());
 		}
-		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
-		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
+		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost,
+		  $this->tax_group_id, $this->tax_included);
 
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 	    if ($this->curr_code == 'CHF') {
@@ -186,13 +185,47 @@ class purch_order
 		}
 
 		if (!$this->tax_included ) {
-			$taxes = get_tax_for_items($items, $prices, 0, $this->tax_group_id,
-			$this->tax_included,  $this->tax_group_array);
+			$taxes = get_tax_for_items($this->trans_type, $items, $prices, 0, $this->tax_group_id,
+			$this->tax_included);
 
 			foreach($taxes as $tax)
 				$total += round($tax['Value'], $dec);
 		}
 		return $total;
+	}
+
+	function split_line_values()
+	{
+		// split nominal line values
+		foreach($this->line_items as $line)
+			$line->split_item_value($this);
+
+		// Exact tax values are currently entered as tax totals, so we need to move the differences back on line level.
+		// currently first item with given tax type will be fixed with the calculated difference
+		// FIXME: change UI moving tax edit to line level in line edit mode, then this workaround will be obsolete.
+		foreach($this->get_taxes() as $tax_id => $tax)
+		{
+			if ($tax['Value'] != 0 && ($tax['Value'] != $tax['Override']))
+			{
+				foreach($this->line_items as $id => $line)
+					if ($line->gl_amounts[0]['tax_type_id'] == $tax_id) // assumed single tax rate on item, so always gl_mount[0] is valid
+					{
+						$diff = $tax['Override'] - $tax['Value'];
+						$this->line_items[$id]->gl_amounts[0]['Value'] += $diff;
+						if ($this->vat_category() != VC_NONDEDUCT)
+							$this->line_items[$id]->gl_amounts[0]['Deductible'] += $diff;
+						else
+							$this->line_items[$id]->gl_amounts['Cost'] += $diff;
+						 // when supplier uses net prices the price is exact, so don't fix net, still record exact VAT.
+						if ($this->tax_included) 
+						{
+							$this->line_items[$id]->gl_amounts['Net'] -= $diff;
+							$this->line_items[$id]->gl_amounts['Cost'] -= $diff;
+						}
+						break;
+					}
+			}
+		}
 	}
 
 } /* end of class defintion */
@@ -216,6 +249,7 @@ class po_line_details
 
 	var $unit_cost;
 	var $descr_editable;
+	var $vat_category;
 
 	function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
 		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
@@ -241,6 +275,7 @@ class po_line_details
 		$this->qty_inv = $qty_inv;
 		$this->unit_cost =0;
 		$this->grn_item_id = $grn_item_id;
+		$this->vat_category = $item_row["vat_category"];
 		$this->qty_ordered = $qty_ordered;
 	}
 	
@@ -249,8 +284,20 @@ class po_line_details
 	//
 	function taxfree_charge_value($po)
 	{
-		return get_tax_free_price_for_item($this->stock_id, $this->quantity*$this->price,
-		  $po->tax_group_id, $po->tax_included, $po->tax_group_array);
+		return get_tax_free_price_for_item($po->trans_type, $this->stock_id, $this->quantity*$this->price,
+		  $po->tax_group_id, $po->tax_included);
 	}
+
+	/*
+		Splits item value to parts posted to GL.
+	*/
+	function split_item_value($cart)
+	{
+        $vat_factor = 1;
+
+		return $this->gl_amounts = split_item_price($this->stock_id, $this->price*$this->quantity, $cart->tax_group_id, $cart->tax_included, 
+			ST_SUPPINVOICE, $vat_factor, $cart->tran_date);
+	}
+  
 }
 

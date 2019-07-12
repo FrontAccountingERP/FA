@@ -246,6 +246,39 @@ define('BO_SUPPLIER', 3);
 
 include_once($path_to_root . '/includes/sysnames.inc');
 
+define('VC_NONE', -1);	// for tax adjustemnts
+define('VC_OTHER', 0);
+define('VC_MEDIA', 1);
+define('VC_ASSETS', 2);
+define('VC_NONDEDUCT', 3);
+define('VC_SERVICES', 4);
+define('VC_REVERSE', 5);
+define('VC_PARTIAL', 6);
+
+$vat_categories = array(
+	VC_OTHER => _('Other goods'),
+	VC_MEDIA => _('Continous services'),
+	VC_ASSETS => _('Fixed assets'),
+	VC_NONDEDUCT => _('No VAT deductible'),
+	VC_SERVICES => _('Other services'),
+//	VC_PARTIAL => _('VAT partially deductible'),
+	VC_REVERSE => _('Reverse charge'),
+);
+
+//
+// Tax area categories
+//
+define('TA_DOMESTIC', 0);
+define('TA_EXPORT', 1);
+define('TA_EU', 2);
+
+$tax_area_types = array(
+	TA_DOMESTIC => _('Domestic'),
+	TA_EXPORT => _('Abroad'),
+	TA_EU => _('European Union'),
+);
+
+
 // tax register type
 define('TR_OUTPUT', 0); // sales
 define('TR_INPUT', 1);	// purchase

@@ -517,7 +517,7 @@ class Cart
 				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
 		}
 
-		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
+		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost,
 		  	$this->tax_group_id, $this->tax_included,  $this->tax_group_array);
 
     // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken

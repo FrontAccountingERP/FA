@@ -123,247 +123,243 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 }
 //----------------------------------------------------------------------------------------
 
-function add_supp_invoice(&$supp_trans)
+function add_supp_invoice(&$supp_trans)  //, $already_voided=false, $allocs=null)
 {
-	global $Refs;
+	global $Refs, $systypes_array;
 
-	//$company_currency = get_company_currency();
 	$trans_no = $supp_trans->trans_no;
 	$trans_type = $supp_trans->trans_type;
 	$supplier = get_supplier($supp_trans->supplier_id);
+	$dec = user_price_dec();
 
 	begin_transaction();
 	hook_db_prewrite($supp_trans, $trans_type);
-	$tax_total = 0;
-    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-	if ($trans_no) {
+
+	if ($trans_no) {	// void old transaction
+//	 if (!$already_voided) {	// transaction is already voided in case of direct invoice edition, which is needed for proper inventory value handling
 		$allocs = get_payments_for($trans_no, $trans_type, $supp_trans->supplier_id); // save allocations
-		void_transaction($trans_type, $trans_no, Today(), _("Document reentered."));
+		void_supp_invoice($trans_type, $trans_no, true);
+		add_audit_trail($trans_type, $trans_no, Today(), _("Voided."));
+		add_voided_entry($trans_type, $trans_no, Today(), _("Document reentered."));
 		$Refs->restore_last($trans_type, $trans_no);
+//	 }
 	} else
 		$allocs = get_po_prepayments($supp_trans);
 
-	add_new_exchange_rate($supp_trans->currency, $supp_trans->tran_date, $supp_trans->ex_rate);
+	// register exchange rate when used first time on date
+	add_new_exchange_rate($supplier['curr_code'], $supp_trans->tran_date, $supp_trans->ex_rate);
 
-    foreach ($taxes as $n => $taxitem)
-    {
-		$taxes[$n]['Value'] =  round2($taxitem['Value'], user_price_dec());
-    	$tax_total += $taxes[$n]['Value'];
-    }
-
-	$invoice_items_total = $supp_trans->get_items_total();
-
-	$item_added_tax = 0;
-    if (!$supp_trans->tax_included)
-    {
-	    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-	    foreach ($taxes as $n => $taxitem)
-			$item_added_tax += isset($taxitem['Override']) ? $taxitem['Override'] : round2($taxitem['Value'], user_price_dec());
-	}
-
-	if ($trans_type == ST_SUPPCREDIT)
-	{
-		// let's negate everything because it's a credit note
-		$invoice_items_total = -$invoice_items_total;
-		$tax_total = -$tax_total;
-		$supp_trans->ov_discount = -$supp_trans->ov_discount; // this isn't used at all...
-		$item_added_tax = -$item_added_tax;
-	}
-
-    $date_ = $supp_trans->tran_date;
-	$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $date_);
-
-    /*First insert the invoice into the supp_trans table*/
-	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
-		$supp_trans->reference, $supp_trans->supp_reference,
-		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included);
+	// store basic transaction info
+	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $supp_trans->tran_date, $supp_trans->due_date,
+		$supp_trans->reference, $supp_trans->supp_reference, 0, 0, 0, "", $supp_trans->ex_rate, $supp_trans->tax_included);
 
 	if ($trans_no)
 		move_trans_attachments($trans_type, $trans_no, $invoice_id);
 
 	$supp_trans->trans_no = $invoice_id;
+    $date_ = $supp_trans->tran_date;
 
-	$total = 0;
+	if (!$supp_trans->ex_rate)
+		$supp_trans->ex_rate = get_exchange_rate_from_home_currency($supplier['curr_code'], $date_);
 
-    /* Now the TAX account */
-    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id, 0, false);
-	$net_diff = 0;
-
-    foreach ($taxes as $taxitem)
-    {
-		if ($taxitem['Net'] != 0)
-		{
-			if (isset($taxitem['Override'])) {
-				if ($supp_trans->tax_included) { // if tax included, fix net amount to preserve overall line price
-					$net_diff += $taxitem['Override'] - $taxitem['Value'];
-					$taxitem['Net'] += $taxitem['Override'] - $taxitem['Value'];
-				}
-				$taxitem['Value'] = $taxitem['Override'];
-			}
-			add_trans_tax_details($trans_type, $invoice_id, 
-				$taxitem['tax_type_id'], $taxitem['rate'], $supp_trans->tax_included, $taxitem['Value'],
-				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference, TR_INPUT);
-
-			if (isset($taxitem['purchasing_gl_code']))
-			{
-				if ($trans_type == ST_SUPPCREDIT)
-					$taxitem['Value'] = -$taxitem['Value'];
-				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
-					$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
-					$supp_trans->supplier_id,
-					"A general ledger transaction for the tax amount could not be added");
-			}
-		}
-    }
-    if ($trans_type == ST_SUPPCREDIT)
-		$net_diff = -$net_diff;
-
-    /* Now the AP account */
-    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier["payable_account"], 0, 0,
-		-($invoice_items_total +  $item_added_tax + $supp_trans->ov_discount),
-		$supp_trans->supplier_id,
-		"The general ledger transaction for the control total could not be added");
-
-	$to_allocate = ($invoice_items_total + $item_added_tax + $supp_trans->ov_discount);
-
-    foreach ($supp_trans->gl_codes as $entered_gl_code)
-    {
-	    /*GL Items are straight forward - just do the debit postings to the GL accounts specified -
-	    the credit is to creditors control act  done later for the total invoice value + tax*/
-
-		if ($trans_type == ST_SUPPCREDIT)
-			$entered_gl_code->amount = -$entered_gl_code->amount;
-
-		$memo_ = $entered_gl_code->memo_;
-		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
-			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id, "", 0, $memo_);
-
-		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code, $entered_gl_code->amount, $memo_,
-			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2);
-
-		// store tax details if the gl account is a tax account
-		if ($trans_type == ST_SUPPCREDIT)
-			$entered_gl_code->amount = -$entered_gl_code->amount;
-		add_gl_tax_details($entered_gl_code->gl_code, 
-			$trans_type, $invoice_id, $entered_gl_code->amount,
-			$ex_rate, $date_, $supp_trans->supp_reference, $supp_trans->tax_included);
-    }
+	// prepare cart for GL postings 
+	$gl_cart = new items_cart($trans_type, $invoice_id);
+	$gl_cart->tran_date = $date_;
+	$gl_cart->set_currency($supplier['curr_code'], $supp_trans->ex_rate);
 
     $clearing_act = get_company_pref('grn_clearing_act');
-    foreach ($supp_trans->grn_items as $line_no => $entered_grn)
-    {
 
-    	if ($trans_type == ST_SUPPCREDIT)
-    	{
-			$entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
-			set_grn_item_credited($entered_grn, $supp_trans->supplier_id, $invoice_id, $date_);
-    	}
+	$supp_trans->split_line_values();	// generate amounts for GL postings
 
-		// For tax included pricelist the net price is calculated down from tax_included price.
-		// To avoid rounding errors we have to operate on line value instead of price
-		// Additionally we have to take into account differences in net value
-		// due to variations in tax calculations on supplier side. More over there is no direct relation between
-		// taxes and sales accounts, so we add net_diff just to first posted net value. This is _ugly_hack_
-		// which save us from rewriting whole routine, and works right only for small tax differences.
-
-		$taxfree_line = get_tax_free_price_for_item($entered_grn->item_code, $entered_grn->this_quantity_inv * $entered_grn->chg_price, 
-			  $supp_trans->tax_group_id, $supp_trans->tax_included) - $net_diff; $net_diff = 0;
-
-		$line_tax = get_full_price_for_item($entered_grn->item_code,
-			$entered_grn->this_quantity_inv * $entered_grn->chg_price, 0, $supp_trans->tax_included) - $taxfree_line;
-
-		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
-
-		$dim = !empty($supp_trans->dimension) ? $supp_trans->dimension :
-			($supplier['dimension_id'] ? $supplier['dimension_id'] : $stock_gl_code['dimension_id']);
-		$dim2 = !empty($supp_trans->dimension2) ? $supp_trans->dimension2 :
-			($supplier['dimension2_id'] ? $supplier['dimension2_id'] : $stock_gl_code['dimension2_id']);
+	$tax_total = 0;
+	$net_total = 0;
+	foreach($supp_trans->grn_items as $item)
+	{
     	if ($trans_type == ST_SUPPCREDIT)
 		{
-			$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : 
-				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]));
-			$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-				$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
+			$item->this_quantity_inv = -$item->this_quantity_inv;
+			set_grn_item_credited($item, $supp_trans->supplier_id, $invoice_id, $date_);
 		}
-    	else
-    	{
-    		// -------------- if price changed since po received.
-			$iv_act = is_inventory_item($entered_grn->item_code) ? ($clearing_act ? $clearing_act : $stock_gl_code["inventory_account"]) : 
-				($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"]);
-    		$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
-    			$entered_grn->this_quantity_inv, $entered_grn->chg_price);
+		$item_gl = $item->gl_amounts;
 
-			// Since the standard cost is always calculated on basis of the po unit_price,
-			// this is also the price that should be the base of calculating the price diff.
-			// In cases where there is two different po invoices on the same delivery with different unit prices this will not work either
+		$stock_gl_code = get_stock_gl_code($item->item_code);
+		$dimension = !empty($supp_trans->dimension) ? $supp_trans->dimension :
+			($supplier['dimension_id'] ? $supplier['dimension_id'] : $stock_gl_code['dimension_id']);
+		$dimension2 = !empty($supp_trans->dimension2) ? $supp_trans->dimension2 :
+			($supplier['dimension2_id'] ? $supplier['dimension2_id'] : $stock_gl_code['dimension2_id']);
 
-			$old_price = $old[2];
+		$line_tax = 0;
+		foreach($item_gl as $index => $value)
+		{
+			 if (is_numeric($index)) // taxes
+			 {
+				if ($value['Deductible'])
+				{	// GL: VAT deductible
+    				$gl_cart->add_gl_item($value['purchasing_gl_code'], 0, 0, $value['Deductible']+$value['Adjust'],  //FIXME: 'Adjust' ?
+						$value['Payable'] ? sprintf(_('Internal invoice %s input tax'), $supp_trans->reference) : '');
+					// GL: VAT adjustment due to vat factor
+					if ($value['Adjust'])
+						$gl_cart->add_gl_item(get_company_pref('tax_adjustments_act'), 0, 0, -$value['Adjust']);
+				}
+				if ($value['Payable']) // reverse charge/intracommunity aquisition
+				{
+	   				$gl_cart->add_gl_item($value['sales_gl_code'], 0, 0, -$value['Payable'],
+    					sprintf(_('Internal invoice %s input tax'), $supp_trans->reference));
+				}
+		   		// GL: AP account (vat part)
+				if ($value['Value'])
+				{
+					$gl_cart->add_gl_item($supplier["payable_account"], 0, 0, -$value['Value'] , '', '', $supp_trans->supplier_id);
+				}
+				if (($item->vat_category == VC_REVERSE) && $supplier['tax_area'] == TA_EU)
+					$vat_category = VC_OTHER;
+				else
+					$vat_category = $item->vat_category;
 
-			$old_date = sql2date($old[1]);
-			if (!is_inventory_item($entered_grn->item_code))
-				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-					$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
-			else
+				add_trans_tax_details($trans_type, $invoice_id, 
+					$value['tax_type_id'], $value['rate'], $supp_trans->tax_included, $value['Value'],
+					$item_gl['Net'], $supp_trans->ex_rate, $date_, $supp_trans->supp_reference, TR_INPUT, $supp_trans->tax_group_id, $vat_category);
+
+					// $value['Deductible'], ???
+
+				$tax_total += $value['Value'];
+
+				$line_tax += $value['Payable'] ? $value['Payable'] : $value['Value'];
+			}
+		}
+		// GL: AP account (net)
+		$gl_cart->add_gl_item($supplier["payable_account"], 0, 0, -$item_gl['Net'], '', '', $supp_trans->supplier_id);
+		$net_total += $item_gl['Net'];
+
+		// cost line value
+		$taxfree_line =  $item_gl['Cost'];
+
+   		$old = update_supp_received_items_for_invoice($item->id, $item->po_detail_item,
+			$item->this_quantity_inv, $item->chg_price);
+
+		// Since the standard cost is always calculated on basis of the po unit_price,
+		// this is also the price that should be the base of calculating the price diff.
+		// In cases where there is two different po invoices on the same delivery with different unit prices this will not work either
+		$old_price = $old[2];
+
+		/*
+			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
+		*/
+		$old_date = sql2date($old[1]);
+
+		if (!is_inventory_item($item->item_code))
+		{
+			$gl_cart->add_gl_item($supplier["purchase_account"] ? $supplier["purchase_account"] : $stock_gl_code["cogs_account"], $dimension, $dimension2,	$taxfree_line);
+
+		} else {
+
+			$val = split_item_price($item->item_code, $item->this_quantity_inv * $old_price, 
+				  $supp_trans->tax_group_id, $supp_trans->tax_included);
+
+			$GRN_value = $val['Cost'];
+
+			$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $GRN_value,
+				$taxfree_line);
+
+			// update average cost with per item part of difference (between invoice value and value set on po/grn)
+			update_average_material_cost(null, $item->item_code,
+				$diff/$item->this_quantity_inv, $item->this_quantity_inv, null, true, "add_supp_invoice $trans_type:$invoice_id");
+
+			if ($clearing_act)	// no postings on GRN, so post full net value
 			{
-				$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $old_date);
-				$old_value = get_tax_free_price_for_item($entered_grn->item_code, $entered_grn->this_quantity_inv * $old_price, 
-					  $supp_trans->tax_group_id, $supp_trans->tax_included);
-
-				$currency = get_supplier_currency($supp_trans->supplier_id);
-
-				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
-					$dim, $dim2, $old_value, $supp_trans->supplier_id, "", $ex_rate);
-				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_value, 
-					$taxfree_line);
-
-				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
-					$diff/$entered_grn->this_quantity_inv, $entered_grn->this_quantity_inv, null, true);
-
 				//Add GL transaction for GRN Provision in case of difference
+				// material was already posted due GRN; post differences in value
 				if ($diff != 0)
 				{
-					$total += add_gl_trans($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
-						$dim, $dim2, 'GRN Provision', $diff, null, null, null,
-						"The general ledger transaction could not be added for the GRN of the inventory item");
 
+					$gl_cart->add_gl_item($stock_gl_code["inventory_account"],			// cart is in supplier currency, so need to fix by ex_rate here
+						$dimension, $dimension2, $diff/$gl_cart->rate, _('GRN Provision')); // subject to rounding errors?
+					$gl_cart->add_gl_item($clearing_act,
+						$dimension, $dimension2, -$diff/$gl_cart->rate, _('GRN Provision'));
+
+					//Chaitanya
 					//If QOH is 0 or negative then update_average_material_cost will be skipped
 					//Thus difference in PO and Supp Invoice should be handled separately
-					$qoh = get_qoh_on_date($entered_grn->item_code);
+					$qoh = get_qoh_on_date($item->item_code);
 					if ($qoh <= 0)
 					{
 						global $Refs;
-
+							//Chaitanya : Post a journal entry
 						$id = get_next_trans_no(ST_JOURNAL);
 						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 						add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
-						$stock_id = $entered_grn->item_code;
+						$stock_id = $item->item_code;
 						$stock_gl_code = get_stock_gl_code($stock_id);
 						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
 						//Reverse the inventory effect if $qoh <=0
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 							$stock_gl_code["inventory_account"],
-							$dim, $dim2, $memo, -$diff);
+							$dimension, $dimension2,
+							$memo, -$diff);
 						//GL Posting to inventory adjustment account
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
 							$stock_gl_code["adjustment_account"],
-							$dim, $dim2, $memo, $diff);
-
-						add_audit_trail(ST_JOURNAL, $id, $date_);
+							$dimension, $dimension2,
+							$memo, $diff);
+							add_audit_trail(ST_JOURNAL, $id, $date_);
 						add_comments(ST_JOURNAL, $id, $date_, $memo);
 						$Refs->save(ST_JOURNAL, $id, $ref);
 					}
 				}
+				$gl_cart->add_gl_item($clearing_act, $dimension, $dimension2, $taxfree_line);
 			}
-			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
-		}
-		update_purchase_value($entered_grn->item_code, $entered_grn->chg_price * $ex_rate);
-		add_supp_invoice_item($trans_type, $invoice_id, $entered_grn->item_code,
-			$entered_grn->item_description, 0, 	$entered_grn->chg_price, $line_tax/$entered_grn->this_quantity_inv,
-			$entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "");
-    } /* end of GRN postings */
+			else
+				$gl_cart->add_gl_item($stock_gl_code["inventory_account"], $dimension, $dimension2,	$taxfree_line);
 
-	/*Post a balance post if $total != 0 */
-	add_gl_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id); // ??
+		}
+
+//        if (is_fa_item($item->item_code)) {
+//          add_actual_cost($item->order_price, $item->item_code);
+//        }
+
+		add_or_update_purchase_data($supp_trans->supplier_id, $item->item_code, $item->chg_price); 
+
+		add_supp_invoice_item($trans_type, $invoice_id, $item->item_code,
+			$item->item_description, 0, 	$item->chg_price, $line_tax/$item->this_quantity_inv,
+			$item->this_quantity_inv, $item->id, $item->po_detail_item);
+    } // grn_items
+
+    /*GL Items are straight forward - just do the debit postings to the GL accounts specified -
+    the credit is to creditors control act */
+    foreach ($supp_trans->gl_codes as $entered_gl_code)
+    {
+		if ($trans_type == ST_SUPPCREDIT)
+			$entered_gl_code->amount = -$entered_gl_code->amount;
+
+		$memo_ = $entered_gl_code->memo_;
+
+		$index = is_tax_account($entered_gl_code->gl_code);
+		if ($index !== false)
+		{
+			$gl_cart->add_gl_item($entered_gl_code->gl_code, $entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount);
+			// store tax details if the gl account is a tax account
+			if ($trans_type == ST_SUPPCREDIT)
+				$entered_gl_code->amount = -$entered_gl_code->amount;
+			add_gl_tax_details($entered_gl_code->gl_code, 
+				$trans_type, $invoice_id, $entered_gl_code->amount,
+				$supp_trans->ex_rate, $date_, $supp_trans->supp_reference, $supp_trans->tax_included, null, $supp_trans->tax_group_id);
+
+			$tax_total += $entered_gl_code->amount;
+		} else {
+			$gl_cart->add_gl_item($entered_gl_code->gl_code, $entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount);
+			$net_total += $entered_gl_code->amount;
+		}
+		$gl_cart->add_gl_item($supplier["payable_account"], 0, 0, -$entered_gl_code->amount, '', '', $supp_trans->supplier_id);
+
+		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code, $entered_gl_code->amount, $memo_,
+			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2);
+    }
+
+	$gl_cart->reduce_gl();	// minimize GL lines
+
+	$gl_cart->write_gl(false); // don't check balances here: we are working on two (maybe unbalanced) carts
+
+	update_supp_trans_sums($trans_type, $invoice_id, round($net_total,2), round($tax_total,2));
 
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
@@ -395,11 +391,10 @@ function add_supp_invoice(&$supp_trans)
 		}
 	}
 
-	reallocate_payments($invoice_id, ST_SUPPINVOICE, $date_, $to_allocate, $allocs, $supp_trans->supplier_id);
-	$supp_trans->trans_no = $invoice_id;
+	reallocate_payments($invoice_id, ST_SUPPINVOICE, $date_, $net_total+$tax_total, $allocs, $supp_trans->supplier_id);
+
 	hook_db_postwrite($supp_trans, $supp_trans->trans_type);
     commit_transaction();
-
     return $invoice_id;
 }
 

@@ -51,7 +51,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	$line_total = $stock_item->quantity * $stock_item->price;
 
 	// if overdue and outstanding quantities, then highlight as so
-	if (date1_greater_date2($purchase_order->orig_order_date, $stock_item->req_del_date))
+	if (date1_greater_date2($purchase_order->tran_date, $stock_item->req_del_date))
 	{
     	start_row("class='overduebg'");
     	$overdue_items = true;

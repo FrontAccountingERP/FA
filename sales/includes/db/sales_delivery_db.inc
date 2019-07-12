@@ -72,11 +72,11 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 		$qty = $delivery_line->qty_dispatched;
 		$line_price = $delivery_line->line_price();
-		$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
-			$delivery_line->price*$qty, 0, $delivery->tax_included,
+		$line_taxfree_price = get_tax_free_price_for_item(ST_CUSTDELIVERY, $delivery_line->stock_id,
+			$delivery_line->price*$qty, $delivery->tax_group_id, $delivery->tax_included,
 			$delivery->tax_group_array);
 
-		$line_tax = get_full_price_for_item($delivery_line->stock_id,
+		$line_tax = get_full_price_for_item(ST_CUSTDELIVERY, $delivery_line->stock_id,
 				$delivery_line->price * $qty, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
 		$delivery_line->unit_cost = get_unit_cost($delivery_line->stock_id);
@@ -188,7 +188,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($delivery->customer_id), $delivery->document_date);
     		    add_trans_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
-				$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference, null);
+				$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference, null, $delivery->tax_group_id);
 		}
 	}
 

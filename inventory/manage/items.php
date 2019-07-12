@@ -238,7 +238,7 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
 				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'));
+				get_post('fa_class_id'), get_post('vat_category'));
 
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
@@ -259,7 +259,7 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
 				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'));
+				get_post('fa_class_id'), get_post('vat_category'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
@@ -311,6 +311,44 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		set_focus('stock_id');
 		$new_item = true;
 		$Ajax->activate('_page_body');
+	}
+}
+
+function generateBarcode() {
+	$tmpBarcodeID = "";
+	$tmpCountTrys = 0;
+	while ($tmpBarcodeID == "")	{
+		srand ((double) microtime( )*1000000);
+		$random_1  = rand(1,9);
+		$random_2  = rand(0,9);
+		$random_3  = rand(0,9);
+		$random_4  = rand(0,9);
+		$random_5  = rand(0,9);
+		$random_6  = rand(0,9);
+		$random_7  = rand(0,9);
+		//$random_8  = rand(0,9);
+
+			// http://stackoverflow.com/questions/1136642/ean-8-how-to-calculate-checksum-digit
+		$sum1 = $random_2 + $random_4 + $random_6; 
+		$sum2 = 3 * ($random_1  + $random_3  + $random_5  + $random_7 );
+		$checksum_value = $sum1 + $sum2;
+
+		$checksum_digit = 10 - ($checksum_value % 10);
+		if ($checksum_digit == 10) 
+			$checksum_digit = 0;
+
+		$random_8  = $checksum_digit;
+
+		$tmpBarcodeID = $random_1 . $random_2 . $random_3 . $random_4 . $random_5 . $random_6 . $random_7 . $random_8;
+
+		// LETS CHECK TO SEE IF THIS NUMBER HAS EVER BEEN USED
+		$query = "SELECT stock_id FROM ".TB_PREF."stock_master WHERE stock_id='" . $tmpBarcodeID . "'";
+		$arr_stock = db_fetch(db_query($query));
+  
+		if (  !$arr_stock['stock_id'] ) {
+			return $tmpBarcodeID;
+		}
+		$tmpBarcodeID = "";	 
 	}
 }
 
@@ -389,6 +427,8 @@ function item_settings(&$stock_id, $new_item)
 		stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
+
+    vat_category_list_row(_("VAT category:"), 'vat_category', null, $fresh_item, false, !$new_item);
 
 	check_row(_("Editable description:"), 'editable');
 
@@ -641,44 +681,4 @@ if (get_post('fixed_asset'))
 
 end_form();
 
-//------------------------------------------------------------------------------------
-
 end_page();
-
-function generateBarcode() {
-	$tmpBarcodeID = "";
-	$tmpCountTrys = 0;
-	while ($tmpBarcodeID == "")	{
-		srand ((double) microtime( )*1000000);
-		$random_1  = rand(1,9);
-		$random_2  = rand(0,9);
-		$random_3  = rand(0,9);
-		$random_4  = rand(0,9);
-		$random_5  = rand(0,9);
-		$random_6  = rand(0,9);
-		$random_7  = rand(0,9);
-		//$random_8  = rand(0,9);
-
-			// http://stackoverflow.com/questions/1136642/ean-8-how-to-calculate-checksum-digit
-		$sum1 = $random_2 + $random_4 + $random_6; 
-		$sum2 = 3 * ($random_1  + $random_3  + $random_5  + $random_7 );
-		$checksum_value = $sum1 + $sum2;
-
-		$checksum_digit = 10 - ($checksum_value % 10);
-		if ($checksum_digit == 10) 
-			$checksum_digit = 0;
-
-		$random_8  = $checksum_digit;
-
-		$tmpBarcodeID = $random_1 . $random_2 . $random_3 . $random_4 . $random_5 . $random_6 . $random_7 . $random_8;
-
-		// LETS CHECK TO SEE IF THIS NUMBER HAS EVER BEEN USED
-		$query = "SELECT stock_id FROM ".TB_PREF."stock_master WHERE stock_id='" . $tmpBarcodeID . "'";
-		$arr_stock = db_fetch(db_query($query));
-  
-		if (  !$arr_stock['stock_id'] ) {
-			return $tmpBarcodeID;
-		}
-		$tmpBarcodeID = "";	 
-	}
-}

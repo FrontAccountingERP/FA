@@ -9,25 +9,25 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_tax_group($name, $taxes, $tax_shippings)
+function add_tax_group($name, $taxes, $tax_shippings, $tax_area)
 {
 	begin_transaction();
 
-	$sql = "INSERT INTO ".TB_PREF."tax_groups (name) VALUES (".db_escape($name).")";
+	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_area) VALUES (".db_escape($name).",".db_escape($tax_area).")";
 	db_query($sql, "could not add tax group");
 	
 	$id = db_insert_id();
 	
-	add_tax_group_items($id, $taxes, $tax_shippings);	
+	add_tax_group_items($id, $taxes, $tax_shippings);
 	
 	commit_transaction();	
 }
 
-function update_tax_group($id, $name, $taxes, $tax_shippings)
+function update_tax_group($id, $name, $taxes, $tax_shippings, $tax_area)
 {
 	begin_transaction();	
 
-    $sql = "UPDATE ".TB_PREF."tax_groups SET name=".db_escape($name)." WHERE id=".db_escape($id);
+    $sql = "UPDATE ".TB_PREF."tax_groups SET name=".db_escape($name).",tax_area=".db_escape($tax_area)." WHERE id=".db_escape($id);
 	db_query($sql, "could not update tax group");
 	
 	delete_tax_group_items($id);
@@ -49,7 +49,7 @@ function get_tax_group($type_id)
 	$sql = "SELECT * FROM ".TB_PREF."tax_groups WHERE id=".db_escape($type_id);
 	
 	$result = db_query($sql, "could not get tax group");
-	
+
 	return db_fetch($result);
 }
 
@@ -123,6 +123,33 @@ function get_tax_group_items_as_array($id)
 	}
 	
 	return $ret_tax_array;
+}
+
+function get_tax_group_data($id)
+{
+	$data = get_tax_group($id);
+
+	$data['taxes'] = get_tax_group_items_as_array($id);
+
+	return $data;
+}
+
+/*
+	Heuristic function to find default domestic tax_group.
+*/
+function find_domestic_tax_group()
+{
+
+	$sql =  "SELECT id, cnt FROM 
+		(SELECT g.id, count(*) cnt 
+			FROM ".TB_PREF."tax_group_items i
+			LEFT JOIN ".TB_PREF."tax_groups g ON g.id=i.tax_group_id
+		WHERE tax_shipping=0 AND tax_area=0 AND !inactive
+		GROUP BY g.id) cnts
+		ORDER by cnt DESC";
+	$result = db_query($sql, "cannot get domestic group id");
+	$group = db_fetch($result);
+	return $group['id'];
 }
 
 function get_shipping_tax_as_array($id=null)

@@ -446,7 +446,7 @@ class items_cart
 				add_trans_tax_details($this->trans_type, $this->order_id,
 					$tax_id, $this->tax_info['rate'][$tax_id], 0, $tax_nominal, $net, $this->rate,
 					$this->tran_date,
-					$this->source_ref, $reg);
+					$this->source_ref, $reg, $this->tax_info['tax_group'], $this->tax_info['tax_category']);
 			}
 		}
 	}

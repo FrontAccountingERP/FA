@@ -57,7 +57,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['wip_account'],
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
-				check_value('no_sale'), check_value('no_purchase'));
+				check_value('no_sale'), check_value('no_purchase'), $_POST['vat_category']);
 			display_notification(_('Selected item category has been updated'));
     	} 
     	else 
@@ -67,7 +67,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['cogs_account'], $_POST['inventory_account'], 
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	
-				$_POST['dim2'],	check_value('no_sale'), check_value('no_purchase'));
+				$_POST['dim2'],	check_value('no_sale'), check_value('no_purchase'), $_POST['vat_category']);
 			display_notification(_('New item category has been added'));
     	}
 		$Mode = 'RESET';
@@ -118,7 +118,7 @@ if ($fixed_asset) {
 		_("Asset Account"), _("Deprecation Cost Account"),
 		_("Depreciation/Disposal Account"), "", "");
 } else {
-	$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
+	$th = array(_("Name"), _("Tax type"), _("Units"), _("VAT Category"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 		_("Assembly Account"), "", "");
 }
@@ -135,8 +135,10 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["description"]);
 	label_cell($myrow["tax_name"]);
 	label_cell($myrow["dflt_units"], "align=center");
-	if (!$fixed_asset)
+	if (!$fixed_asset) {
+		label_cell($vat_categories[$myrow["vat_category"]]);
 		label_cell($stock_types[$myrow["dflt_mb_flag"]]);
+	}
 	label_cell($myrow["dflt_sales_act"], "align=center");
 	label_cell($myrow["dflt_inventory_act"], "align=center");
 	label_cell($myrow["dflt_cogs_act"], "align=center");
@@ -177,6 +179,7 @@ if ($selected_id != -1)
 		$_POST['dim2']  = $myrow["dflt_dim2"];
 		$_POST['no_sale']  = $myrow["dflt_no_sale"];
 		$_POST['no_purchase']  = $myrow["dflt_no_purchase"];
+		$_POST['vat_category']  = $myrow["vat_category"];
 	} 
 	hidden('selected_id', $selected_id);
 	hidden('category_id');
@@ -217,6 +220,11 @@ else
 	stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 
 stock_units_list_row(_("Units of Measure:"), 'units', null);
+
+if (is_fixed_asset($_POST['mb_flag']))
+  hidden('vat_category', VC_ASSETS);
+else
+  vat_category_list_row(_("VAT category:"), 'vat_category',null, true, false, $selected_id!=-1);
 
 if (is_fixed_asset($_POST['mb_flag'])) 
 	hidden('no_sale', 0);
