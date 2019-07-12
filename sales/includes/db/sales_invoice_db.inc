@@ -143,15 +143,13 @@ function write_sales_invoice(&$invoice)
 				$dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id : 
 					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
-					-$line_taxfree_price*$prepaid_factor,
-					$invoice->customer_id, "The sales price GL posting could not be inserted");
+					-$line_taxfree_price*$prepaid_factor, $invoice->customer_id);
 
 				if ($invoice_line->discount_percent != 0) {
 
 					$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_,
 						$branch_data["sales_discount_account"], $dim, $dim2,
-						($line_taxfree_price * $invoice_line->discount_percent)*$prepaid_factor,
-						$invoice->customer_id, "The sales discount GL posting could not be inserted");
+						($line_taxfree_price * $invoice_line->discount_percent)*$prepaid_factor, $invoice->customer_id);
 				} /*end of if discount !=0 */
 			}
 		} /*quantity dispatched is more than 0 */
@@ -159,15 +157,13 @@ function write_sales_invoice(&$invoice)
 
 	if (($items_total + $charge_shipping) != 0) {
 		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
-			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax)*$prepaid_factor,
-			$invoice->customer_id, "The total debtor GL posting could not be inserted");
+			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax)*$prepaid_factor, $invoice->customer_id);
 	}
 	$to_allocate = ($items_total + $charge_shipping + $items_added_tax + $freight_added_tax);
 
 	if ($charge_shipping != 0) {
 		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
-			-$invoice->get_tax_free_shipping()*$prepaid_factor, $invoice->customer_id,
-			"The freight GL posting could not be inserted");
+			-$invoice->get_tax_free_shipping()*$prepaid_factor, $invoice->customer_id);
 	}
 	// post all taxes
 	foreach ($taxes as $taxitem) {
@@ -178,8 +174,7 @@ function write_sales_invoice(&$invoice)
 				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT, $invoice->tax_group_id);
 			if (isset($taxitem['sales_gl_code']) && !empty($taxitem['sales_gl_code']) && $taxitem['Value'] != 0)
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
-					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id,
-					"A tax GL posting could not be inserted");
+					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id);
 		}
 	}
 

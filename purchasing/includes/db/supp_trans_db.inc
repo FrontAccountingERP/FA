@@ -14,7 +14,7 @@
 //	FIXME - this should be revised for transaction update case.
 //
 function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $reference, $supp_reference,
-	$amount, $amount_tax, $discount, $err_msg="", $rate=0, $included=0)
+	$amount, $amount_tax, $discount, $rate=0, $included=0)
 {
 	$new = $trans_no==0;
 	$date = date2sql($date_);
@@ -39,10 +39,7 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 		".db_escape($reference).", ".db_escape($supp_reference).", ".db_escape($amount)
 		.", ".db_escape($amount_tax).", ".db_escape($rate).", ".db_escape($discount).", ".db_escape($included).")";
 
-	if ($err_msg == "")
-		$err_msg = "Cannot insert a supplier transaction record";
-
-	db_query($sql, $err_msg);
+	db_query($sql, "Cannot insert a supplier transaction record");
 	add_audit_trail($type, $trans_no, $date_);
 
 	return $trans_no;

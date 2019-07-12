@@ -17,7 +17,7 @@
 // if $currency is not set, then defaults to no conversion
 
 function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
-	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="", $rate=0)
+	$amount, $currency=null, $person_type_id=null, $person_id=null, $rate=0)
 {
 	global $SysPrefs;
 
@@ -63,10 +63,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 
 	$sql .= ") ";
 
-	if ($err_msg == "")
-		$err_msg = "The GL transaction could not be inserted";
-
-	db_query($sql, $err_msg);
+	db_query($sql, "The GL transaction could not be inserted");
 	return $amount_in_home_currency;
 }
 
@@ -77,12 +74,12 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 // $amount is in HOME currency
 
 function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2,
-	$memo_,	$amount, $person_type_id=null, $person_id=null, $err_msg="")
+	$memo_,	$amount, $person_type_id=null, $person_id=null)
 {
 
 	if ($amount != 0)
 		return add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
-			$amount, null, $person_type_id, $person_id, $err_msg);
+			$amount, null, $person_type_id, $person_id);
 	else
 		return 0;
 }
@@ -96,7 +93,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 	{
 		error_log(sprintf( _("Rounding error %s encountered for trans_type:%s,trans_no:%s"), $amount, $type, $trans_id));
 		return add_gl_trans($type, $trans_id, $date_, get_company_pref('exchange_diff_act'), 0, 0, "",
-			$amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");
+			$amount, null, $person_type_id, $person_id);
 	} else
 		return 0;
 }

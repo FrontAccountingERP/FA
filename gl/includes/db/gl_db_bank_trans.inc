@@ -16,7 +16,7 @@
 // $date_ is display date (non-sql)
 
 function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
-	$amount, $person_type_id, $person_id, $currency="", $err_msg="", $rate=0)
+	$amount, $person_type_id, $person_id, $currency="", $rate=0)
 {
 	$sqlDate = date2sql($date_);
 
@@ -41,10 +41,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 		".db_escape($amount_bank).", ".db_escape($person_type_id)
 		.", ". db_escape($person_id).")";
 
-	if ($err_msg == "")
-		$err_msg = "The bank transaction could not be inserted";
-
-	db_query($sql, $err_msg);
+	db_query($sql, "The bank transaction could not be inserted");
 }
 
 //----------------------------------------------------------------------------------------

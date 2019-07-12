@@ -237,8 +237,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
 		$date_, -($amount + $charge),
-		PT_MISC, $person_id, $currency,
-		"Cannot insert a source bank transaction");
+		PT_MISC, $person_id, $currency);
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$trans_no1 = get_next_trans_no(ST_JOURNAL);
@@ -270,8 +269,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	   		0, 0, _("Exchange Variance"), -$total);
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $to_amount, PT_MISC, $person_id,
-		$to_currency, "Cannot insert a destination bank transaction");
+		$date_, $to_amount, PT_MISC, $person_id);
 
 	if ($SysPrefs->auto_currency_revaluation())
 	{
@@ -467,8 +465,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
     	$date_, -$total_amount,
     	$person_type_id, $person_id,
-    	$currency,
-    	"Cannot insert a source bank transaction");
+    	$currency);
 	$total = 0;
 	foreach ($items->gl_items as $gl_item)
 	{
@@ -489,8 +486,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     	{
     		add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
     			$date_, $gl_item->amount,
-    			$person_type_id, $person_id, $currency,
-    			"Cannot insert a destination bank transaction");
+    			$person_type_id, $person_id, $currency);
     		if ($do_exchange_variance)
     		{
     			add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 

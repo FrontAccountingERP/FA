@@ -367,7 +367,7 @@ class items_cart
 				$gl->date = $this->tran_date;
 
 			$total_gl += add_gl_trans($this->trans_type, $this->order_id, $gl->date, $gl->code_id, $gl->dimension_id, $gl->dimension2_id, 
-				$gl->reference,	$gl->amount, $this->currency, $gl->person_type_id, $gl->person_id, "", $this->rate);
+				$gl->reference,	$gl->amount, $this->currency, $gl->person_type_id, $gl->person_id, $this->rate);
 
 			// post to first found bank account using given gl acount code.
 			$is_bank_to = is_bank_account($gl->code_id);
@@ -397,8 +397,7 @@ class items_cart
 		// update bank ledger if used
 		foreach($bank_trans as $bank_id => $amount)
    			add_bank_trans($this->trans_type, $this->order_id, $bank_id, $this->reference,
-				$this->tran_date, $amount, 0, "", $this->currency,
- 				"Cannot insert a destination bank transaction");
+				$this->tran_date, $amount, 0, "", $this->currency);
 
 		// add AP/AR for journal transaction
 		if ($this->trans_type == ST_JOURNAL)

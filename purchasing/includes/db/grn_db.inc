@@ -129,7 +129,7 @@ function write_grn(&$po)
 				if ($clearing_act)
 					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-					    $order_line->taxfree_charge_value($po), $po->supplier_id, '', 0, $order_line->stock_id);
+					    $order_line->taxfree_charge_value($po), $po->supplier_id, 0, $order_line->stock_id);
  				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->quantity, $date_);
 			}

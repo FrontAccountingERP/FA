@@ -151,7 +151,7 @@ function add_supp_invoice(&$supp_trans)  //, $already_voided=false, $allocs=null
 
 	// store basic transaction info
 	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $supp_trans->tran_date, $supp_trans->due_date,
-		$supp_trans->reference, $supp_trans->supp_reference, 0, 0, 0, "", $supp_trans->ex_rate, $supp_trans->tax_included);
+		$supp_trans->reference, $supp_trans->supp_reference, 0, 0, 0, $supp_trans->ex_rate, $supp_trans->tax_included);
 
 	if ($trans_no)
 		move_trans_attachments($trans_type, $trans_no, $invoice_id);

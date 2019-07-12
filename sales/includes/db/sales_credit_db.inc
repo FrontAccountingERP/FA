@@ -136,14 +136,12 @@ function write_credit_note(&$credit_note, $write_off_acc)
 
 		$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0,
 			-($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax),
-			$credit_note->customer_id,
-			"The total debtor GL posting for the credit note could not be inserted");
+			$credit_note->customer_id);
 	}
 
 	if ($credit_note->freight_cost != 0) {
 		$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0,
-			$credit_note->get_tax_free_shipping(), $credit_note->customer_id,
-			"The freight GL posting for this credit note could not be inserted");
+			$credit_note->get_tax_free_shipping(), $credit_note->customer_id);
 	}
 
 	foreach ($taxes as $taxitem) {
@@ -156,8 +154,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 				$credit_note->document_date, $credit_note->reference, TR_OUTPUT, $credit_note->tax_group_id);
 
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0,
-				$taxitem['Value'], $credit_note->customer_id,
-				"A tax GL posting for this credit note could not be inserted");
+				$taxitem['Value'], $credit_note->customer_id);
 		}
 	}
 	/*Post a balance post if $total != 0 */
@@ -216,8 +213,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
 			$dim, $dim2, "", -($unit_cost * $order_line->qty_dispatched),
-			PT_CUSTOMER, $order->customer_id,
-			"The cost of sales GL posting could not be inserted");
+			PT_CUSTOMER, $order->customer_id);
 
 		/*now the stock entry*/
 		if ($credit_type == "WriteOff") {
@@ -229,8 +225,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0,
 			"", ($unit_cost * $order_line->qty_dispatched),
-			PT_CUSTOMER, $order->customer_id,
-			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
+			PT_CUSTOMER, $order->customer_id);
 
 	} /* end of if GL and stock integrated and standard cost !=0 */
 
@@ -253,15 +248,13 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 		else
 			$sales_account = $stock_gl_codes['sales_account'];
 		$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2,
-			($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id,
-			"The credit note GL posting could not be inserted");
+			($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id);
 
 		if ($order_line->discount_percent != 0) {
 
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"],
 				$dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent),
-				$order->customer_id,
-				"The credit note discount GL posting could not be inserted");
+				$order->customer_id);
 
 		} /*end of if discount !=0 */
 	} /*if line_price!=0 */

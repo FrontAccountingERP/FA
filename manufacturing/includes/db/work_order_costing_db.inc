@@ -135,8 +135,7 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
 	if ($is_bank_to)
 	{
 		add_bank_trans(ST_JOURNAL, $journal_id, $is_bank_to, "",
-			$date, -$amount, PT_WORKORDER, $wo_id, get_company_currency(),
-			"Cannot insert a destination bank transaction");
+			$date, -$amount, PT_WORKORDER, $wo_id, get_company_currency());
 	}
 	add_journal(ST_JOURNAL, $journal_id, $amount, $date, get_company_currency(), $ref, '', 1, $date, $date);
 
