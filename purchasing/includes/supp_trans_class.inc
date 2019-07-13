@@ -16,31 +16,34 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 class supp_trans 
 {
-
-	var $grn_items; /*array of objects of class grn_item using the id as the pointer */
-	var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
-	var $supplier_id;
-	var $supplier_name;
-	var $terms;
-	var $ex_rate;
-	
-	var $tax_description;
-	var $tax_group_id;
-	var $tax_included;
-	
-	var $trans_type;	// invoice or credit
+	//db interface
 	var $trans_no;
-
-	var $Comments;
+	var $trans_type;	// invoice or credit
+	var $supplier_id;
+	var $reference;
+	var $supp_reference;
 	var $tran_date;
 	var $due_date;
-	var $src_docs = array();		// source invoice for this credit note (if any)
-
-	var $supp_reference;
-	var $reference;
 	var $ov_amount;
 	var $ov_discount;
 	var $ov_gst;
+	var $ex_rate;
+
+	var $tax_included;
+
+	var $grn_items; /*array of objects of class grn_item using the id as the pointer */
+	var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
+	var $Comments;
+	//---
+
+	var $supplier_name;
+	var $terms;
+	
+	var $tax_description;
+	var $tax_group_id;
+
+	var $src_docs = array();		// source invoice for this credit note (if any)
+
 	var $credit = 0;
 	var $currency;
 	var $tax_overrides = array();		// array of taxes manually inserted during sales invoice entry
@@ -63,10 +66,10 @@ class supp_trans
  		$this->gl_codes = array();
 		if ($trans_no) {
 			read_supp_invoice($trans_no, $trans_type, $this);
+
 			if ($trans_type == ST_SUPPCREDIT)
-			{
 				$this->src_docs = find_src_invoices($trans_no);
-			}
+
 			read_supplier_details_to_trans($this, $this->supplier_id);
 		}
 	}
@@ -119,27 +122,18 @@ class supp_trans
 		$this->gl_codes = array();
 	}
 
-    function get_taxes($tax_group_id=null, $shipping_cost=0, $gl_codes=true)
+    function get_taxes($gl_codes=true)
     {
     	$items = array();
     	$prices = array();
 
-        if ($tax_group_id == null)
-        	$tax_group_id = $this->tax_group_id;
-
-		// preload the taxgroup
-		$tax_group = get_tax_group_items_as_array($tax_group_id);
-
         foreach ($this->grn_items as $ln_itm) 
         {
         	$items[] = $ln_itm->item_code;
-        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->chg_price),
-				user_price_dec());
+        	$prices[] = round( $ln_itm->this_quantity_inv * $ln_itm->chg_price, user_price_dec());
         }
 
-        if ($tax_group_id == null)
-        	$tax_group_id = $this->tax_group_id;
-        $taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost, $tax_group_id, 
+        $taxes = get_tax_for_items($this->trans_type, $items, $prices, 0, $this->tax_group_id, 
         	$this->tax_included);
 
 		if (isset($this->tax_overrides))
@@ -149,7 +143,7 @@ class supp_trans
 			}
 
 		// Taxes included in gl_codes table have exact value, but count to overrides as well.
-		// Therefore when we want to now taxes only for items (gl_codes==false),
+		// Therefore when we want to know taxes only for items (gl_codes==false),
 		// we have to subtract gl_taxes from override values.
 		foreach ($this->gl_codes as $gl_code)
 		{
@@ -162,7 +156,6 @@ class supp_trans
 					$taxes[$index]['Override'] -= $gl_code->amount;
 			}
 		}
-
         return $taxes;
     }
 	//
@@ -172,14 +165,8 @@ class supp_trans
     {
     	$total = 0;
 
-		// preload the taxgroup !
-		if ($tax_group_id != null)
-			$tax_group = get_tax_group_items_as_array($tax_group_id);
-		else
-			$tax_group = null;
-
 		foreach ($this->grn_items as $ln_itm)
-    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $this->trans_type)),
 			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
@@ -189,6 +176,7 @@ class supp_trans
    		}
    		return $total;
     }
+
 	//
 	//	Returns transaction total 
 	//
@@ -207,6 +195,10 @@ class supp_trans
 		return $total;
 	}
 
+	/*
+		Split line value to cost and taxes.
+		Stores calculated amounts in $line->gl_amounts array.
+	*/
 	function split_line_values()
 	{
 		// split nominal line values
@@ -248,16 +240,19 @@ class grn_item
 all the info to do the necessary entries without looking up ie additional queries of the database again */
 
 	var $id;
+
+	var $gl_code;
+
 	var $po_detail_item;
 	var $item_code;
 	var $item_description;
+	var $this_quantity_inv;
+	var $chg_price;
+
 	var $qty_recd;
 	var $prev_quantity_inv;
-	var $this_quantity_inv;
 	var $order_price;
-	var $chg_price;
 	var $std_cost_unit;
-	var $gl_code;
 	var $tax_included;
 	var $gl_amounts; 	// splited line value (after call to split_line_value method
 	var $vat_category;
@@ -274,9 +269,9 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->qty_recd = $qty_recd;
 		$this->prev_quantity_inv = $prev_quantity_inv;
 		$this->this_quantity_inv = $this_quantity_inv;
-		$this->order_price =$order_price;
+		$this->order_price = $order_price; 		// price on order
 		$this->chg_price = $chg_price;
-		$this->std_cost_unit = $std_cost_unit;
+		$this->std_cost_unit = $std_cost_unit;	// provisional cost for clearing
 		$this->gl_code = $gl_code;
 		$this->tax_included = $tax_included;
 
@@ -284,22 +279,16 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->vat_category = $opts['vat_category'];
 	}
 
-	function full_charge_price($tax_group_id, $trans_type=ST_PURCHORDER)
-	{
-		return get_full_price_for_item($trans_type, $this->item_code, 
-		  $this->chg_price, $tax_group_id, $this->tax_included);
-	}
+//	function full_charge_price($tax_group_id, $trans_type=ST_PURCHORDER)
+//	{
+//		return get_full_price_for_item($trans_type, $this->item_code, 
+//		  $this->chg_price, $tax_group_id, $this->tax_included);
+//	}
 
 	function taxfree_charge_price($tax_group_id, $trans_type=ST_PURCHORDER)
 	{
 		return get_tax_free_price_for_item($trans_type, $this->item_code, $this->chg_price, 
 		  $tax_group_id, $this->tax_included);
-	}
-
-	function taxfree_value($tax_group_id, $trans_type=ST_PURCHORDER)
-	{
-		return get_tax_free_price_for_item($trans_type, $this->item_code, $this->this_quantity_inv * $this->chg_price, 
-		  $tax_group_id, $this->tax_included, $tax_group);
 	}
 
 	/*

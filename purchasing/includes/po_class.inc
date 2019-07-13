@@ -9,12 +9,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* Definition of the purch_order class to hold all the information for a purchase order and delivery
+/*
+	This class serves as cart for PO or GRN.
 */
 
 class purch_order 
 {
-
+	// db interface
 	var $trans_type; // order/grn/invoice (direct)
 	var $supplier_id;
 	var $Comments;
@@ -28,16 +29,18 @@ class purch_order
 	var $alloc; // sum of payments allocated
 	var $tax_included; // type of prices
 
+	var $due_date;		// for grn this is delivery date
+	var $order_no;		// for order modification, grn batch
+	var $ex_rate;		// for grn
+
 	var $line_items;
+	//----
+
 	var $curr_code;
 	var $supplier_name;
-	var $due_date;
-	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
-	var $lines_on_order = 0;
 	var $credit;
 	var $tax_group_id;
 	var $terms;
-	var $ex_rate;
 	var $cash_account;
 	var $dimension,
 		$dimension2;
@@ -47,12 +50,12 @@ class purch_order
 	var $prepayments = array();
 
 	var $fixed_asset = false;
-	var $grn_id ;	// grn batch id used in edition only
+	var $grn_id;	// grn batch id used in edition only
 
 	function __construct()
 	{
 		$this->line_items = array();
-		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
+		$this->order_no = $this->supplier_id = 0;
 		$this->tax_group_id = find_domestic_tax_group(); // prevent tax errors until supplier is selected
 	}
 	
@@ -66,16 +69,10 @@ class purch_order
 		$this->tax_area = $tax_area;
 	}
 	
-	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
+	function add_to_order($stock_id, $qty, $item_descr, $price, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0)
 	{
-		if (isset($qty) && $qty != 0)
-		{
-			$this->line_items[$line_no] = new po_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
-				$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id);
-			$this->lines_on_order++;
-			return 1;
-		}
-		return 0;
+		$this->line_items[] = new po_line_details($stock_id, $item_descr, $qty, $price,
+			$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id, $po_item_id);
 	}
 
 	function update_order_item($line_no, $qty, $price, $req_del_date, $description="")
@@ -102,8 +99,6 @@ class purch_order
 	{
     	unset($this->line_items);
 		$this->line_items = array();
-		
-		$this->lines_on_order = 0;  
 		$this->order_no = 0;
 	}
 
@@ -232,30 +227,28 @@ class purch_order
 
 class po_line_details 
 {
-
-	var $line_no;
-	var $po_detail_rec;
+	//db interface
+	var $po_item_id;
 	var $grn_item_id;
 	var $stock_id;
 	var $item_description;
 	var $price;
 	var $units;
 	var $req_del_date;
-
-	var $quantity;		// this document line quantity
 	var $qty_inv;	// quantity already invoiced against this line (all PIs)
 	var $qty_received;	// quantity already received against this line (all GRNs)
 	var $qty_ordered;	// quantity on order (not used on PO entry)
-
 	var $unit_cost;
+	var $quantity;		// this document line quantity
+	//---
+
 	var $descr_editable;
 	var $vat_category;
+	var $gl_amounts; 	// splited line value (after call to split_line_value method)
 
-	function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
-		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0)
+	function __construct($stock_item, $item_descr, $qty, $prc, $req_del_date, 
+		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0)
 	{
-		/* Constructor function to add a new LineDetail object with passed params */
-		$this->line_no = $line_no;
 		$this->stock_id = $stock_item;
 		$item_row = get_item($stock_item);
 		if (!$item_row) 
@@ -269,7 +262,6 @@ class po_line_details
 		$this->quantity = $qty;
 		$this->req_del_date = $req_del_date;
 		$this->price = $prc;
-//		$this->units = $uom;
 		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
@@ -277,6 +269,7 @@ class po_line_details
 		$this->grn_item_id = $grn_item_id;
 		$this->vat_category = $item_row["vat_category"];
 		$this->qty_ordered = $qty_ordered;
+		$this->po_item_id = $po_item_id;
 	}
 	
 	//

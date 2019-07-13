@@ -99,7 +99,7 @@ function display_po_receive_items()
 
     if (count($_SESSION['PO']->line_items) > 0 )
     {
-       	foreach ($_SESSION['PO']->line_items as $ln_itm)
+       	foreach ($_SESSION['PO']->line_items as $line_no => $ln_itm)
        	{
 
 			alt_table_row_color($k);
@@ -130,7 +130,7 @@ function display_po_receive_items()
 				qty_cell($qty_outstanding, false, $dec);
 
 			if ($mod_grn || $qty_outstanding > 0)
-				qty_cells(null, $ln_itm->line_no, number_format2($ln_itm->quantity, $dec), "align=right", null, $dec);
+				qty_cells(null, $line_no, number_format2($ln_itm->quantity, $dec), "align=right", null, $dec);
 			else
 				label_cell(number_format2($ln_itm->quantity, $dec), "align=right");
 
@@ -313,23 +313,23 @@ function process_receive_po()
 
 if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 {
-	/* if update quantities button is hit page has been called and ${$line->line_no} would have be
+	/* if update quantities button is hit page has been called and ${$line_no} would have be
  	set from the post to the quantity to be received in this receival*/
-	foreach ($_SESSION['PO']->line_items as $line)
+	foreach ($_SESSION['PO']->line_items as $line_no => $line)
 	{
 	 if( ($line->qty_ordered - $line->qty_received) > 0) {
-		$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
-		if (!check_num($line->line_no))
-			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
+		$_POST[$line_no] = max($_POST[$line_no], 0);
+		if (!check_num($line_no))
+			$_POST[$line_no] = number_format2(0, get_qty_dec($line->stock_id));
 
 		if (!isset($_POST['tran_date']) || $_POST['tran_date'] == "")
 			$_POST['tran_date'] = new_doc_date();
 
-		$_SESSION['PO']->line_items[$line->line_no]->quantity = input_num($line->line_no);
+		$_SESSION['PO']->line_items[$line_no]->quantity = input_num($line_no);
 
 		if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0)
 		{
-			$_SESSION['PO']->line_items[$line->line_no]->item_description = $_POST[$line->stock_id . "Desc"];
+			$_SESSION['PO']->line_items[$line_no]->item_description = $_POST[$line->stock_id . "Desc"];
 		}
 	 }
 	}

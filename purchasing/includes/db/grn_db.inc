@@ -148,7 +148,7 @@ function write_grn(&$po)
 			if ($order_line->quantity + $order_line->qty_received > $order_line->qty_ordered)
 				$order_line->qty_ordered = $order_line->quantity + $order_line->qty_received;
 
-			$grn_item = write_grn_item($grn, $order_line->po_detail_rec,
+			$grn_item = write_grn_item($grn, $order_line->po_item_id,
 				$order_line->stock_id, $order_line->item_description, $order_line->quantity, $order_line->grn_item_id);
 
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
@@ -363,24 +363,15 @@ function read_grn_items_to_order($grn_batch, &$order)
   	{
 
 	 	while ($myrow = db_fetch_assoc($result))
-	 	{
+		{
 	 		if ($myrow['qty_recd'] == 0 && $myrow['quantity_inv'] == 0)
 				continue; // We will not have empty credited rows.
-		 	if (is_null($myrow["units"]))
-		 	{
-				$units = "";
-		 	}
-		 	else
-		 	{
-				$units = $myrow["units"];
-		 	}
 
-			$order->add_to_order($order->lines_on_order, $myrow["item_code"],
-				$myrow["qty_recd"],$myrow["description"], $myrow["unit_price"],$units,
+			$order->add_to_order($myrow["item_code"],
+				$myrow["qty_recd"],$myrow["description"], $myrow["unit_price"],
 				sql2date($myrow["req_del_date"]), $myrow["quantity_inv"],
-				$myrow["quantity_received"], $myrow["quantity_ordered"], $myrow["id"]);
+				$myrow["quantity_received"], $myrow["quantity_ordered"], $myrow["id"], $myrow["po_detail_item"]);
 
-			$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
 		} /* line po from purchase order details */
   	} //end of checks on returned data set
 }

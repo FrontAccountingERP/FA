@@ -174,7 +174,7 @@ function invoice_totals(&$supp_trans)
    	start_table(TABLESTYLE, "width='95%'");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
-    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
+    $taxes = $supp_trans->get_taxes();
     $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included, 0, true);
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);

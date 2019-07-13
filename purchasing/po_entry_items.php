@@ -311,9 +311,8 @@ function handle_add_new_item()
 
 			if ($allow_update)
 			{
-				$_SESSION['PO']->add_to_order (count($_SESSION['PO']->line_items), $_POST['stock_id'], input_num('qty'), 
-					get_post('stock_id_text'), //$myrow["description"], 
-					input_num('price'), '', // $myrow["units"], (retrived in cart)
+				$_SESSION['PO']->add_to_order($_POST['stock_id'], input_num('qty'), 
+					get_post('stock_id_text'), input_num('price'), 
 					$_SESSION['PO']->trans_type == ST_PURCHORDER ? $_POST['req_del_date'] : '', 0, 0);
 
 				unset_form_variables();

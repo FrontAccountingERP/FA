@@ -191,14 +191,14 @@ function add_direct_supp_trans($cart)
 	$inv->ov_amount = $inv->ov_gst = $inv->ov_discount = 0;
 	$total = 0;
 		foreach($cart->line_items as $key => $line) {
-		$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
+		$inv->add_grn_to_trans($line->grn_item_id, $line->po_item_id, $line->stock_id,
 			$line->item_description, $line->quantity, 0, $line->quantity,
 			$line->price, $line->price, true, get_unit_cost($line->stock_id), '');
 		$total += round2(($line->quantity * $line->price), user_price_dec());
 	}
 	$inv->tax_overrides = $cart->tax_overrides;
 	if (!$inv->tax_included) {
-		$taxes = $inv->get_taxes($inv->tax_group_id, 0, false);
+		$taxes = $inv->get_taxes();
 		foreach( $taxes as $taxitem) {
 			$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
 		}

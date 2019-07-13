@@ -99,7 +99,7 @@ function add_po(&$po_obj)
 		db_escape($po_line->price) . ", " .
 		db_escape($po_line->quantity). ")";
 		db_query($sql, "One of the purchase order detail records could not be inserted");
-		$po_obj->line_items[$line_no]->po_detail_rec = db_insert_id();
+		$po_obj->line_items[$line_no]->po_item_id = db_insert_id();
      }
 
 	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
@@ -139,7 +139,7 @@ function update_po(&$po_obj)
     {
     	$sql = "INSERT INTO ".TB_PREF."purch_order_details (po_detail_item, order_no, item_code, 
     		description, delivery_date, unit_price, quantity_ordered, quantity_received) VALUES ("
-			.db_escape($po_line->po_detail_rec ? $po_line->po_detail_rec : 0). ","
+			.db_escape($po_line->po_item_id ? $po_line->po_item_id : 0). ","
 			.$po_obj->order_no . ","
 			.db_escape($po_line->stock_id). ","
 			.db_escape($po_line->item_description). ",'"
@@ -213,7 +213,8 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 	$sql = "SELECT poline.*, units
 		FROM ".TB_PREF."purch_order_details poline
 			LEFT JOIN ".TB_PREF."stock_master item	ON poline.item_code=item.stock_id
-		WHERE order_no =".db_escape($order_no);
+		WHERE order_no =".db_escape($order_no)
+			." AND poline.quantity_ordered!=0";
 
     if ($open_items_only)
  		$sql .= " AND (poline.quantity_ordered > poline.quantity_received) ";
@@ -232,21 +233,12 @@ function read_po_items($order_no, &$order, $open_items_only=false)
         		if ($data['supplier_description'] != "")
         			$myrow['description'] = $data['supplier_description'];
         	}		
-            if (is_null($myrow["units"]))
-            {
-		       	$units = "";
-            }
-            else
-            {
-                $units = $myrow["units"];
-            }
 
-            if ($order->add_to_order($order->lines_on_order, $myrow["item_code"],
-            	$myrow["quantity_ordered"],$myrow["description"],
-            	$myrow["unit_price"],$units, sql2date($myrow["delivery_date"]),
-            	$myrow["qty_invoiced"], $myrow["quantity_received"], $myrow["quantity_ordered"])) {
-				$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
-			}
+           	$order->add_to_order($myrow["item_code"],
+           		$myrow["quantity_ordered"],$myrow["description"],
+            	$myrow["unit_price"], sql2date($myrow["delivery_date"]),
+   	        	$myrow["qty_invoiced"], $myrow["quantity_received"],
+   	        	$myrow["quantity_ordered"], 0, $myrow["po_detail_item"]);
         } /* line po from purchase order details */
     } //end of checks on returned data set
 }

@@ -101,9 +101,10 @@ function get_base_taxdata($stock_id, $group_id)
 	Returned array contains calculated values for GL postings and tax registration:
 		'Net' - value without tax,
 		'Tax' - tax sum,
-		'Cost' - cost value (can be higher then Net value) used in parallel postings,
+		'Cost' - cost value (can be higher then Net value),
 		'vat_category' -  stock tax category
-	and detailed info for any tax applicable tax (any array with numeric key):
+
+	and (with numeric keys) detailed info for any applicable tax rate:
 		'tax_type_id' - tax type id
 		'Value' - charged tax value
 		'Deductible' - tax deductible (can be lower than Value for special goods)
