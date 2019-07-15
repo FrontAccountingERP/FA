@@ -121,43 +121,41 @@ function write_grn(&$po)
 		{
 			$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
-			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL 
-			  and recorded in the stock movements for FIFO/LIFO stocks valuations*/
+			//------------------------------------------------------------------------------------------------------
+			if ($order_line->qty_received == 0)
+			{
+				/* This must be the first receipt of goods against this PO line. */
+			   	/* Store provisional cost used in GL posting - inventory is updated to actual cost later when invoice is received */
+			   	$order_line->unit_cost = round2($order_line->taxfree_charge_value($po) / $po->ex_rate / $order_line->quantity, user_price_dec());
+			}
+
 			//------------------- update average material cost and clearing account --------------------------------
 			if (is_inventory_item($order_line->stock_id))
 			{
 				if ($clearing_act)
-					$total += add_gl_trans_supplier(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-					    $order_line->taxfree_charge_value($po), $po->supplier_id, 0, $order_line->stock_id);
+					$total += add_gl_trans_std_cost(ST_SUPPRECEIVE, $grn, $date_, $stock_gl_code["inventory_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $order_line->stock_id,
+					    $order_line->unit_cost*$order_line->quantity, PT_SUPPLIER, $po->supplier_id);
+
  				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 					$order_line->quantity, $date_);
 			}
-			//------------------------------------------------------------------------------------------------------
-			if ($order_line->qty_received == 0)
-			{
-				/*This must be the first receipt of goods against this line */
-			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
-			   	$order_line->unit_cost = get_unit_cost($order_line->stock_id);
-			}
-			// Update the purchase data table
-			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
-				$order_line->item_description); 
 
-			/*Need to insert a grn item */ // also need to check for over-receive.(within allowance)
+			/* Need to insert a grn item */ // also need to check for over-receive.(within allowance)
 			if ($order_line->quantity + $order_line->qty_received > $order_line->qty_ordered)
 				$order_line->qty_ordered = $order_line->quantity + $order_line->qty_received;
 
+			/* Store line details and update po_line */
 			$grn_item = write_grn_item($grn, $order_line->po_item_id,
-				$order_line->stock_id, $order_line->item_description, $order_line->quantity, $order_line->grn_item_id);
+				$order_line->stock_id, $order_line->item_description, $order_line->quantity, $order_line->grn_item_id, $order_line->unit_cost);
 
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
 			 	$order_line->quantity, $order_line->unit_cost, $order_line->taxfree_charge_value($po)/$order_line->quantity);
 
-		} /*quantity received is != 0 */
-	} /*end of order_line loop */
+		} /* quantity received is != 0 */
+	}
 
 	if ($clearing_act && $total != 0.0) {
 		$accs = get_supplier_accounts($po->supplier_id);
@@ -170,6 +168,7 @@ function write_grn(&$po)
 
 	$po->trans_no = $grn;
 	hook_db_postwrite($po, ST_SUPPRECEIVE);
+
 	commit_transaction();
 
 	return $grn;
@@ -208,7 +207,7 @@ function update_grn_batch($grn, $reference, $location, $date_)
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function write_grn_item($grn_batch_id, $po_detail_item, $item_code, $description, $quantity_received, $grn_item_id)
+function write_grn_item($grn_batch_id, $po_detail_item, $item_code, $description, $quantity_received, $grn_item_id, $unit_cost)
 {
 	if ($grn_item_id)
 		$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=".db_escape($quantity_received)
@@ -223,7 +222,8 @@ function write_grn_item($grn_batch_id, $po_detail_item, $item_code, $description
 
 	$sql = "UPDATE ".TB_PREF."purch_order_details po,
 			(SELECT SUM(qty_recd) received FROM ".TB_PREF."grn_items grn WHERE po_detail_item=".db_escape($po_detail_item).") grn
-        SET po.quantity_received = grn.received
+        SET po.quantity_received = grn.received,
+            po.std_cost_unit =".db_escape($unit_cost)."
         WHERE po_detail_item = ".db_escape($po_detail_item);
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
@@ -262,24 +262,23 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 	$myrow = db_fetch($result);
 
 	$sql = "UPDATE ".TB_PREF."purch_order_details
-        SET quantity_received = quantity_received + "
+        SET quantity_received = quantity_received - "
         	.db_escape($entered_grn->this_quantity_inv).",
-        quantity_ordered = quantity_ordered + "
+        quantity_ordered = quantity_ordered - "
         .db_escape($entered_grn->this_quantity_inv).",
-        qty_invoiced = qty_invoiced + ".db_escape($entered_grn->this_quantity_inv).",
-        std_cost_unit=".db_escape($mcost).",
+        qty_invoiced = qty_invoiced - ".db_escape($entered_grn->this_quantity_inv).",
         act_price=".db_escape($entered_grn->chg_price)."
         WHERE po_detail_item = ".$myrow["po_detail_item"];
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
 	//$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=0, quantity_inv=0 WHERE id=$entered_grn->id";
-	$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+".db_escape($entered_grn->this_quantity_inv)
-	.",quantity_inv=quantity_inv+".db_escape($entered_grn->this_quantity_inv)
+	$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd-".db_escape($entered_grn->this_quantity_inv)
+	.",quantity_inv=quantity_inv-".db_escape($entered_grn->this_quantity_inv)
 	." WHERE id=".db_escape($entered_grn->id);
 	db_query($sql);
 
     add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
-       	$entered_grn->this_quantity_inv, $mcost, $entered_grn->chg_price);
+       -$entered_grn->this_quantity_inv, $mcost, $entered_grn->chg_price);
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
@@ -338,7 +337,7 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 
 // get the details for a given grn item
 
-function get_grn_item_detail($grn_item_no)
+function get_grn_item($grn_item_no)
 {
 	$sql = "SELECT grn.*, po.unit_price, grn.qty_recd - grn.quantity_inv AS QtyOstdg,
     		po.std_cost_unit
@@ -370,8 +369,7 @@ function read_grn_items_to_order($grn_batch, &$order)
 			$order->add_to_order($myrow["item_code"],
 				$myrow["qty_recd"],$myrow["description"], $myrow["unit_price"],
 				sql2date($myrow["req_del_date"]), $myrow["quantity_inv"],
-				$myrow["quantity_received"], $myrow["quantity_ordered"], $myrow["id"], $myrow["po_detail_item"]);
-
+				$myrow["quantity_received"], $myrow["quantity_ordered"], $myrow["id"], $myrow["po_detail_item"], $myrow["std_cost_unit"]);
 		} /* line po from purchase order details */
   	} //end of checks on returned data set
 }

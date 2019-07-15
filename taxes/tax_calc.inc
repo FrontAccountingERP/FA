@@ -95,8 +95,8 @@ function get_base_taxdata($stock_id, $group_id)
 		$amount - price/value to be splitted
 		$tax_group - entity tax group
 		$tax_included - whether value includes all taxes
-		$vat_factor - 0-1; tax deduction factor
-		$allow_reverse - option for invoice - whether to honour reverse charging
+		$vat_factor - 0-1; tax deduction factor (purchases, not used for now; depends on whthere it is related to exempt or taxed sales)
+		$allow_reverse - option for invoice - whether to honour reverse charging (depends on customer tax status)
 
 	Returned array contains calculated values for GL postings and tax registration:
 		'Net' - value without tax,
@@ -107,16 +107,26 @@ function get_base_taxdata($stock_id, $group_id)
 	and (with numeric keys) detailed info for any applicable tax rate:
 		'tax_type_id' - tax type id
 		'Value' - charged tax value
-		'Deductible' - tax deductible (can be lower than Value for special goods)
+		'Deductible' - tax deductible (can be lower than Value for special goods or mixed sales structure)
 		'Payable' - tax payable
-		'Adjust' - additional adjustemnt to deductible tax due to sales structure factor
+		'Adjust' - additional adjustment to deductible tax due to sales structure factor
 		'rate' - tax rate
 		'sales_gl_code' - sales tax GL account
 		'purchasing_gl_code' - purchase tax GL account
 		'tax_type_name' - name of tax type
+
+	Price value is splitted as follows:
+		Tax: sum of Value (for applicable taxes)
+		Net: amount - Tax
+		Cost: Net + sum(Payable-Deductible)
+	 for every applicable tax rate:
+		Value: tax calculated or 0
+		Deductible: vat_factor*Value or 0
+		Adjust: Value-Deductible or 0
+		Payable: 0 or Value
 */
 function split_item_price($stock_id, $amount, $group_id, $tax_included=false, $trans_type=ST_SUPPINVOICE, $vat_factor = 1, 
-	$allow_reverse=true, $date=null)
+	$allow_reverse=true)
 {
 	global $TS;
 
@@ -187,13 +197,17 @@ function split_item_price($stock_id, $amount, $group_id, $tax_included=false, $t
 
 			    	if ($taxopt & TAX_DEDUCTIBLE) // tax is deductible
 			    	{
-						$tax['Deductible'] = round2($vat_value*$factor, 2); // [4815] To avoid rounding issues if $dec > 2 decimal places
+						$tax['Deductible'] = round2($vat_value*$factor, 2); // avoid rounding issues if $dec > 2 decimal places
 	  					$tax['Adjust'] = round2(-(1-$vat_factor)*$factor*$vat_value, $dec); // adjustment due to mixed taxed/exmpt sales activity
 				    } else {
 						$tax['Deductible'] = 0;
 	  					$tax['Adjust'] = 0;
 					}
-			    	$ret_array['Cost'] += $tax['Value'] + ($tax['Payable'] - $tax['Deductible']);// - $tax['Adjust'];
+
+					if ($tax['Payable'])
+				    	$ret_array['Cost'] += ($tax['Payable'] - $tax['Deductible']);
+				    elseif ($tax['Deductible'])
+				    	$ret_array['Cost'] += $tax['Adjust'];
 
 			    	$ret_array[] = $tax;
 					$ret_array['Tax'] += $tax['Value'];
@@ -227,7 +241,7 @@ function get_tax_for_items($trans_type, $items, $prices, $shipping_cost, $tax_gr
 	foreach($items as $i => $stock_id)
 	{
 		$taxdata = split_item_price($stock_id, $prices[$i], $tax_group, $tax_included, $trans_type,
-			 $vat_factors ? $vat_factors[$i] : 1, $allow_reverse, $date=null); // FIXME: $date
+			 $vat_factors ? $vat_factors[$i] : 1, $allow_reverse);
 
 		foreach ($taxdata as $key => $data)
 		{

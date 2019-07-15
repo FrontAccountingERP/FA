@@ -16,7 +16,6 @@
 	TODO:
 	. changes in Sales module
 	. change all tax related methods in supp_trans to use split_item_price instead of other functions like get_taxes_for_item
-	. all tax types selections in tax group table (beside domestic group) are currently ignored (see FIXME in split_item_price())
 */
 define('TAX_NONE', 0); // none option
 define('TQ_NONE', 0); // none option

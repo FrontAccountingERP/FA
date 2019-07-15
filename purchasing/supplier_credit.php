@@ -236,10 +236,7 @@ function handle_commit_credit_note()
 	if (!check_data())
 		return;
 
-	if (isset($_POST['invoice_no']))
-		$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
-	else
-		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);
@@ -270,7 +267,7 @@ function check_item_data($n)
 		set_focus('ChgPrice'.$n);
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -278,11 +275,12 @@ function commit_item_data($n)
 {
 	if (check_item_data($n))
 	{
+		$item = get_grn_item($n);
 		$_SESSION['supp_trans']->add_grn_to_trans($n,
-    		$_POST['po_detail_item'.$n], $_POST['item_code'.$n],
-    		$_POST['item_description'.$n], $_POST['qty_recd'.$n],
-    		$_POST['prev_quantity_inv'.$n], input_num('This_QuantityCredited'.$n),
-    		$_POST['order_price'.$n], input_num('ChgPrice'.$n));
+    		$item['po_detail_item'], $item['item_code'],
+    		$item['description'], $item['qty_recd'],
+    		$item['quantity_inv'], input_num('This_QuantityCredited'.$n),
+    		$item['unit_price'], input_num('ChgPrice'.$n), $item['std_cost_unit']);
 		reset_tax_input();
 	}
 }

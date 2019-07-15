@@ -37,7 +37,6 @@ function getTransactions($fromsupp)
 			item.description,
 			qty_recd,
 			quantity_inv,
-			std_cost_unit,
 			act_price,
 			unit_price
 		FROM ".TB_PREF."grn_items item,
@@ -102,7 +101,7 @@ function print_outstanding_GRN()
 	$SuppTot_Val=0;
 	$res = getTransactions($fromsupp);
 
-	While ($GRNs = db_fetch($res))
+	while ($GRNs = db_fetch($res))
 	{
 		$dec2 = get_qty_dec($GRNs['item_code']);
 		if ($Supplier != $GRNs['supplier_id'])
@@ -126,9 +125,9 @@ function print_outstanding_GRN()
 		$rep->AmountCol(3, 4, $GRNs['qty_recd'], $dec2);
 		$rep->AmountCol(4, 5, $GRNs['quantity_inv'], $dec2);
 		$QtyOstg = $GRNs['qty_recd'] - $GRNs['quantity_inv'];
-		$Value = ($GRNs['qty_recd'] - $GRNs['quantity_inv']) * $GRNs['act_price'];
+		$Value = ($GRNs['qty_recd'] - $GRNs['quantity_inv']) * $GRNs['unit_price'];
 		$rep->AmountCol(5, 6, $QtyOstg, $dec2);
-		$rep->AmountCol(6, 7, $GRNs['act_price'], $dec);
+		$rep->AmountCol(6, 7, $GRNs['unit_price'], $dec);
 		$rep->AmountCol(7, 8, $Value, $dec);
 		$Tot_Val += $Value;
 		$SuppTot_Val += $Value;

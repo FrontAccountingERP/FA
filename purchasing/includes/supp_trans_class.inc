@@ -213,11 +213,11 @@ class supp_trans
 			if ($tax['Value'] != 0 && isset($tax['Override']) && ($tax['Value'] != $tax['Override']))
 			{
 				foreach($this->grn_items as $id => $line)
-					if ($line->gl_amounts[0]['tax_type_id'] == $tax_id) // assumed single tax rate on item, so always gl_mount[0] is valid
+					if ($line->gl_amounts[0]['tax_type_id'] == $tax_id) // assumed single tax rate on item, so always gl_amounts[0] is valid
 					{
 						$diff = $tax['Override'] - $tax['Value'];
 						$this->grn_items[$id]->gl_amounts[0]['Value'] += $diff;
-						if ($this->vat_category() != VC_NONDEDUCT)
+						if ($line->vat_category != VC_NONDEDUCT)
 							$this->grn_items[$id]->gl_amounts[0]['Deductible'] += $diff;
 						else
 							$this->grn_items[$id]->gl_amounts['Cost'] += $diff;
@@ -300,7 +300,7 @@ all the info to do the necessary entries without looking up ie additional querie
         $vat_factor = 1;
 
 		return $this->gl_amounts = split_item_price($this->item_code, $this->chg_price*$this->this_quantity_inv, $cart->tax_group_id, $cart->tax_included, 
-			ST_SUPPINVOICE, $vat_factor, $cart->tran_date);
+			ST_SUPPINVOICE, $vat_factor);
 	}
 }
 

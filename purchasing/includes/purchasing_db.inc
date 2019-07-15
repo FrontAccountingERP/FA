@@ -194,6 +194,7 @@ function add_direct_supp_trans($cart)
 		$inv->add_grn_to_trans($line->grn_item_id, $line->po_item_id, $line->stock_id,
 			$line->item_description, $line->quantity, 0, $line->quantity,
 			$line->price, $line->price, true, get_unit_cost($line->stock_id), '');
+
 		$total += round2(($line->quantity * $line->price), user_price_dec());
 	}
 	$inv->tax_overrides = $cart->tax_overrides;

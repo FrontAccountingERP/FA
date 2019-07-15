@@ -238,7 +238,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
            		$myrow["quantity_ordered"],$myrow["description"],
             	$myrow["unit_price"], sql2date($myrow["delivery_date"]),
    	        	$myrow["qty_invoiced"], $myrow["quantity_received"],
-   	        	$myrow["quantity_ordered"], 0, $myrow["po_detail_item"]);
+   	        	$myrow["quantity_ordered"], 0, $myrow["po_detail_item"], $myrow["std_cost_unit"]);
         } /* line po from purchase order details */
     } //end of checks on returned data set
 }

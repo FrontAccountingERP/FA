@@ -246,6 +246,14 @@ function check_item_data($n)
 {
 	global $SysPrefs;
 
+	$item = get_grn_item($n);
+
+	if (!$item)
+	{
+		display_error( _("Invalid GRN item selected."));
+		return false;
+	}
+
 	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
@@ -263,10 +271,8 @@ function check_item_data($n)
 	$margin = $SysPrefs->over_charge_allowance();
 	if ($SysPrefs->check_price_charged_vs_order_price == True)
 	{
-		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
-		     if ($_POST['order_price'.$n]==0 ||
-				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
-			    (1 + ($margin/ 100)))
+		if ($item['unit_price'] != input_num('ChgPrice'.$n)) {
+		     if ($item['unit_price'] == 0 || input_num('ChgPrice'.$n)/$item['unit_price'] > (1 + ($margin/ 100)))
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . $margin . "%");
@@ -276,9 +282,9 @@ function check_item_data($n)
 		}
 	}
 
-	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n]))
+	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($item['qty_recd'] != $item['quantity_inv']))
 	{
-		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
+		if (input_num('this_quantity_inv'.$n) / ($item['qty_recd'] - $item['quantity_inv']) >
 			(1+ ($margin / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
@@ -288,17 +294,23 @@ function check_item_data($n)
 		}
 	}
 
-	return true;
+	$item['quantity'] = input_num('this_quantity_inv'.$n);
+	$item['chg_price'] = input_num('ChgPrice'.$n);
+
+	return $item;
 }
 
 function commit_item_data($n)
 {
-	if (check_item_data($n))
+	$item  = check_item_data($n);
+	if ($item)
 	{
-		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item'.$n],
-			$_POST['item_code'.$n], $_POST['item_description'.$n], $_POST['qty_recd'.$n],
-			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),
-			$_POST['order_price'.$n], input_num('ChgPrice'.$n));
+		$_SESSION['supp_trans']->add_grn_to_trans($n,
+    		$item['po_detail_item'], $item['item_code'],
+    		$item['description'], $item['qty_recd'],
+    		$item['quantity_inv'], $item['quantity'],
+    		$item['unit_price'], $item['chg_price'], $item['std_cost_unit']);
+
 		reset_tax_input();
 	}
 }
@@ -315,9 +327,9 @@ if (isset($_POST['InvGRNAll']))
 {
    	foreach($_POST as $postkey=>$postval )
     {
-		if (strpos($postkey, "qty_recd") === 0)
+		if (strpos($postkey, "this_quantity_inv") === 0)
 		{
-			$id = substr($postkey, strlen("qty_recd"));
+			$id = substr($postkey, strlen("this_quantity_inv"));
 			$id = (int)$id;
 			commit_item_data($id);
 		}

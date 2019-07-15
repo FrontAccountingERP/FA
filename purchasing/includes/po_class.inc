@@ -69,10 +69,10 @@ class purch_order
 		$this->tax_area = $tax_area;
 	}
 	
-	function add_to_order($stock_id, $qty, $item_descr, $price, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0)
+	function add_to_order($stock_id, $qty, $item_descr, $price, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0, $unit_cost=0)
 	{
 		$this->line_items[] = new po_line_details($stock_id, $item_descr, $qty, $price,
-			$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id, $po_item_id);
+			$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id, $po_item_id, $unit_cost);
 	}
 
 	function update_order_item($line_no, $qty, $price, $req_del_date, $description="")
@@ -207,7 +207,7 @@ class purch_order
 					{
 						$diff = $tax['Override'] - $tax['Value'];
 						$this->line_items[$id]->gl_amounts[0]['Value'] += $diff;
-						if ($this->vat_category() != VC_NONDEDUCT)
+						if ($line->vat_category != VC_NONDEDUCT)
 							$this->line_items[$id]->gl_amounts[0]['Deductible'] += $diff;
 						else
 							$this->line_items[$id]->gl_amounts['Cost'] += $diff;
@@ -247,7 +247,7 @@ class po_line_details
 	var $gl_amounts; 	// splited line value (after call to split_line_value method)
 
 	function __construct($stock_item, $item_descr, $qty, $prc, $req_del_date, 
-		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0)
+		$qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0, $unit_cost=0)
 	{
 		$this->stock_id = $stock_item;
 		$item_row = get_item($stock_item);
@@ -265,7 +265,7 @@ class po_line_details
 		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
-		$this->unit_cost =0;
+		$this->unit_cost = $unit_cost;
 		$this->grn_item_id = $grn_item_id;
 		$this->vat_category = $item_row["vat_category"];
 		$this->qty_ordered = $qty_ordered;
@@ -289,7 +289,7 @@ class po_line_details
         $vat_factor = 1;
 
 		return $this->gl_amounts = split_item_price($this->stock_id, $this->price*$this->quantity, $cart->tax_group_id, $cart->tax_included, 
-			ST_SUPPINVOICE, $vat_factor, $cart->tran_date);
+			ST_SUPPINVOICE, $vat_factor);
 	}
   
 }
