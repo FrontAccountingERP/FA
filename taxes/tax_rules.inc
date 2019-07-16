@@ -10,12 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /*
-	FA tax rules basic reimplementation. Final version would involve changes in database scheme,
-	and/or tax system class selection according to site requirements.
-
-	TODO:
-	. changes in Sales module
-	. change all tax related methods in supp_trans to use split_item_price instead of other functions like get_taxes_for_item
+	FA tax basic rules.
 */
 define('TAX_NONE', 0); // none option
 define('TQ_NONE', 0); // none option

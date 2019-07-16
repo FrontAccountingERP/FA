@@ -126,7 +126,7 @@ function write_grn(&$po)
 			{
 				/* This must be the first receipt of goods against this PO line. */
 			   	/* Store provisional cost used in GL posting - inventory is updated to actual cost later when invoice is received */
-			   	$order_line->unit_cost = round2($order_line->taxfree_charge_value($po) / $po->ex_rate / $order_line->quantity, user_price_dec());
+			   	$order_line->unit_cost = round2($order_line->taxfree_charge_value() / $po->ex_rate / $order_line->quantity, user_price_dec());
 			}
 
 			//------------------- update average material cost and clearing account --------------------------------
@@ -152,7 +152,7 @@ function write_grn(&$po)
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
 			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
-			 	$order_line->quantity, $order_line->unit_cost, $order_line->taxfree_charge_value($po)/$order_line->quantity);
+			 	$order_line->quantity, $order_line->unit_cost, $order_line->taxfree_charge_value()/$order_line->quantity);
 
 		} /* quantity received is != 0 */
 	}

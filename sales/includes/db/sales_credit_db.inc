@@ -101,31 +101,30 @@ function write_credit_note(&$credit_note, $write_off_acc)
 	}
 
 	$total = 0;
-	foreach ($credit_note->line_items as $credit_line) {
+	$credit_note->split_line_values();
+	foreach ($credit_note->line_items as $line) {
 
-		if ($credit_invoice && $credit_line->qty_dispatched!=$credit_line->qty_old ) {
-			update_parent_line(ST_CUSTCREDIT, $credit_line->src_id,($credit_line->qty_dispatched
-					-$credit_line->qty_old));
+		if ($credit_invoice && $line->qty_dispatched!=$line->qty_old ) {
+			update_parent_line(ST_CUSTCREDIT, $line->src_id,($line->qty_dispatched
+					-$line->qty_old));
 		}
 
-		$line_taxfree_price = get_tax_free_price_for_item(ST_CUSTCREDIT, $credit_line->stock_id, $credit_line->price,
-		  0, $credit_note->tax_included, $credit_note->tax_group_array);
+		$line_taxfree_price = $line->gl_amounts['Net'];
 
-		$line_tax = get_full_price_for_item(ST_CUSTCREDIT, $credit_line->stock_id, $credit_line->price,
-		  0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
+		$line_tax = $line->gl_amounts['Net'];
 
-		$credit_line->unit_cost = get_unit_cost($credit_line->stock_id); 
+		$line->unit_cost = get_unit_cost($line->stock_id); 
 		
-		write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id,
-			$credit_line->item_description, $credit_line->qty_dispatched,
-			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
-			$credit_line->unit_cost, $credit_line->src_id, $trans_no==0 ? 0:  $credit_line->id);
+		write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $line->stock_id,
+			$line->item_description, $line->qty_dispatched,
+			$line->line_price(), $line_tax, $line->discount_percent,
+			$line->unit_cost, $line->src_id, $trans_no==0 ? 0:  $line->id);
 
 		if ($credit_type == 'Return')
-			add_credit_movements_item($credit_note, $credit_line,
-				$credit_type, ($line_taxfree_price+$line_tax)*(1-$credit_line->discount_percent), $credit_invoice);
+			add_credit_movements_item($credit_note, $line,
+				$credit_type, ($line_taxfree_price+$line_tax)*(1-$line->discount_percent), $credit_invoice);
 
-		$total += add_gl_trans_credit_costs($credit_note, $credit_line, $credit_no,
+		$total += add_gl_trans_credit_costs($credit_note, $line, $credit_no,
 		    $credit_date, $credit_type, $write_off_acc, $branch_data);
 	} /*end of credit_line loop */
 
@@ -166,8 +165,8 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		$Refs->save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 	}
 	hook_db_postwrite($credit_note, ST_CUSTCREDIT);
-	commit_transaction();
 
+	commit_transaction();
 	return $credit_no;
 }
 
@@ -178,7 +177,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 function add_credit_movements_item(&$credit_note, &$credit_line,
 	$credit_type, $price, $credited_invoice=0)
 {
-    //Chaitanya : Stamp current cost in stock moves $credit_line does not fetch cost
+    //Chaitanya : Stamp current cost in stock moves $line does not fetch cost
     $curr_std_cost = get_unit_cost($credit_line->stock_id);
 
 	$reference = _("Return");
@@ -231,12 +230,9 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 	if ($order_line->line_price() != 0) {
 
-		$line_taxfree_price =
-		get_tax_free_price_for_item(ST_CUSTCREDIT, $order_line->stock_id, $order_line->price,
-		  0, $order->tax_included, $order->tax_group_array);
+		$line_taxfree_price = $order_line->gl_amounts['Net'];
 
-		$line_tax = get_full_price_for_item(ST_CUSTCREDIT, $order_line->stock_id, $order_line->price,
-		  0, $order->tax_included, $order->tax_group_array) - $line_taxfree_price;
+		$line_tax = $order_line->gl_amounts['Tax'];
 
 
 		//Post sales transaction to GL credit sales

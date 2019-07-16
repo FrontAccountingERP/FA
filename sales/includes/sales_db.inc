@@ -268,8 +268,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$result = get_customer_trans_details($doc_type,$trans_no);
 		if (db_num_rows($result) > 0) {
 			for($line_no=0; $myrow = db_fetch($result); $line_no++)	{
-				$cart->line_items[$line_no] = new line_details(
-					$myrow["stock_id"],$myrow["quantity"],
+				$cart->add_to_cart($line_no, $myrow["stock_id"],$myrow["quantity"],
 					$myrow["unit_price"], $myrow["discount_percent"],
 					$myrow["qty_done"], $myrow["unit_cost"],
 					$myrow["StockDescription"],$myrow["id"], $myrow["debtor_trans_no"],

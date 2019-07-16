@@ -56,7 +56,7 @@ function write_sales_invoice(&$invoice)
 	}
 
 	if($invoice->tax_included==0) {
-	    $items_added_tax = $ov_gst-$freight_tax;
+	    $items_added_tax = $ov_gst - $freight_tax;
 	    $freight_added_tax = $freight_tax;
 	} else {
 	    $items_added_tax = 0;
@@ -102,34 +102,31 @@ function write_sales_invoice(&$invoice)
 	// for prepayments use deferred income account if set
 	$sales_account = $invoice->is_prepaid() ? get_company_pref('deferred_income_act') : 0;
 
-	foreach ($invoice->line_items as $line_no => $invoice_line) {
-		$qty = $invoice_line->qty_dispatched;
-		$line_taxfree_price = get_tax_free_price_for_item(ST_SALESINVOICE, $invoice_line->stock_id,
-			$invoice_line->price * $qty, $invoice->tax_group_id, $invoice->tax_included,
-			$invoice->tax_group_array);
+	$invoice->split_line_values();
+	foreach ($invoice->line_items as $line_no => $line) {
+		$qty = $line->qty_dispatched;
+		$line_taxfree_price = $line->gl_amounts['Net'];
 
-		$line_tax = get_full_price_for_item(ST_SALESINVOICE, $invoice_line->stock_id,
-			$invoice_line->price * $qty, 0, $invoice->tax_included,
-			$invoice->tax_group_array) - $line_taxfree_price;
+		$line_tax = $line->gl_amounts['Tax'];
 
-		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
-			$invoice_line->item_description, $invoice_line->qty_dispatched,
-			$invoice_line->line_price(), $qty ? $line_tax/$qty : 0, $invoice_line->discount_percent,
-			$invoice_line->unit_cost, $invoice_line->src_id,
-			$trans_no ? $invoice_line->id : 0);
+		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $line->stock_id,
+			$line->item_description, $line->qty_dispatched,
+			$line->line_price(), $qty ? $line_tax/$qty : 0, $line->discount_percent,
+			$line->unit_cost, $line->src_id,
+			$trans_no ? $line->id : 0);
 
 		// Update delivery items for the quantity invoiced
-		if ($invoice_line->qty_old != $invoice_line->qty_dispatched)
+		if ($line->qty_old != $line->qty_dispatched)
 		{
 			if ($invoice->is_prepaid())
-				update_prepaid_so_line($invoice_line->src_id, $invoice_line->qty_dispatched-$invoice_line->qty_old);
+				update_prepaid_so_line($line->src_id, $line->qty_dispatched-$line->qty_old);
 			else
-				update_parent_line(ST_SALESINVOICE, $invoice_line->src_id, ($invoice_line->qty_dispatched-$invoice_line->qty_old));
+				update_parent_line(ST_SALESINVOICE, $line->src_id, ($line->qty_dispatched-$line->qty_old));
 		}
-		if ($invoice_line->qty_dispatched != 0) {
-			$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);
+		if ($line->qty_dispatched != 0) {
+			$stock_gl_code = get_stock_gl_code($line->stock_id);
 
-			if ($invoice_line->line_price() != 0) {
+			if ($line->line_price() != 0) {
 				//Post sales transaction to GL credit sales
 
 				// If there is a Branch Sales Account, then override with this,
@@ -145,11 +142,11 @@ function write_sales_invoice(&$invoice)
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
 					-$line_taxfree_price*$prepaid_factor, $invoice->customer_id);
 
-				if ($invoice_line->discount_percent != 0) {
+				if ($line->discount_percent != 0) {
 
 					$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_,
 						$branch_data["sales_discount_account"], $dim, $dim2,
-						($line_taxfree_price * $invoice_line->discount_percent)*$prepaid_factor, $invoice->customer_id);
+						($line_taxfree_price * $line->discount_percent)*$prepaid_factor, $invoice->customer_id);
 				} /*end of if discount !=0 */
 			}
 		} /*quantity dispatched is more than 0 */

@@ -71,8 +71,11 @@ class purch_order
 	
 	function add_to_order($stock_id, $qty, $item_descr, $price, $req_del_date, $qty_inv, $qty_recd, $qty_ordered=0, $grn_item_id=0, $po_item_id=0, $unit_cost=0)
 	{
-		$this->line_items[] = new po_line_details($stock_id, $item_descr, $qty, $price,
+		$line = new po_line_details($stock_id, $item_descr, $qty, $price,
 			$req_del_date, $qty_inv, $qty_recd, $qty_ordered, $grn_item_id, $po_item_id, $unit_cost);
+
+		$this->line_items[] = $line;
+		$line->cart = $this;
 	}
 
 	function update_order_item($line_no, $qty, $price, $req_del_date, $description="")
@@ -193,7 +196,7 @@ class purch_order
 	{
 		// split nominal line values
 		foreach($this->line_items as $line)
-			$line->split_item_value($this);
+			$line->split_item_value();
 
 		// Exact tax values are currently entered as tax totals, so we need to move the differences back on line level.
 		// currently first item with given tax type will be fixed with the calculated difference
@@ -242,6 +245,7 @@ class po_line_details
 	var $quantity;		// this document line quantity
 	//---
 
+	var $cart; // line context
 	var $descr_editable;
 	var $vat_category;
 	var $gl_amounts; 	// splited line value (after call to split_line_value method)
@@ -275,20 +279,20 @@ class po_line_details
 	//
 	// GRN line tax free value.
 	//
-	function taxfree_charge_value($po)
+	function taxfree_charge_value()
 	{
-		return get_tax_free_price_for_item($po->trans_type, $this->stock_id, $this->quantity*$this->price,
-		  $po->tax_group_id, $po->tax_included);
+		$this->split_item_value();
+		return $this->gl_amounts['Net'];
 	}
 
 	/*
 		Splits item value to parts posted to GL.
 	*/
-	function split_item_value($cart)
+	function split_item_value()
 	{
         $vat_factor = 1;
 
-		return $this->gl_amounts = split_item_price($this->stock_id, $this->price*$this->quantity, $cart->tax_group_id, $cart->tax_included, 
+		return $this->gl_amounts = split_item_price($this->stock_id, $this->price*$this->quantity, $this->cart->tax_group_id, $this->cart->tax_included, 
 			ST_SUPPINVOICE, $vat_factor);
 	}
   

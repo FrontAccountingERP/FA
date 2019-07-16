@@ -121,7 +121,6 @@ function get_tax_group_items_as_array($id)
 		$ret_tax_array[$tax_group_item['tax_type_id']] = $tax_group_item;
 
 	}
-	
 	return $ret_tax_array;
 }
 

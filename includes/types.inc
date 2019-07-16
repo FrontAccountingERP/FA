@@ -261,7 +261,7 @@ $vat_categories = array(
 	VC_ASSETS => _('Fixed assets'),
 	VC_NONDEDUCT => _('No VAT deductible'),
 	VC_SERVICES => _('Other services'),
-//	VC_PARTIAL => _('VAT partially deductible'),
+	VC_PARTIAL => _('VAT partially deductible'),
 	VC_REVERSE => _('Reverse charge'),
 );
 

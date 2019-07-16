@@ -78,10 +78,12 @@ class supp_trans
 		$qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, 
 		$std_cost_unit=null, $gl_code='')
 	{
-		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, 
+		$line = new grn_item($grn_item_id, $po_detail_item, 
 			$item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, 
 			$order_price, $chg_price, $std_cost_unit, $gl_code, $this->tax_included);
 
+		$line->cart = $this;
+		$this->grn_items[$grn_item_id] = $line;
 		$this->src_docs = find_src_invoices($this);
 
 		unset($this->tax_overrides); // cancel tax overrides after cart change
@@ -161,12 +163,12 @@ class supp_trans
 	//
 	//	Returns total invoice amount without taxes.
 	//
-    function get_total_taxfree($tax_group_id=null)
+    function get_total_taxfree()
     {
     	$total = 0;
 
 		foreach ($this->grn_items as $ln_itm)
-    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $this->trans_type)),
+    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price()),
 			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
@@ -203,7 +205,7 @@ class supp_trans
 	{
 		// split nominal line values
 		foreach($this->grn_items as $line)
-			$line->split_item_value($this);
+			$line->split_item_value();
 
 		// Exact tax values are currently entered as tax totals, so we need to move the differences back on line level.
 		// currently first item with given tax type will be fixed with the calculated difference
@@ -257,6 +259,8 @@ all the info to do the necessary entries without looking up ie additional querie
 	var $gl_amounts; 	// splited line value (after call to split_line_value method
 	var $vat_category;
 
+	var $cart; // line context
+
 	function __construct($id, $po_detail_item, $item_code, $item_description, $qty_recd, 
 		$prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price,
 		$std_cost_unit, $gl_code, $tax_included)
@@ -285,22 +289,22 @@ all the info to do the necessary entries without looking up ie additional querie
 //		  $this->chg_price, $tax_group_id, $this->tax_included);
 //	}
 
-	function taxfree_charge_price($tax_group_id, $trans_type=ST_PURCHORDER)
+	function taxfree_charge_price()
 	{
-		return get_tax_free_price_for_item($trans_type, $this->item_code, $this->chg_price, 
-		  $tax_group_id, $this->tax_included);
+		$this->split_item_value();
+		return $this->gl_amounts['Net'];
 	}
 
 	/*
 		Splits item value to parts posted to GL.
 	*/
-	function split_item_value($cart)
+	function split_item_value()
 	{
 
         $vat_factor = 1;
 
-		return $this->gl_amounts = split_item_price($this->item_code, $this->chg_price*$this->this_quantity_inv, $cart->tax_group_id, $cart->tax_included, 
-			ST_SUPPINVOICE, $vat_factor);
+		return $this->gl_amounts = split_item_price($this->item_code, $this->chg_price*$this->this_quantity_inv, $this->cart->tax_group_id, $this->cart->tax_included, 
+			$this->cart->trans_type, $vat_factor);
 	}
 }
 

@@ -61,7 +61,6 @@ class Cart
 
 	var $tax_group_id;
 	var $tax_group_name;
-	var $tax_group_array = null; // saves db queries
 	var $price_factor;	 // ditto for price calculations
 
 	var	$pos;			// user assigned POS
@@ -368,7 +367,6 @@ class Cart
 		$this->phone = $phone;
 		$this->email = $email;
 		$this->tax_group_id = $tax_group_id;
-		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 	}
 
 	function set_sales_type($sales_type, $sales_name, $tax_included=0, $factor=0)
@@ -401,6 +399,7 @@ class Cart
 			$qty_done,  $unit_cost, $description, $id, $src_no, $src_id);
 
 		if ($line->valid) {
+			$line->cart = $this;
 			$this->line_items[$line_no] = $line;
 			return 1;
 		} else
@@ -503,11 +502,22 @@ class Cart
 		return 0;
 	}
 
+	/*
+		Split line value to cost and taxes.
+		Stores calculated amounts in $line->gl_amounts arrays.
+	*/
+	function split_line_values()
+	{
+		// split nominal line values
+		foreach ($this->line_items as $line)
+			$line->split_item_value();
+	}
+
 	function get_taxes($shipping_cost=null)
 	{
 		$items = array();
 		$prices = array();
-		if($shipping_cost==null)
+		if ($shipping_cost == null)
 			$shipping_cost = $this->freight_cost;
 
 		foreach ($this->line_items as $ln_itm) {
@@ -518,7 +528,7 @@ class Cart
 		}
 
 		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost,
-		  	$this->tax_group_id, $this->tax_included,  $this->tax_group_array);
+		  	$this->tax_group_id, $this->tax_included);
 
     // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
     if ($this->customer_currency == 'CHF') {
@@ -541,21 +551,9 @@ class Cart
 
 	function get_shipping_tax()
 	{
+		$freight = split_item_price(NULL, $this->freight_cost, $this->tax_group_id, $this->tax_included, $this->trans_type);
 
-		$tax_items = get_shipping_tax_as_array($this->tax_group_id);
-		$tax_rate = 0;
-		if ($tax_items != null) {
-			foreach ($tax_items as $item_tax) {
-				$index = $item_tax['tax_type_id'];
-				if (isset($this->tax_group_array[$index]['rate'])) {
-					$tax_rate += $item_tax['rate'];
-				}
-			}
-		}
-		if($this->tax_included)
-			return round($this->freight_cost*$tax_rate/($tax_rate+100),  user_price_dec());
-		else
-			return round($this->freight_cost*$tax_rate/100,  user_price_dec());
+		return $freight['Tax'];
 	}
 	/*
 		Returns transaction value including all taxes
@@ -672,6 +670,7 @@ class line_details
 	var $unit_cost;
 	var $descr_editable;
 
+	var $cart; // line context
 	var $valid; // validation in constructor
 	/*
 		Line quantity properties in various cart create modes:
@@ -736,6 +735,21 @@ class line_details
 	function line_price()
 	{
 		return $this->price;
+	}
+
+	function taxfree_charge_price()
+	{
+		$this->split_item_value();
+		return $this->gl_amounts['Net'];
+	}
+
+	/*
+		Splits item value to parts posted to GL.
+	*/
+	function split_item_value()
+	{
+		return $this->gl_amounts = split_item_price($this->stock_id, $this->price*$this->quantity, $this->cart->tax_group_id, $this->cart->tax_included, 
+			$this->cart->trans_type);
 	}
 }
 

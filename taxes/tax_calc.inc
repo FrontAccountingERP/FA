@@ -91,7 +91,7 @@ function get_base_taxdata($stock_id, $group_id)
 
 /*
 	Main tax procedure splitting transaction item value according to item tax rules applicable:
-		$stock_id - stock item code; special case is '' for shipping
+		$stock_id - stock item code; NULL for shipping
 		$amount - price/value to be splitted
 		$tax_group - entity tax group
 		$tax_included - whether value includes all taxes
@@ -230,7 +230,7 @@ function get_tax_for_items($trans_type, $items, $prices, $shipping_cost, $tax_gr
 	// if shipping cost is passed, just add to the prices/items tables
 	if ($shipping_cost != 0)
 	{
-		$items[] = null;
+		$items[] = NULL;
 		$prices[] = $shipping_cost;
 		if ($vat_factors)
 			$vat_factors[] = 1;
