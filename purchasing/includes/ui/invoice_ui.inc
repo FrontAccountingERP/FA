@@ -525,12 +525,12 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch), "nowrap align='right'");
     		if ($mode == 1)
     		{
 //				label_cell($entered_grn->id);
  				$row = get_grn_batch($grn_batch);
-				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"])); // PO
+				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"]), "nowrap align='right'"); // PO
 			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
