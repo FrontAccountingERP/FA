@@ -282,8 +282,9 @@ else
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	array_append($cols, array(
+		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'dispatch_link'),
-		array('insert'=>true, 'fun'=>'edit_link')));
+		array('insert'=>true, 'fun'=>'prt_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 	array_substitute($cols, 4, 1, _("Description"));
@@ -307,8 +308,8 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 } elseif ($trans_type == ST_SALESORDER) {
 	 array_append($cols,array(
 			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
-					array('insert'=>true, 'fun'=>'dispatch_link'),
 					array('insert'=>true, 'fun'=>'edit_link'),
+					array('insert'=>true, 'fun'=>'dispatch_link'),
 					array('insert'=>true, 'fun'=>'prt_link')));
 };
 
