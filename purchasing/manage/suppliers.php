@@ -197,7 +197,7 @@ function supplier_settings(&$supplier_id)
 
 	table_section_title(_("Basic Data"));
 
-	text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
+	text_row(_("Supplier Name:"), 'supp_name', null, 42, 60);
 	text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
 
 	text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
