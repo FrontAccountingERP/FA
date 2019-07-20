@@ -283,11 +283,11 @@ function display_po_items(&$order, $editable=true)
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
 
-	$taxes = $order->get_taxes(input_num('freight_cost'));
+	$taxes = $order->get_taxes();
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2, $order->trans_type==ST_SUPPINVOICE);
 
-	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+	$display_total = price_format(($total + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");

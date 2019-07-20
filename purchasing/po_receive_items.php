@@ -142,14 +142,14 @@ function display_po_receive_items()
 
 	$colspan = count($th)-1;
 
-	$display_sub_total = price_format($total/* + input_num('freight_cost')*/);
+	$display_sub_total = price_format($total);
 
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
-	$taxes = $_SESSION['PO']->get_taxes(input_num('freight_cost'), true);
+	$taxes = $_SESSION['PO']->get_taxes();
 	
 	$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['PO']->tax_included);
 
-	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+	$display_total = price_format(($total + $tax_total));
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");

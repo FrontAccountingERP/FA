@@ -138,20 +138,17 @@ class purch_order
 	
 	//
 	//	Returns taxes for PO/GRN.
-	//	$receival=true in purchase receive context.
 	//
-	function get_taxes($shipping_cost=null, $receival=false)
+	function get_taxes()
 	{
 		$items = array();
 		$prices = array();
-		if($shipping_cost==null)
-			$shipping_cost = 0;//$this->freight_cost;
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
 			$prices[] = round($ln_itm->price * $ln_itm->quantity,  user_price_dec());
 		}
-		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost,
+		$taxes = get_tax_for_items($this->trans_type, $items, $prices, 0,
 		  $this->tax_group_id, $this->tax_included);
 
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
