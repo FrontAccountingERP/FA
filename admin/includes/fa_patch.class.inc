@@ -165,8 +165,7 @@ class fa_patch {
 				{
 					foreach($result as $err)
 						$this->log_error($err[1] . ':'. $err[0]);
-				} else
-				{
+				} else {
 					$this->log_error($result);
 					unset($this->backup); // prevent restore (database was not touched due to other errors)
 				}
@@ -242,8 +241,9 @@ class fa_patch {
 	}
 
     /*
-		Present upgrade parameters to administrator
-		This function presents upgrade choices, after selection company to be upgraded.
+		Present upgrade parameters to administrator.
+		This function is run after successfull switching to target database connection
+		and presents upgrade choices, later fetched in prepare() method.
     */
 	function show_params($comp)
     {
@@ -251,7 +251,7 @@ class fa_patch {
 
     /*
 	    Fetch & check upgrade parameters, check additional upgrade pre-conditions.
-		This function is run after successfull switching to target database connection.
+		This function is run after successfull switching to target database connection, before sql upgrade script is run.
     */
 	function prepare()
     {

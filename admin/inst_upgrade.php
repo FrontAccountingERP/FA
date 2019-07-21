@@ -86,7 +86,6 @@ foreach($site_status as $i => $comp)
 	} else
 		label_cell('-', 'align=center');
 
-
 	if (!$status)
 	{
 		label_cell(radio(null, 'select_comp', $i, null, true), 'align=center');
@@ -103,8 +102,14 @@ div_start('upgrade_args');
 if (get_post('select_comp') !== '')
 {
 	$patch = @$installers[$site_status[get_post('select_comp')]['version']];
-	if ($patch)
-		$patch->show_params(get_post('select_comp'));
+	if ($patch) {
+		if (!set_global_connection(get_post('select_comp'))) // create page in target database context
+			display_error(_("Cannot connect to company database for database restore."));
+		else {
+			$patch->show_params(get_post('select_comp'));
+			set_global_connection(); // switch back
+		}
+	}
 }
 div_end();
 

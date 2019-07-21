@@ -262,9 +262,9 @@ function write_lang()
 		$force - ignore duplicate errors
 		$init - presume $filename is initialization file with '0_' prefix
 		$protect - protect users/roles 
-		$return_errors - return errors instead of display them
+		$system - system upgrade; no constrains on queries, does not rearrange sql queries, returns collected errors
 */
-function db_import($filename, $connection, $force=true, $init=true, $protect=false, $return_errors=false)
+function db_import($filename, $connection, $force=true, $init=true, $protect=false, $system=false)
 {
 	global $db, $SysPrefs;
 
@@ -339,29 +339,34 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 
 		if ($query_table == '') 
 		{	// check if line begins with one of allowed queries
-		 	foreach($allowed_commands as $cmd => $table) 
-			{
-				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
+			if ($system) {
+				$query_table = 'data_queries';	// dont reorder queries, only standard delimiter allowed
+				${$query_table}[] = array('', $line_no+1);
+				$skip = false;
+			} else
+				foreach($allowed_commands as $cmd => $table) 
 				{
-					if ($cmd == 'delimiter') {
-						$delimiter = trim(substr($line, 10));
-						continue 2;
-					}
-					$query_table = $table;
-					$skip = false;
-					if ($protect)
+					if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
 					{
-						foreach($protected as $protbl)
-							if (strpos($line, $connection["tbpref"].$protbl) !== false)
-							{
-								$skip = true; break;
-							}
+						if ($cmd == 'delimiter') {
+							$delimiter = trim(substr($line, 10));
+							continue 2;
+						}
+						$query_table = $table;
+						$skip = false;
+						if ($protect)
+						{
+							foreach($protected as $protbl)
+								if (strpos($line, $connection["tbpref"].$protbl) !== false)
+								{
+									$skip = true; break;
+								}
+						}
+						if (!$skip)
+							${$query_table}[] = array('', $line_no+1);
+						break;
 					}
-					if (!$skip)
-						${$query_table}[] = array('', $line_no+1);
-					break;
 				}
-		 	}
 		 }
 		 if($query_table != '')  // inside allowed query
 		 {
@@ -401,7 +406,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 		if ($new_file) // import on old db is forbidden: this would destroy db content unless latin1 was used before in UI
 		{
 			$msg = _("This is new format backup file which cannot be restored on database not migrated to utf8.");
-			if ($return_errors)
+			if ($system)
 				return $msg;
 			else
 				display_error($msg);
@@ -423,7 +428,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	fclose($f);
 	}
 /*/
-	if ($return_errors)
+	if ($system)
 	{	// prevent errors display
 		$save_debug = $SysPrefs->go_debug;
 		$SysPrefs->go_debug = 0;
@@ -468,7 +473,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 		}
 	}
 
-	if ($return_errors)
+	if ($system)
 		$SysPrefs->go_debug = $save_debug;
 
 	$SysPrefs->sql_trail = $trail;
@@ -479,7 +484,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	db_set_charset($db, $old_encoding); // restore connection encoding
 
 	if (count($sql_errors)) {
-		if ($return_errors)
+		if ($system)
 			return $sql_errors;
 
 		// display first failure message; the rest are probably derivative 
