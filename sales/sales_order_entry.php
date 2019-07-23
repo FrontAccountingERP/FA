@@ -258,24 +258,25 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 
+
 	$cart->reference = $_POST['ref'];
 
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
 
-	$newpayment = false;
 
+	$newpayment = false;
 	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
 		$newpayment = true;
 	}
 	if ($cart->payment_terms['cash_sale']) {
-		if ($newpayment) {
+		if ($newpayment) 
+		{
 			$cart->due_date = $cart->document_date;
 			$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-			$cart->ship_via = 0;
 			$cart->deliver_to = '';
 			$cart->prep_amount = 0;
 		}
@@ -285,10 +286,11 @@ function copy_to_cart()
 		$cart->deliver_to = $_POST['deliver_to'];
 		$cart->delivery_address = $_POST['delivery_address'];
 		$cart->phone = $_POST['phone'];
-		$cart->ship_via = $_POST['ship_via'];
 		if (!$cart->trans_no || ($cart->trans_type == ST_SALESORDER && !$cart->is_started()))
 			$cart->prep_amount = input_num('prep_amount', 0);
 	}
+
+	$cart->ship_via = $_POST['ship_via'];
 	$cart->Location = $_POST['Location'];
 	$cart->freight_cost = input_num('freight_cost');
 	if (isset($_POST['email']))
@@ -408,10 +410,7 @@ function can_process() {
 			return false;
 		}
 
-		if ($_POST['freight_cost'] == "")
-			$_POST['freight_cost'] = price_format(0);
-
-		if (!check_num('freight_cost',0)) {
+		if (isset($_POST['freight_cost']) && !check_num('freight_cost',0)) {
 			display_error(_("The shipping cost entered is expected to be numeric."));
 			set_focus('freight_cost');
 			return false;

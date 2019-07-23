@@ -33,13 +33,6 @@ function get_base_taxdata($stock_id, $group_id)
 
 	$taxdata = array('tax_area' => $group_data['tax_area'], 'taxes' => null);
 
-	if ($stock_id===null) // shipping special case
-	{
-		$taxdata['vat_category'] = VC_SERVICES;
-		$taxdata['taxes'] = get_tax_group_items_as_array(null);
-		return $taxdata;
-	}
-
 	$item_tax_type = get_item_tax_type_for_item($stock_id);	// get item tax data
 	$taxdata['vat_category'] = $item_tax_type['vat_category'];
 
@@ -91,7 +84,6 @@ function get_base_taxdata($stock_id, $group_id)
 
 /*
 	Main tax procedure splitting transaction item value according to item tax rules applicable:
-		$stock_id - stock item code; NULL for shipping
 		$amount - price/value to be splitted
 		$tax_group - entity tax group
 		$tax_included - whether value includes all taxes
@@ -223,18 +215,9 @@ function split_item_price($stock_id, $amount, $group_id, $tax_included=false, $t
 //
 // $vat_factors - effective part of vat values included in tax; calculated but not included vat is added to net value
 //
-function get_tax_for_items($trans_type, $items, $prices, $shipping_cost, $tax_group, $tax_included=null,
+function get_tax_for_items($trans_type, $items, $prices, $tax_group, $tax_included=null,
 	$tax_algorithm = null, $vat_factors = null, $allow_reverse = true)
 {
-
-	// if shipping cost is passed, just add to the prices/items tables
-	if ($shipping_cost != 0)
-	{
-		$items[] = NULL;
-		$prices[] = $shipping_cost;
-		if ($vat_factors)
-			$vat_factors[] = 1;
-	}
 
 	// calculate tax sums
 	$ret_tax_array = array();

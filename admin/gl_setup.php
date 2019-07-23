@@ -222,7 +222,7 @@ check_row(_("Print Item Image on Quote:"), 'print_item_images_on_quote', null);
 
 textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 4);
 
-gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
+gl_all_accounts_list_row(_("Shipping Charged Account (default):"), 'freight_act', $_POST['freight_act']);
 
 gl_all_accounts_list_row(_("Deferred Income Account:"), 'deferred_income_act', $_POST['deferred_income_act'], true, false,
 	_("Not used"), false, false, false);

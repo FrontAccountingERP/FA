@@ -481,7 +481,7 @@ CREATE TABLE `0_cust_branch` (
   `sales_discount_account` varchar(15) NOT NULL DEFAULT '',
   `receivables_account` varchar(15) NOT NULL DEFAULT '',
   `payment_discount_account` varchar(15) NOT NULL DEFAULT '',
-  `default_ship_via` int(11) NOT NULL DEFAULT '1',
+  `default_ship_via` varchar(20) NOT NULL DEFAULT '',
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL DEFAULT '0',
   `notes` tinytext NOT NULL,
@@ -517,7 +517,7 @@ CREATE TABLE `0_debtor_trans` (
   `alloc` double NOT NULL DEFAULT '0',
   `prep_amount` double NOT NULL DEFAULT '0',
   `rate` double NOT NULL DEFAULT '1',
-  `ship_via` int(11) DEFAULT NULL,
+  `ship_via`  varchar(20) NOT NULL DEFAULT '',
   `dimension_id` int(11) NOT NULL DEFAULT '0',
   `dimension2_id` int(11) NOT NULL DEFAULT '0',
   `payment_terms` int(11) DEFAULT NULL,
@@ -1162,7 +1162,7 @@ CREATE TABLE `0_sales_orders` (
   `comments` tinytext,
   `ord_date` date NOT NULL DEFAULT '0000-00-00',
   `order_type` int(11) NOT NULL DEFAULT '0',
-  `ship_via` int(11) NOT NULL DEFAULT '0',
+  `ship_via` varchar(20) NOT NULL DEFAULT '',
   `delivery_address` tinytext NOT NULL,
   `contact_phone` varchar(30) DEFAULT NULL,
   `contact_email` varchar(100) DEFAULT NULL,
@@ -1338,7 +1338,8 @@ INSERT INTO `0_stock_category` VALUES
 ('1', 'Components', '1', 'each', 'B', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
 ('2', 'Charges', '1', 'each', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
 ('3', 'Systems', '1', 'each', 'M', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
-('4', 'Services', '1', 'hr', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0');
+('4', 'Services', '1', 'hr', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0', '0', '0'),
+('5', 'Shipping', '1', 'each', 'T', '4430', '5010', '', '', '', '0', '0', '0', '1', '0', '0');
 
 -- Structure of table `0_stock_fa_class` --
 
@@ -1390,11 +1391,13 @@ CREATE TABLE `0_stock_master` (
   `depreciation_date` date NOT NULL DEFAULT '0000-00-00',
   `fa_class_id` varchar(20) NOT NULL DEFAULT '',
   `vat_category` tinyint(1) NOT NULL DEFAULT '0',
+  `shipper_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`stock_id`)
 ) ENGINE=InnoDB;
 
 -- Data of table `0_stock_master` --
-
+INSERT INTO `0_stock_master` VALUES
+('post-std', '5', '1', 'Standard post package', '', 'each', 'T', '4430', '5010', '', '', '', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'S', '0', '1', '0000-00-00', '0000-00-00', '', '0', '0');
 -- Structure of table `0_stock_moves` --
 
 DROP TABLE IF EXISTS `0_stock_moves`;
@@ -1649,14 +1652,13 @@ DROP TABLE IF EXISTS `0_tax_group_items`;
 CREATE TABLE `0_tax_group_items` (
   `tax_group_id` int(11) NOT NULL DEFAULT '0',
   `tax_type_id` int(11) NOT NULL DEFAULT '0',
-  `tax_shipping` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`tax_group_id`,`tax_type_id`)
 ) ENGINE=InnoDB ;
 
 -- Data of table `0_tax_group_items` --
 
 INSERT INTO `0_tax_group_items` VALUES
-('1', '1', '1');
+('1', '1');
 
 -- Structure of table `0_tax_groups` --
 

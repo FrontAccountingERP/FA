@@ -467,13 +467,13 @@ start_row();
 if (!isset($_POST['ship_via'])) {
 	$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 }
-label_cell(_("Shipping Company"), "class='tableheader2'");
+label_cell(_("Shipping"), "class='tableheader2'");
 if ($prepaid)
 {
-	$shipper = get_shipper($_SESSION['Items']->ship_via);
-	label_cells(null, $shipper['shipper_name']);
+	$shipping = get_item($_SESSION['Items']->ship_via);
+	label_cells(null, $shipping['description']);
 } else
-	shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
+	shipping_methods_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 	$_POST['InvoiceDate'] = new_doc_date();

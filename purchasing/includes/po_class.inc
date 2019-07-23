@@ -148,8 +148,7 @@ class purch_order
 			$items[] = $ln_itm->stock_id;
 			$prices[] = round($ln_itm->price * $ln_itm->quantity,  user_price_dec());
 		}
-		$taxes = get_tax_for_items($this->trans_type, $items, $prices, 0,
-		  $this->tax_group_id, $this->tax_included);
+		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $this->tax_group_id, $this->tax_included);
 
     	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 	    if ($this->curr_code == 'CHF') {
@@ -180,8 +179,7 @@ class purch_order
 		}
 
 		if (!$this->tax_included ) {
-			$taxes = get_tax_for_items($this->trans_type, $items, $prices, 0, $this->tax_group_id,
-			$this->tax_included);
+			$taxes = get_tax_for_items($this->trans_type, $items, $prices, $this->tax_group_id, $this->tax_included);
 
 			foreach($taxes as $tax)
 				$total += round($tax['Value'], $dec);

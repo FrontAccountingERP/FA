@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_tax_group($name, $taxes, $tax_shippings, $tax_area)
+function add_tax_group($name, $taxes, $tax_area)
 {
 	begin_transaction();
 
@@ -18,12 +18,12 @@ function add_tax_group($name, $taxes, $tax_shippings, $tax_area)
 	
 	$id = db_insert_id();
 	
-	add_tax_group_items($id, $taxes, $tax_shippings);
+	add_tax_group_items($id, $taxes);
 	
 	commit_transaction();	
 }
 
-function update_tax_group($id, $name, $taxes, $tax_shippings, $tax_area)
+function update_tax_group($id, $name, $taxes, $tax_area)
 {
 	begin_transaction();	
 
@@ -31,9 +31,9 @@ function update_tax_group($id, $name, $taxes, $tax_shippings, $tax_area)
 	db_query($sql, "could not update tax group");
 	
 	delete_tax_group_items($id);
-	add_tax_group_items($id, $taxes, $tax_shippings);	
+	add_tax_group_items($id, $taxes);
 	
-	commit_transaction();			
+	commit_transaction();
 }
 
 function get_all_tax_groups($all=false)
@@ -66,13 +66,13 @@ function delete_tax_group($id)
 	commit_transaction();
 }
 
-function add_tax_group_items($id, $items, $tax_shippings)
+function add_tax_group_items($id, $items)
 {
 	for ($i=0; $i < count($items); $i++) 
 	{
-		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id, tax_shipping)
-			VALUES (".db_escape($id).",  ".db_escape($items[$i]).", " . $tax_shippings[$i] .")";
-		db_query($sql, "could not add item tax group item");					
+		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id)
+			VALUES (".db_escape($id).",  ".db_escape($items[$i]).")";
+		db_query($sql, "could not add item tax group item");
 	}		
 }
 
@@ -80,14 +80,13 @@ function delete_tax_group_items($id)
 {
 	$sql = "DELETE FROM ".TB_PREF."tax_group_items WHERE tax_group_id=".db_escape($id);
 	
-	db_query($sql, "could not delete item tax group items");					
+	db_query($sql, "could not delete item tax group items");
 }
 
 //
 //	Return all tax types with rate value updated according to tax group selected
-//	Call the function without arg to find shipment group taxes.
 //
-function get_tax_group_rates($group_id=null, $tax_shipping=false)
+function get_tax_group_rates($group_id)
 {
 	global $SysPrefs;
 
@@ -97,14 +96,10 @@ function get_tax_group_rates($group_id=null, $tax_shipping=false)
 			: "CONCAT(t.name, ' (', t.rate, '%)') as tax_type_name,")
 		."t.sales_gl_code,
 		  t.purchasing_gl_code,
-		  IF(g.tax_type_id, t.rate, NULL) as rate,
-		  g.tax_shipping
+		  IF(g.tax_type_id, t.rate, NULL) as rate
 		FROM ".TB_PREF."tax_types t 
 		  LEFT JOIN ".TB_PREF."tax_group_items g ON t.id=g.tax_type_id
-	AND g.tax_group_id=". ($group_id ? db_escape($group_id) : "(SELECT MIN(id) FROM ".TB_PREF."tax_groups)")		  
-	. " WHERE !t.inactive";
-	if ($tax_shipping)
-		$sql .= " AND g.tax_shipping=1";
+	AND g.tax_group_id=".db_escape($group_id). " WHERE !t.inactive";
 
 	return db_query($sql, "cannot get tax types as array");
 }
@@ -143,7 +138,7 @@ function find_domestic_tax_group()
 		(SELECT g.id, count(*) cnt 
 			FROM ".TB_PREF."tax_group_items i
 			LEFT JOIN ".TB_PREF."tax_groups g ON g.id=i.tax_group_id
-		WHERE tax_shipping=0 AND tax_area=0 AND !inactive
+		WHERE tax_area=0 AND !inactive
 		GROUP BY g.id) cnts
 		ORDER by cnt DESC";
 	$result = db_query($sql, "cannot get domestic group id");
@@ -151,17 +146,3 @@ function find_domestic_tax_group()
 	return $group['id'];
 }
 
-function get_shipping_tax_as_array($id=null)
-{
-	$ret_tax_array = array();
-
-	$tax_group_items = get_tax_group_rates($id, true);
-
-	while ($tax_group_item = db_fetch($tax_group_items)) 
-	{
-		$tax_group_item['Value'] = 0;
-		$ret_tax_array[$tax_group_item['tax_type_id']] = $tax_group_item;
-	}
-	
-	return $ret_tax_array;
-}

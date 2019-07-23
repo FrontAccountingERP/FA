@@ -43,7 +43,7 @@ class assets_app extends application
 		$this->add_module(_("Maintenance"));
 		
 		$this->add_lapp_function(2, _("Fixed &Assets"),
-			"inventory/manage/items.php?FixedAsset=1", 'SA_ASSET', MENU_ENTRY);
+			"inventory/manage/items.php?type=F", 'SA_ASSET', MENU_ENTRY);
 		$this->add_rapp_function(2, _("Fixed Assets &Locations"),
 			"inventory/manage/locations.php?FixedAsset=1", 'SA_INVENTORYLOCATION', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("Fixed Assets &Categories"),

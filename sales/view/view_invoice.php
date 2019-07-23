@@ -89,7 +89,7 @@ label_cells(_("Our Order No"),
 end_row();
 start_row();
 label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
-label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
+label_cells(_("Shipping"), $myrow["shipping"], "class='tableheader2'");
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 end_row();
 start_row();

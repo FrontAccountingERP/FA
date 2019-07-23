@@ -105,7 +105,7 @@ function display_credit_header(&$order)
 		$change_prices = 1;
 	}
 
-    shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
+    shipping_methods_list_row(_("Shipping:"), 'ShipperID', $order->ship_via);
 
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 

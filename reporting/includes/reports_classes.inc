@@ -423,7 +423,7 @@ class BoxReports
 				case 'CATEGORIES':
 					return stock_categories_list($name, null, _("No Category Filter"));
 				case 'FCATEGORIES':
-					return stock_categories_list($name, null, _("No Category Filter"), false, true);
+					return stock_categories_list($name, null, _("No Category Filter"), false, 'F');
 				case 'FCLASS':
 					return fixed_asset_classes_list($name, null, _("No Class Filter"), false);
 				case 'SALESTYPES':

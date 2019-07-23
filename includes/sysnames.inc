@@ -170,7 +170,8 @@ $depreciation_methods = array(
 $stock_types = array(
 	'M' => _("Manufactured"),
 	'B' => _("Purchased"),
-	'D' => _("Service")
+	'D' => _("Service"),
+	'T' => _("Shipping")
 );
 
 //----------------------------------------------------------------------------------

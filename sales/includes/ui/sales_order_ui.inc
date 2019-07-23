@@ -215,9 +215,15 @@ function display_order_summary($title, &$order, $editable_items=false)
 	if ($order->trans_no!=0)
 		++$colspan;
 	start_row();
-	label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
-	small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost',0)));
-	label_cell('', 'colspan=2');
+
+	label_cell(_("Shipping method:") . shipping_methods_list('ship_via', null, _("None"), true), "colspan=$colspan align=right");
+
+	if (get_post('ship_via') !== ALL_TEXT) 
+	{
+		small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost',0)));
+		label_cell('', 'colspan=2');
+	} else
+		label_cell('', 'colspan=3');
 	end_row();
 	$display_sub_total = price_format($total + input_num('freight_cost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
@@ -457,12 +463,22 @@ function display_order_header(&$order, $editable, $date_text)
 
 	end_outer_table(1); // outer table
 
+	if (list_updated('ship_via')) {
+		$_SESSION['Items']->ship_via = get_post('ship_via');
+		$_POST['freight_cost'] = price_format(get_price(get_post('ship_via'), $_SESSION['Items']->customer_currency, get_post('sales_type')));
+		$Ajax->activate('items_table');
+	}
+
+
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price = get_kit_price($line->stock_id, $order->customer_currency,
 				$order->sales_type, $order->price_factor, get_post('OrderDate'));
 		}
+	}
+	if ($change_prices != 0 || list_updated('ship_via')) {
+		$_POST['freight_cost'] = price_format(get_price(get_post('ship_via'), $_SESSION['Items']->customer_currency, get_post('sales_type')));
 	    $Ajax->activate('items_table');
 	}
 
@@ -639,8 +655,6 @@ function display_delivery_details(&$order)
 		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
 		  _('Customer reference number for this order (if any)'));
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-
-		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
 
 		end_outer_table(1);
 	}

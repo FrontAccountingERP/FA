@@ -90,7 +90,8 @@ label_cells(_("All Payments Allocated"), price_format($_SESSION['View']->sum_pai
 end_row();
 } else
 	label_row(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'", "colspan=3");
-
+$shipping = get_item($_SESSION['View']->ship_via);
+label_row(_("Shipping"), $shipping['description'], "class='tableheader2'", "colspan=3");
 label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
 label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");

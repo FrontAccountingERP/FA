@@ -138,8 +138,10 @@ function write_credit_note(&$credit_note, $write_off_acc)
 			$credit_note->customer_id);
 	}
 
+	$freight = get_item($credit_note->ship_via);
+
 	if ($credit_note->freight_cost != 0) {
-		$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0,
+		$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $freight["freight_act"], 0, 0,
 			$credit_note->get_tax_free_shipping(), $credit_note->customer_id);
 	}
 

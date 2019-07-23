@@ -823,13 +823,17 @@ function dimensions_list_row($label, $name, $selected_id=null, $no_option=false,
 function stock_items_list($name, $selected_id=null, $all_option=false, 
 	$submit_on_change=false, $opts=array(), $editkey = false, $type = "stock")
 {
-	$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable
-			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE s.category_id=c.category_id";
+	$sql = "SELECT stock_id, s.description, c.description, shipper.shipper_name, s.inactive, s.editable
+			FROM ".TB_PREF."stock_master s 
+				LEFT JOIN ".TB_PREF."shippers shipper ON shipper.shipper_id=s.shipper_id
+				LEFT JOIN ".TB_PREF."stock_category c ON s.category_id=c.category_id";
 
-	if (isset($opts['fixed_asset']) && $opts['fixed_asset'])
-		$sql .= " AND mb_flag='F'";
+	if (isset($opts['shipping']) && $opts['shipping'])
+		$where[] = "mb_flag='T'";
+	elseif (isset($opts['fixed_asset']) && $opts['fixed_asset'])
+		$where[] = "mb_flag='F'";
 	else
-		$sql .= " AND mb_flag!='F'";
+		$where[] = "NOT mb_flag IN('F','T')";
 
 	if ($editkey)
 		set_editor('item', $name, $editkey);
@@ -842,14 +846,15 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 			'spec_id' => ALL_TEXT,
 			'search_box' => true,
 			'search' => array("stock_id", "c.description","s.description"),
-			'search_submit' => get_company_pref('no_item_list')!=0 && (!isset($opts['fixed_asset']) || !$opts['fixed_asset']),
+			'search_submit' => get_company_pref('no_item_list') != 0 && (!isset($opts['fixed_asset']) || !$opts['fixed_asset']),
 			'size'=>10,
 			'select_submit'=> $submit_on_change,
 			'category' => 2,
-			'order' => array('c.description','stock_id'),
+			'order' => (isset($opts['shipping']) && $opts['shipping']) ? array('shipper.shipper_name','stock_id'): array('c.description','stock_id'),
 			'editlink' => $editkey ? add_edit_combo('item') : false,
 			'editable' => false,
-			'max' => 255
+			'max' => 255,
+			'where' => $where
 		  ), $opts), $type );
 	return $ret;
 }
@@ -907,7 +912,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 			".TB_PREF."stock_category c
 			ON i.category_id=c.category_id
 			WHERE i.stock_id=s.stock_id
-      AND mb_flag != 'F'";
+      AND NOT mb_flag IN('F','T')";
 
 	
 	if ($type == 'local')	{ // exclude foreign codes
@@ -1032,7 +1037,7 @@ function stock_purchasable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false, $all=false, $editkey=false)
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("NOT no_purchase"), 
+		array('where'=>array("NOT no_purchase", "mb_flag!='F'"), 
 			'show_inactive'=>$all), $editkey, "stock_purchased");
 }
 //
@@ -1051,19 +1056,53 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 
 //------------------------------------------------------------------------------------
 
-function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=true)
+function shipping_methods_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('type'=>1, 'shipping'=>true, 'category' => false, 'search_box'=>false, 'search_sumbit' => false),
+			false, false);//, "shipping_methods");
+}
+
+function shipping_methods_list_cells($label, $name, $selected_id=null,
+				$all_option=false, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	echo shipping_methods_list($name, $selected_id, $all_option, $submit_on_change);
+	echo "</td>\n";
+}
+
+function shipping_methods_list_row($label, $name, $selected_id=null,
+		$all_option=false, $submit_on_change=false)
+{
+	echo "<tr><td class='label'>$label</td>";
+	shipping_methods_list_cells(null, $name, $selected_id, $all_option, $submit_on_change);
+	echo "</tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
+function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=true, $all=true)
 {
 	global $stock_types;
 
+	$options = $stock_types;
+	if (!$all)
+	{
+		unset($options['T']);
+		unset($options['F']);
+	}
 	echo "<tr>";
 	if ($label != null)
 		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
-
-	echo array_selector($name, $selected_id, $stock_types, 
+		
+	echo array_selector($name, $selected_id, $options, 
 		array( 
 			'select_submit'=> true, 
-			'disabled' => !$enabled) );
+			'disabled' => !$enabled)
+		);
 	echo "</td></tr>\n";
 }
 
@@ -1263,26 +1302,31 @@ function item_tax_types_list_row($label, $name, $selected_id=null, $show_inactiv
 
 //------------------------------------------------------------------------------------
 
-function shippers_list($name, $selected_id=null)
+function shippers_list($name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	$sql = "SELECT shipper_id, shipper_name, inactive FROM ".TB_PREF."shippers";
 	return combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', 
-		array('order'=>array('shipper_name')));
+		array('order'=>array('shipper_name'),
+			'spec_option' => $none_option,
+			'spec_id' => ALL_NUMERIC,
+			'select_submit'=> $submit_on_change,
+			'async' => false,
+));
 }
 
-function shippers_list_cells($label, $name, $selected_id=null)
+function shippers_list_cells($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo shippers_list($name, $selected_id);
+	echo shippers_list($name, $selected_id, $none_option, $submit_on_change);
 	echo "</td>\n";
 }
 
-function shippers_list_row($label, $name, $selected_id=null)
+function shippers_list_row($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	shippers_list_cells(null, $name, $selected_id);
+	shippers_list_cells(null, $name, $selected_id, $none_option, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1711,13 +1755,13 @@ function class_list_row($label, $name, $selected_id=null, $submit_on_change=fals
 }
 
 //-----------------------------------------------------------------------------------------------
-function stock_categories_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
+function stock_categories_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $type=false)
 {
 	$where_opts = array();
-	if ($fixed_asset)
-		$where_opts[0] = "dflt_mb_flag='F'";
+	if (in_array($type, array('F', 'T')))
+		$where_opts[] = "dflt_mb_flag=".db_escape($type);
 	else
-		$where_opts[0] = "dflt_mb_flag!='F'";
+		$where_opts[] = "NOT dflt_mb_flag IN('F','T')";
 
 	$sql = "SELECT category_id, description, inactive FROM ".TB_PREF."stock_category";
 	return combo_input($name, $selected_id, $sql, 'category_id', 'description',
@@ -1730,19 +1774,19 @@ function stock_categories_list($name, $selected_id=null, $spec_opt=false, $submi
  		));
 }
 
-function stock_categories_list_cells($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
+function stock_categories_list_cells($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $type=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo stock_categories_list($name, $selected_id, $spec_opt, $submit_on_change, $fixed_asset);
+	echo stock_categories_list($name, $selected_id, $spec_opt, $submit_on_change, $type);
 	echo "</td>\n";
 }
 
-function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $fixed_asset=false)
+function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false, $type=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	stock_categories_list_cells(null, $name, $selected_id, $spec_opt, $submit_on_change, $fixed_asset);
+	stock_categories_list_cells(null, $name, $selected_id, $spec_opt, $submit_on_change, $type);
 	echo "</tr>\n";
 }
 

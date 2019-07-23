@@ -353,8 +353,8 @@ locations_list_cells(null, 'Location', null, false, true);
 if (!isset($_POST['ship_via'])) {
 	$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 }
-label_cell(_("Shipping Company"), "class='tableheader2'");
-shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
+label_cell(_("Shipping Method"), "class='tableheader2'");
+shipping_methods_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 // set this up here cuz it's used to calc qoh
 if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {

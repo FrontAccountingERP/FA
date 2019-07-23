@@ -167,8 +167,7 @@ function print_po()
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 		$rep->NewLine();
 
-		$tax_items = get_tax_for_items(ST_PURCHORDER, $items, $prices, 0,
-		  $myrow['tax_group_id'], $myrow['tax_included'], TCA_LINES);
+		$tax_items = get_tax_for_items(ST_PURCHORDER, $items, $prices, $myrow['tax_group_id'], $myrow['tax_included'], TCA_LINES);
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{

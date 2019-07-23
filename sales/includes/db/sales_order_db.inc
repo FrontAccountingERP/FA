@@ -231,7 +231,7 @@ function get_sales_order_header($order_no, $trans_type)
 	  stype.id AS sales_type_id,
 	  stype.tax_included,
 	  stype.factor,
- 	  ship.shipper_name,
+ 	  ship.description as shipping,
 	  tax_group.name AS tax_group_name,
 	  tax_group.id AS tax_group_id,
 	  cust.tax_id,
@@ -245,7 +245,7 @@ function get_sales_order_header($order_no, $trans_type)
 			LEFT JOIN (SELECT order_, sum(alloc) inv_allocs FROM ".TB_PREF."debtor_trans 
 				WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no)."  GROUP BY order_)
 				 inv ON sorder.trans_type=".ST_SALESORDER." AND inv.order_=sorder.order_no
-			LEFT JOIN ".TB_PREF."shippers ship ON  ship.shipper_id = sorder.ship_via,"
+			LEFT JOIN ".TB_PREF."stock_master ship ON ship.stock_id = sorder.ship_via,"
 	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
 	  .TB_PREF."tax_groups tax_group, "

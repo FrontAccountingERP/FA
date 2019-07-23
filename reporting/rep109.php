@@ -110,6 +110,10 @@ function print_sales_orders()
 		$result = get_sales_order_details($i, ST_SALESORDER);
 		$SubTotal = 0;
 		$items = $prices = array();
+		if ($myrow["ship_via"]) {
+			$items[] = $myrow["ship_via"];
+			$prices[] = $myrow["freight_cost"];
+		}
 		while ($myrow2=db_fetch($result))
 		{
 			$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
@@ -141,6 +145,7 @@ function print_sales_orders()
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->NewPage();
 		}
+		
 		if ($myrow['comments'] != "")
 		{
 			$rep->NewLine();
@@ -167,9 +172,7 @@ function print_sales_orders()
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
 			$rep->NewLine();
 		}
-
-		$tax_items = get_tax_for_items(ST_SALESINVOICE, $items, $prices, $myrow["freight_cost"],
-		  $myrow['tax_group_id'], $myrow['tax_included']);
+		$tax_items = get_tax_for_items(ST_SALESINVOICE, $items, $prices, $myrow['tax_group_id'], $myrow['tax_included']);
 		$first = true;
 		foreach($tax_items as $tax_item)
 		{

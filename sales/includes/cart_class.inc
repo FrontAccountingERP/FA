@@ -284,7 +284,7 @@ class Cart
 	// Makes parent documents for direct delivery/invoice by recurent call.
 	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
 	function write($policy=0) {
-		
+
 		global $SysPrefs, $Refs;
 		
 		begin_transaction(); // prevents partial database changes in case of direct delivery/invoice
@@ -517,8 +517,12 @@ class Cart
 	{
 		$items = array();
 		$prices = array();
-		if ($shipping_cost == null)
-			$shipping_cost = $this->freight_cost;
+		if ($this->ship_via != '') {
+			if ($shipping_cost == null)
+				$shipping_cost = $this->freight_cost;
+			$items[] = $this->ship_via;
+			$prices[] = $shipping_cost;
+		}
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
@@ -527,8 +531,7 @@ class Cart
 				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
 		}
 
-		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $shipping_cost,
-		  	$this->tax_group_id, $this->tax_included);
+		$taxes = get_tax_for_items($this->trans_type, $items, $prices, $this->tax_group_id, $this->tax_included);
 
     // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
     if ($this->customer_currency == 'CHF') {
@@ -551,7 +554,7 @@ class Cart
 
 	function get_shipping_tax()
 	{
-		$freight = split_item_price(NULL, $this->freight_cost, $this->tax_group_id, $this->tax_included, $this->trans_type);
+		$freight = split_item_price($this->ship_via, $this->freight_cost, $this->tax_group_id, $this->tax_included, $this->trans_type);
 
 		return $freight['Tax'];
 	}

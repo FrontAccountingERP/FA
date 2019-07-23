@@ -158,8 +158,10 @@ function write_sales_invoice(&$invoice)
 	}
 	$to_allocate = ($items_total + $charge_shipping + $items_added_tax + $freight_added_tax);
 
+	$freight = get_item($invoice->ship_via);
+
 	if ($charge_shipping != 0) {
-		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
+		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $freight["sales_account"], 0, 0,
 			-$invoice->get_tax_free_shipping()*$prepaid_factor, $invoice->customer_id);
 	}
 	// post all taxes

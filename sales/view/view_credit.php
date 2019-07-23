@@ -71,7 +71,7 @@ label_cells(_("Currency"), $myrow["curr_code"], "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
-label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
+label_cells(_("Shipping"), $myrow["shipping"], "class='tableheader2'");
 end_row();
 comments_display_row(ST_CUSTCREDIT, $trans_id);
 end_table();

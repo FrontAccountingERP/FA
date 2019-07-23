@@ -135,7 +135,7 @@ class supp_trans
         	$prices[] = round( $ln_itm->this_quantity_inv * $ln_itm->chg_price, user_price_dec());
         }
 
-        $taxes = get_tax_for_items($this->trans_type, $items, $prices, 0, $this->tax_group_id, 
+        $taxes = get_tax_for_items($this->trans_type, $items, $prices, $this->tax_group_id, 
         	$this->tax_included);
 
 		if (isset($this->tax_overrides))
