@@ -140,7 +140,7 @@ function void_bank_trans($type, $type_no, $nested=false)
 {
 
 	if (!$nested)
-		begin_transaction();
+		begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql = "UPDATE ".TB_PREF."bank_trans 
 			SET amount=0

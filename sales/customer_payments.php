@@ -238,14 +238,10 @@ if (get_post('AddPaymentItem') && can_process()) {
 	new_doc_date($_POST['DateBanked']);
 
 	$new_pmt = !$_SESSION['alloc']->trans_no;
-	//Chaitanya : 13-OCT-2011 - To support Edit feature
-	$payment_no = write_customer_payment($_SESSION['alloc']->trans_no, $_POST['customer_id'], $_POST['BranchID'],
-		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
 
-	$_SESSION['alloc']->trans_no = $payment_no;
-	$_SESSION['alloc']->date_ = $_POST['DateBanked'];
-	$_SESSION['alloc']->write();
+	$payment_no =  save_cust_payment($_SESSION['alloc'], get_post('customer_id'), get_post('BranchID'), get_post('bank_account'),
+		 get_post('DateBanked'), get_post('ref'), input_num('amount'), input_num('discount'), get_post('memo_'),
+		 input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	unset($_SESSION['alloc']);
 	meta_forward($_SERVER['PHP_SELF'], $new_pmt ? "AddedID=$payment_no" : "UpdatedID=$payment_no");

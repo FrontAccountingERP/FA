@@ -23,7 +23,7 @@ function write_sales_invoice(&$invoice)
 	$date_ = $invoice->document_date;
 	$charge_shipping =$invoice->freight_cost;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	hook_db_prewrite($invoice, ST_SALESINVOICE);
 	$company_data = get_company_prefs();
@@ -216,7 +216,7 @@ function write_sales_invoice(&$invoice)
 
 function void_sales_invoice($type, $type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	hook_db_prevoid($type, $type_no);
 	void_bank_trans($type, $type_no, true);

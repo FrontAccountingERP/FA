@@ -175,7 +175,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 		$_POST['WriteOffGLCode'] = 0;
 	}
 	copy_to_cn();
-	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
+	$credit_no = write_sales_trans($_SESSION['Items'], $_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{
 		display_error(_("The entered reference is already in use."));

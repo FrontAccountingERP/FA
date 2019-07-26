@@ -13,6 +13,7 @@
 function add_user($user_id, $real_name, $password, $phone, $email, $role_id, 
 	$language, $profile, $rep_popup, $pos)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password"
 		.", phone, email, role_id, language, pos, print_profile, rep_popup)
 		VALUES (".db_escape($user_id).", 
@@ -21,17 +22,23 @@ function add_user($user_id, $real_name, $password, $phone, $email, $role_id,
 		.", ".db_escape($pos).",".db_escape($profile).",".db_escape($rep_popup)
 		." )";
 
-	return db_query($sql, "could not add user for $user_id");
+	$result = db_query($sql, "could not add user for $user_id");
+	commit_transaction();
+	return $result;
 }
 
 //-----------------------------------------------------------------------------------------------
 
 function update_user_password($id, $user_id, $password)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."users SET password=".db_escape($password) . ",
 		user_id = ".db_escape($user_id). " WHERE id=".db_escape($id);
+	$result = db_query($sql, "could not update user password for $user_id");
 
-	return db_query($sql, "could not update user password for $user_id");
+	commit_transaction();
+	return $result;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -39,6 +46,7 @@ function update_user_password($id, $user_id, $password)
 function update_user($id, $user_id, $real_name, $phone, $email, $role_id, 
 	$language, $profile, $rep_popup, $pos)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
 		email=".db_escape($email).",
@@ -50,19 +58,25 @@ function update_user($id, $user_id, $real_name, $phone, $email, $role_id,
 		user_id = " . db_escape($user_id)
 		. " WHERE id=" . db_escape($id);
 	return db_query($sql, "could not update user for $user_id");
+	commit_transaction();
 }
 
 //-----------------------------------------------------------------------------------------------
 
 function update_user_prefs($id, $prefs)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."users SET ";
 	foreach($prefs as $name => $value) {
 		$prefs[$name] = $name.'='. db_escape($value);
 	}
 	$sql .= implode(',', $prefs) . " WHERE id=".db_escape($id);
 
-	return db_query($sql, "could not update user display prefs for $id");
+	$result = db_query($sql, "could not update user display prefs for $id");
+
+	commit_transaction();
+	return $result;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -117,9 +131,13 @@ function get_user_by_email($email)
 
 function delete_user($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."users WHERE id=".db_escape($id);
 
 	db_query($sql, "could not delete user $id");
+
+	commit_transaction();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -134,13 +152,19 @@ function get_user_auth($user_id, $password)
 }
 
 //-----------------------------------------------------------------------------------------------
-
-function update_user_visitdate($user_id)
+//
+//	Record user login. When logging is on also current FA state is recorded.
+//
+function update_user_visitdate($user_id, $src_version, $db_version, $extensions)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."users SET last_visit_date='". date("Y-m-d H:i:s") ."'
 		WHERE user_id=".db_escape($user_id);
 
 	db_query($sql, "could not update last visit date for user $user_id");
+
+	commit_transaction();
 }
 
 //-----------------------------------------------------------------------------------------------

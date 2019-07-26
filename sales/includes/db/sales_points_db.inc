@@ -11,14 +11,17 @@
 ***********************************************************************/
 function add_sales_point($name, $location, $account, $cash, $credit)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (".db_escape($name)
 			. ",".db_escape($location).",".db_escape($account)
 			. ",$cash,$credit)";
 	db_query($sql, "could not add point of sale");
+   	commit_transaction();
 }
 
 function update_sales_point($id, $name, $location, $account, $cash, $credit)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql = "UPDATE ".TB_PREF."sales_pos SET pos_name=".db_escape($name)
 				.",pos_location=".db_escape($location)
@@ -27,7 +30,8 @@ function update_sales_point($id, $name, $location, $account, $cash, $credit)
 				.",credit_sale =$credit"
 		 		." WHERE id = ".db_escape($id);
 	
-	db_query($sql, "could not update sales type");			
+	db_query($sql, "could not update sales type");
+   	commit_transaction();
 }
 
 function get_all_sales_points($all=false)
@@ -66,7 +70,9 @@ function get_sales_point_name($id)
 
 function delete_sales_point($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."sales_pos WHERE id=".db_escape($id);
 	db_query($sql,"The point of sale record could not be deleted");
+   	commit_transaction();
 }
 

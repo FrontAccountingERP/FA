@@ -15,6 +15,8 @@
 function add_attachment($filterType, $trans_no, $description,
 	$filename, $unique_name, $filesize, $filetype)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$date = date2sql(Today());
 	$sql = "INSERT INTO ".TB_PREF."attachments (type_no, trans_no, description, filename, unique_name,
 		filesize, filetype, tran_date) VALUES (".db_escape($filterType).","
@@ -22,12 +24,16 @@ function add_attachment($filterType, $trans_no, $description,
 		.db_escape($filename).", ".db_escape($unique_name).", ".db_escape($filesize)
 		.", ".db_escape($filetype).", '$date')";
 	db_query($sql, "Attachment could not be inserted");		
+
+	commit_transaction();
 }
 //----------------------------------------------------------------------------------------
 
 function update_attachment($selected_id, $filterType, $trans_no, $description,
 	$filename, $unique_name, $filesize, $filetype)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$date = date2sql(Today());
 	$sql = "UPDATE ".TB_PREF."attachments SET
 		type_no=".db_escape($filterType).",
@@ -42,14 +48,20 @@ function update_attachment($selected_id, $filterType, $trans_no, $description,
 	}	
 	$sql .= "tran_date='$date' WHERE id=".db_escape($selected_id);
 	db_query($sql, "Attachment could not be updated");		
+
+	commit_transaction();
 }
 
 //----------------------------------------------------------------------------------------
 
 function delete_attachment($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "DELETE FROM ".TB_PREF."attachments WHERE id = ".db_escape($id);
 	db_query($sql, "Could not delete attachment");
+
+	commit_transaction();
 }
 
 //----------------------------------------------------------------------------------------

@@ -35,13 +35,11 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$show_sql 		= 0;	// show all sql queries in page footer for debugging purposes
 	$go_debug 		= 0;	// set to 1 for basic debugging, or 2 to see also backtrace after failure.
 	$pdf_debug 		= 0;	// display pdf source instead reports for debugging when $go_debug!=0
-	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
-	// Warning: this produces huge amount of data in sql_trail table.
-	// Don't forget switch the option off and flush the table manually after 
-	// trail, or your future backup files are overloaded with unneeded data.
-	//
-	$sql_trail 		= 0; // save all sql queries in sql_trail
-	$select_trail 	= 0; // track also SELECT queries
+	// set $db_trail when you need full log of database changes for debugging purposes
+	// Warning: this option can produce huge amount of data either in backups or error log file.
+	// 1 - log to db_trail table
+	// 2 - log to error file
+	$db_trail 		= 0;
 
 	// Main Title
 	$app_title = "FrontAccounting";

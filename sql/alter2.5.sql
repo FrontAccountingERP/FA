@@ -59,3 +59,15 @@ UPDATE `0_cust_branch` branch
 	SET branch.default_ship_via=stock.stock_id;
 
 ALTER TABLE `0_tax_group_items` DROP COLUMN `tax_shipping`;
+
+# new debug trail
+DROP TABLE `1_sql_trail`;
+CREATE TABLE `1_db_trail` (
+		`id` int(11) NOT NULL AUTO_INCREMENT,
+		`stamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+		`user` tinyint(3) unsigned NOT NULL DEFAULT '0',
+		`msg`  varchar(255) DEFAULT '',
+		`entry`  varchar(255) DEFAULT '',
+		`data` text DEFAULT NULL,
+	PRIMARY KEY (`id`)
+	) ENGINE=MyISAM;

@@ -97,21 +97,13 @@ if (get_post('addupdate'))
 		}
 //		$areas = sort_areas($areas);
 
-		$sections = array_values($sections);
+	write_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
+		$sections, $areas, get_post('inactive'));
 
-     	if ($new_role) 
-       	{
-			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
-			display_notification(_("New security role has been added."));
-       	} else
-       	{
-			update_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
-				$sections, $areas); 
-			update_record_status($_POST['role'], get_post('inactive'),
-				'security_roles', 'id');
-
-	  		display_notification(_("Security role has been updated."));
-       	}
+	if ($new_role) 
+		display_notification(_("New security role has been added."));
+	else
+		display_notification(_("Security role has been updated."));
 	$new_role = true;
 	clear_data();
 	$Ajax->activate('_page_body');

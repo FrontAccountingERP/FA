@@ -11,7 +11,7 @@
 ***********************************************************************/
 function add_tax_group($name, $taxes, $tax_area)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_area) VALUES (".db_escape($name).",".db_escape($tax_area).")";
 	db_query($sql, "could not add tax group");
@@ -25,7 +25,7 @@ function add_tax_group($name, $taxes, $tax_area)
 
 function update_tax_group($id, $name, $taxes, $tax_area)
 {
-	begin_transaction();	
+	begin_transaction(__FUNCTION__, func_get_args());
 
     $sql = "UPDATE ".TB_PREF."tax_groups SET name=".db_escape($name).",tax_area=".db_escape($tax_area)." WHERE id=".db_escape($id);
 	db_query($sql, "could not update tax group");
@@ -55,7 +55,7 @@ function get_tax_group($type_id)
 
 function delete_tax_group($id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 		
 	$sql = "DELETE FROM ".TB_PREF."tax_groups WHERE id=".db_escape($id);
 		

@@ -198,7 +198,8 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	copy_to_cart();
 	if ($new_credit) 
 		new_doc_date($_SESSION['Items']->document_date);
-	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
+
+	$credit_no = write_sales_trans($_SESSION['Items'], $_POST['WriteOffGLCode']);
 	if ($credit_no == -1)
 	{
 		display_error(_("The entered reference is already in use."));

@@ -89,7 +89,7 @@ function write_grn(&$po)
 	$date_ = $po->tran_date;
 	$grn = $po->grn_id;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
 	if (!is_company_currency($po->curr_code))
@@ -448,7 +448,7 @@ function void_grn($grn_batch)
 	if (exists_grn_on_invoices($grn_batch))
 		return false;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_SUPPRECEIVE, $grn_batch);
 
 	void_bank_trans(ST_SUPPRECEIVE, $grn_batch, true);

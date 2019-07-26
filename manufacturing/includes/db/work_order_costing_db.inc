@@ -1,4 +1,5 @@
 <?php
+
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License, GPL, 
@@ -12,13 +13,14 @@
 
 function add_wo_costing($workorder_id, $cost_type, $trans_type, $trans_no, $factor=1)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."wo_costing (workorder_id, cost_type, trans_type, trans_no, factor)
 		VALUES (".db_escape($workorder_id).","
 		.db_escape($cost_type).",".db_escape($trans_type).","
 		.db_escape($trans_no).",".db_escape($factor).")";
 
 	db_query($sql, "could not add work order costing");
-
+	commit_transaction();
 }
 
 function get_wo_costing($workorder_id)
@@ -35,10 +37,12 @@ function get_wo_costing($workorder_id)
 
 function delete_wo_costing($trans_type, $trans_no)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."wo_costing WHERE trans_type=".db_escape($trans_type)
 		." AND trans_no=".db_escape($trans_no);
 
 	db_query($sql, "could not delete work order costing");
+	commit_transaction();
 }
 
 /*
@@ -120,7 +124,7 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
 //
 	global $Refs, $wo_cost_types;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
     $journal_id = get_next_trans_no(ST_JOURNAL);
 
@@ -224,6 +228,7 @@ function void_wo_costing($wo_id)
 {
 	global $Refs;
 
+	begin_transaction(__FUNCTION__, func_get_args());
 	$res = get_wo_costing($wo_id);
 
 	while($row = db_fetch($res))
@@ -241,4 +246,5 @@ function void_wo_costing($wo_id)
 
 	$sql = "DELETE FROM ".TB_PREF."wo_costing WHERE workorder_id=".db_escape($wo_id);
 	db_query($sql, "could not delete work order costing");
+	commit_transaction();
 }

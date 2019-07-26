@@ -20,6 +20,7 @@ function add_bank_account($account_code, $account_type, $bank_account_name,
 	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, 
 	$dflt_curr_act, $bank_charge_act)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	if($dflt_curr_act) 	// only one default account for any currency
 	  clear_dflt_curr_account($bank_curr_code);
 
@@ -32,6 +33,9 @@ function add_bank_account($account_code, $account_type, $bank_account_name,
 		", ".db_escape($bank_curr_code).", ".db_escape($dflt_curr_act).", ".db_escape($bank_charge_act).")";
 
 	db_query($sql, "could not add a bank account for $account_code");
+	$result =  db_insert_id();
+	commit_transaction();
+	return $result;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -39,6 +43,8 @@ function add_bank_account($account_code, $account_type, $bank_account_name,
 function update_bank_account($id, $account_code, $account_type, $bank_account_name, 
 	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act, $bank_charge_act)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if($dflt_curr_act) 	// only one default account for any currency
 	  clear_dflt_curr_account($bank_curr_code);
 
@@ -51,15 +57,19 @@ function update_bank_account($id, $account_code, $account_type, $bank_account_na
 		WHERE id = ".db_escape($id);
 
 	db_query($sql, "could not update bank account for $account_code");
+
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
 
 function delete_bank_account($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "DELETE FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($id);
 
 	db_query($sql,"could not delete bank account for $id");
+	commit_transaction();
 }
 
 
@@ -117,38 +127,49 @@ function get_bank_charge_account($id)
 
 function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type, $usage)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type, `usage`) 
 	VALUES (".db_escape($description).", ".db_escape($type).", "
 		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).", ".db_escape($usage).")";
 
 	db_query($sql, "could not insert quick entry for $description");
+
+	$result = db_insert_id();
+	commit_transaction();
+	return $result;
 }
 
 //---------------------------------------------------------------------------------------------
 
 function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc, $bal_type, $usage)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
 		type=".db_escape($type).", base_amount=".db_escape($base_amount)
 		.", base_desc=".db_escape($base_desc).", bal_type=".db_escape($bal_type).", `usage`=".db_escape($usage)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry for $selected_id");
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
 
 function delete_quick_entry($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "DELETE FROM ".TB_PREF."quick_entries WHERE id=".db_escape($selected_id);
 
 	db_query($sql,"could not delete quick entry $selected_id");
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
 
 function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2, $memo)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines 
 		(qid, action, dest_id, amount, dimension_id, dimension2_id, memo) 
 	VALUES 
@@ -156,12 +177,16 @@ function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2, $me
 			".db_escape($amount).", ".db_escape($dim).", ".db_escape($dim2).", ".db_escape($memo).")";
 
 	db_query($sql, "could not insert quick entry line for $qid");
+
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
 
 function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2, $memo)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."quick_entry_lines SET qid = ".db_escape($qid)
 		.", action=".db_escape($action).",
 		dest_id=".db_escape($dest_id).", amount=".db_escape($amount)
@@ -169,15 +194,20 @@ function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount,
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry line for $selected_id");
+
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
 
 function delete_quick_entry_line($selected_id)
 {
-	$sql = "DELETE FROM ".TB_PREF."quick_entry_lines WHERE id=".db_escape($selected_id);
+	begin_transaction(__FUNCTION__, func_get_args());
 
+	$sql = "DELETE FROM ".TB_PREF."quick_entry_lines WHERE id=".db_escape($selected_id);
 	db_query($sql,"could not delete quick entry line $selected_id");
+
+	commit_transaction();
 }
 //---------------------------------------------------------------------------------------------
 
@@ -293,6 +323,8 @@ function get_sql_for_bank_account_reconcile($bank_account, $date)
 
 function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
 		." WHERE id=".db_escape($reconcile_id);
 
@@ -304,6 +336,8 @@ function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_da
 			WHERE id=".db_escape($bank_account);
 
 	db_query($sql2,"Error updating reconciliation information");
+
+	commit_transaction();
 }
 //---------------------------------------------------------------------------------------------
 

@@ -11,15 +11,20 @@
 ***********************************************************************/
 function add_account_type($id, $name, $class_id, $parent)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."chart_types (id, name, class_id, parent)
 		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($class_id).", ".db_escape($parent).")";
+	$result = db_query($sql);
 
-	return db_query($sql);
+	commit_transaction();
+	return $result ? db_insert_id($sql) : false;
 }
 
 function update_account_type($id, $name, $class_id, $parent, $old_id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if ($old_id !== $id)
 	{
 		$sql = "SELECT id 
@@ -54,6 +59,7 @@ function update_account_type($id, $name, $class_id, $parent, $old_id)
 		." WHERE id = ".db_escape($old_id);
 
 	$ret = db_query($sql, "could not update account type");
+
 	commit_transaction();
 	return $ret;
 }
@@ -103,25 +109,36 @@ function get_account_type_name($id)
 
 function delete_account_type($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = ".db_escape($id);
+	begin_transaction(__FUNCTION__, func_get_args());
 
+	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = ".db_escape($id);
 	db_query($sql, "could not delete account type");
+
+	commit_transaction();
 }
 
 function add_account_class($id, $name, $ctype)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, ctype)
 		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($ctype).")";
+	$result = db_query($sql);
 
-	return db_query($sql);
+	commit_transaction();
+	return $result;
 }
 
 function update_account_class($id, $name, $ctype)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
 		ctype=".db_escape($ctype)." WHERE cid = ".db_escape($id);
+	$result = db_query($sql);
 
-	return db_query($sql);
+	commit_transaction();
+	return $result;
 }
 
 function get_account_classes($all=false, $balance=-1)
@@ -160,8 +177,12 @@ function get_account_class_name($id)
 
 function delete_account_class($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "DELETE FROM ".TB_PREF."chart_class WHERE cid = ".db_escape($id);
 
 	db_query($sql, "could not delete account type");
+	commit_transaction();
+
 }
 

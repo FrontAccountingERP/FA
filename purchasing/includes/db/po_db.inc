@@ -49,7 +49,7 @@ function delete_po($po)
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid($po, ST_PURCHORDER);
 	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=".db_escape($po);
 	db_query($sql, "The order header could not be deleted");
@@ -67,7 +67,7 @@ function add_po(&$po_obj)
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($po_obj, ST_PURCHORDER);
 
      /*Insert to purchase order header record */
@@ -115,7 +115,7 @@ function add_po(&$po_obj)
 
 function update_po(&$po_obj)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($po_obj, ST_PURCHORDER);
 
     /*Update the purchase order header with any changes */

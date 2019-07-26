@@ -14,7 +14,7 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args(); while (count($args) < 10) $args[] = 0;
 	$args = (object)array_combine(array('trans_no', 'supplier_id', 'bank_account', 'date_',
 		 'ref', 'bank_amount', 'supp_amount', 'supp_discount', 'memo_', 'bank_charge'), $args);
@@ -98,7 +98,7 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 
 function void_supp_payment($type, $type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid($type, $type_no);
 
 	void_bank_trans($type, $type_no, true);

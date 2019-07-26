@@ -11,15 +11,18 @@
 ***********************************************************************/
 function add_tax_type($name, $sales_gl_code, $purchasing_gl_code, $rate)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."tax_types (name, sales_gl_code, purchasing_gl_code, rate)
 		VALUES (".db_escape($name).", ".db_escape($sales_gl_code)
 		.", ".db_escape($purchasing_gl_code).", $rate)";
 
 	db_query($sql, "could not add tax type");
+	commit_transaction();
 }
 
 function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."tax_types SET name=".db_escape($name).",
 		sales_gl_code=".db_escape($sales_gl_code).",
 		purchasing_gl_code=".db_escape($purchasing_gl_code).",
@@ -27,6 +30,7 @@ function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $
 		WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not update tax type");
+	commit_transaction();
 }
 
 function get_all_tax_types($all=false)
@@ -78,7 +82,7 @@ function get_tax_type_rate($type_id)
 
 function delete_tax_type($type_id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql = "DELETE FROM ".TB_PREF."tax_types WHERE id=".db_escape($type_id);
 

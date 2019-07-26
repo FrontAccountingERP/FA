@@ -71,18 +71,10 @@ function db_query($sql, $err_msg=null)
 			$retry = 0;
 	} while ($retry);
 
-	db_profile($sql);
+	if($SysPrefs->db_trail == 1)
+		$db_last_inserted_id = mysql_insert_id($db);	// cache to avoid trail overwrite
 
-	if($SysPrefs->sql_trail) {
-		$db_last_inserted_id = mysql_insert_id($db);	// preserve in case trail insert is done
-		if ($SysPrefs->select_trail || (strstr($sql, 'SELECT') === false)) {
-			mysql_query(
-			"INSERT INTO ".$cur_prefix."sql_trail
-				(`sql`, `result`, `msg`)
-				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
-				".db_escape($err_msg).")", $db);
-		}
-	}
+	db_profile($sql);
 
 	if ($err_msg != null || $SysPrefs->go_debug) {
 		$exit = $err_msg != null;
@@ -176,7 +168,7 @@ function db_insert_id()
 {
 	global $db_last_inserted_id, $SysPrefs, $db;
 
-	return $SysPrefs->sql_trail ? $db_last_inserted_id : mysql_insert_id($db);
+	return $SysPrefs->db_trail == 1 ? $db_last_inserted_id : mysql_insert_id($db);
 }
 
 function db_num_affected_rows()

@@ -15,7 +15,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $refer
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args();
 	$args = (object)array_combine(array('Items', 'location_from', 'location_to', 
 	'date_', 'reference', 'memo_'), $args);
@@ -118,7 +118,9 @@ function get_stock_transfer_items($trans_no)
 
 function void_stock_transfer($type_no)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_LOCTRANSFER, $type_no);
 	void_stock_move(ST_LOCTRANSFER, $type_no);
+	commit_transaction();
 }
 

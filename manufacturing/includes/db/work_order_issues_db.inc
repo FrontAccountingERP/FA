@@ -16,7 +16,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args();
 	$args = (object)array_combine(array('woid', 'ref', 'to_work_order', 'items', 'location', 
 		'workcentre', 'date_', 'memo_'), $args);
@@ -162,7 +162,7 @@ function check_void_wo_issue($issue_no)
 
 function void_work_order_issue($type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_MANUISSUE, $type_no);
 
 	$void_entry = get_voided_entry(ST_MANUISSUE, $type_no);

@@ -71,6 +71,18 @@ function handle_submit()
 				set_focus('closed');
 				return false;
 			}	
+			$co = get_company_prefs();
+			if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false)
+			{
+				display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
+				return false;
+			}
+			if (!is_account_balancesheet($co['retained_earnings_act']) || is_account_balancesheet($co['profit_loss_year_act']))
+			{
+				display_error(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
+				return false;
+			}
+
 			$ok = close_year($selected_id);
 		}	
 		else

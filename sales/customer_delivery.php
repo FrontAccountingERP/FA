@@ -291,7 +291,7 @@ if (isset($_POST['process_delivery']) && check_data()) {
 	if ($newdelivery)
 		new_doc_date($dn->document_date);
 
-	$delivery_no = $dn->write($bo_policy);
+	$delivery_no = write_sales_trans($dn, $bo_policy);
 
 	if ($delivery_no == -1)
 	{

@@ -11,26 +11,32 @@
 ***********************************************************************/
 function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."prices (stock_id, sales_type_id, curr_abrev, price) 
 		VALUES (".db_escape($stock_id).", ".db_escape($sales_type_id)
 		.", ".db_escape($curr_abrev).", ".db_escape($price).")";
 
 	db_query($sql,"an item price could not be added");
+	commit_transaction();
 }
 
 function update_item_price($price_id, $sales_type_id, $curr_abrev, $price)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."prices SET sales_type_id=".db_escape($sales_type_id).", 
 		curr_abrev=".db_escape($curr_abrev).", 
 		price=".db_escape($price)." WHERE id=".db_escape($price_id);
 
 	db_query($sql,"an item price could not be updated");
+	commit_transaction();
 }
 
 function delete_item_price($price_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."prices WHERE id= ".db_escape($price_id);
 	db_query($sql,"an item price could not be deleted");
+	commit_transaction();
 }
 
 function get_prices($stock_id)

@@ -14,6 +14,7 @@
 function update_currency($curr_abrev, $symbol, $currency, $country, 
 	$hundreds_name, $auto_update)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."currencies SET currency=".db_escape($currency)
 		.", curr_symbol=".db_escape($symbol).",	country=".db_escape($country)
 		.", hundreds_name=".db_escape($hundreds_name)
@@ -21,6 +22,7 @@ function update_currency($curr_abrev, $symbol, $currency, $country,
 			." WHERE curr_abrev = ".db_escape($curr_abrev);
 
 	db_query($sql, "could not update currency for $curr_abrev");
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -28,6 +30,8 @@ function update_currency($curr_abrev, $symbol, $currency, $country,
 function add_currency($curr_abrev, $symbol, $currency, $country, 
 	$hundreds_name, $auto_update)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."currencies (curr_abrev, curr_symbol, currency, 
 			country, hundreds_name, auto_update)
 		VALUES (".db_escape($curr_abrev).", ".db_escape($symbol).", "
@@ -35,17 +39,25 @@ function add_currency($curr_abrev, $symbol, $currency, $country,
 		.db_escape($hundreds_name).",".db_escape($auto_update).")";
 
 	db_query($sql, "could not add currency for $curr_abrev");
+
+	$result = db_insert_id();
+	commit_transaction();
+	return $result;
 }
 
 //---------------------------------------------------------------------------------------------
 
 function delete_currency($curr_code)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."currencies WHERE curr_abrev=".db_escape($curr_code);
 	db_query($sql, "could not delete currency	$curr_code");
 
 	$sql="DELETE FROM ".TB_PREF."exchange_rates WHERE curr_code='$curr_code'";
 	db_query($sql, "could not delete exchange rates for currency $curr_code");
+
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------

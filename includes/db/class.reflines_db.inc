@@ -167,6 +167,8 @@ class reflines_db extends data_set {
 
 	function save_next($type, $reference, $line=null)
 	{
+		begin_transaction(__CLASS__.':'.__METHOD__, func_get_args());
+
 	    $sql = "UPDATE ".TB_PREF."reflines SET pattern=SUBSTRING(" . db_escape(trim($reference)) .", LENGTH(`prefix`)+1)"
 		. " WHERE trans_type = ".db_escape($type)." AND ";
 
@@ -175,6 +177,8 @@ class reflines_db extends data_set {
 		else
 			$sql .= "`default`";
 
-		return db_query($sql, "The next transaction ref for $type could not be updated");
+		$result = db_query($sql, "The next transaction ref for $type could not be updated");
+		commit_transaction();
+		return $result;
 	}
 }

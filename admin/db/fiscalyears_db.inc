@@ -14,6 +14,8 @@ require_once($path_to_root. "/includes/ui/items_cart.inc");
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
 
@@ -21,14 +23,19 @@ function add_fiscalyear($from_date, $to_date, $closed)
 		VALUES (".db_escape($from).",".db_escape($to).", ".db_escape($closed).")";
 
 	db_query($sql, "could not add fiscal year");
+
+	commit_transaction();
 }
 
 function update_fiscalyear($id, $closed)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=".db_escape($closed)."
 		WHERE id=".db_escape($id);
-
 	db_query($sql, "could not update fiscal year");
+
+	commit_transaction();
 }
 
 function get_all_fiscalyears()
@@ -61,7 +68,7 @@ function get_current_fiscalyear()
 
 function delete_fiscalyear($id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
 
@@ -131,19 +138,7 @@ function close_year($year)
 {
 	global $Refs;
 
-	$co = get_company_prefs();
-	if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false)
-	{
-		display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
-		return false;
-	}
-	if (!is_account_balancesheet($co['retained_earnings_act']) || is_account_balancesheet($co['profit_loss_year_act']))
-	{
-		display_error(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
-		return false;
-	}
-
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$myrow = get_fiscalyear($year);
 	$to = $myrow['end'];
@@ -177,11 +172,13 @@ function close_year($year)
 
 function open_year($year)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$myrow = get_fiscalyear($year);
 	$from = sql2date($myrow['begin']);
 
-	begin_transaction();
 	close_transactions(add_days($from, -1));
+
 	commit_transaction();
 }
 
@@ -216,7 +213,9 @@ function delete_this_fiscalyear($selected_id)
 	global $db_connections;
 	
 	db_backup($db_connections[user_company()], 'Security backup before Fiscal Year Removal');
-	begin_transaction();
+
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$ref = _("Open Balance");
 	$myrow = get_fiscalyear($selected_id);
 	$to = $myrow['end'];

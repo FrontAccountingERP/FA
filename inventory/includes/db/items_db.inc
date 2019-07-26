@@ -16,6 +16,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_factor=1,
 	$depreciation_start=null, $fa_class_id=null, $vat_category='', $shipper_id=0)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
 		category_id=".db_escape($category_id).",
@@ -55,6 +56,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 	db_query($sql, "The item could not be updated");
 
 	update_item_code(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
+	commit_transaction();
 }
 
 function add_item($stock_id, $description, $long_description, $category_id, 
@@ -64,6 +66,7 @@ function add_item($stock_id, $description, $long_description, $category_id,
 	$depreciation_method='D', $depreciation_rate=100,  $depreciation_factor=1, $depreciation_start=null,
 	$fa_class_id=null, $vat_category=0, $shipper_id=0)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
 		adjustment_account, wip_account, dimension_id, dimension2_id, no_sale, no_purchase, editable, vat_category,
@@ -92,10 +95,12 @@ function add_item($stock_id, $description, $long_description, $category_id,
 	db_query($sql, "The item locstock could not be added");
 
 	add_item_code($stock_id, $stock_id, $description, $category_id, 1, 0);
+	commit_transaction();
 }
 
 function delete_item($stock_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	db_query($sql, "could not delete stock item");
 
@@ -116,6 +121,7 @@ function delete_item($stock_id)
 	db_query($sql, "could not delete stock item bom");
 
 	delete_item_kit($stock_id);
+	commit_transaction();
 }
 
 function get_item($stock_id)

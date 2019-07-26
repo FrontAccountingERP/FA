@@ -52,7 +52,7 @@ function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, 
 
 function delete_customer($customer_id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	delete_entity_contacts('customer', $customer_id);
 
 	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);

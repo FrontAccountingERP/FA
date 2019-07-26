@@ -342,8 +342,6 @@ function check_item_data()
 	return true;
 }
 
-//-----------------------------------------------------------------------------------------------
-
 function handle_update_item()
 {
 	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
@@ -355,15 +353,11 @@ function handle_update_item()
 	line_start_focus();
 }
 
-//-----------------------------------------------------------------------------------------------
-
 function handle_delete_item($id)
 {
 	$_SESSION['pay_items']->remove_gl_item($id);
 	line_start_focus();
 }
-
-//-----------------------------------------------------------------------------------------------
 
 function handle_new_item()
 {
@@ -375,7 +369,9 @@ function handle_new_item()
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 	line_start_focus();
 }
+
 //-----------------------------------------------------------------------------------------------
+
 $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
@@ -417,8 +413,6 @@ submit_center_last('Process', $_SESSION['pay_items']->trans_type==ST_BANKPAYMENT
 	_("Process Payment"):_("Process Deposit"), '', 'default');
 
 end_form();
-
-//------------------------------------------------------------------------------------------------
 
 end_page();
 

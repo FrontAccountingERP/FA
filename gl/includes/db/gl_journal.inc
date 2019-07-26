@@ -107,7 +107,7 @@ function write_journal_entries(&$cart)
 	$trans_type = $cart->trans_type;
 	$new = $cart->order_id == 0;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	if (!$new)
 	{
@@ -146,10 +146,9 @@ function write_journal_entries(&$cart)
 
 //----------------------------------------------------------------------------------------
 
-function void_journal_trans($type, $type_no, $use_transaction=true)
+function void_journal_trans($type, $type_no)
 {
-	if ($use_transaction)
-		begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$sql = "UPDATE ".TB_PREF."journal SET amount=0
 		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
@@ -158,7 +157,6 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 
 	void_bank_trans($type, $type_no, true);
 
-	if ($use_transaction)
-		commit_transaction();
+	commit_transaction();
 }
 

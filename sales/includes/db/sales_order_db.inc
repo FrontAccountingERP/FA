@@ -14,7 +14,7 @@ function add_sales_order(&$order)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($order, $order->trans_type);
 	$order_no = get_next_trans_no($order->trans_type);
 	$del_date = date2sql($order->due_date);
@@ -86,7 +86,7 @@ function add_sales_order(&$order)
 
 function delete_sales_order($order_no, $trans_type)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid($trans_type, $order_no);
 
 	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . db_escape($order_no) 
@@ -126,7 +126,7 @@ function update_sales_order($order)
 	$version= current($order->trans_no);
 	$total = $order->get_trans_total();
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($order, $order->trans_type);
 
 	if ($order->trans_type == ST_SALESORDER)

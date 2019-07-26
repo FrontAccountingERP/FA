@@ -11,7 +11,7 @@
 ***********************************************************************/
 //--------------------------------------------------------------------------------
 
-// Base function for adding a GL transaction
+// Base function for adding a GL transaction line
 // $date_ is display date (non-sql)
 // $amount is in $currency currency
 // if $currency is not set, then defaults to no conversion
@@ -378,6 +378,8 @@ function exists_gl_budget($date_, $account, $dimension, $dimension2)
 
 function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$date = date2sql($date_);
 
 	if (exists_gl_budget($date, $account, $dimension, $dimension2))
@@ -393,10 +395,14 @@ function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $
 			.db_escape($dimension2).", ".db_escape($amount).", '')";
 
 	db_query($sql, "The GL budget transaction could not be saved");
+
+	commit_transaction();
 }
 
 function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$date = date2sql($date_);
 
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE account=".db_escape($account)
@@ -404,6 +410,8 @@ function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
 	." AND dimension2_id=".db_escape($dimension2)
 	." AND tran_date='$date'";
 	db_query($sql, "The GL budget transaction could not be deleted");
+
+	commit_transaction();
 }
 
 function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
@@ -592,20 +600,6 @@ function void_gl_trans($type, $trans_id, $nested=false)
 }
 
 //----------------------------------------------------------------------------------------
-
-function clear_gl_trans($type, $trans_id, $nested=false)
-{
-	if (!$nested)
-		begin_transaction();
-
-	$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE type=".db_escape($type)
-	." AND type_no=".db_escape($trans_id);
-
-	db_query($sql, "could not clear gl transactions for type=$type and trans_no=$trans_id");
-
-	if (!$nested)
-		commit_transaction();
-}
 
 function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $alsoclosed=false,
          $user_id=null)

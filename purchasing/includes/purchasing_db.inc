@@ -139,6 +139,9 @@ function get_po_prepayments($supp_trans)
 	return $allocations;
 }
 
+
+//------------------------------------ Backend interfaces--------------------------------------------
+
 //---------------------------------------------------------------------------------------------------
 //
 //	Add Purchase Order, GRN or Purchase Invoice with parent auto documents (if any)
@@ -146,6 +149,8 @@ function get_po_prepayments($supp_trans)
 function add_direct_supp_trans($cart)
 {
 	global $Refs, $type_shortcuts;
+
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	if ($cart->trans_type != ST_PURCHORDER) {
 		// for direct grn/invoice set same dates for lines as for whole document
@@ -156,13 +161,14 @@ function add_direct_supp_trans($cart)
 	$ref = $cart->reference;
 	if ($cart->trans_type != ST_PURCHORDER) {
 		$cart->reference = 'auto';
-		begin_transaction();	// all db changes as single transaction for direct document
 	}
 	$order_no = add_po($cart);
    	$cart->order_no = $order_no;
 
-	if ($cart->trans_type == ST_PURCHORDER)
+	if ($cart->trans_type == ST_PURCHORDER) {
+		commit_transaction();
 		return $order_no;
+	}
 
 	//Direct GRN
 	if ($cart->trans_type == ST_SUPPRECEIVE)
@@ -217,5 +223,42 @@ function add_direct_supp_trans($cart)
 	}
 	commit_transaction(); // save PO+GRN+PI(+SP)
 	return $inv_no;
+}
+
+function write_supplier($supplier_id, $supp_name, $ref, $address, $supp_address, $gst_no,
+				$website, $supp_account_no, $bank_account, $credit_limit = 0, $dim1, $dim2, $curr_code,
+				$payment_terms, $payable_account, $purchase_account, $payment_discount_account,
+				$notes, $tax_group_id, $tax_included, $contact, $phone, $phone2, $fax, $email, $lang, $inactive=null)
+{
+		begin_transaction(__FUNCTION__, func_get_args());
+		if ($supplier_id) {
+			update_supplier($supplier_id, $supp_name, $ref, $address, $supp_address, $gst_no,
+					$website, $supp_account_no, $bank_account, $credit_limit = 0, $dim1, $dim2, $curr_code,
+					$payment_terms, $payable_account, $purchase_account, $payment_discount_account,
+					$notes, $tax_group_id, $tax_included);
+
+			if ( isset($inactive) )
+				update_record_status($supplier_id, $inactive, 'suppliers', 'supplier_id');
+		} else {
+			add_supplier($supp_name, $ref, $address, $supp_address, $gst_no,
+					$website, $supp_account_no, $bank_account, $credit_limit = 0, $dim1, $dim2, $curr_code,
+					$payment_terms, $payable_account, $purchase_account, $payment_discount_account,
+					$notes, $tax_group_id, $tax_included);
+			$supplier_id = db_insert_id();
+
+			add_crm_person($ref, $contact, '', $address, $phone, $phone2, $fax, $email, $lang, '');
+
+			add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
+		}
+		commit_transaction();
+		return $supplier_id;
+}
+
+function write_supp_allocation($cart)
+{
+	begin_transaction(__FUNCTION__, func_get_args());
+		$result = $cart->write();
+	commit_transaction();
+	return $result;
 }
 

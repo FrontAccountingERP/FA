@@ -11,18 +11,25 @@
 ***********************************************************************/
 function add_credit_status($description, $disallow_invoicing)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."credit_status (reason_description, dissallow_invoices) 
 		VALUES (".db_escape($description).",".db_escape($disallow_invoicing).")";
 
 	db_query($sql, "could not add credit status");
+	$result = db_insert_id();
+
+	commit_transaction();
+	return $result;
 }
 
 function update_credit_status($status_id, $description, $disallow_invoicing)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."credit_status SET reason_description=".db_escape($description).",
 		dissallow_invoices=".db_escape($disallow_invoicing)." WHERE id=".db_escape($status_id);
 
 	db_query($sql, "could not update credit status");
+	commit_transaction();
 }
 
 function get_all_credit_status($all=false)
@@ -44,8 +51,10 @@ function get_credit_status($status_id)
 
 function delete_credit_status($status_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."credit_status WHERE id=".db_escape($status_id);
 
 	db_query($sql, "could not delete credit status");
+	commit_transaction();
 }
 

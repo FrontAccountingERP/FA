@@ -17,6 +17,8 @@ function write_credit_note(&$credit_note, $write_off_acc)
 {
 	global $Refs;
 
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if (is_array($credit_note->src_docs))
 	{
 		$docs = array_keys($credit_note->src_docs);
@@ -35,7 +37,6 @@ function write_credit_note(&$credit_note, $write_off_acc)
 
 	$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
 
-	begin_transaction();
 	hook_db_prewrite($credit_note, ST_CUSTCREDIT);
 
 	$company_data = get_company_prefs();

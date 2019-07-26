@@ -15,6 +15,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
 	$notes, $tax_group_id, $tax_included)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, gst_no, website,
 		supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 		payment_terms, payable_account, purchase_account, payment_discount_account, notes, 
@@ -40,6 +41,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 		.db_escape($tax_included). ")";
 
 	db_query($sql,"The supplier could not be added");
+	commit_transaction();
 }
 
 function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_address, $gst_no, 
@@ -47,6 +49,7 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
 	$notes, $tax_group_id, $tax_included)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($supp_name) . ",
 		supp_ref=".db_escape($supp_ref) . ",
 		address=".db_escape($address) . ",
@@ -69,12 +72,15 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 		." WHERE supplier_id = ".db_escape($supplier_id);
 
 	db_query($sql,"The supplier could not be updated");
+	commit_transaction();
 }
 
 function delete_supplier($supplier_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 	db_query($sql,"check failed");
+	commit_transaction();
 }
 
 function get_supplier_details($supplier_id, $to=null, $all=true)

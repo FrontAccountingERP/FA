@@ -43,19 +43,23 @@ function get_requirements_costs($woid)
 
 function create_wo_requirements($woid, $stock_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
 		SELECT ".db_escape($woid).", component, workcentre_added, quantity, loc_code
 		FROM ".TB_PREF."bom WHERE parent=".db_escape($stock_id);
 
     db_query($sql, "The work order requirements could not be added");
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function delete_wo_requirements($woid)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."wo_requirements WHERE workorder_id=".db_escape($woid);
 	db_query($sql,"The work order requirements could not be deleted");	
+	commit_transaction();
 }
 
 
@@ -65,21 +69,25 @@ function delete_wo_requirements($woid)
 */
 function update_wo_requirement_issued($id, $quantity, $cost)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."wo_requirements SET 
 				unit_cost = (units_issued*unit_cost+".$quantity*$cost.")/(units_issued+".$quantity."),
 				units_issued = units_issued + ".db_escape($quantity)."
 			WHERE id = ".db_escape($id);
 
 	db_query($sql, "The work requirements issued quantity couldn't be updated");
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function void_wo_requirements($woid)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = 0
 		WHERE workorder_id = ".db_escape($woid);
 
 	db_query($sql, "The work requirements issued quantity couldn't be voided");	
+	commit_transaction();
 }
 

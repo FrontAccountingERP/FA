@@ -63,7 +63,6 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
-
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
 	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
@@ -471,7 +470,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
 
-	$ret = $_SESSION['Items']->write(1);
+	$ret = write_sales_trans($_SESSION['Items'], 1);
 	if ($ret == -1)
 	{
 		display_error(_("The entered reference is already in use."));

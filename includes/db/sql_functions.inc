@@ -16,12 +16,23 @@
 // Multilevel transaction control.
 //
 $transaction_level = 0;
+$transaction_data = null;
 
-function begin_transaction()
+function begin_transaction($func=null, $args=null)
 {
-	global $transaction_level;
+	global $transaction_level, $transaction_data, $SysPrefs;
 
 	if (!$transaction_level) {
+		if ($SysPrefs->db_trail) {
+			$bt = debug_backtrace();
+			$user = $_SESSION["wa_current_user"]->user;
+			$transaction_data = array(
+				'user' => $_SESSION["wa_current_user"]->user,
+				'msg'=> basename($bt[count($bt)-1]['file']).'@'.$bt[count($bt)-1]['line'], // call start point
+				'entry' => $func,
+				'data' => serialize($args),
+			);
+		}
 		db_query("BEGIN", "could not start a transaction");
 	}
 	$transaction_level++;
@@ -29,11 +40,22 @@ function begin_transaction()
 
 function commit_transaction()
 {
-	global $transaction_level;
+	global $transaction_level, $transaction_data, $SysPrefs, $db_last_inserted_id, $db;
 
 	$transaction_level--;
 
 	if (!$transaction_level) {
+		// FIXME: if logged to table remember to preserve last_insert_id!
+		if ($SysPrefs->db_trail == 1) {
+			$last_insert = $db_last_inserted_id;
+			$db_last_inserted_id = mysqli_insert_id($db);	// preserve in case trail insert is done
+			$sql = "INSERT INTO ".TB_PREF."db_trail (user, msg, entry, data) VALUES ("
+					."'".$transaction_data['user']."','".$transaction_data['msg']."','".$transaction_data['entry']."',"
+					.db_escape($transaction_data['data']).")";
+			db_query($sql, 'cannot log user operation');
+			$db_last_inserted_id = $last_insert;
+		} elseif ($SysPrefs->db_trail == 2)
+			error_log($transaction_data['msg'].'|'.$transaction_data['user'].'|'.$transaction_data['entry'].'|'.$transaction_data['data']);
 		db_query("COMMIT", "could not commit a transaction");
 	}
 }

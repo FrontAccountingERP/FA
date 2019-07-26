@@ -232,10 +232,9 @@ if (isset($_POST['addupdate']))
 			if (file_exists($filename))
 				unlink($filename);
 		}
-		
-		if (!$new_item) 
-		{ /*so its an existing one */
-			update_item($_POST['NewStockID'], $_POST['description'],
+
+			write_item(get_post('stock_id'),
+				$_POST['NewStockID'], $_POST['description'],
 				$_POST['long_description'], $_POST['category_id'], 
 				$_POST['tax_type_id'], get_post('units'), 
 				get_post('mb_flag'), $_POST['sales_account'],
@@ -244,29 +243,16 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
 				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'), get_post('vat_category'), get_post('shipper'));
+				get_post('fa_class_id'), get_post('vat_category'), get_post('shipper', 0), check_value('inactive'));
 
-			update_record_status($_POST['NewStockID'], $_POST['inactive'],
-				'stock_master', 'stock_id');
-			update_record_status($_POST['NewStockID'], $_POST['inactive'],
-				'item_codes', 'item_code');
+		if (!$new_item) 
+		{ /*so its an existing one */
 			set_focus('stock_id');
 			$Ajax->activate('stock_id'); // in case of status change
 			display_notification(_("Item has been updated."));
 		} 
 		else 
 		{ //it is a NEW part
-
-			add_item($_POST['NewStockID'], $_POST['description'],
-				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['units'], get_post('mb_flag'), $_POST['sales_account'],
-				$_POST['inventory_account'], $_POST['cogs_account'],
-				$_POST['adjustment_account'], $_POST['wip_account'], 
-				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
-				get_post('fa_class_id'), get_post('vat_category'), get_post('shipper'));
-
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';

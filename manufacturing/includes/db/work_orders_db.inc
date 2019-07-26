@@ -17,7 +17,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args();
 	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
 		'type', 'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
@@ -74,7 +74,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 					$date_, $required_by, $memo_)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args();
 	$args = (object)array_combine(array('woid', 'loc_code', 'units_reqd', 'stock_id',
 		'date_', 'required_by', 'memo_'), $args);
@@ -100,7 +100,7 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 
 function delete_work_order($woid, $stock_id, $qty, $date)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	// delete the work order requirements
@@ -179,7 +179,7 @@ function work_order_has_payments($woid)
 
 function release_work_order($woid, $releaseDate, $memo_)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$myrow = get_work_order($woid);
 	$stock_id = $myrow["stock_id"];
@@ -259,7 +259,7 @@ function reopen_work_order($woid)
 */
 function void_work_order($woid)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	$work_order = get_work_order($woid);

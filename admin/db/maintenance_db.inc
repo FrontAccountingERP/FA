@@ -268,8 +268,8 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 {
 	global $db, $SysPrefs;
 
-	$trail = $SysPrefs->sql_trail;
-	$SysPrefs->sql_trail = false;
+	$trail = $SysPrefs->db_trail;
+	$SysPrefs->db_trail = false;
 
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
@@ -476,7 +476,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	if ($system)
 		$SysPrefs->go_debug = $save_debug;
 
-	$SysPrefs->sql_trail = $trail;
+	$SysPrefs->db_trail = $trail;
 
 	db_query("SET foreign_key_checks=1");
 	if ($delimiter != ';') db_query("delimiter ;"); // just for any case

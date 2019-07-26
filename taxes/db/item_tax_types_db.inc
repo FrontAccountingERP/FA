@@ -11,7 +11,7 @@
 ***********************************************************************/
 function add_item_tax_type($name, $exempt, $exempt_from)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	
 	$sql = "INSERT INTO ".TB_PREF."item_tax_types (name, exempt) 
 		VALUES (".db_escape($name).",".db_escape($exempt).")";
@@ -28,7 +28,7 @@ function add_item_tax_type($name, $exempt, $exempt_from)
 
 function update_item_tax_type($id, $name, $exempt, $exempt_from)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	
 	$sql = "UPDATE ".TB_PREF."item_tax_types SET name=".db_escape($name).
 	",	exempt=".db_escape($exempt)." WHERE id=".db_escape($id);
@@ -76,7 +76,7 @@ function get_item_tax_type_for_item($stock_id)
 
 function delete_item_tax_type($id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 		
 	$sql = "DELETE FROM ".TB_PREF."item_tax_types WHERE id=".db_escape($id);
 		

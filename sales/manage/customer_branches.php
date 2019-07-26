@@ -78,36 +78,18 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ($input_error != 1)
 	{
 
-		begin_transaction();
-    	if ($selected_id != -1)
-		{
-			update_branch($_POST['customer_id'], $_POST['branch_code'], $_POST['br_name'], $_POST['br_ref'],
+		$id = $_POST['branch_code'] == -1 ? 0 : $_POST['branch_code'];
+		write_cust_branch($id, $_POST['customer_id'], $_POST['br_name'], $_POST['br_ref'],
 				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
 				$_POST['default_location'], $_POST['br_post_address'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account'], 
+				get_post('contact_name'), get_post('phone'), get_post('phone2'), get_post('fax'), get_post('email'), get_post('rep_lang'));
 
+		if ($selected_id != -1)
 			$note =_('Selected customer branch has been updated');
-  		}
 		else
-		{
-			add_branch($_POST['customer_id'], $_POST['br_name'], $_POST['br_ref'],
-				$_POST['br_address'], $_POST['salesman'], $_POST['area'], $_POST['tax_group_id'], $_POST['sales_account'],
-				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
-				$_POST['default_location'], $_POST['br_post_address'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes'], $_POST['bank_account']);
-			$selected_id = db_insert_id();
-
-			add_crm_person($_POST['contact_name'], $_POST['contact_name'], '', $_POST['br_post_address'], 
-				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
-				$_POST['rep_lang'], '');
-
-			add_crm_contact('cust_branch', 'general', $selected_id, db_insert_id());
-
-
 			$note = _('New customer branch has been added');
-		}
-		commit_transaction();
 		display_notification($note);
 
 		if (@$_REQUEST['popup']) {

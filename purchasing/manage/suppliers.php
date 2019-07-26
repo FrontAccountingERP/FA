@@ -62,41 +62,25 @@ function handle_submit(&$supplier_id)
 	
 	if (!can_process())
 		return;
-	begin_transaction();
-	if ($supplier_id) 
-	{
-		update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
-			$_POST['supp_address'], $_POST['gst_no'],
-			$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
+
+	$supp_id = write_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
+			$_POST['supp_address'], $_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 			input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 			$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-			$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
-		update_record_status($_POST['supplier_id'], $_POST['inactive'],
-			'suppliers', 'supplier_id');
+			$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'),
+			get_post('contact'), get_post('phone'), get_post('phone2'), get_post('fax'), get_post('email'), get_post('lang'), check_value('inactive'));
 
+	if ($_POST['supplier_id']) 
+	{
 		$Ajax->activate('supplier_id'); // in case of status change
 		display_notification(_("Supplier has been updated."));
 	} 
 	else 
 	{
-		add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
-			$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
-			input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
-			$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-			$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
-
-		$supplier_id = $_POST['supplier_id'] = db_insert_id();
-
-		add_crm_person($_POST['supp_ref'], $_POST['contact'], '', $_POST['address'], 
-			$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
-			$_POST['rep_lang'], '');
-
-		add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
-
+//			$_POST['supplier_id = $supp_id;
 		display_notification(_("A new supplier has been added."));
 		$Ajax->activate('_page_body');
 	}
-	commit_transaction();
 }
 
 if (isset($_POST['submit'])) 

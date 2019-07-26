@@ -14,7 +14,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo, $close_wo)
 	global $Refs;
 
 // FIXME: support for WO_UNASSEMBLY case
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$args = func_get_args();
 	$args = (object)array_combine(array('woid', 'ref', 'quantity', 'date_', 'memo','close_wo'),
@@ -147,7 +147,7 @@ function check_void_wo_production($prod_no)
 
 function void_work_order_produce($type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_MANURECEIVE, $type_no);
 
 	// Skip processing already voided entry i.e. explicitly voided

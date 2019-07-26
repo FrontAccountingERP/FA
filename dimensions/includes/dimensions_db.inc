@@ -13,7 +13,7 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$date = date2sql($date_);
 	$duedate = date2sql($due_date);
@@ -35,7 +35,7 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 
 function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$date = date2sql($date_);
 	$duedate = date2sql($due_date);
@@ -57,7 +57,7 @@ function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 
 function delete_dimension($id)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	// delete the actual dimension
 	$sql="DELETE FROM ".TB_PREF."dimensions WHERE id=".db_escape($id);
@@ -139,16 +139,20 @@ function dimension_is_closed($id)
 
 function close_dimension($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."dimensions SET closed='1' WHERE id = ".db_escape($id);
 	db_query($sql, "could not close dimension");
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function reopen_dimension($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = ".db_escape($id);
 	db_query($sql, "could not reopen dimension");
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------

@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -24,42 +25,6 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
 page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
-
-function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to, $memo)
-{
-	global $Refs;
-
-	update_last_sent_recurrent_invoice($tmpl_no, $to);
-
-	$doc = new Cart(ST_SALESORDER, array($order_no));
-
-	get_customer_details_to_order($doc, $customer_id, $branch_id);
-
-	$doc->trans_type = ST_SALESORDER;
-	$doc->trans_no = 0;
-	$doc->document_date = $date;
-
-	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
-
-	$doc->reference = $Refs->get_next($doc->trans_type, null, array('customer' => $customer_id, 'branch' => $branch_id,
-		'date' => $date));
-	$doc->Comments = $memo;
-
-	foreach ($doc->line_items as $line_no=>$item) {
-		$line = &$doc->line_items[$line_no];
-		$new_price = get_price($line->stock_id, $doc->customer_currency,
-			$doc->sales_type, $doc->price_factor, $doc->document_date);
-		if ($new_price != 0)	// use template price if no price is currently set for the item.
-			$line->price = $new_price;
-	}	
-	$cart = $doc;
-	$cart->trans_type = ST_SALESINVOICE;
-	$cart->reference = $Refs->get_next($cart->trans_type);
-	$cart->payment_terms['cash_sale'] = false; // no way to register cash payment with recurrent invoice at once
-	$invno = $cart->write(1);
-
-	return $invno;
-}
 
 function calculate_from($myrow)
 {
@@ -92,46 +57,9 @@ if ($id != -1 && is_date_closed($_POST['trans_date']))
 
 if ($id != -1)
 {
-	/*
-		whole invoiced time is <begin, end>
-		invoices are issued _after_ invoiced period is gone, eg:
-		begin 1.1
-		end   31.3
-		period:    invoice ready for issue since:
-		1.1-31.1 -  1.2
-		1.2-28.2 -  1.3
-		1.3-31.3 -  1.4
-		In example above, when end is set to 1.4 will generate additional invoice on 1.5 !
-	*/
-
 	$Ajax->activate('_page_body');
-	$from = get_post('from');
-	$to = get_post('to');
-	$memo = get_post('memo');
-	$date = $_POST['trans_date'];
-	$myrow = get_recurrent_invoice($id);
+	$invs = create_recurrent_invoices($id, get_post('from'), get_post('to'), get_post('trans_date'), get_post('memo'));
 
-	$invs = array();
-	if (recurrent_invoice_ready($id, $date))
-	{
- 			begin_transaction();
-
-			if ($myrow['debtor_no'] == 0)
-			{
-				$cust = get_cust_branches_from_group($myrow['group_no']);
-				while ($row = db_fetch($cust))
-				{
-					$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id'],
-						$date, $from, $to, $memo);
-				}
-			}
-			else
-			{
-				$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id'],
-					$date, $from, $to, $memo);
-			}
-			commit_transaction();
-	}
 	if (count($invs) > 0)
 	{
 		$min = min($invs);
@@ -149,6 +77,7 @@ if ($id != -1)
 		display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 	}
 }
+
 
 
 $id = find_submit('create');

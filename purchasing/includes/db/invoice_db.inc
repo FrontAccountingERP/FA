@@ -132,7 +132,7 @@ function add_supp_invoice(&$supp_trans)  //, $already_voided=false, $allocs=null
 	$supplier = get_supplier($supp_trans->supplier_id);
 	$dec = user_price_dec();
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prewrite($supp_trans, $trans_type);
 
 	if ($trans_no) {	// void old transaction
@@ -514,7 +514,7 @@ function get_matching_invoice_item($stock_id, $po_item_id)
 
 function void_supp_invoice($type, $type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	hook_db_prevoid($type, $type_no);
 	$trans = get_supp_trans($type_no, $type);

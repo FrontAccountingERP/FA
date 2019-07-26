@@ -92,7 +92,7 @@ if (isset($_POST['Process']))
 {
 	if (check_allocations())
 	{
-		$_SESSION['alloc']->write();
+		write_supp_allocation($_SESSION['alloc']);
 		clear_allocations();
 		$_POST['Cancel'] = 1;
 	}

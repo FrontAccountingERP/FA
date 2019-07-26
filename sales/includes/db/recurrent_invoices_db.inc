@@ -13,17 +13,20 @@
 function add_recurrent_invoice($description, $order_no, $debtor_no, $group_no, $days, $monthly,
 	$begin, $end)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."recurrent_invoices (description, order_no, debtor_no,
 		group_no, days, monthly, begin, end, last_sent) VALUES (".db_escape($description) . ", "
 		.db_escape($order_no).", ".db_escape($debtor_no).", "
 		.db_escape($group_no).", ".$days.", ".$monthly.", '"
 		.date2sql($begin)."', '".date2sql($end)."', '0000-00-00')";
    	db_query($sql,"The recurrent invoice could not be added");
+	commit_transaction();
 }
 
 function update_recurrent_invoice($selected_id, $description, $order_no, $debtor_no, $group_no, $days, $monthly,
 	$begin, $end)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET 
 		description=".db_escape($description).", 
 		order_no=".db_escape($order_no).", 
@@ -35,20 +38,25 @@ function update_recurrent_invoice($selected_id, $description, $order_no, $debtor
 		end='".date2sql($end)."' 
 		WHERE id = ".db_escape($selected_id);
    	db_query($sql,"The recurrent invoice could not be updated");
+	commit_transaction();
 }
 
 function update_last_sent_recurrent_invoice($id, $date)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$date = date2sql($date);
 	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=".db_escape($id);
 
    	db_query($sql,"The recurrent invoice could not be updated");
+	commit_transaction();
 }
 
 function delete_recurrent_invoice($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($selected_id);
 	db_query($sql,"could not delete recurrent invoice");
+	commit_transaction();
 }
 
 function get_recurrent_invoices($date=null)
@@ -171,3 +179,41 @@ function check_sales_order_type($order_no)
 
 	return !$myrow['prepaid'];
 }
+
+function create_template_invoice($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to, $memo)
+{
+	global $Refs;
+
+	update_last_sent_recurrent_invoice($tmpl_no, $to);
+
+	$doc = new Cart(ST_SALESORDER, array($order_no));
+
+	get_customer_details_to_order($doc, $customer_id, $branch_id);
+
+	$doc->trans_type = ST_SALESORDER;
+	$doc->trans_no = 0;
+	$doc->document_date = $date;
+
+	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
+
+	$doc->reference = $Refs->get_next($doc->trans_type, null, array('customer' => $customer_id, 'branch' => $branch_id,
+		'date' => $date));
+	$doc->Comments = $memo;
+
+	foreach ($doc->line_items as $line_no=>$item) {
+		$line = &$doc->line_items[$line_no];
+		$new_price = get_price($line->stock_id, $doc->customer_currency,
+			$doc->sales_type, $doc->price_factor, $doc->document_date);
+		if ($new_price != 0)	// use template price if no price is currently set for the item.
+			$line->price = $new_price;
+	}	
+	$cart = $doc;
+	$cart->trans_type = ST_SALESINVOICE;
+	$cart->reference = $Refs->get_next($cart->trans_type);
+	$cart->payment_terms['cash_sale'] = false; // no way to register cash payment with recurrent invoice at once
+
+	$invno = $cart->write(1);
+
+	return $invno;
+}
+

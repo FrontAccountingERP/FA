@@ -11,6 +11,8 @@
 ***********************************************************************/
 function write_item_unit($selected, $abbr, $description, $decimals)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
     if($selected!='')
 		$sql = "UPDATE ".TB_PREF."item_units SET
 	 	abbr = ".db_escape($abbr).",
@@ -23,13 +25,16 @@ function write_item_unit($selected, $abbr, $description, $decimals)
 	  		".db_escape($description).", ".db_escape($decimals).")";
 
 	db_query($sql,"an item unit could not be updated");
+	commit_transaction();
 }
 
 function delete_item_unit($unit)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
 
 	db_query($sql,"an unit of measure could not be deleted");
+	commit_transaction();
 }
 
 function get_item_unit($unit)

@@ -12,18 +12,23 @@
 
 function write_printer_def($id, $name, $descr, $queue, $host, $port, $timeout)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if ($id>0)
 		$sql = "UPDATE ".TB_PREF."printers SET description=".db_escape($descr)
 		.",name=".db_escape($name).",queue=".db_escape($queue)
 		.",host=".db_escape($host).",port=".db_escape($port).",timeout=".db_escape($timeout)
 		." WHERE id=".db_escape($id);
-	else 
+	else
 		$sql = "INSERT INTO ".TB_PREF."printers ("
 			."name,description,queue,host,port,timeout) "
 			."VALUES (".db_escape($name).",".db_escape($descr).","
 			.db_escape($queue).",".db_escape($host).",".db_escape($port).",".db_escape($timeout).")";
 
-	return db_query($sql,"could not write printer definition");
+	$result = db_query($sql,"could not write printer definition");
+
+	commit_transaction();
+	return  $result ? ($id ? $id : db_insert_id()) : false;
 }
 
 function get_all_printers() 
@@ -43,14 +48,20 @@ function get_printer($id)
 
 function delete_printer($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."printers WHERE id=".db_escape($id);
 	db_query($sql,"could not delete printer definition");
+
+	commit_transaction();
 }
 //============================================================================
 // printer profiles functions
 //
 function update_printer_profile($name, $dest)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	foreach( $dest as $rep => $printer) {
 		if ($printer != '' || $rep == '') {
 			$sql = "REPLACE INTO ".TB_PREF."print_profiles "
@@ -68,6 +79,8 @@ function update_printer_profile($name, $dest)
 			return false;
 		}
 	}
+
+	commit_transaction();
 	return true;
 }
 //
@@ -94,8 +107,13 @@ function get_report_printer($profile, $report)
 
 function delete_printer_profile($name)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."print_profiles WHERE profile=".db_escape($name);
-	return db_query($sql,"could not delete printing profile");
+	$result = db_query($sql,"could not delete printing profile");
+
+	commit_transaction();
+	return $result;
 }
 //
 // Get all report destinations for given profile.

@@ -11,18 +11,25 @@
 ***********************************************************************/
 function add_sales_type($name, $tax_included, $factor)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included,factor) VALUES (".db_escape($name).","
 		.db_escape($tax_included).",".db_escape($factor).")";
-	db_query($sql, "could not add sales type");		
+	db_query($sql, "could not add sales type");
+	$result = db_insert_id();
+
+   	commit_transaction();
+	return $result;
 }
 
 function update_sales_type($id, $name, $tax_included, $factor)
 {
-
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."sales_types SET sales_type = ".db_escape($name).",
 	tax_included =".db_escape($tax_included).", factor=".db_escape($factor)." WHERE id = ".db_escape($id);
 	
 	db_query($sql, "could not update sales type");			
+   	commit_transaction();
 }
 
 function get_all_sales_types($all=false)
@@ -55,10 +62,12 @@ function get_sales_type_name($id)
 
 function delete_sales_type($id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."sales_types WHERE id=".db_escape($id);
 	db_query($sql,"The Sales type record could not be deleted");
 
 	$sql ="DELETE FROM ".TB_PREF."prices WHERE sales_type_id=".db_escape($id);
 	db_query($sql,"The Sales type prices could not be deleted");
+   	commit_transaction();
 }
 

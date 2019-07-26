@@ -494,6 +494,17 @@ CREATE TABLE `0_cust_branch` (
 
 -- Data of table `0_cust_branch` --
 
+DROP TABLE IF EXISTS `0_sql_trail`;
+CREATE TABLE `0_db_trail` (
+		`id` int(11) NOT NULL AUTO_INCREMENT,
+		`stamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+		`user` tinyint(3) unsigned NOT NULL DEFAULT '0',
+		`msg`  varchar(255) DEFAULT '',
+		`entry`  varchar(255) DEFAULT '',
+		`data` text DEFAULT NULL,
+	PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
 -- Structure of table `0_debtor_trans` --
 
 DROP TABLE IF EXISTS `0_debtor_trans`;
@@ -1292,20 +1303,6 @@ CREATE TABLE `0_shippers` (
 
 INSERT INTO `0_shippers` VALUES
 ('1', 'Default', '', '', '', '', '0');
-
--- Structure of table `0_sql_trail` --
-
-DROP TABLE IF EXISTS `0_sql_trail`;
-
-CREATE TABLE `0_sql_trail` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `sql` text NOT NULL,
-  `result` tinyint(1) NOT NULL,
-  `msg` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB ;
-
--- Data of table `0_sql_trail` --
 
 -- Structure of table `0_stock_category` --
 

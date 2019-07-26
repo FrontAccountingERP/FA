@@ -59,7 +59,7 @@ class current_user
 
 	function login($company, $loginname, $password)
 	{
-		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $SysPrefs;
+		global $security_areas, $security_groups, $security_headings, $path_to_root, $dflt_lang, $SysPrefs, $src_version, $db_version, $installed_extensions;
 
 		$this->set_company($company);
 	    $this->logged = false;
@@ -132,7 +132,7 @@ class current_user
         	    $this->prefs = new user_prefs($myrow);
         	    $this->user = @$myrow["id"];
                 $this->email = @$myrow["email"];
-		    	update_user_visitdate($this->username);
+		    	update_user_visitdate($this->username, $src_version, $db_version, $installed_extensions);
 		    	$this->logged = true;
 				$this->last_act = time();
 				$this->timeout = session_timeout();

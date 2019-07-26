@@ -80,25 +80,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	if ($input_error != 1)
 	{
+		write_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], input_num('debtor_no'), 
+    			input_num('group_no'), input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end'],
+    			get_post('last_sent',null));
+
     	if ($selected_id != -1) 
-    	{
-    		update_recurrent_invoice($selected_id, $_POST['description'], $_POST['order_no'], input_num('debtor_no'), 
-    			input_num('group_no'), input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
-    		if (isset($_POST['last_sent']))	
-				update_last_sent_recurrent_invoice($selected_id, $_POST['last_sent']);
 			$note = _('Selected recurrent invoice has been updated');
-    	} 
     	else 
-    	{
-    		add_recurrent_invoice($_POST['description'], $_POST['order_no'], input_num('debtor_no'), input_num('group_no'),
-    			input_num('days', 0), input_num('monthly', 0), $_POST['begin'], $_POST['end']);
 			$note = _('New recurrent invoice has been added');
-    	}
-    
+
 		display_notification($note);
 		$Mode = 'RESET';
 	}
 } 
+
 
 if ($Mode == 'Delete')
 {

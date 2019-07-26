@@ -14,7 +14,7 @@ function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 {
 	global $SysPrefs, $path_to_root, $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args();
 	$args = (object)array_combine(array('items', 'location', 'date_', 'reference', 'memo_'), $args);
 	$args->trans_no = 0;
@@ -61,9 +61,11 @@ function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 
 function void_stock_adjustment($type_no)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	hook_db_prevoid(ST_INVADJUST, $type_no);
 	void_gl_trans(ST_INVADJUST, $type_no);
 	void_stock_move(ST_INVADJUST, $type_no);
+	commit_transaction();
 }
 
 //-------------------------------------------------------------------------------------------------------------

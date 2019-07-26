@@ -25,7 +25,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 {
 	global $Refs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$args = func_get_args(); while (count($args) < 12) $args[] = 0;
 	$args = (object)array_combine(array('trans_no', 'customer_id', 'branch_id', 'bank_account', 
 		'date_', 'ref', 'amount', 'discount', 'memo_','rate','charge', 'bank_amount'), $args);
@@ -121,7 +121,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 function void_customer_payment($type, $type_no)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	hook_db_prevoid($type, $type_no);
 	void_bank_trans($type, $type_no, true);

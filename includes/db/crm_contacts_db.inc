@@ -13,6 +13,7 @@
 function add_crm_person($ref, $name, $name2, $address, $phone, $phone2, $fax, $email, $lang, $notes,
 	$cat_ids=null, $entity=null)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."crm_persons (ref, name, name2, address,
 		phone, phone2, fax, email, lang, notes)
 		VALUES ("
@@ -27,10 +28,8 @@ function add_crm_person($ref, $name, $name2, $address, $phone, $phone2, $fax, $e
 		  .db_escape($lang) . ", "
 		  .db_escape($notes)
 		.")";
-
-	begin_transaction();
-
 	$ret = db_query($sql, "Can't insert crm person");
+
 	$id = db_insert_id();
 	if ($ret && $cat_ids) {
 		if(!update_person_contacts($id, $cat_ids, $entity))
@@ -43,6 +42,8 @@ function add_crm_person($ref, $name, $name2, $address, $phone, $phone2, $fax, $e
 function update_crm_person($id, $ref, $name, $name2, $address, $phone, $phone2, $fax, $email, 
 	$lang, $notes, $cat_ids, $entity=null, $type=null)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."crm_persons SET "
 		  ."ref=".db_escape($ref) . ", "
 		  ."name=".db_escape($name) . ", "
@@ -56,8 +57,6 @@ function update_crm_person($id, $ref, $name, $name2, $address, $phone, $phone2, 
 		  ."notes=".db_escape($notes)
 		  ." WHERE id = ".db_escape($id);
 
-	begin_transaction();
-
 	$ret = db_query($sql, "Can't update crm person");
 	if ($ret) {
 		if(!update_person_contacts($id, $cat_ids, $entity, $type))
@@ -69,7 +68,7 @@ function update_crm_person($id, $ref, $name, $name2, $address, $phone, $phone2, 
 
 function delete_crm_person($person, $with_contacts=false)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	if ($with_contacts) {
 		$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE person_id=".db_escape($person);
@@ -149,11 +148,12 @@ function get_person_contacts($id)
 
 function update_person_contacts($id, $cat_ids, $entity_id=null, $type=null)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE person_id=".db_escape($id);
 	if ($type)
 		$sql .= " AND type=".db_escape($type);
 
-	begin_transaction();
 
 	$ret = db_query($sql, "Can't delete person contacts");
 
@@ -175,6 +175,8 @@ function update_person_contacts($id, $cat_ids, $entity_id=null, $type=null)
 
 function delete_entity_contacts($class, $entity)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	delete_crm_contacts(null, $class, $entity);
 	// cleanup
 	$res = get_crm_persons($class, null, $entity, null, true);
@@ -184,12 +186,16 @@ function delete_entity_contacts($class, $entity)
 			delete_crm_person($person['id']);
 		}
 	}
+
+	commit_transaction();
 }
 
 //-----------------------------------------------------------------------------------------------
 
 function add_crm_category($type, $action, $name, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."crm_categories (type, action, name, description)
 		VALUES (".db_escape($type) . ", "
 		  .db_escape($action) . ", "
@@ -197,10 +203,14 @@ function add_crm_category($type, $action, $name, $description)
 		  .db_escape($description)
 		.")";
    	db_query($sql,"The insert of the crm category failed");
+
+	commit_transaction();
 }
 
 function update_crm_category($selected_id, $type, $action, $name, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."crm_categories SET ";
 	if ($type)
 		$sql .= "type=".db_escape($type) . ",";
@@ -210,13 +220,19 @@ function update_crm_category($selected_id, $type, $action, $name, $description)
 			."description=".db_escape($description)
 			." WHERE id = ".db_escape($selected_id);
    	db_query($sql,"The update of the crm category failed");
+
+	commit_transaction();
 }
 
 function delete_crm_category($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	// preserve system categories
 	$sql="DELETE FROM ".TB_PREF."crm_categories WHERE system=0 AND id=".db_escape($selected_id);
 	db_query($sql,"could not delete crm category");
+
+	commit_transaction();
 }
 
 function get_crm_categories($show_inactive)

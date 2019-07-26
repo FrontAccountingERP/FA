@@ -63,12 +63,16 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	if (is_company_currency($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 			
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$date = date2sql($date_);
 		
 	$sql = "UPDATE ".TB_PREF."exchange_rates SET rate_buy=$buy_rate, rate_sell=".db_escape($sell_rate)
 	." WHERE curr_code=".db_escape($curr_code)." AND date_='$date'";
 				
 	db_query($sql, "could not add exchange rate for $curr_code");
+
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -78,12 +82,14 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 	if (is_company_currency($curr_code))
 		display_db_error("Exchange rates cannot be set for company currency", "", true);
 
+	begin_transaction(__FUNCTION__, func_get_args());
 	$date = date2sql($date_);
 		
 	$sql = "INSERT INTO ".TB_PREF."exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (".db_escape($curr_code).", '$date', ".db_escape($buy_rate)
 		.", ".db_escape($sell_rate).")";
 	db_query($sql, "could not add exchange rate for $curr_code");
+	commit_transaction();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -101,8 +107,12 @@ function add_new_exchange_rate($curr_code, $date_, $ex_rate)
 
 function delete_exchange_rate($rate_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE id=".db_escape($rate_id);
 	db_query($sql, "could not delete exchange rate $rate_id");
+
+	commit_transaction();
 }
 
 //-----------------------------------------------------------------------------

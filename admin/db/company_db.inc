@@ -14,6 +14,8 @@
 */
 function update_company_prefs($params)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."sys_prefs SET value = ";
 	foreach($params as $name => $value) {
 		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
@@ -22,6 +24,8 @@ function update_company_prefs($params)
 		// update cached value
 		$_SESSION['SysPrefs']->prefs[$name] = $value;
 	}
+
+	commit_transaction();
 	return true;
 }
 /*
@@ -55,9 +59,15 @@ function get_company_prefs()
 
 function set_company_pref($pref, $category, $type, $length, $value)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "REPLACE `".TB_PREF."sys_prefs` SET `name`=".db_escape($pref).", `category`=".db_escape($category)
 		.", `type`=".db_escape($type).", `length`=".db_escape($length).", `value`=".db_escape($value);
-	return db_query($sql, "cannot set company pref");
+	$result = db_query($sql, "cannot set company pref");
+
+	commit_transaction();
+	return $result;
+
 }
 
 function get_base_sales_type()
@@ -78,6 +88,8 @@ function get_company_extensions($id = -1) {
 
 function add_payment_terms($daysOrFoll, $terms, $dayNumber)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if ($daysOrFoll) 
 	{
 		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
@@ -93,10 +105,14 @@ function add_payment_terms($daysOrFoll, $terms, $dayNumber)
 			0, " . db_escape($dayNumber) . ")";
 	}
    	db_query($sql,"The payment term could not be added");
+
+	commit_transaction();
 }
 
 function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	if ($daysOrFoll) 
 	{
 		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
@@ -112,12 +128,18 @@ function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
 			WHERE terms_indicator = " .db_escape($selected_id);
 	}
    	db_query($sql,"The payment term could not be updated");
+
+	commit_transaction();
 }
 
 function delete_payment_terms($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
 	db_query($sql,"could not delete a payment terms");
+
+	commit_transaction();
 }
 
 function get_payment_terms($selected_id)
@@ -161,7 +183,7 @@ function key_in_foreign_table($id, $tables, $stdkey)
 	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
 
 	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
-	$count =  db_fetch($result);
+	$count = db_fetch($result);
 
 	return $count[0];
 }
@@ -174,6 +196,8 @@ function clean_user_themes($theme)
 {
 	global $db_connections, $db;
 
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$comp = user_company();
 
 	$connections = $db_connections;	// do not use db_connections directly here, or script will hang due to db_connections usage inside the loop
@@ -185,5 +209,7 @@ function clean_user_themes($theme)
 	}
 	$db = $_SESSION["wa_current_user"]->set_db_connection($comp);
 	$_SESSION['wa_current_user']->prefs->theme = 'default';
+
+	commit_transaction();
 	return true;
 }

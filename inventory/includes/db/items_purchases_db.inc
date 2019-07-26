@@ -13,6 +13,7 @@
 function add_item_purchasing_data($supplier_id, $stock_id, $price,
 	$suppliers_uom, $conversion_factor, $supplier_description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
 		conversion_factor, supplier_description) VALUES (";
 	$sql .= db_escape($supplier_id).", ".db_escape($stock_id). ", "
@@ -21,11 +22,13 @@ function add_item_purchasing_data($supplier_id, $stock_id, $price,
 		.db_escape($supplier_description) . ")";
 
 	db_query($sql,"The supplier purchasing details could not be added");
+	commit_transaction();
 }
 
 function update_item_purchasing_data($selected_id, $stock_id, $price,
 	$suppliers_uom, $conversion_factor, $supplier_description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . $price . ",
 		suppliers_uom=".db_escape($suppliers_uom) . ",
 		conversion_factor=" . $conversion_factor . ",
@@ -33,13 +36,16 @@ function update_item_purchasing_data($selected_id, $stock_id, $price,
 		WHERE stock_id=".db_escape($stock_id) . " AND
 		supplier_id=".db_escape($selected_id);
 	db_query($sql,"The supplier purchasing details could not be updated");
+	commit_transaction();
 }
 
 function delete_item_purchasing_data($selected_id, $stock_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id=".db_escape($selected_id)."
 		AND stock_id=".db_escape($stock_id);
 	db_query($sql,"could not delete purchasing data");
+	commit_transaction();
 }
 
 function get_items_purchasing_data($stock_id)

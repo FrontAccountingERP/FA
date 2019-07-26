@@ -12,20 +12,27 @@
 
 function add_sales_group($description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."groups (description) VALUES (".db_escape($description) . ")";
    	db_query($sql,"The sales group could not be added");
+   	commit_transaction();
+	return db_insert_id();
 }
 
 function update_sales_group($selected_id, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."groups SET description=".db_escape($description)." WHERE id = ".db_escape($selected_id);
    	db_query($sql,"The sales group could not be updated");
+   	commit_transaction();
 }
 
 function delete_sales_group($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
 	db_query($sql,"could not delete sales group");
+   	commit_transaction();
 }
 
 function get_sales_groups($show_inactive)
@@ -54,20 +61,28 @@ function get_sales_group_name($group_no)
 
 function add_sales_area($description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."areas (description) VALUES (".db_escape($description) . ")";
    	db_query($sql,"The sales area could not be added");
+   	$result =  db_insert_id();
+   	commit_transaction();
+   	return $result;
 }
 
 function update_sales_area($selected_id, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($description)." WHERE area_code = ".db_escape($selected_id);
    	db_query($sql,"The sales area could not be updated");
+   	commit_transaction();
 }
 
 function delete_sales_area($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."areas WHERE area_code=".db_escape($selected_id);
 	db_query($sql,"could not delete sales area");
+   	commit_transaction();
 }
 
 function get_sales_areas($show_inactive)
@@ -98,6 +113,7 @@ function get_area_name($id)
 function add_salesman($salesman_name, $salesman_phone, $salesman_fax,
 	$salesman_email, $provision, $break_pt, $provision2)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
 		provision, break_pt, provision2)
 		VALUES (".db_escape($salesman_name) . ", "
@@ -107,11 +123,13 @@ function add_salesman($salesman_name, $salesman_phone, $salesman_fax,
 		$provision.", ".$break_pt.", "
 		.$provision2.")";
    	db_query($sql,"The insert of the sales person failed");
+   	commit_transaction();
 }
 
 function update_salesman($selected_id, $salesman_name, $salesman_phone, $salesman_fax,
 	$salesman_email, $provision, $break_pt, $provision2)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."salesman SET salesman_name=".db_escape($salesman_name) . ",
 		salesman_phone=".db_escape($salesman_phone) . ",
 		salesman_fax=".db_escape($salesman_fax) . ",
@@ -121,12 +139,15 @@ function update_salesman($selected_id, $salesman_name, $salesman_phone, $salesma
 		provision2=".$provision2."
 		WHERE salesman_code = ".db_escape($selected_id);
    	db_query($sql,"The update of the sales person failed");
+   	commit_transaction();
 }
 
 function delete_salesman($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($selected_id);
 	db_query($sql,"The sales-person could not be deleted");
+   	commit_transaction();
 }
 
 function get_salesmen($show_inactive)

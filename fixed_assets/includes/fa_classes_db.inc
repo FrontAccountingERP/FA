@@ -32,6 +32,7 @@ function get_fixed_asset_classname($class)
 
 function update_fixed_asset_class($fa_class_id, $parent_id, $description, $long_description, $depreciation_rate)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."stock_fa_class SET
 		parent_id=".db_escape($parent_id).",
 		description=".db_escape($description).",
@@ -40,10 +41,12 @@ function update_fixed_asset_class($fa_class_id, $parent_id, $description, $long_
     WHERE fa_class_id=".db_escape($fa_class_id);
 
 	db_query($sql, "The fixed asset class could not be updated");
+	commit_transaction();
 }
 
 function add_fixed_asset_class($fa_class_id, $parent_id, $description, $long_description, $depreciation_rate)
 {
+  begin_transaction(__FUNCTION__, func_get_args());
   $sql = "INSERT INTO ".TB_PREF."stock_fa_class (fa_class_id, parent_id, description, long_description,
      depreciation_rate) VALUES ("
     .db_escape($fa_class_id).", ".db_escape($parent_id).", "
@@ -51,11 +54,14 @@ function add_fixed_asset_class($fa_class_id, $parent_id, $description, $long_des
     .db_escape($depreciation_rate).")";
 
 	db_query($sql, "The fixed asset class could not be added");
+	commit_transaction();
 }
 
 function delete_fixed_asset_class($fa_class_id)
 {
-  $sql = "DELETE FROM ".TB_PREF."stock_fa_class WHERE fa_class_id=".db_escape($fa_class_id);
+	begin_transaction(__FUNCTION__, func_get_args());
+	$sql = "DELETE FROM ".TB_PREF."stock_fa_class WHERE fa_class_id=".db_escape($fa_class_id);
 
 	db_query($sql, "The fixed asset class could not be deleted");
+	commit_transaction();
 }

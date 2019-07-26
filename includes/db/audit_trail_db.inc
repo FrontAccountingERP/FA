@@ -13,7 +13,7 @@
 function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 {
 	$descr = substr($descr, 0, 60);
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$date = date2sql($trans_date);
 	$sql = "INSERT INTO ".TB_PREF."audit_trail"
@@ -63,7 +63,7 @@ function get_audit_trail_last($trans_type, $trans_no)
 */
 function close_transactions($todate) {
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	$errors = 0;
 	// select only those audit trail records which produce any GL postings

@@ -14,6 +14,7 @@ function add_branch($customer_id, $br_name, $br_ref, $br_address, $salesman, $ar
 	$payment_discount_account, $default_location, $br_post_address, $group_no,
 	$default_ship_via, $notes, $bank_account)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, branch_ref, br_address,
 		salesman, area, tax_group_id, sales_account, receivables_account, payment_discount_account, 
 		sales_discount_account, default_location,
@@ -34,6 +35,7 @@ function add_branch($customer_id, $br_name, $br_ref, $br_address, $salesman, $ar
 			.db_escape($notes). ", "
 			.db_escape($bank_account, true).")";
 	db_query($sql,"The branch record could not be added");
+	commit_transaction();
 }
 
 function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_address,
@@ -41,6 +43,7 @@ function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_addres
 	$payment_discount_account, $default_location, $br_post_address, $group_no,
 	$default_ship_via, $notes, $bank_account)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = " . db_escape($br_name) . ",
 		branch_ref = " . db_escape($br_ref) . ",
 		br_address = ".db_escape($br_address). ",
@@ -60,14 +63,17 @@ function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_addres
 		WHERE branch_code =".db_escape($branch_code) . "
 		AND debtor_no=".db_escape($customer_id);
 	db_query($sql,"The branch record could not be updated");
+	commit_transaction();
 }
 
 function delete_branch($customer_id, $branch_code)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	delete_entity_contacts('cust_branch', $branch_code);
 
 	$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code=".db_escape($branch_code)." AND debtor_no=".db_escape($customer_id);
 	db_query($sql,"could not delete branch");
+	commit_transaction();
 }
 
 function branch_in_foreign_table($customer_id, $branch_code, $table)

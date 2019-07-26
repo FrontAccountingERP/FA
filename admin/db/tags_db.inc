@@ -12,16 +12,21 @@
 
 function add_tag($type, $name, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."tags (type, name, description)
 		VALUES (".db_escape($type).", ".db_escape($name).", ".db_escape($description).")";
 
-	return db_query($sql);
+	$result = db_query($sql);
+	commit_transaction();
+	return $result;
 }
 
 //--------------------------------------------------------------------------------------
 
 function update_tag($id, $name, $description, $type=null)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."tags SET name=".db_escape($name).", 
                                        description=".db_escape($description);
 	if ($type != null)
@@ -29,7 +34,9 @@ function update_tag($id, $name, $description, $type=null)
 
 	$sql .= " WHERE id = ".db_escape($id);
 
-	return db_query($sql);
+	$result = db_query($sql);
+	commit_transaction();
+	return $result;
 }
 
 //--------------------------------------------------------------------------------------
@@ -112,15 +119,20 @@ function get_tag_description($id)
 
 function delete_tag($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."tags WHERE id = ".db_escape($id);
+	begin_transaction(__FUNCTION__, func_get_args());
 
+	$sql = "DELETE FROM ".TB_PREF."tags WHERE id = ".db_escape($id);
 	db_query($sql, "could not delete tag");
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function add_tag_associations($recordid, $tagids)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	foreach($tagids as $tagid) {
 		if (!$tagid) continue;
 		$sql = "INSERT INTO ".TB_PREF."tag_associations (record_id, tag_id)
@@ -128,16 +140,22 @@ function add_tag_associations($recordid, $tagids)
 
 		db_query($sql, "could not add tag association");
 	}
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function update_tag_associations($type, $recordid, $tagids)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	// Delete the old associations
 	delete_tag_associations($type, $recordid, false);
 	// Add the new associations
 	add_tag_associations($recordid, $tagids);
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
@@ -146,6 +164,7 @@ function update_tag_associations($type, $recordid, $tagids)
 //
 function delete_tag_associations($type, $recordid, $all=false)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 /* multiply table DELETE syntax available since MySQL 4.0.0:
 	$sql = "DELETE ta FROM ".TB_PREF."tag_associations ta 
 				INNER JOIN ".TB_PREF."tags tags ON tags.id = ta.tag_id 
@@ -164,6 +183,8 @@ function delete_tag_associations($type, $recordid, $all=false)
 			record_id = '".$ta['record_id']."' AND tag_id=".$ta['tag_id'];
 		db_query($sql2, "could not delete tag associations");
 	}
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------

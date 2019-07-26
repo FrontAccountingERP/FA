@@ -11,18 +11,22 @@
 ***********************************************************************/
 function add_work_centre($name, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."workcentres (name, description)
 		VALUES (".db_escape($name).",".db_escape($description).")";
 
 	db_query($sql, "could not add work centre");
+	commit_transaction();
 }
 
 function update_work_centre($type_id, $name, $description)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."workcentres SET name=".db_escape($name).", description=".db_escape($description)."
 		WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not update work centre");
+	commit_transaction();
 }
 
 function get_all_work_centres($all=false)
@@ -44,8 +48,10 @@ function get_work_centre($type_id)
 
 function delete_work_centre($type_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."workcentres WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not delete work centre");
+	commit_transaction();
 }
 

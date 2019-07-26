@@ -135,7 +135,9 @@ function get_account_home_balance($person_id, $person_type, $rec_account, $to_da
 function add_exchange_variation_all($date=null, $ref="", $memo)
 {
 	global $Refs;
-	begin_transaction();
+
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$exchanged = false;
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$sql = "SELECT * FROM ".TB_PREF."bank_accounts";
@@ -209,7 +211,8 @@ function add_bank_transfer($from_account, $to_account, $date_,
 {
 	global $Refs, $SysPrefs;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$args = func_get_args(); if (count($args) < 8) $args[] = 0;
 	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
 		'ref', 'memo_', 'charge', 'target_amount'), $args);
@@ -353,7 +356,7 @@ function update_bank_transfer(
 	$trans_no, $from_account, $to_account, $date_,
 	$amount, $ref, $memo_, $charge=0, $target_amount=0)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	delete_comments(ST_BANKTRANSFER, $trans_no);
 	void_transaction(ST_BANKTRANSFER, $trans_no, Today(), _("Document reentered."));
 	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
@@ -393,9 +396,8 @@ function write_bank_transaction(&$cart)
 	$do_exchange_variance = false;
 	$exchanged = false;
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, $args = func_get_args());
 
-	$args = func_get_args();
 	hook_db_prewrite($args, $trans_type);
 
 	$aid = 0;

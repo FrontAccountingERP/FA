@@ -11,6 +11,7 @@
 ***********************************************************************/
 function add_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact, $fixed_asset = 0)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "INSERT INTO ".TB_PREF."locations (loc_code, location_name, delivery_address, phone, phone2, fax, email, contact, fixed_asset)
 		VALUES (".db_escape($loc_code).", ".db_escape($location_name).", ".db_escape($delivery_address).", "
 			.db_escape($phone).", ".db_escape($phone2).", ".db_escape($fax).", ".db_escape($email).", "
@@ -23,6 +24,7 @@ function add_item_location($loc_code, $location_name, $delivery_address, $phone,
 		SELECT ".db_escape($loc_code).", ".TB_PREF."stock_master.stock_id, 0 FROM ".TB_PREF."stock_master";
 
 	db_query($sql,"a location could not be added");
+	commit_transaction();
 }
 
 //------------------------------------------------------------------------------------
@@ -30,6 +32,7 @@ function add_item_location($loc_code, $location_name, $delivery_address, $phone,
 function update_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact, $fixed_asset = 0)
 
 {
+	begin_transaction(__FUNCTION__, func_get_args());
     $sql = "UPDATE ".TB_PREF."locations SET location_name=".db_escape($location_name).",
     	delivery_address=".db_escape($delivery_address).",
     	phone=".db_escape($phone).", phone2=".db_escape($phone2).", fax=".db_escape($fax).",
@@ -38,17 +41,20 @@ function update_item_location($loc_code, $location_name, $delivery_address, $pho
     	WHERE loc_code = ".db_escape($loc_code);
 
 	db_query($sql,"a location could not be updated");
+	commit_transaction();
 }
 
 //------------------------------------------------------------------------------------
 
 function delete_item_location($item_location)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql="DELETE FROM ".TB_PREF."locations WHERE loc_code=".db_escape($item_location);
 	db_query($sql,"a location could not be deleted");
 
 	$sql = "DELETE FROM ".TB_PREF."loc_stock WHERE loc_code =".db_escape($item_location);
 	db_query($sql,"a location could not be deleted");
+	commit_transaction();
 }
 
 //------------------------------------------------------------------------------------
@@ -75,10 +81,12 @@ function get_item_locations($show_inactive, $fixed_asset = 0)
 
 function set_reorder_level($stock_id, $loc_code, $reorder_level)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
 	$sql = "UPDATE ".TB_PREF."loc_stock SET reorder_level = $reorder_level
 		WHERE stock_id = ".db_escape($stock_id)." AND loc_code = ".db_escape($loc_code);
 
 	db_query($sql,"an item reorder could not be set");
+	commit_transaction();
 }
 
 //------------------------------------------------------------------------------------

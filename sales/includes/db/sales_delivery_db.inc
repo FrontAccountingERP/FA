@@ -19,7 +19,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	$trans_no = $delivery->trans_no;
 	if (is_array($trans_no)) $trans_no = key($trans_no);
 
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 	$delivery->bo_policy = $bo_policy;
 	hook_db_prewrite($delivery, ST_CUSTDELIVERY);
 
@@ -215,7 +215,7 @@ function adjust_shipping_charge(&$delivery, $trans_no)
 function void_sales_delivery($type, $type_no, $transactions=true)
 {
 	if ($transactions)
-		begin_transaction();
+		begin_transaction(__FUNCTION__, func_get_args());
 
 	hook_db_prevoid($type, $type_no);
 	

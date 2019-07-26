@@ -17,7 +17,7 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
   $row = get_item($stock_id);
   $old_cost = $row['material_cost'];
 
-  begin_transaction();
+  begin_transaction(__FUNCTION__, func_get_args());
 
   $date_ = Today();
   if (!is_date_in_fiscalyear($date_))

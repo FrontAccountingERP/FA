@@ -24,7 +24,7 @@ include_once($path_to_root . "/gl/includes/db/gl_db_account_types.inc");
 
 function add_budget($account, $dim1, $dim2, $amounts)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	foreach($amounts as $date => $amount) {
 		add_update_gl_budget_trans($date, $account, $dim1, $dim2, $amount);
@@ -34,7 +34,7 @@ function add_budget($account, $dim1, $dim2, $amounts)
 
 function delete_budget($account, $dim1, $dim2, $dates)
 {
-	begin_transaction();
+	begin_transaction(__FUNCTION__, func_get_args());
 
 	foreach($amounts as $date) {
 		delete_gl_budget_trans($date, $account, $dim1, $dim2);

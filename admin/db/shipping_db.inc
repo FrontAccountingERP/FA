@@ -14,6 +14,8 @@
 
 function add_shipper($shipper_name, $contact, $phone, $phone2, $address)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . db_escape($shipper_name) . ", " .
 		db_escape($contact). ", " .
@@ -22,12 +24,18 @@ function add_shipper($shipper_name, $contact, $phone, $phone2, $address)
 		db_escape($address) . ")";
 
 	db_query($sql,"The Shipping Company could not be added");
+	$result = db_insert_id();
+
+	commit_transaction();
+	return $result;
 }
 
 //--------------------------------------------------------------------------------------
 
 function update_shipper($selected_id, $shipper_name, $contact, $phone, $phone2, $address)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($shipper_name). " ,
 		contact =" . db_escape($contact). " ,
 		phone =" . db_escape($phone). " ,
@@ -36,15 +44,21 @@ function update_shipper($selected_id, $shipper_name, $contact, $phone, $phone2, 
 		WHERE shipper_id = ".db_escape($selected_id);
 
 	db_query($sql,"The shipping company could not be updated");
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
 
 function delete_shipper($selected_id)
 {
+	begin_transaction(__FUNCTION__, func_get_args());
+
 	$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=".db_escape($selected_id);
 	
 	db_query($sql,"could not delete shipper");
+
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------

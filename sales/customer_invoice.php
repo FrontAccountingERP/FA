@@ -358,7 +358,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	if ($newinvoice) 
 		new_doc_date($_SESSION['Items']->document_date);
 
-	$invoice_no = $_SESSION['Items']->write();
+	$invoice_no = write_sales_trans($_SESSION['Items']);
 	if ($invoice_no == -1)
 	{
 		display_error(_("The entered reference is already in use."));

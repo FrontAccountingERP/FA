@@ -17,7 +17,6 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-//include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -95,7 +94,7 @@ if (isset($_POST['Process']))
 {
 	if (check_allocations())
 	{
-		$_SESSION['alloc']->write();
+		write_cust_allocation($_SESSION['alloc']);
 		clear_allocations();
 		$_POST['Cancel'] = 1;
 	}
