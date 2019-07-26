@@ -144,38 +144,32 @@ function create_cart($type, $trans_no)
 {
 	global $Refs;
 
-	if (isset($_SESSION['pay_items']))
-	{
-		unset ($_SESSION['pay_items']);
-	}
-
 	$cart = new items_cart($type);
     $cart->order_id = $trans_no;
 
 	if ($trans_no) {
-
 		$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
-		$_POST['bank_account'] = $bank_trans["bank_act"];
-		$_POST['PayType'] = $bank_trans["person_type_id"];
+		$cart->bank_act = $bank_trans["bank_act"];
+
 		$cart->reference = $bank_trans["ref"];
 
 		if ($bank_trans["person_type_id"] == PT_CUSTOMER)
 		{
 			$trans = get_customer_trans($trans_no, $type);	
-			$_POST['person_id'] = $trans["debtor_no"];
-			$_POST['PersonDetailID'] = $trans["branch_code"];
+			$cart->person_id = $trans["debtor_no"];
+			$cart->person_detail_id = $trans["branch_code"];
 		}
 		elseif ($bank_trans["person_type_id"] == PT_SUPPLIER)
 		{
 			$trans = get_supp_trans($trans_no, $type);
-			$_POST['person_id'] = $trans["supplier_id"];
+			$cart->person_id = $trans["supplier_id"];
 		}
 		elseif ($bank_trans["person_type_id"] == PT_MISC)
-			$_POST['person_id'] = $bank_trans["person_id"];
+			$cart->person_id = $bank_trans["person_id"];
 		elseif ($bank_trans["person_type_id"] == PT_QUICKENTRY)
-			$_POST['person_id'] = $bank_trans["person_id"];
+			$cart->person_id = $bank_trans["person_id"];
 		else 
-			$_POST['person_id'] = $bank_trans["person_id"];
+			$cart->person_id = $bank_trans["person_id"];
 
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->tran_date = sql2date($bank_trans['trans_date']);
@@ -206,6 +200,11 @@ function create_cart($type, $trans_no)
 			$cart->tran_date = end_fiscalyear();
 	}
 
+	$_POST['PayType'] = $cart->person_type_id;
+	$_POST['person_id'] = $cart->person_id;
+	$_POST['PersonDetailID'] = $cart->person_detail_id;
+
+	$_POST['bank_account'] = $cart->bank_act;
 	$_POST['memo_'] = $cart->memo_;
 	$_POST['ref'] = $cart->reference;
 	$_POST['date_'] = $cart->tran_date;
@@ -291,27 +290,28 @@ function check_trans()
 
 if (isset($_POST['Process']) && !check_trans())
 {
-	begin_transaction();
+	$cart = &$_SESSION['pay_items'];
 
-	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
+	$cart->person_type_id = get_post('PayType');
+	$cart->person_id = get_post('person_id');
+	$cart->person_detail_id = get_post('PersonDetailID');
+	$cart->bank_act = get_post('bank_account');
+	$cart->ex_rate = input_num('_ex_rate');
+	$cart->tran_date = get_post('date_');
+	$cart->memo_ = get_post('memo_');
+	$cart->reference = get_post('ref');
+	$cart->settled_amount = input_num('settled_amount', null);
+
 	$new = $_SESSION['pay_items']->order_id == 0;
 
-	add_new_exchange_rate(get_bank_account_currency(get_post('bank_account')), get_post('date_'), input_num('_ex_rate'));
+	write_bank_transaction($cart);
 
-	$trans = write_bank_transaction(
-		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
-		$_SESSION['pay_items'], $_POST['date_'],
-		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_'], true, input_num('settled_amount', null));
+	$trans_type = $cart->trans_type;
+   	$trans_no = $cart->order_id;
 
-	$trans_type = $trans[0];
-   	$trans_no = $trans[1];
 	new_doc_date($_POST['date_']);
-
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
-
-	commit_transaction();
 
 	if ($new)
 		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?

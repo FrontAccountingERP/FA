@@ -379,24 +379,23 @@ function update_bank_transfer(
 //
 // FIXME -revise code for update case
 //
-function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true, $settled_amount=null)
+function write_bank_transaction(&$cart)
 {
 	global $Refs, $SysPrefs;
 
-	// we can only handle type 1 (payment)and type 2 (deposit)
-	if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
-		display_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
+	$trans_type = $cart->trans_type;
+	$trans_no = $cart->order_id;
+	$from_account = $cart->bank_act;
+	$person_type_id = $cart->person_type_id;
+	$person_id = $cart->person_id;
+	$ref = $cart->reference;
 
 	$do_exchange_variance = false;
 	$exchanged = false;
-	if ($use_transaction)
-		begin_transaction();
 
-	$args = func_get_args(); if (count($args) < 11) $args[] = true;
-	$args = (object)array_combine(array('trans_type', 'trans_no', 'from_account', 'items', 'date_',
-		'person_type_id', 'person_id', 'person_detail_id', 'ref', 'memo_', 'use_transaction', 'settled_amount'),
-		$args);
+	begin_transaction();
+
+	$args = func_get_args();
 	hook_db_prewrite($args, $trans_type);
 
 	$aid = 0;
@@ -411,21 +410,21 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	$bank_gl_account = get_bank_gl_account($from_account);
 
 	// the gl items are already inversed/negated for type 2 (deposit)
-	$total_amount = $items->gl_items_total();
+	$total_amount = $cart->gl_items_total();
 
     if ($person_type_id == PT_CUSTOMER)
     {
     	// we need to add a customer transaction record
 		// convert to customer currency
-		if (!isset($settled_amount)) // leaved for backward/ext compatibility 
-			$cust_amount = exchange_from_to(abs($total_amount), $currency, get_customer_currency($person_id), $date_);
+		if (!isset($cart->settled_amount)) // leaved for backward/ext compatibility 
+			$cust_amount = exchange_from_to(abs($total_amount), $currency, get_customer_currency($person_id), $cart->tran_date);
 		else
-			$cust_amount = $settled_amount;
+			$cust_amount = $cart->settled_amount;
 
 		if ($trans_type == ST_BANKPAYMENT)
 			$cust_amount = -$cust_amount;
 
-		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
+		$trans_no = write_customer_trans($trans_type, 0, $person_id, $cart->person_detail_id, $cart->tran_date,
         	$ref, $cust_amount);
 		if ($old_trans)
 			move_trans_attachments($trans_type, $old_trans, $trans_no);
@@ -434,15 +433,15 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     {
     	// we need to add a supplier transaction record
 		// convert to supp currency
-		if (!isset($settled_amount)) // leaved for for backward/ext compatibility 
-			$supp_amount = exchange_from_to(abs($total_amount), $currency, get_supplier_currency($person_id), $date_);
+		if (!isset($cart->settled_amount)) // leaved for for backward/ext compatibility 
+			$supp_amount = exchange_from_to(abs($total_amount), $currency, get_supplier_currency($person_id), $cart->tran_date);
 		else
-			$supp_amount = $settled_amount;
+			$supp_amount = $cart->settled_amount;
 
 		if ($trans_type == ST_BANKPAYMENT)
 			$supp_amount = -$supp_amount;
 
-		$trans_no = write_supp_trans($trans_type, 0, $person_id, $date_, '',
+		$trans_no = write_supp_trans($trans_type, 0, $person_id, $cart->tran_date, '',
 			$ref, "", $supp_amount, 0, 0);
 		if ($old_trans)
 			move_trans_attachments($trans_type, $old_trans, $trans_no);
@@ -463,11 +462,11 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	// do the source account postings
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$date_, -$total_amount,
+    	$cart->tran_date, -$total_amount,
     	$person_type_id, $person_id,
     	$currency);
 	$total = 0;
-	foreach ($items->gl_items as $gl_item)
+	foreach ($cart->gl_items as $gl_item)
 	{
 		$is_bank_to = is_bank_account($gl_item->code_id);
 
@@ -478,49 +477,49 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		}
 
     	// do the destination account postings
-    	$total += add_gl_trans($trans_type, $trans_no, $date_, $gl_item->code_id,
+    	$total += add_gl_trans($trans_type, $trans_no, $cart->tran_date, $gl_item->code_id,
     		$gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference,
     		$gl_item->amount, $currency, $person_type_id, $person_id);
 
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
-    			$date_, $gl_item->amount,
+    			$cart->tran_date, $gl_item->amount,
     			$person_type_id, $person_id, $currency);
     		if ($do_exchange_variance)
     		{
-    			add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 
+    			add_exchange_variation($trans_no1, $cart->tran_date, $is_bank_to, $gl_item->code_id, 
     				$currency, $person_type_id, $person_id);
     		}
     	}
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
-		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
+		$ex_rate = get_exchange_rate_from_home_currency($currency, $cart->tran_date);
 
 		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
-			$ex_rate, $date_, $memo_);
+			$ex_rate, $cart->tran_date, $cart->memo_);
 	}
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
+    add_gl_trans($trans_type, $trans_no, $cart->tran_date, $bank_gl_account, 0, 0, $cart->memo_,
     	-$total, null, $person_type_id, $person_id);
 
     if ($do_exchange_variance)
     {
-    	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
+    	if ($exchanged || add_exchange_variation($trans_no1, $cart->tran_date, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id))
     	{
-   			$ref1 = $Refs->get_next(ST_JOURNAL, null, $date_);
+   			$ref1 = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
-			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
+			add_audit_trail(ST_JOURNAL, $trans_no1, $cart->tran_date);
 		}
 	}
 
-	add_comments($trans_type, $trans_no, $date_, $memo_);
+	add_comments($trans_type, $trans_no, $cart->tran_date, $cart->memo_);
 
 	$Refs->save($trans_type, $trans_no, $ref);
-	add_audit_trail($trans_type, $trans_no, $date_);
+	add_audit_trail($trans_type, $trans_no, $cart->tran_date);
 
 	// old transaction can be voided only after new transaction is entered,
 	//  otherwise the operation could fail for cash accounts due to temporary negative balance
@@ -534,11 +533,9 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		}
 	}
 
-
-	$args->trans_no = $trans_no;
+	$cart->order_id = $trans_no;
 	hook_db_postwrite($args, $trans_type);
-	if ($use_transaction)
-		commit_transaction();
 
-	return array($trans_type, $trans_no);
+	commit_transaction();
+
 }

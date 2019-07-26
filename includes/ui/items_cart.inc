@@ -12,6 +12,18 @@
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
+/*
+	FIXME: This class currently handles three different types of transactions:
+	. simple inventory transactions working on quantities:
+		ST_INVADJUST, ST_LOCTRANSFER, ST_MANUISSUE
+	. balanced low level GL transactions, working on amounts:
+		ST_JOURNAL, ST_COSTUPDATE, used also in purchase invoice costing 
+	. unbalanced bank transaction:
+		ST_BANKPAYMENT, ST_BANK_DEPOSIT
+
+	No reason to keep all this in the same class.
+*/
+
 class items_cart
 {
 	var $trans_type;
@@ -37,8 +49,16 @@ class items_cart
 	var $vat_category;
 
 	var $tax_info;	// tax info for the GL transaction
+	var $reconcile_date;
 
 	var $fixed_asset;
+
+	// bank transaction related
+	var $bank_act;
+	var $person_type_id;
+	var $person_id;
+	var $person_detail_id;
+	var $settled_amount;
 
 	function __construct($type, $trans_no=0)
 	{
