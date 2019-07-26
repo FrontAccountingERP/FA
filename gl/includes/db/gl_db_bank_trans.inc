@@ -223,3 +223,10 @@ function check_void_bank_trans($type, $type_no)
 	return true;
 }
 
+function update_reconcile_date($type, $trans_no, $date=NULL)
+{
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".($date ? "'".date2sql($date)."'" : 'NULL')
+		." WHERE type=" . db_escape($type). " AND trans_no=".db_escape($trans_no);
+
+	db_query($sql, "Can't change reconciliation status");
+}

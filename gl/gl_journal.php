@@ -116,6 +116,7 @@ function create_cart($type=0, $trans_no=0)
 		$cart->currency = $header['currency'];
 		$cart->rate = $header['rate'];
 		$cart->source_ref = $header['source_ref'];
+		$cart->reconcile_date = $header['reconcile_date'] ? sql2date($header['reconcile_date']) : NULL;
 
 		$result = get_gl_trans($type, $trans_no);
 
@@ -164,6 +165,7 @@ function create_cart($type=0, $trans_no=0)
 		$cart->reference = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
 	}
 
+	$_POST['reconciled_date'] = $cart->reconcile_date;
 	$_POST['memo_'] = $cart->memo_;
 	$_POST['ref'] = $cart->reference;
 	$_POST['date_'] = $cart->tran_date;
@@ -328,20 +330,16 @@ if (isset($_POST['Process']))
 		}
 	} else
 		$cart->tax_info = false;
+
+	if (!get_post('reconciled'))	// clear reconcilation (if any)
+		$cart->reconcile_date = NULL;
+
 	$trans_no = write_journal_entries($cart);
-
-        // retain the reconciled status if desired by user
-        if (isset($_POST['reconciled'])
-            && $_POST['reconciled'] == 1) {
-            $sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".db_escape($_POST['reconciled_date'])
-                ." WHERE type=" . ST_JOURNAL . " AND trans_no=".db_escape($trans_no);
-
-            db_query($sql, "Can't change reconciliation status");
-        }
 
 	$cart->clear_items();
 	new_doc_date($_POST['date_']);
 	unset($_SESSION['journal_items']);
+
 	if($new)
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	else

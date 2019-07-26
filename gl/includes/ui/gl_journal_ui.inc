@@ -80,15 +80,10 @@ function display_order_header(&$Order)
 
 	check_row(_('Include in tax register:'), 'taxable_trans', null, true);
         // Query the user to retain the reconciled status
-        if (!$new) {
-            $result = get_bank_trans(ST_JOURNAL, $Order->order_id);
-            $row = db_fetch($result);
-            if ($row
-                && $row['reconciled']) {
-                check_row(_('Reconciled:'), 'reconciled', 1, true);
-                hidden('reconciled_date', $row['reconciled']);
-            }
-        }
+    if (!$new && $Order->reconcile_date) {
+    	check_row(_('Reconciled:'), 'reconciled', 1, true);
+    	hidden('reconcile_date', $Order->reconcile_date);
+    }
 	end_outer_table(1);
 }
 
