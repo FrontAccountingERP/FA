@@ -21,3 +21,23 @@ include_once($path_to_root . "/gl/includes/db/gl_db_rates.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_accounts.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_account_types.inc");
 //--------------------------------------------------------------------------------
+
+function add_budget($account, $dim1, $dim2, $amounts)
+{
+	begin_transaction();
+
+	foreach($amounts as $date => $amount) {
+		add_update_gl_budget_trans($date, $account, $dim1, $dim2, $amount);
+	}
+	commit_transaction();
+}
+
+function delete_budget($account, $dim1, $dim2, $dates)
+{
+	begin_transaction();
+
+	foreach($amounts as $date) {
+		delete_gl_budget_trans($date, $account, $dim1, $dim2);
+	}
+	commit_transaction();
+}

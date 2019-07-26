@@ -761,19 +761,19 @@ function _format_fiscalyears($row)
 	. "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active'));
 }
 
-function fiscalyears_list_cells($label, $name, $selected_id=null)
+function fiscalyears_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo fiscalyears_list($name, $selected_id);
+	echo fiscalyears_list($name, $selected_id, $submit_on_change);
 	echo "</td>\n";
 }
 
-function fiscalyears_list_row($label, $name, $selected_id=null)
+function fiscalyears_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	fiscalyears_list_cells(null, $name, $selected_id);
+	fiscalyears_list_cells(null, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 }
 //------------------------------------------------------------------------------------
@@ -1907,11 +1907,11 @@ function gl_all_accounts_list_cells($label, $name, $selected_id=null,
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id=null, 
-	$skip_bank_accounts=false, $cells=false, $all_option=false, $type_id=false)
+	$skip_bank_accounts=false, $cells=false, $all_option=false, $submit_on_change=false, $all=false, $type_id=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	gl_all_accounts_list_cells(null, $name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option, $type_id);
+		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all, $type_id);
 	echo "</tr>\n";
 }
 

@@ -29,26 +29,27 @@ check_db_has_gl_account_groups(_("There are no account groups defined. Please de
 
 if (isset($_POST['add']) || isset($_POST['delete']))
 {
-	begin_transaction();
 
-	for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++)
-	{
-		if (isset($_POST['add']))
-			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
-		else
-			delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
+	$amounts = array();
+	for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++) {
+		$amounts[$da] = input_num('amount'.$i);
 		$da = add_months($da, 1);
 	}
-	commit_transaction();
+	if (isset($_POST['add'])) {
 
-	if (isset($_POST['add']))
+		add_budget($_POST['account'], $_POST['dim1'], $_POST['dim2'], $amounts);
 		display_notification_centered(_("The Budget has been saved."));
-	else
+
+	} else {
+
+		delete_budget($_POST['account'], $_POST['dim1'], $_POST['dim2'], array_keys($amounts));
 		display_notification_centered(_("The Budget has been deleted."));
+
+	}
 
 	$Ajax->activate('budget_tbl');
 }
-if (isset($_POST['submit']) || isset($_POST['update']))
+if (isset($_POST['submit']) || isset($_POST['update']) || list_updated('fyear') || list_updated('account'))
 	$Ajax->activate('budget_tbl');
 
 //-------------------------------------------------------------------------------------
@@ -59,20 +60,20 @@ if (db_has_gl_accounts())
 {
 	$dim = get_company_pref('use_dimension');
 	start_table(TABLESTYLE2);
-	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
-	gl_all_accounts_list_row(_("Account Code:"), 'account', null);
+	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null, true);
+	gl_all_accounts_list_row(_("Account Code:"), 'account', null, true, false, false, true);
 	if (!isset($_POST['dim1']))
 		$_POST['dim1'] = 0;
 	if (!isset($_POST['dim2']))
 		$_POST['dim2'] = 0;
     if ($dim == 2)
     {
-		dimensions_list_row(_("Dimension")." 1", 'dim1', $_POST['dim1'], true, null, false, 1);
-		dimensions_list_row(_("Dimension")." 2", 'dim2', $_POST['dim2'], true, null, false, 2);
+		dimensions_list_row(_("Dimension")." 1", 'dim1', $_POST['dim1'], true, null, false, 1, true);
+		dimensions_list_row(_("Dimension")." 2", 'dim2', $_POST['dim2'], true, null, false, 2, true);
 	}
 	elseif ($dim == 1)
 	{
-		dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1);
+		dimensions_list_row(_("Dimension"), 'dim1', $_POST['dim1'], true, null, false, 1, true);
 		hidden('dim2', 0);
 	}
 	else
