@@ -111,7 +111,7 @@ function print_payment_report()
 		WHERE ";
 	if ($fromsupp != ALL_TEXT)
 		$sql .= "supplier_id=".db_escape($fromsupp)." AND ";
-	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.id
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 

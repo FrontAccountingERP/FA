@@ -125,7 +125,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	elseif ($order->trans_type == ST_SALESQUOTE)
 		$order->due_date = add_days($order->document_date, $SysPrefs->default_quote_valid_days());
 
-	if($order->payment_terms['cash_sale']) {
+	if($order->payment_terms['type'] == PTT_CASH) {
 		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
 		$order->set_location($myrow["default_location"], $myrow["location_name"]);
@@ -309,8 +309,8 @@ function display_order_header(&$order, $editable, $date_text)
 
 				if (!in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER))
 					&& ($order->pos['cash_sale'] != $order->pos['credit_sale'])
-					&& (($order->payment_terms['cash_sale'] && !$order->pos['cash_sale']) ||
-						(!$order->payment_terms['cash_sale'] && !$order->pos['credit_sale']))) {
+					&& (($order->payment_terms['type'] == PTT_CASH && !$order->pos['cash_sale']) ||
+						(!$order->payment_terms['type'] != PTT_CASH && !$order->pos['credit_sale']))) {
 							// force payment terms refresh if terms are editable
 							// and pos have no permitions for terms selected in customer record.
 							// Terms are set to first terms in allowed category below.
@@ -388,7 +388,7 @@ function display_order_header(&$order, $editable, $date_text)
 			$order->payment = get_post('payment');
 			$order->payment_terms = get_payment_terms($order->payment);
 			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
-			if ($order->payment_terms['cash_sale']) {
+			if ($order->payment_terms['type'] == PTT_CASH) {
 				$_POST['Location'] = $order->Location = $order->pos['pos_location'];
 				$order->location_name = $order->pos['location_name'];
 			}
@@ -589,7 +589,7 @@ function display_delivery_details(&$order)
 	div_start('delivery');	
 
 
-	if ($order->payment_terms['cash_sale']) {	// Direct payment sale
+	if ($order->payment_terms['type'] == PTT_CASH) {	// Direct payment sale
 		$Ajax->activate('items_table');
 		display_heading(_('Cash payment'));
 		start_table(TABLESTYLE2, "width='60%'");
@@ -627,7 +627,7 @@ function display_delivery_details(&$order)
 		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true, $order->fixed_asset);
-		if ($order->payment_terms['days_before_due'] == -1)
+		if ($order->payment_terms['type'] == PTT_PREPAY)
 		{
 			$Ajax->addUpdate('items_table', 'prep_amount', price_format($order->get_trans_total())); // bind to items_table update
 			if (!$order->is_started())

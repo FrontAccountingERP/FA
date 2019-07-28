@@ -863,23 +863,25 @@ INSERT INTO `0_locations` VALUES
 DROP TABLE IF EXISTS `0_payment_terms`;
 
 CREATE TABLE `0_payment_terms` (
-  `terms_indicator` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `terms` char(80) NOT NULL DEFAULT '',
-  `days_before_due` smallint(6) NOT NULL DEFAULT '0',
-  `day_in_following_month` smallint(6) NOT NULL DEFAULT '0',
+  `type` tinyint(1) NOT NULL DEFAULT '1'
+  `days` int(11) NOT NULL DEFAULT '0'
+  `early_discount` double NOT NULL DEFAULT '0'
+  `early_days` double NOT NULL DEFAULT '0',
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`terms_indicator`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `terms` (`terms`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 ;
 
 -- Data of table `0_payment_terms` --
 
 INSERT INTO `0_payment_terms` VALUES
-('1', 'Due 15th Of the Following Month', '0', '17', '0'),
-('2', 'Due By End Of The Following Month', '0', '30', '0'),
-('3', 'Payment due within 10 days', '10', '0', '0'),
-('4', 'Cash Only', '0', '0', '0'),
-('5', 'Prepaid', '-1', '0', '0');
+('1', 'Due 15th Of the Following Month', '4', '17', '0', '0', '0'),
+('2', 'Due By End Of The Following Month', '4', '30', '0', '0', '0'),
+('3', 'Payment due within 10 days', '3', '10', '0', '0', '0'),
+('4', 'Cash Only', '2', '0', '0', '0', '0'),
+('5', 'Prepaid', '1', '0', '0', '0', '0');
 
 -- Structure of table `0_prices` --
 

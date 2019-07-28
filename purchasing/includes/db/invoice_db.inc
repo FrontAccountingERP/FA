@@ -16,17 +16,16 @@ include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 {
-	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due, supp.dimension_id, supp.dimension2_id,
-		terms.day_in_following_month, supp.tax_included,
+	$sql = "SELECT supp.supp_name, supp.dimension_id, supp.dimension2_id, supp.tax_included,
 		supp.tax_group_id, tax_group.name AS tax_group_name,
-		supp.credit_limit - Sum((ov_amount + ov_gst + ov_discount)) as cur_credit, curr_code
-		FROM ".TB_PREF."suppliers supp LEFT JOIN "
-			.TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, "
-			.TB_PREF."payment_terms terms, "
-			.TB_PREF."tax_groups tax_group
-		WHERE supp.tax_group_id = tax_group.id
-		AND supp.payment_terms=terms.terms_indicator
-		AND supp.supplier_id = ".db_escape($supplier_id)." GROUP BY supp.supp_name";
+		supp.credit_limit - Sum((ov_amount + ov_gst + ov_discount)) as cur_credit,
+		supp.curr_code,
+		terms.*
+		FROM ".TB_PREF."suppliers supp 
+			LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
+			LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.id
+			LEFT JOIN ".TB_PREF."tax_groups tax_group ON supp.tax_group_id = tax_group.id
+		WHERE supp.supplier_id = ".db_escape($supplier_id);
 
 	$result = db_query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
 
@@ -47,9 +46,11 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
     $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->terms = array( 
 		'description' => $myrow['terms'],
-		'days_before_due' => $myrow['days_before_due'], 
-		'day_in_following_month' => $myrow['day_in_following_month'] );
-
+		'type' => $myrow['type'], 
+		'days' => $myrow['days'],
+		'early_discount' => $myrow['early_discount'],
+		'early_days' => $myrow['early_days'],
+	);
 	$supp_trans->credit = $myrow['cur_credit'];
 
 	$supp_trans->tax_description = $myrow['tax_group_name'];

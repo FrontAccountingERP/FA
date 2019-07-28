@@ -78,7 +78,7 @@ label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class
 end_row();
 
 
-if ($_SESSION['View']->payment_terms['days_before_due']<0)
+if ($_SESSION['View']->payment_terms['type'] == PTT_PREPAY)
 {
 start_row();
 label_cells(_("Payment Terms"), $_SESSION['View']->payment_terms['terms'], "class='tableheader2'");

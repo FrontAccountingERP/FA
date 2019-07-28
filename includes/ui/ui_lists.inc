@@ -1473,8 +1473,8 @@ function workorders_list_row($label, $name, $selected_id=null)
 
 function payment_terms_list($name, $selected_id=null)
 {
-	$sql = "SELECT terms_indicator, terms, inactive FROM ".TB_PREF."payment_terms";
-	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms', array());
+	$sql = "SELECT id, terms, inactive FROM ".TB_PREF."payment_terms";
+	return combo_input($name, $selected_id, $sql, 'id', 'terms', array());
 }
 
 function payment_terms_list_cells($label, $name, $selected_id=null)
@@ -1697,16 +1697,16 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 //
 function sale_payment_list($name, $category, $selected_id=null, $submit_on_change=true, $prepayments=true)
 {
-	$sql = "SELECT terms_indicator, terms, inactive FROM ".TB_PREF."payment_terms";
+	$sql = "SELECT id, terms, inactive FROM ".TB_PREF."payment_terms";
 
 	if ($category == PM_CASH) // only cash
-			$sql .= " WHERE days_before_due=0 AND day_in_following_month=0";
+			$sql .= " WHERE type=".PTT_CASH;
 	elseif ($category == PM_CREDIT) // only delayed payments
-			$sql .= " WHERE days_before_due".($prepayments ? '!=': '>')."0 OR day_in_following_month!=0";
+			$sql .= " WHERE type IN(".PTT_FOLLOWING.",".PTT_DAYS.")";
 	elseif (!$prepayments)
-			$sql .= " WHERE days_before_due>=0";
+			$sql .= " WHERE type<>".PTT_PREPAY;
 
-	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms',
+	return combo_input($name, $selected_id, $sql, 'id', 'terms',
 		array(
 			'select_submit'=> $submit_on_change,
 			'async' => true

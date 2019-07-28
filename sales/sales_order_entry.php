@@ -271,7 +271,7 @@ function copy_to_cart()
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
 		$newpayment = true;
 	}
-	if ($cart->payment_terms['cash_sale']) {
+	if ($cart->payment_terms['type'] == PTT_CASH) {
 		if ($newpayment) 
 		{
 			$cart->due_date = $cart->document_date;
@@ -390,8 +390,8 @@ function can_process() {
 		display_error(_("This document cannot be processed because there is insufficient quantity for items marked."));
 		return false;
 	}
-	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
-		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['days_before_due'] == -1) && ((input_num('prep_amount')<=0) ||
+	if ($_SESSION['Items']->payment_terms['type'] != PTT_CASH) {
+		if (!$_SESSION['Items']->is_started() && ($_SESSION['Items']->payment_terms['type'] == PTT_PREPAY) && ((input_num('prep_amount')<=0) ||
 			input_num('prep_amount')>$_SESSION['Items']->get_trans_total())) {
 			display_error(_("Pre-payment required have to be positive and less than total amount."));
 			set_focus('prep_amount');
@@ -452,7 +452,7 @@ function can_process() {
 		return false;
 	}
 
-	if ($_SESSION['Items']->payment_terms['cash_sale'] && 
+	if ($_SESSION['Items']->payment_terms['type'] == PTT_CASH && 
 		($_SESSION['Items']->trans_type == ST_CUSTDELIVERY || $_SESSION['Items']->trans_type == ST_SALESINVOICE)) 
 		$_SESSION['Items']->due_date = $_SESSION['Items']->document_date;
 	return true;

@@ -192,7 +192,7 @@ $sys_crm_cats = array (
 //----------------------------------------------------------------------------------
 
 $pterm_types = array(
-	PTT_PRE => _("Prepayment"),
+	PTT_PREPAY => _("Prepayment"),
 	PTT_CASH => _("Cash"),
 	PTT_DAYS => _("After No. of Days"),
 	PTT_FOLLOWING => _("Day In Following Month")

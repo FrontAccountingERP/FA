@@ -19,25 +19,6 @@ include($path_to_root . "/includes/ui.inc");
 
 simple_page_mode(true);
 
-//------------------------------
-//	Helper to translate record content to more intuitive form
-//
-function term_days($myrow)
-{
-	return $myrow["day_in_following_month"] != 0 ? $myrow["day_in_following_month"] :
-		$myrow["days_before_due"];
-}
-
-function term_type($myrow)
-{
-	if ($myrow["day_in_following_month"] != 0)
-		return PTT_FOLLOWING;
-
-	$days = $myrow["days_before_due"];
-
-	return $days < 0 ? PTT_PRE : ($days ? PTT_DAYS : PTT_CASH);
-}
-
 //-------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
@@ -63,22 +44,15 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	if ($input_error != 1)
 	{
-		$type = get_post('type');
-		$days = input_num('DayNumber');
-		$from_now = ($type != PTT_FOLLOWING);
-		if ($type == PTT_CASH)
-			$days = 0;
-		if ($type == PTT_PRE)
-			$days = -1;
 
     	if ($selected_id != -1) 
     	{
-    		update_payment_terms($selected_id, $from_now, $_POST['terms'], $days); 
+    		update_payment_terms($selected_id, get_post('terms'), get_post('type'), input_num('DayNumber', 0)); 
  			$note = _('Selected payment terms have been updated');
     	} 
     	else 
     	{
-			add_payment_terms($from_now, $_POST['terms'], $days);
+			add_payment_terms(get_post('terms'), get_post('type'), input_num('DayNumber', 0));
 			$note = _('New payment terms have been added');
     	}
     	//run the sql from either of the above possibilites
@@ -131,16 +105,14 @@ table_header($th);
 $k = 0; //row colour counter
 while ($myrow = db_fetch($result)) 
 {
-
+	$days = $myrow['days'];
 	alt_table_row_color($k);
-	$type = term_type($myrow);
-	$days = term_days($myrow);
     label_cell($myrow["terms"]);
-    label_cell($pterm_types[$type]);
-    label_cell($type == PTT_DAYS ? "$days "._("days") : ($type == PTT_FOLLOWING ? $days : _("N/A")));
-	inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
- 	edit_button_cell("Edit".$myrow["terms_indicator"], _("Edit"));
- 	delete_button_cell("Delete".$myrow["terms_indicator"], _("Delete"));
+    label_cell($pterm_types[$myrow['type']]);
+    label_cell($myrow['type'] == PTT_DAYS ? "$days "._("days") : ($myrow['type'] == PTT_FOLLOWING ? $days : _("N/A")));
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'payment_terms', "id");
+ 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
     end_row();
 
 }
@@ -157,7 +129,6 @@ div_start('edits');
 
 start_table(TABLESTYLE2);
 
-$day_in_following_month = $days_before_due = 0;
 if ($selected_id != -1) 
 {
 	if ($Mode == 'Edit') {
@@ -165,8 +136,8 @@ if ($selected_id != -1)
 		$myrow = get_payment_terms($selected_id);
 
 		$_POST['terms']  = $myrow["terms"];
-		$_POST['DayNumber'] = term_days($myrow);
-		$_POST['type'] = term_type($myrow);
+		$_POST['type'] = $myrow['type'];
+		$_POST['DayNumber'] = $myrow['days'];
 	}
 	hidden('selected_id', $selected_id);
 }

@@ -237,15 +237,17 @@ function get_sales_order_header($order_no, $trans_type)
 	  cust.tax_id,
 	  sorder.alloc,
 	  IFNULL(allocs.ord_allocs, 0)+IFNULL(inv.inv_allocs ,0) AS sum_paid,
-	  sorder.prep_amount>0 as prepaid
+	  sorder.prep_amount>0 as prepaid,
+	  terms.type=".PTT_CASH." as cash_sale
 	FROM ".TB_PREF."sales_orders sorder
 			LEFT JOIN (SELECT trans_no_to, sum(amt) ord_allocs FROM ".TB_PREF."cust_allocations
-				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no)." GROUP BY trans_no_to)
-				 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
+				WHERE trans_type_to=".ST_SALESORDER." AND trans_no_to=".db_escape($order_no)." GROUP BY trans_no_to) allocs 
+					ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
 			LEFT JOIN (SELECT order_, sum(alloc) inv_allocs FROM ".TB_PREF."debtor_trans 
 				WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($order_no)."  GROUP BY order_)
 				 inv ON sorder.trans_type=".ST_SALESORDER." AND inv.order_=sorder.order_no
-			LEFT JOIN ".TB_PREF."stock_master ship ON ship.stock_id = sorder.ship_via,"
+			LEFT JOIN ".TB_PREF."stock_master ship ON ship.stock_id = sorder.ship_via
+			LEFT JOIN ".TB_PREF."payment_terms terms ON sorder.payment_terms=terms.id,"
 	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
 	  .TB_PREF."tax_groups tax_group, "
@@ -393,10 +395,10 @@ function get_invoice_duedate($terms, $invdate)
 	if (!$myrow)
 		return $invdate;
 
-	if ($myrow['day_in_following_month'] > 0)
-		$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
-	elseif ($myrow['days_before_due'] > 0)
-		$duedate = add_days($invdate, $myrow['days_before_due']);
+	if ($myrow['type'] == PTT_FOLLOWING)
+		$duedate = add_days(end_month($invdate), $myrow['days']);
+	elseif ($myrow['type'] == PTT_DAYS)
+		$duedate = add_days($invdate, $myrow['days']);
 	else
 		$duedate = $invdate;
 	return $duedate;

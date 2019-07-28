@@ -583,14 +583,14 @@ function get_duedate_from_terms(&$trans)
 	{
 		$date = Today();
 	}
-	if ($trans->terms['day_in_following_month'])
+	if ($trans->terms['type'] == PTT_FOLLOWING)
 	{ /*Its a day in the following month when due */
 		$trans->due_date =
-			add_days(end_month($date), $trans->terms["day_in_following_month"]);
+			add_days(end_month($date), $trans->terms["days"]);
 	}
 	else
 	{ /*Use the Days Before Due to add to the invoice date */
-		$trans->due_date = add_days($date, $trans->terms["days_before_due"]);
+		$trans->due_date = add_days($date, $trans->terms["days"]);
 	}
 }
 

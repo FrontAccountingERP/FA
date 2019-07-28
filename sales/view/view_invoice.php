@@ -42,7 +42,7 @@ $branch = get_branch($myrow["branch_code"]);
 $sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
 display_heading(sprintf($myrow['prep_amount'] > 0 ? (
-	$paym['days_before_due']>=0 ? _("FINAL INVOICE #%d") : _("PREPAYMENT INVOICE #%d")) : _("SALES INVOICE #%d"),$trans_id));
+	$paym['type'] == PTT_PREPAY ? _("FINAL INVOICE #%d") : _("PREPAYMENT INVOICE #%d")) : _("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
 start_table(TABLESTYLE2, "width='95%'");

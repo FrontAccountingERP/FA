@@ -86,47 +86,29 @@ function get_company_extensions($id = -1) {
 	return $installed_extensions;
 }
 
-function add_payment_terms($daysOrFoll, $terms, $dayNumber)
+function add_payment_terms($terms, $type, $days=0, $early_discount=0, $early_days=0)
 {
 	begin_transaction(__FUNCTION__, func_get_args());
 
-	if ($daysOrFoll) 
-	{
-		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
-			days_before_due, day_in_following_month)
-			VALUES (" .
-			db_escape($terms) . ", " . db_escape($dayNumber) . ", 0)";
-	} 
-	else 
-	{
-		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
-			days_before_due, day_in_following_month)
-			VALUES (" . db_escape($terms) . ",
-			0, " . db_escape($dayNumber) . ")";
-	}
+	$sql = "INSERT INTO ".TB_PREF."payment_terms (terms, type, days, early_discount, early_days)
+		VALUES (" .db_escape($terms) . "," . db_escape($type) . ", ".db_escape($days). ", ".db_escape($early_discount). ", ".db_escape($early_days).")";
+
    	db_query($sql,"The payment term could not be added");
 
 	commit_transaction();
 }
 
-function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
+function update_payment_terms($selected_id, $terms, $type, $days=0, $early_discount=0, $early_days=0)
 {
 	begin_transaction(__FUNCTION__, func_get_args());
 
-	if ($daysOrFoll) 
-	{
-		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
-			day_in_following_month=0,
-			days_before_due=" . db_escape($dayNumber) . "
-			WHERE terms_indicator = " .db_escape($selected_id);
-	} 
-	else 
-	{
-		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
-			day_in_following_month=" . db_escape($dayNumber) . ",
-			days_before_due=0
-			WHERE terms_indicator = " .db_escape($selected_id);
-	}
+	$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
+		type=".db_escape($type).",
+		days=" . db_escape($days).",
+		early_discount=".db_escape($early_discount).",
+		early_days=".db_escape($early_days).
+		" WHERE id = " .db_escape($selected_id);
+
    	db_query($sql,"The payment term could not be updated");
 
 	commit_transaction();
@@ -136,7 +118,7 @@ function delete_payment_terms($selected_id)
 {
 	begin_transaction(__FUNCTION__, func_get_args());
 
-	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
+	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE id=".db_escape($selected_id);
 	db_query($sql,"could not delete a payment terms");
 
 	commit_transaction();
@@ -144,8 +126,7 @@ function delete_payment_terms($selected_id)
 
 function get_payment_terms($selected_id)
 {
-	$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
-	 FROM ".TB_PREF."payment_terms t WHERE terms_indicator=".db_escape($selected_id);
+	$sql = "SELECT * FROM ".TB_PREF."payment_terms t WHERE id=".db_escape($selected_id);
 
 	$result = db_query($sql,"could not get payment term");
 

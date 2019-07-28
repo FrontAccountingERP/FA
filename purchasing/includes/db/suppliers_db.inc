@@ -114,19 +114,13 @@ function get_supplier_details($supplier_id, $to=null, $all=true)
 		supp.tax_group_id
 
 		FROM ".TB_PREF."suppliers supp
-			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id AND trans.tran_date <= '$todate',
-			 ".TB_PREF."payment_terms
-
+			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id AND trans.tran_date <= '$todate'
+			 LEFT JOIN ".TB_PREF."payment_terms ON supp.payment_terms = ".TB_PREF."payment_terms.id
 		WHERE
-			 supp.payment_terms = ".TB_PREF."payment_terms.terms_indicator
-			 AND supp.supplier_id = $supplier_id ";
+			 supp.supplier_id = $supplier_id ";
 	if (!$all)
-		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA." ";  
-	$sql .= "GROUP BY
-			  supp.supp_name,
-			  ".TB_PREF."payment_terms.terms,
-			  ".TB_PREF."payment_terms.days_before_due,
-			  ".TB_PREF."payment_terms.day_in_following_month";
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA." ";
+
     $result = db_query($sql,"The customer details could not be retrieved");
     $supp = db_fetch($result);
 

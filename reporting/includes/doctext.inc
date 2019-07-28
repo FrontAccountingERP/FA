@@ -39,7 +39,7 @@
 		$row = get_payment_terms($this->formData['payment_terms']);
 		$Payment_Terms = _("Payment Terms") . ': ' . $row["terms"];
 		if ($this->formData['doctype'] == ST_SALESINVOICE && $this->formData['prepaid'])
-			$this->formData['prepaid'] = ($row['days_before_due'] >= 0) ? 'final' : 'partial';
+			$this->formData['prepaid'] = ($row['type'] != PTT_PREPAY) ? 'final' : 'partial';
 	}
 
 

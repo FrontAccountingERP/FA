@@ -177,7 +177,7 @@ function check_sales_order_type($order_no)
 {
 	$myrow = get_sales_order_header($order_no, ST_SALESORDER);
 
-	return !$myrow['prepaid'];
+	return !$myrow['prepaid'] && ! $myrow['cash_sale'];
 }
 
 function create_template_invoice($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to, $memo)
@@ -210,7 +210,6 @@ function create_template_invoice($customer_id, $branch_id, $order_no, $tmpl_no, 
 	$cart = $doc;
 	$cart->trans_type = ST_SALESINVOICE;
 	$cart->reference = $Refs->get_next($cart->trans_type);
-	$cart->payment_terms['cash_sale'] = false; // no way to register cash payment with recurrent invoice at once
 
 	$invno = $cart->write(1);
 

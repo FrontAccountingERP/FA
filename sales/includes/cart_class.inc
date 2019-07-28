@@ -354,7 +354,7 @@ class Cart
 		$this->payment_terms = get_payment_terms($payment);
 		$this->cash_discount = $cdiscount;
 
-		if ($this->payment_terms['cash_sale']) {
+		if ($this->payment_terms['type'] == PTT_CASH) {
 			$this->Location = $this->pos['pos_location'];
 			$this->location_name = $this->pos['location_name'];
 		}
@@ -645,7 +645,7 @@ class Cart
 		$remainder = prepaid_invoice_remainder($this->order_no);
 
 		// recalculate prepaid part from payments
-		if ($this->payment_terms['days_before_due'] == -1)
+		if ($this->payment_terms['type'] == PTT_PREPAY)
 		{	// this is partial invoice for selected prepayments made.
 			$paid = 0;
 			foreach($this->prepayments as $payment)

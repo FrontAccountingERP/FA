@@ -71,3 +71,13 @@ CREATE TABLE `1_db_trail` (
 		`data` text DEFAULT NULL,
 	PRIMARY KEY (`id`)
 	) ENGINE=MyISAM;
+
+# payment terms normalization, early payment support
+ALTER TABLE `0_payment_terms` CHANGE COLUMN `terms_indicator` `id` tinyint(1) NOT NULL DEFAULT '0';
+ALTER TABLE `0_payment_terms` ADD COLUMN `type` tinyint(1) NOT NULL DEFAULT '0' AFTER `terms`;
+UPDATE `0_payment_terms` SET `type`=IF(days_before_due < 0, 1, IF(day_in_following_month>0, 4, IF(days_before_due=0, 2, 3)));
+UPDATE `0_payment_terms` SET days_before_due=day_in_following_month WHERE days_before_due<=0;
+ALTER TABLE `0_payment_terms` CHANGE COLUMN `days_before_due` `days` int(11) NOT NULL DEFAULT '0';
+ALTER TABLE `0_payment_terms` DROP COLUMN `day_in_following_month`;
+ALTER TABLE `0_payment_terms` ADD COLUMN `early_discount` double NOT NULL DEFAULT '0' AFTER `days`;
+ALTER TABLE `0_payment_terms` ADD COLUMN `early_days` int(11) NOT NULL DEFAULT '0' AFTER `early_discount`;

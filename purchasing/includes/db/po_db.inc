@@ -15,14 +15,12 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 {
 	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included, dimension_id, dimension2_id,
 			supp.credit_limit - Sum((ov_amount + ov_gst + ov_discount)) as cur_credit,
-				terms.terms, terms.days_before_due, terms.day_in_following_month, tg.tax_area
+				terms.*, tg.tax_area
 		FROM ".TB_PREF."suppliers supp
 			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
-			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.terms_indicator
+			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.id
 			 LEFT JOIN ".TB_PREF."tax_groups tg ON supp.tax_group_id=tg.id
-		WHERE supp.supplier_id = ".db_escape($supplier_id)."
-		GROUP BY
-			  supp.supp_name";
+		WHERE supp.supplier_id = ".db_escape($supplier_id);
 
 	$result = db_query($sql, "The supplier details could not be retreived");
 	$myrow = db_fetch($result);
@@ -30,8 +28,11 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 	$order->credit = $myrow["cur_credit"];
 	$order->terms = array( 
 		'description' => $myrow['terms'],
-		'days_before_due' => $myrow['days_before_due'], 
-		'day_in_following_month' => $myrow['day_in_following_month'] );
+		'type' => $myrow['type'], 
+		'days' => $myrow['days'],
+		'early_discount' => $myrow['early_discount'],
+		'early_days' => $myrow['early_days'],
+	);
 
 	$_POST['supplier_id'] = $supplier_id;
 	$_POST['supplier_name'] = $myrow["supp_name"];

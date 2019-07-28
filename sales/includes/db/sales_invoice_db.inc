@@ -184,7 +184,7 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		$Refs->save(ST_SALESINVOICE, $invoice_no, $invoice->reference, null, $invoice->fixed_asset);
-		if ($invoice->payment_terms['cash_sale'] && $invoice->pos['pos_account']) {
+		if ($invoice->payment_terms['type'] == PTT_CASH && $invoice->pos['pos_account']) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
 
@@ -296,9 +296,9 @@ function prepaid_invoice_remainder($order)
 			." AND so.trans_type=".ST_SALESORDER
 			." AND inv.type=".ST_SALESINVOICE
 			." AND inv.order_=so.order_no"
-			." AND so.payment_terms=pt.terms_indicator"
-			." AND inv.payment_terms=pt.terms_indicator"
-			." AND pt.days_before_due = -1";
+			." AND so.payment_terms=pt.id"
+			." AND inv.payment_terms=pt.id"
+			." AND pt.type = ".PTT_PREPAY;
 
 	$result = db_fetch(db_query($sql, "cannot find final invoice value"));
 	return $result[0] ? $result[0] : 0;

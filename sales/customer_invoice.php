@@ -341,7 +341,7 @@ function check_data()
 			return false;
 		}
 	} else {
-		if (($_SESSION['Items']->payment_terms['days_before_due'] == -1) && !count($_SESSION['Items']->prepayments)) {
+		if (($_SESSION['Items']->payment_terms['type'] == PTT_PREPAY) && !count($_SESSION['Items']->prepayments)) {
 			display_error(_("There is no non-invoiced payments for this order. If you want to issue final invoice, select delayed or cash payment terms."));
 			return false;
 		}
@@ -385,7 +385,7 @@ if(list_updated('payment')) {
 	$_POST['Comments'] = '';
 	$Ajax->activate('due_date');
 	$Ajax->activate('options');
-	if ($order->payment_terms['cash_sale']) {
+	if ($order->payment_terms['type'] == PTT_CASH) {
 		$_POST['Location'] = $order->Location = $order->pos['pos_location'];
 		$order->location_name = $order->pos['location_name'];
 	}

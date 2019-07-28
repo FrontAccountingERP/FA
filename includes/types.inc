@@ -226,7 +226,7 @@ define('TAG_DIMENSION', 2);
 //----------------------------------------------------------------------------------
 // Payment term types
 
-define('PTT_PRE', 1);
+define('PTT_PREPAY', 1);
 define('PTT_CASH', 2);
 define('PTT_DAYS', 3);
 define('PTT_FOLLOWING', 4);
