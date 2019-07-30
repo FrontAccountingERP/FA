@@ -58,13 +58,6 @@ function can_process()
 		return false;		
 	} 
 	
-	if (!check_num('pymt_discount', 0, 100)) 
-	{
-		display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-		set_focus('pymt_discount');
-		return false;		
-	} 
-	
 	if (!check_num('discount', 0, 100)) 
 	{
 		display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
@@ -87,7 +80,7 @@ function handle_submit(&$selected_id)
 
 	$_POST['customer_id'] = write_customer($_POST['customer_id'], $_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
 			$_POST['tax_id'], $_POST['curr_code'], $_POST['dimension_id'], $_POST['dimension2_id'],
-			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount'), input_num('pymt_discount'),
+			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount'),
 			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes'], @$_POST['inactive'], get_post('salesman'),
 			get_post('area'), get_post('tax_group_id'), get_post('location'), get_post('address'), get_post('ship_via'), 
 			get_post('notes'), get_post('bank_account'), get_post('address'), get_post('phone'), get_post('phone2'), get_post('fax'), get_post('email'));
@@ -175,7 +168,7 @@ function customer_settings($selected_id)
 			$_POST['credit_status']  = -1;
 			$_POST['payment_terms']  = $_POST['notes']  = '';
 
-			$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
+			$_POST['discount']  = percent_format(0);
 			$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
 		}
 	}
@@ -194,7 +187,6 @@ function customer_settings($selected_id)
 		$_POST['credit_status']  = $myrow["credit_status"];
 		$_POST['payment_terms']  = $myrow["payment_terms"];
 		$_POST['discount']  = percent_format($myrow["discount"] * 100);
-		$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
 		$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
 		$_POST['notes']  = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
@@ -240,7 +232,6 @@ function customer_settings($selected_id)
 	table_section_title(_("Sales"));
 
 	percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 	amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);

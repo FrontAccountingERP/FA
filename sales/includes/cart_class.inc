@@ -66,7 +66,6 @@ class Cart
 	var	$pos;			// user assigned POS
 	var $cash_account;
 	var $account_name;
-	var $cash_discount;	// not used as of FA 2.1
 	var $dimension_id;
 	var $dimension2_id;
 	var $payment;
@@ -344,7 +343,7 @@ class Cart
 		return $ret;
 	}
 
-	function set_customer($customer_id, $customer_name, $currency, $discount, $payment, $cdiscount=0)
+	function set_customer($customer_id, $customer_name, $currency, $discount, $payment)
 	{
 		$this->customer_name = $customer_name;
 		$this->customer_id = $customer_id;
@@ -352,7 +351,6 @@ class Cart
 		$this->customer_currency = $currency;
 		$this->payment = $payment;
 		$this->payment_terms = get_payment_terms($payment);
-		$this->cash_discount = $cdiscount;
 
 		if ($this->payment_terms['type'] == PTT_CASH) {
 			$this->Location = $this->pos['pos_location'];

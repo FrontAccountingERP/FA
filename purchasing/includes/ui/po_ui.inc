@@ -171,6 +171,8 @@ function display_po_header(&$order)
 
 	table_section(2);
 
+    label_row(_("Terms:"), $order->terms['description']);
+
 	if ($order->trans_type==ST_SUPPINVOICE)
 		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 
@@ -180,10 +182,9 @@ function display_po_header(&$order)
 		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);
 	if (get_company_pref('use_dimension') == 2)
 		dimensions_list_row(_('Dimension 2').':', 'dimension2', null, true, _('Default'), false, 2);
-	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true, $order->fixed_asset); 
 
 	table_section(3);
-
+	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true, $order->fixed_asset); 
     if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" ||
     	isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) ||
     	$_POST['delivery_address'] == "")

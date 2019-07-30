@@ -465,7 +465,7 @@ function write_recurrent_invoice($invoice_id, $description, $order_no, $debtor_n
 }
 
 function write_customer($customer_id, $name, $ref, $address, $tax_id, $curr_code, $dim1, $dim2, $credit_status,
-	 $payment_terms, $discount, $pymt_discount, $credit_limit, $sales_type, $notes, $inactive, $salesman, $area, 
+	 $payment_terms, $discount, $credit_limit, $sales_type, $notes, $inactive, $salesman, $area, 
 	 $tax_group, $location, $address, $ship_via, $notes, $bank_account, $address, $phone, $phone2, $fax, $email)
 {
 	global $SysPrefs;
@@ -474,13 +474,13 @@ function write_customer($customer_id, $name, $ref, $address, $tax_id, $curr_code
 
 	if ($customer_id) {
 		update_customer($customer_id, $name, $ref, $address, $tax_id, $curr_code, $dim1, $dim2, $credit_status,
-			 $payment_terms, $discount/100, $pymt_discount/100, $credit_limit, $sales_type, $notes, $inactive);
+			 $payment_terms, $discount/100, $credit_limit, $sales_type, $notes, $inactive);
 
 		update_record_status($customer_id, $inactive, 'debtors_master', 'debtor_no');
 
 	} else {
 		add_customer($name, $ref, $address,	$tax_id, $curr_code, $dim1, $dim2, $credit_status, $payment_terms,
-			$discount / 100, $pymt_discount / 100, $credit_limit, $sales_type, $notes);
+			$discount / 100, $credit_limit, $sales_type, $notes);
 
 		$customer_id = db_insert_id();
 

@@ -119,12 +119,12 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 	 	.TB_PREF."debtor_trans as trans, "
 		.TB_PREF."debtors_master as debtor"
 	." WHERE trans.debtor_no=debtor.debtor_no
-		AND (((type=".ST_CUSTPAYMENT." OR type=".ST_BANKDEPOSIT.") AND (trans.ov_amount > 0))
+		AND (((type=".ST_CUSTPAYMENT." OR type=".ST_BANKDEPOSIT.") AND (trans.ov_amount+ov_discount > 0))
 		 OR (type=".ST_CUSTCREDIT. " AND (ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)>0)
 		 OR (type=".ST_JOURNAL. " AND (trans.ov_amount < 0)))";
 
 	if (!$settled)
-		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) > 0)";
+		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)-alloc,6) > 0)";
 
 	if ($customer_id != null)
 		$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
@@ -148,9 +148,12 @@ function get_allocatable_sales_orders($customer_id = null, $trans_no=null, $type
 		sorder.version,
 		amt,
 		sorder.debtor_no,
-		sorder.branch_code
+		sorder.branch_code,
+		pmt.early_days,
+		pmt.early_discount
 		FROM ".TB_PREF."sales_orders as sorder
 			LEFT JOIN ".TB_PREF."debtors_master as debtor ON sorder.debtor_no = debtor.debtor_no
+			LEFT JOIN ".TB_PREF."payment_terms as pmt ON sorder.payment_terms=pmt.id
 			LEFT JOIN ".TB_PREF."cust_allocations as alloc 
 				ON sorder.order_no = alloc.trans_no_to AND sorder.trans_type = alloc.trans_type_to AND alloc.person_id=sorder.debtor_no
 			LEFT JOIN (SELECT order_, sum(prep_amount) amount FROM ".TB_PREF."debtor_trans dt
@@ -191,10 +194,13 @@ function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=nul
 		trans.version,
 		amt,
 		trans.debtor_no,
-		trans.branch_code
+		trans.branch_code,
+		pmt.early_days,
+		pmt.early_discount
 	 FROM ".TB_PREF."debtor_trans as trans
 			LEFT JOIN ".TB_PREF."cust_allocations as alloc
-				ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no,"
+				ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no
+			LEFT JOIN ".TB_PREF."payment_terms as pmt ON trans.payment_terms=pmt.id,"
 	 		.TB_PREF."debtors_master as debtor
 	 WHERE
 	 	 trans.debtor_no=debtor.debtor_no";
@@ -218,9 +224,11 @@ function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=nul
 					OR
 				  	trans.type = '". ST_JOURNAL."'
 					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0
+					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>alloc
 					OR
 				  	trans.type = '". ST_BANKPAYMENT."'
 					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0
+					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>alloc
 				)";
 		$sql .= " GROUP BY type, trans_no";
 	}

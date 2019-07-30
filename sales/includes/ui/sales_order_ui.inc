@@ -85,7 +85,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$deliver = $myrow['address']; // in case no branch address use company address
 
 	$order->set_customer($customer_id, $name, $myrow['curr_code'], 
-		$myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']);
+		$myrow['discount'], $myrow['payment_terms']);
 
 	// the sales type determines the price list to be used by default
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],

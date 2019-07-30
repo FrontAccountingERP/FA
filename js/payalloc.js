@@ -30,29 +30,32 @@ function blur_alloc(i) {
 		}
 }
 
-function allocate_all(doc) {
-	var amount = get_amount('amount'+doc);
-	var unallocated = get_amount('un_allocated'+doc);
-	var total = get_amount('amount');
-	var left = 0;
-	total -=  (amount-unallocated);
-	left -= (amount-unallocated);
-	amount = unallocated;
-	if(left<0) {
-		total  += left;
-		amount += left;
-		left = 0;
+function update_totals() {
+	var amount = 0;
+	var discount = 0;
+
+	for (var i=0; i<docs.length; i++) {
+		amount += get_amount('amount'+docs[i])
+		if (document.getElementsByName('early_disc'+docs[i])[0].checked 
+			&& (get_amount('un_allocated'+docs[i]) == get_amount('amount'+docs[i])))
+				discount += get_amount('early_disc'+docs[i]);
 	}
-	price_format('amount'+doc, amount, user.pdec);
-	price_format('amount', total, user.pdec);
+	price_format('amount', amount-discount, user.pdec);
+	price_format('discount', discount, user.pdec);
+	
+}
+
+function allocate_all(doc) {
+	var unallocated = get_amount('maxval'+doc, 1);
+	price_format('amount'+doc, unallocated, user.pdec);
+	update_totals();
 }
 
 function allocate_none(doc) {
-	amount = get_amount('amount'+doc);
-	total = get_amount('amount');
 	price_format('amount'+doc, 0, user.pdec);
-	price_format('amount', total-amount, user.pdec);
+	update_totals();
 }
+
 
 var allocations = {
 	'.amount': function(e) {
@@ -69,6 +72,11 @@ var allocations = {
 			e.onfocus = function() {
 				focus_alloc(this);
 			};
+		}
+	},
+	'.check':function(e) {
+		e.onclick = function() {
+			update_totals();
 		}
 	}
 }

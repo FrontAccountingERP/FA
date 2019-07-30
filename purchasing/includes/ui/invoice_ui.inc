@@ -132,9 +132,9 @@ function invoice_header(&$supp_trans)
 		$Ajax->activate('due_date');
 	}
 
-    date_row(_("Due Date") . ":", 'due_date');
-
     label_row(_("Terms:"), $supp_trans->terms['description']);
+
+    date_row(_("Due Date") . ":", 'due_date');
 
 	if (get_company_pref('use_dimension'))
 		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);

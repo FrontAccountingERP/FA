@@ -698,7 +698,6 @@ CREATE TABLE `0_debtors_master` (
   `credit_status` int(11) NOT NULL DEFAULT '0',
   `payment_terms` int(11) DEFAULT NULL,
   `discount` double NOT NULL DEFAULT '0',
-  `pymt_discount` double NOT NULL DEFAULT '0',
   `credit_limit` float NOT NULL DEFAULT '1000',
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL DEFAULT '0',
@@ -710,8 +709,8 @@ CREATE TABLE `0_debtors_master` (
 -- Data of table `0_debtors_master` --
 
 INSERT INTO `0_debtors_master` VALUES
-('1', 'Donald Easter LLC', 'Donald Easter', 'N/A', '123456789', 'USD', '1', '0', '0', '1', '4', '0', '0', '1000', '', '0'),
-('2', 'MoneyMaker Ltd.', 'MoneyMaker', 'N/A', '54354333', 'EUR', '1', '1', '0', '1', '1', '0', '0', '1000', '', '0');
+('1', 'Donald Easter LLC', 'Donald Easter', 'N/A', '123456789', 'USD', '1', '0', '0', '1', '4', '0', '1000', '', '0'),
+('2', 'MoneyMaker Ltd.', 'MoneyMaker', 'N/A', '54354333', 'EUR', '1', '1', '0', '1', '1', '0', '1000', '', '0');
 
 -- Structure of table `0_dimensions` --
 

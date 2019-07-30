@@ -373,9 +373,9 @@ function checkbox($label, $name, $value=null, $submit_on_change=false, $title=fa
 	if ($value === null)
 		$value = get_post($name,0);
 
-	$str .= "<input"
-	    .($value == 1 ? ' checked':'')
-	    ." type='checkbox' name='$name' value='1'"
+	$str .= "<input class=check"
+	    .($value != 0 ? ' checked':'')
+	    ." type='checkbox' name='$name' value='".$value."'"
 	    .($submit_on_change ? " onclick='$submit_on_change'" : '')
 	    .($title ? " title='$title'" : '')
 	    ." >\n";

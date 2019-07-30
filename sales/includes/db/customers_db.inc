@@ -11,24 +11,23 @@
 ***********************************************************************/
 
 function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
-	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount,
 	$credit_limit, $sales_type, $notes)
 {
 	$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id,
 		dimension_id, dimension2_id, curr_code, credit_status, payment_terms, discount, 
-		pymt_discount,credit_limit, sales_type, notes) VALUES ("
+		credit_limit, sales_type, notes) VALUES ("
 		.db_escape($CustName) .", " .db_escape($cust_ref) .", "
 		.db_escape($address) . ", " . db_escape($tax_id) . ","
 		.db_escape($dimension_id) . ", " 
 		.db_escape($dimension2_id) . ", ".db_escape($curr_code) . ", 
-		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
-		" . $pymt_discount . ", " . $credit_limit 
+		" . db_escape($credit_status) .", " . db_escape($payment_terms) .", " . $discount . "," . $credit_limit 
 		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
 	db_query($sql,"The customer could not be added");
 }
 
 function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code,
-	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount,
 	$credit_limit, $sales_type, $notes)
 {
 	$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($CustName) . ", 
@@ -41,7 +40,6 @@ function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, 
 		credit_status=".db_escape($credit_status) . ", 
 		payment_terms=".db_escape($payment_terms) . ", 
 		discount=" . $discount . ", 
-		pymt_discount=" . $pymt_discount . ", 
 		credit_limit=" . $credit_limit . ", 
 		sales_type = ".db_escape($sales_type) . ", 
 		notes=".db_escape($notes) ."
@@ -133,7 +131,7 @@ function get_customer_name($customer_id)
 
 function get_customer_habit($customer_id)
 {
-	$sql = "SELECT debtor.pymt_discount, credit_status.dissallow_invoices
+	$sql = "SELECT credit_status.dissallow_invoices
 			FROM ".TB_PREF."debtors_master debtor,"
 				.TB_PREF."credit_status credit_status
 			WHERE debtor.credit_status = credit_status.id

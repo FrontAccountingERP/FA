@@ -582,7 +582,6 @@ CREATE TABLE `0_debtors_master` (
   `credit_status` int(11) NOT NULL DEFAULT '0',
   `payment_terms` int(11) DEFAULT NULL,
   `discount` double NOT NULL DEFAULT '0',
-  `pymt_discount` double NOT NULL DEFAULT '0',
   `credit_limit` float NOT NULL DEFAULT '1000',
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL DEFAULT '0',

@@ -188,10 +188,7 @@ function write_sales_invoice(&$invoice)
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
 
-			// to use debtors.pmt_discount on cash sale:
-			// extend invoice entry page with final amount after discount 
-			// and change line below.
-			$discount = 0; // $invoice->cash_discount*$amount;
+			$discount = 0;
 			$pmtno = write_customer_payment(0, $invoice->customer_id, 
 				$invoice->Branch, $invoice->pos['pos_account'], $date_,
 				$Refs->get_next(ST_CUSTPAYMENT, null, array('customer' => $invoice->customer_id,

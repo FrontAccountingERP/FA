@@ -89,12 +89,21 @@ if (!isset($_POST['customer_id'])) {
 	$_POST['bank_account'] = $dflt_act['id'];
 }
 if (!isset($_POST['DateBanked'])) {
-	$_POST['DateBanked'] = new_doc_date();
+	$_SESSION['alloc']->date_ =$_POST['DateBanked'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = end_fiscalyear();
 	}
 }
 
+if (get_post('_DateBanked_changed')) {
+	if (!is_date($_POST['DateBanked'])) {
+		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
+		set_focus('DateBanked');
+	} else {
+		$_SESSION['alloc']->date_ = get_post('DateBanked');
+		$Ajax->activate('_page_body');
+	}
+}
 
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
@@ -240,8 +249,8 @@ if (get_post('AddPaymentItem') && can_process()) {
 	$new_pmt = !$_SESSION['alloc']->trans_no;
 
 	$payment_no =  save_cust_payment($_SESSION['alloc'], get_post('customer_id'), get_post('BranchID'), get_post('bank_account'),
-		 get_post('DateBanked'), get_post('ref'), input_num('amount'), input_num('discount'), get_post('memo_'),
-		 input_num('charge'), input_num('bank_amount', input_num('amount')));
+		get_post('DateBanked'), get_post('ref'), input_num('amount'), input_num('discount'), get_post('memo_'),
+		input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	unset($_SESSION['alloc']);
 	meta_forward($_SERVER['PHP_SELF'], $new_pmt ? "AddedID=$payment_no" : "UpdatedID=$payment_no");
@@ -256,7 +265,6 @@ function read_customer_data()
 	$myrow = get_customer_habit($_POST['customer_id']);
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
-	$_POST['pymt_discount'] = $myrow["pymt_discount"];
 	// To support Edit feature
 	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
@@ -338,7 +346,6 @@ read_customer_data();
 set_global_customer($_POST['customer_id']);
 if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	
 	display_warning(_("This customer account is on hold."));
-$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
 table_section(2);
 
@@ -368,8 +375,6 @@ show_allocatable(false);
 div_end();
 
 start_table(TABLESTYLE, "width='60%'");
-
-label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
 amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
 
