@@ -124,7 +124,7 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 		 OR (type=".ST_JOURNAL. " AND (trans.ov_amount < 0)))";
 
 	if (!$settled)
-		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc),6) > 0)";
+		$sql .= " AND (round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) > 0)";
 
 	if ($customer_id != null)
 		$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
