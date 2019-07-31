@@ -158,7 +158,7 @@ class Cart
 			$this->dimension2_id = $cust['dimension2_id'];
 		}
 		if ($type == ST_SALESINVOICE) {
-			$this->due_date = get_invoice_duedate($this->payment, $this->document_date);
+			$this->due_date = get_payment_due_date($this->payment, $this->document_date);
 		}
 
 		$this->src_docs = $this->trans_no;
@@ -270,7 +270,7 @@ class Cart
 			}	
 			if ($type == ST_SALESINVOICE) {
 				$this->due_date =
-					get_invoice_duedate($this->payment, $this->document_date);
+					get_payment_due_date($this->payment, $this->document_date);
 			} else
 				$this->due_date =
 					add_days($this->document_date, $SysPrefs->default_delivery_required_by());

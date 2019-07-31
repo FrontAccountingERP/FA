@@ -194,7 +194,7 @@ function create_template_invoice($customer_id, $branch_id, $order_no, $tmpl_no, 
 	$doc->trans_no = 0;
 	$doc->document_date = $date;
 
-	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
+	$doc->due_date = get_payment_due_date($doc->payment, $doc->document_date);
 
 	$doc->reference = $Refs->get_next($doc->trans_type, null, array('customer' => $customer_id, 'branch' => $branch_id,
 		'date' => $date));

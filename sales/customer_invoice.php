@@ -189,7 +189,7 @@ if (isset($_POST['Update'])) {
 	$Ajax->activate('Items');
 }
 if (isset($_POST['_InvoiceDate_changed'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
+	$_POST['due_date'] = get_payment_due_date($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
 
@@ -381,7 +381,7 @@ if(list_updated('payment')) {
 	copy_to_cart();
 	$order->payment = get_post('payment');
 	$order->payment_terms = get_payment_terms($order->payment);
-	$_POST['due_date'] = $order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+	$_POST['due_date'] = $order->due_date = get_payment_due_date($order->payment, $order->document_date);
 	$_POST['Comments'] = '';
 	$Ajax->activate('due_date');
 	$Ajax->activate('options');
@@ -486,7 +486,7 @@ date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0,
 	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
+	$_POST['due_date'] = get_payment_due_date($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");

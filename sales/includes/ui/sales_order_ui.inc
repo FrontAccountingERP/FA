@@ -118,7 +118,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
 	if ($order->trans_type == ST_SALESINVOICE) {
-		$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+		$order->due_date = get_payment_due_date($order->payment, $order->document_date);
 	}
 	elseif ($order->trans_type == ST_SALESORDER)
 		$order->due_date = add_days($order->document_date, $SysPrefs->default_delivery_required_by());
@@ -387,7 +387,7 @@ function display_order_header(&$order, $editable, $date_text)
 		if (get_post('payment') !== $order->payment) {
 			$order->payment = get_post('payment');
 			$order->payment_terms = get_payment_terms($order->payment);
-			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+			$order->due_date = get_payment_due_date($order->payment, $order->document_date);
 			if ($order->payment_terms['type'] == PTT_CASH) {
 				$_POST['Location'] = $order->Location = $order->pos['pos_location'];
 				$order->location_name = $order->pos['location_name'];
@@ -434,7 +434,7 @@ function display_order_header(&$order, $editable, $date_text)
 			}
 			$Ajax->activate('_ex_rate');
 			if ($order->trans_type == ST_SALESINVOICE) {
-				$_POST['delivery_date'] = get_invoice_duedate(get_post('payment'), get_post('OrderDate'));
+				$_POST['delivery_date'] = get_payment_due_date(get_post('payment'), get_post('OrderDate'));
 			} else 
 				$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');

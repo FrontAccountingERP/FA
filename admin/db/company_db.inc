@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root. "/admin/db/payment_terms_db.inc");
+
 /*
 	Update main or gl company setup.
 */
@@ -84,89 +86,6 @@ function get_company_extensions($id = -1) {
 		include($file);
 	}
 	return $installed_extensions;
-}
-
-function add_payment_terms($terms, $type, $days=0, $early_discount=0, $early_days=0)
-{
-	begin_transaction(__FUNCTION__, func_get_args());
-
-	$sql = "INSERT INTO ".TB_PREF."payment_terms (terms, type, days, early_discount, early_days)
-		VALUES (" .db_escape($terms) . "," . db_escape($type) . ", ".db_escape($days). ", ".db_escape($early_discount). ", ".db_escape($early_days).")";
-
-   	db_query($sql,"The payment term could not be added");
-
-	commit_transaction();
-}
-
-function update_payment_terms($selected_id, $terms, $type, $days=0, $early_discount=0, $early_days=0)
-{
-	begin_transaction(__FUNCTION__, func_get_args());
-
-	$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
-		type=".db_escape($type).",
-		days=" . db_escape($days).",
-		early_discount=".db_escape($early_discount).",
-		early_days=".db_escape($early_days).
-		" WHERE id = " .db_escape($selected_id);
-
-   	db_query($sql,"The payment term could not be updated");
-
-	commit_transaction();
-}
-
-function delete_payment_terms($selected_id)
-{
-	begin_transaction(__FUNCTION__, func_get_args());
-
-	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE id=".db_escape($selected_id);
-	db_query($sql,"could not delete a payment terms");
-
-	commit_transaction();
-}
-
-function get_payment_terms($selected_id)
-{
-	$sql = "SELECT * FROM ".TB_PREF."payment_terms t WHERE id=".db_escape($selected_id);
-
-	$result = db_query($sql,"could not get payment term");
-
-	return db_fetch($result);
-}
-
-function get_payment_terms_all($show_inactive)
-{
-	$sql = "SELECT * FROM ".TB_PREF."payment_terms";
-	if (!$show_inactive) $sql .= " WHERE !inactive";
-	return db_query($sql,"could not get payment terms");
-}
-/*
-	Return number of records in tables, where some foreign key $id is used.
-	$id - searched key value
-	$tables - array of table names (without prefix); when table name is used as a key, then
-		value is name of foreign key field. For numeric keys $stdkey field name is used.
-	$stdkey - standard name of foreign key.
-*/
-function key_in_foreign_table($id, $tables, $stdkey)
-{
-
-	if (!is_array($tables))
-		$tables = array($tables);
-
-	$sqls = array();
-	foreach ($tables as $tbl => $key) {
-		if (is_numeric($tbl)) {
-			$tbl = $key;
-			$key = $stdkey;
-		}
-		$sqls[] = "(SELECT COUNT(*) as cnt FROM `".TB_PREF."$tbl` WHERE `$key`=".db_escape($id).")\n";
-	}
-
-	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
-
-	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
-	$count = db_fetch($result);
-
-	return $count[0];
 }
 
 //---------------------------------------------------------------------------------------------

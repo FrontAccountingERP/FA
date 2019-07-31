@@ -373,7 +373,7 @@ echo "</td><td>";// outer table
 start_table(TABLESTYLE, "width='90%'");
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['DispatchDate']);
+	$_POST['due_date'] = get_payment_due_date($_SESSION['Items']->payment, $_POST['DispatchDate']);
 }
 customer_credit_row($_SESSION['Items']->customer_id, $_SESSION['Items']->credit, "class='tableheader2'");
 

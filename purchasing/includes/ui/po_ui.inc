@@ -124,7 +124,8 @@ function display_po_header(&$order)
 	if ($order->supplier_id != get_post('supplier_id',-1)) {
 		$old_supp = $order->supplier_id;
 		get_supplier_details_to_order($order, $_POST['supplier_id']); 
-	    get_duedate_from_terms($order);
+	    $order->due_date = get_payment_due_date($order->terms, $order->tran_date);
+
 		$_POST['due_date'] = $order->due_date;
 
 		// supplier default price update
@@ -146,7 +147,7 @@ function display_po_header(&$order)
 
 	if (isset($_POST['_OrderDate_changed'])) {
 		$order->tran_date = $_POST['OrderDate'];
-	    get_duedate_from_terms($order);
+	    $order->due_date = get_payment_due_date($order->terms, $order->tran_date);
 	    $_POST['due_date'] = $order->due_date;
 		$Ajax->activate('due_date');
 	}

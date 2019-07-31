@@ -109,6 +109,9 @@ function invoice_header(&$supp_trans)
 		$supp_trans->clear_items();
 		read_supplier_details_to_trans($supp_trans, $_POST['supplier_id']);
 		copy_from_trans($supp_trans);
+		$supp_trans->due_date = get_payment_due_date($supp_trans->terms, $supp_trans->tran_date);
+		$_POST['due_date'] = $supp_trans->due_date;
+		$Ajax->activate('due_date');
 	}
 
    	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
@@ -127,7 +130,7 @@ function invoice_header(&$supp_trans)
 	if (isset($_POST['_tran_date_changed'])) {
 		$Ajax->activate('_ex_rate');
 		$supp_trans->tran_date = $_POST['tran_date'];
-		get_duedate_from_terms($supp_trans);
+		$supp_trans->due_date = get_payment_due_date($supp_trans->terms, $supp_trans->tran_date);
 		$_POST['due_date'] = $supp_trans->due_date;
 		$Ajax->activate('due_date');
 	}
@@ -573,26 +576,3 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 	return $total_grn_value;
 }
-
-//--------------------------------------------------------------------------------------------------
-function get_duedate_from_terms(&$trans)
-{
-	$date = $trans->tran_date;
-
-	if (!is_date($date))
-	{
-		$date = Today();
-	}
-	if ($trans->terms['type'] == PTT_FOLLOWING)
-	{ /*Its a day in the following month when due */
-		$trans->due_date =
-			add_days(end_month($date), $trans->terms["days"]);
-	}
-	else
-	{ /*Use the Days Before Due to add to the invoice date */
-		$trans->due_date = add_days($date, $trans->terms["days"]);
-	}
-}
-
-//--------------------------------------------------------------------------------------------------
-

@@ -101,3 +101,33 @@ function running_total_sql($table, $column, $index)
 			(SELECT @total:=0) total_var";
 }
 
+/*
+	Return number of records in tables, where some foreign key $id is used.
+	$id - searched key value
+	$tables - array of table names (without prefix); when table name is used as a key, then
+		value is name of foreign key field. For numeric keys $stdkey field name is used.
+	$stdkey - standard name of foreign key.
+*/
+function key_in_foreign_table($id, $tables, $stdkey)
+{
+
+	if (!is_array($tables))
+		$tables = array($tables);
+
+	$sqls = array();
+	foreach ($tables as $tbl => $key) {
+		if (is_numeric($tbl)) {
+			$tbl = $key;
+			$key = $stdkey;
+		}
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM `".TB_PREF."$tbl` WHERE `$key`=".db_escape($id).")\n";
+	}
+
+	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
+
+	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
+	$count = db_fetch($result);
+
+	return $count[0];
+}
+

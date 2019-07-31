@@ -664,7 +664,7 @@ function create_cart($type, $trans_no)
 		$doc->trans_no = 0;
 		$doc->document_date = new_doc_date();
 		if ($type == ST_SALESINVOICE) {
-			$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
+			$doc->due_date = get_payment_due_date($doc->payment, $doc->document_date);
 			$doc->pos = get_sales_point(user_pos());
 		} else
 			$doc->due_date = $doc->document_date;

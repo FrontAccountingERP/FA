@@ -383,27 +383,6 @@ function close_sales_order($order_no)
 
 //---------------------------------------------------------------------------------------------------------------
 
-function get_invoice_duedate($terms, $invdate)
-{
-	if (!is_date($invdate))
-	{
-		return new_doc_date();
-	}
-	
-	$myrow = get_payment_terms($terms);
-	
-	if (!$myrow)
-		return $invdate;
-
-	if ($myrow['type'] == PTT_FOLLOWING)
-		$duedate = add_days(end_month($invdate), $myrow['days']);
-	elseif ($myrow['type'] == PTT_DAYS)
-		$duedate = add_days($invdate, $myrow['days']);
-	else
-		$duedate = $invdate;
-	return $duedate;
-}
-
 function get_customer_to_order($customer_id) {
 
 	// Now check to ensure this account is not on hold */

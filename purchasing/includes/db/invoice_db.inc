@@ -38,12 +38,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		if (!is_date_in_fiscalyear($supp_trans->tran_date))
 			$supp_trans->tran_date = end_fiscalyear();
 	}
-	if ($supp_trans->supplier_id != $supplier_id)
-	    get_duedate_from_terms($supp_trans);
 
-    $supp_trans->supplier_id = $supplier_id;
-    $supp_trans->tax_included = $myrow['tax_included'];
-    $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->terms = array( 
 		'description' => $myrow['terms'],
 		'type' => $myrow['type'], 
@@ -51,6 +46,13 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		'early_discount' => $myrow['early_discount'],
 		'early_days' => $myrow['early_days'],
 	);
+
+	if ($supp_trans->supplier_id != $supplier_id)
+	    $supp_trans->due_date = get_payment_due_date($supp_trans->terms, $supp_trans->tran_date);
+
+    $supp_trans->supplier_id = $supplier_id;
+    $supp_trans->tax_included = $myrow['tax_included'];
+    $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->credit = $myrow['cur_credit'];
 
 	$supp_trans->tax_description = $myrow['tax_group_name'];
