@@ -606,8 +606,8 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 		gl.tran_date,
 		gl.type as trans_type,
 		gl.type_no as trans_no,
-		IFNULL(MAX(supp.supp_name), MAX(cust.name)) as name,
-		IF(ISNULL(st.supp_reference), '', st.supp_reference) AS supp_reference,
+		IFNULL(MAX(gl.person_id), IFNULL(bt.person_id, dt.debtor_no)) as person_id,
+ 		IF(ISNULL(st.supp_reference), '', st.supp_reference) AS supp_reference,
 		refs.reference,"
 		.($dimension ? " -SUM(IF(dim.dimension in(gl.dimension_id,gl.dimension2_id), gl.amount, 0)) as amount,":" SUM(IF(gl.amount>0, gl.amount,0)) as amount,")
 		."com.memo_,
@@ -616,8 +616,9 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 	if ($contractor_id > 0) {
 		$sql.= ", st.supplier_id, dt.debtor_no ";
 	}
-
-	$sql.= " FROM ".TB_PREF."gl_trans as gl
+    $sql.=", IFNULL(MAX(gl.person_type_id), IFNULL(bt.person_type_id, ".PT_CUSTOMER.")) as person_type_id
+ 	 
+		 FROM ".TB_PREF."gl_trans as gl
 		 LEFT JOIN ".TB_PREF."audit_trail as a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)
 		 LEFT JOIN ".TB_PREF."comments as com ON
@@ -626,11 +627,11 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
 			(gl.type=refs.type AND gl.type_no=refs.id)
 		 LEFT JOIN ".TB_PREF."users as u ON
 			a.user=u.id
-	 	 LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no
-	 	 LEFT JOIN ".TB_PREF."debtors_master cust ON gl.person_type_id=2 AND gl.person_id=cust.debtor_no
-	 	 LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no
-	 	 LEFT JOIN ".TB_PREF."suppliers supp ON gl.person_type_id=3 AND gl.person_id=supp.supplier_id"
-	 	 .($dimension ? 
+         LEFT JOIN ".TB_PREF."bank_trans bt ON bt.type=gl.type AND bt.trans_no=gl.type_no AND bt.amount!=0
+                 AND (bt.person_id != '' AND !ISNULL(bt.person_id))
+		 LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no
+         LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no "
+    	 	 .($dimension ? 
 		 " LEFT JOIN (SELECT type, type_no, MAX(IFNULL(dimension_id, dimension2_id)) dimension FROM ".TB_PREF."gl_trans GROUP BY type, type_no) dim 
 		 		ON gl.type=dim.type AND gl.type_no=dim.type_no" : '')
 		." WHERE gl.tran_date >= '" . date2sql($from) . "'

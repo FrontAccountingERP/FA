@@ -71,6 +71,11 @@ function systype_name($dummy, $type)
 	return $systypes_array[$type];
 }
 
+function person_link($row) 
+{
+    return payment_person_name($row["person_type_id"],$row["person_id"]);
+}
+
 function view_link($row) 
 {
 	return get_trans_view_str($row["trans_type"], $row["trans_no"]);
@@ -108,7 +113,7 @@ $cols = array(
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
- 	_("Counterparty") => array('ord' => ''),
+	_("Counterparty") => array('fun' => 'person_link'),
 	_("Supplier's Reference") => 'skip',
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),
