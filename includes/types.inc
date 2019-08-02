@@ -36,19 +36,13 @@ define('ST_WORKORDER', 26);
 define('ST_MANUISSUE', 28);
 define('ST_MANURECEIVE', 29);
 
-//
-//	Depreciation period types
-//
-define('FA_MONTHLY', 0);
-define('FA_YEARLY', 1);
-
 define('ST_SALESORDER', 30);
 define('ST_SALESQUOTE', 32);
 define('ST_COSTUPDATE', 35);
 define('ST_DIMENSION', 40);
 
 // Don't include these defines in the $systypes_array.
-// They are used for documents only.
+// They are used as report subtypes only.
 define ('ST_STATEMENT', 91);
 define ('ST_CHEQUE', 92);
 
@@ -282,6 +276,13 @@ $tax_area_types = array(
 // tax register type
 define('TR_OUTPUT', 0); // sales
 define('TR_INPUT', 1);	// purchase
+
+//
+//	Depreciation period types
+//
+define('FA_MONTHLY', 0);
+define('FA_YEARLY', 1);
+
 //---------------------------------------------------------------------------------
 // Constants optionally redefined locally
 //
