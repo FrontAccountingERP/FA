@@ -12,6 +12,7 @@
 
 function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 {
+	$descr = substr($descr, 0, 60);
 	begin_transaction();
 
 	$date = date2sql($trans_date);
