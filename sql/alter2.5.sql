@@ -81,3 +81,22 @@ ALTER TABLE `0_payment_terms` CHANGE COLUMN `days_before_due` `days` int(11) NOT
 ALTER TABLE `0_payment_terms` DROP COLUMN `day_in_following_month`;
 ALTER TABLE `0_payment_terms` ADD COLUMN `early_discount` double NOT NULL DEFAULT '0' AFTER `days`;
 ALTER TABLE `0_payment_terms` ADD COLUMN `early_days` int(11) NOT NULL DEFAULT '0' AFTER `early_discount`;
+
+ALTER TABLE `0_cust_allocations` ADD COLUMN `discount` double unsigned DEFAULT '0' AFTER `amt`;
+ALTER TABLE `0_supp_allocations` ADD COLUMN `discount` double unsigned DEFAULT '0' AFTER `amt`;
+
+# please define and set payment terms with discount manually per customer when needed
+ALTER TABLE `0_debtors_master` DROP COLUMN `pymt_discount`;
+
+# this update works only for single pay for invoice discounts, so may need additional manual fixes in more complex cases 
+UPDATE `0_cust_allocations` ca
+	LEFT JOIN `0_debtor_trans` pay ON pay.`type`=ca.`trans_type_from` AND pay.`trans_no`=ca.`trans_no_from`
+	LEFT JOIN `0_debtor_trans` trans ON trans.`type`=ca.`trans_type_to` AND trans.`trans_no`=ca.`trans_no_to`
+SET ca.discount=pay.ov_discount 
+	WHERE pay.ov_discount != 0 AND pay.ov_amount+pay.ov_discount = trans.ov_amount+trans.ov_gst+trans.ov_freight+trans.ov_freight_tax;
+
+UPDATE `0_supp_allocations` sa
+	LEFT JOIN `0_supp_trans` pay ON pay.`type`=sa.`trans_type_from` AND pay.`trans_no`=sa.`trans_no_from`
+	LEFT JOIN `0_supp_trans` trans ON trans.`type`=sa.`trans_type_to` AND trans.`trans_no`=sa.`trans_no_to`
+SET sa.discount=pay.ov_discount 
+	WHERE pay.ov_discount != 0 AND pay.ov_amount+pay.ov_discount = trans.ov_amount+trans.ov_gst;

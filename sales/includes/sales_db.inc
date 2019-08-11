@@ -388,9 +388,14 @@ function write_sales_trans($cart, $policy = 0)
 }
 
 function save_cust_payment($cart, $customer_id, $branch_id,
-		$bank_account, $trans_date, $ref, $amount, $discount, $memo, $charge, $bank_amount)
+		$bank_account, $trans_date, $ref, $amount, $memo, $charge, $bank_amount)
 {
 	begin_transaction(__FUNCTION__, func_get_args());
+
+	$discount = 0;
+	foreach($cart->allocs as $alloc)
+		if ($alloc->discount_confirmed)
+			$discount += $alloc->early_discount*$alloc->amount;
 
 	$payment_no = write_customer_payment($cart->trans_no, $customer_id, $branch_id,
 		$bank_account, $trans_date, $ref, $amount, $discount, $memo, 0, $charge, $bank_amount);

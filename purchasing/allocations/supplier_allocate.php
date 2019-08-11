@@ -55,15 +55,13 @@ function edit_allocations_for_transaction($type, $trans_no)
 
     display_heading2(_("Date:") . " <b>" . $cart->date_ . "</b>");
 
-   	display_heading2(_("Total:"). " <b>" . price_format(-$cart->bank_amount).' '.$cart->currency."</b>");
-
 	if (floatcmp($cart->bank_amount, $cart->amount))
-	{
-	    $total = _("Amount ot be settled:") . " <b>" . price_format(-$cart->amount).' '.$cart->person_curr."</b>";
-		if ($cart->currency != $cart->person_curr)
-    		$total .= sprintf(" (%s %s/%s)",  exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
-	   	display_heading2($total);
-	}
+		display_heading2(_("Total:"). " <b>" . price_format(-$cart->bank_amount).' '.$cart->currency."</b>");
+
+	$total = _("Amount ot be settled:") . " <b>" . '<span id="total">'.price_format(-$cart->amount).'</span> '.$cart->person_curr."</b>";
+	if ($cart->currency != $cart->person_curr)
+   		$total .= sprintf(" (%s %s/%s)",  exrate_format($cart->bank_amount/$cart->amount), $cart->currency, $cart->person_curr);
+   	display_heading2($total);
     echo "<br>";
 
   	div_start('alloc_tbl');

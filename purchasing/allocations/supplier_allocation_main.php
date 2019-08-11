@@ -88,6 +88,12 @@ function check_settled($row)
 }
 
 
+$all_settled = !db_num_rows(get_allocatable_to_supp_transactions(get_post('supplier_id')));
+if ($all_settled)
+	display_note('<b>'.
+		($supplier_id ? _("There is no unsettled transactions for this supplier.")
+			:_("There is no unsettled transactions.")).'</b><p>');
+
 $sql = get_allocatable_from_supp_sql($supplier_id, $settled);
 
 $cols = array(

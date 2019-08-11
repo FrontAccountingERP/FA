@@ -68,7 +68,7 @@ function alloc_link($row)
 {
 	global $all_settled;
 
-	return  ($row['settled']&&!get_post('ShowSettled')) || (!$row['settled'] && $all_settled)  ? '' : pager_link(_("Allocate"),
+	return pager_link(_("Allocate"),
 		"/sales/allocations/customer_allocate.php?trans_no="
 			.$row["trans_no"] . "&trans_type=" . $row["type"]. "&debtor_no=" . $row["debtor_no"], ICON_ALLOC);
 }
@@ -89,8 +89,11 @@ function check_settled($row)
 }
 
 $all_settled = !db_num_rows(get_allocatable_to_cust_transactions($customer_id));
+
 if ($all_settled)
-	display_note('<b>'._("There is no unsettled transactions for this customer.").'</b>');
+	display_note('<b>'.
+		($customer_id ? _("There is no unsettled transactions for this customer.")
+			:_("There is no unsettled transactions.")).'</b><p>');
 
 $sql = get_allocatable_from_cust_sql($customer_id, $settled);
 

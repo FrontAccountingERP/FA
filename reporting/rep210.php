@@ -119,7 +119,7 @@ function print_remittances()
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
 			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
-			$result = get_allocatable_to_supp_transactions($myrow['supplier_id'], $myrow['trans_no'], $myrow['type']);
+			$result = get_allocatable_to_supp_transactions(0, $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_SUPPAYMENT;
 

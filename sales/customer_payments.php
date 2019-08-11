@@ -198,20 +198,9 @@ function can_process()
 		}	
 	}
 
-	if (@$_POST['discount'] == "") 
-	{
-		$_POST['discount'] = 0;
-	}
-
-	if (!check_num('discount')) {
-		display_error(_("The entered discount is not a valid number."));
-		set_focus('discount');
-		return false;
-	}
-
 	if (input_num('amount') <= 0) {
 		display_error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
-		set_focus('discount');
+		set_focus('amount');
 		return false;
 	}
 
@@ -249,7 +238,7 @@ if (get_post('AddPaymentItem') && can_process()) {
 	$new_pmt = !$_SESSION['alloc']->trans_no;
 
 	$payment_no =  save_cust_payment($_SESSION['alloc'], get_post('customer_id'), get_post('BranchID'), get_post('bank_account'),
-		get_post('DateBanked'), get_post('ref'), input_num('amount'), input_num('discount'), get_post('memo_'),
+		get_post('DateBanked'), get_post('ref'), input_num('amount'), get_post('memo_'),
 		input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	unset($_SESSION['alloc']);
@@ -304,6 +293,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 		$Ajax->activate('alloc_tbl');
 	}
 }
+
 
 //----------------------------------------------------------------------------------------------
 $new = !$_SESSION['alloc']->trans_no;
@@ -376,12 +366,14 @@ div_end();
 
 start_table(TABLESTYLE, "width='60%'");
 
-amount_row(_("Amount of Discount:"), 'discount', null, '', $cust_currency);
+label_row(_("Total Discount:"), price_format(input_num('discount')), '','', 0, 'discount');
 
 amount_row(_("Amount:"), 'amount', null, '', $cust_currency);
 
 textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 end_table(1);
+
+hidden('discount', null);
 
 if ($new)
 	submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');

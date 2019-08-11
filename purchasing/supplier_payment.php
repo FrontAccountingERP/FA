@@ -161,19 +161,6 @@ function check_inputs()
 		}	
 	}
 
-	if (@$_POST['discount'] == "") 
-	{
-		$_POST['discount'] = 0;
-	}
-
-	if (!check_num('discount', 0))
-	{
-		display_error(_("The entered discount is invalid or less than zero."));
-		set_focus('amount');
-		return false;
-	}
-
-	//if (input_num('amount') - input_num('discount') <= 0) 
 	if (input_num('amount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
@@ -232,14 +219,10 @@ function check_inputs()
 
 function handle_add_payment()
 {
-	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
-		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
+	$payment_id = save_supp_payment($_SESSION['alloc'], $_POST['supplier_id'], $_POST['bank_account'],
+		$_POST['DatePaid'], $_POST['ref'], input_num('amount'), $_POST['memo_'], 
 		input_num('charge'), input_num('bank_amount', input_num('amount')));
 	new_doc_date($_POST['DatePaid']);
-
-	$_SESSION['alloc']->trans_no = $payment_id;
-	$_SESSION['alloc']->date_ = $_POST['DatePaid'];
-	$_SESSION['alloc']->write();
 
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
@@ -326,10 +309,12 @@ start_form();
 	div_end();
 
 	start_table(TABLESTYLE, "width='60%'");
-	amount_row(_("Amount of Discount:"), 'discount', null, '', $supplier_currency);
+	label_row(_("Total Discount:"), price_format(input_num('discount')), '', '', 0, 'discount');
 	amount_row(_("Amount of Payment:"), 'amount', null, '', $supplier_currency);
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
+
+	hidden('discount', null);
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
 

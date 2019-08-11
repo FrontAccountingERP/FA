@@ -120,7 +120,7 @@ function print_receipts()
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
  			$rep->SetHeaderType('Header2');
 			$rep->NewPage();
-			$result = get_allocatable_to_cust_transactions($myrow['debtor_no'], $myrow['trans_no'], $myrow['type']);
+			$result = get_allocatable_to_cust_transactions(0, $myrow['trans_no'], $myrow['type']);
 
 			$doctype = ST_CUSTPAYMENT;
 

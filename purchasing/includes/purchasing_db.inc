@@ -262,3 +262,24 @@ function write_supp_allocation($cart)
 	return $result;
 }
 
+function save_supp_payment($cart, $supplier_id, $bank_account, $trans_date, $ref, $amount, $memo, $charge, $bank_amount)
+{
+	begin_transaction(__FUNCTION__, func_get_args());
+
+	$discount = 0;
+	foreach($cart->allocs as $alloc)
+		if ($alloc->discount_confirmed)
+			$discount += $alloc->early_discount*$alloc->amount;
+
+	$payment_no = write_supp_payment($cart->trans_no, $supplier_id, $bank_account, $trans_date, $ref, $amount,
+		$discount, $memo, $charge, $bank_amount);
+
+	$cart->trans_no = $payment_no;
+	$cart->date_ = $trans_date;
+	$cart->write();
+
+	commit_transaction();
+
+	return $payment_no;
+}
+

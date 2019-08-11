@@ -12,13 +12,14 @@
 //----------------------------------------------------------------------------------------
 
 function add_cust_allocation($amount, $trans_type_from, $trans_no_from,
-	$trans_type_to, $trans_no_to, $person_id, $date_)
+	$trans_type_to, $trans_no_to, $person_id, $date_, $discount=0)
 {
 	$date = date2sql($date_);
 	$sql = "INSERT INTO ".TB_PREF."cust_allocations (
-		amt, date_alloc,
+		amt, discount, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to, person_id)
-		VALUES ($amount, '$date', ".db_escape($trans_type_from).", ".db_escape($trans_no_from).", ".db_escape($trans_no_to)
+		VALUES (".db_escape($amount).",".db_escape($discount).", '$date', "
+		.db_escape($trans_type_from).", ".db_escape($trans_no_from).", ".db_escape($trans_no_to)
 		.", ".db_escape($trans_type_to).", ".db_escape($person_id).")";
 
 	db_query($sql, "A customer allocation could not be added to the database");
@@ -114,9 +115,10 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 		trans.version,
 		round(abs(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc),6) <= 0 AS settled,
 		trans.debtor_no
-
 	 FROM "
-	 	.TB_PREF."debtor_trans as trans, "
+	 	.TB_PREF."debtor_trans as trans 
+		LEFT JOIN ".TB_PREF."cust_allocations as alloc
+			ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no,"
 		.TB_PREF."debtors_master as debtor"
 	." WHERE trans.debtor_no=debtor.debtor_no
 		AND (((type=".ST_CUSTPAYMENT." OR type=".ST_BANKDEPOSIT.") AND (trans.ov_amount+ov_discount > 0))
@@ -128,11 +130,11 @@ function get_allocatable_from_cust_sql($customer_id=null, $settled)
 
 	if ($customer_id != null)
 		$sql .= " AND trans.debtor_no = ".db_escape($customer_id);
-
+	$sql .= " GROUP BY trans_no, type";
 	return $sql;
 }
 
-function get_allocatable_sales_orders($customer_id = null, $trans_no=null, $type=null)
+function get_allocatable_sales_orders($customer_id, $trans_no=null, $type=null)
 {
 	$sql = "SELECT
 		sorder.trans_type as type,
@@ -146,7 +148,8 @@ function get_allocatable_sales_orders($customer_id = null, $trans_no=null, $type
 		sorder.delivery_date as due_date,
 		debtor.address,
 		sorder.version,
-		amt,
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.amt, 0) amt" : "alloc.amt").",
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.discount, 0) discount"  : "alloc.discount").",
 		sorder.debtor_no,
 		sorder.branch_code,
 		pmt.early_days,
@@ -160,25 +163,29 @@ function get_allocatable_sales_orders($customer_id = null, $trans_no=null, $type
 			WHERE prep_amount>0 AND dt.type=".ST_SALESINVOICE." GROUP BY order_) as invoiced ON sorder.order_no = invoiced.order_
 		WHERE sorder.trans_type=".ST_SALESORDER;
 
-	if ($trans_no != null and $type != null)
-	{
-		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)."
-				  AND alloc.trans_type_from=".db_escape($type);
-	}
-	else
-	{
-		$sql .= " AND round(sorder.prep_amount)>0 and Total>0"; // only sales orders with prepayment level set and no yet fully invoiced
-	}
+	$sql .= " AND ((round(sorder.prep_amount)>0 and Total>0)" // only sales orders with prepayment level set and no yet fully invoiced
+			." OR (alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type)."))";
+
 	if ($customer_id)
 		$sql .= " AND sorder.debtor_no=".db_escape($customer_id);
+	elseif (isset($trans_no) && isset($type))
+		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type);
 
 	$sql .= " GROUP BY sorder.order_no";
 
 	return $sql;
 }
-//-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=null, $type=null)
+//-------------------------------------------------------------------------------------------------------------
+//
+//	Returns all allocatable sales transactions including all settled with selected payment.
+//
+// 1. not fully settled; customer_id!=0, trans_no/type!=null (for trans edition)
+// 2. for given transaction; customer_id=null, trans_no/type!=null  (for transaction view)
+// 3. for customer, not fully settled  customer_id!=0, trans_no/type=null (non fully settled documents for customer exists)
+// 4. for all customers, not fully settled customer_id==0, trans_no/type=null (any non fully settled documents exists)
+
+function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $type=null)
 {
 	$sql = "SELECT
 		trans.type,
@@ -187,54 +194,36 @@ function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=nul
 		trans.tran_date,
 		debtor.name AS DebtorName, 
 		debtor.curr_code,
-		IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount) AS Total,
-		trans.alloc,
+		trans.debtor_no,
+		trans.branch_code,
 		trans.due_date,
 		debtor.address,
 		trans.version,
-		amt,
-		trans.debtor_no,
-		trans.branch_code,
+		IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount) AS Total,
+		trans.alloc,
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.amt, 0) amt" : "alloc.amt").",
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.discount, 0) discount"  : "alloc.discount").",
 		pmt.early_days,
 		pmt.early_discount
-	 FROM ".TB_PREF."debtor_trans as trans
-			LEFT JOIN ".TB_PREF."cust_allocations as alloc
-				ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no
-			LEFT JOIN ".TB_PREF."payment_terms as pmt ON trans.payment_terms=pmt.id,"
-	 		.TB_PREF."debtors_master as debtor
-	 WHERE
-	 	 trans.debtor_no=debtor.debtor_no";
+	FROM ".TB_PREF."debtor_trans as trans
+		LEFT JOIN ".TB_PREF."cust_allocations as alloc
+			ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no
+		LEFT JOIN ".TB_PREF."payment_terms as pmt ON trans.payment_terms=pmt.id
+		LEFT JOIN ".TB_PREF."debtors_master as debtor ON trans.debtor_no=debtor.debtor_no";
+
+	$sql .= " WHERE (round(IF(trans.type IN(".ST_CUSTCREDIT.",".ST_BANKDEPOSIT.",".ST_CUSTPAYMENT."),-1,IF(trans.type=".ST_CUSTDELIVERY.",0,1))"
+		."*IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)-IFNULL(alloc,0),6) > 0
+		 OR (alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . "))";
+
 	if ($customer_id)
 		$sql .= " AND trans.debtor_no=".db_escape($customer_id);
+	elseif (isset($trans_no) && isset($type))
+		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type);
 
-	if ($trans_no != null and $type != null)
-	{
-		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)."
-				  AND alloc.trans_type_from=".db_escape($type);
-	}
-	else
-	{
-		$sql .= "
-				 AND (
-					trans.type='".ST_SALESINVOICE."'
-					AND round(IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)-alloc,6) > 0
-					OR
-					trans.type='". ST_CUSTCREDIT."'
-					AND round(-IF(prep_amount, prep_amount, ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount)-alloc,6) > 0
-					OR
-				  	trans.type = '". ST_JOURNAL."'
-					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0
-					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>alloc
-					OR
-				  	trans.type = '". ST_BANKPAYMENT."'
-					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>0
-					AND ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount>alloc
-				)";
-		$sql .= " GROUP BY type, trans_no";
-	}
+	$sql .= " GROUP BY type, trans_no"; // avoids row multiplication for journal entry containing multiply customers
 
 	$orders = get_allocatable_sales_orders($customer_id, $trans_no, $type);
-	$sql = "($sql ORDER BY trans_no) \nUNION \n($orders)";
+	$sql = "($sql) \nUNION \n($orders) ORDER BY amt, due_date";
 
 	return db_query($sql, "Cannot retreive alloc to transactions");
 }
@@ -256,7 +245,8 @@ function get_allocatable_from_cust_transactions($customer_id, $trans_no=null, $t
 		trans.due_date,
 		debtor.address,
 		trans.version,
-		amt,
+		alloc.amt,
+		alloc.discount,
 		trans.debtor_no
 	 FROM  ".TB_PREF."debtor_trans as trans,"
 			.TB_PREF."debtors_master as debtor,"

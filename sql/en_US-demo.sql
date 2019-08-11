@@ -524,6 +524,7 @@ CREATE TABLE `0_cust_allocations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `person_id` int(11) DEFAULT NULL,
   `amt` double unsigned DEFAULT NULL,
+  `discount` double unsigned DEFAULT '0',
   `date_alloc` date NOT NULL DEFAULT '0000-00-00',
   `trans_no_from` int(11) DEFAULT NULL,
   `trans_type_from` int(11) DEFAULT NULL,
@@ -538,10 +539,10 @@ CREATE TABLE `0_cust_allocations` (
 -- Data of table `0_cust_allocations` --
 
 INSERT INTO `0_cust_allocations` VALUES
-('1', '1', '6240', '2018-05-10', '1', '12', '1', '10'),
-('2', '1', '300', '2018-05-07', '2', '12', '2', '10'),
-('3', '1', '0', '2018-05-07', '3', '12', '4', '10'),
-('4', '1', '1250', '2019-01-21', '4', '12', '5', '10');
+('1', '1', '6240', '0', '2018-05-10', '1', '12', '1', '10'),
+('2', '1', '300', '0', '2018-05-07', '2', '12', '2', '10'),
+('3', '1', '0', '0', '2018-05-07', '3', '12', '4', '10'),
+('4', '1', '1250', '0', '2019-01-21', '4', '12', '5', '10');
 
 -- Structure of table `0_cust_branch` --
 
@@ -1740,6 +1741,7 @@ CREATE TABLE `0_supp_allocations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `person_id` int(11) DEFAULT NULL,
   `amt` double unsigned DEFAULT NULL,
+  `discount` double unsigned DEFAULT '0',
   `date_alloc` date NOT NULL DEFAULT '0000-00-00',
   `trans_no_from` int(11) DEFAULT NULL,
   `trans_type_from` int(11) DEFAULT NULL,

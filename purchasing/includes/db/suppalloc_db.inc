@@ -12,13 +12,13 @@
 //----------------------------------------------------------------------------------------
 
 function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
-	$trans_type_to, $trans_no_to, $person_id, $date_)
+	$trans_type_to, $trans_no_to, $person_id, $date_, $discount=0)
 {
 	$date = date2sql($date_);
 	$sql = "INSERT INTO ".TB_PREF."supp_allocations (
-		amt, date_alloc,
+		amt, discount, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to, person_id)
-		VALUES (".db_escape($amount).", '$date', "
+		VALUES (".db_escape($amount).",".db_escape($discount).", '$date', "
 		.db_escape($trans_type_from).", ".db_escape($trans_no_from).", "
 		.db_escape($trans_no_to).", ".db_escape($trans_type_to).", ".db_escape($person_id).")";
 
@@ -31,7 +31,7 @@ function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
 function delete_supp_allocation($trans_id)
 {
 	$sql = "DELETE FROM ".TB_PREF."supp_allocations WHERE id = ".db_escape($trans_id);
-	db_query($sql, "The existing allocation $trans_id could not be deleted");
+	return db_query($sql, "The existing allocation $trans_id could not be deleted");
 }
 
 //----------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ function get_allocatable_from_supp_sql($supplier_id=null, $settled)
 	return $sql;
 }
 
-function get_allocatable_purch_orders($supplier_id = null, $trans_no=null, $type=null)
+function get_allocatable_purch_orders($supplier_id, $trans_no=null, $type=null)
 {
 	$due_dates = "SELECT order_no, MIN(delivery_date) as date
 		FROM ".TB_PREF."purch_order_details det
@@ -147,7 +147,8 @@ function get_allocatable_purch_orders($supplier_id = null, $trans_no=null, $type
 		porder.alloc,
 		due_dates.date as due_date,
 		supplier.address,
-		amt,
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.amt, 0) amt" : "alloc.amt").",
+		".(isset($trans_no) ? "IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.discount, 0) discount"  : "alloc.discount").",
 		supp_reference as supp_ref,
 		0, 0
 		FROM ".TB_PREF."purch_orders as porder
@@ -158,25 +159,29 @@ function get_allocatable_purch_orders($supplier_id = null, $trans_no=null, $type
 			LEFT JOIN ($due_dates) due_dates ON due_dates.order_no=porder.order_no
 		WHERE total>0";
 
-	if ($trans_no != null and $type != null)
-	{
-		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)."
-				  AND alloc.trans_type_from=".db_escape($type);
-	}
-	else
-	{
-		$sql .= " AND ISNULL(grn.purch_order_no)"; // only sales orders no yet received
-	}
+	$sql .= " AND ( ISNULL(grn.purch_order_no)" // only orders no yet received
+		."OR (alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type)."))";
+
 	if ($supplier_id)
 		$sql .= " AND porder.supplier_id=".db_escape($supplier_id);
+	elseif (isset($trans_no) && isset($type))
+		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type);
 
 	$sql .= " GROUP BY porder.order_no, grn.purch_order_no";
 
 	return $sql;
 }
-//-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_to_supp_transactions($supplier_id=null, $trans_no=null, $type=null)
+//-------------------------------------------------------------------------------------------------------------
+//
+//	Returns all allocatable purchase transactions including all settled with selected payment.
+//
+// 1. not fully settled; supplier_id!=0, trans_no/type!=null (for trans edition)
+// 2. for given transaction; supplier_id=null, trans_no/type!=null  (for transaction view)
+// 3. for supplier, not fully settled  supplier_id!=0, trans_no/type=null (non fully settled documents for supplier exists)
+// 4. for all suppliers, not fully settled supplier_id==0, trans_no/type=null (any non fully settled documents exists)
+
+function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $type=null)
 {
 	$sql = "SELECT
 		trans.type,
@@ -189,7 +194,8 @@ function get_allocatable_to_supp_transactions($supplier_id=null, $trans_no=null,
 		trans.alloc,
 		trans.due_date,
 		trans.supplier_id,
-		amt,
+		IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.amt, 0) amt,
+		IF(alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type) . ", alloc.discount, 0) discount,
 		supp_reference,
 		pmt.early_days,
 		pmt.early_discount
@@ -200,25 +206,22 @@ function get_allocatable_to_supp_transactions($supplier_id=null, $trans_no=null,
 			LEFT JOIN ".TB_PREF."supp_allocations as alloc
 				ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.supplier_id";
 
-	if ($trans_no != null and $type != null)
-	{
-		$sql .= " WHERE alloc.trans_no_from=".db_escape($trans_no)."
-				  AND alloc.trans_type_from=".db_escape($type);
-	}
-	else
-	{
-		$sql .= " WHERE round(ov_amount+ov_gst+ov_discount-alloc,6) > 0
-			AND trans.type NOT IN (".implode(',',array(ST_SUPPAYMENT, ST_BANKPAYMENT)).")";
-	}
+	$sql .= " WHERE (
+		(round(ov_amount+ov_gst+ov_discount-alloc,6) > 0
+			AND trans.type NOT IN (".implode(',',array(ST_SUPPAYMENT, ST_BANKPAYMENT))."))
+		OR (alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type)."))";
 
 	if ($supplier_id)
-		$sql .= " AND supplier.supplier_id=".db_escape($supplier_id);
+		$sql .= " AND trans.supplier_id=".db_escape($supplier_id);
+	elseif (isset($trans_no) && isset($type))
+		$sql .= " AND alloc.trans_no_from=".db_escape($trans_no)." AND alloc.trans_type_from=".db_escape($type);
 
+	$sql .= " GROUP BY type, trans_no"; // avoids row multiplication for journal entry containing multiply suppliers
 
 	$orders = get_allocatable_purch_orders($supplier_id, $trans_no, $type);
-	$sql = "($sql ORDER BY trans_no) \nUNION \n($orders)";
+	$sql = "($sql) \nUNION \n($orders) ORDER BY amt, due_date";
 
-	return db_query($sql." ORDER BY due_date", "Cannot retreive alloc to transactions");
+	return db_query($sql, "Cannot retreive alloc to transactions");
 }
 
 //-------------------------------------------------------------------------------------------------------------

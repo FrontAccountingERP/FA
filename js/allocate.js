@@ -14,19 +14,13 @@ function focus_alloc(i) {
 }
 
 function blur_alloc(i) {
-
-	var last = +i.getAttribute('_last')
-	var left = get_amount('left_to_allocate', 1); 
-	var cur = Math.min(get_amount(i.name), get_amount('maxval'+i.name.substr(6), 1), last+left)
+	var id = i.name.substr(6)
+	var unallocated = get_amount('un_allocated'+id)
+	var cur = Math.max(Math.min(get_amount(i.name), unallocated, get_amount('left_to_allocate',1)+parseFloat(i.getAttribute('_last'))), 0)
 
 	price_format(i.name, cur, user.pdec);
-	change = cur-last;
-
-	var total = get_amount('total_allocated', 1)+change;
-		left -= change;
-	
-	price_format('left_to_allocate', left, user.pdec, 1, 1);
-	price_format('total_allocated', total, user.pdec, 1, 1);
+	price_format('left'+id, unallocated-cur, user.pdec, 1);
+	update_totals()
 }
 
 function update_totals() {
@@ -39,36 +33,26 @@ function update_totals() {
 			&& (get_amount('un_allocated'+docs[i]) == get_amount('amount'+docs[i])))
 				discount += get_amount('early_disc'+docs[i]);
 	}
-	price_format('amount', amount-discount, user.pdec);
-	price_format('discount', discount, user.pdec);
-	
+	price_format('left_to_allocate', Math.abs(get_amount('total',1)-(amount-discount)), user.pdec, 1,1);
+	price_format('total_allocated', amount-discount, user.pdec, 1, 1);
+	price_format('total_discount', discount, user.pdec, 1, 1);
 }
 
+
 function allocate_all(doc) {
-	var amount = get_amount('amount'+doc);
 	var unallocated = get_amount('un_allocated'+doc);
-	var total = get_amount('total_allocated', 1);
-	var left = get_amount('left_to_allocate', 1);
-	total -=  (amount-unallocated);
-	left += (amount-unallocated);
-	amount = unallocated;
-	if(left<0) {
-		total  += left;
-		amount += left;
-		left = 0;
-	}
-	price_format('amount'+doc, amount, user.pdec);
-	price_format('left_to_allocate', left, user.pdec, 1,1);
-	price_format('total_allocated', total, user.pdec, 1, 1);
+	var cur = Math.min(unallocated, get_amount('left_to_allocate',1))
+	price_format('amount'+doc, cur, user.pdec);
+	price_format('left'+doc, 0, user.pdec, 1);
+	update_totals();
+
 }
 
 function allocate_none(doc) {
-	amount = get_amount('amount'+doc);
-	left = get_amount('left_to_allocate', 1);
-	total = get_amount('total_allocated', 1);
-	price_format('left_to_allocate',amount+left, user.pdec, 1, 1);
+	var unallocated = get_amount('un_allocated'+doc);
 	price_format('amount'+doc, 0, user.pdec);
-	price_format('total_allocated', total-amount, user.pdec, 1, 1);
+	price_format('left'+doc, unallocated, user.pdec, 1);
+	update_totals();
 }
 
 var allocations = {

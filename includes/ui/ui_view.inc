@@ -563,10 +563,8 @@ function display_allocations($alloc_result, $total, $title, $show_summary=true)
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
     	$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
-    	if ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT)
-    		$alloc_row['Total'] = -$alloc_row['Total'];
-    	amount_cell($alloc_row['Total']);
-   		amount_cell($alloc_row['Total'] - $alloc_row['alloc']);
+    	amount_cell(abs($alloc_row['Total']));
+   		amount_cell(abs($alloc_row['Total']) - $alloc_row['alloc']);
     	amount_cell($alloc_row['amt']);
     	end_row();
 
@@ -594,11 +592,11 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	switch ($person_type)
 	{
 		case PT_CUSTOMER :
-			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
+			$alloc_result = get_allocatable_to_cust_transactions(0, $type_no, $type);
 			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 		case PT_SUPPLIER :
-			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
+			$alloc_result = get_allocatable_to_supp_transactions(0, $type_no, $type);
 			display_allocations($alloc_result, $total, _("Allocations"));
 			return;
 	}
