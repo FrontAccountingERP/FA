@@ -417,7 +417,7 @@ class items_cart
 		// update bank ledger if used
 		foreach($bank_trans as $bank_id => $amount)
    			add_bank_trans($this->trans_type, $this->order_id, $bank_id, $this->reference,
-				$this->tran_date, $amount, 0, "", $this->currency);
+				$this->tran_date, $amount, 0, 0, "", $this->currency);
 
 		// add AP/AR for journal transaction
 		if ($this->trans_type == ST_JOURNAL)

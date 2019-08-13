@@ -85,6 +85,12 @@ function fmt_credit($row)
 	return $value>0 ? price_format($value) : '';
 }
 
+function bank_fee($row)
+{
+	$value = -$row["charge"];
+	return $value > 0 ? price_format($value) : '';
+}
+
 function fmt_person($trans)
 {
 	return get_counterparty_name($trans["type"], $trans["trans_no"]);
@@ -269,6 +275,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 		_("Date") => 'date',
 		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
+		_("Bank fees") => array('align'=>'right','insert'=>true, 'fun'=>'bank_fee'),
 	    _("Person/Item") => array('fun'=>'fmt_person'), 
 		_("Memo") => array('fun'=>'fmt_memo'),
 		array('insert'=>true, 'fun'=>'gl_view'),

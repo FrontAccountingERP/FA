@@ -276,11 +276,10 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] > 0 )
 	$_POST['BranchID'] = $myrow["branch_code"];
 	$_POST['bank_account'] = $myrow["bank_act"];
 	$_POST['ref'] =  $myrow["reference"];
-	$charge = get_cust_bank_charge(ST_CUSTPAYMENT, $_POST['trans_no']);
-	$_POST['charge'] =  price_format($charge);
+	$_POST['charge'] =  price_format(-$myrow['bank_charge']);
 	$_POST['DateBanked'] =  sql2date($myrow['tran_date']);
 	$_POST["amount"] = price_format($myrow['Total'] - $myrow['ov_discount']);
-	$_POST["bank_amount"] = price_format($myrow['bank_amount']+$charge);
+	$_POST["bank_amount"] = price_format($myrow['bank_amount']);
 	$_POST["discount"] = price_format($myrow['ov_discount']);
 	$_POST["memo_"] = get_comments_string(ST_CUSTPAYMENT,$_POST['trans_no']);
 

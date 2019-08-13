@@ -239,7 +239,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		-($amount + $charge), $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-		$date_, -($amount + $charge),
+		$date_, -$amount, -$charge,
 		PT_MISC, $person_id, $currency);
 	if ($SysPrefs->auto_currency_revaluation())
 	{
@@ -272,7 +272,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	   		0, 0, _("Exchange Variance"), -$total);
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $to_amount, PT_MISC, $person_id);
+		$date_, $to_amount, 0, PT_MISC, $person_id);
 
 	if ($SysPrefs->auto_currency_revaluation())
 	{
@@ -361,7 +361,7 @@ function update_bank_transfer(
 	void_transaction(ST_BANKTRANSFER, $trans_no, Today(), _("Document reentered."));
 	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
 	$new_trans_no = add_bank_transfer(
-		$from_account, $to_account, $date_, $amount,
+		$from_account, $to_account, $date_, $amount, $charge,
 		$ref, $memo_, $charge, $target_amount
 	);
 	commit_transaction();
@@ -464,7 +464,7 @@ function write_bank_transaction(&$cart)
 	// do the source account postings
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$cart->tran_date, -$total_amount,
+    	$cart->tran_date, -$total_amount, 0,
     	$person_type_id, $person_id,
     	$currency);
 	$total = 0;
@@ -486,7 +486,7 @@ function write_bank_transaction(&$cart)
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
-    			$cart->tran_date, $gl_item->amount,
+    			$cart->tran_date, $gl_item->amount, 0,
     			$person_type_id, $person_id, $currency);
     		if ($do_exchange_variance)
     		{

@@ -241,6 +241,7 @@ function get_allocatable_from_supp_transactions($supplier_id, $trans_no=null, $t
 		trans.supplier_id,
 		supplier.address,
 		amt,
+		alloc.discount,
 		supp_reference
 	 FROM  ".TB_PREF."supp_trans as trans,"
 			.TB_PREF."suppliers as supplier,"

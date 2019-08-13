@@ -69,7 +69,7 @@ function get_supp_trans($trans_no, $trans_type=-1, $supplier_id=null)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", account.bank_name, account.bank_account_name, account.bank_curr_code,
-			account.account_type AS BankTransType, bank_trans.amount AS bank_amount,
+			account.account_type AS BankTransType, bank_trans.amount AS bank_amount, bank_trans.charge AS bank_charge,
 			bank_trans.ref ";
 	}
 

@@ -33,7 +33,7 @@ print_bank_transactions_reconcile();
 function get_bank_balance_to($to, $account)
 {
 	$to = date2sql($to);
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act='$account'
+	$sql = "SELECT SUM(amount+charge) FROM ".TB_PREF."bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 	$result = db_query($sql, "The starting balance on hand could not be calculated");
 	$row = db_fetch_row($result);
@@ -51,6 +51,7 @@ function get_bank_transactions($from, $to, $account)
 		WHERE trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
+		AND (amount !=0 OR charge !=0)
 		ORDER BY trans_date,trans.id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
@@ -73,12 +74,12 @@ function print_bank_transactions_reconcile()
 	$rep = new FrontReport(_('Bank Statement w/Reconcile'), "BankStatementReconcile", user_pagesize(), 9, "L");
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 120, 170, 225, 450, 500, 550, 600, 660, 700);
+	$cols = array(0, 90, 120, 170, 225, 400, 450, 500, 550, 600, 660, 700);
 
-	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right', 'center', 'left');
+	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right', 'right', 'center', 'left');
 
 	$headers = array(_('Type'),	_('#'),	_('Reference'), _('Date'), _('Person/Item'),
-		_('Debit'),	_('Credit'), _('Balance'), _('Reco Date'), _('Narration'));
+		_('Debit'),	_('Credit'), _('Fee Incl.'), _('Balance'), _('Reco Date'), _('Narration'));
 
 	$account = get_bank_account($acc);
 	$act = $account['bank_account_name']." - ".$account['bank_curr_code']." - ".$account['bank_account_number'];
@@ -110,13 +111,15 @@ function print_bank_transactions_reconcile()
 		$rep->NewLine(2);
 		// Keep a running total as we loop through
 		// the transactions.
-		$total_debit = $total_credit = 0;			
+		$total_debit = $total_credit = $charges = 0;
 		if ($rows > 0)
 		{
 			
 			while ($myrow=db_fetch($trans))
 			{
-				$total += $myrow['amount'];
+				$total += $myrow['amount']+$myrow['charge'];
+				$charges += $myrow['charge'];
+				$amount = abs($myrow['amount']);
 
 				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
@@ -125,18 +128,21 @@ function print_bank_transactions_reconcile()
 				$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
 				{
-					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
-					$total_debit += abs($myrow['amount']);
+					$rep->AmountCol(5, 6, $amount, $dec);
+					$total_debit += $amount;
 				}
 				else
 				{
-					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
-					$total_credit += abs($myrow['amount']);
+					$rep->AmountCol(6, 7, $amount, $dec);
+					$total_credit += $amount;
 				}
-				$rep->AmountCol(7, 8, $total, $dec);
+				if ($myrow['charge'])
+					$rep->AmountCol(7, 8, -$myrow['charge'], $dec);
+
+				$rep->AmountCol(8, 9, $total, $dec);
 				if ($myrow["reconciled"] && $myrow["reconciled"] != '0000-00-00')
-					$rep->DateCol(8, 9,	$myrow["reconciled"], true);
-				$rep->TextCol(9, 10, $myrow['memo_']);
+					$rep->DateCol(9, 10,	$myrow["reconciled"], true);
+				$rep->TextCol(10, 11, $myrow['memo_']);
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
@@ -148,17 +154,18 @@ function print_bank_transactions_reconcile()
 		}
 		
 		// Print totals for the debit and credit columns.
-		$rep->TextCol(3, 5, _("Total Debit / Credit"));
+		$rep->TextCol(3, 5, _("Total Debit / Credit / Fees"));
 		$rep->AmountCol(5, 6, $total_debit, $dec);
 		$rep->AmountCol(6, 7, $total_credit, $dec);
+		$rep->AmountCol(7, 8, -$charges, $dec);
 		$rep->NewLine(2);
 
 		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
-			$rep->AmountCol(5, 6, abs($total), $dec);
+			$rep->AmountCol(5, 6, $total, $dec);
 		else
-			$rep->AmountCol(6, 7, abs($total), $dec);
+			$rep->AmountCol(6, 7, -$total, $dec);
 		$rep->Font();
 		$rep->NewLine(2);	
 		
@@ -174,7 +181,7 @@ function print_bank_transactions_reconcile()
 		
 		// Calculate Bank Balance as per reco
 		$date = date2sql($to);
-		$sql = "SELECT SUM(IF(reconciled<='$date' AND reconciled !='0000-00-00', amount, 0)) as reconciled,
+		$sql = "SELECT SUM(IF(reconciled<='$date' AND reconciled !='0000-00-00', amount+charge, 0)) as reconciled,
 				 SUM(amount) as books_total
 			FROM ".TB_PREF."bank_trans trans
 			WHERE bank_act=".db_escape($account['id'])."
@@ -211,7 +218,7 @@ function print_bank_transactions_reconcile()
 		$rep->NewLine(2);	
 			
 		$rep->Line($rep->row - $rep->lineHeight + 4);
-		$rep->NewLine(2, 1);			
+		$rep->NewLine(2, 1);
 			
 	}
 	$rep->End();

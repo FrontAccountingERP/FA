@@ -69,12 +69,12 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 start_table(TABLESTYLE);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"),
-	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), _("Memo"), "", "");
+	_("Debit"), _("Credit"), _("Fee"), _("Balance"), _("Person/Item"), _("Memo"), "", "");
 table_header($th);
 
 $bfw = get_balance_before_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate']);
 
-$credit = $debit = 0;
+$credit = $debit = $charges = 0;
 start_row("class='inquirybg' style='font-weight:bold'");
 label_cell(_("Opening Balance")." - ".$_POST['TransAfterDate'], "colspan=4");
 display_debit_or_credit_cells($bfw);
@@ -94,7 +94,7 @@ while ($myrow = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	$running_total += $myrow["amount"];
+	$running_total += $myrow["amount"]+$myrow["charge"];
 
 	$trandate = sql2date($myrow["trans_date"]);
 	label_cell($systypes_array[$myrow["type"]]);
@@ -102,6 +102,7 @@ while ($myrow = db_fetch($result))
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"],$myrow['ref']));
 	label_cell($trandate);
 	display_debit_or_credit_cells($myrow["amount"]);
+	amount_cell(-$myrow['charge']);
 	amount_cell($running_total);
 
 	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
@@ -116,7 +117,8 @@ while ($myrow = db_fetch($result))
  		$debit += $myrow["amount"];
  	else 
  		$credit += $myrow["amount"];
-
+	$credit += $myrow["charge"];
+	$charges += $myrow["charge"];
 	if ($j == 12)
 	{
 		$j = 1;
@@ -131,6 +133,7 @@ label_cell(_("Ending Balance")." - ". $_POST['TransToDate'], "colspan=4");
 amount_cell($debit);
 amount_cell(-$credit);
 //display_debit_or_credit_cells($running_total);
+amount_cell(-$charges);
 amount_cell($debit+$credit);
 label_cell("", "colspan=4");
 end_row();

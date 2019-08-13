@@ -100,3 +100,22 @@ UPDATE `0_supp_allocations` sa
 	LEFT JOIN `0_supp_trans` trans ON trans.`type`=sa.`trans_type_to` AND trans.`trans_no`=sa.`trans_no_to`
 SET sa.discount=pay.ov_discount 
 	WHERE pay.ov_discount != 0 AND pay.ov_amount+pay.ov_discount = trans.ov_amount+trans.ov_gst;
+
+# bank charge stored in bank_trans
+ALTER TABLE `0_bank_trans` ADD COLUMN `charge` double DEFAULT 0 AFTER `amount`;
+
+UPDATE `0_bank_trans` bt
+	LEFT JOIN (SELECT trans.type, trans.trans_no, IF(act.bank_curr_code=home_curr.value, charge.amount,
+		IF(act.bank_curr_code=debtor.curr_code, -(trans.amount-ar.ov_amount+ar.ov_discount),
+		IFNULL(charge.amount*trans.amount/pmt.amount, 0))) amount
+		FROM 0_bank_trans trans
+			LEFT JOIN `0_bank_accounts` act ON trans.bank_act=act.id
+			LEFT JOIN `0_sys_prefs` charge_act ON charge_act.name='bank_charge_act'
+			LEFT JOIN `0_sys_prefs` home_curr ON home_curr.name='curr_default'
+			LEFT JOIN `0_gl_trans` charge ON charge.type=trans.`type` AND charge.type_no=trans.trans_no AND charge.account=charge_act.`value`
+			LEFT JOIN `0_gl_trans` pmt ON pmt.type=trans.type AND pmt.type_no=trans.trans_no AND pmt.account=act.account_code
+			LEFT JOIN `0_debtors_master` debtor ON trans.person_id=debtor.debtor_no AND trans.person_type_id=2
+			LEFT JOIN `0_debtor_trans` ar ON trans.type=ar.`type` AND trans.trans_no=ar.trans_no
+		WHERE pmt.amount!=0 AND charge.amount!=0 AND trans.amount!=0) charges ON bt.`type`=charges.`type` AND bt.`trans_no`=charges.`trans_no`
+	SET bt.charge=IFNULL(-charges.amount,0),
+		bt.amount=bt.amount+IFNULL(charges.amount,0);

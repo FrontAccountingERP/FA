@@ -80,7 +80,7 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 
    /*now enter the bank_trans entry */
 	add_bank_trans(ST_SUPPAYMENT, $payment_id, $bank_account, $ref,
-		$date_, -($bank_amount + $bank_charge), PT_SUPPLIER, $supplier_id);
+		$date_, -$bank_amount, -$bank_charge, PT_SUPPLIER, $supplier_id);
 
 	add_comments(ST_SUPPAYMENT, $payment_id, $date_, $memo_);
 
