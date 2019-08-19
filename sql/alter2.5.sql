@@ -61,8 +61,8 @@ UPDATE `0_cust_branch` branch
 ALTER TABLE `0_tax_group_items` DROP COLUMN `tax_shipping`;
 
 # new debug trail
-DROP TABLE `1_sql_trail`;
-CREATE TABLE `1_db_trail` (
+DROP TABLE `0_sql_trail`;
+CREATE TABLE `0_db_trail` (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`stamp` timestamp DEFAULT CURRENT_TIMESTAMP,
 		`user` tinyint(3) unsigned NOT NULL DEFAULT '0',
