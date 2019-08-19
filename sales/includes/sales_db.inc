@@ -471,7 +471,7 @@ function write_recurrent_invoice($invoice_id, $description, $order_no, $debtor_n
 
 function write_customer($customer_id, $name, $ref, $address, $tax_id, $curr_code, $dim1, $dim2, $credit_status,
 	 $payment_terms, $discount, $credit_limit, $sales_type, $notes, $inactive, $salesman, $area, 
-	 $tax_group, $location, $address, $ship_via, $notes, $bank_account, $address, $phone, $phone2, $fax, $email)
+	 $tax_group, $location, $address, $ship_via, $notes, $bank_account, $phone, $phone2, $fax, $email)
 {
 	global $SysPrefs;
 
