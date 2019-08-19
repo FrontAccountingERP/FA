@@ -78,12 +78,12 @@ function handle_submit(&$selected_id)
 		return;
 		
 
-	$_POST['customer_id'] = write_customer($_POST['customer_id'], $_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
-		$_POST['tax_id'], $_POST['curr_code'], $_POST['dimension_id'], $_POST['dimension2_id'],
-		$_POST['credit_status'], $_POST['payment_terms'], input_num('discount'),
-		input_num('credit_limit'), $_POST['sales_type'], $_POST['notes'], @$_POST['inactive'], get_post('salesman'),
-		get_post('area'), get_post('tax_group_id'), get_post('location'), get_post('address'), get_post('ship_via'), 
-		get_post('notes'), get_post('bank_account'), get_post('phone'), get_post('phone2'), get_post('fax'), get_post('email'));
+	$_POST['customer_id'] = write_customer(get_post('customer_id'), get_post('CustName'), get_post('cust_ref'), get_post('address'),
+		get_post('tax_id'), get_post('curr_code'), get_post('dimension_id'), get_post('dimension2_id'),
+		get_post('credit_status'), get_post('payment_terms'), input_num('discount'),
+		input_num('credit_limit'), get_post('sales_type'), get_post('notes'), @$_POST['inactive'], get_post('salesman'),
+		get_post('area'), get_post('tax_group_id'), get_post('location'), get_post('ship_via'), 
+		get_post('bank_account'), get_post('phone'), get_post('phone2'), get_post('fax'), get_post('email'));
 
 	if ($selected_id) 
 	{
