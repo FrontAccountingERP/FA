@@ -123,8 +123,8 @@ $cols = array(
 		_("Currency") => array('align'=>'center'), 
 		_("Order Total") => 'amount',
 		array('insert'=>true, 'fun'=>'edit_link'),
-		array('insert'=>true, 'fun'=>'prt_link'),
-		array('insert'=>true, 'fun'=>'receive_link')
+		array('insert'=>true, 'fun'=>'receive_link'),
+		array('insert'=>true, 'fun'=>'prt_link')
 );
 
 if (get_post('StockLocation') != ALL_TEXT) {

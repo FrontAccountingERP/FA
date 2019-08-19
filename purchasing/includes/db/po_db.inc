@@ -294,6 +294,8 @@ function get_sql_for_po_search_completed($from, $to, $supplier_id=ALL_TEXT, $loc
 		porder.ord_date, 
 		supplier.curr_code, 
 		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
+		Sum(line.delivery_date < '". date2sql(Today()) ."'
+		AND (line.quantity_ordered > line.quantity_received)) As OverDue,
 		porder.into_stock_location,
 		chk.isopen
 		FROM ".TB_PREF."purch_orders as porder

@@ -365,7 +365,7 @@ $opts = array(		// default options
 		$selector .= ' '.$opts['editlink'];
 
 	if ($search_box && $opts['cells'])
-		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
+		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td nowrap>$selector$img</td>";
 	else
 		$str = $edit_entry.$selector.$img;
 	return $str;
@@ -944,7 +944,7 @@ function sales_items_list_cells($label, $name, $selected_id=null, $all_option=fa
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo sales_items_list($name, $selected_id, $all_option, $submit_on_change,
-		'', array('cells'=>true));
+		'', array('cells'=>true, 'max'=>50)); // maximum is set to 50 and not default 255.
 }
 
 function sales_kits_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)

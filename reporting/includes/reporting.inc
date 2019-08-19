@@ -117,6 +117,16 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_3' => '', 
 				'PARAM_4' => $def_orientation);
 			break;
+		case ST_DIMENSION :
+			$rep = 501;
+			// from, to, email, comments, orientation
+			$ar = array(
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => 1, 
+				'PARAM_3' => '', 
+				'PARAM_4' => $def_orientation);
+			break;
 		default:
 			return null;
 	}

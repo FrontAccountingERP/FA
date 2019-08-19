@@ -60,14 +60,13 @@ function display_adjustment_items($title, &$order)
 		_("Unit"), _("Unit Cost"), _("Total"), "");
 		if ( count($order->line_items)) $th[] = '';
 	}
-	if ( count($order->line_items)) $th[] = '';
 
 	table_header($th);
 	$total = 0;
 	$k = 0;  //row colour counter
 
 	$low_stock = $order->check_qoh($_POST['StockLocation'], $_POST['AdjDate']);
-	$id = find_submit('Edit');
+	$id = get_post('selected_id', find_submit('Edit'));
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
@@ -97,9 +96,16 @@ function display_adjustment_items($title, &$order)
 				amount_cell($stock_item->standard_cost * $stock_item->quantity);
 
       		if (!$order->fixed_asset) {
-        		edit_button_cell("Edit$line_no", _("Edit"),	_('Edit document line'));
+      			if ($id == -1)
+	        		edit_button_cell("Edit$line_no", _("Edit"),	_('Edit document line'));
+	        	else
+	        		label_cell('');
       		}
-			delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+    		if ($id == -1)
+				delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
+        	else
+        		label_cell('');
+			
 			end_row();
 		}
 		else
@@ -114,6 +120,9 @@ function display_adjustment_items($title, &$order)
 	label_row(_("Total"), number_format2($total,user_price_dec()), "align=right colspan=5", "align=right", 2);
 
     end_table();
+
+	if ($id != -1)
+	    hidden('selected_id', $id);
 	if ($low_stock)
 		display_note(_("Marked items have insufficient quantities in stock as on day of adjustment."), 0, 1, "class='stockmankofg'");
 	div_end();
@@ -127,19 +136,20 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	start_row();
 
 	$dec2 = 0;
-	$id = find_submit('Edit');
-	if ($line_no != -1 && $line_no == $id)
-	{
-		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, 
-			$order->line_items[$id]->stock_id, $dec);
-		//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
-		$_POST['std_cost'] = price_decimal_format($order->line_items[$id]->standard_cost, $dec2);
-		$_POST['units'] = $order->line_items[$id]->units;
 
+	if ($line_no != -1)
+	{
+		if (find_submit('Edit') != -1) {
+			$_POST['stock_id'] = $order->line_items[$line_no]->stock_id;
+			$_POST['qty'] = qty_format($order->line_items[$line_no]->quantity, 
+				$order->line_items[$line_no]->stock_id, $dec);
+		//$_POST['std_cost'] = price_format($order->line_items[$line_no]->standard_cost);
+			$_POST['std_cost'] = price_decimal_format($order->line_items[$line_no]->standard_cost, $dec2);
+		}
+		$_POST['units'] = $order->line_items[$line_no]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$id]->item_description, 'nowrap');
+		label_cell($order->line_items[$line_no]->item_description, 'nowrap');
 	    $Ajax->activate('items_table');
 	}
 	else
@@ -150,49 +160,53 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 			stock_costable_items_list_cells(null, 'stock_id', null, false, true);
 
 		if (list_updated('stock_id')) {
-			    $Ajax->activate('units');
-			    $Ajax->activate('qty');
-			    $Ajax->activate('std_cost');
-			    $Ajax->activate('std_cost_view');
-			    $Ajax->activate('initial_price');
+			$Ajax->activate('items_table');
 		}
 
-    	$item_info = get_item_edit_info($_POST['stock_id']);
-		$dec = $item_info['decimals'];
-   		$_POST['qty'] = number_format2(0, $dec);
-		$_POST['std_cost'] = price_decimal_format($item_info["material_cost"], $dec2);
-		$_POST['units'] = $item_info["units"];
 	}
 
+   	$item_info = get_item_edit_info(get_post('stock_id'));
+   	if ($item_info) {
+		$dec = $item_info['decimals'];
+		$_POST['std_cost'] = price_decimal_format($item_info["material_cost"], $dec2);
+		$_POST['units'] = $item_info["units"];
+	} else
+		$dec = 0;
 	if ($order->fixed_asset) {
 		hidden('qty', -1);
 		qty_cell(1, false, 0);
 	} else
-		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
+		label_cell( text_input('qty', get_post('qty', '0'), 15, 15, '',  'class="amount active" dec='.$dec), "nowrap align=right");
 
-	label_cell($_POST['units'], '', 'units');
+	label_cell(get_post('units'), '', 'units');
 
 	if ($order->fixed_asset) {
-		/* TODO: check if this is a correct way of creating a fixed item
-			that still has to be submitted in the form */ 
 		hidden('std_cost');
 		label_cell($_POST['std_cost'], "nowrap align=right ", 'std_cost_view');
 		$price = get_purchase_value($_POST['stock_id']);
 		amount_cell($price, false, '', 'initial_price');
 	} else {
-		//amount_cells(null, 'std_cost', $_POST['std_cost']);
-		amount_cells(null, 'std_cost', null, null, null, $dec2);
+		if (get_post('_qty_changed')) {
+			$Ajax->activate('items_table');
+			set_focus(input_num('qty') >= 0 ? 'std_cost' : 'AddItem');
+		}
+		if (input_num('qty') >= 0)
+		    amount_cells(null, 'std_cost', null, null, null, $dec);
+		else {
+		    hidden('std_cost');
+			label_cell($_POST['std_cost'], "nowrap align=right");
+		}
 		label_cell("&nbsp;");
 	}
 
-	if ($id != -1)
+	if ($line_no != -1)
 	{
 		button_cell('UpdateItem', _("Update"),
 				_('Confirm changes'), ICON_UPDATE);
 		button_cell('CancelItemChanges', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
 		hidden('LineNo', $line_no);
- 		set_focus('qty');
+		set_focus('qty');
 	}
 	else
 	{

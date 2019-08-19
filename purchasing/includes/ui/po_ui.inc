@@ -166,7 +166,7 @@ function display_po_header(&$order)
 	if ($order->trans_type==ST_SUPPINVOICE)
 		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 
-  	text_row(_("Supplier's Reference:"), 'supp_ref', null, 16, 15);
+  	text_row(_("Supplier's Reference:"), 'supp_ref', null, 20, 60);
 
 	if (get_company_pref('use_dimension'))
 		dimensions_list_row(_('Dimension').':', 'dimension', null, true, _('Default'), false, 1);

@@ -29,7 +29,7 @@ if (user_use_date_picker())
 //----------------------------------------------------------------------------------------
 
 if (isset($_GET['ModifyCredit']))
-	check_is_editable(ST_SUPPINVOICE, $_GET['ModifyCredit']);
+	check_is_editable(ST_SUPPCREDIT, $_GET['ModifyCredit']);
 
 //---------------------------------------------------------------------------------------------------
 
@@ -282,8 +282,7 @@ function commit_item_data($n)
     		$_POST['po_detail_item'.$n], $_POST['item_code'.$n],
     		$_POST['item_description'.$n], $_POST['qty_recd'.$n],
     		$_POST['prev_quantity_inv'.$n], input_num('This_QuantityCredited'.$n),
-    		$_POST['order_price'.$n], input_num('ChgPrice'.$n),
-    		$_POST['std_cost_unit'.$n], "");
+    		$_POST['order_price'.$n], input_num('ChgPrice'.$n));
 		reset_tax_input();
 	}
 }

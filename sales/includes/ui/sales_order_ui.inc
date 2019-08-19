@@ -490,7 +490,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		if ($order->line_items[$id]->descr_editable)
-			text_cells(null,'item_description', null, 45, 150);
+			text_cells(null,'item_description', null, 45, 50);
 		else {
 			hidden('item_description', $_POST['item_description']);
 			label_cell($_POST['item_description']);

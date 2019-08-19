@@ -70,9 +70,15 @@ function credit_link($row)
 
 	if ($page_nested)
 		return '';
-	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
-		pager_link(_("Credit This") ,
-			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT):'';
+	if ($row["Outstanding"] > 0)
+	{
+		if ($row['type'] == ST_CUSTDELIVERY)
+			return pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" 
+				.$row['trans_no'], ICON_DOC);
+		else if ($row['type'] == ST_SALESINVOICE)
+			return pager_link(_("Credit This") ,
+			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT);
+	}	
 }
 
 function edit_link($row)
@@ -203,8 +209,8 @@ $cols = array(
 	_("Amount") => array('align'=>'right', 'fun'=>'fmt_amount'), 
 	_("Balance") => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
-		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'prt_link')
 	);
 

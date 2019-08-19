@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(800, 500);
@@ -117,6 +118,12 @@ function edit_link($row)
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
+function prt_link($row)
+{
+	return print_document_link($row['id'], _("Print"), true, ST_DIMENSION, ICON_PRINT);
+}
+
+
 $sql = get_sql_for_search_dimensions($dim, $_POST['FromDate'], $_POST['ToDate'],
 	$_POST['OrderNumber'], $_POST['type_'], check_value('OpenOnly'), check_value('OverdueOnly'));
 
@@ -129,7 +136,8 @@ $cols = array(
 	_("Due Date") => array('name'=>'due_date', 'type'=>'date', 'ord'=>'asc'), 
 	_("Closed") => array('fun'=>'is_closed'),
 	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'sum_dimension'),
-	array('insert'=>true, 'fun'=>'edit_link')
+	array('insert'=>true, 'fun'=>'edit_link'),
+	array('insert'=>true, 'fun'=>'prt_link')
 );
 
 if ($outstanding_only) {

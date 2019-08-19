@@ -45,7 +45,7 @@ start_row();
 ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
 
 journal_types_list_cells(_("Type:"), "filterType");
-date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
+date_cells(_("From:"), 'FromDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'ToDate');
 
 end_row();
@@ -69,6 +69,11 @@ function systype_name($dummy, $type)
 	global $systypes_array;
 	
 	return $systypes_array[$type];
+}
+
+function person_link($row) 
+{
+    return payment_person_name($row["person_type_id"],$row["person_id"]);
 }
 
 function view_link($row) 
@@ -108,7 +113,7 @@ $cols = array(
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
- 	_("Counterparty") => array('ord' => ''),
+	_("Counterparty") => array('fun' => 'person_link'),
 	_("Supplier's Reference") => 'skip',
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),

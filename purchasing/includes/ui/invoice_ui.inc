@@ -146,14 +146,12 @@ function invoice_header(&$supp_trans)
 
 	set_global_supplier($_POST['supplier_id']);
 
-	$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
-
 	$company_currency = get_company_currency();
 
-	if ($supplier_currency != $company_currency)
+	if ($supp_trans->currency != $company_currency)
 	{
-        label_row(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
-		exchange_rate_display($company_currency, $supplier_currency, $_POST['tran_date']);
+        label_row(_("Supplier's Currency:"), "<b>" . $supp_trans->currency . "</b>");
+		exchange_rate_display($company_currency, $supp_trans->currency, $_POST['tran_date']);
 	}
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);
@@ -393,7 +391,6 @@ function display_grn_items_for_selection(&$supp_trans, $k)
            	hidden('item_description'.$n, $myrow["description"]);
            	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv']);
            	hidden('order_price'.$n, $myrow['unit_price']);
-           	hidden('std_cost_unit'.$n, $myrow['std_cost_unit']);
            	hidden('po_detail_item'.$n, $myrow['po_detail_item']);
         	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]), "nowrap align='right'");
             label_cell($myrow["item_code"]);
@@ -528,12 +525,12 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch), "nowrap align='right'");
     		if ($mode == 1)
     		{
 //				label_cell($entered_grn->id);
  				$row = get_grn_batch($grn_batch);
-				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"])); // PO
+				label_cell(get_trans_view_str(ST_PURCHORDER, $row["purch_order_no"]), "nowrap align='right'"); // PO
 			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
