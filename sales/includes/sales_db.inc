@@ -421,7 +421,6 @@ function create_recurrent_invoices($id, $from, $to, $date, $memo)
 		1.3-31.3 -  1.4
 		In example above, when end is set to 1.4 will generate additional invoice on 1.5 !
 	*/
-	log_user();
 
 	$myrow = get_recurrent_invoice($id);
 
