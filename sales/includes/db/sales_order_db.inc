@@ -637,7 +637,7 @@ function last_sales_order_detail($order, $field)
             ORDER BY order_no DESC LIMIT 1)
             ORDER BY d.id DESC LIMIT 1";        
 
-        $last_query=db_query($sql, "Retreive last order detail");
+        $last_query=db_query($sql, "Could not retrieve last order detail");
         $row = db_fetch_row($last_query);
         return $row[0];
 }
