@@ -31,7 +31,8 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 		$sql .= " ,t.$trans_ref as ref ";
 	else
 		$sql .= ", r.reference as ref";
- 	$sql .= ",t.$trans_date as trans_date";
+	if ($trans_date)
+		$sql .= ",t.$trans_date as trans_date";
  	if ($type_name)
 		$sql .= ", t.$type_name as type";
 	$sql .= " FROM $table_name t LEFT JOIN ".TB_PREF."voided v ON"
