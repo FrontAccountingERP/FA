@@ -341,7 +341,7 @@ class FrontReport extends Cpdf
 		$str = $this->fiscal_year;
 		$this->Text($titleCol, $str, $companyCol);
 		$this->Text($companyCol, $this->user);
-		for ($i = 1; $i < count($this->params); $i++)
+		for ($i = 1; $i < count_array($this->params); $i++)
 		{
 			if ($this->params[$i]['from'] != '')
 			{
@@ -376,7 +376,7 @@ class FrontReport extends Cpdf
 				$this->TextCol2($i, $i + 1,	$this->headers2[$i]);
 			$this->NewLine();
 		}
-		$count = count($this->headers);
+		$count = count_array($this->headers);
 		for ($i = 0; $i < $count; $i++)
 			$this->TextCol($i, $i + 1, $this->headers[$i]);
 		$this->Font();
