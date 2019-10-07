@@ -26,6 +26,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 
 if (isset($_GET['debtor_no'])) 
 {
@@ -304,12 +305,12 @@ function customer_settings($selected_id)
 	if (@$_REQUEST['popup']) hidden('popup', 1);
 	if (!$selected_id)
 	{
-		submit_center('submit', _("Add New Customer"), true, '', 'default');
+		submit_center('submit', _("Add New Customer"), true, '', false);
 	} 
 	else 
 	{
 		submit_center_first('submit', _("Update Customer"), 
-		  _('Update customer data'), $page_nested ? true : 'default');
+		  _('Update customer data'), $page_nested ? true : false);
 		submit_return('select', $selected_id, _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"), 
 		  _('Delete customer data if have been never used'), true);
@@ -321,7 +322,7 @@ function customer_settings($selected_id)
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
  
-start_form();
+start_form(true);
 
 if (db_has_customers()) 
 {
@@ -352,6 +353,7 @@ tabbed_content_start('tabs', array(
 		'contacts' => array(_('&Contacts'), $selected_id),
 		'transactions' => array(_('&Transactions'), (user_check_access('SA_SALESTRANSVIEW') ? $selected_id : null)),
 		'orders' => array(_('Sales &Orders'), (user_check_access('SA_SALESTRANSVIEW') ? $selected_id : null)),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $selected_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -371,6 +373,11 @@ tabbed_content_start('tabs', array(
 			$_GET['customer_id'] = $selected_id;
 			include_once($path_to_root."/sales/inquiry/sales_orders_view.php");
 			break;
+		case 'attachments':
+			$_GET['trans_no'] = $selected_id;
+			$_GET['type_no']= ST_CUSTOMER;
+			$attachments = new attachments('attachment', $selected_id, 'customers');
+			$attachments->show();
 	};
 br();
 tabbed_content_end();

@@ -13,6 +13,7 @@ $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -279,19 +280,19 @@ function supplier_settings(&$supplier_id)
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
-		  _('Update supplier data'), $page_nested ? true : 'default');
+		  _('Update supplier data'), $page_nested ? true : 'false');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);
 	}
 	else 
 	{
-		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
+		submit_center('submit', _("Add New Supplier Details"), true, '', 'false');
 	}
 	div_end();
 }
 
-start_form();
+start_form(true);
 
 if (db_has_suppliers()) 
 {
@@ -320,6 +321,7 @@ tabbed_content_start('tabs', array(
 		'contacts' => array(_('&Contacts'), $supplier_id),
 		'transactions' => array(_('&Transactions'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
 		'orders' => array(_('Purchase &Orders'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $supplier_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -339,6 +341,11 @@ tabbed_content_start('tabs', array(
 			$_GET['supplier_id'] = $supplier_id;
 			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
 			break;
+		case 'attachments':
+			$_GET['trans_no'] = $supplier_id;
+			$_GET['type_no']= ST_SUPPLIER;
+			$attachments = new attachments('attachment', $supplier_id, 'suppliers');
+			$attachments->show();
 	};
 br();
 tabbed_content_end();

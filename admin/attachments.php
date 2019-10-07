@@ -58,7 +58,7 @@ if ($download_id != -1)
 			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
     		header("Content-type: ".$type);
 	    	header('Content-Length: '.$row['filesize']);
-    		header('Content-Disposition: attachment; filename='.$row['filename']);
+    		header('Content-Disposition: attachment; filename="'.$row['filename'].'"');
     		echo file_get_contents(company_path()."/attachments/".$row['unique_name']);
 	    	exit();
 		}
@@ -79,6 +79,13 @@ if (isset($_GET['trans_no']))
 
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
+	
+	if($_POST['filterType'] == ST_CUSTOMER){
+		$_POST['trans_no'] = $_POST['customer_id'];
+	}elseif($_POST['filterType'] == ST_SUPPLIER){
+		$_POST['trans_no'] = $_POST['supplier_id'];
+	}
+
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
 	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
@@ -171,6 +178,12 @@ function viewing_controls()
 	if (list_updated('filterType'))
 		$selected_id = -1;
 
+	if(get_post('filterType') == ST_CUSTOMER ){
+		customer_list_cells(_("Select a customer: "), 'customer_id', null, _('Select customer'), true, true);
+	} elseif(get_post('filterType') == ST_SUPPLIER){
+		supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,  _('Select supplier'), true,true);
+	}
+
 	end_row();
     end_table(1);
 
@@ -201,9 +214,9 @@ function delete_link($row)
   	return button('Delete'.$row["id"], _("Delete"), _("Delete"), ICON_DELETE);
 }
 
-function display_rows($type)
+function display_rows($type, $id_no)
 {
-	$sql = get_sql_for_attached_documents($type);
+	$sql = get_sql_for_attached_documents($type, $id_no);
 	$cols = array(
 		_("#") => array('fun'=>'trans_view', 'ord'=>''),
 	    _("Description") => array('name'=>'description'),
@@ -228,8 +241,8 @@ function display_rows($type)
 start_form(true);
 
 viewing_controls();
-
-display_rows($_POST['filterType']);
+$id_no = ($_POST['filterType'] == ST_CUSTOMER) ? get_post('customer_id') : get_post('supplier_id');
+display_rows($_POST['filterType'], $id_no);
 
 br(2);
 
@@ -248,8 +261,12 @@ if ($selected_id != -1)
 	}	
 	hidden('selected_id', $selected_id);
 }
-else
-	text_row_ex(_("Transaction #").':', 'trans_no', 10);
+else {
+	if( $id_no == 0 )
+		text_row_ex(_("Transaction #").':', 'trans_no', 10);
+	else
+		hidden('trans_no', $id_no);
+}
 text_row_ex(_("Description").':', 'description', 40);
 file_row(_("Attached File") . ":", 'filename', 'filename');
 
