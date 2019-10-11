@@ -13,7 +13,7 @@ $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/includes/ui/attachment.inc");
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -24,6 +24,7 @@ page(_($help_context = "Suppliers"), false, false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -280,14 +281,14 @@ function supplier_settings(&$supplier_id)
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
-		  _('Update supplier data'), $page_nested ? true : 'false');
+		  _('Update supplier data'), $page_nested ? true : false);
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);
 	}
 	else 
 	{
-		submit_center('submit', _("Add New Supplier Details"), true, '', 'false');
+		submit_center('submit', _("Add New Supplier Details"), true, '', false);
 	}
 	div_end();
 }
