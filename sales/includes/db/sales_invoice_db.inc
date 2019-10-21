@@ -193,21 +193,22 @@ function write_sales_invoice(&$invoice)
 		if ($invoice->payment_terms['cash_sale'] && $invoice->pos['pos_account']) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
+			if ($amount != 0) {
+				// to use debtors.pmt_discount on cash sale:
+				// extend invoice entry page with final amount after discount 
+				// and change line below.
+				$discount = 0; // $invoice->cash_discount*$amount;
+				$pmtno = write_customer_payment(0, $invoice->customer_id, 
+					$invoice->Branch, $invoice->pos['pos_account'], $date_,
+					$Refs->get_next(ST_CUSTPAYMENT, null, array('customer' => $invoice->customer_id,
+						'branch' => $invoice->Branch, 'date' => $date_)),
+					$amount-$discount, $discount,
+					$invoice->pos['pos_name'].' #'.$invoice_no);
+				add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no, $invoice->customer_id, $date_);
 
-			// to use debtors.pmt_discount on cash sale:
-			// extend invoice entry page with final amount after discount 
-			// and change line below.
-			$discount = 0; // $invoice->cash_discount*$amount;
-			$pmtno = write_customer_payment(0, $invoice->customer_id, 
-				$invoice->Branch, $invoice->pos['pos_account'], $date_,
-				$Refs->get_next(ST_CUSTPAYMENT, null, array('customer' => $invoice->customer_id,
-					'branch' => $invoice->Branch, 'date' => $date_)),
-				$amount-$discount, $discount,
-				$invoice->pos['pos_name'].' #'.$invoice_no);
-			add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no, $invoice->customer_id, $date_);
-
-			update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $invoice->customer_id);
-			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $invoice->customer_id);
+				update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $invoice->customer_id);
+				update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $invoice->customer_id);
+			}
 		}
 	}
 	reallocate_payments($invoice_no, ST_SALESINVOICE, $date_, $to_allocate, $allocs, $invoice->customer_id);
