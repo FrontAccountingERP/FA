@@ -389,7 +389,7 @@ class FrontReport extends Cpdf
 	*/
 	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype, $contacts)
 	{
-
+		$this->pageNumber = 0;
 		$this->formData = array();
 		$datnames = array( 
 		'myrow' => array('ord_date', 'date_', 'tran_date', 
