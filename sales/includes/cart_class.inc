@@ -565,7 +565,6 @@ class Cart
 		$total = $this->get_items_total() + $this->freight_cost;
 		$dec = user_price_dec();
 		if (!$this->tax_included ) {
-			$total += $this->get_shipping_tax();
 			$taxes = $this->get_taxes();
 			foreach($taxes as $tax)
 				$total += round($tax['Value'], $dec);
