@@ -195,7 +195,7 @@ function customer_top($today, $limit=10, $width="33", &$pg=null)
 	while ($myrow = db_fetch($result))
 	{
 		alt_table_row_color($k);
-		$name = $myrow["debtor_no"]." ".$myrow["name"];
+		$name = $myrow["debtor_no"]." ".htmlspecialchars_decode($myrow["name"]);
 		label_cell($name);
 		amount_cell($myrow['total']);
 		if ($pg != null)
@@ -232,7 +232,7 @@ function supplier_top($today, $limit=10, $width="33", &$pg=null)
 	while ($myrow = db_fetch($result))
 	{
 		alt_table_row_color($k);
-		$name = $myrow["supplier_id"]." ".$myrow["supp_name"];
+		$name = $myrow["supplier_id"]." ".htmlspecialchars_decode($myrow["supp_name"]);
 		label_cell($name);
 		amount_cell($myrow['total']);
 		if ($pg != null)
