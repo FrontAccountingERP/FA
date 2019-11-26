@@ -293,11 +293,11 @@ class Cart
 		{
 			if (!empty($SysPrefs->prefs['ref_no_auto_increase']))
 				$this->reference = $Refs->get_next($this->trans_type, null, array('date' => Today()));
-			if (!is_new_reference($this->reference, $this->trans_type))	
+			else	
 			{
 				commit_transaction();
 				return -1;
-			}	
+			}
 		}
 		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY) && !$this->is_prepaid()) {
 			// this is direct document - first add parent
