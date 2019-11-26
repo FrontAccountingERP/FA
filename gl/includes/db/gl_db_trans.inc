@@ -625,8 +625,8 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
          LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=gl.type_no AND gl.type=".ST_SUPPRECEIVE."
          LEFT JOIN ".TB_PREF."bank_trans bt ON bt.type=gl.type AND bt.trans_no=gl.type_no AND bt.amount!=0
                  AND (bt.person_id != '' AND !ISNULL(bt.person_id))
-         LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no
-         LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no
+         LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no AND (gl.type_no != 0 or gl.person_id=dt.debtor_no) AND gl.person_type_id=2
+         LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no AND (gl.type !=0 or gl.person_id=st.supplier_id) AND gl.person_type_id=3
          WHERE gl.tran_date >= '" . date2sql($from) . "'
         AND gl.tran_date <= '" . date2sql($to) . "'
         AND gl.amount!=0";
