@@ -310,9 +310,9 @@ function show_allocatable($show_totals) {
 	    		$un_allocated = round((abs($alloc_item->amount) - $alloc_item->amount_allocated), 6);
 	    		amount_cell($un_allocated, false,'', 'maxval'.$id);
     			amount_cells(null, "amount" . $id);//, input_num('amount' . $id));
-				label_cell("<a href='#' name=Alloc$id onclick='allocate_all(this.name.substr(5));return true;'>"
+				label_cell("<a href='javascript:void(0)' name=Alloc$id onclick='allocate_all(this.name.substr(5));return true;'>"
 					 . _("All") . "</a>");
-				label_cell("<a href='#' name=DeAll$id onclick='allocate_none(this.name.substr(5));return true;'>"
+				label_cell("<a href='javascript:void(0)' name=DeAll$id onclick='allocate_none(this.name.substr(5));return true;'>"
 					 . _("None") . "</a>".hidden("un_allocated" . $id, 
 					 price_format($un_allocated), false));
 				end_row();
