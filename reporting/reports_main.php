@@ -360,7 +360,7 @@ if ($dim > 0)
 }
 $reports->addReportClass(_('Banking'), RC_BANKING);
 	$reports->addReport(RC_BANKING,  601, _('Bank &Statement'),
-	array(	_('Bank Accounts') => 'BANK_ACCOUNTS',
+	array(	_('Bank Accounts') => 'BANK_ACCOUNTS_NO_FILTER',
 			_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
 			_('Zero values') => 'YES_NO',

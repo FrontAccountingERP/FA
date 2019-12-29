@@ -276,9 +276,13 @@ class BoxReports
 				case 'GL_ACCOUNTS':
 					return gl_all_accounts_list($name);
 
+				case 'BANK_ACCOUNTS_NO_FILTER':
 				case 'BANK_ACCOUNTS':
-					return bank_accounts_list($name);
-					
+					if ($type == 'BANK_ACCOUNTS_NO_FILTER')
+						return bank_accounts_list($name, null, false, _("All"));
+					else
+						return bank_accounts_list($name);
+
 				case 'DIMENSION':
 					return dimensions_list($name, null, false, ' ', false, true, 0);
 					
