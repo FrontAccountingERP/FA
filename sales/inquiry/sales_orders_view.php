@@ -254,7 +254,7 @@ $sql = get_sql_for_sales_orders_view($trans_type, get_post('OrderNumber'), get_p
 
 if ($trans_type == ST_SALESORDER)
 	$cols = array(
-		_("Order #") => array('fun'=>'view_link', 'align'=>'right'),
+		_("Order #") => array('fun'=>'view_link', 'align'=>'right', 'ord' =>''),
 		_("Ref") => array('type' => 'sorder.reference', 'ord' => '') ,
 		_("Customer") => array('type' => 'debtor.name' , 'ord' => '') ,
 		_("Branch"), 
@@ -268,7 +268,7 @@ if ($trans_type == ST_SALESORDER)
 	);
 else
 	$cols = array(
-		_("Quote #") => array('fun'=>'view_link', 'align'=>'right'),
+		_("Quote #") => array('fun'=>'view_link', 'align'=>'right', 'ord' => ''),
 		_("Ref"),
 		_("Customer"),
 		_("Branch"), 

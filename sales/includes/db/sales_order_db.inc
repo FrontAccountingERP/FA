@@ -557,7 +557,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 					sorder.branch_code,
 					sorder.customer_ref,
 					sorder.ord_date,
-					sorder.deliver_to";
+					sorder.deliver_to
+				ORDER BY sorder.order_no DESC";
 	return $sql;
 }
 
