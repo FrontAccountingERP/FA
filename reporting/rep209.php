@@ -176,10 +176,7 @@ function print_po()
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			if ($SysPrefs->suppress_tax_rates() == 1)
-				$tax_type_name = $tax_item['tax_type_name'];
-			else
-				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
+			$tax_type_name = $tax_item['tax_type_name'];
 
 			if ($myrow['tax_included'])
 			{
