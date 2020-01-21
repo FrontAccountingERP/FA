@@ -20,7 +20,7 @@ if ($SysPrefs->use_popup_windows)
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Suppliers"), false, false, "", $js);
+page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");

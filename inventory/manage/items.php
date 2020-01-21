@@ -32,7 +32,7 @@ else {
 }
 
 
-page($_SESSION['page_title'], false, false, "", $js);
+page($_SESSION['page_title'], @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
