@@ -643,7 +643,7 @@ end_form();
 
 //------------------------------------------------------------------------------------
 
-end_page();
+end_page(@$_REQUEST['popup']);
 
 function generateBarcode() {
 	$tmpBarcodeID = "";
