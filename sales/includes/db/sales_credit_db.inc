@@ -211,7 +211,8 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	$total = 0;
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 	$unit_cost = get_unit_cost($order_line->stock_id);
-	if ($unit_cost != 0) {
+
+	if ($stock_gl_codes['mb_flag'] != 'D' && $unit_cost != 0) {
 		/*first the cost of sales entry*/
 
 		$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
