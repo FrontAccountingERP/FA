@@ -1602,6 +1602,7 @@ INSERT INTO `0_sys_prefs` VALUES
 ('print_invoice_no','glsetup.sales', 'tinyint', 1, '0'),
 ('allow_negative_prices','glsetup.inventory', 'tinyint', 1, '1'),
 ('print_item_images_on_quote','glsetup.inventory', 'tinyint', 1, '0'),
+('tax_bank_payments','setup.company', 'tinyint', 1, '0'),
 ('suppress_tax_rates','setup.company', 'tinyint', 1, '0'),
 ('company_logo_report','setup.company', 'tinyint', 1, '0'),
 ('barcodes_on_stock','setup.company', 'tinyint', 1, '0'),

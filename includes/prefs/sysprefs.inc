@@ -175,6 +175,11 @@ class sys_prefs
 		return $this->prefs['suppress_tax_rates'];
 	}
 
+	function tax_bank_payments() 
+	{
+		return $this->prefs['tax_bank_payments'];
+	}
+
 	function backup_dir($comp=null)
 	{
 		if (!isset($comp))
