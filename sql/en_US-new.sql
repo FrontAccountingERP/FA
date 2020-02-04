@@ -1,6 +1,6 @@
 -- MySQL dump of database 'en_US-new' on host 'localhost'
--- Backup Date and Time: 2019-01-21 11:16
--- Built by FrontAccounting 2.4.6
+-- Backup Date and Time: 2020-01-21 11:16
+-- Built by FrontAccounting 2.4.7
 -- http://frontaccounting.com
 -- Company: Training Co.
 -- User: Administrator
@@ -636,7 +636,7 @@ CREATE TABLE `0_fiscal_year` (
 -- Data of table `0_fiscal_year` --
 
 INSERT INTO `0_fiscal_year` VALUES
-('1', '2018-01-01', '2018-12-31', '1');
+('1', '2019-01-01', '2019-12-31', '1');
 
 -- Structure of table `0_gl_trans` --
 
@@ -1781,7 +1781,7 @@ CREATE TABLE `0_users` (
 -- Data of table `0_users` --
 
 INSERT INTO `0_users` VALUES
-('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@example.com', 'C', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2018-05-07 13:58:33', '10', '1', '1', '1', '1', '0', 'orders', '30', '0', '1', '0', '0', '0');
+('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@example.com', 'C', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2019-05-07 13:58:33', '10', '1', '1', '1', '1', '0', 'orders', '30', '0', '1', '0', '0', '0');
 
 -- Structure of table `0_voided` --
 
