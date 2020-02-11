@@ -371,9 +371,29 @@ function check_allocations()
 			return false;
 		 }
 
-		 $_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
+		if ($_SESSION['alloc']->person_type == PT_CUSTOMER) {
+			if ($_SESSION['alloc']->allocs[$counter]->type == ST_SALESORDER)
+				$trans = get_sales_order_header($_SESSION['alloc']->allocs[$counter]->type_no, $_SESSION['alloc']->allocs[$counter]->type);
+			else
+				$trans = get_customer_trans($_SESSION['alloc']->allocs[$counter]->type_no, $_SESSION['alloc']->allocs[$counter]->type);
 
-		 $total_allocated += input_num('amount' . $counter);
+			if ($trans['debtor_no'] != $_SESSION['alloc']->person_id) {
+				display_error(_("Allocated transaction allocated is not related to company selected."));
+				set_focus('amount'.$counter);
+				return false;
+			}
+		} elseif ($_SESSION['alloc']->person_type == PT_SUPPLIER) {
+			$trans = get_supp_trans($_SESSION['alloc']->allocs[$counter]->type_no, $_SESSION['alloc']->allocs[$counter]->type);
+			if ($trans['supplier_id'] != $_SESSION['alloc']->person_id) {
+				display_error(_("Allocated transaction allocated is not related to company selected."));
+				set_focus('amount'.$counter);
+				return false;
+			}
+		}
+
+		$_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
+
+		$total_allocated += input_num('amount' . $counter);
 	}
 
 	$amount = abs($_SESSION['alloc']->amount);
