@@ -296,7 +296,7 @@ function print_annual_expense_breakdown()
  	elseif (user_pagesize() == 'A4')
  	{
  		// Portrait, so adjust columns for A4, 16.7 pts narrower than Letter
- 		for ($i = 2; $i <= 16; $i++)
+ 		for ($i = 2; $i < sizeof($cols); $i++)
  			$cols[$i] -= 17;
  	}
 
