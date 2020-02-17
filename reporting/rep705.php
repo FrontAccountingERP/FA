@@ -110,7 +110,7 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 
 		$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
 			$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
-			$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12'], $bal[pertotal]);
+			$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12'], $bal['pertotal']);
 		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
