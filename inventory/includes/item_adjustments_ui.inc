@@ -50,13 +50,13 @@ function display_adjustment_items($title, &$order)
 
 	display_heading($title);
     div_start('items_table');
-	start_table(TABLESTYLE, "width='80%'");
+	start_table(TABLESTYLE, "width='90%'");
 
 	if ($order->fixed_asset) {
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Initial Value"), "");
 	} else {
-		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		$th = array(_("Item Code"), _("Item Description"), _("QOH"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Total"), "");
 		if ( count($order->line_items)) $th[] = '';
 	}
@@ -85,7 +85,13 @@ function display_adjustment_items($title, &$order)
 				view_stock_status_cell($stock_item->stock_id);
 
 			label_cell($stock_item->item_description);
-    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+			$dec = get_qty_dec($stock_item->stock_id);
+    		if (!$order->fixed_asset)
+			{
+				$qoh = get_qoh_on_date($stock_item->stock_id, $_POST['StockLocation']);
+				qty_cell($qoh, false, $dec);
+			}
+    		qty_cell($stock_item->quantity, false, $dec);
 			label_cell($stock_item->units);
 			amount_decimal_cell($stock_item->standard_cost);
 
@@ -116,8 +122,8 @@ function display_adjustment_items($title, &$order)
 
 	if ($id == -1)
 		adjustment_edit_item_controls($order);
-
-	label_row(_("Total"), number_format2($total,user_price_dec()), "align=right colspan=5", "align=right", 2);
+	$row = !$order->fixed_asset ? 6 : 5;
+	label_row(_("Total"), number_format2($total,user_price_dec()), "align=right colspan=$row", "align=right", 2);
 
     end_table();
 
@@ -175,9 +181,11 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	if ($order->fixed_asset) {
 		hidden('qty', -1);
 		qty_cell(1, false, 0);
-	} else
+	} else {
+		$qoh = get_qoh_on_date(get_post('stock_id'), $_POST['StockLocation']);
+		qty_cell($qoh, false, $dec);
 		label_cell( text_input('qty', get_post('qty', '0'), 15, 15, '',  'class="amount active" dec='.$dec), "nowrap align=right");
-
+	}
 	label_cell(get_post('units'), '', 'units');
 
 	if ($order->fixed_asset) {
