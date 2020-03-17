@@ -134,7 +134,7 @@ class allocation
 				$this->amount = $trans["Total"];
 			}
 		}
-	/* Now populate the array of possible (and previous actual) allocations 
+		/* Now populate the array of possible (and previous actual) allocations 
 		for this customer/supplier. First get the transactions that have 
 		outstanding balances ie Total-alloc >0 */
 
@@ -158,9 +158,9 @@ class allocation
 		}
 		if ($this->trans_no == 0) return; // this is new payment
 
-	/* Now get trans that might have previously been allocated to by this trans
-	NB existing entries where still some of the trans outstanding entered from
-	above logic will be overwritten with the prev alloc detail below */
+		/* Now get trans that might have previously been allocated to by this trans
+		NB existing entries where still some of the trans outstanding entered from
+		above logic will be overwritten with the prev alloc detail below */
 
 		if ($this->person_type==PT_SUPPLIER)
 			$trans_items = get_allocatable_to_supp_transactions($this->person_id, 
@@ -169,13 +169,34 @@ class allocation
 		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id, 
 				$this->trans_no, $this->type);
 
+		$amount = $this->amount;
 		while ($myrow = db_fetch($trans_items))
 		{
+			$amount -= $myrow["Total"];
 			$this->add_or_update_item ($myrow["type"], $myrow["trans_no"],
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
 				$myrow["Total"],
 				$myrow["alloc"] - $myrow["amt"], $myrow["amt"], $myrow["reference"]);
+		}
+
+		/* Finally, if there any unallocated money remaining, assign the unallocated portion to
+		the earliest transactions. This makes the javascript All/None keys consistent
+		with the transaction amount. */
+
+		if ($amount > 0) {
+			foreach ($this->allocs as $alloc_item) {
+				$allocatable = $alloc_item->amount - $alloc_item->amount_allocated;
+				if ($allocatable > 0) {
+					if ($amount >= $allocatable) {
+						$alloc_item->current_allocated = $allocatable;
+						$amount -= $allocatable;
+					} else {
+						$alloc_item->current_allocated += $amount;
+						break;
+					}
+				}
+			}
 		}
 	}
 	//
