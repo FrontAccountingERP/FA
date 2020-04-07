@@ -196,7 +196,7 @@ $selected_kit = $_POST['item_code'];
 if (get_post('item_code') == '') {
 // New sales kit entry
 	start_table(TABLESTYLE2);
-	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
+	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 20);
 } else
 {
 	 // Kit selected so display bom or edit component
