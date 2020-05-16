@@ -27,12 +27,15 @@ page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "",
 
 function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to, $memo)
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 
 	update_last_sent_recurrent_invoice($tmpl_no, $to);
 
 	$doc = new Cart(ST_SALESORDER, array($order_no));
-
+	
+	if (!empty($SysPrefs->prefs['dim_on_recurrent_invoice']))
+		$doc->trans_type = ST_SALESINVOICE;
+	
 	get_customer_details_to_order($doc, $customer_id, $branch_id);
 
 	$doc->trans_type = ST_SALESORDER;
