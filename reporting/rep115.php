@@ -232,7 +232,7 @@ function print_customer_balances()
             $grandtotal[$i] += $init[$i];
         }
 
-        if (db_num_rows($res) == 0 && !no_zeros) 
+        if (db_num_rows($res) == 0 && !$no_zeros) 
         {
 		    $rep->TextCol(0, 2, $myrow['name']);
             $rep->AmountCol(3, 4, $init[3], $dec);
