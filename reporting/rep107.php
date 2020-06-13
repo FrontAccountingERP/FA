@@ -163,6 +163,11 @@ function print_invoices()
 				$rep->TextCol($c++, $c,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines($c++, $c, $myrow2['StockDescription'], -2);
+				if (!empty($SysPrefs->prefs['long_description_invoice']) && !empty($myrow2['StockLongDescription']))
+				{
+					$c--;
+					$rep->TextColLines($c++, $c, $myrow2['StockLongDescription'], -2);
+				}
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
 				if ($Net != 0.0 || !is_service($myrow2['mb_flag']) || !$SysPrefs->no_zero_lines_amount())
