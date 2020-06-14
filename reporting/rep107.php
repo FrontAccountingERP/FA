@@ -47,7 +47,7 @@ function get_invoice_range($from, $to, $currency=false)
  		." AND trans.trans_no BETWEEN ".db_escape($from)." AND ".db_escape($to);			
 
 	if ($currency !== false)
-		" AND cust.curr_code=".db_escape($currency);
+		$sql .= " AND cust.curr_code=".db_escape($currency);
 
 	$sql .= " ORDER BY trans.tran_date, trans.$ref";
 
