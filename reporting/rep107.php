@@ -25,19 +25,31 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
-function get_invoice_range($from, $to)
+function get_invoice_range($from, $to, $currency=false)
 {
 	global $SysPrefs;
 
 	$ref = ($SysPrefs->print_invoice_no() == 1 ? "trans_no" : "reference");
 
-	$sql = "SELECT trans.trans_no, trans.reference
-		FROM ".TB_PREF."debtor_trans trans 
-			LEFT JOIN ".TB_PREF."voided voided ON trans.type=voided.type AND trans.trans_no=voided.id
-		WHERE trans.type=".ST_SALESINVOICE
-			." AND ISNULL(voided.id)"
- 			." AND trans.trans_no BETWEEN ".db_escape($from)." AND ".db_escape($to)			
-		." ORDER BY trans.tran_date, trans.$ref";
+	$sql = "SELECT trans.trans_no, trans.reference";
+
+//  if($currency !== false)
+//		$sql .= ", cust.curr_code";
+
+	$sql .= " FROM ".TB_PREF."debtor_trans trans 
+			LEFT JOIN ".TB_PREF."voided voided ON trans.type=voided.type AND trans.trans_no=voided.id";
+
+	if ($currency !== false)
+		$sql .= " LEFT JOIN ".TB_PREF."debtors_master cust ON trans.debtor_no=cust.debtor_no";
+
+	$sql .= " WHERE trans.type=".ST_SALESINVOICE
+		." AND ISNULL(voided.id)"
+ 		." AND trans.trans_no BETWEEN ".db_escape($from)." AND ".db_escape($to);			
+
+	if ($currency !== false)
+		" AND cust.curr_code=".db_escape($currency);
+
+	$sql .= " ORDER BY trans.tran_date, trans.$ref";
 
 	return db_query($sql, "Cant retrieve invoice range");
 }
@@ -88,7 +100,12 @@ function print_invoices()
 	if ($orientation == 'L')
 		recalculate_cols($cols);
 
-	$range = get_invoice_range($from, $to);
+	$range = Array();
+	if ($currency == ALL_TEXT)
+		$range = get_invoice_range($from, $to);
+	else
+		$range = get_invoice_range($from, $to, $currency);
+
 	while($row = db_fetch($range))
 	{
 			if (!exists_customer_trans(ST_SALESINVOICE, $row['trans_no']))
@@ -99,9 +116,10 @@ function print_invoices()
 			if ($customer && $myrow['debtor_no'] != $customer) {
 				continue;
 			}
-			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
-				continue;
-			}
+//			if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
+//				continue;
+//			}
+			
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 
