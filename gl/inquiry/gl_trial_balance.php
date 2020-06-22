@@ -60,6 +60,7 @@ function gl_inquiry_controls()
 		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 	check_cells(_("No zero values"), 'NoZero', null);
 	check_cells(_("Only balances"), 'Balance', null);
+	check_cells(_("Group totals only"), 'GroupTotalOnly', null);
 	submit_cells('Show',_("Show"),'','', 'default');
 	end_row();
     end_table();
@@ -100,9 +101,12 @@ function display_trial_balance($type, $typename)
 		//Print Type Title if it has atleast one non-zero account
 		if (!$printtitle)
 		{
-			start_row("class='inquirybg' style='font-weight:bold'");
-			label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
-			end_row();
+			if (!check_value('GroupTotalOnly'))
+			{
+				start_row("class='inquirybg' style='font-weight:bold'");
+				label_cell(_("Group")." - ".$type ." - ".$typename, "colspan=8");
+				end_row();
+			}
 			$printtitle = 1;
 		}
 
@@ -120,27 +124,35 @@ function display_trial_balance($type, $typename)
 		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
 		if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
-		alt_table_row_color($k);
+		if (!check_value('GroupTotalOnly'))
+		{
+			alt_table_row_color($k);
 
-		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "&Dimension=" . $_POST["Dimension"] . "&Dimension2=" . $_POST["Dimension2"] . "'>" . $account["account_code"] . "</a>";
+			$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "&Dimension=" . $_POST["Dimension"] . "&Dimension2=" . $_POST["Dimension2"] . "'>" . $account["account_code"] . "</a>";
 
-		label_cell($url);
-		label_cell($account["account_name"]);
+			label_cell($url);
+			label_cell($account["account_name"]);
+		}
 		if (check_value('Balance'))
 		{
-			display_debit_or_credit_cells($prev['balance']);
-			display_debit_or_credit_cells($curr['balance']);
-			display_debit_or_credit_cells($tot['balance']);
-
+			if (!check_value('GroupTotalOnly'))
+			{
+				display_debit_or_credit_cells($prev['balance']);
+				display_debit_or_credit_cells($curr['balance']);
+				display_debit_or_credit_cells($tot['balance']);
+			}
 		}
 		else
 		{
-			amount_cell($prev['debit']-$offset);
-			amount_cell($prev['credit']-$offset);
-			amount_cell($curr['debit']);
-			amount_cell($curr['credit']);
-			amount_cell($tot['debit']-$offset);
-			amount_cell($tot['credit']-$offset);
+			if (!check_value('GroupTotalOnly'))
+			{
+				amount_cell($prev['debit']-$offset);
+				amount_cell($prev['credit']-$offset);
+				amount_cell($curr['debit']);
+				amount_cell($curr['credit']);
+				amount_cell($tot['debit']-$offset);
+				amount_cell($tot['credit']-$offset);
+			}
 			$pdeb += $prev['debit'];
 			$pcre += $prev['credit'];
 			$cdeb += $curr['debit'];
@@ -171,7 +183,11 @@ function display_trial_balance($type, $typename)
 	}
 
 	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell(_("Total") ." - ".$typename, "colspan=2");
+	if (!check_value('GroupTotalOnly'))
+		label_cell(_("Total") ." - ".$typename, "colspan=2");
+	else
+		label_cell(" - ".$typename, "colspan=2");
+
 
 	if (!check_value('Balance'))
 	{
