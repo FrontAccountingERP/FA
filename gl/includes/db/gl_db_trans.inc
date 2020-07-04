@@ -462,7 +462,7 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 	// guess tax register if not set
 	if (!isset($reg_type))
 		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_OUTPUT
-				: in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_INPUT : null;
+				: (in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_INPUT : null);
 
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,

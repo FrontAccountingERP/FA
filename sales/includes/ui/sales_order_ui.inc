@@ -625,7 +625,7 @@ function display_delivery_details(&$order)
 
 		date_row($delname, 'delivery_date',
 			$order->trans_type==ST_SALESORDER ?  _('Enter requested day of delivery') 
-				: $order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : '');
+				: ($order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : ''));
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 50, 60,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 
