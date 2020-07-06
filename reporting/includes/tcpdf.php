@@ -1124,7 +1124,8 @@ if (!class_exists('TCPDF')) {
 				mb_internal_encoding("ASCII");
 			}
 			// set language direction
-			$this->rtl = $this->l['a_meta_dir']=='rtl' ? true : false;
+
+			$this->rtl = @$this->l['a_meta_dir']=='rtl' ? true : false;
 			$this->tmprtl = false;
 			//Some checks
 			$this->_dochecks();
@@ -3520,6 +3521,8 @@ if (!class_exists('TCPDF')) {
 		function unichr($c) {
 			if (!$this->isunicode) {
 				return chr($c);
+			} elseif ($c == '') {
+				return '';
 			} elseif ($c <= 0x7F) {
 				// one byte
 				return chr($c);

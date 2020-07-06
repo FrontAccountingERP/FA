@@ -158,7 +158,7 @@ $opts = array(		// default options
 	// sql completion
 	if (count($opts['where'])) {
 		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
-		$where .= '('. implode($opts['where'], ' AND ') . ')';
+		$where .= '('. implode(' AND ', $opts['where']) . ')';
 		$group_pos = strpos($sql, 'GROUP BY');
 		if ($group_pos) {
 			$group = substr($sql, $group_pos);
