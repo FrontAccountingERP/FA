@@ -151,16 +151,16 @@ function handle_submit($id)
 			$dflt_lang = $_POST['code'];
 	}
 	
-	$installed_languages[$id]['code'] = $_POST['code'];
+	$installed_languages[$id]['code'] = clean_file_name($_POST['code']);
 	$installed_languages[$id]['name'] = $_POST['name'];
-	$installed_languages[$id]['path'] = 'lang/' . $_POST['code'];
+	$installed_languages[$id]['path'] = 'lang/' . clean_file_name(get_post('code'));
 	$installed_languages[$id]['encoding'] = $_POST['encoding'];
 	$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
 	$installed_languages[$id]['package'] = '';
 	$installed_languages[$id]['version'] = '';
 	if (!write_lang())
 		return false;
-	$directory = $path_to_root . "/lang/" . $_POST['code'];
+	$directory = $path_to_root . "/lang/" . clean_file_name(get_post('code'));
 	if (!file_exists($directory))
 	{
 		mkdir($directory);
