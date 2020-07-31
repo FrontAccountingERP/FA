@@ -66,7 +66,7 @@ class supp_trans
 			read_supp_invoice($trans_no, $trans_type, $this);
 			if ($trans_type == ST_SUPPCREDIT)
 			{
-				$this->src_docs = find_src_invoices($trans_no);
+                $this->src_docs = find_src_invoices($this);
 			}
 			read_supplier_details_to_trans($this, $this->supplier_id);
 		}

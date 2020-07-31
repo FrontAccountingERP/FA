@@ -28,8 +28,11 @@ if (user_use_date_picker())
 
 //----------------------------------------------------------------------------------------
 
-if (isset($_GET['ModifyCredit']))
-	check_is_editable(ST_SUPPCREDIT, $_GET['ModifyCredit']);
+if (isset($_GET['ModifyCredit'])) {
+    check_is_editable(ST_SUPPCREDIT, $_GET['ModifyCredit']);
+    $_SESSION['page_title'] = sprintf( _("Modifying Supplier Credit # %d"), $_GET['ModifyCredit']);
+    $_SESSION['supp_trans'] = new supp_trans(ST_SUPPCREDIT, $_GET['ModifyCredit']);
+}
 
 //---------------------------------------------------------------------------------------------------
 
