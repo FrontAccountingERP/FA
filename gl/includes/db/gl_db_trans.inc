@@ -605,13 +605,13 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
         gl.tran_date,
         gl.type as trans_type,
         gl.type_no as trans_no,
-        IFNULL(gl.person_id, IFNULL(st.supplier_id, IFNULL(grn.supplier_id, IFNULL(dt.debtor_no, bt.person_id)))) as person_id,
+        IF(MAX(gl.person_id), MAX(gl.person_id), IFNULL(st.supplier_id, IFNULL(grn.supplier_id, IFNULL(dt.debtor_no, bt.person_id)))) as person_id,
         IF(ISNULL(st.supp_reference), '', st.supp_reference) AS supp_reference,
         refs.reference,
         IF(gl.type=".ST_BANKTRANSFER.",MAX(gl.amount),SUM(IF(gl.amount>0, gl.amount,0))) as amount,
         com.memo_,
         IF(ISNULL(u.user_id),'',u.user_id) as user_id,
-        IF(gl.person_id, gl.person_type_id, IF(!ISNULL(st.supplier_id) OR !ISNULL(grn.supplier_id),".  PT_SUPPLIER . "," .  "IF(dt.debtor_no," . PT_CUSTOMER . "," .
+        IF(MAX(gl.person_id), MAX(gl.person_type_id), IF(!ISNULL(st.supplier_id) OR !ISNULL(grn.supplier_id),".  PT_SUPPLIER . "," .  "IF(dt.debtor_no," . PT_CUSTOMER . "," .
         "IF(bt.person_id != '' AND !ISNULL(bt.person_id), bt.person_type_id, -1)))) as person_type_id
         FROM ".TB_PREF."gl_trans as gl
          LEFT JOIN ".TB_PREF."audit_trail as a ON
