@@ -67,6 +67,8 @@ start_row();
 label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='tableheader2'");
 if ($_GET['trans_type'] == ST_SALESQUOTE)
 	label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='tableheader2'");
+elseif ($_SESSION['View']->reference == "auto")
+	label_cells(_("Due Date"), $_SESSION['View']->due_date, "class='tableheader2'");
 else
 	label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
 end_row();
@@ -181,7 +183,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	$credits_total = 0;
 
-	if (get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
+	if ($result = get_sales_child_documents(ST_SALESINVOICE, $inv_numbers)) {
 		$k = 0;
 
 		while ($credits_row = db_fetch($result))

@@ -101,7 +101,7 @@ class items_cart
 
 		$low_stock = array();
 
-    	if (!$SysPrefs->allow_negative_stock() || is_fixed_asset($line_item->mb_flag))
+    	if (!$SysPrefs->allow_negative_stock())
     	{
 			foreach ($this->line_items as $line_no => $line_item)
 				if (has_stock_holding($line_item->mb_flag) || is_fixed_asset($line_item->mb_flag))
@@ -224,7 +224,7 @@ class items_cart
 	{
 		foreach ($this->gl_items as $gl_item)
 		{
-			if ($gl_item->person_id)
+			if (is_subledger_account($gl_item->code_id))
 				return true;
 		}
 		return false;
@@ -309,7 +309,7 @@ class items_cart
 		if (!isset($tax_info['tax_reg']) && isset($tax_info['person_type']))
 			$tax_info['tax_reg'] = $tax_info['person_type']==PT_CUSTOMER ? TR_OUTPUT : TR_INPUT;
 
-		if (count(@$tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
+		if (count_array(@$tax_info['net_amount']))	// guess exempt sales/purchase if any tax has been found
 		{
 			$ex_net = abs($net_sum) - @array_sum($tax_info['net_amount']);
 			if ($ex_net != 0)

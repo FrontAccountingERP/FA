@@ -53,6 +53,17 @@ $reports->addReport(RC_CUSTOMER, 102, _('&Aged Customer Analysis'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
+$reports->addReport(RC_CUSTOMER, 115, _('Customer Trial Balance'),
+    array(  _('Start Date') => 'DATEBEGIN',
+            _('End Date') => 'DATEENDM',
+            _('Customer') => 'CUSTOMERS_NO_FILTER',
+            _('Sales Areas') => 'AREAS',
+            _('Sales Folk') => 'SALESMEN',
+            _('Currency Filter') => 'CURRENCY',
+            _('Suppress Zeros') => 'YES_NO',
+            _('Comments') => 'TEXTBOX',
+            _('Orientation') => 'ORIENTATION',
+            _('Destination') => 'DESTINATION'));
 $reports->addReport(RC_CUSTOMER, 103, _('Customer &Detail Listing'),
 	array(	_('Activity Since') => 'DATEBEGIN',
 			_('Sales Areas') => 'AREAS',
@@ -145,6 +156,7 @@ $reports->addReport(RC_CUSTOMER, 112, _('Print Receipts'),
 	array(	_('From') => 'RECEIPT',
 			_('To') => 'RECEIPT',
 			_('Currency Filter') => 'CURRENCY',
+            _('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION'));
 
@@ -170,6 +182,15 @@ $reports->addReport(RC_SUPPLIER, 202, _('&Aged Supplier Analyses'),
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
 			_('Destination') => 'DESTINATION'));
+$reports->addReport(RC_SUPPLIER, 206, _('Supplier &Trial Balances'),
+    array(  _('Start Date') => 'DATEBEGIN',
+            _('End Date') => 'DATEENDM',
+            _('Supplier') => 'SUPPLIERS_NO_FILTER',
+            _('Currency Filter') => 'CURRENCY',
+            _('Suppress Zeros') => 'YES_NO',
+            _('Comments') => 'TEXTBOX',
+            _('Orientation') => 'ORIENTATION',
+            _('Destination') => 'DESTINATION'));
 $reports->addReport(RC_SUPPLIER, 203, _('&Payment Report'),
 	array(	_('End Date') => 'DATE',
 			_('Supplier') => 'SUPPLIERS_NO_FILTER',
@@ -303,6 +324,7 @@ if (get_company_pref('use_manufacturing'))
 		array(	_('Items') => 'ITEMS_ALL',
 				_('Location') => 'LOCATIONS',
 				_('Outstanding Only') => 'YES_NO',
+				_('Show GL Rows') => 'YES_NO',
 				_('Comments') => 'TEXTBOX',
 				_('Orientation') => 'ORIENTATION',
 				_('Destination') => 'DESTINATION'));
@@ -338,7 +360,7 @@ if ($dim > 0)
 }
 $reports->addReportClass(_('Banking'), RC_BANKING);
 	$reports->addReport(RC_BANKING,  601, _('Bank &Statement'),
-	array(	_('Bank Accounts') => 'BANK_ACCOUNTS',
+	array(	_('Bank Accounts') => 'BANK_ACCOUNTS_NO_FILTER',
 			_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
 			_('Zero values') => 'YES_NO',
@@ -385,6 +407,7 @@ if ($dim == 2)
 			_('Account Tags') =>  'ACCOUNTTAGS',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
+			_('Amounts in thousands') => 'YES_NO',
 			_('Destination') => 'DESTINATION'));
 	$reports->addReport(RC_GL, 706, _('&Balance Sheet'),
 	array(	_('Start Date') => 'DATEBEGIN',
@@ -437,6 +460,7 @@ elseif ($dim == 1)
 			_('Account Tags') =>  'ACCOUNTTAGS',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
+			_('Amounts in thousands') => 'YES_NO',
 			_('Destination') => 'DESTINATION'));
 	$reports->addReport(RC_GL, 706, _('&Balance Sheet'),
 	array(	_('Start Date') => 'DATEBEGIN',
@@ -484,6 +508,7 @@ else
 			_('Account Tags') =>  'ACCOUNTTAGS',
 			_('Comments') => 'TEXTBOX',
 			_('Orientation') => 'ORIENTATION',
+			_('Amounts in thousands') => 'YES_NO',
 			_('Destination') => 'DESTINATION'));
 	$reports->addReport(RC_GL, 706, _('&Balance Sheet'),
 	array(	_('Start Date') => 'DATEBEGIN',

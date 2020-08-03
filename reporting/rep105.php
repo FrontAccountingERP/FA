@@ -42,6 +42,7 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
                 sorder.ord_date,
                 sorder.from_stk_loc,
                 sorder.delivery_date,
+                sorder.total,
                 line.stk_code,
                 item.description,
                 item.units,
@@ -112,7 +113,7 @@ function print_order_status_list()
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right',	'right');
 
 	$headers = array(_('Code'),	_('Description'), _('Ordered'),	_('Delivered'),
-		_('Outstanding'), '');
+		_('Outstanding'), '', _('Total Amount'));
 
     $params =   array( 	0 => $comments,
 	    				1 => array(  'text' => _('Period'), 'from' => $from, 'to' => $to),
@@ -131,9 +132,9 @@ function print_order_status_list()
 
 	$rep->NewPage();
 	$orderno = 0;
+	$grand_total = 0;
 
 	$result = GetSalesOrders($from, $to, $category, $location, $backorder);
-
 	while ($myrow=db_fetch($result))
 	{
 		$rep->NewLine(0, 2, false, $orderno);
@@ -151,7 +152,10 @@ function print_order_status_list()
 			$rep->DateCol(4, 5,	$myrow['ord_date'], true);
 			$rep->DateCol(5, 6,	$myrow['delivery_date'], true);
 			$rep->TextCol(6, 7,	$myrow['from_stk_loc']);
-			$rep->NewLine(2);
+			$rep->NewLine(1);
+			$rep->AmountCol(6, 7, $myrow['total']);
+			$rep->NewLine(1);
+			$grand_total += $myrow['total'];		
 			$orderno = $myrow['order_no'];
 		}
 		$rep->TextCol(0, 1,	$myrow['stk_code']);
@@ -169,6 +173,10 @@ function print_order_status_list()
 		$rep->NewLine();
 	}
 	$rep->Line($rep->row);
+	$rep->NewLine();
+	$rep->TextCol(1, 6, _("Grand Total")); 
+	$rep->AmountCol(6, 7, $grand_total);
+	$rep->Line($rep->row - 5);
 	$rep->End();
 }
 

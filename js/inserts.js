@@ -319,6 +319,7 @@ var inserts = {
 				}, 100);
 				return true;
 			}
+			return false;
 		},
 		e.onkeydown = function(ev) {	// block unintentional page escape with 'history back' key pressed on buttons
 			ev = ev||window.event;
@@ -345,11 +346,18 @@ var inserts = {
 				return false;
 			}
 	},
-    '.amount': function(e) {
-		if(e.onblur==undefined) {
+	'.amount': function(e) {
+		if (e.onblur == undefined) {
+		  e.setAttribute('_last_val', e.value);
   		  e.onblur = function() {
 			var dec = this.getAttribute("dec");
-			price_format(this.name, get_amount(this.name), dec);
+			var val = this.getAttribute('_last_val');
+			if (val != get_amount(this.name)) {
+				this.setAttribute('_last_val', get_amount(this.name));
+				price_format(this.name, get_amount(this.name), dec);
+				if (e.className.match(/\bactive\b/))
+					JsHttpRequest.request('_'+this.name+'_changed', this.form);
+			}
 		  };
 		}
 	},

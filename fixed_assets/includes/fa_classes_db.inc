@@ -21,7 +21,7 @@ function get_fixed_asset_classes()
 
 function get_fixed_asset_classname($class)
 {
-	$sql="SELECT description FROM ".TB_PREF."stock_fa_class WHERE fa_class_id = ".db_escape($class);;
+	$sql="SELECT description FROM ".TB_PREF."stock_fa_class WHERE fa_class_id = ".db_escape($class);
 
 	$result = db_query($sql,"fixed asset class name could not be retrieved");
 

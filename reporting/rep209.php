@@ -176,10 +176,7 @@ function print_po()
 				continue;
 			$DisplayTax = number_format2($tax_item['Value'], $dec);
 
-			if ($SysPrefs->suppress_tax_rates() == 1)
-				$tax_type_name = $tax_item['tax_type_name'];
-			else
-				$tax_type_name = $tax_item['tax_type_name']." (".$tax_item['rate']."%) ";
+			$tax_type_name = $tax_item['tax_type_name'];
 
 			if ($myrow['tax_included'])
 			{
@@ -188,7 +185,7 @@ function print_po()
 					if ($first)
 					{
 						$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
-						$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+						$rep->TextCol(6, 7,	number_format2($tax_item['net_amount'], $dec), -2);
 						$rep->NewLine();
 					}
 					$rep->TextCol(3, 6, $tax_type_name, -2);

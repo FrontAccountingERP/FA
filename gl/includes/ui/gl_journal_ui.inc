@@ -79,6 +79,16 @@ function display_order_header(&$Order)
 	}
 
 	check_row(_('Include in tax register:'), 'taxable_trans', null, true);
+        // Query the user to retain the reconciled status
+        if (!$new) {
+            $result = get_bank_trans(ST_JOURNAL, $Order->order_id);
+            $row = db_fetch($result);
+            if ($row
+                && $row['reconciled']) {
+                check_row(_('Reconciled:'), 'reconciled', 1, true);
+                hidden('reconciled_date', $row['reconciled']);
+            }
+        }
 	end_outer_table(1);
 }
 
@@ -246,6 +256,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
 			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+		$_POST['LineMemo'] = "";			
 	}
 
 	if (get_post('_code_id_update'))

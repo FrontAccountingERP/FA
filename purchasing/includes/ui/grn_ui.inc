@@ -25,7 +25,7 @@ function display_grn_summary(&$po)
     label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
     	"class='tableheader2'");
 
-	label_cells(_("Ordered On"), $po->orig_order_date, "class='tableheader2'");
+	label_cells(_("Delivery Date"), $po->orig_order_date, "class='tableheader2'"); // FIXME: delivery date
 	end_row();
 
    	start_row();

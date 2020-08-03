@@ -45,7 +45,7 @@ start_row();
 ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
 
 journal_types_list_cells(_("Type:"), "filterType");
-date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
+date_cells(_("From:"), 'FromDate', '', null, -user_transaction_days());
 date_cells(_("To:"), 'ToDate');
 
 end_row();
@@ -71,6 +71,11 @@ function systype_name($dummy, $type)
 	return $systypes_array[$type];
 }
 
+function person_link($row) 
+{
+    return payment_person_name($row["person_type_id"],$row["person_id"]);
+}
+
 function view_link($row) 
 {
 	return get_trans_view_str($row["trans_type"], $row["trans_no"]);
@@ -88,10 +93,11 @@ function edit_link($row)
 	if ($row['trans_type'] == ST_SALESINVOICE)
 	{
 		$myrow = get_customer_trans($row["trans_no"], $row["trans_type"]);
-		if ($myrow['alloc'] != 0 || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
+		if ($myrow['alloc'] != $myrow['Total'] || get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) !== false)
 			$ok = false;
 	}
-	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '';
+	
+	return $ok ? trans_editor_link( $row["trans_type"], $row["trans_no"]) : '--';
 }
 
 function invoice_supp_reference($row)
@@ -107,7 +113,7 @@ $cols = array(
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
- 	_("Counterparty") => array('ord' => ''),
+	_("Counterparty") => array('fun' => 'person_link'),
 	_("Supplier's Reference") => 'skip',
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),

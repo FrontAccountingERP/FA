@@ -49,7 +49,7 @@ class db_pager {
 	    $from,
 		$group,
 		$order;
-	var	$extra_where;
+	var	$extra_where = array();
 	
 	var $ready = false; // this var is false after change in sql before first
 						// and before first query.

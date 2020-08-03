@@ -464,6 +464,10 @@ function get_branch_to_order($customer_id, $branch_id) {
 function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter, 
 	$stock_item='', $from='', $to='', $ref='', $location=ALL_TEXT, $customer_id=ALL_TEXT)
 {
+    if ($filter=='OutstandingOnly')
+        $order_value = 'Sum(line.unit_price*(line.quantity-line.qty_sent)*(1-line.discount_percent))+freight_cost';
+    else
+        $order_value = 'Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost';
 
 	$sql = "SELECT 
 			sorder.order_no,
@@ -476,7 +480,7 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 			."sorder.ord_date,
 			sorder.delivery_date,
 			sorder.deliver_to,
-			Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
+			$order_value AS OrderValue,
 			sorder.type,
 			debtor.curr_code,
 			Sum(line.qty_sent) AS TotDelivered,
@@ -557,7 +561,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 					sorder.branch_code,
 					sorder.customer_ref,
 					sorder.ord_date,
-					sorder.deliver_to";
+					sorder.deliver_to
+				ORDER BY sorder.order_no DESC";
 	return $sql;
 }
 
@@ -626,3 +631,19 @@ function is_prepaid_order_open($order_no)
 
 	return $result[0];
 }
+
+function last_sales_order_detail($order, $field)
+{
+        $sql = "SELECT $field
+            FROM ".TB_PREF."sales_order_details d
+            WHERE order_no =
+            (SELECT order_no FROM ".TB_PREF."sales_orders o
+            WHERE debtor_no=" . db_escape($order->customer_id) . "
+            ORDER BY order_no DESC LIMIT 1)
+            ORDER BY d.id DESC LIMIT 1";        
+
+        $last_query=db_query($sql, "Could not retrieve last order detail");
+        $row = db_fetch_row($last_query);
+        return $row[0];
+}
+

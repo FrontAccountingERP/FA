@@ -6653,7 +6653,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         $colcount = count($this->_colinfo);
         for ($i = 0; $i < $colcount; $i++) {
            // Skip cols without outline level info.
-           if (count($col_level) >= 6) {
+           if (count_array($col_level) >= 6) {
               $col_level = max($this->_colinfo[$i][5], $col_level);
            }
         }

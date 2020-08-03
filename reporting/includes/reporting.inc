@@ -92,8 +92,9 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => '', 
-				'PARAM_3' => '',
-				'PARAM_4' => $def_orientation);
+				'PARAM_3' => $email,
+				'PARAM_4' => '',
+				'PARAM_5' => $def_orientation);
 			break;
 		case ST_SUPPAYMENT :
 			$rep = 210;
@@ -113,6 +114,16 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => $email, 
+				'PARAM_3' => '', 
+				'PARAM_4' => $def_orientation);
+			break;
+		case ST_DIMENSION :
+			$rep = 501;
+			// from, to, email, comments, orientation
+			$ar = array(
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => 1, 
 				'PARAM_3' => '', 
 				'PARAM_4' => $def_orientation);
 			break;

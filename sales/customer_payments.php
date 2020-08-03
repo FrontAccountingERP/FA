@@ -51,8 +51,9 @@ if (!isset($_POST['bank_account'])) { // first page call
 		$inv = get_customer_trans($_GET['SInvoice'], ST_SALESINVOICE);
 		$dflt_act = get_default_bank_account($inv['curr_code']);
 		$_POST['bank_account'] = $dflt_act['id'];
-		if($inv) {
-			$_SESSION['alloc']->person_id = $_POST['customer_id'] = $inv['debtor_no'];
+		if ($inv) {
+			$_POST['customer_id'] = $inv['debtor_no'];
+			$_SESSION['alloc']->set_person($inv['debtor_no'], PT_CUSTOMER);
 			$_SESSION['alloc']->read();
 			$_POST['BranchID'] = $inv['branch_code'];
 			$_POST['DateBanked'] = sql2date($inv['tran_date']);
@@ -81,8 +82,11 @@ if (list_updated('BranchID')) {
 }
 
 if (!isset($_POST['customer_id'])) {
-	$_SESSION['alloc']->person_id = $_POST['customer_id'] = get_global_customer(false);
+	$_POST['customer_id'] = get_global_customer(false);
+	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 	$_SESSION['alloc']->read();
+	$dflt_act = get_default_bank_account($_SESSION['alloc']->person_curr);
+	$_POST['bank_account'] = $dflt_act['id'];
 }
 if (!isset($_POST['DateBanked'])) {
 	$_POST['DateBanked'] = new_doc_date();
@@ -98,6 +102,7 @@ if (isset($_GET['AddedID'])) {
 	display_notification_centered(_("The customer payment has been successfully entered."));
 
 	submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
+	submenu_print(_("&Email This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, null, 1);
 
 	submenu_view(_("&View this Customer Payment"), ST_CUSTPAYMENT, $payment_no);
 
@@ -170,7 +175,7 @@ function can_process()
 		return false;
 	}
 
-	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+	if (isset($_POST['charge']) && (!check_num('charge', 0) || $_POST['charge'] == $_POST['amount'])) {
 		display_error(_("The entered amount is invalid or negative and cannot be processed."));
 		set_focus('charge');
 		return false;
@@ -239,6 +244,7 @@ if (get_post('AddPaymentItem') && can_process()) {
 		input_num('amount'), input_num('discount'), $_POST['memo_'], 0, input_num('charge'), input_num('bank_amount', input_num('amount')));
 
 	$_SESSION['alloc']->trans_no = $payment_no;
+	$_SESSION['alloc']->date_ = $_POST['DateBanked'];
 	$_SESSION['alloc']->write();
 
 	unset($_SESSION['alloc']);
@@ -305,19 +311,11 @@ start_outer_table(TABLESTYLE2, "width='60%'", 5);
 
 table_section(1);
 
-bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-
 if ($new)
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 else {
 	label_cells(_("From Customer:"), $_SESSION['alloc']->person_name, "class='label'");
 	hidden('customer_id', $_POST['customer_id']);
-}
-
-if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
-	$_SESSION['alloc']->read();
-	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-	$Ajax->activate('alloc_tbl');
 }
 
 if (db_customer_has_branches($_POST['customer_id'])) {
@@ -330,8 +328,14 @@ if (list_updated('customer_id') || ($new && list_updated('bank_account'))) {
 	$_SESSION['alloc']->set_person($_POST['customer_id'], PT_CUSTOMER);
 	$_SESSION['alloc']->read();
 	$_POST['memo_'] = $_POST['amount'] = $_POST['discount'] = '';
-	$Ajax->activate('alloc_tbl');
+	if (list_updated('customer_id')) {
+		$dflt_act = get_default_bank_account($_SESSION['alloc']->person_curr);
+		$_POST['bank_account'] = $dflt_act['id'];
+	}
+	$Ajax->activate('_page_body');
 }
+
+bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 read_customer_data();
 

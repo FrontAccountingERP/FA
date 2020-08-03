@@ -61,7 +61,7 @@ while ($item = db_fetch($transfer_items))
         label_cell($item['description']);
         qty_cell($item['qty'], false, get_qty_dec($item['stock_id']));
         label_cell($item['units']);
-        end_row();;
+        end_row();
 	}
 }
 

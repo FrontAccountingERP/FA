@@ -23,7 +23,7 @@ class fa_reflines extends simple_crud_view {
 			'description',
 			'trans_type',
 			'pattern',
-			'default',
+			'default' => 'check',
 		);
 
 	}
@@ -98,7 +98,7 @@ class fa_reflines extends simple_crud_view {
 		label_row(_("Reference Pattern:"), $prefix . text_input($this->name.'pattern', null, 30, 60));
 
 		if (get_post($this->name.'default'))
-			label_row(_("Default for This Type:"), _("Yes"));
+			{ label_row(_("Default for This Type:"), _("Yes")); hidden($this->name.'default', 1); }
 		else
 			check_row(_("Set as Default for This Type:"), $this->name.'default');
 

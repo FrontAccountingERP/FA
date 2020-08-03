@@ -177,7 +177,7 @@ start_table(TABLESTYLE2);
 
 hidden('code_id', $selected_id);
 
-text_row(_("UPC/EAN code:"), 'item_code', null, 20, 21);
+text_row(_("UPC/EAN code:"), 'item_code', null, 20, 20);
 qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
 text_row(_("Description:"), 'description', null, 50, 200);
 stock_categories_list_row(_("Category:"), 'category_id', null);

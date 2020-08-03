@@ -99,20 +99,14 @@ function print_list_of_journal_entries()
             $rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
             $rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
             $rep->DateCol(2, 3, $myrow['tran_date'], true);
-            $coms =  get_subaccount_name($myrow["account"], $myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
-            if ($memo != '')
-            {
-            	if ($coms == "")
-            		$coms = $memo;
-            	else
-            		$coms .= " / ".$memo;
-            }		
-            $rep->TextColLines(3, 6, $coms);
+			$rep->TextCol(3, 6, $memo);
             $rep->NewLine();
         }
         $rep->TextCol(0, 1, $myrow['account']);
         $rep->TextCol(1, 2, $myrow['account_name']);
+        $coms =  get_subaccount_name($myrow["account"], $myrow["person_id"]);
+        $rep->TextCol(3, 6, $coms);
         $dim_str = get_dimension_string($myrow['dimension_id']);
         $dim_str2 = get_dimension_string($myrow['dimension2_id']);
         if ($dim_str2 != "")

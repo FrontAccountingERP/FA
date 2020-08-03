@@ -16,11 +16,10 @@ include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 {
-	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due,
+	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due, supp.dimension_id, supp.dimension2_id,
 		terms.day_in_following_month, supp.tax_included,
 		supp.tax_group_id, tax_group.name AS tax_group_name,
-		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
-			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
+		supp.credit_limit - Sum((ov_amount + ov_gst + ov_discount)) as cur_credit, curr_code
 		FROM ".TB_PREF."suppliers supp LEFT JOIN "
 			.TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, "
 			.TB_PREF."payment_terms terms, "
@@ -55,7 +54,10 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 
 	$supp_trans->tax_description = $myrow['tax_group_name'];
 	$supp_trans->tax_group_id = $myrow['tax_group_id'];
-
+	$supp_trans->dimension = $myrow['dimension_id'];
+	$supp_trans->dimension2 = $myrow['dimension2_id'];
+	$supp_trans->currency = $myrow['curr_code'];
+ 
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -70,10 +72,10 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 		$sql = "SELECT act_price, unit_price FROM ".TB_PREF."purch_order_details WHERE
 			po_detail_item = ".db_escape($po_detail_item);
 		$result = db_query($sql, "The old actual price of the purchase order line could not be retrieved");
-		$row = db_fetch_row($result);
-		$ret = $row[0];
+		$row = db_fetch($result);
+		$ret = $row['act_price'];
 
-		$unit_price = $row[1]; //Added by Rasmus
+		$unit_price = $row['unit_price']; //Added by Rasmus
 
 		$sql = "SELECT delivery_date 
 			FROM ".TB_PREF."grn_batch grn,"
@@ -81,8 +83,8 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 			WHERE
 				grn.id = line.grn_batch_id AND line.id=".db_escape($id);
 		$result = db_query($sql, "The old delivery date from the received record cout not be retrieved");
-		$row = db_fetch_row($result);
-		$date = $row[0];
+		$row = db_fetch($result);
+		$date = $row['delivery_date'];
 	}
 	else
 	{
@@ -141,7 +143,7 @@ function add_supp_invoice(&$supp_trans)
 	} else
 		$allocs = get_po_prepayments($supp_trans);
 
-	add_new_exchange_rate($supplier['curr_code'], $supp_trans->tran_date, $supp_trans->ex_rate);
+	add_new_exchange_rate($supp_trans->currency, $supp_trans->tran_date, $supp_trans->ex_rate);
 
     foreach ($taxes as $n => $taxitem)
     {
@@ -169,7 +171,7 @@ function add_supp_invoice(&$supp_trans)
 	}
 
     $date_ = $supp_trans->tran_date;
-	$ex_rate = get_exchange_rate_from_home_currency($supplier['curr_code'], $date_);
+	$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $date_);
 
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = write_supp_trans($trans_type, 0, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -303,7 +305,7 @@ function add_supp_invoice(&$supp_trans)
 					$dim, $dim2, $taxfree_line, $supp_trans->supplier_id);
 			else
 			{
-				$ex_rate = get_exchange_rate_from_home_currency($supplier['curr_code'], $old_date);
+				$ex_rate = get_exchange_rate_from_home_currency($supp_trans->currency, $old_date);
 				$old_value = get_tax_free_price_for_item($entered_grn->item_code, $entered_grn->this_quantity_inv * $old_price, 
 					  $supp_trans->tax_group_id, $supp_trans->tax_included);
 
@@ -447,7 +449,7 @@ function get_tax_overrides($trans_type, $trans_no)
 
 function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 {
-	$sql = "SELECT trans.*, supp_name 
+	$sql = "SELECT trans.*, supp_name, dimension_id, dimension2_id, curr_code
 		FROM ".TB_PREF."supp_trans trans,"
 			.TB_PREF."suppliers sup
 		WHERE trans_no = ".db_escape($trans_no)." AND type = ".db_escape($trans_type)."
@@ -470,6 +472,9 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 		$supp_trans->ov_discount = $trans_row["ov_discount"];
 		$supp_trans->ov_gst = $trans_row["ov_gst"];
 		$supp_trans->tax_included = $trans_row["tax_included"];
+		$supp_trans->dimension = $trans_row["dimension_id"];
+		$supp_trans->dimension2 = $trans_row["dimension2_id"];
+		$supp_trans->currency = $trans_row["curr_code"];
 
 		$id = $trans_row["trans_no"];
 

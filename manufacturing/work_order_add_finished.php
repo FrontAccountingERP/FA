@@ -57,9 +57,9 @@ if (isset($_GET['AddedID']))
 
 //--------------------------------------------------------------------------------------------------
 
-$wo_details = get_work_order($_POST['selected_id']);
+$wo_details = get_work_order($_POST['selected_id'], true);
 
-if (strlen($wo_details[0]) == 0)
+if ($wo_details === false)
 {
 	display_error(_("The order number sent is not valid."));
 	exit;

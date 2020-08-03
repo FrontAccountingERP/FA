@@ -56,9 +56,9 @@ if (isset($_GET['AddedID']))
 
 //--------------------------------------------------------------------------------------------------
 
-$wo_details = get_work_order($_POST['selected_id']);
+$wo_details = get_work_order($_POST['selected_id'], true);
 
-if (strlen($wo_details[0]) == 0)
+if ($wo_details === false)
 {
 	display_error(_("The order number sent is not valid."));
 	exit;
@@ -139,7 +139,7 @@ if (list_updated('PaymentType'))
 
 $item = get_item($wo_details['stock_id']);
 $r = get_default_bank_account(get_company_pref('curr_default'));
-$_POST['cr_acc'] = $r[0];
+$_POST['cr_acc'] = $r['account_code'];
 $_POST['costs'] = price_format(get_post('PaymentType')==WO_OVERHEAD ? $item['overhead_cost'] : $item['labour_cost']);
 
 amount_row(_("Additional Costs:"), 'costs');

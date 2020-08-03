@@ -13,16 +13,18 @@ $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
+
 $js = "";
 if ($SysPrefs->use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if (user_use_date_picker())
 	$js .= get_js_date_picker();
 
-page(_($help_context = "Suppliers"), false, false, "", $js);
+page(_($help_context = "Suppliers"), @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/contacts_view.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -31,7 +33,113 @@ if (isset($_GET['supplier_id']))
 	$_POST['supplier_id'] = $_GET['supplier_id'];
 }
 
-$supplier_id = get_post('supplier_id'); 
+$supplier_id = get_post('supplier_id', ''); 
+
+function can_process()
+{
+	/* actions to take once the user has clicked the submit button
+	ie the page has called itself with some user input */
+
+	//first off validate inputs sensible
+
+	if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") 
+	{
+		display_error(_("The supplier name must be entered."));
+		set_focus('supp_name');
+		return false;
+	}
+
+	if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") 
+	{
+		display_error(_("The supplier short name must be entered."));
+		set_focus('supp_ref');
+		return false;
+	}
+	return true;
+}
+
+function handle_submit(&$supplier_id)
+{
+	global $path_to_root, $Ajax, $SysPrefs;
+	
+	if (!can_process())
+		return;
+	begin_transaction();
+	if ($supplier_id) 
+	{
+		update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
+			$_POST['supp_address'], $_POST['gst_no'],
+			$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
+			input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
+			$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
+			$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
+		update_record_status($_POST['supplier_id'], $_POST['inactive'],
+			'suppliers', 'supplier_id');
+
+		$Ajax->activate('supplier_id'); // in case of status change
+		display_notification(_("Supplier has been updated."));
+	} 
+	else 
+	{
+		add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
+			$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
+			input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
+			$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
+			$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
+
+		$supplier_id = $_POST['supplier_id'] = db_insert_id();
+
+		add_crm_person($_POST['supp_ref'], $_POST['contact'], '', $_POST['address'], 
+			$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
+			$_POST['rep_lang'], '');
+
+		add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
+
+		display_notification(_("A new supplier has been added."));
+		$Ajax->activate('_page_body');
+	}
+	commit_transaction();
+}
+
+if (isset($_POST['submit'])) 
+{
+	handle_submit($supplier_id);
+}
+
+if (isset($_POST['delete']) && $_POST['delete'] != "") 
+{
+	//the link to delete a selected record was clicked instead of the submit button
+
+	$cancel_delete = 0;
+
+	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
+
+	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
+	{
+		$cancel_delete = 1;
+		display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+
+	} 
+	else 
+	{
+		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
+		{
+			$cancel_delete = 1;
+			display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+		}
+
+	}
+	if ($cancel_delete == 0) 
+	{
+		delete_supplier($_POST['supplier_id']);
+
+		unset($_SESSION['supplier_id']);
+		$supplier_id = '';
+		$Ajax->activate('_page_body');
+		display_notification("#" . $_POST['supplier_id'] . " " . _("Supplier has been deleted."));
+	} //end if Delete supplier
+}
+
 //--------------------------------------------------------------------------------------------
 function supplier_settings(&$supplier_id)
 {
@@ -70,26 +178,28 @@ function supplier_settings(&$supplier_id)
 	} 
 	else 
 	{
-		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
-			$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
-		$_POST['dimension_id'] = 0;
-		$_POST['dimension2_id'] = 0;
-		$_POST['tax_included'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['gst_no'] = $_POST['bank_account'] = '';
-		$_POST['payment_terms']  = '';
-		$_POST['credit_limit'] = price_format(0);
+		if (list_updated('supplier_id') || !isset($_POST['supp_name'])) {
+			$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
+				$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
+			$_POST['dimension_id'] = 0;
+			$_POST['dimension2_id'] = 0;
+			$_POST['tax_included'] = 0;
+			$_POST['sales_type'] = -1;
+			$_POST['gst_no'] = $_POST['bank_account'] = '';
+			$_POST['payment_terms']  = '';
+			$_POST['credit_limit'] = price_format(0);
 
-		$company_record = get_company_prefs();
-		$_POST['curr_code']  = $company_record["curr_default"];
-		$_POST['payable_account'] = $company_record["creditors_act"];
-		$_POST['purchase_account'] = ''; // default/item's cogs account
-		$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+			$company_record = get_company_prefs();
+			$_POST['curr_code']  = $company_record["curr_default"];
+			$_POST['payable_account'] = $company_record["creditors_act"];
+			$_POST['purchase_account'] = ''; // default/item's cogs account
+			$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+		}
 	}
 
 	table_section_title(_("Basic Data"));
 
-	text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
+	text_row(_("Supplier Name:"), 'supp_name', null, 42, 60);
 	text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
 
 	text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
@@ -171,119 +281,19 @@ function supplier_settings(&$supplier_id)
 	if ($supplier_id) 
 	{
 		submit_center_first('submit', _("Update Supplier"), 
-		  _('Update supplier data'), $page_nested ? true : 'default');
+		  _('Update supplier data'), $page_nested ? true : false);
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"), 
 		  _('Delete supplier data if have been never used'), true);
 	}
 	else 
 	{
-		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
+		submit_center('submit', _("Add New Supplier Details"), true, '', false);
 	}
 	div_end();
 }
 
-if (isset($_POST['submit'])) 
-{
-
-	//initialise no input errors assumed initially before we test
-	$input_error = 0;
-
-	/* actions to take once the user has clicked the submit button
-	ie the page has called itself with some user input */
-
-	//first off validate inputs sensible
-
-	if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") 
-	{
-		$input_error = 1;
-		display_error(_("The supplier name must be entered."));
-		set_focus('supp_name');
-	}
-
-	if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") 
-	{
-		$input_error = 1;
-		display_error(_("The supplier short name must be entered."));
-		set_focus('supp_ref');
-	}
-
-	if ($input_error !=1 )
-	{
-
-		begin_transaction();
-		if ($supplier_id) 
-		{
-			update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
-				$_POST['supp_address'], $_POST['gst_no'],
-				$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
-				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
-				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-				$_POST['notes'], $_POST['tax_group_id'], get_post('tax_included', 0));
-			update_record_status($_POST['supplier_id'], $_POST['inactive'],
-				'suppliers', 'supplier_id');
-
-			$Ajax->activate('supplier_id'); // in case of status change
-			display_notification(_("Supplier has been updated."));
-		} 
-		else 
-		{
-			add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
-				$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
-				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
-				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
-
-			$supplier_id = $_POST['supplier_id'] = db_insert_id();
-
-			add_crm_person($_POST['supp_ref'], $_POST['contact'], '', $_POST['address'], 
-				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
-				$_POST['rep_lang'], '');
-
-			add_crm_contact('supplier', 'general', $supplier_id, db_insert_id());
-
-			display_notification(_("A new supplier has been added."));
-			$Ajax->activate('_page_body');
-		}
-		commit_transaction();
-	}
-
-} 
-elseif (isset($_POST['delete']) && $_POST['delete'] != "") 
-{
-	//the link to delete a selected record was clicked instead of the submit button
-
-	$cancel_delete = 0;
-
-	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
-
-	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
-	{
-		$cancel_delete = 1;
-		display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
-
-	} 
-	else 
-	{
-		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
-		{
-			$cancel_delete = 1;
-			display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
-		}
-
-	}
-	if ($cancel_delete == 0) 
-	{
-		delete_supplier($_POST['supplier_id']);
-
-		unset($_SESSION['supplier_id']);
-		$supplier_id = '';
-		$Ajax->activate('_page_body');
-		display_notification("#" . $_POST['supplier_id'] . " " . _("Supplier has been deleted."));
-	} //end if Delete supplier
-}
-
-start_form();
+start_form(true);
 
 if (db_has_suppliers()) 
 {
@@ -312,6 +322,7 @@ tabbed_content_start('tabs', array(
 		'contacts' => array(_('&Contacts'), $supplier_id),
 		'transactions' => array(_('&Transactions'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
 		'orders' => array(_('Purchase &Orders'), (user_check_access('SA_SUPPTRANSVIEW') ? $supplier_id : null)),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? $supplier_id : null)),
 	));
 	
 	switch (get_post('_tabs_sel')) {
@@ -331,9 +342,14 @@ tabbed_content_start('tabs', array(
 			$_GET['supplier_id'] = $supplier_id;
 			include_once($path_to_root."/purchasing/inquiry/po_search_completed.php");
 			break;
+		case 'attachments':
+			$_GET['trans_no'] = $supplier_id;
+			$_GET['type_no']= ST_SUPPLIER;
+			$attachments = new attachments('attachment', $supplier_id, 'suppliers');
+			$attachments->show();
 	};
 br();
 tabbed_content_end();
 end_form();
-end_page();
+end_page(@$_REQUEST['popup']);
 

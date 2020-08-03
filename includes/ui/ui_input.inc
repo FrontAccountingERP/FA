@@ -348,7 +348,13 @@ function select_button_cell($name, $value, $title=false)
 
 function check_value($name)
 {
-    return (empty($_POST[$name]) ? 0 : 1);
+	if (is_array($name)) {
+		$ret = array();
+		foreach($name as $key)
+			$ret[$key] = check_value($key);
+		return $ret;
+	} else
+		return (empty($_POST[$name]) ? 0 : 1);
 }
 
 function checkbox($label, $name, $value=null, $submit_on_change=false, $title=false)
@@ -758,7 +764,7 @@ function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit
 
 		label_cell($list."<input name='".$name."' "
 			.(check_edit_access($name) ? '' : 'disabled ')
-			."value='".@$_POST[$name]."' size=10 maxlength=35>");
+			."value='".@$_POST[$name]."' size=16 maxlength=35>");
 	}
 	else // just wildcard ref field (e.g. for global inquires)
 	{

@@ -49,6 +49,7 @@ function GetSalesmanTrans($from, $to)
 			".TB_PREF."salesman salesman
 		WHERE sorder.order_no=trans.order_
 		    AND sorder.branch_code=branch.branch_code
+		    AND sorder.trans_type = ".ST_SALESORDER."
 		    AND branch.salesman=salesman.salesman_code
 		    AND trans.debtor_no=cust.debtor_no
 		    AND (trans.type=".ST_SALESINVOICE." OR trans.type=".ST_CUSTCREDIT.")

@@ -116,6 +116,19 @@ function db_get_default_charset()
 	return $var[0];
 }
 
+function db_get_view_schema($view)
+{
+    global $db;
+    $schema = NULL;
+    $qry = "select view_definition from information_schema.views where table_schema=DATABASE() and table_name='$view'";
+    $res = db_query($qry,'Failed to select view schema');
+    if ($res && db_num_rows($res) == 1) {
+        $row = db_fetch_assoc($res);
+        $schema = $row['view_definition'];
+    }
+    return $schema;
+}
+
 /*
 	SQL db profiling stub
 */

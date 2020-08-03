@@ -153,7 +153,7 @@ class reflines_db extends data_set {
 	function find_refline_id($reference, $type, $fallback=true)
 	{
 		$sql = "SELECT * FROM ".TB_PREF."reflines WHERE trans_type=".db_escape($type)
-			." AND CHAR_LENGTH(`prefix`) AND LEFT('$reference', CHAR_LENGTH(`prefix`)) = `prefix`";
+			." AND CHAR_LENGTH(`prefix`) AND LEFT(".db_escape($reference).", CHAR_LENGTH(`prefix`)) = `prefix`";
 		if ($fallback)	// if not found return refline with empty prefix
 			$sql .= " UNION SELECT * FROM ".TB_PREF."reflines WHERE trans_type=".db_escape($type)." AND `prefix`=''";
 		$ret = db_query($sql, "cannot check reference line id");

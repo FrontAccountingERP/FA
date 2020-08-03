@@ -258,6 +258,8 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
 	else {
 		$sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
+		$sql2 .= " AND trans.delivery_date >= '$date_after'
+            AND trans.delivery_date <= '$date_to'";
 	}
 
    	if ($supplier_id != ALL_TEXT) {

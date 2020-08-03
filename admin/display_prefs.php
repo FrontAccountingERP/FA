@@ -40,10 +40,12 @@ if (isset($_POST['setprefs']))
 			array('prices_dec', 'qty_dec', 'rates_dec', 'percent_dec',
 			'date_format', 'date_sep', 'tho_sep', 'dec_sep', 'print_profile', 
 			'theme', 'page_size', 'language', 'startup_tab',
-			'show_gl' => 0, 'show_codes'=> 0, 'show_hints' => 0,
-			'rep_popup' => 0, 'graphic_links' => 0, 'sticky_doc_date' => 0,
-			'query_size' => 10.0, 'transaction_days' => 30, 'save_report_selections' => 0,
-			'use_date_picker' => 0, 'def_print_destination' => 0, 'def_print_orientation' => 0)));
+			'query_size' => 10, 'transaction_days' => 30, 'save_report_selections' => 0,
+			'def_print_destination' => 0, 'def_print_orientation' => 0)));
+
+		set_user_prefs(check_value(
+			array( 'show_gl', 'show_codes', 'show_hints', 'rep_popup',
+			  'graphic_links', 'sticky_doc_date', 'use_date_picker')));
 
 		if ($chg_lang)
 			$_SESSION['language']->set_language($_POST['language']);

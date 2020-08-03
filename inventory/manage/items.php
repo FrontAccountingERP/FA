@@ -32,7 +32,7 @@ else {
 }
 
 
-page($_SESSION['page_title'], false, false, "", $js);
+page($_SESSION['page_title'], @$_REQUEST['popup'], false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -44,6 +44,16 @@ include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
 $user_comp = user_company();
 $new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
 //------------------------------------------------------------------------------------
+function set_edit($stock_id)
+{
+	$_POST = array_merge($_POST, get_item($stock_id));
+
+	$_POST['depreciation_rate'] = number_format2($_POST['depreciation_rate'], 1);
+	$_POST['depreciation_factor'] = number_format2($_POST['depreciation_factor'], 1);
+	$_POST['depreciation_start'] = sql2date($_POST['depreciation_start']);
+	$_POST['depreciation_date'] = sql2date($_POST['depreciation_date']);
+	$_POST['del_image'] = 0;
+}
 
 if (isset($_GET['stock_id']))
 {
@@ -227,7 +237,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
 				get_post('fa_class_id'));
 
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -248,7 +258,7 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['wip_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'), check_value('editable'), check_value('no_purchase'),
-				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start'),
+				get_post('depreciation_method'), input_num('depreciation_rate'), input_num('depreciation_factor'), get_post('depreciation_start', null),
 				get_post('fa_class_id'));
 
 			display_notification(_("A new item has been added."));
@@ -262,6 +272,7 @@ if (isset($_POST['addupdate']))
 }
 
 if (get_post('clone')) {
+	set_edit($_POST['stock_id']); // restores data for disabled inputs too
 	unset($_POST['stock_id']);
 	$stock_id = '';
 	unset($_POST['inactive']);
@@ -335,37 +346,7 @@ function item_settings(&$stock_id, $new_item)
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 
 			$_POST['NewStockID'] = $_POST['stock_id'];
-
-			$myrow = get_item($_POST['NewStockID']);
-
-			$_POST['long_description'] = $myrow["long_description"];
-			$_POST['description'] = $myrow["description"];
-			$_POST['category_id']  = $myrow["category_id"];
-			$_POST['tax_type_id']  = $myrow["tax_type_id"];
-			$_POST['units']  = $myrow["units"];
-			$_POST['mb_flag']  = $myrow["mb_flag"];
-
-			$_POST['depreciation_method'] = $myrow['depreciation_method'];
-			$_POST['depreciation_rate'] = number_format2($myrow['depreciation_rate'], 1);
-			$_POST['depreciation_factor'] = number_format2($myrow['depreciation_factor'], 1);
-			$_POST['depreciation_start'] = sql2date($myrow['depreciation_start']);
-			$_POST['depreciation_date'] = sql2date($myrow['depreciation_date']);
-			$_POST['fa_class_id'] = $myrow['fa_class_id'];
-			$_POST['material_cost'] = $myrow['material_cost'];
-			$_POST['purchase_cost'] = $myrow['purchase_cost'];
-			
-			$_POST['sales_account'] =  $myrow['sales_account'];
-			$_POST['inventory_account'] = $myrow['inventory_account'];
-			$_POST['cogs_account'] = $myrow['cogs_account'];
-			$_POST['adjustment_account']	= $myrow['adjustment_account'];
-			$_POST['wip_account']	= $myrow['wip_account'];
-			$_POST['dimension_id']	= $myrow['dimension_id'];
-			$_POST['dimension2_id']	= $myrow['dimension2_id'];
-			$_POST['no_sale']	= $myrow['no_sale'];
-			$_POST['no_purchase']	= $myrow['no_purchase'];
-			$_POST['del_image'] = 0;
-			$_POST['inactive'] = $myrow["inactive"];
-			$_POST['editable'] = $myrow["editable"];
+			set_edit($_POST['stock_id']);
 		}
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
@@ -379,7 +360,7 @@ function item_settings(&$stock_id, $new_item)
 
 	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item, $fixed_asset);
 
-	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
+	if ($new_item && (list_updated('category_id') || !isset($_POST['sales_account']))) { // changed category for new item or first page view
 
 		$category_record = get_item_category($_POST['category_id']);
 
@@ -483,7 +464,7 @@ function item_settings(&$stock_id, $new_item)
 		gl_all_accounts_list_row(_("Depreciation cost account:"), 'cogs_account', $_POST['cogs_account']);
 		gl_all_accounts_list_row(_("Depreciation/Disposal account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
-	elseif (!is_service($_POST['mb_flag'])) 
+	elseif (!is_service(get_post('mb_flag')))
 	{
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
@@ -497,7 +478,7 @@ function item_settings(&$stock_id, $new_item)
 	}
 
 
-	if (is_manufactured($_POST['mb_flag']))
+	if (is_manufactured(get_post('mb_flag')))
 		gl_all_accounts_list_row(_("WIP Account:"), 'wip_account', $_POST['wip_account']);
 	else
 		hidden('wip_account', $_POST['wip_account']);
@@ -602,7 +583,8 @@ $tabs = (get_post('fixed_asset'))
 		'standard_cost' => array(_('Standard &Costs'), (user_check_access('SA_STANDARDCOST') ? $stock_id : null)),
 		'reorder_level' => array(_('&Reorder Levels'), (is_inventory_item($stock_id) && 
 			user_check_access('SA_REORDER') ? $stock_id : null)),
-		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') ? $stock_id : null)),
+		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
+			$stock_id : null)),
 		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
 	);
 
@@ -630,14 +612,14 @@ tabbed_content_start('tabs', $tabs);
 			break;
 		case 'reorder_level':
 			if (!is_inventory_item($stock_id))
-			{
 				break;
-			}	
 			$_GET['page_level'] = 1;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/reorder_level.php");
 			break;
 		case 'movement':
+			if (!is_inventory_item($stock_id))
+				break;
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/inquiry/stock_movements.php");
 			break;
@@ -661,7 +643,7 @@ end_form();
 
 //------------------------------------------------------------------------------------
 
-end_page();
+end_page(@$_REQUEST['popup']);
 
 function generateBarcode() {
 	$tmpBarcodeID = "";

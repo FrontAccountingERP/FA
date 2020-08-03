@@ -66,7 +66,7 @@ class supp_trans
 			read_supp_invoice($trans_no, $trans_type, $this);
 			if ($trans_type == ST_SUPPCREDIT)
 			{
-				$this->src_docs = find_src_invoices($trans_no);
+                $this->src_docs = find_src_invoices($this);
 			}
 			read_supplier_details_to_trans($this, $this->supplier_id);
 		}
@@ -74,7 +74,7 @@ class supp_trans
 
 	function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $item_description, 
 		$qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, 
-		$std_cost_unit, $gl_code)
+		$std_cost_unit=null, $gl_code='')
 	{
 		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, 
 			$item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, 

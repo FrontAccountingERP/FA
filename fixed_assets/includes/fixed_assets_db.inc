@@ -57,8 +57,6 @@ function process_fixed_asset_depreciation($stock_id, $gl_rows, $refline, $memo_)
     WHERE stock_id=".db_escape($stock_id);
   db_query($sql,"The depreciation start date could not be updated");
 
-  $update_no = -1;
-  add_audit_trail(ST_JOURNAL, $update_no, $date_);
   commit_transaction();
 
   return $trans_no;

@@ -58,7 +58,7 @@ if ($download_id != -1)
 			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
     		header("Content-type: ".$type);
 	    	header('Content-Length: '.$row['filesize']);
-    		header('Content-Disposition: attachment; filename='.$row['filename']);
+    		header('Content-Disposition: attachment; filename="'.$row['filename'].'"');
     		echo file_get_contents(company_path()."/attachments/".$row['unique_name']);
 	    	exit();
 		}
@@ -79,6 +79,7 @@ if (isset($_GET['trans_no']))
 
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
+	
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
 	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
@@ -155,7 +156,6 @@ if ($Mode == 'Delete')
 
 if ($Mode == 'RESET')
 {
-	unset($_POST['trans_no']);
 	unset($_POST['description']);
 	$selected_id = -1;
 }
@@ -169,7 +169,13 @@ function viewing_controls()
 	start_row();
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
 	if (list_updated('filterType'))
-		$selected_id = -1;;
+		$selected_id = -1;
+
+	if(get_post('filterType') == ST_CUSTOMER ){
+		customer_list_cells(_("Select a customer: "), 'trans_no', null, false, true, true);
+	} elseif(get_post('filterType') == ST_SUPPLIER){
+		supplier_list_cells(_("Select a supplier: "), 'trans_no', null,  false, true,true);
+	}
 
 	end_row();
     end_table(1);
@@ -201,11 +207,11 @@ function delete_link($row)
   	return button('Delete'.$row["id"], _("Delete"), _("Delete"), ICON_DELETE);
 }
 
-function display_rows($type)
+function display_rows($type, $trans_no)
 {
-	$sql = get_sql_for_attached_documents($type);
+	$sql = get_sql_for_attached_documents($type, $type==ST_SUPPLIER || $type==ST_CUSTOMER ? $trans_no : 0);
 	$cols = array(
-		_("#") => array('fun'=>'trans_view', 'ord'=>''),
+		_("#") => $type == ST_SUPPLIER || $type == ST_CUSTOMER? 'skip' : array('fun'=>'trans_view', 'ord'=>''),
 	    _("Description") => array('name'=>'description'),
 	    _("Filename") => array('name'=>'filename'),
 	    _("Size") => array('name'=>'filesize'),
@@ -216,20 +222,25 @@ function display_rows($type)
 	    	array('insert'=>true, 'fun'=>'download_link'),
 	    	array('insert'=>true, 'fun'=>'delete_link')
 	    );	
-		$table =& new_db_pager('trans_tbl', $sql, $cols);
 
-		$table->width = "60%";
+	$table =& new_db_pager('trans_tbl', $sql, $cols);
 
-		display_db_pager($table);
+	$table->width = "60%";
+
+	display_db_pager($table);
 }
 
 //----------------------------------------------------------------------------------------
+if (list_updated('filterType') || list_updated('trans_no'))
+	$Ajax->activate('_page_body');
 
 start_form(true);
 
 viewing_controls();
 
-display_rows($_POST['filterType']);
+$type = get_post('filterType');
+
+display_rows($type, get_post('trans_no'));
 
 br(2);
 
@@ -244,12 +255,15 @@ if ($selected_id != -1)
 		$_POST['description']  = $row["description"];
 		hidden('trans_no', $row['trans_no']);
 		hidden('unique_name', $row['unique_name']);
-		label_row(_("Transaction #"), $row['trans_no']);
+		if ($type != ST_SUPPLIER && $type != ST_CUSTOMER)
+			label_row(_("Transaction #"), $row['trans_no']);
 	}	
 	hidden('selected_id', $selected_id);
 }
-else
-	text_row_ex(_("Transaction #").':', 'trans_no', 10);
+else {
+	if ($type != ST_SUPPLIER && $type != ST_CUSTOMER)
+		text_row_ex(_("Transaction #").':', 'trans_no', 10);
+}
 text_row_ex(_("Description").':', 'description', 40);
 file_row(_("Attached File") . ":", 'filename', 'filename');
 

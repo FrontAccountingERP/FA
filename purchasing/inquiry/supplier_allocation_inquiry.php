@@ -139,7 +139,7 @@ $cols = array(
 	_("Supplier") => array('ord'=>''), 
 	_("Supp Reference"),
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
-	_("Due Date") => array('fun'=>'due_date'),
+	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Currency") => array('align'=>'center'),
 	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 	_("Credit") => array('align'=>'right', 'insert'=>true, 'fun'=>'fmt_credit'), 

@@ -122,19 +122,21 @@ function get_work_order($woid, $allow_null=false)
 {
     $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
     		l.delivery_address,l.email, l.contact, st.inventory_account, st.wip_account
-		FROM ".TB_PREF."workorders wo, "
+			FROM ".TB_PREF."workorders wo
+			LEFT JOIN ".TB_PREF."voided v ON v.id=wo.id and v.type=".ST_WORKORDER.","
 			.TB_PREF."stock_master st, "
 			.TB_PREF."locations l
-		WHERE st.stock_id=wo.stock_id
+		WHERE ISNULL(v.id)
+		AND st.stock_id=wo.stock_id
 		AND	l.loc_code=wo.loc_code
 		AND wo.id=".db_escape($woid)."
 		GROUP BY wo.id";
 
-	$result = db_query($sql, "The work order issues could not be retrieved");
+	$result = db_query($sql, "The work order could not be retrieved");
 
 	if (!$allow_null && db_num_rows($result) == 0)
 	{
-		display_db_error("Could not find work order $woid", $sql);
+		display_db_error("Could not find work order ".(int)$woid, $sql);
 		return false;
 	}
 
@@ -287,7 +289,8 @@ function void_work_order($woid)
 	void_wo_requirements($woid);
 
 	// close workorder
-	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
+	// FIXME: due to bug in 2.4 db scheme (conflicting wo_ref unique key) we have to fix wo_ref here:
+	$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0, wo_ref=CONCAT(wo_ref, ' ', '".uniqid()."') WHERE id = "
 		.db_escape($woid);
 	db_query($sql, "The work order couldn't be voided");
 
@@ -311,11 +314,13 @@ function get_sql_for_work_orders($outstanding_only, $stock_id, $location = ALL_T
 		workorder.released,
 		workorder.stock_id,
 		unit.decimals
-		FROM ".TB_PREF."workorders as workorder,"
+		FROM ".TB_PREF."workorders as workorder
+			LEFT JOIN ".TB_PREF."voided v ON v.id=workorder.id and v.type=".ST_WORKORDER.","
 			.TB_PREF."stock_master as item,"
 			.TB_PREF."item_units as unit,"
 			.TB_PREF."locations as location
-		WHERE workorder.stock_id=item.stock_id 
+		WHERE ISNULL(v.id)
+			AND workorder.stock_id=item.stock_id 
 			AND workorder.loc_code=location.loc_code
 			AND item.units=unit.abbr";
 

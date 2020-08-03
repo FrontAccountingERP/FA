@@ -41,6 +41,8 @@ $systypes_array = array (
 	ST_SALESQUOTE => _("Sales Quotation"),
 	ST_COSTUPDATE => _("Cost Update"),
 	ST_DIMENSION => _("Dimension"),
+	ST_CUSTOMER => _("Customer"),
+	ST_SUPPLIER => _("Supplier"),
 	);
 
 $fa_systypes_array = array (

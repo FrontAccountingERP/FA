@@ -137,11 +137,13 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	$proto = 'http://';
 	$curr_a = get_company_pref('curr_default');
 	if ($provider == 'ECB')
-	{
-		$filename = "/stats/eurofxref/eurofxref-daily.xml";
-		$site = "www.ecb.europa.eu";
-		$site_ip="172.230.157.137";
-	}
+    {
+        $filename = "/stats/eurofxref/eurofxref-daily.xml";
+        $site = "www.ecb.europa.eu";
+        $proto = 'https://';
+        $site_ip="172.230.157.137";
+        $contents=file_get_contents($proto.$site.$filename);
+    }
 	elseif ($provider == 'YAHOO')
 	{
 		$filename = "/d/quotes.csv?s={$curr_a}{$curr_b}=X&f=sl1d1t1ba&e=.csv"; // new URL's for YAHOO
@@ -150,13 +152,21 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'GOOGLE')
 	{
-		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
-		$site = "finance.google.com";
+		$filename = "/search?q={$curr_b}+to+{$curr_a}";
+		$site = "https://www.google.com";
+		$contents = file_get_contents($site.$filename);
 	}
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$filename = "/quote/{$curr_b}{$curr_a}:CUR";
 		$site = "www.bloomberg.com";
+		$proto = 'https://';
+		$contents=file_get_contents($proto.$site.$filename);
+	}
+	elseif ($provider == 'EXCHANGE-RATES.ORG')
+	{
+		$filename = "/converter/{$curr_b}/{$curr_a}/1";
+		$site = "exchange-rates.org";
 		$proto = 'https://';
 		$contents=file_get_contents($proto.$site.$filename);
 	}
@@ -215,21 +225,21 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	}
 	elseif ($provider == 'GOOGLE')
 	{
-		$val = getInnerStr($contents, '<span class=bld>', ' ');
-		if (empty($val) || $val+0 <= 0.0001) {
-			// reverse lookup on could not convert for too small values 
-            $filename = "/finance/converter?a=1&from={$curr_b}&to={$curr_a}";
-            $contents = url_get_contents($proto.$site.$filename);
-            $val = getInnerStr($contents, '<span class=bld>', ' ');
-		} else {
-			if ($val != 0)
-				$val = 1 / $val;
-		}
-    }    
+		$data = preg_split('/\D\s(.*?)\s=\s/', $contents);
+		$array = explode(" ", $data[1]);
+		$exRate = $array[0];
+
+		$val = str_replace (',', '', $exRate);
+    }
 	elseif ($provider == 'BLOOMBERG')
 	{
 		$val = getInnerStr($contents, ',"price":', ',"');
     }    
+    elseif ($provider == 'EXCHANGE-RATES.ORG')
+	{
+		$val = getInnerStr($contents, '<span id="ctl00_M_lblToAmount">', '<');
+		$val = str_replace (',', '', $val);
+    }
 	return $val;
 }  /* end function get_extern_rate */
 

@@ -37,20 +37,30 @@ display_grn_summary($purchase_order);
 display_heading2(_("Line Details"));
 
 start_table(TABLESTYLE, "width='90%'");
-$th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
+$th = array(_("Item Code"), _("Item Description"), _("Required by"), _("Quantity"),
 	_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
 
 table_header($th);
 
 $total = 0;
 $k = 0;  //row colour counter
+$overdue_items = false;
 
 foreach ($purchase_order->line_items as $stock_item)
 {
 
 	$line_total = $stock_item->qty_received * $stock_item->price;
 
-	alt_table_row_color($k);
+	// if overdue and outstanding quantities, then highlight as so
+	if (date1_greater_date2($purchase_order->orig_order_date, $stock_item->req_del_date))
+	{
+    	start_row("class='overduebg'");
+    	$overdue_items = true;
+	}
+	else
+	{
+		alt_table_row_color($k);
+	}
 
 	label_cell($stock_item->stock_id);
 	label_cell($stock_item->item_description);
@@ -82,6 +92,9 @@ end_row();
 
 
 end_table(1);
+
+if ($overdue_items)
+	display_note(_("Marked items were delivered overdue."), 0, 0, "class='overduefg'");
 
 is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 

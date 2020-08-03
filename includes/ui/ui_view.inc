@@ -270,7 +270,7 @@ function check_ui_refresh($name=null)
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
+function exchange_rate_display($from_currency=null, $to_currency=null, $date_, $force_edit=false)
 {
     global $Ajax, $SysPrefs;
 
@@ -281,6 +281,12 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit
 	 	$rate = input_num('_ex_rate');
 	 	if (check_ui_refresh() || !$rate) { // readonly or ui context changed
 			$comp_currency = get_company_currency();
+
+	 		if (!isset($from_currency))
+	 			$from_currency = $comp_currency;
+	 		if (!isset($to_currency))
+	 			$to_currency = $comp_currency;
+
 			if ($from_currency == $comp_currency)
 				$currency = $to_currency;
 			else
@@ -560,7 +566,7 @@ function display_allocations($alloc_result, $total, $title, $show_summary=true)
     	if ($alloc_row['type'] == ST_SUPPAYMENT || $alloc_row['type'] == ST_BANKPAYMENT || $alloc_row['type'] == ST_SUPPCREDIT)
     		$alloc_row['Total'] = -$alloc_row['Total'];
     	amount_cell($alloc_row['Total']);
-   		amount_cell($alloc_row['Total'] - $alloc_row['amt']);
+   		amount_cell($alloc_row['Total'] - $alloc_row['alloc']);
     	amount_cell($alloc_row['amt']);
     	end_row();
 
@@ -832,7 +838,7 @@ function _number_to_words($number)
         "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
         "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", 
         "Nineteen"); 
-    $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", 
+    $tens = array("", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", 
         "Seventy", "Eighty", "Ninety"); 
 
     if ($Dn || $n) 
@@ -908,13 +914,23 @@ function get_js_lookup_window() {
 function get_js_select_combo_item() {
 	$js = "function selectComboItem(doc, client_id, value){
     	var element = doc.getElementById(client_id);
-		var options = element.options;
-		for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
-			if (options[i].value == value) {
-				element.selectedIndex = i;
-        		element.onchange();
+		if (typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT' ){
+			var options = element.options;
+			for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+				if (options[i].value == value) {
+					element.selectedIndex = i;
+	        		element.onchange();
+				}
 			}
-		}
+		} else {			
+			var stock_element = doc.getElementsByName('stock_id');
+	    	if( stock_element.length > 0) {
+				stock_element.value = value;	
+				var stock_id = doc.getElementById('_stock_id_edit'); 
+				stock_id.value=value;
+				stock_id.onblur();		
+			}
+		}			
 		window.close();
 	}";
 	return $js;
@@ -923,14 +939,24 @@ function get_js_select_combo_item() {
 function get_js_set_combo_item() {
 	$js = "function setComboItem(doc, client_id, value, text){
     	var element = doc.getElementById(client_id);
- 		var options = element.options;
- 		options.length = 0;
- 		var option = doc.createElement('option');
-		option.value = value;
-		option.text = text;
-    	element.add(option, 0);
-		element.selectedIndex = 0;
-        element.onchange();
+  		if(typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT') {
+	 		var options = element.options;
+	 		options.length = 0;
+	 		var option = doc.createElement('option');
+			option.value = value;
+			option.text = text;
+	   		element.add(option, 0);
+			element.selectedIndex = 0;
+	        element.onchange();
+	    } else {
+			var stock_element = doc.getElementsByName('stock_id');
+	    	if( stock_element.length > 0) {
+				stock_element[0].value = value;	
+				var stock_id = doc.getElementById('_stock_id_edit'); 
+				stock_id.value=value;
+				stock_id.onblur();					
+			}
+ 		}
 		window.close();
 	}";
 	return $js;
@@ -1435,6 +1461,14 @@ function changeCCYear(change) {
 function changeCCMonth(change) {
   cC.changeMonth(change);
 }
+window.addEventListener('click', function(e) {
+  if (document.getElementById('CC').contains(e.target)){} else {
+    if (cC.visible()) {
+      cC.hide();
+    }
+  }
+});
+
 document.write(\"<iframe id='CCIframe' src='javascript:false;' frameBorder='0' scrolling='no'></iframe>\");
 document.write(\"<div id='CC'></div>\");";
 
@@ -1469,7 +1503,7 @@ if (!function_exists('_vd'))
 
 function _vl($mixed, $title = '', $exit = false)
 {
-	error_log((!empty($title) ? ($title .':') : '') . var_export($mixed, true));
+	error_log((!empty($title) ? ($title .':') : '') . print_r($mixed, true));
 	if ($exit)
 		exit;
 }
@@ -1542,7 +1576,7 @@ function trans_editor_link($type, $trans_no)
 	//   35=> Cost Update,
 	);
 
-	return !isset($editor_url[$type]) ? '' :
+	return !isset($editor_url[$type]) ? '--' :
 		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
 			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
 }

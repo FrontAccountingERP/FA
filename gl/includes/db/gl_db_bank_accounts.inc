@@ -277,13 +277,15 @@ function get_ending_reconciled($bank_account, $bank_date)
 
 function get_sql_for_bank_account_reconcile($bank_account, $date)
 {
-	$sql = "SELECT	type, trans_no, ref, trans_date,
-				amount,	person_id, person_type_id, reconciled, id
-		FROM ".TB_PREF."bank_trans
+	$sql = "SELECT	bt.type, trans_no, ref, trans_date,
+				amount,	person_id, person_type_id, reconciled, bt.id, c.memo_
+		FROM ".TB_PREF."bank_trans bt
+		LEFT JOIN ".TB_PREF."comments c ON c.type = bt.type AND c.id = bt.trans_no
 		WHERE bank_act = ".db_escape($bank_account) . "
 			AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
 			AND amount != 0
-		ORDER BY trans_date, id";
+		ORDER BY trans_date, bt.id";
+
 	return $sql;
 }
 

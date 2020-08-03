@@ -72,6 +72,8 @@ class user_view {
 				    return user_numeric($value);
 			case 'percent':
 					return user_numeric($value)/100;
+			case 'check':
+					return isset($value) ? 1 : 0;
 			case 'text':
 			case 'date':
 			default:
@@ -92,6 +94,8 @@ class user_view {
 				return number_format2($value);
 			case 'percent':
 				return percent_format($value*100);
+			case 'check':
+				return !empty($value);
 			case 'stock':
 				$this->dec = get_qty_dec($value); // retrieve dec for use in following qty fields
 			case 'text':
@@ -161,7 +165,8 @@ class user_view {
 				$value = isset($this->data->$fld) ?	$this->data->$fld : @$fmt['dflt'];
 			else
 				$value = isset($this->data[$fld]) ?	$this->data[$fld] : @$fmt['dflt'];
-			if(isset($value))
+
+			if (isset($value))
 				$output[$post] = $this->_format_output($value, @$fmt['fmt']);
 		}
 	}
@@ -198,9 +203,13 @@ class user_view {
 			$post = isset($fmt['post']) ? $fmt['post'] : $name; // input name (default to field name)
 			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;	// input value (default to field name)
 
+
 //			if ($all || array_key_exists($post, $input))
 //			{
-				$value = $this->_format_input(@$input[$post], @$fmt['fmt']);
+				if (@$fmt['fmt'] == 'check')
+					$value = @$input[$post] ? 1 : 0;
+				else
+					$value = $this->_format_input(@$input[$post], @$fmt['fmt']);
 
 //				if (is_array($data))
 				if ($all || isset($value))

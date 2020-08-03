@@ -91,7 +91,7 @@ function display_wo_issue_details($issue_no)
             qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
 			label_cell($myrow["units"]);
 			amount_cell($myrow["unit_cost"]);
-			end_row();;
+			end_row();
 
         	$j++;
         	If ($j == 12)

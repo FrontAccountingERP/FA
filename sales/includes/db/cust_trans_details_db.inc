@@ -18,7 +18,9 @@ if (!is_array($debtor_trans_no))
 
 	$sql = "SELECT line.*,
 		line.unit_price+line.unit_tax AS FullUnitPrice,
-		line.description As StockDescription,
+        line.unit_price AS UnitPriceExTax,  
+		line.description AS StockDescription,
+		item.long_description AS StockLongDescription,
 		item.units, item.mb_flag
 		FROM "
 			.TB_PREF."debtor_trans_details line,"

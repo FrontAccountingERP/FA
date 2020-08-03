@@ -48,8 +48,8 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 {
 	global $Refs;
 
-	$product = get_item($stock_id);
-	$avg_cost =  $product['material_cost'];
+	$item = get_item($stock_id);
+	$avg_cost =  $item['material_cost'];
 
 	$qoh = get_qoh_on_date($stock_id, null, $date);
 
@@ -104,7 +104,7 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 	}
 
 	if ($qty > 0 && ($qoh != -$qty))
-		$avg_cost = ($avg_cost*($qoh+$qty_delayed)+$unit_cost*$qty_new)/($qoh+$qty);
+        $avg_cost = ($avg_cost*($qoh+$qty_delayed)+$unit_cost*$qty_new)/($qoh+$qty);
 
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($avg_cost)."
 		    WHERE stock_id=".db_escape($stock_id);
@@ -163,6 +163,7 @@ function work_order_production_gl($woid, $stock_id, $quantity, $date_, $rcv_no)
 {
 	global $SysPrefs, $path_to_root;
 
+	$memo = "";
 	if ($SysPrefs->loc_notification() == 1)
 	{
 		include_once($path_to_root . "/sales/includes/cart_class.inc");
@@ -228,6 +229,10 @@ function void_wo_costing($wo_id)
 
 	while($row = db_fetch($res))
 	{
+		$is_bank_to = is_bank_account($row['account']);
+		if ($is_bank_to)
+			void_bank_trans($row['trans_type'], $row['trans_no']);
+
 		// void any related gl trans
 		$date = Today();
 		$type = $row['trans_type'];

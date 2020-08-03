@@ -55,8 +55,9 @@ table_header($th);
 
 $k = 0;
 $name = $_GET["client_id"];
+$skip = $_GET["skip"];
 
-$result = get_chart_accounts_search(get_post("description"));
+$result = get_chart_accounts_search(get_post("description"), $skip);
 while ($myrow = db_fetch_assoc($result)) {
 	alt_table_row_color($k);
 	$value = $myrow['account_code'];

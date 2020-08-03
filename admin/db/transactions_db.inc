@@ -31,11 +31,12 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 		$sql .= " ,t.$trans_ref as ref ";
 	else
 		$sql .= ", r.reference as ref";
- 	$sql .= ",t.$trans_date as trans_date";
+	if ($trans_date)
+		$sql .= ",t.$trans_date as trans_date";
  	if ($type_name)
 		$sql .= ", t.$type_name as type";
 	$sql .= " FROM $table_name t LEFT JOIN ".TB_PREF."voided v ON"
-		." t.$trans_no_name=v.id AND v.type=$filtertype";
+		." t.$trans_no_name=v.id AND v.type=".db_escape($filtertype);
 
 	$sql .= " WHERE ISNULL(v.`memo_`)";
 	if ($from != null && $to != null)
@@ -208,6 +209,9 @@ function get_systype_db_info($type)
         case     ST_SALESQUOTE   : return array(TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
         case	 ST_DIMENSION    : return array(TB_PREF."dimensions", null, "id", "reference", "date_");
         case     ST_COSTUPDATE   : return array(TB_PREF."journal", "type", "trans_no", "reference", "tran_date");
+
+        case     ST_CUSTOMER    : return array(TB_PREF."debtors_master", null, "debtor_no", "debtor_ref", null);
+        case     ST_SUPPLIER    : return array(TB_PREF."suppliers", null, "supplier_id", "supp_ref", null);
 	}
 
 	display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);

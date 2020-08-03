@@ -295,20 +295,10 @@ function commit_item_data($n)
 {
 	if (check_item_data($n))
 	{
-    	if (input_num('this_quantity_inv'.$n) >= ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]))
-    	{
-    		$complete = true;
-    	}
-    	else
-    	{
-    		$complete = false;
-    	}
-
 		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item'.$n],
 			$_POST['item_code'.$n], $_POST['item_description'.$n], $_POST['qty_recd'.$n],
 			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),
-			$_POST['order_price'.$n], input_num('ChgPrice'.$n), $complete,
-			$_POST['std_cost_unit'.$n], "");
+			$_POST['order_price'.$n], input_num('ChgPrice'.$n));
 		reset_tax_input();
 	}
 }
@@ -350,6 +340,20 @@ if ($id4 != -1)
 	clear_fields();
 	reset_tax_input();
 	$Ajax->activate('gl_items');
+}
+
+$id5 = find_submit('Edit');
+if ($id5 != -1)
+{
+    $_POST['gl_code'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_code;
+    $_POST['dimension_id'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_dim;
+    $_POST['dimension2_id'] = $_SESSION['supp_trans']->gl_codes[$id5]->gl_dim2;
+    $_POST['amount'] = $_SESSION['supp_trans']->gl_codes[$id5]->amount;
+    $_POST['memo_'] = $_SESSION['supp_trans']->gl_codes[$id5]->memo_;
+
+       $_SESSION['supp_trans']->remove_gl_codes_from_trans($id5);
+       reset_tax_input();
+       $Ajax->activate('gl_items');
 }
 
 $id2 = -1;

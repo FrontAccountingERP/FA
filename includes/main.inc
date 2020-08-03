@@ -179,6 +179,9 @@ function js_compress($sJS)
 	
 		//loop through line's characters and take out any literal strings, replace them with ___i___ where i is the index of this string
 		$len = strlen($line);
+		if (version_compare(PHP_VERSION, '7.0.0') >= 0) // uninitialized string offser error fix. @Braath Waate
+			$line .= chr(32);
+		
 		for($j=0;$j<$len;$j++)
 		{
 			$c = $line[$j];		// this is _really_ faster than subst

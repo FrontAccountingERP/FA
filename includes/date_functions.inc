@@ -395,32 +395,34 @@ and converts to a yyyy/mm/dd format */
         list($day, $month, $year) = explode($sep, $date_);
     else // $how == 2 || $how == 5, YYYYMMDD or YYYYMmmDD
         list($year, $month, $day) = explode($sep, $date_);
+
 	if ($how > 2)
 	{
 		global $tmonths;
 		$month = array_search($month, $tmonths);
-	}	
-//to modify assumption in 2030
-	if ($SysPrefs->date_system == 0 || $SysPrefs->date_system == 3)
-	{
-		if ((int)$year < 60)
-		{
-			$year = "20".$year;
-		} 
-		elseif ((int)$year > 59 && (int)$year < 100)
-		{
-			$year = "19".$year;
-		}
-	}	
-	if ((int)$year > 9999)
-	{
-		return 0;
 	}
-	if ($SysPrefs->date_system == 1)
-		list($year, $month, $day) = jalali_to_gregorian($year, $month, $day); 
-	elseif ($SysPrefs->date_system == 2)
-		list($year, $month, $day) = islamic_to_gregorian($year, $month, $day); 
-
+	if ($year+$day+$month) {
+		//to modify assumption in 2030
+		if ($SysPrefs->date_system == 0 || $SysPrefs->date_system == 3)
+		{
+			if ((int)$year < 60)
+			{
+				$year = "20".$year;
+			} 
+			elseif ((int)$year > 59 && (int)$year < 100)
+			{
+				$year = "19".$year;
+			}
+		}
+		if ((int)$year > 9999)
+		{
+			return 0;
+		}
+		if ($SysPrefs->date_system == 1)
+			list($year, $month, $day) = jalali_to_gregorian($year, $month, $day); 
+		elseif ($SysPrefs->date_system == 2)
+			list($year, $month, $day) = islamic_to_gregorian($year, $month, $day); 
+	}
 	return sprintf("%04d-%02d-%02d", $year, $month, $day);
 }// end of function
 

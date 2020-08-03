@@ -1,13 +1,13 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
+	Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License, GPL, 
 	as published by the Free Software Foundation, either version 3 
 	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_SALESINVOICE';
 $path_to_root = "..";
@@ -27,12 +27,15 @@ page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "",
 
 function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no, $date, $from, $to, $memo)
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 
 	update_last_sent_recurrent_invoice($tmpl_no, $to);
 
 	$doc = new Cart(ST_SALESORDER, array($order_no));
-
+	
+	if (!empty($SysPrefs->prefs['dim_on_recurrent_invoice']))
+		$doc->trans_type = ST_SALESINVOICE;
+	
 	get_customer_details_to_order($doc, $customer_id, $branch_id);
 
 	$doc->trans_type = ST_SALESORDER;
@@ -96,11 +99,11 @@ if ($id != -1)
 		whole invoiced time is <begin, end>
 		invoices are issued _after_ invoiced period is gone, eg:
 		begin 1.1
-		end   31.3
-		period:    invoice ready for issue since:
-		1.1-31.1 -  1.2
-		1.2-28.2 -  1.3
-		1.3-31.3 -  1.4
+		end	  31.3
+		period:	   invoice ready for issue since:
+		1.1-31.1 -	1.2
+		1.2-28.2 -	1.3
+		1.3-31.3 -	1.4
 		In example above, when end is set to 1.4 will generate additional invoice on 1.5 !
 	*/
 
@@ -114,7 +117,7 @@ if ($id != -1)
 	$invs = array();
 	if (recurrent_invoice_ready($id, $date))
 	{
- 			begin_transaction();
+			begin_transaction();
 
 			if ($myrow['debtor_no'] == 0)
 			{
@@ -143,9 +146,8 @@ if ($id != -1)
 	if (count($invs) > 0)
 	{
 		$ar = array('PARAM_0' => $min."-".ST_SALESINVOICE,	'PARAM_1' => $max."-".ST_SALESINVOICE, 'PARAM_2' => "",
-			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => user_def_print_orientation());
+			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => "", 'PARAM_7' => user_def_print_orientation());
 		display_note(print_link(sprintf(_("&Print Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
-		$ar['PARAM_6'] = 1; // orygina³
 		$ar['PARAM_3'] = 1; // email
 		display_note(print_link(sprintf(_("&Email Recurrent Invoices # %s - # %s"), $min, $max), 107, $ar), 0, 1);
 	}
@@ -180,8 +182,10 @@ if ($id != -1)
 		label_row(_('Template:'), get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 		label_row(_('Number of invoices:'), $count);
 		date_row(_('Invoice date:'), 'trans_date');
-		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $from, add_days($to, -1)),
-			100, 100);
+		$newto = add_months($to, $myrow['monthly']);
+		$newto = add_days($newto, $myrow['days']);
+		text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), $to,	 add_days($newto, -1)), 100, 100);
+		//text_row(_('Invoice notice:'), 'memo', sprintf(_("Recurrent Invoice covers period %s - %s."), //$from, add_days($to, -1)), 100, 100);
 		end_table();
 		hidden('from', $from, true);
 		hidden('to', $to, true);
@@ -230,20 +234,20 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["days"]);
 	label_cell($myrow['monthly']);
 	label_cell(sql2date($myrow['begin']),  "align='center'");
-	label_cell(sql2date($myrow['end']),  "align='center'");
-	label_cell(calculate_next($myrow),  "align='center'");
- 	if ($myrow['overdue'])
- 	{
+	label_cell(sql2date($myrow['end']),	 "align='center'");
+	label_cell(calculate_next($myrow),	"align='center'");
+	if ($myrow['overdue'])
+	{
 		$count = recurrent_invoice_count($myrow['id']);
- 		if ($count)
- 		{
+		if ($count)
+		{
 			button_cell("create".$myrow["id"], sprintf(_("Create %s Invoice(s)"), $count), "", ICON_DOC, 'process');
 		} else {
 			label_cell('');
 		}
 	}
- 	else
- 		label_cell("");
+	else
+		label_cell("");
 	end_row();
 }
 end_table();

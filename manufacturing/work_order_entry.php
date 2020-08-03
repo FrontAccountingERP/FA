@@ -316,9 +316,9 @@ $existing_comments = "";
 $dec = 0;
 if (isset($selected_id))
 {
-	$myrow = get_work_order($selected_id);
+	$myrow = get_work_order($selected_id, true);
 
-	if (strlen($myrow[0]) == 0)
+	if ($myrow === false)
 	{
 		echo _("The order number sent is not valid.");
 		safe_exit();

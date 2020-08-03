@@ -16,10 +16,13 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 {
-    if ($order->find_cart_item($new_item))
-         display_error(_("For Part :") . $new_item . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
-	else
-         $order->add_to_cart (count($order->line_items), $new_item, $new_item_qty, $standard_cost);
+	$kit = get_item_kit($new_item);
+	foreach($kit as $item) {
+		if ($order->find_cart_item($item['stock_id']))
+			display_error(_("For Part :") . $item['stock_id'] . " " . "This item is already on this document. You can change the quantity on the existing line if necessary.");
+		else
+			$order->add_to_cart (count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $standard_cost);
+	}
 }
 
 //--------------------------------------------------------------------------------
@@ -39,8 +42,7 @@ function display_order_header(&$order)
 
     date_row(_("Date:"), 'AdjDate', '', true);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER, null, array('date'=>get_post('AdjDate'), 'location'=> get_post('FromStockLocation'))),
-		 false, ST_LOCTRANSFER);
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER, null, array('date'=>get_post('AdjDate'), 'location'=> get_post('FromStockLocation'))), false, ST_LOCTRANSFER);
 
 	end_outer_table(1); // outer table
 }
@@ -85,9 +87,7 @@ function display_transfer_items($title, &$order)
     		end_row();
 		}
 		else
-		{
 			transfer_edit_item_controls($order, $line_no);
-		}
 	}
 
 	if ($id == -1)
@@ -123,11 +123,11 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
 		if ($order->fixed_asset)
 			stock_disposable_fa_list_cells(null, 'stock_id', null, false, true, $order->line_items);
 		else
-			stock_costable_items_list_cells(null, 'stock_id', null, false, true);
+			sales_items_list_cells(null,'stock_id', null, false, true, true);
 
 		if (list_updated('stock_id')) {
-			    $Ajax->activate('units');
-			    $Ajax->activate('qty');
+			$Ajax->activate('units');
+			$Ajax->activate('qty');
 		}
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
@@ -147,18 +147,13 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
 
 	if ($id != -1)
 	{
-		button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE);
-		button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL);
+		button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 		hidden('LineNo', $line_no);
  		set_focus('qty');
 	}
 	else
-	{
-		submit_cells('AddItem', _("Add Item"), "colspan=2",
-		    _('Add new item to document'), true);
-	}
+		submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 
 	end_row();
 }
@@ -168,12 +163,12 @@ function transfer_edit_item_controls(&$order, $line_no=-1)
 
 function transfer_options_controls()
 {
-	  echo "<br>";
-	  start_table();
+    echo "<br>";
+    start_table();
 
-	  textarea_row(_("Memo"), 'memo_', null, 50, 3);
+	textarea_row(_("Memo"), 'memo_', null, 50, 3);
 
-	  end_table(1);
+	end_table(1);
 }
 
 

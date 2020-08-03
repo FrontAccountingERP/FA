@@ -490,7 +490,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		if ($order->line_items[$id]->descr_editable)
-			text_cells(null,'item_description', null, 45, 150);
+			text_cells(null,'item_description', null, 45, 50);
 		else {
 			hidden('item_description', $_POST['item_description']);
 			label_cell($_POST['item_description']);
@@ -500,15 +500,19 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	else	// prepare new line
 	{
 		if ($order->fixed_asset)
-			stock_disposable_fa_list_cells(null,'stock_id', null, _('[Select item]'), true, $order->line_items);
-		else
-			sales_items_list_cells(null,'stock_id', null, false, true, true);
-		if (list_updated('stock_id')) {
-			    $Ajax->activate('price');
-			    $Ajax->activate('units');
-			    $Ajax->activate('qty');
-			    $Ajax->activate('line_total');
-		}
+            stock_disposable_fa_list_cells(null,'stock_id', null, _('[Select item]'), true, $order->line_items);
+        else {
+            if (!isset($_POST['stock_id'])) {   // Check if stock_id dosesn't exist
+				$_POST['stock_id'] = last_sales_order_detail($order, 'stk_code');  //get the llast sales stock id.
+			}
+            sales_items_list_cells(null,'stock_id', $_POST['stock_id'], false, true, true);
+        }
+        if (list_updated('stock_id')) {            
+            $Ajax->activate('price');
+            $Ajax->activate('units');
+            $Ajax->activate('qty');
+            $Ajax->activate('line_total');
+        }		
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$units = $item_info["units"];
@@ -621,7 +625,7 @@ function display_delivery_details(&$order)
 
 		date_row($delname, 'delivery_date',
 			$order->trans_type==ST_SALESORDER ?  _('Enter requested day of delivery') 
-				: $order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : '');
+				: ($order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : ''));
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 50, 60,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 

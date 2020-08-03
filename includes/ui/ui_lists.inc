@@ -158,7 +158,7 @@ $opts = array(		// default options
 	// sql completion
 	if (count($opts['where'])) {
 		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
-		$where .= '('. implode($opts['where'], ' AND ') . ')';
+		$where .= '('. implode(' AND ', $opts['where']) . ')';
 		$group_pos = strpos($sql, 'GROUP BY');
 		if ($group_pos) {
 			$group = substr($sql, $group_pos);
@@ -345,7 +345,9 @@ $opts = array(		// default options
         			$img_title = _("Search suppliers");
         			break;
       			case "account":
-        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&client_id=" . $id;
+      			case "account2":
+      				$skip = strtolower($type) == "account" ? false : true;
+        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
         			$img_title = _("Search GL accounts");
         			break;
     		}
@@ -363,7 +365,7 @@ $opts = array(		// default options
 		$selector .= ' '.$opts['editlink'];
 
 	if ($search_box && $opts['cells'])
-		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector$img</td>";
+		$str = ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td nowrap>$selector$img</td>";
 	else
 		$str = $edit_entry.$selector.$img;
 	return $str;
@@ -551,10 +553,11 @@ function supplier_list_cells($label, $name, $selected_id=null, $all_option=false
 	$submit_on_change=false, $all=false, $editkey = false)
 {
 	if ($label != null)
-		echo "<td>$label</td><td>\n";
-		echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
+		echo "<td>$label</td>\n";
+	echo "<td>";	
+	echo supplier_list($name, $selected_id, $all_option, $submit_on_change, 
 		$all, $editkey);
-		echo "</td>\n";
+	echo "</td>\n";
 }
 
 function supplier_list_row($label, $name, $selected_id=null, $all_option = false, 
@@ -941,7 +944,7 @@ function sales_items_list_cells($label, $name, $selected_id=null, $all_option=fa
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo sales_items_list($name, $selected_id, $all_option, $submit_on_change,
-		'', array('cells'=>true));
+		'', array('cells'=>true, 'max'=>50)); // maximum is set to 50 and not default 255.
 }
 
 function sales_kits_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -1149,11 +1152,12 @@ function stock_depreciable_fa_list_cells($label, $name, $selected_id=null,
     	( SELECT stock_id FROM ".TB_PREF."stock_moves WHERE (type=".ST_CUSTDELIVERY." OR type=".ST_INVADJUST.") AND qty!=0 )";
 
 	$year = get_current_fiscalyear();
-	$y = date('Y', strtotime($year['end']));
+	$begin = date2sql(add_months(sql2date($year['begin']), -1));
+	$end = date2sql(add_months(sql2date($year['end']), -1));
 
 	// check if current fiscal year
-	$where_opts[] = "depreciation_date < '".$y."-12-01'";
-	$where_opts[] = "depreciation_date >= '".($y-1)."-12-01'";
+	$where_opts[] = "depreciation_date <= '".$end."'";
+	$where_opts[] = "depreciation_date >= '".$begin."'";
 
 	$where_opts[] = "material_cost > 0";
 	$where_opts[] = "mb_flag='F'";
@@ -1202,7 +1206,7 @@ function tax_types_list_row($label, $name, $selected_id=null, $none_option=false
 function tax_groups_list($name, $selected_id=null,
 	$none_option=false, $submit_on_change=false)
 {
-	$sql = "SELECT id, name FROM ".TB_PREF."tax_groups";
+	$sql = "SELECT id, name, inactive FROM ".TB_PREF."tax_groups";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 		array(
@@ -1821,7 +1825,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
 	if ($type_id ) $sql .= " AND chart.account_type=".db_escape($type_id);
-
+	$account = ($skip_bank_accounts ? "account2" : "account");
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 		array(
 			'format' => '_format_account',
@@ -1838,7 +1842,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'async' => false,
 			'category' => 2,
 			'show_inactive' => $all
-		), "account" );
+		), $account );
 }
 
 function _format_account($row)
@@ -2687,7 +2691,7 @@ function accounts_type_list_row($label, $name, $selected_id=null)
 function users_list_cells($label, $name, $selected_id=null, $submit_on_change=false, $spec_opt=true)
 {
     $where = false;
-    $sql = " SELECT user_id, real_name FROM ".TB_PREF."users";
+	$sql = " SELECT user_id, IF(real_name = '', user_id, real_name) FROM ".TB_PREF."users";
 
     if ($label != null)
         echo "<td>$label</td>\n";

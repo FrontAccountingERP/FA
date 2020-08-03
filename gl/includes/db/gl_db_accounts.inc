@@ -289,7 +289,7 @@ function is_bank_account($account_code)
 		return false;
 }
 
-function get_chart_accounts_search($like)
+function get_chart_accounts_search($like, $skip=false)
 {
 	global $SysPrefs;
 
@@ -298,14 +298,20 @@ function get_chart_accounts_search($like)
 	else
 		$limit = 10;
 
-
-	$sql = "SELECT chart.account_code, chart.account_name, type.name
-			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
-			WHERE chart.account_type=type.id
-        AND (
-          chart.account_name LIKE " . db_escape("%" . $like. "%") . " OR
-          chart.account_code LIKE " . db_escape("%" . $like. "%") . "
-        ) 
-      	ORDER BY chart.account_code LIMIT 0,".(int)($limit); // We only display 10 items.
+	if ($skip)
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+			FROM (".TB_PREF."chart_master chart,".TB_PREF."chart_types type) "
+			."LEFT JOIN ".TB_PREF."bank_accounts acc "
+			."ON chart.account_code=acc.account_code
+				WHERE acc.account_code  IS NULL
+			AND chart.account_type=type.id ";
+	else		
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type WHERE chart.account_type=type.id ";
+	$sql .= "AND (
+          	chart.account_name LIKE " . db_escape("%" . $like. "%") . " OR
+          	chart.account_code LIKE " . db_escape("%" . $like. "%") . "
+        	) 
+    		ORDER BY chart.account_code LIMIT 0,".(int)($limit); // We only display 10 items.
 	return db_query($sql, "Failed in retreiving GL account list.");
 }

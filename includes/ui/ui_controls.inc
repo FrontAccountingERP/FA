@@ -22,7 +22,7 @@ function get_post($name, $dflt='')
 		$ret = array();
 		foreach($name as $key => $dflt)
 			if (!is_numeric($key)) {
-				$ret[$key] = is_float($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
+				$ret[$key] = is_numeric($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
 			} else {
 				$ret[$dflt] = get_post($dflt, null);
 			}
@@ -503,15 +503,15 @@ function tab_visible($name, $tab)
 */
 $popup_editors = array(
 	'customer' => array('/sales/manage/customers.php?debtor_no=', 
-		113,	_("Customers"), 900, 600),
+		113,	_("Customers"), 900, 550),
 	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
-		114, _("Branches"), 900, 700),
+		114, _("Branches"), 900, 650),
 	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
-		113, _("Suppliers"), 900, 700),
+		113, _("Suppliers"), 1150, 550),
 	'item' => array('/inventory/manage/items.php?stock_id=', 
-		115, _("Items"), 800, 600),
+		115, _("Items"), 1000, 500),
 	'fa_item' => array('/inventory/manage/items.php?FixedAsset=1&stock_id=', 
-		115, _("Items"), 800, 600)
+		115, _("Items"), 1000, 500)
 );
 /*
 	Bind editors for various selectors.

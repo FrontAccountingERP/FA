@@ -146,7 +146,7 @@ if (get_post('creat')) {
 
 if (get_post('restore')) {
 	if ($backup_name) {
-		if (db_import($backup_path, $conn, true, false, check_value('protected')))
+		if (db_import($backup_path, $conn, true, false, check_value('protect')))
 			display_notification(_("Restore backup completed."));
 		$SysPrefs->refresh(); // re-read system setup
 	} else
@@ -187,7 +187,7 @@ if (get_post('upload'))
 
 }
 //-------------------------------------------------------------------------------
-start_form(false, true);
+start_form(true, true);
 start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Create backup"));

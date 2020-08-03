@@ -341,7 +341,7 @@ class FrontReport extends Cpdf
 		$str = $this->fiscal_year;
 		$this->Text($titleCol, $str, $companyCol);
 		$this->Text($companyCol, $this->user);
-		for ($i = 1; $i < count($this->params); $i++)
+		for ($i = 1; $i < count_array($this->params); $i++)
 		{
 			if ($this->params[$i]['from'] != '')
 			{
@@ -371,12 +371,12 @@ class FrontReport extends Cpdf
 		$this->Font('italic');
 		if ($this->headers2 != null)
 		{
-			$count = count($this->headers2);
+			$count = count_array($this->headers2);
 			for ($i = 0; $i < $count; $i++)
 				$this->TextCol2($i, $i + 1,	$this->headers2[$i]);
 			$this->NewLine();
 		}
-		$count = count($this->headers);
+		$count = count_array($this->headers);
 		for ($i = 0; $i < $count; $i++)
 			$this->TextCol($i, $i + 1, $this->headers[$i]);
 		$this->Font();
@@ -389,7 +389,7 @@ class FrontReport extends Cpdf
 	*/
 	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype, $contacts)
 	{
-
+		$this->pageNumber = 0;
 		$this->formData = array();
 		$datnames = array( 
 		'myrow' => array('ord_date', 'date_', 'tran_date', 
@@ -951,6 +951,9 @@ class FrontReport extends Cpdf
 	function End($email=0, $subject='')
 	{
 		global $SysPrefs, $path_to_root;
+
+		if (!empty($SysPrefs->prefs['print_dialog_direct']))		
+			$this->includeJS("print();"); // force to open print dialog
 
 		if ($SysPrefs->pdf_debug == 1)
 		{
