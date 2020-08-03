@@ -224,7 +224,7 @@ function is_subledger_account($account)
 
 	$result = db_query($sql,"Couldn't test AR/AP account");
 	$myrow = db_fetch_row($result);
-	return $myrow[0];
+	return $myrow == false ? 0 : $myrow[0];
 }
 
 function get_subaccount_data($code_id, $person_id)

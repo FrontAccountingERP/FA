@@ -644,6 +644,6 @@ function last_sales_order_detail($order, $field)
 
         $last_query=db_query($sql, "Could not retrieve last order detail");
         $row = db_fetch_row($last_query);
-        return $row[0];
+        return $row == false ? false : $row[0];
 }
 

@@ -225,7 +225,7 @@ class references
 			return false;
 
 		$result = db_fetch_row($result);
-		return $result[0];
+		return $result == false ? false : $result[0];
 	}
 
 	function is_new_reference($ref, $type, $trans_no=0)

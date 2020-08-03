@@ -147,7 +147,7 @@ function create_cart($type=0, $trans_no=0)
 		{
 			$net_sum = 0;
 			foreach($cart->gl_items as $gl)
-				if (!is_tax_account($gl->code_id) && !is_subledger_account($gl->code_id, $gl->person_id))
+                if (!is_tax_account($gl->code_id) && !is_subledger_account($gl->code_id))
 					$net_sum += $gl->amount;
 
 			$ex_net = abs($net_sum) - array_sum($tax_info['net_amount']);
