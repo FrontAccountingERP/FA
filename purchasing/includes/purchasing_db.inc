@@ -213,7 +213,7 @@ function add_direct_supp_trans($cart)
 
 	if ($cart->cash_account) {
 		$pmt_no = write_supp_payment(0, $inv->supplier_id, $cart->cash_account,	$inv->tran_date, $Refs->get_next(ST_SUPPAYMENT, null, $inv->tran_date), 
-			$total, 0, _('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')');
+			$total, 0, _('Payment for:').$inv->supp_reference .' ('.$type_shortcuts[ST_SUPPINVOICE].$inv_no.')' . ' ' . $cart->Comments, $cart->dimension, $cart->dimension2);
 		add_supp_allocation($total, ST_SUPPAYMENT, $pmt_no, ST_SUPPINVOICE, $inv_no, $inv->supplier_id, $inv->tran_date);
 		update_supp_trans_allocation(ST_SUPPINVOICE, $inv_no, $inv->supplier_id);
 		update_supp_trans_allocation(ST_SUPPAYMENT, $pmt_no, $inv->supplier_id);

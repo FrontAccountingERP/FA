@@ -131,6 +131,10 @@ function add_supp_invoice(&$supp_trans)
 	$trans_no = $supp_trans->trans_no;
 	$trans_type = $supp_trans->trans_type;
 	$supplier = get_supplier($supp_trans->supplier_id);
+    $dim = !empty($supp_trans->dimension) ? $supp_trans->dimension :
+        ($supplier['dimension_id'] ? $supplier['dimension_id'] : 0);
+    $dim2 = !empty($supp_trans->dimension2) ? $supp_trans->dimension2 :
+        ($supplier['dimension2_id'] ? $supplier['dimension2_id'] : 0);
 
 	begin_transaction();
 	hook_db_prewrite($supp_trans, $trans_type);
@@ -209,7 +213,7 @@ function add_supp_invoice(&$supp_trans)
 				if ($trans_type == ST_SUPPCREDIT)
 					$taxitem['Value'] = -$taxitem['Value'];
 				$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
-					$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
+					$taxitem['purchasing_gl_code'], $dim, $dim2, $taxitem['Value'],
 					$supp_trans->supplier_id,
 					"A general ledger transaction for the tax amount could not be added");
 			}
@@ -219,7 +223,7 @@ function add_supp_invoice(&$supp_trans)
 		$net_diff = -$net_diff;
 
     /* Now the AP account */
-    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier["payable_account"], 0, 0,
+    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier["payable_account"], $dim, $dim2,
 		-($invoice_items_total +  $item_added_tax + $supp_trans->ov_discount),
 		$supp_trans->supplier_id,
 		"The general ledger transaction for the control total could not be added");

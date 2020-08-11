@@ -234,7 +234,7 @@ function handle_add_payment()
 {
 	$payment_id = write_supp_payment(0, $_POST['supplier_id'], $_POST['bank_account'],
 		$_POST['DatePaid'], $_POST['ref'], input_num('amount'),	input_num('discount'), $_POST['memo_'], 
-		input_num('charge'), input_num('bank_amount', input_num('amount')));
+		input_num('charge'), input_num('bank_amount', input_num('amount')), $_POST['dimension_id'], $_POST['dimension2_id']);
 	new_doc_date($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;
@@ -318,6 +318,20 @@ start_form();
 
 	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
+	$row = get_supplier($_POST['supplier_id']);
+	$_POST['dimension_id'] = $row['dimension_id'];
+	$_POST['dimension2_id'] = $row['dimension2_id'];
+	$dim = get_company_pref('use_dimension');
+	if ($dim > 0)
+		dimensions_list_row(_("Dimension").":", 'dimension_id',
+			null, true, ' ', false, 1, false);
+	else
+		hidden('dimension_id', 0);
+	if ($dim > 1)
+		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id',
+			null, true, ' ', false, 2, false);
+	else
+		hidden('dimension2_id', 0);
 
 	end_outer_table(1);
 

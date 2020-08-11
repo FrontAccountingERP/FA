@@ -507,7 +507,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	}
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
+    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, $gl_item->dimension_id, $gl_item->dimension2_id, $memo_,
     	-$total, null, $person_type_id, $person_id);
 
     if ($do_exchange_variance)
