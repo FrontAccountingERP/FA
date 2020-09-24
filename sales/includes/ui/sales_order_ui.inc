@@ -353,7 +353,7 @@ function display_order_header(&$order, $editable, $date_text)
 		else
 		{
 			$row = get_customer_to_order($_POST['customer_id']);
-			if ($row['dissallow_invoices'] == 1)
+			if ($row && $row['dissallow_invoices'] == 1)
 				$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 		}
 	}
@@ -515,8 +515,11 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
         }		
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
-		$units = $item_info["units"];
-		$dec = $item_info['decimals'];
+		$units = ''; $dec = 2;
+		if ($item_info) {
+				$units = $item_info["units"];
+				$dec = $item_info['decimals'];
+		}
 		$_POST['qty'] = number_format2(1, $dec);
 		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,

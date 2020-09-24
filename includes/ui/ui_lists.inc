@@ -150,7 +150,7 @@ $opts = array(		// default options
 					foreach($opts['search'] as $i=> $s)
 						$opts['search'][$i] = $s . " LIKE "
 							.db_escape(($class=='combo3' ? '' : '%').$txt.'%');
-					$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+					$opts['where'][] = '('. implode(' OR ', $opts['search']) . ')';
 				}
 		}
 	}
