@@ -173,8 +173,9 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if ($delivery->is_prepaid())
 	{
 		$deferred_act = get_company_pref('deferred_income_act');
-		add_gl_trans_customer(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $deferred_act, 0, 0,
-			-$total, $delivery->customer_id, "The deferred income GL posting could not be inserted");
+		add_gl_trans(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $deferred_act, 0, 0, 
+			"The deferred income GL posting could not be inserted",
+			-$total, null, PT_CUSTOMER, $delivery->customer_id);
 	}
 
 	if ($bo_policy == 0) {
