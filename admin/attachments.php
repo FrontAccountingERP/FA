@@ -80,6 +80,7 @@ if (isset($_GET['trans_no']))
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
 	
+	$filename = basename($_FILES['filename']['name']);
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
 	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
@@ -89,8 +90,9 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		  	display_error(_("The file size is over the maximum allowed."));
     	else
 		  	display_error(_("Select attachment file."));
-  	}
-	else {
+  	} elseif ( strlen($filename) > 60) {
+		display_error(_("File name exceeds maximum of 60 chars. Please change filename and try again."));
+	} else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
 
@@ -104,7 +106,6 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			fclose($fp);
 		}
 
-		$filename = basename($_FILES['filename']['name']);
 		$filesize = $_FILES['filename']['size'];
 		$filetype = $_FILES['filename']['type'];
 
