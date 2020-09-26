@@ -632,7 +632,7 @@ function display_delivery_details(&$order)
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 50, 60,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 
-		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
+		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5, 255,
 			_('Delivery address. Default is address of customer branch'));
 
 		table_section(2);

@@ -141,7 +141,7 @@ if ($Mode == 'Edit' && $myrow['system']) {
 }
 
 text_row_ex(_("Category Short Name:"), 'name', 30); 
-textarea_row(_("Category Description:"), 'description', null, 60,4);
+textarea_row(_("Category Description:"), 'description', null, 60, 4);
 
 end_table(1);
 
