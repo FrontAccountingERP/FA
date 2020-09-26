@@ -218,18 +218,20 @@ class hooks {
 /*
 	Installs hooks provided by extension modules
 */
-function install_hooks()
+function install_hooks($lang_code=null)
 {
 	global $path_to_root, $Hooks, $installed_extensions;
 
 	$Hooks = array();
-	
 	// include current language related $Hooks object if locale file exists
-	$lang_code  = clean_file_name($_SESSION['language']->code);
+	if (!$lang_code)
+		$lang_code = $_SESSION['language']->code;
+	$lang_code  = clean_file_name($lang_code);
+
 	if (file_exists($path_to_root . "/lang/" . $lang_code . "/locale.inc"))
 	{
 		include_once($path_to_root . "/lang/" . $lang_code . "/locale.inc");
-		$code = $_SESSION['language']->code;
+		$code = $lang_code;
 		$hook_class = 'hooks_'.$code;
 		$Hooks[$code] = new $hook_class;
 		unset($code, $hook_class);
