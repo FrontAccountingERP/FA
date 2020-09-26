@@ -49,7 +49,7 @@ function delete_po($po)
 	global $Refs;
 
 	begin_transaction();
-	hook_db_prevoid($po, ST_PURCHORDER);
+	hook_db_prevoid(ST_PURCHORDER, $po);
 	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=".db_escape($po);
 	db_query($sql, "The order header could not be deleted");
 
