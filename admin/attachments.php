@@ -83,7 +83,10 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 	$filename = basename($_FILES['filename']['name']);
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
-	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
+	elseif ($Mode == 'ADD_ITEM' && !in_array(strtoupper(substr($filename, strlen($filename) - 3)), array('JPG','PNG','GIF', 'PDF', 'DOC', 'ODT')))
+	{
+		display_error(_('Only graphics,pdf,doc and odt files are supported.'));
+	} elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
 		display_error(_("Select attachment file."));
 	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
     	if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
