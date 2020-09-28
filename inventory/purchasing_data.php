@@ -133,6 +133,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 if ($mb_flag == -1)
 {
 	display_error(_("Entered item is not defined. Please re-enter."));
+  	$Ajax->activate('price_table');
 	set_focus('stock_id');
 }
 else

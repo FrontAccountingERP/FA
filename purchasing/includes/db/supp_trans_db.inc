@@ -131,7 +131,7 @@ function get_supp_payment_before($supplier_id, $date)
 	. TB_PREF . "bank_trans,"
 	. TB_PREF . "bank_accounts "
 	. "WHERE "
-	. TB_PREF . "supp_trans.supplier_id=" . $supplier_id . " "
+	. TB_PREF . "supp_trans.supplier_id='" . $supplier_id . "' "
 	. "AND " . TB_PREF . "supp_trans.tran_date<'" . $date . "' "
 	. "AND " . TB_PREF . "supp_trans.type=" . ST_SUPPAYMENT . " "
 	. "AND " . TB_PREF . "supp_trans.trans_no=" . TB_PREF . "bank_trans.trans_no "

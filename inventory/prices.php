@@ -200,7 +200,8 @@ if (!isset($_POST['price'])) {
 }
 
 $kit = get_item_code_dflts($_POST['stock_id']);
-small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
+$units = $kit ? $kit["units"] : '';
+small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$units);
 
 end_table(1);
 if ($calculated)
