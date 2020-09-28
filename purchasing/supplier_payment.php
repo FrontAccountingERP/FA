@@ -57,13 +57,6 @@ if (isset($_POST['_DatePaid_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 
-if (list_updated('supplier_id')) {
-	$_POST['amount'] = price_format(0);
-	$_SESSION['alloc']->person_id = get_post('supplier_id');
-	$Ajax->activate('amount');
-} elseif (list_updated('bank_account'))
-	$Ajax->activate('alloc_tbl');
-
 //----------------------------------------------------------------------------------------
 
 if (!isset($_POST['bank_account'])) { // first page call
@@ -275,6 +268,13 @@ start_form();
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
+	if (list_updated('supplier_id')) {
+		$_POST['amount'] = price_format(0);
+		$_SESSION['alloc']->person_id = get_post('supplier_id');
+		$Ajax->activate('amount');
+	} elseif (list_updated('bank_account'))
+		$Ajax->activate('alloc_tbl');
+
 	if (list_updated('supplier_id') || list_updated('bank_account')) {
 	  $_SESSION['alloc']->read();
 	  $_POST['memo_'] = $_POST['amount'] = '';
@@ -319,8 +319,8 @@ start_form();
 	amount_row(_("Bank Charge:"), 'charge', null, '', $bank_currency);
 
 	$row = get_supplier($_POST['supplier_id']);
-	$_POST['dimension_id'] = $row['dimension_id'];
-	$_POST['dimension2_id'] = $row['dimension2_id'];
+	$_POST['dimension_id'] = @$row['dimension_id'];
+	$_POST['dimension2_id'] = @$row['dimension2_id'];
 	$dim = get_company_pref('use_dimension');
 	if ($dim > 0)
 		dimensions_list_row(_("Dimension").":", 'dimension_id',
