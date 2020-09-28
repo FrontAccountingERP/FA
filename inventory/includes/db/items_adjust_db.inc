@@ -36,8 +36,8 @@ function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 		if ($SysPrefs->loc_notification() == 1 && $line_item->quantity < 0)
 		{
 			$tmp = $line_item->quantity;
-			$chg = $line_item; $chg->quantity= -$chg->quantity;	// calculate_reorder_level expect positive qty
-			$loc = calculate_reorder_level($location, $chg, $st_ids, $st_names, $st_num, $st_reorder); 
+			$line_item->quantity = -$line_item->quantity;	// calculate_reorder_level expect positive qty
+			$loc = calculate_reorder_level($location, $line_item, $st_ids, $st_names, $st_num, $st_reorder);
 			$line_item->quantity = $tmp;
 		}
 
