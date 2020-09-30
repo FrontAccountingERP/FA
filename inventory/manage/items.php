@@ -213,7 +213,7 @@ if (isset($_POST['addupdate']))
       $_POST['depreciation_rate'] = 0;
     }
     $move_row = get_fixed_asset_move($_POST['NewStockID'], ST_SUPPRECEIVE);
-    if (isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
+    if ($move_row && isset($_POST['depreciation_start']) && strtotime($_POST['depreciation_start']) < strtotime($move_row['tran_date'])) {
       display_warning(_('The depracation cannot start before the fixed asset purchase date'));
     }
   }
@@ -390,14 +390,12 @@ function item_settings(&$stock_id, $new_item)
 
 	stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
-	check_row(_("Editable description:"), 'editable');
 
-	if (get_post('fixed_asset'))
-		hidden('no_sale', 0);
-	else
+	if (!get_post('fixed_asset')) {
+		check_row(_("Editable description:"), 'editable');
 		check_row(_("Exclude from sales:"), 'no_sale');
-
-	check_row(_("Exclude from purchases:"), 'no_purchase');
+		check_row(_("Exclude from purchases:"), 'no_purchase');
+	}
 
 	if (get_post('fixed_asset')) {
 		table_section_title(_("Depreciation"));
@@ -490,7 +488,8 @@ function item_settings(&$stock_id, $new_item)
 	// Add Image upload for New Item  - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
+
+	if (@$_POST['NewStockID'] && file_exists(company_path().'/images/'
 		.item_img_name($_POST['NewStockID']).".jpg")) 
 	{
 	 // 31/08/08 - rand() call is necessary here to avoid caching problems.

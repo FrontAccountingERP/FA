@@ -95,6 +95,8 @@ function get_purchase_data($supplier_id, $stock_id)
 function add_or_update_purchase_data($supplier_id, $stock_id, $price, $description="", $uom="")
 {
 	$data = get_purchase_data($supplier_id, $stock_id);
+
+	$description = substr($description, 0, 50); // FIXME: temporary constraint to avoid db errors on long descriptions, see [0005170]
 	if ($data === false)
 	{
 		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
