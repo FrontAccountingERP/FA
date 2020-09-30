@@ -138,7 +138,7 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 {
 	$l = array_search_value($i_lang, $inst_langs,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
-	 isset($l['rtl']) ? 'rtl' : 'ltr');
+	 @isset($l['rtl']) ? 'rtl' : 'ltr');
 
 }
 if (!isset($installed_languages))

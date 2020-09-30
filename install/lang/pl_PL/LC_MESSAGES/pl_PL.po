@@ -262,7 +262,7 @@ msgstr "Powtórz Has³o:"
 
 #: install/index.php:399 install/index.php:400 install/index.php:401
 msgid "Select Chart of Accounts:"
-msgstr "Wybierz Planów Kont:"
+msgstr "Wybierz Plan Kont:"
 
 #: install/index.php:400 install/index.php:401 install/index.php:402
 msgid "Select Default Language:"
