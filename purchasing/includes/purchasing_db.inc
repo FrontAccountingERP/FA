@@ -209,6 +209,7 @@ function add_direct_supp_trans($cart)
 			$total += isset($taxitem['Override']) ? $taxitem['Override'] : $taxitem['Value'];
 		}
 	}
+	$inv->currency = $cart->curr_code;
 	$inv->ex_rate = $cart->ex_rate;
 
 	$inv_no = add_supp_invoice($inv);
