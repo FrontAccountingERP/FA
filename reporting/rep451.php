@@ -94,7 +94,7 @@ function print_fixed_assets_valuation_report()
     $rep->NewPage();
 
 	//$res = getTransactions($category, $location, $date);
-	$sql = get_sql_for_fixed_assets(true);
+	$sql = get_sql_for_fixed_assets(false);
 	$res = db_query($sql,"No transactions were returned");
 	
 	$total = $grandtotal = 0.0;
