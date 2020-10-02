@@ -140,7 +140,7 @@ function print_fixed_assets_valuation_report()
 		{
 			$rep->NewLine();
 			$rep->TextCol(0, 1, $trans['stock_id']);
-			$rep->TextCol(1, 2, $trans['name'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
+			$rep->TextCol(1, 2, $trans['name']);
 			$rep->TextCol(2, 3, $trans['units']);
 			$rep->AmountCol(3, 4, $UnitCost, $dec);
 			$rep->AmountCol(4, 5, $Depreciation, $dec);
