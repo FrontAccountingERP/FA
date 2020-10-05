@@ -92,7 +92,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	// titles and screen header
 	global $path_to_root, $SysPrefs, $db_connections;
 
-	if (in_ajax())
+	if (in_ajax() || isset($_POST['REP_ID']))
 		return; // just for speed up
 
 	$theme = user_theme();

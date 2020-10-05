@@ -561,7 +561,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			{
 				// in case of GET request redirect to avoid confirmation dialog 
 				// after return from menu option
-				header("HTTP/1.1 303 See Other");
+				header("HTTP/1.1 307 Temporary Redirect");
 				header("Location: ".$_SESSION['timeout']['uri']);
 				exit();
 			}
