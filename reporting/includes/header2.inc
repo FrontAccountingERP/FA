@@ -67,20 +67,18 @@
 		$this->LineTo($right, $iline5 ,$right, $iline7);
 
 		// Company Logo
-		$this->NewLine();
 		$logo = company_path() . "/images/" . $this->company['coy_logo'];
 		if ($this->company['coy_logo'] != '' && file_exists($logo))
 		{
+			$this->NewLine();
 			$this->AddImage($logo, $ccol, $this->row, 0, 40);
 		}
-		else
-		{
-			$this->fontSize += 4;
-			$this->Font('bold');
-			$this->Text($ccol, $this->company['coy_name'], $icol);
-			$this->Font();
-			$this->fontSize -= 4;
-		}
+		$this->NewLine();
+		$this->fontSize += 4;
+		$this->Font('bold');
+		$this->Text($ccol, $this->company['coy_name'], $icol);
+		$this->Font();
+		$this->fontSize -= 4;
 		// Document title
 		$this->SetTextColor(190, 190, 190);
 		$this->fontSize += 10;
