@@ -141,10 +141,10 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 				$filename, $unique_name, $filesize, $filetype); 
 			display_notification(_("Attachment has been updated.")); 
 		}
+		reset_form();
 	}
 	refresh_pager('trans_tbl');
 	$Ajax->activate('_page_body');
-	$Mode = 'RESET';
 }
 
 if ($Mode == 'Delete')
@@ -155,11 +155,15 @@ if ($Mode == 'Delete')
 		unlink($dir."/".$row['unique_name']);
 	delete_attachment($selected_id);	
 	display_notification(_("Attachment has been deleted.")); 
-	$Mode = 'RESET';
+	reset_form();
 }
 
 if ($Mode == 'RESET')
+	reset_form();
+
+function reset_form()
 {
+	unset($_POST['trans_no']);
 	unset($_POST['description']);
 	$selected_id = -1;
 }
@@ -173,7 +177,7 @@ function viewing_controls()
 	start_row();
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
 	if (list_updated('filterType'))
-		$selected_id = -1;
+		reset_form();
 
 	if(get_post('filterType') == ST_CUSTOMER ){
 		customer_list_cells(_("Select a customer: "), 'trans_no', null, false, true, true);
