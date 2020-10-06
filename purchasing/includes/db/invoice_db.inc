@@ -39,16 +39,18 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 		if (!is_date_in_fiscalyear($supp_trans->tran_date))
 			$supp_trans->tran_date = end_fiscalyear();
 	}
-	if ($supp_trans->supplier_id != $supplier_id)
-	    get_duedate_from_terms($supp_trans);
 
-    $supp_trans->supplier_id = $supplier_id;
     $supp_trans->tax_included = $myrow['tax_included'];
     $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->terms = array( 
 		'description' => $myrow['terms'],
 		'days_before_due' => $myrow['days_before_due'], 
 		'day_in_following_month' => $myrow['day_in_following_month'] );
+
+	if ($supp_trans->supplier_id != $supplier_id)
+	    get_duedate_from_terms($supp_trans);
+
+    $supp_trans->supplier_id = $supplier_id;
 
 	$supp_trans->credit = $myrow['cur_credit'];
 

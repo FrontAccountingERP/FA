@@ -103,6 +103,7 @@ function invoice_header(&$supp_trans)
 	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
+		copy_to_trans($supp_trans);
 		// supplier has changed
 		// delete all the order items - drastic but necessary because of
 		// change of currency, etc
