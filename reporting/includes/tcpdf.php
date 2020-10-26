@@ -177,6 +177,17 @@ require_once(dirname(__FILE__)."/barcodes.php");
  */
 require_once(dirname(__FILE__)."/html_entity_decode_php4.php");
 
+//
+// Check image file format against specific TCPDF engine requirements.
+//
+function check_image_file($filename)
+{
+	$test = new TCPDF();
+	if ( !$test->Image($filename, 0, 0) )
+		return _('Unsupported image file format.');
+	return '';
+}
+
 if (!class_exists('TCPDF')) {
 	/**
 	 * define default PDF document producer
@@ -3707,6 +3718,7 @@ if (!class_exists('TCPDF')) {
 				}
 			}
 			$this->endlinex = $this->img_rb_x;
+			return $info;
 		}
 
 		/**

@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/reporting/includes/tcpdf.php");
 //-------------------------------------------------------------------------------------------------
 
 if (isset($_POST['update']) && $_POST['update'] != "")
@@ -104,12 +105,20 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			}
 		}
 
-		if ($input_error != 1)
-		{
+		if ($input_error != 1) {
 			$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 			$_POST['coy_logo'] = clean_file_name($_FILES['pic']['name']);
-			if(!$result) 
+			if(!$result) {
 				display_error(_('Error uploading logo file'));
+				$input_error = 1;
+			} else {
+				$msg = check_image_file($filename);
+				if ( $msg) {
+					display_error( $msg);
+					unlink($filename);
+					$input_error = 1;
+				}
+			}
 		}
 	}
 	if (check_value('del_coy_logo'))

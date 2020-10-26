@@ -12,6 +12,7 @@
 $page_security = 'SA_ITEM';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
+include($path_to_root . "/reporting/includes/tcpdf.php");
 
 $js = "";
 if ($SysPrefs->use_popup_windows)
@@ -87,7 +88,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		mkdir($filename);
 	}	
-	$filename .= "/".item_img_name($stock_id).".jpg";
+	$filename .= "/".item_img_name($stock_id).(substr(trim($_FILES['pic']['name']), strrpos($_FILES['pic']['name'], '.')));
 
   if ($_FILES['pic']['error'] == UPLOAD_ERR_INI_SIZE) {
     display_error(_('The file size is over the maximum allowed.'));
@@ -137,6 +138,11 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	if ($upload_file == 'Yes')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
+		if ($msg = check_image_file($filename)) {
+			display_error($msg);
+			unlink($filename);
+			$upload_file ='No';
+		}
 	}
 	$Ajax->activate('details');
  /* EOF Add Image upload for New Item  - by Ori */
