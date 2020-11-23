@@ -401,7 +401,7 @@ if ($id != -1 || $id2 != -1)
 	$Ajax->activate('inv_tot');
 }
 
-if (get_post('AddGLCodeToTrans'))
+if (get_post('AddGLCodeToTrans') || get_post('update'))
 	$Ajax->activate('inv_tot');
 
 br();
