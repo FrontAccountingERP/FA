@@ -160,6 +160,15 @@ function update_po(&$po_obj)
 
 //----------------------------------------------------------------------------------------
 
+function get_po($order_no) {
+    $sql = "SELECT * FROM ".TB_PREF."purch_orders WHERE order_no = ".db_escape($order_no);
+    $result = db_query($sql);
+
+    return db_fetch($result);
+}
+
+//----------------------------------------------------------------------------------------
+
 function read_po_header($order_no, &$order)
 {
     	$sql = "SELECT po.*, supplier.*, loc.location_name 
