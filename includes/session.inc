@@ -133,15 +133,13 @@ function kill_login()
 function login_fail()
 {
 	global $path_to_root;
-	
+
 	header("HTTP/1.1 401 Authorization Required");
 	echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 	echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
-
 	echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
 	echo "<br><a href='$path_to_root/index.php'>" . _("Try again") . "</a>";
 	echo "</center>";
-
 	kill_login();
 	die();
 }
@@ -533,9 +531,10 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 					'', html_specials_encode($_SERVER['REQUEST_URI'])),
 				'post' => $_POST);
 
+		if (in_ajax())
+			$Ajax->popup($path_to_root ."/access/timeout.php");
+		else
 			include($path_to_root . "/access/login.php");
-			if (in_ajax())
-				$Ajax->activate('_page_body');
 			exit;
 		} else {
 			if (isset($_POST["company_login_nickname"]) && !isset($_POST["company_login_name"])) {
@@ -555,7 +554,11 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 			if (!$succeed)
 			{
 			// Incorrect password
-				login_fail();
+				if (isset($_SESSION['timeout'])) {
+					include($path_to_root . "/access/login.php");
+					exit;
+				} else
+					login_fail();
 			}
 			elseif(isset($_SESSION['timeout']) && !$_SESSION['timeout']['post'])
 			{

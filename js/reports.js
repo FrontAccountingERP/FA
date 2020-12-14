@@ -35,12 +35,6 @@ var replinks = {
 			return false;
 		}
 	},
-	'button': function(e) {
-		e.onclick = function() {
-			window.open('', 'formpopup', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no');
-			e.form.target='formpopup';
-		}
-	},
 }
 
 function set_options(e)
