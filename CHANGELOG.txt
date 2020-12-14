@@ -1,3 +1,8 @@
+2020-12-14 10:50:22 +0100 Joe Hunt 
+Release 2.4.9
+M	CHANGELOG.txt
+M	version.php
+
 2020-12-14 09:39:03 +0100 Janusz Dobrowolski 
 Gettext templates updated
 M	install/lang/new_language_template/LC_MESSAGES/empty.po
