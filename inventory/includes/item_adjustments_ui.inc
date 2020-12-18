@@ -199,7 +199,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 			set_focus(input_num('qty') >= 0 ? 'std_cost' : 'AddItem');
 		}
 		if (input_num('qty') >= 0)
-		    amount_cells(null, 'std_cost', null, null, null, $dec);
+		    amount_cells(null, 'std_cost', null, null, null, $dec2);
 		else {
 		    hidden('std_cost');
 			label_cell($_POST['std_cost'], "nowrap align=right");
