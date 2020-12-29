@@ -130,7 +130,7 @@ $Ajax = new Ajax();
 get_text_init();
 
 $i_lang = isset($_POST['inst_lang']) ? $_POST['inst_lang'] : 
- 	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : array('code' => 'C'));
+ 	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : 'C');
 
 // Page Initialisation
 if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')
