@@ -183,6 +183,7 @@ function check_valid_entries($trans_no)
 
 	$amnt_tr = input_num('charge') + input_num('amount');
 
+	$problemTransaction = null;
 	if ($trans_no) {
 		$problemTransaction = check_bank_transfer( $trans_no, $_POST['FromBankAccount'], $_POST['ToBankAccount'], $_POST['DatePaid'],
 			$amnt_tr, input_num('target_amount', $amnt_tr));
