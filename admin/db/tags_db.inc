@@ -75,9 +75,9 @@ function get_tag_name($id)
 	$sql = "SELECT name FROM ".TB_PREF."tags WHERE id = ".db_escape($id);
 
 	$result = db_query($sql, "could not get tag name");
-
+	
 	$row = db_fetch_row($result);
-	return $row[0];
+	return $row ? $row[0] : '';
 }
 
 //----------------------------------------------------------------------------------------------------
