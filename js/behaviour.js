@@ -161,7 +161,7 @@ document.getElementsBySelector = function(selector) {
       currentContext = new Array;
       var currentContextIndex = 0;
       for (var k = 0; k < found.length; k++) {
-        if (found[k].className && found[k].className.match(new RegExp('\\b'+className+'\\b'))) {
+        if (found[k].getAttribute('class') != null && found[k].getAttribute('class').match(new RegExp('\\b'+className+'\\b'))) {
           currentContext[currentContextIndex++] = found[k];
         }
       }
