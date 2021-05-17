@@ -323,7 +323,7 @@ function print_invoices()
 			$rep->Font();
 			if ($email == 1)
 			{
-				$rep->End($email);
+				$rep->End($email, sprintf(_("Invoice %d from %s"), $myrow['reference'], get_company_pref('coy_name')));
 			}
 	}
 	if ($email == 0)
