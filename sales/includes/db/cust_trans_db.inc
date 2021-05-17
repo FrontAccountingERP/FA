@@ -125,6 +125,7 @@ function get_customer_trans($trans_id, $trans_type, $customer_id=null)
 	$sql = "SELECT trans.*,"
 		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
 		."cust.name AS DebtorName, cust.address, "
+		."cust.debtor_ref, "
 		."cust.curr_code, "
 		."cust.tax_id,
 		trans.prep_amount>0 as prepaid,"
