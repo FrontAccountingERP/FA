@@ -100,7 +100,7 @@ function clear_supp_alloctions($type, $type_no, $person_id=null, $date="")
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_supp_sql($supplier_id=null, $settled)
+function get_allocatable_from_supp_sql($supplier_id, $settled)
 {
 	$sql = "SELECT
 		trans.type,

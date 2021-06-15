@@ -377,7 +377,7 @@ if (!function_exists('money_format'))
 
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
-function qty_format($number, $stock_id=null, &$dec) {
+function qty_format($number, $stock_id, &$dec) {
 	$dec = get_qty_dec($stock_id);
     return number_format2($number, $dec);
 }

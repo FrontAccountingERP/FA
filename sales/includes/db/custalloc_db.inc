@@ -98,7 +98,7 @@ function clear_cust_alloctions($type, $type_no, $person_id=null, $date="")
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_cust_sql($customer_id=null, $settled)
+function get_allocatable_from_cust_sql($customer_id, $settled)
 {
 	$sql = "SELECT
 		trans.type,
