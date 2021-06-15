@@ -85,7 +85,7 @@ function print_aged_customer_analysis()
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
-		$pg = new graph();
+		$pg = new chart($graphics);
 	}
 
 	if ($fromcust == ALL_TEXT)
@@ -225,28 +225,30 @@ function print_aged_customer_analysis()
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
 	$rep->fontSize -= 2;
+	$serie = array();
 	for ($i = 0; $i < count($total); $i++)
 	{
 		$rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
 		if ($graphics && $i < count($total) - 1)
 		{
-			$pg->y[$i] = abs($total[$i]);
+			$serie[] = abs($total[$i]);
 		}
 	}
    	$rep->Line($rep->row - 8);
    	if ($graphics)
    	{
-		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
-		$pg->title     = $rep->title;
-		$pg->axis_x    = _("Days");
-		$pg->axis_y    = _("Amount");
-		$pg->graphic_1 = $to;
-		$pg->type      = $graphics;
-		$pg->skin      = $SysPrefs->graph_skin;
-		$pg->built_in  = false;
+		$pg->setStream('png');
+		$pg->addSerie(_('Balances'), $serie);
+		$pg->setLabels(array(_('Current'), $nowdue, $pastdue1, $pastdue2));
+		$pg->setTitle($rep->title);
+		$pg->setXTitle(_("Days"));
+		$pg->setYTitle(_("Amount"));
+		$pg->setDTitle(number_format2($total[4]));
+		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
-		$pg->display($filename, true);
+		$pg->display($filename);
+		//sleep(5);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
 		$x = ($rep->pageWidth - $w) / 2;
