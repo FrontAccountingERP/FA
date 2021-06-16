@@ -735,7 +735,7 @@ function gl_week_performance($today, $width="33", $weeks=4)
 			GROUP BY week_name ORDER BY week_name DESC LIMIT 0, $weeks) b 
 		GROUP BY week_name ORDER BY week_name ASC";
 	$result = db_query($sql, "Transactions could not be calculated");
-	$title = _("Last $weeks weeks Performance");
+	$title = sprintf(_("Last %s weeks Performance"), $weeks);
 	check_page_security('SA_GLANALYTIC');
 	$week_names = $sales = $costs = $results = array();
 	while ($myrow = db_fetch($result))
@@ -774,7 +774,7 @@ function gl_month_performance($today, $width="33", $months=5)
 			GROUP BY month_name ORDER BY month_name DESC LIMIT 0, $months) b 
 		GROUP BY month_name ORDER BY month_name ASC";
 	$result = db_query($sql, "Transactions could not be calculated");
-	$title = _("Last $months Months Performance");
+	$title = sprintf(_("Last %s Months Performance"), $months);
 	check_page_security('SA_GLANALYTIC');
 	$month_names = $sales = $costs = $results = array();
 	while ($myrow = db_fetch($result))
@@ -964,7 +964,7 @@ function cash_flow($today)
 		$date[$i] = $y.$sep.$m;
 		$total[$i] = round($total[$i]);
 	}
-	$title = _("Last $months Months Cash Flow");
+	$title = sprintf(_("Last %s Months Cash Flow"), $months);
 	check_page_security('SA_BANKREP');
 	$pg->setLabels($date);
 	$pg->addSerie(_('Balances'), $total, false, true);

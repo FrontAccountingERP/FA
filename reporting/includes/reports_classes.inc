@@ -253,7 +253,7 @@ class BoxReports
 
 				case 'GRAPHIC':
 					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), 
-								_("Dots"), _("Lines"), _("Pie"), _("Donut"), _("Half donut"), _("Spline"));
+								_("Dots"), _("Lines"), _("Pie"), _("Donut"), _("Half Donut"), _("Splines"));
 					return array_selector($name, null, $sel);
 
 				case 'SYS_TYPES':
