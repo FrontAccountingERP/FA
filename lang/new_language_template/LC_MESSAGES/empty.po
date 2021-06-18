@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-14 09:35+0100\n"
+"POT-Creation-Date: 2021-06-19 00:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,41 +46,45 @@ msgstr ""
 msgid "request new password"
 msgstr ""
 
-#: access/login.php:40
+#: access/login.php:45
 msgid "Too many failed login attempts.<br>Please wait a while or try later."
 msgstr ""
 
-#: access/login.php:54 access/login.php:86
+#: access/login.php:47
+msgid "Invalid password or username. Please, try again."
+msgstr ""
+
+#: access/login.php:57 access/login.php:89
 msgid "Authorization timeout"
 msgstr ""
 
-#: access/login.php:54 access/login.php:91
+#: access/login.php:57 access/login.php:94
 msgid "Login"
 msgstr ""
 
-#: access/login.php:91 access/password_reset.php:61
+#: access/login.php:94 access/password_reset.php:61
 msgid "Version"
 msgstr ""
 
-#: access/login.php:94
+#: access/login.php:98
 msgid "User name"
 msgstr ""
 
-#: access/login.php:98 admin/users.php:202
+#: access/login.php:102 admin/users.php:202
 msgid "Password:"
 msgstr ""
 
-#: access/login.php:107 access/login.php:113 access/password_reset.php:69
+#: access/login.php:111 access/login.php:117 access/password_reset.php:69
 #: access/password_reset.php:75 admin/create_coy.php:247
 #: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:210
 msgid "Company"
 msgstr ""
 
-#: access/login.php:121
+#: access/login.php:125
 msgid "Login -->"
 msgstr ""
 
-#: access/login.php:156 access/password_reset.php:106
+#: access/login.php:160 access/password_reset.php:106
 #: admin/display_prefs.php:125 themes/default/renderer.php:136
 msgid "Theme:"
 msgstr ""
@@ -127,7 +131,7 @@ msgstr ""
 msgid "Select attachment file."
 msgstr ""
 
-#: admin/attachments.php:93 admin/company_preferences.php:67
+#: admin/attachments.php:93 admin/company_preferences.php:73
 #: inventory/manage/items.php:94
 msgid "The file size is over the maximum allowed."
 msgstr ""
@@ -149,7 +153,7 @@ msgstr ""
 msgid "Attachment has been deleted."
 msgstr ""
 
-#: admin/attachments.php:178 admin/view_print_transaction.php:72
+#: admin/attachments.php:179 admin/view_print_transaction.php:72
 #: gl/inquiry/journal_inquiry.php:47
 #: manufacturing/work_order_add_finished.php:191
 #: manufacturing/work_order_costs.php:136
@@ -160,7 +164,7 @@ msgstr ""
 msgid "Type:"
 msgstr ""
 
-#: admin/attachments.php:183 sales/allocations/customer_allocation_main.php:32
+#: admin/attachments.php:184 sales/allocations/customer_allocation_main.php:32
 #: sales/manage/customer_branches.php:270 sales/manage/customers.php:331
 #: sales/inquiry/customer_allocation_inquiry.php:42
 #: sales/inquiry/customer_inquiry.php:160
@@ -169,14 +173,14 @@ msgstr ""
 msgid "Select a customer: "
 msgstr ""
 
-#: admin/attachments.php:185 purchasing/manage/suppliers.php:302
+#: admin/attachments.php:186 purchasing/manage/suppliers.php:302
 #: purchasing/inquiry/po_search_completed.php:104
 #: purchasing/inquiry/po_search.php:76
 #: purchasing/inquiry/supplier_allocation_inquiry.php:48
 msgid "Select a supplier: "
 msgstr ""
 
-#: admin/attachments.php:200 admin/create_coy.php:269
+#: admin/attachments.php:201 admin/create_coy.php:269
 #: admin/crm_categories.php:106 admin/fiscalyears.php:164
 #: admin/inst_lang.php:100 admin/payment_terms.php:142 admin/printers.php:96
 #: admin/shipping_companies.php:106 admin/tags.php:140 admin/users.php:155
@@ -210,15 +214,15 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: admin/attachments.php:205 gl/inquiry/journal_inquiry.php:122
+#: admin/attachments.php:206 gl/inquiry/journal_inquiry.php:122
 msgid "View"
 msgstr ""
 
-#: admin/attachments.php:210 includes/ui/attachment.inc:96
+#: admin/attachments.php:211 includes/ui/attachment.inc:96
 msgid "Download"
 msgstr ""
 
-#: admin/attachments.php:215 admin/create_coy.php:272
+#: admin/attachments.php:216 admin/create_coy.php:272
 #: admin/crm_categories.php:110 admin/fiscalyears.php:166
 #: admin/inst_chart.php:90 admin/inst_lang.php:109 admin/inst_module.php:152
 #: admin/inst_theme.php:87 admin/payment_terms.php:143 admin/printers.php:97
@@ -252,7 +256,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: admin/attachments.php:222 admin/view_print_transaction.php:126
+#: admin/attachments.php:223 admin/view_print_transaction.php:126
 #: admin/void_transaction.php:186 dimensions/inquiry/search_dimensions.php:131
 #: dimensions/view/view_dimension.php:55 gl/bank_account_reconcile.php:267
 #: gl/inquiry/bank_inquiry.php:71 gl/inquiry/gl_account_inquiry.php:128
@@ -286,7 +290,7 @@ msgstr ""
 msgid "#"
 msgstr ""
 
-#: admin/attachments.php:223 admin/attachments.php:275
+#: admin/attachments.php:224 admin/attachments.php:276
 #: admin/crm_categories.php:88 admin/payment_terms.php:127
 #: admin/printers.php:84 admin/print_profiles.php:147
 #: gl/inquiry/accounts_list.php:39 gl/inquiry/accounts_list.php:52
@@ -311,28 +315,28 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: admin/attachments.php:224 admin/backups.php:74 admin/backups.php:160
+#: admin/attachments.php:225 admin/backups.php:74 admin/backups.php:160
 #: includes/ui/attachment.inc:84
 msgid "Filename"
 msgstr ""
 
-#: admin/attachments.php:225 includes/ui/attachment.inc:84
+#: admin/attachments.php:226 includes/ui/attachment.inc:84
 msgid "Size"
 msgstr ""
 
-#: admin/attachments.php:226 includes/ui/attachment.inc:84
+#: admin/attachments.php:227 includes/ui/attachment.inc:84
 msgid "Filetype"
 msgstr ""
 
-#: admin/attachments.php:227
+#: admin/attachments.php:228
 msgid "Date Uploaded"
 msgstr ""
 
-#: admin/attachments.php:267 admin/attachments.php:273
+#: admin/attachments.php:268 admin/attachments.php:274
 msgid "Transaction #"
 msgstr ""
 
-#: admin/attachments.php:276
+#: admin/attachments.php:277
 msgid "Attached File"
 msgstr ""
 
@@ -549,239 +553,251 @@ msgid "Round Calculated field must be a positive number."
 msgstr ""
 
 #: admin/company_preferences.php:60
+msgid "Max day range in Documents must be a positive number."
+msgstr ""
+
+#: admin/company_preferences.php:66
 msgid "Add Price from Std Cost field must be number."
 msgstr ""
 
-#: admin/company_preferences.php:71
+#: admin/company_preferences.php:77
 msgid "Error uploading logo file."
 msgstr ""
 
-#: admin/company_preferences.php:85
+#: admin/company_preferences.php:91
 msgid ""
 "Only jpg and png files are supported - a file extension of .jpg or .png is "
 "expected"
 msgstr ""
 
-#: admin/company_preferences.php:90 inventory/manage/items.php:120
+#: admin/company_preferences.php:96 inventory/manage/items.php:120
 msgid ""
 "The file size is over the maximum allowed. The maximum size allowed in KB is"
 msgstr ""
 
-#: admin/company_preferences.php:95 inventory/manage/items.php:110
+#: admin/company_preferences.php:101 inventory/manage/items.php:110
 #: inventory/manage/items.php:125
 msgid "Only graphics files can be uploaded"
 msgstr ""
 
-#: admin/company_preferences.php:103 admin/company_preferences.php:132
+#: admin/company_preferences.php:109 admin/company_preferences.php:138
 #: inventory/manage/items.php:133
 msgid "The existing image could not be removed"
 msgstr ""
 
-#: admin/company_preferences.php:112
+#: admin/company_preferences.php:118
 msgid "Error uploading logo file"
 msgstr ""
 
-#: admin/company_preferences.php:156
+#: admin/company_preferences.php:162
 msgid "Company setup has been updated."
 msgstr ""
 
-#: admin/company_preferences.php:244
+#: admin/company_preferences.php:256
 msgid "General settings"
 msgstr ""
 
-#: admin/company_preferences.php:246
+#: admin/company_preferences.php:258
 msgid "Name (to appear on reports):"
 msgstr ""
 
-#: admin/company_preferences.php:247 admin/shipping_companies.php:142
+#: admin/company_preferences.php:259 admin/shipping_companies.php:142
 #: includes/ui/contacts_view.inc:106 inventory/manage/locations.php:212
 #: sales/manage/customers.php:235 sales/includes/ui/sales_order_ui.inc:635
 msgid "Address:"
 msgstr ""
 
-#: admin/company_preferences.php:248
+#: admin/company_preferences.php:260
 msgid "Domicile:"
 msgstr ""
 
-#: admin/company_preferences.php:250 admin/shipping_companies.php:138
+#: admin/company_preferences.php:262 admin/shipping_companies.php:138
 #: purchasing/manage/suppliers.php:245 sales/manage/customer_branches.php:253
 msgid "Phone Number:"
 msgstr ""
 
-#: admin/company_preferences.php:251 includes/ui/contacts_view.inc:101
+#: admin/company_preferences.php:263 includes/ui/contacts_view.inc:101
 #: purchasing/manage/suppliers.php:248 sales/manage/customer_branches.php:255
 #: sales/manage/customers.php:259
 msgid "Fax Number:"
 msgstr ""
 
-#: admin/company_preferences.php:252 admin/users.php:213
+#: admin/company_preferences.php:264 admin/users.php:213
 msgid "Email Address:"
 msgstr ""
 
-#: admin/company_preferences.php:254
+#: admin/company_preferences.php:266
 msgid "BCC Address for all outgoing mails:"
 msgstr ""
 
-#: admin/company_preferences.php:256
+#: admin/company_preferences.php:268
 msgid "Official Company Number:"
 msgstr ""
 
-#: admin/company_preferences.php:257 purchasing/manage/suppliers.php:205
+#: admin/company_preferences.php:269 purchasing/manage/suppliers.php:205
 #: sales/manage/customers.php:237
 msgid "GSTNo:"
 msgstr ""
 
-#: admin/company_preferences.php:258
+#: admin/company_preferences.php:270
 msgid "Home Currency:"
 msgstr ""
 
-#: admin/company_preferences.php:260
+#: admin/company_preferences.php:272
 msgid "Company Logo:"
 msgstr ""
 
-#: admin/company_preferences.php:261
+#: admin/company_preferences.php:273
 msgid "New Company Logo (.jpg)"
 msgstr ""
 
-#: admin/company_preferences.php:262
+#: admin/company_preferences.php:274
 msgid "Delete Company Logo:"
 msgstr ""
 
-#: admin/company_preferences.php:264
+#: admin/company_preferences.php:276
 msgid "Time Zone on Reports"
 msgstr ""
 
-#: admin/company_preferences.php:265
+#: admin/company_preferences.php:277
 msgid "Company Logo on Reports"
 msgstr ""
 
-#: admin/company_preferences.php:266
+#: admin/company_preferences.php:278
 msgid "Use Barcodes on Stocks"
 msgstr ""
 
-#: admin/company_preferences.php:267
+#: admin/company_preferences.php:279
 msgid "Auto Increase of Document References"
 msgstr ""
 
-#: admin/company_preferences.php:268
+#: admin/company_preferences.php:280
 msgid "Use Dimensions on Recurrent Invoices"
 msgstr ""
 
-#: admin/company_preferences.php:269
+#: admin/company_preferences.php:281
 msgid "Use Long Descriptions on Invoices"
 msgstr ""
 
-#: admin/company_preferences.php:270
+#: admin/company_preferences.php:282
 msgid "Database Scheme Version"
 msgstr ""
 
-#: admin/company_preferences.php:274
+#: admin/company_preferences.php:286
 msgid "General Ledger Settings"
 msgstr ""
 
-#: admin/company_preferences.php:275 gl/gl_budget.php:62
+#: admin/company_preferences.php:287 gl/gl_budget.php:62
 msgid "Fiscal Year:"
 msgstr ""
 
-#: admin/company_preferences.php:276
+#: admin/company_preferences.php:288
 msgid "Tax Periods:"
 msgstr ""
 
-#: admin/company_preferences.php:276
+#: admin/company_preferences.php:288
 msgid "Months."
 msgstr ""
 
-#: admin/company_preferences.php:277
+#: admin/company_preferences.php:289
 msgid "Tax Last Period:"
 msgstr ""
 
-#: admin/company_preferences.php:277
+#: admin/company_preferences.php:289
 msgid "Months back."
 msgstr ""
 
-#: admin/company_preferences.php:278
+#: admin/company_preferences.php:290
 msgid "Put alternative Tax Include on Docs"
 msgstr ""
 
-#: admin/company_preferences.php:279
+#: admin/company_preferences.php:291
 msgid "Suppress Tax Rates on Docs"
 msgstr ""
 
-#: admin/company_preferences.php:280
+#: admin/company_preferences.php:292
 msgid "Automatic Revaluation Currency Accounts"
 msgstr ""
 
-#: admin/company_preferences.php:282
+#: admin/company_preferences.php:294
 msgid "Sales Pricing"
 msgstr ""
 
-#: admin/company_preferences.php:283
+#: admin/company_preferences.php:295
 msgid "Base for auto price calculations:"
 msgstr ""
 
-#: admin/company_preferences.php:284
+#: admin/company_preferences.php:296
 msgid "No base price list"
 msgstr ""
 
-#: admin/company_preferences.php:286
+#: admin/company_preferences.php:298
 msgid "Add Price from Std Cost:"
 msgstr ""
 
-#: admin/company_preferences.php:288
+#: admin/company_preferences.php:300
 msgid "Round calculated prices to nearest:"
 msgstr ""
 
-#: admin/company_preferences.php:292
+#: admin/company_preferences.php:304
 msgid "Optional Modules"
 msgstr ""
 
-#: admin/company_preferences.php:293 includes/dashboard.inc:118
+#: admin/company_preferences.php:305 includes/dashboard.inc:118
 #: reporting/reports_main.php:316
 msgid "Manufacturing"
 msgstr ""
 
-#: admin/company_preferences.php:294 includes/dashboard.inc:116
+#: admin/company_preferences.php:306 includes/dashboard.inc:116
 #: inventory/manage/items.php:25 reporting/reports_main.php:340
 msgid "Fixed Assets"
 msgstr ""
 
-#: admin/company_preferences.php:295
+#: admin/company_preferences.php:307
 msgid "Use Dimensions:"
 msgstr ""
 
-#: admin/company_preferences.php:297
+#: admin/company_preferences.php:309
 msgid "User Interface Options"
 msgstr ""
 
-#: admin/company_preferences.php:299
+#: admin/company_preferences.php:311
 msgid "Short Name and Name in List"
 msgstr ""
 
-#: admin/company_preferences.php:300
+#: admin/company_preferences.php:312
 msgid "Open Print Dialog Direct on Reports"
 msgstr ""
 
-#: admin/company_preferences.php:301
+#: admin/company_preferences.php:313
 msgid "Search Item List"
 msgstr ""
 
-#: admin/company_preferences.php:302
+#: admin/company_preferences.php:314
 msgid "Search Customer List"
 msgstr ""
 
-#: admin/company_preferences.php:303
+#: admin/company_preferences.php:315
 msgid "Search Supplier List"
 msgstr ""
 
-#: admin/company_preferences.php:304
+#: admin/company_preferences.php:316
 msgid "Login Timeout:"
 msgstr ""
 
-#: admin/company_preferences.php:304
+#: admin/company_preferences.php:316
 msgid "seconds"
 msgstr ""
 
-#: admin/company_preferences.php:309 admin/display_prefs.php:162
+#: admin/company_preferences.php:317
+msgid "Max day range in documents"
+msgstr ""
+
+#: admin/company_preferences.php:317
+msgid "days."
+msgstr ""
+
+#: admin/company_preferences.php:322 admin/display_prefs.php:162
 #: admin/gl_setup.php:309 admin/inst_chart.php:84 admin/inst_lang.php:103
 #: admin/inst_module.php:146 admin/inst_module.php:164
 #: admin/inst_module.php:207 admin/inst_theme.php:81
@@ -1144,7 +1160,7 @@ msgstr ""
 msgid "Excel"
 msgstr ""
 
-#: admin/display_prefs.php:110 reporting/includes/reports_classes.inc:235
+#: admin/display_prefs.php:110 reporting/includes/reports_classes.inc:237
 msgid "PDF/Printer"
 msgstr ""
 
@@ -1152,11 +1168,11 @@ msgstr ""
 msgid "Default Report Orientation:"
 msgstr ""
 
-#: admin/display_prefs.php:113 reporting/includes/reports_classes.inc:242
+#: admin/display_prefs.php:113 reporting/includes/reports_classes.inc:244
 msgid "Landscape"
 msgstr ""
 
-#: admin/display_prefs.php:113 reporting/includes/reports_classes.inc:242
+#: admin/display_prefs.php:113 reporting/includes/reports_classes.inc:244
 msgid "Portrait"
 msgstr ""
 
@@ -1299,7 +1315,7 @@ msgstr ""
 #: includes/ui/ui_view.inc:1582 manufacturing/search_work_orders.php:116
 #: reporting/rep402.php:136 reporting/rep501.php:87 reporting/rep710.php:114
 #: reporting/includes/excel_report.inc:231
-#: reporting/includes/pdf_report.inc:267
+#: reporting/includes/pdf_report.inc:268
 msgid "Closed"
 msgstr ""
 
@@ -1726,8 +1742,8 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282 reporting/rep115.php:161
-#: reporting/rep206.php:115 reporting/rep501.php:87 reporting/rep709.php:116
-#: reporting/rep709.php:117 sales/manage/customer_branches.php:284
+#: reporting/rep206.php:115 reporting/rep501.php:87 reporting/rep709.php:117
+#: reporting/rep709.php:118 sales/manage/customer_branches.php:284
 #: sales/manage/sales_people.php:99 taxes/item_tax_types.php:117
 msgid "Name"
 msgstr ""
@@ -1827,7 +1843,7 @@ msgstr ""
 
 #: admin/inst_module.php:177 includes/ui/ui_lists.inc:761
 #: includes/ui/ui_lists.inc:2355 reporting/includes/excel_report.inc:229
-#: reporting/includes/pdf_report.inc:265
+#: reporting/includes/pdf_report.inc:266
 msgid "Active"
 msgstr ""
 
@@ -1993,7 +2009,7 @@ msgstr ""
 #: reporting/rep202.php:137 reporting/rep402.php:136 reporting/rep501.php:87
 #: reporting/rep601.php:81 reporting/rep602.php:80 reporting/rep702.php:60
 #: reporting/rep704.php:79 reporting/rep704.php:87 reporting/rep704.php:95
-#: reporting/rep709.php:112 reporting/rep710.php:78 reporting/rep710.php:86
+#: reporting/rep709.php:113 reporting/rep710.php:78 reporting/rep710.php:86
 #: reporting/reports_main.php:386 reporting/reports_main.php:551
 #: reporting/includes/doctext.inc:161 reporting/includes/doctext.inc:204
 #: reporting/includes/doctext.inc:223
@@ -2538,7 +2554,7 @@ msgstr ""
 #: reporting/rep306.php:141 reporting/rep310.php:142 reporting/rep402.php:136
 #: reporting/rep402.php:141 reporting/rep501.php:87 reporting/rep601.php:81
 #: reporting/rep602.php:80 reporting/rep704.php:79 reporting/rep704.php:87
-#: reporting/rep704.php:95 reporting/rep709.php:116 reporting/rep710.php:77
+#: reporting/rep704.php:95 reporting/rep709.php:117 reporting/rep710.php:77
 #: reporting/includes/doctext.inc:166 reporting/includes/doctext.inc:209
 #: reporting/includes/doctext.inc:247 reporting/includes/header2.inc:135
 #: sales/customer_delivery.php:366 sales/customer_invoice.php:485
@@ -2693,8 +2709,8 @@ msgstr ""
 msgid "Closing Year"
 msgstr ""
 
-#: admin/db/fiscalyears_db.inc:220 reporting/rep101.php:192
-#: reporting/rep115.php:161 reporting/rep201.php:170 reporting/rep206.php:115
+#: admin/db/fiscalyears_db.inc:220 reporting/rep101.php:196
+#: reporting/rep115.php:161 reporting/rep201.php:174 reporting/rep206.php:115
 #: reporting/rep706.php:185
 msgid "Open Balance"
 msgstr ""
@@ -3627,7 +3643,7 @@ msgstr ""
 #: reporting/rep310.php:136 reporting/rep402.php:119 reporting/rep402.php:127
 #: reporting/rep451.php:67 reporting/rep451.php:74 reporting/rep702.php:61
 #: reporting/rep710.php:86 reporting/rep710.php:87
-#: reporting/includes/reports_classes.inc:282
+#: reporting/includes/reports_classes.inc:284
 msgid "All"
 msgstr ""
 
@@ -4038,7 +4054,7 @@ msgstr ""
 msgid "Enter Transfer"
 msgstr ""
 
-#: gl/bank_transfer.php:172 gl/bank_transfer.php:226 gl/bank_transfer.php:250
+#: gl/bank_transfer.php:172 gl/bank_transfer.php:227 gl/bank_transfer.php:251
 #: purchasing/supplier_payment.php:137 purchasing/supplier_payment.php:143
 msgid "The entered amount is invalid or less than zero."
 msgstr ""
@@ -4047,45 +4063,45 @@ msgstr ""
 msgid "The total bank amount cannot be 0."
 msgstr ""
 
-#: gl/bank_transfer.php:193
+#: gl/bank_transfer.php:194
 #, php-format
 msgid ""
 "This bank transfer change would result in exceeding authorized overdraft "
 "limit (%s) of the account '%s'"
 msgstr ""
 
-#: gl/bank_transfer.php:198
+#: gl/bank_transfer.php:199
 #, php-format
 msgid ""
 "This bank transfer change would result in exceeding authorized overdraft "
 "limit on '%s' for transaction: %s #%s on %s."
 msgstr ""
 
-#: gl/bank_transfer.php:210
+#: gl/bank_transfer.php:211
 #, php-format
 msgid ""
 "This bank transfer would result in exceeding authorized overdraft limit of "
 "the account (%s)"
 msgstr ""
 
-#: gl/bank_transfer.php:215
+#: gl/bank_transfer.php:216
 #, php-format
 msgid ""
 "This bank transfer would result in exceeding authorized overdraft limit for "
 "transaction: %s #%s on %s."
 msgstr ""
 
-#: gl/bank_transfer.php:231 purchasing/supplier_payment.php:151
+#: gl/bank_transfer.php:232 purchasing/supplier_payment.php:151
 #: sales/customer_payments.php:186
 msgid ""
 "The Bank Charge Account has not been set in System and General GL Setup."
 msgstr ""
 
-#: gl/bank_transfer.php:243
+#: gl/bank_transfer.php:244
 msgid "The source and destination bank accouts cannot be the same."
 msgstr ""
 
-#: gl/bank_transfer.php:255
+#: gl/bank_transfer.php:256
 msgid "The incomming bank amount cannot be 0."
 msgstr ""
 
@@ -4265,7 +4281,7 @@ msgstr ""
 #: reporting/rep706.php:203 reporting/rep706.php:211 reporting/rep707.php:210
 #: reporting/rep707.php:217 reporting/rep707.php:227 reporting/rep707.php:235
 #: reporting/rep708.php:200 reporting/rep708.php:209 reporting/rep708.php:216
-#: reporting/rep709.php:111 reporting/rep710.php:85
+#: reporting/rep709.php:112 reporting/rep710.php:85
 msgid "Period"
 msgstr ""
 
@@ -4294,8 +4310,8 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:575 purchasing/po_receive_items.php:63
 #: purchasing/view/view_po.php:140
 #: purchasing/allocations/supplier_allocation_main.php:100
-#: reporting/rep101.php:260 reporting/rep106.php:91 reporting/rep106.php:126
-#: reporting/rep106.php:173 reporting/rep114.php:161 reporting/rep201.php:230
+#: reporting/rep101.php:264 reporting/rep106.php:91 reporting/rep106.php:126
+#: reporting/rep106.php:173 reporting/rep114.php:161 reporting/rep201.php:234
 #: reporting/rep203.php:89 reporting/rep203.php:166 reporting/rep204.php:113
 #: reporting/rep204.php:141 reporting/rep301.php:193 reporting/rep301.php:241
 #: reporting/rep304.php:160 reporting/rep304.php:205 reporting/rep305.php:106
@@ -4444,11 +4460,11 @@ msgid "VAT date:"
 msgstr ""
 
 #: gl/gl_journal.php:556 gl/inquiry/tax_inquiry.php:102
-#: reporting/rep709.php:189
+#: reporting/rep709.php:190
 msgid "Input Tax"
 msgstr ""
 
-#: gl/gl_journal.php:556 gl/inquiry/tax_inquiry.php:96 reporting/rep709.php:189
+#: gl/gl_journal.php:556 gl/inquiry/tax_inquiry.php:96 reporting/rep709.php:190
 msgid "Output Tax"
 msgstr ""
 
@@ -4525,7 +4541,7 @@ msgid "Equities"
 msgstr ""
 
 #: gl/inquiry/balance_sheet.php:256 gl/inquiry/profit_loss.php:327
-#: includes/current_user.inc:102 includes/ui/ui_controls.inc:215
+#: includes/current_user.inc:103 includes/ui/ui_controls.inc:215
 #: includes/ui/ui_view.inc:1013
 msgid "Back"
 msgstr ""
@@ -4678,17 +4694,17 @@ msgid "Profit & Loss Drilldown"
 msgstr ""
 
 #: gl/inquiry/profit_loss.php:30 reporting/rep707.php:210
-#: reporting/includes/reports_classes.inc:249
+#: reporting/includes/reports_classes.inc:251
 msgid "Accumulated"
 msgstr ""
 
 #: gl/inquiry/profit_loss.php:31 reporting/rep707.php:257
-#: reporting/includes/reports_classes.inc:249
+#: reporting/includes/reports_classes.inc:251
 msgid "Period Y-1"
 msgstr ""
 
 #: gl/inquiry/profit_loss.php:32 reporting/rep707.php:246
-#: reporting/includes/reports_classes.inc:249
+#: reporting/includes/reports_classes.inc:251
 msgid "Budget"
 msgstr ""
 
@@ -4709,11 +4725,11 @@ msgstr ""
 msgid "Tax Inquiry"
 msgstr ""
 
-#: gl/inquiry/tax_inquiry.php:80 reporting/rep709.php:189
+#: gl/inquiry/tax_inquiry.php:80 reporting/rep709.php:190
 msgid "Outputs"
 msgstr ""
 
-#: gl/inquiry/tax_inquiry.php:80 reporting/rep709.php:189
+#: gl/inquiry/tax_inquiry.php:80 reporting/rep709.php:190
 msgid "Inputs"
 msgstr ""
 
@@ -4729,7 +4745,7 @@ msgstr ""
 msgid "Net payable or collectible"
 msgstr ""
 
-#: gl/inquiry/tax_inquiry.php:115 reporting/rep709.php:221
+#: gl/inquiry/tax_inquiry.php:115 reporting/rep709.php:222
 msgid "Total payable or refund"
 msgstr ""
 
@@ -6410,21 +6426,21 @@ msgid ""
 "rate manually on Exchange Rates page."
 msgstr ""
 
-#: includes/current_user.inc:101
+#: includes/current_user.inc:102
 msgid ""
 "Before software upgrade you have to include old $security_groups and "
 "$security_headings arrays from old config.php file to the new one."
 msgstr ""
 
-#: includes/current_user.inc:112
+#: includes/current_user.inc:113
 msgid "System is available for site admin only until full database upgrade"
 msgstr ""
 
-#: includes/current_user.inc:168
+#: includes/current_user.inc:170
 msgid "New password for"
 msgstr ""
 
-#: includes/current_user.inc:624
+#: includes/current_user.inc:626
 msgid "Requesting data..."
 msgstr ""
 
@@ -6818,40 +6834,40 @@ msgstr ""
 msgid "Login here"
 msgstr ""
 
-#: includes/session.inc:219
+#: includes/session.inc:220
 #, php-format
 msgid ""
 "Brute force attack on account '%s' detected. Access for non-logged users "
 "temporarily blocked."
 msgstr ""
 
-#: includes/session.inc:251
+#: includes/session.inc:252
 msgid "Security settings have not been defined for your user account."
 msgstr ""
 
-#: includes/session.inc:252
+#: includes/session.inc:253
 msgid "Please contact your system administrator."
 msgstr ""
 
-#: includes/session.inc:253
+#: includes/session.inc:254
 msgid ""
 "Please remove $security_groups and $security_headings arrays from config.php "
 "file!"
 msgstr ""
 
-#: includes/session.inc:256
+#: includes/session.inc:257
 msgid ""
 "Access to application has been blocked until database upgrade is completed "
 "by system administrator."
 msgstr ""
 
-#: includes/session.inc:270
+#: includes/session.inc:271
 msgid ""
 "The security settings on your account do not permit you to access this "
 "function"
 msgstr ""
 
-#: includes/session.inc:279
+#: includes/session.inc:280
 msgid ""
 "System is blocked after source upgrade until database is updated on System/"
 "Software Upgrade page"
@@ -7588,7 +7604,7 @@ msgstr ""
 #: reporting/reports_main.php:545 reporting/reports_main.php:553
 #: reporting/includes/excel_report.inc:292
 #: reporting/includes/excel_report.inc:425
-#: reporting/includes/pdf_report.inc:360 reporting/includes/pdf_report.inc:621
+#: reporting/includes/pdf_report.inc:361 reporting/includes/pdf_report.inc:622
 #: sales/view/view_sales_order.php:100
 msgid "Comments"
 msgstr ""
@@ -7741,7 +7757,7 @@ msgid "Supplier Ref"
 msgstr ""
 
 #: includes/ui/allocation_cart.inc:311 reporting/rep704.php:79
-#: reporting/rep704.php:87 reporting/rep704.php:95 reporting/rep709.php:116
+#: reporting/rep704.php:87 reporting/rep704.php:95 reporting/rep709.php:117
 #: sales/view/view_credit.php:68 sales/view/view_sales_order.php:111
 #: sales/view/view_sales_order.php:144 sales/view/view_sales_order.php:181
 #: sales/inquiry/customer_branches_list.php:49
@@ -8043,7 +8059,7 @@ msgid ""
 "Do you want to abandon changes?"
 msgstr ""
 
-#: includes/ui/ui_input.inc:661 reporting/includes/reports_classes.inc:223
+#: includes/ui/ui_input.inc:661 reporting/includes/reports_classes.inc:225
 msgid "Click Here to Pick up the date"
 msgstr ""
 
@@ -11686,7 +11702,6 @@ msgid "Total:"
 msgstr ""
 
 #: purchasing/allocations/supplier_allocate.php:62
-#: sales/allocations/customer_allocate.php:64
 msgid "Amount ot be settled:"
 msgstr ""
 
@@ -11748,7 +11763,7 @@ msgid "Balances in Home Currency"
 msgstr ""
 
 #: reporting/rep101.php:136 reporting/rep201.php:115 reporting/rep203.php:88
-#: reporting/rep709.php:116 reporting/includes/doctext.inc:166
+#: reporting/rep709.php:117 reporting/includes/doctext.inc:166
 #: reporting/includes/doctext.inc:209 reporting/includes/doctext.inc:247
 msgid "Trans Type"
 msgstr ""
@@ -11782,24 +11797,24 @@ msgstr ""
 msgid "Customer Balances"
 msgstr ""
 
-#: reporting/rep101.php:267 reporting/rep102.php:226 reporting/rep105.php:177
-#: reporting/rep106.php:182 reporting/rep115.php:292 reporting/rep201.php:240
+#: reporting/rep101.php:271 reporting/rep102.php:226 reporting/rep105.php:177
+#: reporting/rep106.php:182 reporting/rep115.php:296 reporting/rep201.php:244
 #: reporting/rep202.php:233 reporting/rep203.php:176 reporting/rep204.php:148
-#: reporting/rep206.php:227 reporting/rep301.php:250 reporting/rep304.php:212
+#: reporting/rep206.php:231 reporting/rep301.php:250 reporting/rep304.php:212
 #: reporting/rep305.php:193 reporting/rep306.php:292 reporting/rep309.php:157
 #: reporting/rep451.php:164
 msgid "Grand Total"
 msgstr ""
 
 #: reporting/rep102.php:98 reporting/rep106.php:100 reporting/rep202.php:104
-#: reporting/rep709.php:100 reporting/reports_main.php:50
+#: reporting/rep709.php:101 reporting/reports_main.php:50
 #: reporting/reports_main.php:104 reporting/reports_main.php:179
 #: reporting/reports_main.php:234 reporting/reports_main.php:345
 #: reporting/reports_main.php:544
 msgid "Summary Only"
 msgstr ""
 
-#: reporting/rep102.php:100 reporting/rep202.php:106 reporting/rep709.php:102
+#: reporting/rep102.php:100 reporting/rep202.php:106 reporting/rep709.php:103
 msgid "Detailed Report"
 msgstr ""
 
@@ -12032,6 +12047,11 @@ msgstr ""
 msgid "THIS INVOICE"
 msgstr ""
 
+#: reporting/rep107.php:326
+#, php-format
+msgid "Invoice %d from %s"
+msgstr ""
+
 #: reporting/rep108.php:112 reporting/rep108.php:116
 #: reporting/includes/doctext.inc:239
 msgid "STATEMENT"
@@ -12136,7 +12156,7 @@ msgstr ""
 msgid "Total ex. Tax"
 msgstr ""
 
-#: reporting/rep114.php:95 reporting/rep709.php:117 taxes/tax_groups.php:174
+#: reporting/rep114.php:95 reporting/rep709.php:118 taxes/tax_groups.php:174
 msgid "Tax"
 msgstr ""
 
@@ -12331,7 +12351,7 @@ msgstr ""
 msgid "QTY"
 msgstr ""
 
-#: reporting/rep308.php:225 reporting/rep709.php:117
+#: reporting/rep308.php:225 reporting/rep709.php:118
 #: taxes/item_tax_types.php:185
 msgid "Rate"
 msgstr ""
@@ -12495,27 +12515,27 @@ msgstr ""
 msgid "Profit and Loss Statement"
 msgstr ""
 
-#: reporting/rep709.php:98
+#: reporting/rep709.php:99
 msgid "Tax Report"
 msgstr ""
 
-#: reporting/rep709.php:116
+#: reporting/rep709.php:117
 msgid "Branch Name"
 msgstr ""
 
-#: reporting/rep709.php:117
+#: reporting/rep709.php:118
 msgid "Net"
 msgstr ""
 
-#: reporting/rep709.php:189
+#: reporting/rep709.php:190
 msgid "Tax Rate"
 msgstr ""
 
-#: reporting/rep709.php:189
+#: reporting/rep709.php:190
 msgid "Net Tax"
 msgstr ""
 
-#: reporting/rep709.php:207
+#: reporting/rep709.php:208
 msgid "Exempt"
 msgstr ""
 
@@ -13086,7 +13106,7 @@ msgstr ""
 msgid "DueDate"
 msgstr ""
 
-#: reporting/includes/doctext.inc:273 reporting/includes/pdf_report.inc:1022
+#: reporting/includes/doctext.inc:273 reporting/includes/pdf_report.inc:1023
 msgid "You can pay through"
 msgstr ""
 
@@ -13094,18 +13114,18 @@ msgstr ""
 msgid "* Subject to Realisation of the Cheque."
 msgstr ""
 
-#: reporting/includes/excel_report.inc:69 reporting/includes/pdf_report.inc:81
+#: reporting/includes/excel_report.inc:69 reporting/includes/pdf_report.inc:82
 msgid ""
 "The security settings on your account do not permit you to print this report"
 msgstr ""
 
 #: reporting/includes/excel_report.inc:259
-#: reporting/includes/pdf_report.inc:330
+#: reporting/includes/pdf_report.inc:331
 msgid "Print Out Date"
 msgstr ""
 
 #: reporting/includes/excel_report.inc:265
-#: reporting/includes/pdf_report.inc:339
+#: reporting/includes/pdf_report.inc:340
 msgid "Fiscal Year"
 msgstr ""
 
@@ -13114,12 +13134,12 @@ msgid "Report Date"
 msgstr ""
 
 #: reporting/includes/excel_report.inc:410
-#: reporting/includes/pdf_report.inc:603
+#: reporting/includes/pdf_report.inc:604
 msgid "Generated At"
 msgstr ""
 
 #: reporting/includes/excel_report.inc:416
-#: reporting/includes/pdf_report.inc:612
+#: reporting/includes/pdf_report.inc:613
 msgid "Generated By"
 msgstr ""
 
@@ -13131,46 +13151,46 @@ msgstr ""
 msgid "Domicile"
 msgstr ""
 
-#: reporting/includes/header2.inc:144 reporting/includes/pdf_report.inc:366
-#: reporting/includes/pdf_report.inc:504 reporting/includes/pdf_report.inc:631
+#: reporting/includes/header2.inc:144 reporting/includes/pdf_report.inc:367
+#: reporting/includes/pdf_report.inc:505 reporting/includes/pdf_report.inc:632
 msgid "Page"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:586
+#: reporting/includes/pdf_report.inc:587
 msgid "Report Period"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:989 reporting/includes/pdf_report.inc:1037
+#: reporting/includes/pdf_report.inc:990 reporting/includes/pdf_report.inc:1038
 #, php-format
 msgid "You have no email contact defined for this type of document for '%s'."
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1008
+#: reporting/includes/pdf_report.inc:1009
 msgid "Dear"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1009
+#: reporting/includes/pdf_report.inc:1010
 msgid "Attached you will find "
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1025
+#: reporting/includes/pdf_report.inc:1026
 msgid "Kindest regards"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1040
+#: reporting/includes/pdf_report.inc:1041
 msgid "Sending document by email failed"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1040
-#: reporting/includes/pdf_report.inc:1043
+#: reporting/includes/pdf_report.inc:1041
+#: reporting/includes/pdf_report.inc:1044
 msgid "Email:"
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1043
+#: reporting/includes/pdf_report.inc:1044
 msgid "has been sent by email to destination."
 msgstr ""
 
-#: reporting/includes/pdf_report.inc:1072
+#: reporting/includes/pdf_report.inc:1073
 msgid "Report has been sent to network printer "
 msgstr ""
 
@@ -13218,84 +13238,84 @@ msgstr ""
 msgid "Unknown report parameter type:"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:179
+#: reporting/includes/reports_classes.inc:181
 msgid "No Currency Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:253
+#: reporting/includes/reports_classes.inc:255
 msgid "No Graphics"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:253
+#: reporting/includes/reports_classes.inc:255
 msgid "Vertical bars"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:253
+#: reporting/includes/reports_classes.inc:255
 msgid "Horizontal bars"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:254
+#: reporting/includes/reports_classes.inc:256
 msgid "Dots"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:254
+#: reporting/includes/reports_classes.inc:256
 msgid "Lines"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:254
+#: reporting/includes/reports_classes.inc:256
 msgid "Pie"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:254
+#: reporting/includes/reports_classes.inc:256
 msgid "Donut"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:258
-#: reporting/includes/reports_classes.inc:261
+#: reporting/includes/reports_classes.inc:260
+#: reporting/includes/reports_classes.inc:263
 msgid "No Type Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:271
+#: reporting/includes/reports_classes.inc:273
 msgid "No Account Group Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:290
-#: reporting/includes/reports_classes.inc:296
-#: reporting/includes/reports_classes.inc:302
+#: reporting/includes/reports_classes.inc:292
+#: reporting/includes/reports_classes.inc:298
+#: reporting/includes/reports_classes.inc:304
 msgid "No Dimension Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:307
+#: reporting/includes/reports_classes.inc:309
 msgid "No Customer Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:314
+#: reporting/includes/reports_classes.inc:316
 msgid "No Supplier Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:429
-#: reporting/includes/reports_classes.inc:431
+#: reporting/includes/reports_classes.inc:439
+#: reporting/includes/reports_classes.inc:441
 msgid "No Location Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:434
-#: reporting/includes/reports_classes.inc:436
+#: reporting/includes/reports_classes.inc:444
+#: reporting/includes/reports_classes.inc:446
 msgid "No Category Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:438
+#: reporting/includes/reports_classes.inc:448
 msgid "No Class Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:443
+#: reporting/includes/reports_classes.inc:453
 msgid "No Areas Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:446
+#: reporting/includes/reports_classes.inc:456
 msgid "No Sales Folk Filter"
 msgstr ""
 
-#: reporting/includes/reports_classes.inc:453
+#: reporting/includes/reports_classes.inc:463
 msgid "No Users Filter"
 msgstr ""
 
@@ -14359,6 +14379,10 @@ msgstr ""
 #: sales/allocations/customer_allocate.php:55
 #, php-format
 msgid "Allocation of %s # %d"
+msgstr ""
+
+#: sales/allocations/customer_allocate.php:64
+msgid "Amount to be settled:"
 msgstr ""
 
 #: sales/allocations/customer_allocation_main.php:22
