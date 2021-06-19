@@ -1,3 +1,198 @@
+2021-06-19 08:49:18 +0200 Joe Hunt 
+Release 2.4.10
+M	version.php
+
+2021-06-19 00:26:33 +0200 Janusz Dobrowolski 
+Updated gettext template.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2021-06-16 11:53:15 +0200 Joe Hunt 
+Cleaning up new Dashboard.
+M	includes/dashboard.inc
+M	reporting/includes/reports_classes.inc
+
+2021-06-16 09:41:04 +0200 Joe Hunt 
+Bug 5460: Inventory valuation report does not discard zero quantity items for items with decimal quantity units. Fixed.
+M	reporting/rep301.php
+
+2021-06-15 21:59:05 +0200 Joe Hunt 
+New dashboard and Graphics Engine Class, that also includes the SVG Vector Graphics for the core. Much prettier graphics.
+M	admin/dashboard.php
+M	includes/dashboard.inc
+A	reporting/fonts/FreeSans.ttf
+M	reporting/includes/class.graphic.inc
+M	reporting/includes/reports_classes.inc
+M	reporting/rep102.php
+M	reporting/rep202.php
+M	reporting/rep706.php
+M	reporting/rep707.php
+
+2021-06-15 20:13:46 +0200 Joe Hunt 
+php 8. Fixed undefined array key warnings.
+M	includes/errors.inc
+M	includes/session.inc
+
+2021-06-15 13:12:14 +0200 Joe Hunt 
+More php8 deprecation fixes about required parameters following optional parameters.
+M	gl/includes/db/gl_db_banking.inc
+M	gl/includes/db/gl_db_rates.inc
+M	includes/current_user.inc
+M	includes/db/class.data_set.inc
+M	includes/ui/ui_lists.inc
+M	includes/ui/ui_view.inc
+M	inventory/includes/db/items_db.inc
+M	purchasing/includes/db/suppalloc_db.inc
+M	sales/includes/db/custalloc_db.inc
+
+2021-06-15 09:41:46 +0200 Joe Hunt 
+Fixed a php8 deprecation no required parameters after optional parameters in function.
+M	reporting/includes/reporting.inc
+
+2021-05-17 20:46:56 +0200 Janusz Dobrowolski 
+[0005245] Added debtors_master.debtor_ref to get_customer_trans() results
+M	sales/includes/db/cust_trans_db.inc
+
+2021-05-17 19:15:59 +0200 Janusz Dobrowolski 
+[0005197] Slightly changed email subject for sales invoice to avoid false marking by spam filters.
+M	reporting/rep107.php
+
+2021-05-12 17:25:53 +0200 Joe Hunt 
+Rerun Feature 5388: Print Invoices (documents) list gets too long. Fixed by default 180 days in company setup.
+M	reporting/includes/reports_classes.inc
+
+2021-05-05 15:11:32 +0200 Joe Hunt 
+Payments & Deposits(Rounding Problem). Fixed.
+M	fixed_assets/includes/fixed_assets_db.inc
+M	includes/ui/items_cart.inc
+
+2021-05-02 23:37:48 +0200 Joe Hunt 
+bug 5429: balance sheet report sometimes prints lines with zero amounts. Fixed.
+M	gl/includes/db/gl_db_trans.inc
+
+2021-03-29 10:01:40 +0200 Joe Hunt 
+Feature 5388: Print Invoices (documents) list gets too long. Fixed by default 180 days in company setup.
+M	admin/company_preferences.php
+M	reporting/includes/reports_classes.inc
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2021-03-10 14:20:18 +0100 Joe Hunt 
+Function get_magic_quotes_gpc() is deprecated php7.4. /install/isession.inc. Fixed.
+M	install/isession.inc
+
+2021-02-28 23:14:48 +0100 Joe Hunt 
+Wrong Permission for Inventory Purchasing Report (rep306.php). Fixed.
+M	reporting/rep306.php
+
+2021-02-28 15:37:31 +0100 Janusz Dobrowolski 
+Fixed javascript error appearing on themes using SVGElements.
+M	js/behaviour.js
+
+2021-02-19 10:11:26 +0100 Joe Hunt 
+Bug 5360: Spelling mistake in ../sales/allocations/customer_allocate.php. Fixed.
+M	sales/allocations/customer_allocate.php
+
+2021-02-15 17:43:59 +0100 Joe Hunt 
+PHP 7.4 Bugs in some reports.
+M	reporting/rep101.php
+M	reporting/rep115.php
+M	reporting/rep201.php
+M	reporting/rep206.php
+M	reporting/rep306.php
+M	reporting/rep710.php
+
+2021-02-15 08:57:34 +0100 Joe Hunt 
+Bug 5352: missing global declaration in reset_form() in attachments.php. Fixed.
+M	admin/attachments.php
+
+2021-02-15 08:56:32 +0100 Joe Hunt 
+Bug 5351: dim dim2 not defined lines 623, 627 of purchasing/includes/db/invoice_db.inc. Fixed.
+M	purchasing/includes/db/invoice_db.inc
+
+2021-02-11 08:59:50 +0100 Joe Hunt 
+Bug 5332: Rep709, Tax Report, Multiple entries for a sinle tax line. Fixed.
+M	reporting/rep709.php
+
+2021-02-11 01:05:06 +0100 Joe Hunt 
+Bug 5310: DB error when on bank payment/transfer edit if current fiscal year is missing. Fixed.
+M	gl/includes/db/gl_db_banking.inc
+
+2021-02-04 08:23:37 +0100 Joe Hunt 
+Bug in Customer/Supplier Payments Recording. Fixed.
+M	includes/ui/allocation_cart.inc
+
+2021-01-31 16:11:10 +0100 Joe Hunt 
+Bug 5326 needs reversion for PHP < 5.5. Fixed.
+M	includes/archive.inc
+
+2021-01-21 11:12:11 +0100 Joe Hunt 
+PHP 7.4 bug in /admin/db/tags_db, function get_tag_name. Fixed.
+M	admin/db/tags_db.inc
+
+2021-01-20 23:16:58 +0100 Janusz Dobrowolski 
+[0005326] Install Languages/Extensions/Themes/CoA: fixed warnings during module installation.
+M	includes/archive.inc
+
+2021-01-20 22:36:18 +0100 Janusz Dobrowolski 
+[0005322] Login/Timeout: Added message on failed login attempt.
+M	access/login.php
+M	includes/current_user.inc
+M	includes/session.inc
+
+2021-01-15 09:02:11 +0100 Joe Hunt 
+Wrong security area passed in generalledger.php. Fixed.
+M	applications/generalledger.php
+
+2021-01-11 08:48:30 +0100 Joe Hunt 
+Bug 5310: DB error when on supplier invoice edit if current fiscal year is missing. Fixed.
+M	purchasing/includes/db/invoice_db.inc
+
+2021-01-10 22:45:41 +0100 Joe Hunt 
+Undefined variable: problemTransaction after enter a bank transfer. Fixed.
+M	gl/bank_transfer.php
+
+2021-01-10 09:34:24 +0100 Joe Hunt 
+Rerun of Rep 704 GL Account Transactions report shows html code on Person/Item.
+M	includes/types.inc
+M	reporting/rep601.php
+M	reporting/rep704.php
+
+2021-01-09 14:59:07 +0100 Joe Hunt 
+Call to undefined count_array() in pdf_report.inc. Fixed.
+M	reporting/includes/pdf_report.inc
+
+2021-01-09 14:58:02 +0100 Joe Hunt 
+Rep 704 GL Account Transactions report shows html code on Person/Item if PT_WORKORDER. Fixed.
+M	reporting/rep704.php
+
+2021-01-08 10:41:06 +0100 Joe Hunt 
+wrong target focus in accruals.php fixed.
+M	gl/accruals.php
+
+2020-12-29 13:59:41 +0100 Janusz Dobrowolski 
+Installer issue fixed again.
+M	install/isession.inc
+
+2020-12-23 14:54:03 +0100 Janusz Dobrowolski 
+Fixed volatile error on first installer page show.
+M	install/isession.inc
+
+2020-12-18 11:21:07 +0100 Joe Hunt 
+Item Adjustments Note disable rounding of Unit Cost. Fixed.
+M	inventory/includes/item_adjustments_ui.inc
+
+2020-12-17 16:15:38 +0100 Joe Hunt 
+FA 2.4.9 Purchase Order pdf printout won't work. Fixed.
+M	reporting/rep209.php
+
+2020-12-16 09:41:11 +0100 Joe Hunt 
+Compatibility fix for commit on 2020-09-28 (php < 5.4)
+M	gl/includes/db/gl_db_bank_accounts.inc
+
+2020-12-14 10:58:31 +0100 Joe Hunt 
+Changelog.txt
+M	CHANGELOG.txt
+
 2020-12-14 10:50:22 +0100 Joe Hunt 
 Release 2.4.9
 M	CHANGELOG.txt
