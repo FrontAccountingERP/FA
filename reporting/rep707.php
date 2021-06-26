@@ -100,7 +100,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
+			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics, $labels, $serie1, $serie2);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
@@ -192,13 +192,13 @@ function print_profit_and_loss_statement()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$orientation = ($orientation ? 'L' : 'P');
+	$labels = array();
+	$serie1 = array();
+	$serie2 = array();
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new Chart($graphics);
-		$labels = array();
-		$serie1 = array();
-		$serie2 = array();
 	}
 	if (!$decimals)
 		$dec = 0;
