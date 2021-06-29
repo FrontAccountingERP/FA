@@ -60,7 +60,7 @@ file for later presentation.
 
 	Joe Hunt
 */
-
+define('MAXLEN', 27); // we cut after 25 chars + ...
 class Chart 
 {
 	var $id;
@@ -138,7 +138,7 @@ class Chart
 		elseif (!is_numeric($type)) $type = 1;
 		$this->width = $width;
 		$this->height = $height;
-		$this->max_label   = NULL;
+		$this->max_label   = "";
 		$this->max_value	= NULL;
 		$this->num_labels = 0;
 		$this->type = $type;
@@ -245,6 +245,8 @@ class Chart
 		$this->legend_box_height  += (14 * $this->num_labels);
 		for ($i = 0; $i < $this->num_labels; $i++)
 		{
+			if (strlen($this->labels[$i]) > MAXLEN)
+				$this->labels[$i] = substr($this->labels[$i], 0, MAXLEN)."...";
 			if (strlen($this->labels[$i]) > strlen($this->max_label))
 				$this->max_label = $this->labels[$i];
 		}
@@ -412,7 +414,7 @@ class Chart
 			// Axis X
 			if ($this->stream == 'svg')
 			{
-				$this->svg->text(($this->graphic_area_x2+10), ($this->graphic_area_y2+10), $this->axis_y, $this->size, $this->color['title'], false, $this->align);
+				$this->svg->text($this->graphic_area_x2+10, ($this->graphic_area_y2+10), $this->axis_y, $this->size, $this->color['title'], false, $this->align);
 				$this->svg->line($this->graphic_area_x1, $this->graphic_area_y2, $this->graphic_area_x2, $this->graphic_area_y2, $this->color['axis_line']);
 			}
 			else
@@ -423,7 +425,8 @@ class Chart
 			// Axis Y
 			if ($this->stream == 'svg')
 			{
-				$this->svg->text(20, ($this->graphic_area_y1-10), $this->axis_x, $this->size, $this->color['title'], false, $this->align);
+				$lex = ($this->string_width($this->max_label, $this->size)) / 2;
+				$this->svg->text($lex, ($this->graphic_area_y1-10), $this->axis_x, $this->size, $this->color['title'], false, $this->align);
 				$this->svg->line($this->graphic_area_x1, $this->graphic_area_y1, $this->graphic_area_x1, $this->graphic_area_y2, $this->color['axis_line']);
 			}
 			else
@@ -635,6 +638,7 @@ class Chart
 	function draw_horizontal_bars()
 	{
 		$y = 10;
+		$label_len = $this->string_width($this->max_label, $this->size);
 		foreach ($this->labels as $i => $parameter)
 		{
 			for ($j = 0; $j < $this->num_series; $j++)
@@ -660,12 +664,14 @@ class Chart
 			}
 			if ($this->stream == 'svg')
 			{
-				$this->svg->text(20, ($y2-5), $parameter, $this->size, $this->color['axis_values'], false, $this->align);
+				$lex = $this->dir == 'rtl' ? $label_len : 20;
+				$this->svg->text($lex, ($y2-5), $parameter, $this->size, $this->color['axis_values'], false, "start");
 				$y += 8;
 			}
 			else
 			{
-				$this->_imagestring($this->img, $this->size, 20, ($y1-5), $parameter, $this->color['axis_values'], 0);
+				$lex = $this->dir == 'rtl' ? $label_len+10 : 20;
+				$this->_imagestring($this->img, $this->size, $lex, ($y1-5), $parameter, $this->color['axis_values'], 0, 0, $this->align);
 				$y	 += 10;
 			}
 		}
@@ -943,16 +949,16 @@ class Chart
 	function draw_table()
 	{
 		$cs = $this->num_labels + 1;
-		$html = "<table cellspacing='0' style='width:{$this->width}px;font-family:{$this->font};font-size:12px;background:inherit;text-align:center;'>\n";
+		$html = "<table cellspacing='0' //style='width:{$this->width}px;font-family:{$this->font};font-size:12px;background:inherit;'>\n";
 		if (!empty($this->title))
 			$html .= "<tr><th colspan=$cs style='text-align:center;'><h3>$this->title</th><tr>\n";
-		$html .= "<tr><th style='text-align:left;border-bottom:1px solid #444'>#</th>"; 
+		$html .= "<tr><th style='border-bottom:1px solid #444'>#</th>"; 
 		for ($i = 0; $i < $this->num_labels; $i++)
 			$html .= "<th style='text-align:right;border-bottom:1px solid #444'>{$this->labels[$i]}</th>";
 		$html .= "</tr>\n";
 		for ($j = 0; $j < $this->num_series; $j++)
 		{
-			$html .= "<tr><td style='text-align:left;'>{$this->series[$j]['label']}</td>";
+			$html .= "<tr><td style=''>{$this->series[$j]['label']}</td>";
 			for ($i = 0; $i < $this->num_labels; $i++)
 				$html .= "<td style='text-align:right;'>".number_format($this->series[$j]['data'][$i], 0)."</td>";
 			$html .= "</tr>\n";
@@ -1127,21 +1133,22 @@ class Chart
 			for ($j = 0; $j < $this->num_series; $j++)
 			{
 				$color = (preg_match("/^(1|2)$/", $this->type)) ? $this->color['bars'][$j]	 : $this->color['line'][$j];
+				$len = $this->string_width($this->max_legend_str, $this->size)-20;
 				if ($this->stream == 'svg')
 				{
-					$lex = $this->dir == 'rtl' ? $x1+$this->string_width($this->max_legend_str, $this->size)-20 : $x1-5;
+					$lex = $this->dir == 'rtl' ? $x1+$len : $x1-5;
 					$this->svg->circle($lex, $y-5, 6, "#fff", 1, $color);
 					//$this->svg->rect($lex, $y-10, 10, 10, "#fff", 1, $color);
-					$lex = $this->dir == 'rtl' ? $x-20 : $x-5; 
-					$this->svg->text($lex, ($y-2), $this->series[$j]['label'], $this->size, $this->color['axis_values'], false, $this->align);
+					$lex = $this->dir == 'rtl' ? $x1+$len-15 : $x-5; 
+					$this->svg->text($lex, ($y-2), $this->series[$j]['label'], $this->size, $this->color['axis_values'], false, "start");
 				}
 				else
 				{
-					$lex = $this->dir == 'rtl' ? $x2-60 : $x-10;
+					$lex = $this->dir == 'rtl' ? $x1+$len+20 : $x-10;
 					imagefilledrectangle($this->img, $lex, $y, ($lex+10), ($y+10), $color);
 					imagerectangle($this->img, $lex, $y, ($lex+10), ($y+10), $this->color['title']);
-					$lex = $this->dir == 'rtl' ? $x-10 : $x+10;
-					$this->_imagestring($this->img, $this->size, $lex, ($y-2), $this->series[$j]['label'], $this->color['axis_values']);
+					$lex = $this->dir == 'rtl' ? $x1+$len+20 : $x+10;
+					$this->_imagestring($this->img, $this->size, $lex, ($y-2), $this->series[$j]['label'], $this->color['axis_values'], 0, 0, $this->align);
 				}
 				$y += 20;
 			}
@@ -1152,12 +1159,17 @@ class Chart
 			$n = count(self::$palette);
 			if ($this->sum_total[0] == 0)
 				return;
+			$label_len = $this->string_width($this->max_label, $this->size);
+			//$value_len = $this->string_width($this->max_value, $this->size);
+			$value_len = $this->string_width(number_format($this->max_value), $this->size);
+			$total_len = $label_len + $value_len;
+			$total_len = max($total_len, $x2-$x1);
 			if (!empty($this->axis_x)) // Only first serie [0]
 			{
 				if ($this->stream == 'svg')
-					$this->svg->text(((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x." (".$this->series[0]['label'].")", $this->size, $this->color['title'], false, $this->align);
+					$this->svg->text(((($x1+$x1+$total_len)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x." (".$this->series[0]['label'].")", $this->size, $this->color['title'], false, $this->align);
 				else
-					$this->_imagestring($this->img, $this->size, (($x1+$x2)/2 - strlen($this->axis_x)*7/2)+30, $y, 
+					$this->_imagestring($this->img, $this->size, (($x1+$x1+$total_len)/2 - strlen($this->axis_x)*7/2)+30, $y, 
 					$this->axis_x."-".$this->series[0]['label'], $this->color['title']);
 				$y += 25;
 			}
@@ -1170,32 +1182,33 @@ class Chart
 				if ($this->stream == 'svg')
 				{
 					$j = $i % $n;
-					$lex = $this->dir == 'rtl' ? $x2+60 : $x+5;
+					$lex = $this->dir == 'rtl' ? $x1+$total_len-25 : $x1;
 					$this->svg->circle($lex, $y-5, 6, "#fff", 1, $this->color[$j]);
-					//$this->svg->rect($cx, $cy-10, 10, 10, "#fff", 1, $this->color[$j]);
+					// $this->svg->rect($lex-5, $y-10, 10, 10, "#fff", 1, $this->color[$j]);
 					// Display label text
-					$lex = $this->dir == 'rtl' ? $x2-100 : $x+15;
-					$this->svg->text($lex, ($y-2), $parameter, $this->size, $this->color['axis_values'], false, $this->align);
-					$lex = $this->dir == 'rtl' ? $x1+25 : $x2;
+					$lex = $this->dir == 'rtl' ? $x1+$total_len-40 : $x1+15;
+					$this->svg->text($lex, ($y-2), $parameter, $this->size, $this->color['axis_values'], false, "start");	
+					$lex = $this->dir == 'rtl' ? $x1+$value_len-25 : $x1+$total_len;
 					$al = $this->dir == 'rtl' ? "start" : "end";
 					$this->svg->text($lex, ($y-2), $text, $this->size, $this->color['axis_values'], false, $al);
-					$lex = $this->dir == 'rtl' ? $x1-10 : $x1+10;
-					$lex2 = $this->dir == 'rtl' ? $x2+50 : $x2;
-					$this->svg->line($lex, $y+1, $lex2, $y+1, $this->color['bg_lines']);
+					$lex2 = $this->dir == 'rtl' ? $x1+$total_len-25 : $x1+$total_len;
+					$this->svg->line($x1, $y+1, $lex2, $y+1, $this->color['bg_lines']);
 				}
 				else
 				{
 					$j = $i % $n;
 					$color = 'arc_' . $j;
 					$width = $this->string_width($text, $this->size);
-					imageline($this->img, $x1+15, ($y-2), $x2+20, ($y-2), $this->color['bg_lines']);
+					imageline($this->img, $x1+15, ($y+11), $x2+20, ($y+11), $this->color['bg_lines']);
 					$lex = $this->dir == 'rtl' ? $x2+20 : $x;
 					imagefilledrectangle($this->img, $lex, $y, ($lex+10), ($y+10), $this->color[$color]);
 					imagerectangle($this->img, $lex, $y, ($lex+10), ($y+10), $this->color['title']);
-					$lex = $this->dir == 'rtl' ? $x2+10 : $x+15;
+					$lex = $this->dir == 'rtl' ? $x2+5 : $x+15;
 					$this->_imagestring($this->img, $this->size, $lex, ($y-2), $parameter, $this->color['axis_values'], 0, 0, $this->align);
-					$lex = $this->dir == 'rtl' ? $x+10 : $x2-$width;
-					$this->_imagestring($this->img, $this->size, $lex, ($y-2), $text, $this->color['axis_values'], 0, 0, $this->align);
+					//$lex = $this->dir == 'rtl' ? $x+10 : $x2-$width;
+					$lex = $this->dir == 'rtl' ? $x1+$value_len : $x2-$width;
+					$al = $this->dir == 'rtl' ? "end" : $this->align;
+					$this->_imagestring($this->img, $this->size, $lex, ($y-2), $text, $this->color['axis_values'], 0, 0, $al);
 				}
 				$y += 18;
 			}

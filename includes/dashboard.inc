@@ -11,15 +11,16 @@
 ***********************************************************************/
 //$colors = array('#008cc9','#4db625','#ef5500','#eef100','#05c6e6', '#5ee66a'); // Current in Use 	 
 $colors = Chart::$palette;
+$align = $_SESSION['language']->dir == 'rtl' ? 'right' : 'left';
 $style = "<style>
 div.square {
 	display: inline-block;
 	width: 200px;
 	height:40px;
-	padding: 3px 0 0 5px;
+	padding: 3px 5px 0 5px;
 	font-size:12px;
 	font-weight:normal;
-	text-align: left;
+	text-align: $align;
 	line-height: 1.2;
 	color:#fff;
 	border-radius:6px;
