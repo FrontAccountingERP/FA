@@ -46,7 +46,7 @@ function display_kit_items($selected_kit)
 		label_cell($myrow["stock_id"]);
 		label_cell($myrow["comp_name"]);
         qty_cell($myrow["quantity"], false, 
-			$myrow["units"] == '' ? 0 : get_qty_dec($myrow["comp_name"]));
+			$myrow["units"] == '' ? 0 : get_qty_dec($myrow["stock_id"]));
         label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
  		edit_button_cell("Edit".$myrow['id'], _("Edit"));
  		delete_button_cell("Delete".$myrow['id'], _("Delete"));
