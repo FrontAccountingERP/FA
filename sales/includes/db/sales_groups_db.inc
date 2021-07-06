@@ -49,7 +49,7 @@ function get_sales_group_name($group_no)
 	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function add_sales_area($description)
@@ -92,7 +92,7 @@ function get_area_name($id)
 	$result = db_query($sql, "could not get sales type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function add_salesman($salesman_name, $salesman_phone, $salesman_fax,
@@ -151,7 +151,7 @@ function get_salesman_name($id)
 	$result = db_query($sql, "could not get sales type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 

@@ -45,7 +45,7 @@ function fetch_items($category=0)
     return db_query($sql,"No transactions were returned");
 }
 
-function trans_qty($stock_id, $location=null, $from_date, $to_date, $inward = true)
+function trans_qty($stock_id, $location, $from_date, $to_date, $inward = true)
 {
 	if ($from_date == null)
 		$from_date = Today();

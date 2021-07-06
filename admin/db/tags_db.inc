@@ -65,7 +65,7 @@ function get_tag_type($id)
 	$result = db_query($sql, "could not get tag type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ function get_tag_description($id)
 	$result = db_query($sql, "could not get tag description");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 //--------------------------------------------------------------------------------------

@@ -27,7 +27,7 @@ function get_fixed_asset_classname($class)
 
 	$row = db_fetch_row($result);
 	
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function update_fixed_asset_class($fa_class_id, $parent_id, $description, $long_description, $depreciation_rate)

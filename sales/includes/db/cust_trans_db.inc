@@ -244,7 +244,7 @@ function get_customer_trans_order($type, $type_no)
 
 	$row = db_fetch_row($result);
 
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 //----------------------------------------------------------------------------------------

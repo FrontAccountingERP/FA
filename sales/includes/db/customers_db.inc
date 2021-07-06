@@ -132,7 +132,7 @@ function get_customer_name($customer_id)
 
 	$row = db_fetch_row($result);
 
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function get_customer_habit($customer_id)
@@ -165,6 +165,8 @@ function get_current_cust_credit($customer_id)
 {
 	$custdet = get_customer_details($customer_id);
 
+	if (!is_array($custdet))
+		return 0;
 	return $custdet['credit_limit']-$custdet['Balance'];
 
 }

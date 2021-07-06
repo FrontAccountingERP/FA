@@ -144,7 +144,7 @@ function get_supplier_name($supplier_id)
 
 	$row = db_fetch_row($result);
 
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function get_supplier_accounts($supplier_id)

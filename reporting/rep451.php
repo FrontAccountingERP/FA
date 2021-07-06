@@ -33,7 +33,7 @@ function find_last_location($stock_id, $end_date)
 		tran_date <= '$end_date' ORDER BY tran_date DESC LIMIT 1";
 	$res = db_query($sql,"No stock moves were returned");
 	$row = db_fetch_row($res);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 //----------------------------------------------------------------------------------------------------

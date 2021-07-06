@@ -73,7 +73,7 @@ function get_tax_type_rate($type_id)
 	$result = db_query($sql, "could not get tax type rate");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function delete_tax_type($type_id)

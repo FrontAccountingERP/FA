@@ -175,7 +175,7 @@ if ($id != -1)
 	change_tpl_flag($id);
 
 
-if (isset($_POST['Reconcile'])) {
+if (isset($_POST['last']) && isset($_POST['Reconcile'])) {
 	set_focus('bank_date');
 	foreach($_POST['last'] as $id => $value)
 		if ($value != check_value('rec_'.$id))
@@ -184,7 +184,7 @@ if (isset($_POST['Reconcile'])) {
     $Ajax->activate('_page_body');
 }
 
-if (isset($_POST['ReconcileAll'])) {
+if (isset($_POST['last']) && isset($_POST['ReconcileAll'])) {
 	set_focus('bank_date');
 	foreach($_POST['last'] as $id => $value)
 		set_tpl_flag($id);

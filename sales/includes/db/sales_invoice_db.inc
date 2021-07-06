@@ -291,7 +291,7 @@ function get_cust_prepayment_invoice_factor($trans_no)
 		LEFT JOIN ".TB_PREF."sales_orders so ON so.trans_type=".ST_SALESORDER." AND so.order_no=dt.order_
 		 WHERE dt.type=".ST_SALESINVOICE." AND trans_no=".db_escape($trans_no);
 	$row = db_fetch(db_query($sql, 'cannot retrieve prepaid invoice factor'));
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 /*
