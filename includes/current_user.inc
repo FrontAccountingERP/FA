@@ -366,14 +366,6 @@ function price_decimal_format($number, &$dec)
 	}
 	return number_format2($number, $dec);
 }
-// function money_format doesn't exist in OS Win. It is also deprecated above php 7.4.
-if (!function_exists('money_format'))
-{
-	function money_format($format, $number) 
-	{
-		return price_format($number);
-	} 
-}	
 
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
