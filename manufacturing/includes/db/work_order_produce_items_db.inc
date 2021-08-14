@@ -161,7 +161,7 @@ function void_work_order_produce($type_no)
 		return;
 
 	// deduct the quantity of this production from the parent work order
-	work_order_update_finished_quantity($prod["workorder_id"], -$prod["quantity"], false);
+	work_order_update_finished_quantity($prod["workorder_id"], -$prod["quantity"]);
 
 	// clear the production record
 	$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".db_escape($type_no);
