@@ -100,7 +100,7 @@ class BoxReports
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $SysPrefs->pdf_debug ? false : 'default popup') . hidden('REP_ID', $report->id, false).'<br><br>';
+						false, '', $SysPrefs->pdf_debug ? false : 'default process popup') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls(), $report->id);
 					$st_params .= "\n<input type=hidden name='Class' value=".$cur_class.">"
 						."\n</form></td></tr></table>\n";
