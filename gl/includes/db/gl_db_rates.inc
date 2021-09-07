@@ -237,8 +237,7 @@ function get_extern_rate($curr_b, $provider, $date)
     }    
     elseif ($provider == 'EXCHANGE-RATES.ORG')
 	{
-		$val = getInnerStr($contents, '<span id="ctl00_M_lblToAmount">', '<');
-		$val = str_replace (',', '', $val);
+		$val = getInnerStr($contents, "1 $curr_b = ",$curr_a);		
     }
 	return $val;
 }  /* end function get_extern_rate */
