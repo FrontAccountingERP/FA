@@ -1217,7 +1217,7 @@ class Chart
 
 	function string_width($string, $size) 
 	{
-		$p = imagettfbbox($size, 0, $this->fontfile, $string);
+		$p = imageftbbox($size, 0, $this->fontfile, $string);
 		return $p[4] - $p[0];
 	}
 
