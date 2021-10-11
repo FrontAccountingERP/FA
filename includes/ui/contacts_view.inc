@@ -48,7 +48,7 @@ class contacts extends simple_crud {
 			while ($last)
 			{
 					
-				if ($myrow['id'] != $last['id']) {
+				if (@$myrow['id'] != $last['id']) {
 					alt_table_row_color($k);
 					label_cell(implode('<br>',$description));
 					label_cell($last["ref"]);
