@@ -71,7 +71,7 @@ function print_sales_orders()
 		$branch = get_branch($myrow["branch_code"]);
 
         if ($i == $from || $email == 1)
-            $rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+            $rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
         if ($print_as_quote == 1)
         {
             $rep->title = _('QUOTE');
