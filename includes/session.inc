@@ -397,7 +397,7 @@ foreach ($installed_extensions as $ext)
 ini_set('session.gc_maxlifetime', 36000); // moved from below.
 
 $Session_manager = new SessionManager();
-$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)));
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)), 0, '/', null, True);
 
 $_SESSION['SysPrefs'] = new sys_prefs();
 
