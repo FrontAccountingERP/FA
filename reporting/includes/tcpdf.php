@@ -624,7 +624,7 @@ if (!class_exists('TCPDF')) {
 		 * @var Header font.
 		 * @access protected
 		 */
-		var $header_font;
+		var $header_font = array('helvetica', '', 12);
 
 		/**
 		 * @var Footer font.
