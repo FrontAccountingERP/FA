@@ -235,7 +235,7 @@ elseif (isset($_POST['db_test'])) {
 			'host' => $_POST['host'],
 			'port' => $_POST['port'],
 			'dbuser' => $_POST['dbuser'],
-			'dbpassword' => $_POST['dbpassword'],
+			'dbpassword' => @html_entity_decode($_POST['dbpassword'], ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ? 'ISO-8859-1' : $_SESSION['language']->encoding),
 			'dbname' => $_POST['dbname'],
 			'tbpref' => $_POST['tbpref'] ? '0_' : '',
 			'sel_langs' => check_value('sel_langs'),

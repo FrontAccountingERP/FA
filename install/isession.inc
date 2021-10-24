@@ -125,6 +125,14 @@ $inst_langs = array(
   'zh_CN' => array ( 'name' => 'Chinese Simplifed',	'code' => 'zh_CN',	'encoding' => 'utf-8'),
 );
 
+if ($SysPrefs->go_debug > 0)
+	$cur_error_level = -1;
+else
+	$cur_error_level = E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE;
+
+error_reporting($cur_error_level);
+ini_set("display_errors", "On");
+
 $Ajax = new Ajax();
 
 get_text_init();
