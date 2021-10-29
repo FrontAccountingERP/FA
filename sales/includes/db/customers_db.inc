@@ -97,7 +97,7 @@ function get_customer_details($customer_id, $to=null, $all=true)
 		$sql .= " AND debtor.debtor_no = ".db_escape($customer_id);
 
 	if (!$all)
-		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > ".FLOAT_COMP_DELTA;
+		$sql .= " AND ABS(trans.ov_amount) + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc > ".FLOAT_COMP_DELTA;
 	$sql .= " GROUP BY
 			  	debtor.name,
 			  	terms.terms,
