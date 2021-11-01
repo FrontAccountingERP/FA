@@ -318,7 +318,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
 		debtor.name, 
 		branch.br_name,
 		debtor.curr_code,
-		IF(prep_amount, prep_amount, abs(trans.ov_amount) + trans.ov_gst + trans.ov_freight 
+		IF(prep_amount, prep_amount, trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,"
 //   	if ($filter != ALL_TEXT)
 //  		$sql .= "@bal := @bal+IF(prep_amount, prep_amount, trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
@@ -391,7 +391,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND trans.due_date < '$today'
-				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
+				AND (ABS(trans.ov_amount) + trans.ov_gst + trans.ov_freight_tax + 
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
     	}
    	}
