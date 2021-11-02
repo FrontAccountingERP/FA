@@ -38,7 +38,7 @@ function getTransactions($debtorno, $date, $show_also_allocated)
         trans.reference,
         trans.tran_date,
         trans.due_date,
-        (ABS(ov_amount) + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
+        (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) AS TotalAmount, alloc AS Allocated,
 		((trans.type = ".ST_SALESINVOICE.") AND due_date < '$date') AS OverDue
 		FROM ".TB_PREF."debtor_trans trans
 		LEFT JOIN ".TB_PREF."voided as v
@@ -137,14 +137,15 @@ function print_statements()
 		{
 			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]),$dec);
 			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
-			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
+			$DisplayNet = number_format2(Abs($myrow2["TotalAmount"]) - $myrow2["Allocated"],$dec);
 
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['type'] == ST_SALESINVOICE || $myrow2['type'] == ST_BANKPAYMENT)
+			if ($myrow2['type'] == ST_SALESINVOICE || $myrow2['type'] == ST_BANKPAYMENT || ($myrow2['type'] == ST_JOURNAL && 
+				$myrow2["TotalAmount"] > 0))
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
 			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);

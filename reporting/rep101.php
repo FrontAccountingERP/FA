@@ -216,7 +216,7 @@ function print_customer_balances()
                 if ($show_balance) {
                     if ($trans['TotalAmount'] == 0) continue;
                 } else {
-                    if (floatcmp($trans['TotalAmount'], $trans['Allocated']) == 0) continue;
+                    if (floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
                 }
             }
 			$rep->NewLine(1, 2);
@@ -230,7 +230,7 @@ function print_customer_balances()
 				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0)
 			{
-				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
+				$item[0] = round2($trans['TotalAmount'] * $rate, $dec);
 				$rep->AmountCol(4, 5, $item[0], $dec);
 				$accumulate += $item[0];
 				$item[2] = round2($trans['Allocated'] * $rate, $dec);
