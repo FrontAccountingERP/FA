@@ -49,7 +49,8 @@ if (!isset($_POST['bank_account'])) { // first page call
 	if (isset($_GET['SInvoice'])) {
 		//  get date and supplier
 		$type = !isset($_GET['Type']) ? ST_SALESINVOICE : $_GET['Type'];
-		$inv = get_customer_trans($_GET['SInvoice'], $type);
+		$cust = !isset($_GET['customer_id']) ? null : $_GET['customer_id'];
+		$inv = get_customer_trans($_GET['SInvoice'], $type,  $cust);
 		$dflt_act = get_default_bank_account($inv['curr_code']);
 		$_POST['bank_account'] = $dflt_act['id'];
 		if ($inv) {

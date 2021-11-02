@@ -63,8 +63,9 @@ if (!isset($_POST['bank_account'])) { // first page call
 	$_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0, get_post('supplier_id'));
 
 	if (isset($_GET['PInvoice'])) {
+		$supp = isset($_POST['supplier_id']) ? $_POST['supplier_id'] : null;
 		//  get date and supplier
-		$inv = get_supp_trans($_GET['PInvoice'], $_GET['trans_type']);
+		$inv = get_supp_trans($_GET['PInvoice'], $_GET['trans_type'], $supp);
 		if ($inv) {
 			$_SESSION['alloc']->person_id = $_POST['supplier_id'] = $inv['supplier_id'];
 			$_SESSION['alloc']->read();

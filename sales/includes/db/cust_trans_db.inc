@@ -396,7 +396,7 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
     	}
    	}
 
-	$sql .= " GROUP BY trans.trans_no, trans.type";
+	$sql .= " GROUP BY trans.trans_no, trans.type, trans.debtor_no";
 
    	return $sql;
 }
