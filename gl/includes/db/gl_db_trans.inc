@@ -458,11 +458,11 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 //
 function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
 	$amount, $net_amount, $ex_rate, $tran_date, $memo, $reg_type=null)
-{
+{	
 	// guess tax register if not set
 	if (!isset($reg_type))
-		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_OUTPUT
-				: (in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_INPUT : null);
+		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_INPUT
+				: (in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_OUTPUT : null);
 
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
