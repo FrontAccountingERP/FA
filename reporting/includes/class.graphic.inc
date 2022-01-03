@@ -4,14 +4,13 @@
 $pg = new Chart('bar'); // Width and Height is set automatically4
 $pg->setTitle("Testing the Chart");
 $pg->setLabels(array('Jan', 'Feb', 'Mar'));
-$pg->addSerie(array(10345, 15666, 12222), 'Sales', false, true); 
-$pg->addSerie(array(20767, 10456, 2888), 'Costs', false, false);
-$pg->addSerie(array(15657, 7567, 12890), 'Result', 'spline', false);
+$pg->addSerie('Sales', array(10345, 15666, 12222), false, true); 
+$pg->addSerie('Costs', array(20767, 10456, 2888), false, false);
+$pg->addSerie('Result', array(15657, 7567, 12890), 'spline', false);
 $pg->setXTitle("Names");
 $pg->setYTitle("Amount");
-$pg->setDValues(False);
 $pg->setDTitle(number_format("15666")); // only printed on donut or half donut
-$filename = "test.png";
+//$filename = "test.png";
 $pg->display(); // with filename to file
 
 In your html file you set it up as:
@@ -186,6 +185,7 @@ class Chart
 	{
 		if ($label == false)
 			$label = "Serie $this->num_series";
+		$type = $type == 'line' ? 4 : ($type == 'spline' ? 8 : $type);
 		$this->series[$this->num_series]['label'] = $label;
 		$this->series[$this->num_series]['data'] = $data;
 		$this->series[$this->num_series]['type'] = $type;
@@ -872,6 +872,7 @@ class Chart
 			$ang1=0;	  // start angle
 			foreach ($this->labels as $i => $num)
 			{
+				$n = count(self::$palette);
 				$pct[$i] = round($this->series[0]['data'][$i] / $this->sum_total[0] * 100, 1);
 				$dang = $this->series[0]['data'][$i] * $area;		// delta angle
 				$laf  = $dang > 180 ? 1 : 0; // Large Arc Flag
@@ -886,7 +887,7 @@ class Chart
 				$p4 = sprintf('%0.2f,%0.2f', $cx + $rc * cos($a), $cy + $rc * sin($a));
 				$a = ($ang1 - $start) * $rad + asin($gap / $rc); 
 				$p5 = sprintf('%0.2f,%0.2f', $cx + $rc * cos($a), $cy + $rc * sin($a));
-				$this->svg->path("M$p1 L$p2 A$r,$r 0 $laf,1 $p3 L$p4 A$rc,$rc 0 $laf,0 $p5", $this->color[$i], 0, $this->color[$i], "class=\"tips\"", "$num: ".number_format($pct[$i], 1)."&#x25;");
+				$this->svg->path("M$p1 L$p2 A$r,$r 0 $laf,1 $p3 L$p4 A$rc,$rc 0 $laf,0 $p5", $this->color[$i % $n], 0, $this->color[$i % $n], "class=\"tips\"", "$num: ".number_format($pct[$i], 1)."&#x25;");
 				$ang1=$ang2;
 			}
 			if (!empty($this->donut_title) && $this->type != 5)
