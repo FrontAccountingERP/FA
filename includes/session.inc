@@ -11,6 +11,7 @@
 ***********************************************************************/
 define('VARLIB_PATH', $path_to_root.'/tmp');
 define('VARLOG_PATH', $path_to_root.'/tmp');
+define('SECURE_ONLY', true);
 
 class SessionManager
 {
@@ -397,7 +398,7 @@ foreach ($installed_extensions as $ext)
 ini_set('session.gc_maxlifetime', 36000); // moved from below.
 
 $Session_manager = new SessionManager();
-$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)), 0, '/', null, True);
+$Session_manager->sessionStart('FA'.md5(dirname(__FILE__)), 0, '/', null, SECURE_ONLY);
 
 $_SESSION['SysPrefs'] = new sys_prefs();
 
