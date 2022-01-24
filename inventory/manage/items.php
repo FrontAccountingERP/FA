@@ -56,7 +56,7 @@ function set_edit($stock_id)
 	$_POST['del_image'] = 0;
 }
 
-function del_image($stock_id)
+function delete_image($stock_id)
 {
 	foreach (array('jpg', 'png', 'gif') as $ext) {
 		$filename = company_path().'/images/'.item_img_name($stock_id).".".$ext;
