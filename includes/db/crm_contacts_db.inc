@@ -175,9 +175,9 @@ function update_person_contacts($id, $cat_ids, $entity_id=null, $type=null)
 
 function delete_entity_contacts($class, $entity)
 {
-	delete_crm_contacts(null, $class, $entity);
 	// cleanup
 	$res = get_crm_persons($class, null, $entity, null, true);
+	delete_crm_contacts(null, $class, $entity);
 	while($person = db_fetch($res)) {
 		$rels = get_person_contacts($person['id']);
 		if (count($rels) == 0) {

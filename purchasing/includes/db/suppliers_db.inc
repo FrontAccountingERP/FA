@@ -73,8 +73,12 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 
 function delete_supplier($supplier_id)
 {
+	begin_transaction();
+	delete_entity_contacts('supplier', $supplier_id);
 	$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
+
 	db_query($sql,"check failed");
+	commit_transaction();
 }
 
 function get_supplier_details($supplier_id, $to=null, $all=true)
