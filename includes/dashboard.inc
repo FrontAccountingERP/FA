@@ -236,7 +236,7 @@ function display_supplier_topten()
 	td('50%');
 	source_graphic($today, $title[0], _("Supplier"), $pg);
 	br(3);
-	echo "<div class='square square2'>"._('Purchable Total')."<p class='span1'>";
+	echo "<div class='square square2'>"._('Purchasable Total')."<p class='span1'>";
 	echo number_format2($title[1])."</p></div>";
 	br(3);
 	echo "<div class='square square2'>"._('Aging Total')."<p class='span1'>";

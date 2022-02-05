@@ -6578,7 +6578,7 @@ msgid "Supplier"
 msgstr ""
 
 #: includes/dashboard.inc:239
-msgid "Purchable Total"
+msgid "Purchasable Total"
 msgstr ""
 
 #: includes/dashboard.inc:255 includes/dashboard.inc:319
