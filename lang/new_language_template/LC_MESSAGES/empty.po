@@ -11913,7 +11913,7 @@ msgid "Total:"
 msgstr ""
 
 #: purchasing/allocations/supplier_allocate.php:62
-msgid "Amount ot be settled:"
+msgid "Amount to be settled:"
 msgstr ""
 
 #: purchasing/allocations/supplier_allocate.php:74
