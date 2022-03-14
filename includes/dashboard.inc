@@ -446,25 +446,21 @@ function customer_top($today, $limit=10, $width='33', &$pg=null)
 	headers($th);
 	check_page_security('SA_SALESTRANSVIEW');
 	$k = 0; //row colour counter
-	$i = 1;
 	$names = $totals = array();
 	$sales = 0;
 	while ($myrow = db_fetch($result))
 	{
 		$sales += round($myrow['total']);
-		if ($i++ < $limit)
+		alt_table_row_color($k);
+		$name = $myrow["debtor_no"]." ".htmlspecialchars_decode($myrow["name"]);
+		label_cell($name);
+		amount_cell($myrow['total']);
+		if ($pg != null)
 		{
-			alt_table_row_color($k);
-			$name = $myrow["debtor_no"]." ".htmlspecialchars_decode($myrow["name"]);
-			label_cell($name);
-			amount_cell($myrow['total']);
-			if ($pg != null)
-			{
-				$names[] = $name;
-				$totals[] = round($myrow['total']);
-			}	
-			end_row();
-		}
+			$names[] = $name;
+			$totals[] = round($myrow['total']);
+		}	
+		end_row();
 	}
 	if ($pg != null)
 	{
@@ -492,25 +488,21 @@ function supplier_top($today, $limit=10, $width='33', &$pg=null)
 	headers($th);
 	check_page_security('SA_SUPPTRANSVIEW');
 	$k = 0; //row colour counter
-	$i = 1;
 	$names = $totals = array();
 	$total = 0;
 	while ($myrow = db_fetch($result))
 	{
 		$total += $myrow['total'];
-		if ($i++ < $limit)
+		alt_table_row_color($k);
+		$name = $myrow["supplier_id"]." ".htmlspecialchars_decode($myrow["supp_name"]);
+		label_cell($name);
+		amount_cell($myrow['total']);
+		if ($pg != null)
 		{
-			alt_table_row_color($k);
-			$name = $myrow["supplier_id"]." ".htmlspecialchars_decode($myrow["supp_name"]);
-			label_cell($name);
-			amount_cell($myrow['total']);
-			if ($pg != null)
-			{
-				$names[] = $name;
-				$totals[] = round($myrow['total']);
-			}	
-			end_row();
-		}
+			$names[] = $name;
+			$totals[] = round($myrow['total']);
+		}	
+		end_row();
 	}
 	if ($pg != null)
 	{
@@ -568,7 +560,6 @@ function stock_top($today, $limit=10, $width='33', $type=0, &$pg=null)
 	headers($th);
 	check_page_security($sec);
 	$k = 0; //row colour counter
-	$i = 1;
 	$names = $totals = $costs = $results = array();
 	$sales = $cost = $res = 0;
 	while ($myrow = db_fetch($result))
@@ -579,30 +570,27 @@ function stock_top($today, $limit=10, $width='33', $type=0, &$pg=null)
 			$cost += $myrow['costs'];
 			$res += ($myrow['total'] - $myrow['costs']);
 		}
-		if ($i++ < $limit)
+		alt_table_row_color($k);
+		$name = $myrow["description"];
+		label_cell($name);
+		amount_cell($myrow['total']);
+		if ($type == 0)
 		{
-			alt_table_row_color($k);
-			$name = $myrow["description"];
-			label_cell($name);
-			amount_cell($myrow['total']);
+			amount_cell($myrow['costs']);
+			amount_cell($myrow['total'] - $myrow['costs']);
+		}
+		qty_cell($myrow['qty']);
+		if ($pg != NULL)
+		{
+			$names[] = $name;
+			$totals[] = round($myrow['total']);	
 			if ($type == 0)
 			{
-				amount_cell($myrow['costs']);
-				amount_cell($myrow['total'] - $myrow['costs']);
+				$costs[] = round($myrow['costs']);
+				$results[] = round($myrow['total'] - $myrow['costs']);
 			}
-			qty_cell($myrow['qty']);
-			if ($pg != NULL)
-			{
-				$names[] = $name;
-				$totals[] = round($myrow['total']);	
-				if ($type == 0)
-				{
-					$costs[] = round($myrow['costs']);
-					$results[] = round($myrow['total'] - $myrow['costs']);
-				}
-			}	
-			end_row();
-		}
+		}	
+		end_row();
 	}
 	if ($pg != null)
 	{
