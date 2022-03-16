@@ -617,7 +617,7 @@ function dimension_top($today, $limit=10, $width='33', &$pg=null)
 		LEFT JOIN ".TB_PREF."dimensions AS d ON (g.dimension_id = d.id OR g.dimension2_id = d.id)
 		LEFT JOIN ".TB_PREF."chart_class AS c ON t.class_id = c.cid
 		WHERE IF(c.ctype > 3, tran_date >= '$begin', tran_date >= '0000-00-00') 
-		AND tran_date <= '$today'  AND d.reference IS NOT NULL GROUP BY d.reference ORDER BY d.reference DESC LIMIT $limit"; 	
+		AND tran_date <= '$today'  AND d.reference IS NOT NULL GROUP BY d.reference ORDER BY result DESC LIMIT $limit"; 	
 	$result = db_query($sql, "Transactions could not be calculated");
 	$title = sprintf(_("Top %s Dimensions in fiscal year"), $limit);
 	display_title($title);
@@ -790,7 +790,8 @@ function customer_aging($today, $width="33")
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
 	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT))."), -1, 1)";
-   	$value = "IFNULL($sign*((trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount)*trans.rate),0)";
+   	$value = "IFNULL($sign*((trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
+		trans.alloc)*trans.rate),0)";
 	$due = "IF (trans.type=".ST_SALESINVOICE.", trans.due_date, trans.tran_date)";
     $sql = "SELECT Sum($value) AS Balance,
 				Sum(IF ((TO_DAYS('$today1') - TO_DAYS($due)) > 0,$value,0)) AS Due,
@@ -803,6 +804,7 @@ function customer_aging($today, $width="33")
 			WHERE
 					debtor.payment_terms = terms.terms_indicator
 	 			AND debtor.credit_status = credit_status.id";
+		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
     $result = db_query($sql,"The customer details could not be retrieved");
 
     $row = db_fetch($result);
@@ -826,12 +828,13 @@ function customer_balance($today)
 {
 	$today = date2sql($today);
 	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT))."), -1, 1)";
-   	$value = "IFNULL($sign*((trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount)*trans.rate),0)";
+   	$value = "IFNULL($sign*((trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount -
+		trans.alloc)*trans.rate),0)";
 	$due = "IF (trans.type=".ST_SALESINVOICE.", trans.due_date, trans.tran_date)";
     $sql = "SELECT Sum($value) AS Balance
 			FROM ".TB_PREF."debtors_master debtor
 				 LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.tran_date <= '$today' AND debtor.debtor_no = trans.debtor_no AND trans.type <> ".ST_CUSTDELIVERY."
-			WHERE ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) > ".FLOAT_COMP_DELTA;
+			WHERE ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
     $result = db_query($sql,"The customer details could not be retrieved");
     $row = db_fetch($result);
 	return $row[0];
@@ -839,21 +842,25 @@ function customer_balance($today)
 
 function supplier_aging($today, $width="33")
 {
-	$pg = new chart('bar', 's3');
+	$pg = new chart('bar', 's3'); 
 	if (isset($_POST['select_s3']))
 		$pg->type = $_POST['select_s3'];
 	$today1 = date2sql($today);
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
-   	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)*trans.rate";
+   	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.", 
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) * trans.rate,
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc) * trans.rate)";
 	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
     $sql = "SELECT Sum($value) AS Balance,
 				Sum(IF ((TO_DAYS('$today1') - TO_DAYS($due)) > 0,$value,0)) AS Due,
 				Sum(IF ((TO_DAYS('$today1') - TO_DAYS($due)) > $past1,$value,0)) AS Overdue1,
 				Sum(IF ((TO_DAYS('$today1') - TO_DAYS($due)) > $past2,$value,0)) AS Overdue2
 			FROM ".TB_PREF."suppliers supp
-			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id AND trans.tran_date <= '$today1'";
+			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id AND trans.tran_date <= '$today1'
+			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) > ".FLOAT_COMP_DELTA."
+			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
     $result = db_query($sql,"The supplier details could not be retrieved");
 
     $row = db_fetch($result);
@@ -875,13 +882,16 @@ function supplier_aging($today, $width="33")
 
 function supplier_balance($today)
 {
-	$today = date2sql($today);
-   	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount) * trans.rate";
+	$today = date2sql($today); 
+   	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.", 
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc) * trans.rate,
+    	(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc) * trans.rate)";
     $sql = "SELECT Sum($value) AS Balance
 			FROM ".TB_PREF."suppliers supplier, ".TB_PREF."supp_trans trans
 				WHERE supplier.supplier_id = trans.supplier_id
 			AND trans.tran_date <= '$today'
-			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) > ".FLOAT_COMP_DELTA;
+			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) > ".FLOAT_COMP_DELTA."
+			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
     $result = db_query($sql,"The supplier details could not be retrieved");
     $row = db_fetch($result);
 	return $row[0];
