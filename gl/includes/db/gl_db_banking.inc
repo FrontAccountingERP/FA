@@ -208,14 +208,14 @@ function add_exchange_variation_all($date, $memo)
 //	
 
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $ref, $memo_, $charge=0, $target_amount=0)
+	$amount, $ref, $memo_, $dim1, $dim2, $charge=0, $target_amount=0)
 {
 	global $Refs, $SysPrefs;
 
 	begin_transaction();
 	$args = func_get_args(); if (count($args) < 8) $args[] = 0;
-	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
-		'ref', 'memo_', 'charge', 'target_amount'), $args);
+	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',  
+		'ref', 'memo_', 'dimension_id', 'dimension2_id', 'charge', 'target_amount'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite($args, ST_BANKTRANSFER);
 
@@ -234,7 +234,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	
 	$total = 0;
 	// do the source account postings
-    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, $person_id,
+    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, $dim1, $dim2, $person_id,
 		-($amount + $charge), $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
@@ -252,7 +252,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		/* Now Debit bank charge account with charges */
 		$charge_act = get_bank_charge_account($from_account);
 		$total += add_gl_trans($trans_type, $trans_no, $date_,
-			$charge_act, 0, 0, $person_id, $charge, $currency);
+			$charge_act, $dim1, $dim2, $person_id, $charge, $currency);
 	}
 
 	// provide backward compatibility for extension modules (target amount can be not passed)
@@ -260,7 +260,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$to_amount = $target_amount ? $target_amount : $amount;
 
 	// do the destination account postings
-	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, $person_id,
+	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, $dim1, $dim2, $person_id,
 		$to_amount, $to_currency);
 		
 	/*Post a balance post if $total != 0 */
@@ -268,7 +268,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		add_gl_balance($trans_type, $trans_no, $date_, -$total);
 	else	// in this case those are exchange variances between bank and home rates
 	   	add_gl_trans($trans_type, $trans_no, $date_, get_company_pref('exchange_diff_act'),
-	   		0, 0, _("Exchange Variance"), -$total);
+	   		$dim1, $dim2, _("Exchange Variance"), -$total);
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
 		$date_, $to_amount, PT_MISC, $person_id,
@@ -347,7 +347,7 @@ function check_bank_transfer($trans_no, $from_account, $to_account, $date_,
 
 function update_bank_transfer(
 	$trans_no, $from_account, $to_account, $date_,
-	$amount, $ref, $memo_, $charge=0, $target_amount=0)
+	$amount, $ref, $memo_, $dim1, $dim2, $charge=0, $target_amount=0)
 {
 	begin_transaction();
 	delete_comments(ST_BANKTRANSFER, $trans_no);
@@ -355,7 +355,7 @@ function update_bank_transfer(
 	void_gl_trans(ST_BANKTRANSFER, $trans_no, true);
 	$new_trans_no = add_bank_transfer(
 		$from_account, $to_account, $date_, $amount,
-		$ref, $memo_, $charge, $target_amount
+		$ref, $memo_, $dim1, $dim2, $charge, $target_amount
 	);
 	commit_transaction();
 	return $new_trans_no;
