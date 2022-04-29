@@ -244,7 +244,7 @@
 				_("Our Order No") => '',
 				_("Delivery Date") => '',
 			);
-			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Charges"),
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Debits"),
 				_("Credits"), _("Allocated"), _("Outstanding"));
 	}
 
