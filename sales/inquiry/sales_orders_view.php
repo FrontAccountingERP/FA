@@ -173,6 +173,21 @@ function tmpl_checkbox($row)
 	. hidden('last['.$row['order_no'].']', $value, false);
 }
 
+function unallocated_prepayments($row)
+{
+
+    if ($row['ord_payments'] > 0) {
+        $pmts = get_payments_for($row['order_no'], $row['trans_type'], $row['debtor_no']);
+
+        foreach($pmts as $pmt)
+        {
+            $list[] = get_trans_view_str($pmt['trans_type_from'], $pmt['trans_no_from'], get_reference($pmt['trans_type_from'], $pmt['trans_no_from']));
+        }
+        return implode(',', $list);
+    } else
+        return '';
+}
+
 function invoice_prep_link($row)
 {
 	// invoicing should be available only for partially allocated orders
@@ -297,7 +312,8 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	);
 } else if ($_POST['order_view_mode'] == 'PrepaidOrders') {
 	array_append($cols, array(
-			array('insert'=>true, 'fun'=>'invoice_prep_link'))
+		_("New Payments") => array('insert'=>true, 'fun'=>'unallocated_prepayments'),
+		array('insert'=>true, 'fun'=>'invoice_prep_link'))
 	);
 
 } elseif ($trans_type == ST_SALESQUOTE) {
