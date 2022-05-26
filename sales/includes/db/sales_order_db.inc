@@ -285,6 +285,7 @@ function get_sales_order_details($order_no, $trans_type) {
 				line.quantity,
 				discount_percent,
 				qty_sent as qty_done,
+				item.long_description,
 				item.units,
 				item.mb_flag,
 				item.material_cost
