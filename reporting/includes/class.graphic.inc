@@ -1218,6 +1218,8 @@ class Chart
 
 	function string_width($string, $size) 
 	{
+		if ($string == NULL)
+			return $size;
 		$p = imageftbbox($size, 0, $this->fontfile, $string);
 		return $p[4] - $p[0];
 	}
