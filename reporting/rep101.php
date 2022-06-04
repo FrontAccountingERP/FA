@@ -172,16 +172,16 @@ function print_customer_balances()
 		$bal = get_open_balance($myrow['debtor_no'], $from);
 		$init = array();
 
-		$init[0] = round2(abs($bal['charges']*$rate), $dec);
-		$init[1] = round2(abs($bal['credits']*$rate), $dec);
-		$init[2] = round2($bal['Allocated']*$rate, $dec);
+		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
+		$init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
+		$init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding']*$rate, $dec);
+			$init[3] = round2(($bal != false ? $bal['OutStanding'] : 0)*$rate, $dec);
 
 		$res = get_transactions($myrow['debtor_no'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;

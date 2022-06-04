@@ -150,20 +150,20 @@ function print_supplier_balances()
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init = array();
-		$bal['charges'] = isset($bal['charges']) ? $bal['charges'] : 0;
-		$bal['credits'] = isset($bal['credits']) ? $bal['credits'] : 0;
-		$bal['Allocated'] = isset($bal['Allocated']) ? $bal['Allocated'] : 0;
-		$bal['OutStanding'] = isset($bal['OutStanding']) ? $bal['OutStanding'] : 0;
-		$init[0] = round2(abs($bal['charges']*$rate), $dec);
-		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
-		$init[2] = round2($bal['Allocated']*$rate, $dec);
+		//$bal['charges'] = $bal != false ? $bal['charges'] : 0;
+		//$bal['credits'] = $bal != false ? $bal['credits'] : 0;
+		//$bal['Allocated'] = $bal != false ? $bal['Allocated'] : 0;
+		//$bal['OutStanding'] = $bal != false ? $bal['OutStanding'] : 0;
+		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
+		$init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
+		$init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding']*$rate, $dec);
+			$init[3] = round2(($bal != false ? $bal['OutStanding'] : 0)*$rate, $dec);
 		$res = getTransactions($myrow['supplier_id'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
 

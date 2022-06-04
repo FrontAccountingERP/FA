@@ -302,55 +302,57 @@ $opts = array(		// default options
 		$link = "";
   		$id = $name;
   		if ($SysPrefs->use_popup_windows) {
-    		switch (strtolower($type)) {
-      			case "stock":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_manufactured":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_purchased":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_sales":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_costable":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "component":
-      				$parent = $opts['parent'];
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=component&parent=".$parent."&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "kits":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "customer":
-        			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
-        			$img_title = _("Search customers");
-        			break;
-      			case "branch":
-        			$link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#customer_id";
-        			$img_title = _("Search branches");
-        			break;
-      			case "supplier":
-        			$link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
-        			$img_title = _("Search suppliers");
-        			break;
-      			case "account":
-      			case "account2":
-      				$skip = strtolower($type) == "account" ? false : true;
-        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
-        			$img_title = _("Search GL accounts");
-        			break;
-    		}
+  			if ($type != NULL) {
+	    		switch (strtolower($type)) {
+	      			case "stock":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_manufactured":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_purchased":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_sales":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_costable":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "component":
+	      				$parent = $opts['parent'];
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=component&parent=".$parent."&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "kits":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "customer":
+	        			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
+	        			$img_title = _("Search customers");
+	        			break;
+	      			case "branch":
+	        			$link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#customer_id";
+	        			$img_title = _("Search branches");
+	        			break;
+	      			case "supplier":
+	        			$link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
+	        			$img_title = _("Search suppliers");
+	        			break;
+	      			case "account":
+	      			case "account2":
+	      				$skip = strtolower($type) == "account" ? false : true;
+	        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
+	        			$img_title = _("Search GL accounts");
+	        			break;
+	    		}
+	    	}
   		}
 
   		if ($link !=="") {

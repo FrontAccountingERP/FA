@@ -266,12 +266,14 @@ class JsHttpRequest
             '_POST'=> $rawPost,
         );
         foreach ($source as $dst=>$src) {
-            // First correct all 2-byte entities.
-            $s = preg_replace('/%(?!5B)(?!5D)([0-9a-f]{2})/si', '%u00\\1', $src);
-            // Now we can use standard parse_str() with no worry!
-            $data = null;
-            parse_str($s, $data);
-            $GLOBALS[$dst] = $this->_ucs2EntitiesDecode($data);
+            if ($src != NULL) {
+                // First correct all 2-byte entities.
+                $s = preg_replace('/%(?!5B)(?!5D)([0-9a-f]{2})/si', '%u00\\1', $src);
+                // Now we can use standard parse_str() with no worry!
+                $data = null;
+                parse_str($s, $data);
+                $GLOBALS[$dst] = $this->_ucs2EntitiesDecode($data);
+            }
         }
         $GLOBALS['HTTP_GET_VARS'] = $_GET; // deprecated vars
         $GLOBALS['HTTP_POST_VARS'] = $_POST;
