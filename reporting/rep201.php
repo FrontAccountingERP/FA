@@ -150,10 +150,6 @@ function print_supplier_balances()
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['supplier_id'], $from);
 		$init = array();
-		//$bal['charges'] = $bal != false ? $bal['charges'] : 0;
-		//$bal['credits'] = $bal != false ? $bal['credits'] : 0;
-		//$bal['Allocated'] = $bal != false ? $bal['Allocated'] : 0;
-		//$bal['OutStanding'] = $bal != false ? $bal['OutStanding'] : 0;
 		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
 		$init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
 		$init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
