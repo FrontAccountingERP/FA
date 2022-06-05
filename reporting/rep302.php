@@ -112,13 +112,11 @@ function print_inventory_planning()
 		$loc = get_location_name($location);
 
 	$cols = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
-
-	$per0 = substr(date('F',mktime(0,0,0,date('m'),1,date('Y'))), 0, 3);
-	$per1 = substr(date('F',mktime(0,0,0,date('m')-1,1,date('Y'))), 0, 3);
-	$per2 = substr(date('F',mktime(0,0,0,date('m')-2,1,date('Y'))), 0, 3);
-	$per3 = substr(date('F',mktime(0,0,0,date('m')-3,1,date('Y'))), 0, 3);
-	$per4 = substr(date('F',mktime(0,0,0,date('m')-4,1,date('Y'))), 0, 3);
-
+	$per0 = date('M',mktime(0,0,0,date('m'),1,date('Y')));
+	$per1 = date('M',mktime(0,0,0,date('m')-1,1,date('Y')));
+	$per2 = date('M',mktime(0,0,0,date('m')-2,1,date('Y')));
+	$per3 = date('M',mktime(0,0,0,date('m')-3,1,date('Y')));
+	$per4 = date('M',mktime(0,0,0,date('m')-4,1,date('Y')));
 	$headers = array(_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
 		_('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord'));
 
