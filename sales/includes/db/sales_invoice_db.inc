@@ -84,7 +84,6 @@ function write_sales_invoice(&$invoice)
 	} else {
 		$prepaid_factor = 1;
 	}
-
 	 // write_customer_trans have to be called after optional void_cust_allocations above
 	$invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
@@ -300,18 +299,14 @@ function get_cust_prepayment_invoice_factor($trans_no)
 */
 function prepaid_invoice_remainder($order)
 {
-	$sql = "SELECT so.total - IFNULL(SUM(inv.prep_amount),0) FROM "
-		.TB_PREF."sales_orders so,
-		".TB_PREF."debtor_trans inv,
-		".TB_PREF."payment_terms pt
+	$sql = "SELECT so.total - SUM(IFNULL(inv.prep_amount,0)) FROM "
+		.TB_PREF."sales_orders so
+			LEFT JOIN ".TB_PREF."payment_terms pt ON so.payment_terms=pt.terms_indicator AND pt.days_before_due = -1
+			LEFT JOIN ".TB_PREF."debtor_trans inv ON inv.type=".ST_SALESINVOICE ." AND inv.order_=so.order_no
 		WHERE  so.order_no=".db_escape($order)
 			." AND so.trans_type=".ST_SALESORDER
-			." AND inv.type=".ST_SALESINVOICE
-			." AND inv.order_=so.order_no"
-			." AND so.payment_terms=pt.terms_indicator"
-			." AND inv.payment_terms=pt.terms_indicator"
-			." AND pt.days_before_due = -1";
-
+			." AND so.payment_terms=pt.terms_indicator";
+			
 	$result = db_fetch(db_query($sql, "cannot find final invoice value"));
 	return $result[0] ? $result[0] : 0;
 }

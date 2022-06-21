@@ -788,10 +788,12 @@ function customer_aging($today, $width="33")
 	$today1 = date2sql($today);
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
-	// removed - debtor_trans.alloc from all summations
+
 	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT))."), -1, 1)";
-   	$value = "IFNULL($sign*((trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
-		trans.alloc)*trans.rate),0)";
+
+	$value = "$sign*(IF(trans.prep_amount, trans.prep_amount,
+		ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount)) - trans.alloc)*trans.rate";
+
 	$due = "IF (trans.type=".ST_SALESINVOICE.", trans.due_date, trans.tran_date)";
     $sql = "SELECT Sum($value) AS Balance,
 				Sum(IF ((TO_DAYS('$today1') - TO_DAYS($due)) > 0,$value,0)) AS Due,
@@ -804,7 +806,7 @@ function customer_aging($today, $width="33")
 			WHERE
 					debtor.payment_terms = terms.terms_indicator
 	 			AND debtor.credit_status = credit_status.id";
-		$sql .= " AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) - trans.alloc > ".FLOAT_COMP_DELTA;
+		$sql .= " AND ABS(IF(trans.prep_amount, trans.prep_amount, ABS(trans.ov_amount) + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) - trans.alloc) > ".FLOAT_COMP_DELTA;
     $result = db_query($sql,"The customer details could not be retrieved");
 
     $row = db_fetch($result);
