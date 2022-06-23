@@ -125,7 +125,7 @@ function get_journal_number($type, $trans_no) {
 	if (db_num_rows($res))
 	{
 		$myrow =db_fetch($res);
-		return $myrow['gl_seq'] ? $myrow['gl_seq'] : _('None');
+		return $myrow['gl_seq'] ? $myrow['gl_seq'] : 0;
 	}
 	return "-";
 }
