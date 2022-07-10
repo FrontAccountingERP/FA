@@ -145,7 +145,8 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 
 	$id = default_focus($id);
 	foreach($pars as $par => $val) {
-		$pars[$par] = "$par=".urlencode($val);
+		if ($val != null)
+			$pars[$par] = "$par=".urlencode($val);
 	}
 	$pars[] = 'REP_ID='.urlencode($rep);
 	$url .= implode ('&', $pars);
