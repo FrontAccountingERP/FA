@@ -53,9 +53,12 @@ function void_transaction($type, $type_no, $date_, $memo_)
 				return _('Selected transaction does not exists.');
 			if ($type == ST_CUSTDELIVERY)	// added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
 			{
-				$childs = get_sales_child_lines($type, $type_no, false); // 2011-03-17 This had been changed. Joe
-				if ($childs && db_num_rows($childs))
-					return _('This delivery cannot be voided because it was already invoiced.');
+				$vers = get_customer_trans_version($type, $type_no);
+				if ($vers[$type_no] == 1) {
+					$childs = get_sales_child_lines($type, $type_no, false); // 2011-03-17 This had been changed. Joe
+					if ($childs && db_num_rows($childs))
+						return _('This delivery cannot be voided because it was already invoiced.');
+				}
 			}
 			post_void_customer_trans($type, $type_no);
 			break;
