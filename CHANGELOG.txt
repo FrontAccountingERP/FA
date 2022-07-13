@@ -1,3 +1,181 @@
+2022-07-11 00:33:09 +0200 Joe 
+Removed delivery in a batch cannot be voided after the invoice is made. Fixed.
+M	admin/db/voiding_db.inc
+
+2022-07-11 00:31:59 +0200 Joe 
+php 8.1 bug. Parameter to urlencode cannot be null. Fixed.
+M	reporting/includes/reporting.inc
+
+2022-06-28 10:30:24 +0200 Joe 
+Bug 5599: Generating an EAN-8 Barcode throws an error "Trying to access array offset on value of type bool". Fixed.
+M	inventory/manage/items.php
+
+2022-06-27 11:28:02 +0200 Joe 
+Feature 5623. Link to new supplier invoice. Clean up. Bad link text. Fixed.
+M	purchasing/supplier_payment.php
+
+2022-06-26 17:29:04 +0200 Joe 
+Feature 5623: link to new supplier invoice after supplier payment, option to have last supplier invoice be current supplier. Fixed by link.
+M	purchasing/supplier_payment.php
+
+2022-06-23 09:02:15 +0200 Joe 
+Bug 5571 and 5572. Unable to void/edit transactions in php 8. Due to an error in audit_trail_db.inc. _('None') returns a positive value in php 8 and not a 0 value. Fixed.
+M	includes/db/audit_trail_db.inc
+
+2022-06-21 11:54:28 +0200 Janusz Dobrowolski 
+Additional bugfixes for prepayment handling in sales reports (Customer Balances, Aged Customer Analysys, Customer Statements and Sales Invoice)
+M	includes/dashboard.inc
+M	reporting/rep102.php
+M	reporting/rep107.php
+M	sales/customer_invoice.php
+M	sales/includes/db/customers_db.inc
+M	sales/includes/db/sales_invoice_db.inc
+
+2022-06-06 15:45:29 +0200 Joe 
+php 8.1 Deprecated null parameters. Clean UP local months names.
+M	reporting/rep302.php
+M	reporting/rep705.php
+
+2022-06-06 10:43:06 +0200 Joe 
+php 8.1 Deprecated null parameters in functions. Fixed.
+M	includes/packages.inc
+
+2022-06-05 10:19:54 +0200 Joe 
+php 8.1 deprecated null parameters. Clean Up.
+M	reporting/rep302.php
+M	reporting/rep705.php
+
+2022-06-05 00:36:49 +0200 Joe 
+php 8.1 deprecated null parameters. Missing file.
+M	reporting/rep201.php
+
+2022-06-05 00:34:23 +0200 Joe 
+php 8.1 deprecated null parameters fixed.
+M	includes/JsHttpRequest.php
+M	includes/ui/ui_lists.inc
+M	reporting/includes/pdf_report.inc
+M	reporting/rep101.php
+M	reporting/rep103.php
+M	reporting/rep201.php
+M	reporting/rep206.php
+M	reporting/rep302.php
+M	reporting/rep705.php
+
+2022-06-03 11:00:26 +0200 Joe 
+PHP 8 Bug. Deprecated null value in parameter.
+M	reporting/includes/class.graphic.inc
+
+2022-05-26 15:55:57 +0200 Joe 
+Fixed Long product Description on Sales Quotation.
+M	reporting/rep111.php
+M	sales/includes/db/sales_order_db.inc
+
+2022-05-11 16:45:04 +0200 Janusz Dobrowolski 
+Customer balances reports: further fixes and cleanups.
+M	reporting/rep101.php
+M	reporting/rep102.php
+M	reporting/rep115.php
+M	sales/includes/db/customers_db.inc
+
+2022-05-07 08:39:14 +0200 Joe 
+Buttons missing on Chart of Accounts page (on some editions). Fixed.
+M	gl/manage/gl_accounts.php
+
+2022-05-07 08:26:38 +0200 Joe 
+Adding Assets Classes fails. Fixed.
+M	fixed_assets/fixed_asset_classes.php
+
+2022-04-30 13:13:49 +0200 Janusz Dobrowolski 
+Customer balances reports: additional bug fixes to balance totals calculations.
+M	sales/includes/db/customers_db.inc
+
+2022-04-29 10:56:51 +0200 Janusz Dobrowolski 
+Customer balances reports: fixed balance sums for prepayment invoices.
+M	reporting/includes/doctext.inc
+M	reporting/rep101.php
+M	reporting/rep102.php
+M	reporting/rep108.php
+M	reporting/rep115.php
+
+2022-04-29 09:38:02 +0200 Janusz Dobrowolski 
+Invoice Prepaid Orders: Added new payments column for direct review of order invoicing status.
+M	sales/includes/db/sales_order_db.inc
+M	sales/inquiry/sales_orders_view.php
+
+2022-04-18 08:47:10 +0200 Joe 
+Email invoice always says invoice 0 from company. Fixed.
+M	reporting/rep107.php
+
+2022-04-13 08:02:40 +0200 Joe 
+Journal Entry - Cursor skips through dimension field. Fixed.
+M	gl/includes/ui/gl_journal_ui.inc
+
+2022-04-11 11:31:50 +0200 Joe 
+Coding bug in inventory_db.inc. Fixed.
+M	inventory/includes/inventory_db.inc
+
+2022-03-23 09:38:04 +0100 Joe 
+Bank account transfers don't have GL dimensions. Fixed.
+M	gl/bank_transfer.php
+M	gl/includes/db/gl_db_banking.inc
+
+2022-03-16 01:20:33 +0100 Joe Hunt 
+Rerun of dashboard.inc
+M	includes/dashboard.inc
+
+2022-03-15 15:15:54 +0100 Joe Hunt 
+SalesDashboard Aging total =/= Aged Costumer Analisys. Fixed.
+M	includes/dashboard.inc
+M	purchasing/inquiry/supplier_inquiry.php
+
+2022-03-14 11:37:12 +0100 Joe Hunt 
+Dashboard Top 10 only show 1 record less than top. Fixed.
+M	includes/dashboard.inc
+
+2022-03-12 16:53:59 +0100 Joe Hunt 
+translatable string typo in Purchaseing/allocations/supplier_allocate.php - Amount ot be settled: Fixed.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	purchasing/allocations/supplier_allocate.php
+
+2022-02-05 10:01:16 +0100 Joe Hunt 
+Typo in translatable string - Purchable Total. Fixed.
+M	includes/dashboard.inc
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2022-01-24 19:35:59 +0100 Janusz Dobrowolski 
+Add and Manage Customers, Suppliers: contact persons where not removed when deleting customer/supplier. Fixed.
+M	includes/db/crm_contacts_db.inc
+M	purchasing/includes/db/suppliers_db.inc
+
+2022-01-24 09:07:55 +0100 Joe Hunt 
+Rerun of function 'delete_image' when deleting item. Fixed.
+M	inventory/manage/items.php
+
+2022-01-24 08:57:30 +0100 Joe Hunt 
+Missing function 'delete_image' when deling item. Fixed.
+M	inventory/manage/items.php
+
+2022-01-23 21:36:42 +0100 Janusz Dobrowolski 
+Added SECURE_ONLY option in session.inc allowing explicit switching off https only access.
+M	includes/session.inc
+
+2022-01-03 01:07:29 +0100 Joe Hunt 
+Fixed a couple of small bugs in Graphics engine.
+M	reporting/includes/class.graphic.inc
+
+2021-12-14 09:47:22 +0100 Janusz Dobrowolski 
+Code cleanup (fixed parametr lists in gl_all_accounts_list_row and calls to subledger__list_cells)
+M	gl/includes/ui/gl_journal_ui.inc
+M	includes/ui/ui_lists.inc
+
+2021-12-13 12:24:21 +0100 Joe Hunt 
+Bug 5544: Notes from template are not used in recurring invoices. Fixed.
+M	sales/create_recurrent_invoices.php
+
+2021-12-04 14:45:21 +0100 Joe Hunt 
+New CHANGELOG.txt file.
+M	CHANGELOG.txt
+
 2021-12-04 14:43:27 +0100 Joe Hunt 
 Release 2.4.11.
 M	version.php
