@@ -1,3 +1,12 @@
+2022-07-13 07:55:11 +0200 Joe 
+Release 2.4.12
+M	CHANGELOG.txt
+M	version.php
+
+2022-07-12 21:41:30 +0200 Janusz Dobrowolski 
+Updated gettext template.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
 2022-07-11 00:33:09 +0200 Joe 
 Removed delivery in a batch cannot be voided after the invoice is made. Fixed.
 M	admin/db/voiding_db.inc
