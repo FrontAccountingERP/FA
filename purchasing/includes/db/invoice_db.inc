@@ -343,7 +343,6 @@ function add_supp_invoice(&$supp_trans)
 						$ref = $Refs->get_next(ST_JOURNAL, null, $date_);
 						add_journal(ST_JOURNAL, $id, $diff, $date_, get_company_currency(), $ref);
 						$stock_id = $entered_grn->item_code;
-						$stock_gl_code = get_stock_gl_code($stock_id);
 						$memo = _("Supplier invoice adjustment for zero inventory of ").$stock_id." "._("Invoice")." ".$supp_trans->reference;
 						//Reverse the inventory effect if $qoh <=0
 						add_gl_trans_std_cost(ST_JOURNAL, $id, $date_, 
