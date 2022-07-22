@@ -140,17 +140,16 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 	$icon=false, $class='printlink', $id='')
 {
 	global $path_to_root, $SysPrefs;
-
 	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
 
 	$id = default_focus($id);
+	$parm = array();
 	foreach($pars as $par => $val) {
-		if ($val != null)
-			$pars[$par] = "$par=".urlencode($val);
+		if ($val != "")
+			$parm[] = "$par=".urlencode($val);
 	}
-	$pars[] = 'REP_ID='.urlencode($rep);
-	$url .= implode ('&', $pars);
-
+	$parm[] = 'REP_ID='.urlencode($rep);
+	$url .= implode ('&', $parm);
 	if ($class != '')
 		$class = $SysPrefs->pdf_debug ? '' : " class='$class'";
 	if ($id != '')
