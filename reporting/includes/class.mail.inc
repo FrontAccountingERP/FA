@@ -39,7 +39,7 @@ class email
     var $subject = "";
     var $body = "";
 	var $charset = 'ISO-8859-1';
-	var $add_params;
+	var $add_params = "";
 	
     function __construct($name, $mail)
     {
