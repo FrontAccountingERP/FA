@@ -737,7 +737,7 @@ function gl_week_performance($today, $width="33", $weeks=4)
 	$pg->setLabels($week_names);
 	$pg->addSerie(_('Sales'), $sales, 'bar');
 	$pg->addSerie(_('Costs'), $costs, 'bar');
-	$pg->addSerie(_('Results'), $results, 8);
+	$pg->addSerie(_('Results'), $results, 'spline');
 	source_graphic($today, $title, _("Week"), $pg, _("Weeks"), $weeks);
 }
 
@@ -776,7 +776,7 @@ function gl_month_performance($today, $width="33", $months=5)
 	$pg->setLabels($month_names);
 	$pg->addSerie(_('Sales'), $sales, 'bar');
 	$pg->addSerie(_('Costs'), $costs, 'bar');
-	$pg->addSerie(_('Results'), $results, 8);
+	$pg->addSerie(_('Results'), $results, 'spline');
 	source_graphic($today, $title, _("Month"), $pg, _("Months"), $months);
 }
 
@@ -1088,19 +1088,25 @@ function supplier_trans($today)
 		FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as s 
 		WHERE s.supplier_id = trans.supplier_id
 			AND trans.type = ".ST_SUPPINVOICE." AND (ABS(trans.ov_amount + trans.ov_gst + 
-				trans.ov_discount) - trans.alloc) > ".FLOAT_COMP_DELTA."
-			AND DATEDIFF('$today', trans.due_date) > 0 ORDER BY days DESC";
+				trans.ov_discount) - trans.alloc) > ".FLOAT_COMP_DELTA." ORDER BY days DESC";
 	$result = db_query($sql);
-	$title = db_num_rows($result) . _(" overdue Purchase Invoices");
+	$title = db_num_rows($result) . _(" unpaid Purchase Invoices");
 	display_title($title);
 	$th = array("#", _("Ref."), _("Date"), _("Due Date"), _("Supplier"), _("Currency"), _("Total"), 
 		_("Remainder"),	_("Days"));
 	start_table(TABLESTYLE, "width=90%");
 	headers($th);
 	$k = 0; //row colour counter
+	$due = false;
 	while ($myrow = db_fetch($result))
 	{
-		alt_table_row_color($k);
+		if ($myrow['days'] > 0)
+		{
+			start_row("class='overduebg'");
+			$due = true;
+		}
+		else
+			alt_table_row_color($k);
 		label_cell(get_trans_view_str(ST_SUPPINVOICE, $myrow["trans_no"]));
 		label_cell($myrow['reference']);
 		label_cell(sql2date($myrow['tran_date']));
@@ -1113,7 +1119,10 @@ function supplier_trans($today)
 		label_cell($myrow['days'], "align='right'");
 		end_row();
 	}
-	end_table(2);
+	end_table();
+	if ($due)
+		display_note(_("Marked items are overdue."), 1, 0, "class='overduefg'");
+	br();
 }
 
 function stock_below_reorder($today, $type)
