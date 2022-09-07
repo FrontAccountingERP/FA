@@ -92,7 +92,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 {
 	$amount = round2($amount, user_price_dec());
 
-	if (floatcmp($amount, 0))
+	if ($amount != 0.0)
 	{
 		error_log(sprintf( _("Rounding error %s encountered for trans_type:%s,trans_no:%s"), $amount, $type, $trans_id));
 		return add_gl_trans($type, $trans_id, $date_, get_company_pref('exchange_diff_act'), 0, 0, "",
