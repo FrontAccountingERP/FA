@@ -1228,7 +1228,7 @@ class Chart
 	{
 		$digits	  = strlen(round($this->max_value));
 		$interval = pow(10, ($digits-1));
-		$this->higher_value = round(($this->max_value - ($this->max_value % $interval) + $interval), 1);
+		$this->higher_value = round(($this->max_value - ((int)$this->max_value % $interval) + $interval), 1);
 		$this->higher_value_str = $this->number_formated($this->higher_value, $this->dec1);
 	}
 
@@ -1388,7 +1388,7 @@ class Chart
 			$size += 2;
 			$string = str_replace(" ", "  ", $string);
 		}	
-		imagettftext($img, $size, $angle, $x, $y  + $alt, $col, $this->fontfile, $string);
+		imagettftext($img, $size, $angle, intval($x), $y  + $alt, $col, $this->fontfile, $string);
 	}
 
 	function hex2rgb($hex)
