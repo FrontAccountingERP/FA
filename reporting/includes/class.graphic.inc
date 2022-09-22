@@ -330,9 +330,9 @@ class Chart
 			for ($i = 1; $i < 10; $i++)
 			{
 				$dec_y = $i * ($this->higher_value_size / 10);
-				$x1 = $this->graphic_area_x1;
-				$y1 = $this->graphic_area_y2 - $dec_y;
-				$x2 = $this->graphic_area_x2;
+				$x1 = round($this->graphic_area_x1);
+				$y1 = round($this->graphic_area_y2 - $dec_y);
+				$x2 = round($this->graphic_area_x2);
 				$y2 = $y1;
 				if ($this->stream == 'svg')
 					$this->svg->line($x1, $y1, $x2, $y2, $this->color['bg_lines']);
@@ -835,13 +835,13 @@ class Chart
 					$j = $n - 1;
 					while ($i + 1 < $j) {
 						$k = $i + ($j - $i) / 2;
-						if ($x <= $splines[$k]['x']) {
+						if ($x <= $splines[round($k)]['x']) {
 							$j = $k;
 						} else {
 							$i = $k;
 						}
 					}
-					$s = $splines[$j];
+					$s = $splines[round($j)];
 				}
 			}
 			$dx = ($x - $s['x']);
@@ -1228,7 +1228,7 @@ class Chart
 	{
 		$digits	  = strlen(round($this->max_value));
 		$interval = pow(10, ($digits-1));
-		$this->higher_value = round(($this->max_value - ((int)$this->max_value % $interval) + $interval), 1);
+		$this->higher_value = round(($this->max_value - (round($this->max_value) % $interval) + $interval), 1);
 		$this->higher_value_str = $this->number_formated($this->higher_value, $this->dec1);
 	}
 
@@ -1345,8 +1345,14 @@ class Chart
 			round($x2 + (1+$k)*$a), round($y2 - (1-$k)*$a),
 			round($x2 + (1-$k)*$a), round($y2 + (1+$k)*$a),
 		);
-		imagefilledpolygon($image, $points, 4, $color);
-		return imagepolygon($image, $points, 4, $color);
+		if (PHP_MAJOR_VERSION >= 8) { // num_points is deprecated
+			imagefilledpolygon($image, $points, $color);
+			return imagepolygon($image, $points, $color);
+		}
+		else {
+			imagefilledpolygon($image, $points, 4, $color);
+			return imagepolygon($image, $points, 4, $color);
+		}
 	}
 
 	function _imagestring($img, $size, $x, $y, $string, $col, $alt=0, $angle=0, $align=false)
@@ -1388,7 +1394,7 @@ class Chart
 			$size += 2;
 			$string = str_replace(" ", "  ", $string);
 		}	
-		imagettftext($img, $size, $angle, intval($x), $y  + $alt, $col, $this->fontfile, $string);
+		imagettftext($img, $size, $angle, round($x), $y  + $alt, $col, $this->fontfile, $string);
 	}
 
 	function hex2rgb($hex)
