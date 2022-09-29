@@ -124,7 +124,6 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 	return $diff;
 }
 //----------------------------------------------------------------------------------------
-
 function add_supp_invoice(&$supp_trans)
 {
 	global $Refs;
@@ -166,7 +165,6 @@ function add_supp_invoice(&$supp_trans)
 	    foreach ($taxes as $n => $taxitem)
 			$item_added_tax += isset($taxitem['Override']) ? $taxitem['Override'] : round2($taxitem['Value'], user_price_dec());
 	}
-
 	if ($trans_type == ST_SUPPCREDIT)
 	{
 		// let's negate everything because it's a credit note
@@ -497,7 +495,7 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
            				$details_row["description"], 
            				$details_row['qty_recd'],
            				$details_row['quantity_inv'],
-           				$details_row["quantity"], 0, $details_row["FullUnitPrice"],
+           				($trans_type == ST_SUPPCREDIT ? -1 : 1) * $details_row["quantity"], 0, $details_row["FullUnitPrice"], // SUPPCREDIT quantities are stored negative in database
            				0, 0);
              	}
              	else
