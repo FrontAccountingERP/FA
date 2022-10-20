@@ -262,7 +262,7 @@ function read_customer_data()
 	$myrow = get_customer_habit($_POST['customer_id']);
 
 	$_POST['HoldAccount'] = !$myrow ? false : $myrow["dissallow_invoices"];
-	$_POST['pymt_discount'] = !$myrow ? 0 : $myrow["pymt_descount"];
+	$_POST['pymt_discount'] = !$myrow ? 0 : $myrow["pymt_discount"];
 	// To support Edit feature
 	// If page is called first time and New entry fetch the nex reference number
 	if (!$_SESSION['alloc']->trans_no && !isset($_POST['charge'])) 
