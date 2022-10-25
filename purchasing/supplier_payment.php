@@ -97,6 +97,7 @@ if (isset($_GET['AddedID'])) {
 
 	submenu_option(_("Enter another supplier &payment"), "/purchasing/supplier_payment.php?supplier_id=".$_POST['supplier_id']);
 
+	submenu_option(_("Enter &Supplier Invoice"), "/purchasing/supplier_invoice.php?New=1");
 	submenu_option(_("Enter direct &Invoice"), "/purchasing/po_entry_items.php?NewInvoice=Yes");
 
 	submenu_option(_("Enter Other &Payment"), "/gl/gl_bank.php?NewPayment=Yes");
