@@ -1,3 +1,47 @@
+2022-10-26 09:26:01 +0200 Joe 
+Release 2.4.14
+M	README.md
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
+2022-10-25 19:06:00 +0200 Joe 
+Bug. Add instruction if Login from unsecure server. Fixed.
+M	access/login.php
+
+2022-10-25 19:04:26 +0200 Joe 
+Feature. Add Supplier Invoice Menu after Supplier Payment. Fixed.
+M	purchasing/supplier_payment.php
+
+2022-10-20 09:14:06 +0200 Joe 
+Typo on line 265. Fixed.
+M	sales/customer_payments.php
+
+2022-09-29 10:12:08 +0200 Janusz Dobrowolski 
+Modifying Supplier Credit: reverted GL postings - fixed. Supplier Credit Note: invalid reference number selected for credit against invoice - fixed
+M	purchasing/includes/db/invoice_db.inc
+M	purchasing/includes/db/suppalloc_db.inc
+M	purchasing/supplier_credit.php
+
+2022-09-26 11:41:47 +0200 Joe 
+Updating the empty.po language file. Files adjustment.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2022-09-23 11:21:40 +0200 Joe 
+Typo in ISO_8859-1 => ISO-8859-1. Fixed
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2022-09-22 11:49:19 +0200 Joe 
+PHP 8 deprecated parameter in imagefilledpolygon. More float to int problems. Only problems in reporting. Fixed.
+M	reporting/includes/class.graphic.inc
+
+2022-09-20 23:58:42 +0200 Joe 
+PHP 8. Conversion from float to int loses precision in file: line 1391. Fixed.
+M	reporting/includes/class.graphic.inc
+
+2022-09-18 08:11:43 +0200 Joe 
+New CHANGELOG.txt
+M	CHANGELOG.txt
+
 2022-09-18 08:08:48 +0200 Joe 
 Release 2.4.13
 M	lang/new_language_template/LC_MESSAGES/empty.po
