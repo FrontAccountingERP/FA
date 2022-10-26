@@ -44,15 +44,17 @@ Master branch contains all the latest bugfixes made atop the last stable release
 	
 ### 3. Installation
 
+FrontAccounting should NOT be used via unsecure http protocol. If you really need this - change SECURE_ONLY constant in /includes/session.inc to false (comment in the file added). Unfortunately this option cannot be added in sysprefs/config.php because the settings are not available before session is started.
+
 Use your browser to open page at URL related to chosen installation folder. As an example, if you plan to use application locally and in previous step you have put files on your Linux box in /var/www/html/frontaccounting subfolder, just select `http://localhost/frontaccounting` url in your browser, and you will see start page of installation wizard. Follow instructions displayed during the process.
 
 During installation you will need to provide data server credentials with permissions to create new database, or you will have to provide existing database name and credentials for user with valid usage permissions to access it. You will have to chose also a couple of other options including installation language, optimal encoding for database data etc. Keep in mind that some options (like additional translations and charts of accounts) presented during installation process could be installed also later, when FrontAccounting is already in use.
 
- After successful installation please remove or rename your install directory for safety reasons. You won't need it any more.
+After successful installation please remove or rename your install directory for safety reasons. You won't need it any more.
 
 ### 4. Logging In For the First Time
 
- Open a browser and enter the URL for the web server directory where FrontAccounting is installed. Enter the user name  **admin** and use password declared during install process to login as company administrator. Now you can proceed with configuration process setting up additional user accounts, creating fiscal years, defining additional currencies, GL accounts etc. All configuration options available in application are described in [FrontAccounting Wiki](http://frontaccounting.com/fawiki/) available directly from Help links on every application page under ![Help](./themes/default/images/help.gif  "Help") icon.
+Open a browser and enter the URL for the web server directory where FrontAccounting is installed. Enter the user name  **admin** and use password declared during install process to login as company administrator. Now you can proceed with configuration process setting up additional user accounts, creating fiscal years, defining additional currencies, GL accounts etc. All configuration options available in application are described in [FrontAccounting Wiki](http://frontaccounting.com/fawiki/) available directly from Help links on every application page under ![Help](./themes/default/images/help.gif  "Help") icon.
  
 
 ## Troubleshooting

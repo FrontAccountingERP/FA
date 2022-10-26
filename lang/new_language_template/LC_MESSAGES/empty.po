@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-26 10:57+0200\n"
+"POT-Creation-Date: 2022-10-25 19:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,37 +56,44 @@ msgstr ""
 msgid "Invalid password or username. Please, try again."
 msgstr ""
 
-#: access/login.php:57 access/login.php:89
+#: access/login.php:57 access/login.php:90
 msgid "Authorization timeout"
 msgstr ""
 
-#: access/login.php:57 access/login.php:94
+#: access/login.php:57 access/login.php:95
 msgid "Login"
 msgstr ""
 
-#: access/login.php:94 access/password_reset.php:61
+#: access/login.php:95 access/password_reset.php:61
 msgid "Version"
 msgstr ""
 
-#: access/login.php:98
+#: access/login.php:103
 msgid "User name"
 msgstr ""
 
-#: access/login.php:102 admin/users.php:202
+#: access/login.php:107 admin/users.php:202
 msgid "Password:"
 msgstr ""
 
-#: access/login.php:111 access/login.php:117 access/password_reset.php:69
+#: access/login.php:116 access/login.php:122 access/password_reset.php:69
 #: access/password_reset.php:75 admin/create_coy.php:247
 #: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:210
 msgid "Company"
 msgstr ""
 
-#: access/login.php:125
+#: access/login.php:127
+msgid ""
+"HTTP access is not allowed on this site. This is unsecure. If you really "
+"want to access this unsecure site then set the SECURE_ONLY to false in /"
+"includes/session.inc file."
+msgstr ""
+
+#: access/login.php:135
 msgid "Login -->"
 msgstr ""
 
-#: access/login.php:160 access/password_reset.php:106
+#: access/login.php:170 access/password_reset.php:106
 #: admin/display_prefs.php:125 themes/canvas/renderer.php:184
 #: themes/default/renderer.php:136 themes/dropdown/renderer.php:210
 msgid "Theme:"
@@ -2627,7 +2634,7 @@ msgstr ""
 #: manufacturing/work_order_costs.php:147
 #: manufacturing/work_order_entry.php:429
 #: manufacturing/work_order_release.php:102 purchasing/po_entry_items.php:486
-#: purchasing/supplier_payment.php:349
+#: purchasing/supplier_payment.php:350
 #: purchasing/includes/ui/invoice_ui.inc:192
 #: purchasing/includes/ui/po_ui.inc:474 sales/customer_invoice.php:659
 #: sales/customer_payments.php:399
@@ -2650,7 +2657,7 @@ msgstr ""
 
 #: admin/void_transaction.php:242 inventory/reorder_level.php:71
 #: inventory/inquiry/stock_movements.php:109
-#: inventory/inquiry/stock_status.php:74 purchasing/supplier_credit.php:230
+#: inventory/inquiry/stock_status.php:74 purchasing/supplier_credit.php:231
 msgid "Quantity On Hand"
 msgstr ""
 
@@ -2674,7 +2681,7 @@ msgstr ""
 #: gl/manage/exchange_rates.php:33 gl/manage/revaluate_currencies.php:45
 #: manufacturing/work_order_add_finished.php:89
 #: manufacturing/work_order_costs.php:80 purchasing/po_receive_items.php:174
-#: purchasing/supplier_payment.php:191 sales/customer_credit_invoice.php:90
+#: purchasing/supplier_payment.php:192 sales/customer_credit_invoice.php:90
 #: sales/sales_order_entry.php:373 sales/manage/recurrent_invoices.php:60
 #: sales/manage/recurrent_invoices.php:66
 #: sales/manage/recurrent_invoices.php:71
@@ -2687,8 +2694,8 @@ msgstr ""
 #: inventory/transfers.php:115 manufacturing/work_order_add_finished.php:95
 #: manufacturing/work_order_costs.php:86 manufacturing/work_order_entry.php:151
 #: manufacturing/work_order_issue.php:82 purchasing/po_entry_items.php:351
-#: purchasing/po_receive_items.php:179 purchasing/supplier_credit.php:196
-#: purchasing/supplier_invoice.php:200 purchasing/supplier_payment.php:197
+#: purchasing/po_receive_items.php:179 purchasing/supplier_credit.php:197
+#: purchasing/supplier_invoice.php:200 purchasing/supplier_payment.php:198
 #: sales/create_recurrent_invoices.php:92
 #: sales/create_recurrent_invoices.php:170 sales/credit_note_entry.php:175
 #: sales/customer_credit_invoice.php:94 sales/customer_delivery.php:164
@@ -3766,7 +3773,7 @@ msgstr ""
 #: manufacturing/work_order_entry.php:357
 #: manufacturing/work_order_entry.php:365
 #: manufacturing/includes/work_order_issue_ui.inc:161
-#: purchasing/supplier_payment.php:306
+#: purchasing/supplier_payment.php:307
 #: purchasing/includes/ui/invoice_ui.inc:117
 #: purchasing/includes/ui/po_ui.inc:156 purchasing/includes/ui/po_ui.inc:161
 #: sales/customer_payments.php:353
@@ -4142,8 +4149,8 @@ msgstr ""
 #: includes/sysnames.inc:43 includes/sysnames.inc:182
 #: inventory/manage/items.php:478 inventory/manage/items.php:480
 #: inventory/manage/item_categories.php:258
-#: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:330
-#: purchasing/supplier_payment.php:335
+#: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:331
+#: purchasing/supplier_payment.php:336
 #: purchasing/includes/ui/invoice_ui.inc:141
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
@@ -4395,7 +4402,7 @@ msgid "Amount:"
 msgstr ""
 
 #: gl/bank_transfer.php:137 gl/bank_transfer.php:144
-#: purchasing/supplier_payment.php:323 sales/customer_payments.php:368
+#: purchasing/supplier_payment.php:324 sales/customer_payments.php:368
 msgid "Bank Charge:"
 msgstr ""
 
@@ -4412,7 +4419,7 @@ msgid "Enter Transfer"
 msgstr ""
 
 #: gl/bank_transfer.php:187 gl/bank_transfer.php:242 gl/bank_transfer.php:266
-#: purchasing/supplier_payment.php:141 purchasing/supplier_payment.php:147
+#: purchasing/supplier_payment.php:142 purchasing/supplier_payment.php:148
 msgid "The entered amount is invalid or less than zero."
 msgstr ""
 
@@ -4448,7 +4455,7 @@ msgid ""
 "transaction: %s #%s on %s."
 msgstr ""
 
-#: gl/bank_transfer.php:247 purchasing/supplier_payment.php:155
+#: gl/bank_transfer.php:247 purchasing/supplier_payment.php:156
 #: sales/customer_payments.php:188
 msgid ""
 "The Bank Charge Account has not been set in System and General GL Setup."
@@ -4497,7 +4504,7 @@ msgstr ""
 
 #: gl/gl_bank.php:89 gl/gl_journal.php:64 inventory/adjustments.php:65
 #: manufacturing/work_order_entry.php:67 purchasing/po_entry_items.php:117
-#: purchasing/po_entry_items.php:138 purchasing/supplier_credit.php:85
+#: purchasing/po_entry_items.php:138 purchasing/supplier_credit.php:86
 #: purchasing/supplier_invoice.php:74 sales/credit_note_entry.php:77
 #: sales/customer_credit_invoice.php:61 sales/customer_invoice.php:72
 #: sales/sales_order_entry.php:250
@@ -4547,7 +4554,7 @@ msgstr ""
 msgid "You must enter at least one payment line."
 msgstr ""
 
-#: gl/gl_bank.php:241 purchasing/supplier_payment.php:206
+#: gl/gl_bank.php:241 purchasing/supplier_payment.php:207
 #, php-format
 msgid "The total bank amount exceeds allowed limit (%s)."
 msgstr ""
@@ -4768,7 +4775,7 @@ msgid "The credit amount entered is not a valid number or is less than zero."
 msgstr ""
 
 #: gl/gl_journal.php:401 includes/ui/ui_view.inc:655
-#: purchasing/supplier_credit.php:146 purchasing/supplier_invoice.php:152
+#: purchasing/supplier_credit.php:147 purchasing/supplier_invoice.php:152
 msgid "Cannot post to GL account used by more than one tax type."
 msgstr ""
 
@@ -4819,6 +4826,65 @@ msgstr ""
 msgid "Process journal entry only if debits equal to credits"
 msgstr ""
 
+#: gl/includes/db/class.data_set.inc:77 includes/db/class.data_set.inc:77
+msgid "Invalid validator string"
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:113 includes/db/class.data_set.inc:113
+#, php-format
+msgid "Input parameter '%s' have to be set."
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:121 includes/db/class.data_set.inc:121
+#, php-format
+msgid "Parameter '%s' cannot be empty."
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:128 includes/db/class.data_set.inc:128
+#, php-format
+msgid "Parameter '%s' contains invalid characters."
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:134 includes/db/class.data_set.inc:134
+#, php-format
+msgid "Parameter '%s' has invalid value."
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:277 includes/db/class.data_set.inc:277
+#, php-format
+msgid "Invalid key passed reading '%s'"
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:329 includes/db/class.data_set.inc:329
+msgid "Empty update data for table "
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:339 gl/includes/db/class.data_set.inc:368
+#: includes/db/class.data_set.inc:339 includes/db/class.data_set.inc:368
+#, php-format
+msgid "Invalid key for update '%s'"
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:376 includes/db/class.data_set.inc:376
+msgid "Cannot update record in "
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:395 includes/db/class.data_set.inc:395
+msgid "Empty data set for insertion into "
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:401 includes/db/class.data_set.inc:401
+msgid "Cannot insert record into "
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:482 includes/db/class.data_set.inc:482
+msgid "Empty update data for array "
+msgstr ""
+
+#: gl/includes/db/class.data_set.inc:510 includes/db/class.data_set.inc:510
+msgid "Empty data for array "
+msgstr ""
+
 #: gl/includes/db/gl_db_banking.inc:52 gl/includes/db/gl_db_banking.inc:56
 #: gl/includes/db/gl_db_banking.inc:84 gl/includes/db/gl_db_banking.inc:87
 #: gl/includes/db/gl_db_banking.inc:271
@@ -4843,7 +4909,7 @@ msgid "To"
 msgstr ""
 
 #: gl/includes/db/gl_db_banking.inc:354 gl/includes/db/gl_db_banking.inc:521
-#: gl/includes/db/gl_journal.inc:111 purchasing/includes/db/invoice_db.inc:147
+#: gl/includes/db/gl_journal.inc:111 purchasing/includes/db/invoice_db.inc:146
 msgid "Document reentered."
 msgstr ""
 
@@ -7496,8 +7562,8 @@ msgstr ""
 msgid "Supplier Invoice"
 msgstr ""
 
-#: includes/sysnames.inc:34 purchasing/supplier_credit.php:58
-#: purchasing/supplier_credit.php:62
+#: includes/sysnames.inc:34 purchasing/supplier_credit.php:59
+#: purchasing/supplier_credit.php:63
 msgid "Supplier Credit Note"
 msgstr ""
 
@@ -8186,64 +8252,6 @@ msgstr ""
 msgid ""
 "Some transactions journal GL postings were not indexed due to lack of audit "
 "trail record."
-msgstr ""
-
-#: includes/db/class.data_set.inc:77
-msgid "Invalid validator string"
-msgstr ""
-
-#: includes/db/class.data_set.inc:113
-#, php-format
-msgid "Input parameter '%s' have to be set."
-msgstr ""
-
-#: includes/db/class.data_set.inc:121
-#, php-format
-msgid "Parameter '%s' cannot be empty."
-msgstr ""
-
-#: includes/db/class.data_set.inc:128
-#, php-format
-msgid "Parameter '%s' contains invalid characters."
-msgstr ""
-
-#: includes/db/class.data_set.inc:134
-#, php-format
-msgid "Parameter '%s' has invalid value."
-msgstr ""
-
-#: includes/db/class.data_set.inc:277
-#, php-format
-msgid "Invalid key passed reading '%s'"
-msgstr ""
-
-#: includes/db/class.data_set.inc:329
-msgid "Empty update data for table "
-msgstr ""
-
-#: includes/db/class.data_set.inc:339 includes/db/class.data_set.inc:368
-#, php-format
-msgid "Invalid key for update '%s'"
-msgstr ""
-
-#: includes/db/class.data_set.inc:376
-msgid "Cannot update record in "
-msgstr ""
-
-#: includes/db/class.data_set.inc:395
-msgid "Empty data set for insertion into "
-msgstr ""
-
-#: includes/db/class.data_set.inc:401
-msgid "Cannot insert record into "
-msgstr ""
-
-#: includes/db/class.data_set.inc:482
-msgid "Empty update data for array "
-msgstr ""
-
-#: includes/db/class.data_set.inc:510
-msgid "Empty data for array "
 msgstr ""
 
 #: includes/db/class.reflines_db.inc:22
@@ -9184,7 +9192,7 @@ msgid "There are no purchasable inventory items defined in the system."
 msgstr ""
 
 #: inventory/purchasing_data.php:30 purchasing/po_entry_items.php:73
-#: purchasing/supplier_credit.php:68 purchasing/supplier_invoice.php:53
+#: purchasing/supplier_credit.php:69 purchasing/supplier_invoice.php:53
 #: purchasing/supplier_payment.php:40
 msgid "There are no suppliers defined in the system."
 msgstr ""
@@ -11015,9 +11023,9 @@ msgid ""
 "purchased."
 msgstr ""
 
-#: purchasing/po_entry_items.php:338 purchasing/supplier_credit.php:170
+#: purchasing/po_entry_items.php:338 purchasing/supplier_credit.php:171
 #: purchasing/supplier_invoice.php:175 purchasing/supplier_invoice.php:391
-#: purchasing/supplier_payment.php:129
+#: purchasing/supplier_payment.php:130
 msgid "There is no supplier selected."
 msgstr ""
 
@@ -11029,12 +11037,12 @@ msgstr ""
 msgid "The entered due date is invalid."
 msgstr ""
 
-#: purchasing/po_entry_items.php:374 purchasing/supplier_credit.php:209
+#: purchasing/po_entry_items.php:374 purchasing/supplier_credit.php:210
 #: purchasing/supplier_invoice.php:213
 msgid "You must enter a supplier's invoice reference."
 msgstr ""
 
-#: purchasing/po_entry_items.php:381 purchasing/supplier_credit.php:216
+#: purchasing/po_entry_items.php:381 purchasing/supplier_credit.php:217
 #: purchasing/supplier_invoice.php:220
 msgid ""
 "This invoice number has already been entered. It cannot be entered again."
@@ -11212,67 +11220,67 @@ msgstr ""
 msgid "Modifying Supplier Credit # %d"
 msgstr ""
 
-#: purchasing/supplier_credit.php:79
+#: purchasing/supplier_credit.php:80
 msgid "Supplier credit note has been processed."
 msgstr ""
 
-#: purchasing/supplier_credit.php:80
+#: purchasing/supplier_credit.php:81
 msgid "View this Credit Note"
 msgstr ""
 
-#: purchasing/supplier_credit.php:82
+#: purchasing/supplier_credit.php:83
 msgid "View the GL Journal Entries for this Credit Note"
 msgstr ""
 
-#: purchasing/supplier_credit.php:84
+#: purchasing/supplier_credit.php:85
 msgid "Enter Another Credit Note"
 msgstr ""
 
-#: purchasing/supplier_credit.php:129 purchasing/supplier_invoice.php:135
+#: purchasing/supplier_credit.php:130 purchasing/supplier_invoice.php:135
 msgid ""
 "The account code entered is not a valid code, this line cannot be added to "
 "the transaction."
 msgstr ""
 
-#: purchasing/supplier_credit.php:139 purchasing/supplier_invoice.php:145
+#: purchasing/supplier_credit.php:140 purchasing/supplier_invoice.php:145
 msgid ""
 "The amount entered is not numeric. This line cannot be added to the "
 "transaction."
 msgstr ""
 
-#: purchasing/supplier_credit.php:177
+#: purchasing/supplier_credit.php:178
 msgid ""
 "The credit note cannot be processed because the there are no items or values "
 "on the invoice.  Credit notes are expected to have a charge."
 msgstr ""
 
-#: purchasing/supplier_credit.php:190
+#: purchasing/supplier_credit.php:191
 msgid ""
 "The credit note as entered cannot be processed because the date entered is "
 "not valid."
 msgstr ""
 
-#: purchasing/supplier_credit.php:202 purchasing/supplier_invoice.php:206
+#: purchasing/supplier_credit.php:203 purchasing/supplier_invoice.php:206
 msgid ""
 "The invoice as entered cannot be processed because the due date is in an "
 "incorrect format."
 msgstr ""
 
-#: purchasing/supplier_credit.php:228
+#: purchasing/supplier_credit.php:229
 msgid ""
 "The return cannot be processed because there is an insufficient quantity for "
 "item:"
 msgstr ""
 
-#: purchasing/supplier_credit.php:272
+#: purchasing/supplier_credit.php:270
 msgid "The quantity to credit must be numeric and greater than zero."
 msgstr ""
 
-#: purchasing/supplier_credit.php:279
+#: purchasing/supplier_credit.php:277
 msgid "The price is either not numeric or negative."
 msgstr ""
 
-#: purchasing/supplier_credit.php:381
+#: purchasing/supplier_credit.php:379
 msgid "Enter Credit Note"
 msgstr ""
 
@@ -11378,64 +11386,68 @@ msgid "Enter another supplier &payment"
 msgstr ""
 
 #: purchasing/supplier_payment.php:100
+msgid "Enter &Supplier Invoice"
+msgstr ""
+
+#: purchasing/supplier_payment.php:101
 msgid "Enter direct &Invoice"
 msgstr ""
 
-#: purchasing/supplier_payment.php:102 sales/customer_payments.php:114
+#: purchasing/supplier_payment.php:103 sales/customer_payments.php:114
 msgid "Enter Other &Payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:103
+#: purchasing/supplier_payment.php:104
 msgid "Enter &Customer Payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:104 sales/customer_payments.php:112
+#: purchasing/supplier_payment.php:105 sales/customer_payments.php:112
 msgid "Enter Other &Deposit"
 msgstr ""
 
-#: purchasing/supplier_payment.php:105 sales/customer_payments.php:115
+#: purchasing/supplier_payment.php:106 sales/customer_payments.php:115
 msgid "Bank Account &Transfer"
 msgstr ""
 
-#: purchasing/supplier_payment.php:168
+#: purchasing/supplier_payment.php:169
 msgid "The entered discount is invalid or less than zero."
 msgstr ""
 
-#: purchasing/supplier_payment.php:176
+#: purchasing/supplier_payment.php:177
 msgid ""
 "The total of the amount and the discount is zero or negative. Please enter "
 "positive values."
 msgstr ""
 
-#: purchasing/supplier_payment.php:183
+#: purchasing/supplier_payment.php:184
 msgid "The entered bank amount is zero or negative."
 msgstr ""
 
-#: purchasing/supplier_payment.php:273
+#: purchasing/supplier_payment.php:274
 msgid "Payment To:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:298
+#: purchasing/supplier_payment.php:299
 msgid "From Bank Account:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:304 purchasing/view/view_supp_payment.php:55
+#: purchasing/supplier_payment.php:305 purchasing/view/view_supp_payment.php:55
 msgid "Date Paid"
 msgstr ""
 
-#: purchasing/supplier_payment.php:320
+#: purchasing/supplier_payment.php:321
 msgid "Bank Amount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:347 sales/customer_payments.php:395
+#: purchasing/supplier_payment.php:348 sales/customer_payments.php:395
 msgid "Amount of Discount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:348
+#: purchasing/supplier_payment.php:349
 msgid "Amount of Payment:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:352
+#: purchasing/supplier_payment.php:353
 msgid "Enter Payment"
 msgstr ""
 
@@ -11521,19 +11533,19 @@ msgstr ""
 msgid "Payment for:"
 msgstr ""
 
-#: purchasing/includes/db/invoice_db.inc:346
+#: purchasing/includes/db/invoice_db.inc:344
 msgid "Supplier invoice adjustment for zero inventory of "
 msgstr ""
 
-#: purchasing/includes/db/invoice_db.inc:346 reporting/rep106.php:90
+#: purchasing/includes/db/invoice_db.inc:344 reporting/rep106.php:90
 #: sales/inquiry/customer_inquiry.php:75
 #: sales/inquiry/sales_deliveries_view.php:155
 #: sales/inquiry/sales_orders_view.php:139
 msgid "Invoice"
 msgstr ""
 
+#: purchasing/includes/db/invoice_db.inc:701
 #: purchasing/includes/db/invoice_db.inc:703
-#: purchasing/includes/db/invoice_db.inc:705
 msgid "GRN Removal"
 msgstr ""
 
