@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-25 19:10+0200\n"
+"POT-Creation-Date: 2022-11-11 16:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12532,6 +12532,10 @@ msgstr ""
 
 #: reporting/rep108.php:178
 msgid "as of"
+msgstr ""
+
+#: reporting/rep108.php:183
+msgid "No customers with outstanding balances found"
 msgstr ""
 
 #: reporting/rep109.php:74 reporting/rep109.php:82
