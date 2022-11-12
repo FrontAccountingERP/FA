@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-11 16:18+0100\n"
+"POT-Creation-Date: 2022-11-12 13:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12526,15 +12526,24 @@ msgstr ""
 msgid "Outstanding Transactions"
 msgstr ""
 
-#: reporting/rep108.php:178
+#: reporting/rep108.php:180
 msgid "Statement"
 msgstr ""
 
-#: reporting/rep108.php:178
+#: reporting/rep108.php:180
 msgid "as of"
 msgstr ""
 
-#: reporting/rep108.php:183
+#: reporting/rep108.php:180
+msgid "from"
+msgstr ""
+
+#: reporting/rep108.php:182
+#, php-format
+msgid "Customer %s has no overdue debs. No e-mail is send."
+msgstr ""
+
+#: reporting/rep108.php:187
 msgid "No customers with outstanding balances found"
 msgstr ""
 
