@@ -179,7 +179,7 @@ function print_statements()
             if (($CustomerRecord["Balance"]) != ($CustomerRecord["Balance"] - $CustomerRecord["Due"]))
                 $rep->End($email, _("Statement") . " " . _("as of") . " " . sql2date($date) . " " . _("from") . " " . get_company_pref('coy_name'));
             else
-                display_notification(sprintf(_("Customer %s has no overdue debs. No e-mail is send."), $myrow["DebtorName"]));       
+                display_notification(sprintf(_("Customer %s has no overdue debits. No e-mail is sent."), $myrow["DebtorName"]));       
         }
 	}
 
