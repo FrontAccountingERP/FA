@@ -386,6 +386,10 @@ function get_sql_for_customer_inquiry($from, $to, $cust_id = ALL_TEXT, $filter =
    		{
 			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
    		}
+   		elseif ($filter == '6')
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
+   		}
 
     	if ($filter == '2')
     	{

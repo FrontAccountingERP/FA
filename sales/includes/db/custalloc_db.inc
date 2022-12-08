@@ -322,6 +322,10 @@ function get_sql_for_customer_allocation_inquiry($from, $to, $customer, $filterT
    		{
 			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
+   		elseif ($filterType == '6')
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
+   		}
 
     	if ($filterType == '2')
     	{

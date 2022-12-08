@@ -288,6 +288,10 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
    		}
+   		elseif (($filter == '7')) 
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL."  ";
+   		}
 
    		if (($filter == '2') || ($filter == '5')) 
    		{

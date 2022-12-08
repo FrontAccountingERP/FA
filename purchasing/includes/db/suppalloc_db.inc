@@ -302,6 +302,10 @@ function get_sql_for_supplier_allocation_inquiry()
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
    		}
+   		elseif ($_POST['filterType'] == '6')	// Journal
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
+   		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) // overdude 
    		{
