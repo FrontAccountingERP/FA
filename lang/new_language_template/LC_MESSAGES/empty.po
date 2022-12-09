@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-17 23:51+0100\n"
+"POT-Creation-Date: 2022-12-10 00:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1860,7 +1860,7 @@ msgid "Install third-party extension."
 msgstr ""
 
 #: admin/inst_module.php:177 fixed_assets/inquiry/stock_inquiry.php:114
-#: includes/ui/ui_lists.inc:763 includes/ui/ui_lists.inc:2357
+#: includes/ui/ui_lists.inc:763 includes/ui/ui_lists.inc:2360
 #: reporting/includes/excel_report.inc:229
 #: reporting/includes/pdf_report.inc:266
 msgid "Active"
@@ -6886,7 +6886,7 @@ msgid "Salesmen"
 msgstr ""
 
 #: includes/dashboard.inc:189 includes/dashboard.inc:226
-#: includes/ui/ui_lists.inc:2161
+#: includes/ui/ui_lists.inc:2162
 msgid "Overdue Invoices"
 msgstr ""
 
@@ -6935,8 +6935,8 @@ msgstr ""
 msgid "New Orders"
 msgstr ""
 
-#: includes/dashboard.inc:223 includes/ui/ui_lists.inc:2160
-#: includes/ui/ui_lists.inc:2177
+#: includes/dashboard.inc:223 includes/ui/ui_lists.inc:2161
+#: includes/ui/ui_lists.inc:2179
 msgid "Invoices"
 msgstr ""
 
@@ -8626,7 +8626,7 @@ msgstr ""
 msgid "Click Here to Pick up the date"
 msgstr ""
 
-#: includes/ui/ui_input.inc:977 includes/ui/ui_lists.inc:2357
+#: includes/ui/ui_input.inc:977 includes/ui/ui_lists.inc:2360
 #: reporting/rep301.php:228 reporting/rep302.php:167 reporting/rep303.php:300
 #: reporting/rep304.php:184 reporting/rep304.php:188 reporting/rep306.php:231
 #: reporting/rep306.php:238 reporting/rep310.php:186 reporting/rep310.php:194
@@ -8725,8 +8725,8 @@ msgstr ""
 msgid "Use Item Sales Accounts"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2143 includes/ui/ui_lists.inc:2159
-#: includes/ui/ui_lists.inc:2175
+#: includes/ui/ui_lists.inc:2143 includes/ui/ui_lists.inc:2160
+#: includes/ui/ui_lists.inc:2177
 msgid "All Types"
 msgstr ""
 
@@ -8734,19 +8734,19 @@ msgstr ""
 msgid "Sales Invoices"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2145 includes/ui/ui_lists.inc:2178
+#: includes/ui/ui_lists.inc:2145 includes/ui/ui_lists.inc:2180
 msgid "Unsettled transactions"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2146 includes/ui/ui_lists.inc:2162
-#: includes/ui/ui_lists.inc:2179 includes/ui/ui_view.inc:615
+#: includes/ui/ui_lists.inc:2146 includes/ui/ui_lists.inc:2163
+#: includes/ui/ui_lists.inc:2181 includes/ui/ui_view.inc:615
 #: includes/ui/ui_view.inc:619 themes/canvas/renderer.php:86
 #: themes/canvas/renderer.php:97 themes/canvas/renderer.php:129
 msgid "Payments"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2147 includes/ui/ui_lists.inc:2163
-#: includes/ui/ui_lists.inc:2180 sales/view/view_sales_order.php:178
+#: includes/ui/ui_lists.inc:2147 includes/ui/ui_lists.inc:2164
+#: includes/ui/ui_lists.inc:2182 sales/view/view_sales_order.php:178
 msgid "Credit Notes"
 msgstr ""
 
@@ -8754,76 +8754,81 @@ msgstr ""
 msgid "Delivery Notes"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2164 includes/ui/ui_lists.inc:2181
+#: includes/ui/ui_lists.inc:2149 includes/ui/ui_lists.inc:2166
+#: includes/ui/ui_lists.inc:2184
+msgid "Journal Entries"
+msgstr ""
+
+#: includes/ui/ui_lists.inc:2165 includes/ui/ui_lists.inc:2183
 msgid "Overdue Credit Notes"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2176
+#: includes/ui/ui_lists.inc:2178
 msgid "GRNs"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2194
+#: includes/ui/ui_lists.inc:2197
 msgid "Automatically put balance on back order"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2195
+#: includes/ui/ui_lists.inc:2198
 msgid "Cancel any quantites not delivered"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2212
+#: includes/ui/ui_lists.inc:2215
 msgid "Items Returned to Inventory Location"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2213
+#: includes/ui/ui_lists.inc:2216
 msgid "Items Written Off"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2382
+#: includes/ui/ui_lists.inc:2385
 msgid "New role"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2434
+#: includes/ui/ui_lists.inc:2437
 msgid "No tags defined."
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2434
+#: includes/ui/ui_lists.inc:2437
 msgid "No active tags defined."
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2472
+#: includes/ui/ui_lists.inc:2475
 #, php-format
 msgid "Activated for '%s'"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2475
+#: includes/ui/ui_lists.inc:2478
 msgid "Available and/or installed"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2545
+#: includes/ui/ui_lists.inc:2548
 msgid "Standard new company American COA (4 digit)"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2547
+#: includes/ui/ui_lists.inc:2550
 msgid "Standard American COA (4 digit) with demo data"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2568
+#: includes/ui/ui_lists.inc:2571
 msgid "No payment Link"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2688
+#: includes/ui/ui_lists.inc:2691
 msgid "Numeric"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2688
+#: includes/ui/ui_lists.inc:2691
 msgid "Alpha Numeric"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2688
+#: includes/ui/ui_lists.inc:2691
 msgid "ALPHA NUMERIC"
 msgstr ""
 
-#: includes/ui/ui_lists.inc:2704
+#: includes/ui/ui_lists.inc:2707
 msgid "All users"
 msgstr ""
 
@@ -14862,7 +14867,7 @@ msgid ""
 "browser tab. You cannot edit more than one sales document at once."
 msgstr ""
 
-#: sales/includes/db/custalloc_db.inc:382
+#: sales/includes/db/custalloc_db.inc:386
 msgid ""
 "Unsuspected overallocation happened due to sparse credit notes exists for "
 "this invoice.\n"
