@@ -91,6 +91,7 @@ function getTransactions($category, $location, $date)
 {
 	$date = date2sql($date);
 
+	$dec = user_qty_dec();
 	$sql = "SELECT item.category_id,
 			category.description AS cat_description,
 			item.stock_id,
@@ -117,7 +118,7 @@ function getTransactions($category, $location, $date)
 			$sql .= "move.loc_code, ";
 		$sql .= "item.stock_id,
 			item.description
-		HAVING ROUND(SUM(move.qty), units.decimals) != 0";
+		HAVING ROUND(SUM(move.qty), IF(units.decimals <> -1, units.decimals, $dec)) != 0";
 		if ($category != 0)
 			$sql .= " AND item.category_id = ".db_escape($category);
 		if ($location != 'all')
