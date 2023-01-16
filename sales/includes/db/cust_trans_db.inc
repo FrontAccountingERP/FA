@@ -111,7 +111,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
-	if ($trans_type != ST_JOURNAL) // skip for journal entries
+	if ($trans_type != ST_JOURNAL && $trans_type != ST_BANKDEPOSIT && $trans_type != ST_BANKPAYMENT) // skip for journal entries
 		add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
 
 	return $trans_no;
