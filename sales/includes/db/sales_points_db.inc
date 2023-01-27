@@ -61,7 +61,7 @@ function get_sales_point_name($id)
 	$result = db_query($sql, "could not get POS name");
 	
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function delete_sales_point($id)

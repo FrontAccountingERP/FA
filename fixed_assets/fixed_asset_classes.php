@@ -27,7 +27,11 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	//initialise no input errors assumed initially before we test
 	$input_error = 0;
-
+  if (input_num('depreciation_rate') > 100) {
+    display_error(_("The depreciation rate can't be greater than 100%"));
+    $input_error = 1;
+  }
+	
 	/* actions to take once the user has clicked the submit button
 	ie the page has called itself with some user input */
 
@@ -36,13 +40,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_fixed_asset_class($selected_id, $_POST['parent_id'], $_POST['description'], $_POST['long_description'],
-    			$_POST['depreciation_rate']);
+    			input_num('depreciation_rate'));
 			  display_notification(_('Selected fixed asset class has been updated'));
     	} 
     	else 
     	{
-    		add_fixed_asset_class($_POST['fa_class_id'], $_POST['parent_id'], $_POST['description'], $_POST['long_description'],
-    			$_POST['depreciation_rate']);
+    		add_fixed_asset_class($_POST['fa_class_id'], $_POST['parent_id'], $_POST['description'], $_POST['long_description'], input_num('depreciation_rate'));
 			  display_notification(_('New fixed asset class has been added'));
     	}
 

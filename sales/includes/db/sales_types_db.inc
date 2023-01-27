@@ -50,7 +50,7 @@ function get_sales_type_name($id)
 	$result = db_query($sql, "could not get sales type");
 	
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function delete_sales_type($id)

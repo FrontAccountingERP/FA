@@ -92,7 +92,7 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 {
 	$amount = round2($amount, user_price_dec());
 
-	if (floatcmp($amount, 0))
+	if ($amount != 0.0)
 	{
 		error_log(sprintf( _("Rounding error %s encountered for trans_type:%s,trans_no:%s"), $amount, $type, $trans_id));
 		return add_gl_trans($type, $trans_id, $date_, get_company_pref('exchange_diff_act'), 0, 0, "",
@@ -289,7 +289,7 @@ function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $d
 	$result = db_query($sql, "The starting balance for account $account could not be calculated");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return round2($row[0], user_price_dec());
 }
 
 //--------------------------------------------------------------------------------
@@ -313,7 +313,7 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
 	$row = db_fetch_row($result);
-	return (float)$row[0];
+	return round2($row[0], user_price_dec());
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -458,11 +458,11 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 //
 function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
 	$amount, $net_amount, $ex_rate, $tran_date, $memo, $reg_type=null)
-{
+{	
 	// guess tax register if not set
 	if (!isset($reg_type))
-		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_OUTPUT
-				: (in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_INPUT : null);
+		$reg_type = in_array($trans_type, array(ST_SUPPINVOICE, ST_SUPPCREDIT)) ? TR_INPUT
+				: (in_array($trans_type, array(ST_SALESINVOICE, ST_CUSTCREDIT)) ? TR_OUTPUT : null);
 
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
@@ -523,22 +523,22 @@ function get_tax_summary($from, $to, $also_zero_purchases=false)
 	$sql = "SELECT 
 				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
-					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.",".ST_BANKDEPOSIT."))
 					), net_amount*ex_rate,0)
 				) net_output,
 
 				SUM(IF(trans_type=".ST_CUSTCREDIT.",-1,1)*
 				IF((reg_type=".TR_OUTPUT.")"
-					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.") OR (trans_type=".ST_JOURNAL." AND reg_type=".TR_INPUT."))
+					." || ((trans_type IN(".ST_SALESINVOICE.",".ST_CUSTCREDIT.",".ST_BANKDEPOSIT."))
 					), amount*ex_rate,0)) payable,
 
-				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
-				IF(reg_type=".TR_INPUT
+				SUM(IF(trans_type IN(".ST_SUPPCREDIT.",".ST_BANKPAYMENT."),-1,1)*
+				IF((reg_type=".TR_INPUT." OR trans_type IN (".ST_SUPPINVOICE.",".ST_BANKPAYMENT."))"
 					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate")
 					.", net_amount*ex_rate, 0)) net_input,
 
-				SUM(IF(trans_type IN(".ST_SUPPCREDIT."),-1,1)*
-				IF(reg_type=".TR_INPUT
+				SUM(IF(trans_type IN(".ST_SUPPCREDIT.",".ST_BANKPAYMENT."),-1,1)*
+				IF((reg_type=".TR_INPUT." OR trans_type IN (".ST_SUPPINVOICE.",".ST_BANKPAYMENT."))"
 					. ($also_zero_purchases ? '': " AND tax_type_id AND taxrec.rate ") 
 					.", amount*ex_rate, 0)) collectible,
 				taxrec.rate,
@@ -625,8 +625,8 @@ function get_sql_for_journal_inquiry($filter, $from, $to, $ref='', $memo='', $al
          LEFT JOIN ".TB_PREF."grn_batch grn ON grn.id=gl.type_no AND gl.type=".ST_SUPPRECEIVE."
          LEFT JOIN ".TB_PREF."bank_trans bt ON bt.type=gl.type AND bt.trans_no=gl.type_no AND bt.amount!=0
                  AND (bt.person_id != '' AND !ISNULL(bt.person_id))
-         LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no AND (gl.type_no != 0 or gl.person_id=dt.debtor_no) AND gl.person_type_id=2
-         LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no AND (gl.type !=0 or gl.person_id=st.supplier_id) AND gl.person_type_id=3
+         LEFT JOIN ".TB_PREF."debtor_trans dt ON dt.type=gl.type AND gl.type_no=dt.trans_no AND gl.person_id=dt.debtor_no AND gl.person_type_id=2
+         LEFT JOIN ".TB_PREF."supp_trans st ON st.type=gl.type AND gl.type_no=st.trans_no AND gl.person_id=st.supplier_id AND gl.person_type_id=3
          WHERE gl.tran_date >= '" . date2sql($from) . "'
         AND gl.tran_date <= '" . date2sql($to) . "'
         AND gl.amount!=0";

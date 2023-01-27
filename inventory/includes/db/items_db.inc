@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function update_item($stock_id, $description, $long_description, $category_id, 
-	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
+	$tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, 
 	$cogs_account, 	$adjustment_account, $wip_account, $dimension_id, 
 	$dimension2_id, $no_sale, $editable, $no_purchase,
 	$depreciation_method = 'D', $depreciation_rate=100, $depreciation_factor=1,

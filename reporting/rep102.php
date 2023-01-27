@@ -33,29 +33,26 @@ function get_invoices($customer_id, $to, $all=true)
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 
-	// Revomed allocated from sql
-	if ($all)
-    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount)";
-	else
-    	$value = "(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc)";
-	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT,ST_JOURNAL))."), -1, 1)";
+	$sign = "IF(`type` IN(".implode(',',  array(ST_CUSTCREDIT,ST_CUSTPAYMENT,ST_BANKDEPOSIT))."), -1, 1)";
+
+	$value = "$sign*(IF(trans.prep_amount, trans.prep_amount,
+		ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount)) ".($all ? '' : "- trans.alloc").")";
+
 	$due = "IF (type=".ST_SALESINVOICE.", due_date, tran_date)";
 
 	$sql = "SELECT type, reference, tran_date,
-		$sign*$value as Balance,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > 0,$sign*$value,0) AS Due,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays1,$sign*$value,0) AS Overdue1,
-		IF ((TO_DAYS('$todate') - TO_DAYS($due)) > $PastDueDays2,$sign*$value,0) AS Overdue2
+		$value as Balance,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
 		FROM ".TB_PREF."debtor_trans trans
 
 		WHERE type <> ".ST_CUSTDELIVERY."
 			AND debtor_no = $customer_id 
 			AND tran_date <= '$todate'
-			AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) > " . FLOAT_COMP_DELTA;
+			AND ABS($value) > " . FLOAT_COMP_DELTA;
 
-	if (!$all)
-		$sql .= "AND ABS(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount - alloc) > " . FLOAT_COMP_DELTA;
 	$sql .= "ORDER BY tran_date";
 
 	return db_query($sql, "The customer transactions could not be retrieved");
@@ -85,7 +82,7 @@ function print_aged_customer_analysis()
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
-		$pg = new graph();
+		$pg = new chart($graphics);
 	}
 
 	if ($fromcust == ALL_TEXT)
@@ -195,14 +192,6 @@ function print_aged_customer_analysis()
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
 
-				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
-				{
-					$trans['Balance'] *= -1;
-					$trans['Due'] *= -1;
-					$trans['Overdue1'] *= -1;
-					$trans['Overdue2'] *= -1;
-				}
-
 				foreach ($trans as $i => $value)
 					$trans[$i] = (float)$trans[$i] * $rate;
 				$str = array($trans["Balance"] - $trans["Due"],
@@ -225,28 +214,30 @@ function print_aged_customer_analysis()
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
 	$rep->fontSize -= 2;
+	$serie = array();
 	for ($i = 0; $i < count($total); $i++)
 	{
 		$rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
 		if ($graphics && $i < count($total) - 1)
 		{
-			$pg->y[$i] = abs($total[$i]);
+			$serie[] = abs($total[$i]);
 		}
 	}
    	$rep->Line($rep->row - 8);
    	if ($graphics)
    	{
-		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
-		$pg->title     = $rep->title;
-		$pg->axis_x    = _("Days");
-		$pg->axis_y    = _("Amount");
-		$pg->graphic_1 = $to;
-		$pg->type      = $graphics;
-		$pg->skin      = $SysPrefs->graph_skin;
-		$pg->built_in  = false;
+		$pg->setStream('png');
+		$pg->addSerie(_('Balances'), $serie);
+		$pg->setLabels(array(_('Current'), $nowdue, $pastdue1, $pastdue2));
+		$pg->setTitle($rep->title);
+		$pg->setXTitle(_("Days"));
+		$pg->setYTitle(_("Amount"));
+		$pg->setDTitle(number_format2($total[4]));
+		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
-		$pg->display($filename, true);
+		$pg->display($filename);
+		//sleep(5);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;
 		$x = ($rep->pageWidth - $w) / 2;

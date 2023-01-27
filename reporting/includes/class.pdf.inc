@@ -83,6 +83,8 @@ class Cpdf extends FPDI {
 
 		if (!$code)
 			$code = $dflt_lang;
+		else
+			install_hooks($code);
 
 		$lang = array_search_value($code, $installed_languages, 'code');
 		$GetText->set_language($lang['code'], strtoupper($lang['encoding']));

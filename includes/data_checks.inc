@@ -567,7 +567,7 @@ function check_empty_result($sql)
 	$result = db_query($sql, "could not do check empty query");	
 	
 	$myrow = db_fetch_row($result);
-	return $myrow[0] > 0;
+	return is_array($myrow) ? $myrow[0] > 0 : false;
 }
 //
 //	Integer input check 

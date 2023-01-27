@@ -33,7 +33,7 @@ function find_last_location($stock_id, $end_date)
 		tran_date <= '$end_date' ORDER BY tran_date DESC LIMIT 1";
 	$res = db_query($sql,"No stock moves were returned");
 	$row = db_fetch_row($res);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ function print_fixed_assets_valuation_report()
     $rep->NewPage();
 
 	//$res = getTransactions($category, $location, $date);
-	$sql = get_sql_for_fixed_assets(true);
+	$sql = get_sql_for_fixed_assets(false);
 	$res = db_query($sql,"No transactions were returned");
 	
 	$total = $grandtotal = 0.0;
@@ -140,7 +140,7 @@ function print_fixed_assets_valuation_report()
 		{
 			$rep->NewLine();
 			$rep->TextCol(0, 1, $trans['stock_id']);
-			$rep->TextCol(1, 2, $trans['name'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
+			$rep->TextCol(1, 2, $trans['name']);
 			$rep->TextCol(2, 3, $trans['units']);
 			$rep->AmountCol(3, 4, $UnitCost, $dec);
 			$rep->AmountCol(4, 5, $Depreciation, $dec);

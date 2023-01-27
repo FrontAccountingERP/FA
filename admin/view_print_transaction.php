@@ -69,7 +69,7 @@ function viewing_controls()
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
-	systypes_list_cells(_("Type:"), 'filterType', null, true);
+	systypes_list_cells(_("Type:"), 'filterType', null, true, array(ST_CUSTOMER, ST_SUPPLIER));
 
 	if (!isset($_POST['FromTransNo']))
 		$_POST['FromTransNo'] = "1";

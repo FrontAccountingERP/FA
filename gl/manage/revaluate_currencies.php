@@ -22,24 +22,18 @@ if (user_use_date_picker())
 	$js .= get_js_date_picker();
 page(_($help_context = "Revaluation of Currency Accounts"), false, false, "", $js);
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['BA'])) 
 {
-	$trans_no = $_GET['AddedID'];
+	$BA = $_GET['BA'];
 	$JE = $_GET['JE'];
-	$trans_type = ST_JOURNAL;
 
-	if ($trans_no == 0)
-   		display_notification_centered( _("No Revaluation was needed"));
-	else
+	if ($BA != 0 || $JE !=0)
 	{
-   		display_notification_centered( _("Transfer has been entered"));
-
-		display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
+		display_notification_centered(sprintf(_("%d Journal Entries for Bank Accounts have been added"), $BA));
+		display_notification_centered(sprintf(_("%d Journal Entries for AR/AP accounts have been added"), $JE));
 	}
-	if ($JE > 0)
-   		display_notification_centered(sprintf(_("%d Journal Entries for AR/AP accounts have been added"), $JE));
-
-	//display_footer_exit();
+	else
+   		display_notification_centered( _("No revaluation was needed."));
 }
 
 
@@ -58,11 +52,6 @@ function check_data()
 		set_focus('date');
 		return false;
 	}
-	if (!check_reference($_POST['ref'], ST_JOURNAL))
-	{
-		set_focus('ref');
-		return false;
-	}
 
 	return true;
 }
@@ -74,9 +63,9 @@ function handle_submit()
 	if (!check_data())
 		return;
 
-	$trans = add_exchange_variation_all($_POST['date'], $_POST['ref'], $_POST['memo_']);
+	$trans = add_exchange_variation_all($_POST['date'], $_POST['memo_']);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$trans[0]."&JE=".$trans[1]);
+	meta_forward($_SERVER['PHP_SELF'], "BA=".$trans[0]."&JE=".$trans[1]);
 	//clear_data();
 }
 
@@ -85,14 +74,12 @@ function handle_submit()
 
 function display_reval()
 {
-	global $Refs;
 	start_form();
 	start_table(TABLESTYLE2);
 
 	if (!isset($_POST['date']))
 		$_POST['date'] = Today();
     date_row(_("Date for Revaluation:"), 'date', '', null, 0, 0, 0, null, true);
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_JOURNAL, null, $_POST['date']), false, ST_JOURNAL);
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 	end_table(1);
 

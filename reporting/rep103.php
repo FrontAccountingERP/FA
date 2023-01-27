@@ -215,7 +215,7 @@ function print_customer_details_listing()
 			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
 			$rep->TextCol(2, 3,	$myrow['br_name']);
 			$rep->NewLine();
-			$adr = Explode("\n", $myrow['address']);
+			$adr = $myrow['address'] != NULL ? Explode("\n", $myrow['address']) : array();
 			if ($myrow['br_post_address'] == '')
 				$adr2 = Explode("\n", $myrow['br_address']);
 			else

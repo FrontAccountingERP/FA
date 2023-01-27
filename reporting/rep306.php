@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 'SA_SALESANALYTIC';
+$page_security = 'SA_SUPPLIERANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -85,10 +85,7 @@ function get_supp_inv_reference($supplier_id, $stock_id, $date)
 		AND trans.tran_date=".db_escape($date);
     $result = db_query($sql,"No transactions were returned");
     $row = db_fetch_row($result);
-    if (isset($row[0]))
-    	return $row[0];
-    else
-    	return '';
+	return is_array($row) ? $row[0] : '';
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -266,7 +263,7 @@ function print_inventory_purchase()
 			$rep->NewLine();
 			$rep->NewLine();
 			$total_supp = $total_qty = 0.0;
-			$supplier_name = $trans['supplier_name'];
+			$supplier_name = isset($trans['supplier_name']) ? $trans['supplier_name'] : "";
 		}	
 	}
 	if ($supplier_name != '')

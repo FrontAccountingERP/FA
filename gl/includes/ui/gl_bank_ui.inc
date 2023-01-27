@@ -74,7 +74,7 @@ function display_bank_header(&$order)
         		hidden('PersonDetailID');
         	}
         	$trans = get_customer_habit($_POST['person_id']); // take care of customers on hold
-        	if ($trans['dissallow_invoices'] != 0)
+        	if (is_array($trans) && $trans['dissallow_invoices'] != 0)
         	{
         		if ($payment)
         		{
@@ -230,14 +230,14 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			if ($_POST['PayType'] == PT_CUSTOMER)
 			{
 				$acc = get_branch_accounts($_POST['PersonDetailID']);
-				$_POST['code_id'] = $acc['receivables_account'];
+				$_POST['code_id'] = is_array($acc) ? $acc['receivables_account'] : '';
 			}
 			elseif ($_POST['PayType'] == PT_SUPPLIER)
 			{
 				$acc = get_supplier_accounts($_POST['person_id']);
-				$_POST['code_id'] = $acc['payable_account'];
-				$_POST['dimension_id'] = $acc['dimension_id'];
-				$_POST['dimension2_id'] = $acc['dimension2_id'];
+				$_POST['code_id'] = is_array($acc) ? $acc['payable_account'] : '';
+				$_POST['dimension_id'] = is_array($acc) ? $acc['dimension_id'] : '';
+				$_POST['dimension2_id'] = is_array($acc) ? $acc['dimension2_id'] : '';
 			}
 			else {
 				$_POST['code_id'] =

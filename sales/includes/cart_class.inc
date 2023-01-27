@@ -71,7 +71,7 @@ class Cart
 	var $dimension_id;
 	var $dimension2_id;
 	var $payment;
-	var $payment_terms; // cached payment terms
+	var $payment_terms = array('cash_sale' => false, 'days_before_due' => 0); // cached payment terms
 	var $credit;
 	// prepayment mode:
 	var $prepaid=false;	// true for documents issued in prepayment mode

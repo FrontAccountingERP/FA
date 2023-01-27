@@ -34,7 +34,7 @@ function get_open_balance($debtorno, $to)
 	if($to)
 		$to = date2sql($to);
 	$sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0),
-             -abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount), 0)) AS charges,";
+             -abs(IF(t.prep_amount, t.prep_amount, t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)), 0)) AS charges,";
 
 	$sql .= "SUM(IF(t.type != ".ST_SALESINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0),
              abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1, 0)) AS credits,";		
@@ -42,7 +42,7 @@ function get_open_balance($debtorno, $to)
     $sql .= "SUM(IF(t.type != ".ST_SALESINVOICE." AND NOT(t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.")), t.alloc * -1, t.alloc)) AS Allocated,";
 
  	$sql .=	"SUM(IF(t.type = ".ST_SALESINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0), 1, -1) *
- 			(abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) - abs(t.alloc))) AS OutStanding
+			(IF(t.prep_amount, t.prep_amount, abs(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)) - abs(t.alloc))) AS OutStanding
 		FROM ".TB_PREF."debtor_trans t
     	WHERE t.debtor_no = ".db_escape($debtorno)
 		." AND t.type <> ".ST_CUSTDELIVERY;
@@ -73,7 +73,8 @@ function get_transactions($debtorno, $from, $to)
  				GROUP BY trans_type_to, trans_no_to) alloc_to";
 
      $sql = "SELECT trans.*,
- 		(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount) AS TotalAmount,
+		IF(trans.prep_amount, trans.prep_amount, trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount)
+			AS TotalAmount,
  		IFNULL(alloc_from.amount, alloc_to.amount) AS Allocated,
  		((trans.type = ".ST_SALESINVOICE.")	AND trans.due_date < '$to') AS OverDue
      	FROM ".TB_PREF."debtor_trans trans
@@ -115,7 +116,7 @@ function print_customer_balances()
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
-    	$dec = user_price_dec();
+    $dec = user_price_dec();
 
 	if ($show_balance) $sb = _('Yes');
 	else $sb = _('No');
@@ -133,7 +134,7 @@ function print_customer_balances()
 
 	$cols = array(0, 95, 140, 200,	250, 320, 385, 450,	515);
 
-	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'),
+	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Debits'), _('Credits'),
 		_('Allocated'), 	_('Outstanding'));
 
 	if ($show_balance)
@@ -169,17 +170,18 @@ function print_customer_balances()
 		$accumulate = 0;
 		$rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
 		$bal = get_open_balance($myrow['debtor_no'], $from);
-		$init[0] = $init[1] = 0.0;
-		$init[0] = round2(abs($bal['charges']*$rate), $dec);
-		$init[1] = round2(Abs($bal['credits']*$rate), $dec);
-		$init[2] = round2($bal['Allocated']*$rate, $dec);
+		$init = array();
+
+		$init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
+		$init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
+		$init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
 		if ($show_balance)
 		{
 			$init[3] = $init[0] - $init[1];
 			$accumulate += $init[3];
 		}	
 		else	
-			$init[3] = round2($bal['OutStanding']*$rate, $dec);
+			$init[3] = round2(($bal != false ? $bal['OutStanding'] : 0)*$rate, $dec);
 
 		$res = get_transactions($myrow['debtor_no'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
@@ -212,7 +214,7 @@ function print_customer_balances()
                 if ($show_balance) {
                     if ($trans['TotalAmount'] == 0) continue;
                 } else {
-                    if (floatcmp($trans['TotalAmount'], $trans['Allocated']) == 0) continue;
+                    if (floatcmp(abs($trans['TotalAmount']), $trans['Allocated']) == 0) continue;
                 }
             }
 			$rep->NewLine(1, 2);
@@ -226,14 +228,14 @@ function print_customer_balances()
 				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0)
 			{
-				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
+				$item[0] = round2($trans['TotalAmount'] * $rate, $dec);
 				$rep->AmountCol(4, 5, $item[0], $dec);
 				$accumulate += $item[0];
 				$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			}
 			else
 			{
-				$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
+				$item[1] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->AmountCol(5, 6, $item[1], $dec);
 				$accumulate -= $item[1];
 				$item[2] = round2($trans['Allocated'] * $rate, $dec) * -1;

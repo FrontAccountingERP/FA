@@ -231,6 +231,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 	} else {
 		// read header data from first document
 		$myrow = get_customer_trans($trans_no[0],$doc_type);
+        $debtor_no = $myrow['debtor_no'];
 		if (count_array($trans_no)>1)
 			$cart->trans_no = get_customer_trans_version($doc_type, $trans_no);
 		else
@@ -238,7 +239,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 
 		$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"],0);
 
-		$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
+        $cart->set_customer($debtor_no, $myrow["DebtorName"],
 			$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 		$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
@@ -279,7 +280,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 					@$myrow["src_id"]);
 			}
 		}
-		$cart->prepayments = get_payments_for($trans_no, $doc_type, $myrow["debtor_no"]);
+        $cart->prepayments = get_payments_for($trans_no[0], $doc_type, $debtor_no);
 
 	} // !newdoc
 

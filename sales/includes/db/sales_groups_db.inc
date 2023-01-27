@@ -12,25 +12,25 @@
 
 function add_sales_group($description)
 {
-	$sql = "INSERT INTO ".TB_PREF."groups (description) VALUES (".db_escape($description) . ")";
+	$sql = "INSERT INTO `".TB_PREF."groups` (description) VALUES (".db_escape($description) . ")";
    	db_query($sql,"The sales group could not be added");
 }
 
 function update_sales_group($selected_id, $description)
 {
-	$sql = "UPDATE ".TB_PREF."groups SET description=".db_escape($description)." WHERE id = ".db_escape($selected_id);
+	$sql = "UPDATE `".TB_PREF."groups` SET description=".db_escape($description)." WHERE id = ".db_escape($selected_id);
    	db_query($sql,"The sales group could not be updated");
 }
 
 function delete_sales_group($selected_id)
 {
-	$sql="DELETE FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
+	$sql="DELETE FROM `".TB_PREF."groups` WHERE id=".db_escape($selected_id);
 	db_query($sql,"could not delete sales group");
 }
 
 function get_sales_groups($show_inactive)
 {
-	$sql = "SELECT * FROM ".TB_PREF."groups";
+	$sql = "SELECT * FROM `".TB_PREF."groups`";
 	if (!$show_inactive) $sql .= " WHERE !inactive";
 	$sql .= " ORDER BY description";
 	return db_query($sql,"could not get groups");
@@ -38,7 +38,7 @@ function get_sales_groups($show_inactive)
 
 function get_sales_group($selected_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
+	$sql = "SELECT * FROM `".TB_PREF."groups` WHERE id=".db_escape($selected_id);
 
 	$result = db_query($sql,"could not get group");
 	return db_fetch($result);
@@ -46,10 +46,10 @@ function get_sales_group($selected_id)
 
 function get_sales_group_name($group_no)
 {
-	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
+	$sql = "SELECT description FROM `".TB_PREF."groups` WHERE id = ".db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function add_sales_area($description)
@@ -92,7 +92,7 @@ function get_area_name($id)
 	$result = db_query($sql, "could not get sales type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function add_salesman($salesman_name, $salesman_phone, $salesman_fax,
@@ -151,7 +151,7 @@ function get_salesman_name($id)
 	$result = db_query($sql, "could not get sales type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 

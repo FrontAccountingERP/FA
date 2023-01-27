@@ -57,14 +57,6 @@ function print_sales_orders()
 
 	$cur = get_company_Pref('curr_default');
 
-	if ($email == 0)
-	{
-
-		if ($print_as_quote == 0)
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
-		else
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize(), 9, $orientation);
-	}
     if ($orientation == 'L')
     	recalculate_cols($cols);
 
@@ -77,34 +69,26 @@ function print_sales_orders()
 		$baccount = get_default_bank_account($myrow['curr_code']);
 		$params['bankaccount'] = $baccount['id'];
 		$branch = get_branch($myrow["branch_code"]);
-		if ($email == 1)
-			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
+
+        if ($i == $from || $email == 1)
+            $rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize(), 9, $orientation);
+        if ($print_as_quote == 1)
+        {
+            $rep->title = _('QUOTE');
+            $rep->filename = "Quote" . $i . ".pdf";
+        }
+        else
+        {
+            $rep->title = _("SALES ORDER");
+            $rep->filename = "SalesOrder" . $i . ".pdf";
+        }		
 		$rep->SetHeaderType('Header2');
-		$rep->currency = $cur;
-		$rep->Font();
-		if ($print_as_quote == 1)
-		{
-			$rep = new FrontReport("", "", user_pagesize(), 9, $orientation);
-			if ($print_as_quote == 1)
-			{
-				$rep->title = _('QUOTE');
-				$rep->filename = "Quote" . $i . ".pdf";
-			}
-			else
-			{
-				$rep->title = _("SALES ORDER");
-				$rep->filename = "SalesOrder" . $i . ".pdf";
-			}
-		}
-		else
-			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no'], true);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
-		$rep->SetHeaderType('Header2');
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESORDER);
@@ -218,12 +202,9 @@ function print_sales_orders()
 			$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
 		}	
 		$rep->Font();
-		if ($email == 1)
-		{
-			$rep->End($email);
-		}
+        if ($i == $to || $email == 1)
+            $rep->End($email);
+		
 	}
-	if ($email == 0)
-		$rep->End();
 }
 

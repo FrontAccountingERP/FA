@@ -32,6 +32,7 @@ class current_user
 	var $old_db;
 	var $logged;
 	var $ui_mode = 0;
+	var $login_attempt=0;
 	
 	var $prefs;
 	var $cur_con; // current db connection (can be different from $company for superuser)
@@ -134,6 +135,7 @@ class current_user
                 $this->email = @$myrow["email"];
 		    	update_user_visitdate($this->username);
 		    	$this->logged = true;
+		    	$this->login_attempt=0;
 				$this->last_act = time();
 				$this->timeout = session_timeout();
 				flush_dir(user_js_cache()); // refresh cache on login
@@ -364,18 +366,10 @@ function price_decimal_format($number, &$dec)
 	}
 	return number_format2($number, $dec);
 }
-// function money_format doesn't exist in OS Win.
-if (!function_exists('money_format'))
-{
-	function money_format($format, $number) 
-	{
-		return price_format($number);
-	} 
-}	
 
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
-function qty_format($number, $stock_id=null, &$dec) {
+function qty_format($number, $stock_id, &$dec) {
 	$dec = get_qty_dec($stock_id);
     return number_format2($number, $dec);
 }

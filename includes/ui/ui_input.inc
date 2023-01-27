@@ -314,7 +314,7 @@ function button($name, $value, $title=false, $icon=false,  $aspect='')
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"
-			.htmlentities(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
+			.html_specials_encode(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
 			)))
 			."' value='$value'"
 			.($title ? " title='$title'":'')
@@ -696,7 +696,7 @@ function date_row($label, $name, $title=null, $check=null, $inc_days=0, $inc_mon
 function password_row($label, $name, $value)
 {
 	echo "<tr><td class='label'>$label</td>";
-	label_cell("<input type='password' name='$name' size=20 maxlength=20 value='$value' >");
+	label_cell("<input type='password' name='$name' size=32 maxlength=32 value='$value' >");
 	echo "</tr>\n";
 }	
 
@@ -911,7 +911,7 @@ function small_qty_cells($label, $name, $init=null, $params=null, $post_label=nu
 
 //-----------------------------------------------------------------------------------
 
-function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params="")
+function textarea_cells($label, $name, $value, $cols, $rows, $max=255, $title = null, $params="")
 {
   	global $Ajax;
 
@@ -922,14 +922,15 @@ function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $par
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	echo "<td><textarea name='$name' cols='$cols' rows='$rows'"
 	.($title ? " title='$title'" : '')
+	.($max ? " maxlength=$max" : '')
 	.">$value</textarea></td>\n";
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params="")
+function textarea_row($label, $name, $value, $cols, $rows, $max=255, $title=null, $params="")
 {
 	echo "<tr><td class='label'>$label</td>";
-	textarea_cells(null, $name, $value, $cols, $rows, $title, $params);
+	textarea_cells(null, $name, $value, $cols, $rows, $max, $title, $params);
 	echo "</tr>\n";
 }
 

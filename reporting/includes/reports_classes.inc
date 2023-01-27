@@ -100,7 +100,7 @@ class BoxReports
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $SysPrefs->pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
+						false, '', $SysPrefs->pdf_debug ? false : 'default process popup') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls(), $report->id);
 					$st_params .= "\n<input type=hidden name='Class' value=".$cur_class.">"
 						."\n</form></td></tr></table>\n";
@@ -170,7 +170,9 @@ class BoxReports
 	{
 		global $path_to_root, $SysPrefs,
 			$type_shortcuts;
-
+		$day_range = get_company_pref("max_days_in_docs");
+		if (!$day_range)
+			$day_range = 180;
 		$st = '';
 			switch ($type)
 			{
@@ -251,7 +253,7 @@ class BoxReports
 
 				case 'GRAPHIC':
 					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), 
-								_("Dots"), _("Lines"), _("Pie"), _("Donut"));
+								_("Dots"), _("Lines"), _("Pie"), _("Donut"), _("Half Donut"), _("Splines"));
 					return array_selector($name, null, $sel);
 
 				case 'SYS_TYPES':
@@ -324,6 +326,7 @@ class BoxReports
 							.TB_PREF."debtor_trans debtor_trans LEFT JOIN ".TB_PREF."voided AS vd ON debtor_trans.type=vd.type AND
 							debtor_trans.trans_no=vd.id
 						WHERE debtor_trans.type=".ST_SALESINVOICE." AND debtor.debtor_no=debtor_trans.debtor_no AND ISNULL(vd.id)
+						AND debtor_trans.tran_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
@@ -336,6 +339,7 @@ class BoxReports
 							.TB_PREF."debtor_trans debtor_trans LEFT JOIN ".TB_PREF."voided AS vd ON debtor_trans.type=vd.type AND
 							debtor_trans.trans_no=vd.id
 						WHERE debtor_trans.type=".ST_CUSTCREDIT." AND debtor.debtor_no=debtor_trans.debtor_no AND ISNULL(vd.id)
+						AND debtor_trans.tran_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
@@ -347,6 +351,7 @@ class BoxReports
 							.TB_PREF."debtor_trans debtor_trans LEFT JOIN ".TB_PREF."voided AS vd ON debtor_trans.type=vd.type AND
 							debtor_trans.trans_no=vd.id
 						WHERE debtor_trans.type=".ST_CUSTDELIVERY." AND debtor.debtor_no=debtor_trans.debtor_no AND ISNULL(vd.id)
+						AND debtor_trans.tran_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
@@ -355,8 +360,9 @@ class BoxReports
 					$sql = "SELECT sorder.order_no, concat(sorder.$ref, '-', debtor.name) as IName
 						FROM ".TB_PREF."debtors_master debtor,"
 							.TB_PREF."sales_orders sorder
-						WHERE debtor.debtor_no=sorder.debtor_no	AND sorder.trans_type=".ST_SALESORDER
-						." ORDER BY sorder.order_no DESC";
+						WHERE debtor.debtor_no=sorder.debtor_no	AND sorder.trans_type=".ST_SALESORDER." 
+						AND sorder.ord_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
+						ORDER BY sorder.order_no DESC";
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
 				case 'QUOTATIONS':
@@ -364,8 +370,9 @@ class BoxReports
 					$sql = "SELECT sorder.order_no, concat(sorder.$ref, '-', debtor.name) as IName
 						FROM ".TB_PREF."debtors_master debtor,"
 							.TB_PREF."sales_orders sorder
-						WHERE debtor.debtor_no=sorder.debtor_no	AND sorder.trans_type=".ST_SALESQUOTE
-						." ORDER BY sorder.order_no DESC";
+						WHERE debtor.debtor_no=sorder.debtor_no	AND sorder.trans_type=".ST_SALESQUOTE." 
+						AND sorder.ord_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
+						ORDER BY sorder.order_no DESC";
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
 				case 'PO':
@@ -374,6 +381,7 @@ class BoxReports
 						FROM ".TB_PREF."suppliers supplier,"
 							.TB_PREF."purch_orders po
 						WHERE supplier.supplier_id=po.supplier_id
+						AND po.ord_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY po.order_no DESC";
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
@@ -390,6 +398,7 @@ class BoxReports
 							.TB_PREF."supp_trans trans  LEFT JOIN ".TB_PREF."voided AS vd ON trans.type=vd.type AND trans.trans_no=vd.id
 						WHERE trans.type IN(".ST_BANKPAYMENT.",".ST_SUPPAYMENT.",".ST_SUPPCREDIT.") AND
 							supplier.supplier_id=trans.supplier_id AND ISNULL(vd.id)
+						AND trans.tran_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
@@ -403,6 +412,7 @@ class BoxReports
 							.TB_PREF."debtor_trans trans LEFT JOIN ".TB_PREF."voided AS vd ON trans.type=vd.type AND trans.trans_no=vd.id
 						WHERE trans.type IN(".ST_BANKDEPOSIT.",".ST_CUSTPAYMENT.",".ST_CUSTCREDIT.") AND
 							debtor.debtor_no=trans.debtor_no AND ISNULL(vd.id)
+						AND trans.tran_date > SUBDATE(CURRENT_DATE, INTERVAL $day_range DAY)
 						ORDER BY trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 

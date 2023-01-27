@@ -84,7 +84,6 @@ function write_sales_invoice(&$invoice)
 	} else {
 		$prepaid_factor = 1;
 	}
-
 	 // write_customer_trans have to be called after optional void_cust_allocations above
 	$invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
@@ -158,14 +157,14 @@ function write_sales_invoice(&$invoice)
 	} /*end of delivery_line loop */
 
 	if (($items_total + $charge_shipping) != 0) {
-		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
+		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], $invoice->dimension_id, $invoice->dimension2_id,
 			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax)*$prepaid_factor,
 			$invoice->customer_id, "The total debtor GL posting could not be inserted");
 	}
 	$to_allocate = ($items_total + $charge_shipping + $items_added_tax + $freight_added_tax);
 
 	if ($charge_shipping != 0) {
-		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
+		$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], $invoice->dimension_id, $invoice->dimension2_id,
 			-$invoice->get_tax_free_shipping()*$prepaid_factor, $invoice->customer_id,
 			"The freight GL posting could not be inserted");
 	}
@@ -177,7 +176,7 @@ function write_sales_invoice(&$invoice)
 				$taxitem['rate'], $invoice->tax_included, $prepaid_factor*$taxitem['Value'],
 				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference, TR_OUTPUT);
 			if (isset($taxitem['sales_gl_code']) && !empty($taxitem['sales_gl_code']) && $taxitem['Value'] != 0)
-				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
+				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], $invoice->dimension_id, $invoice->dimension2_id,
 					(-$taxitem['Value'])*$prepaid_factor, $invoice->customer_id,
 					"A tax GL posting could not be inserted");
 		}
@@ -198,12 +197,15 @@ function write_sales_invoice(&$invoice)
 				// extend invoice entry page with final amount after discount 
 				// and change line below.
 				$discount = 0; // $invoice->cash_discount*$amount;
+				$payment_info = $invoice->pos['pos_name'].' #'.$invoice_no;
+				if (!empty($invoice->payment_info))
+					$payment_info .= ' ' . $invoice->payment_info;
 				$pmtno = write_customer_payment(0, $invoice->customer_id, 
 					$invoice->Branch, $invoice->pos['pos_account'], $date_,
 					$Refs->get_next(ST_CUSTPAYMENT, null, array('customer' => $invoice->customer_id,
 						'branch' => $invoice->Branch, 'date' => $date_)),
-					$amount-$discount, $discount,
-					$invoice->pos['pos_name'].' #'.$invoice_no);
+					$amount-$discount, $discount, $payment_info,
+					0,0,0,$invoice->dimension_id, $invoice->dimension2_id);
 				add_cust_allocation($amount, ST_CUSTPAYMENT, $pmtno, ST_SALESINVOICE, $invoice_no, $invoice->customer_id, $date_);
 
 				update_debtor_trans_allocation(ST_SALESINVOICE, $invoice_no, $invoice->customer_id);
@@ -246,8 +248,9 @@ function void_sales_invoice($type, $type_no)
 		if ($deliveries !== 0) {
 			if ($type == ST_SALESINVOICE && count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
 			{
+				$trans = get_customer_trans($deliveries[0], ST_CUSTDELIVERY);
 				void_sales_delivery(ST_CUSTDELIVERY, $deliveries[0], false);
-				$date_ = Today();
+				$date_ = sql2date($trans['tran_date']);
 				add_audit_trail(ST_CUSTDELIVERY, $deliveries[0], $date_, _("Voided."));
 				add_voided_entry(ST_CUSTDELIVERY, $deliveries[0], $date_, "");
 			}
@@ -255,7 +258,7 @@ function void_sales_invoice($type, $type_no)
 			{
 				$srcdetails = get_sales_parent_lines($type, $type_no);
 				while ($row = db_fetch($srcdetails)) {
-					update_parent_line($type, $row['id'], -$row['quantity']);
+					update_parent_line($type, $row['id'], -$row['qty_done']);
 				}
 			}
 		}
@@ -288,7 +291,7 @@ function get_cust_prepayment_invoice_factor($trans_no)
 		LEFT JOIN ".TB_PREF."sales_orders so ON so.trans_type=".ST_SALESORDER." AND so.order_no=dt.order_
 		 WHERE dt.type=".ST_SALESINVOICE." AND trans_no=".db_escape($trans_no);
 	$row = db_fetch(db_query($sql, 'cannot retrieve prepaid invoice factor'));
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 /*
@@ -296,18 +299,14 @@ function get_cust_prepayment_invoice_factor($trans_no)
 */
 function prepaid_invoice_remainder($order)
 {
-	$sql = "SELECT so.total - IFNULL(SUM(inv.prep_amount),0) FROM "
-		.TB_PREF."sales_orders so,
-		".TB_PREF."debtor_trans inv,
-		".TB_PREF."payment_terms pt
+	$sql = "SELECT so.total - SUM(IFNULL(inv.prep_amount,0)) FROM "
+		.TB_PREF."sales_orders so
+			LEFT JOIN ".TB_PREF."payment_terms pt ON so.payment_terms=pt.terms_indicator AND pt.days_before_due = -1
+			LEFT JOIN ".TB_PREF."debtor_trans inv ON inv.type=".ST_SALESINVOICE ." AND inv.order_=so.order_no
 		WHERE  so.order_no=".db_escape($order)
 			." AND so.trans_type=".ST_SALESORDER
-			." AND inv.type=".ST_SALESINVOICE
-			." AND inv.order_=so.order_no"
-			." AND so.payment_terms=pt.terms_indicator"
-			." AND inv.payment_terms=pt.terms_indicator"
-			." AND pt.days_before_due = -1";
-
+			." AND so.payment_terms=pt.terms_indicator";
+			
 	$result = db_fetch(db_query($sql, "cannot find final invoice value"));
 	return $result[0] ? $result[0] : 0;
 }

@@ -126,13 +126,15 @@ div_start('cost_table');
 
 start_table(TABLESTYLE2);
 $dec1 = $dec2 = $dec3 = 0;
-$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
-$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
-$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
+if ($myrow) {
+	$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
+	$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
+	$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
+}
 
 amount_row(_("Unit cost"), "material_cost", null, "class='tableheader2'", null, $dec1);
 
-if ($myrow["mb_flag"]=='M')
+if ($myrow && $myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
 	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);

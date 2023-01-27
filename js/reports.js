@@ -34,7 +34,7 @@ var replinks = {
 			showClass(this.id.substring(5)); // id=classX
 			return false;
 		}
-	}
+	},
 }
 
 function set_options(e)

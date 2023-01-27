@@ -172,7 +172,7 @@ function show_gl_controls() {
     hidden ('months');
   }
   refline_list_row(_("Reference line:"), 'refline', ST_JOURNAL, null, false, true);
-  textarea_row(_("Memo:"), 'memo_', null, 40,4);
+  textarea_row(_("Memo:"), 'memo_', null, 40, 4);
 
   end_table(1);
 

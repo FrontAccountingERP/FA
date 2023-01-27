@@ -43,7 +43,8 @@ function write_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $re
 		$err_msg = "Cannot insert a supplier transaction record";
 
 	db_query($sql, $err_msg);
-	add_audit_trail($type, $trans_no, $date_);
+	if ($type != ST_JOURNAL && $type != ST_BANKDEPOSIT && $type != ST_BANKPAYMENT) 
+		add_audit_trail($type, $trans_no, $date_);
 
 	return $trans_no;
 }
@@ -131,7 +132,7 @@ function get_supp_payment_before($supplier_id, $date)
 	. TB_PREF . "bank_trans,"
 	. TB_PREF . "bank_accounts "
 	. "WHERE "
-	. TB_PREF . "supp_trans.supplier_id=" . $supplier_id . " "
+	. TB_PREF . "supp_trans.supplier_id='" . $supplier_id . "' "
 	. "AND " . TB_PREF . "supp_trans.tran_date<'" . $date . "' "
 	. "AND " . TB_PREF . "supp_trans.type=" . ST_SUPPAYMENT . " "
 	. "AND " . TB_PREF . "supp_trans.trans_no=" . TB_PREF . "bank_trans.trans_no "
@@ -287,6 +288,10 @@ function get_sql_for_supplier_inquiry($filter, $after_date, $to_date, $supplier_
    		elseif (($filter == '4') || ($filter == '5')) 
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
+   		}
+   		elseif (($filter == '7')) 
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL."  ";
    		}
 
    		if (($filter == '2') || ($filter == '5')) 

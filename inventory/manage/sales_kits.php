@@ -46,7 +46,7 @@ function display_kit_items($selected_kit)
 		label_cell($myrow["stock_id"]);
 		label_cell($myrow["comp_name"]);
         qty_cell($myrow["quantity"], false, 
-			$myrow["units"] == '' ? 0 : get_qty_dec($myrow["comp_name"]));
+			$myrow["units"] == '' ? 0 : get_qty_dec($myrow["stock_id"]));
         label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
  		edit_button_cell("Edit".$myrow['id'], _("Edit"));
  		delete_button_cell("Delete".$myrow['id'], _("Delete"));
@@ -224,8 +224,8 @@ if (get_post('item_code') == '') {
 
 	if (get_post('item_code') == '') { // new kit/alias
 		if ($Mode!='ADD_ITEM' && $Mode!='UPDATE_ITEM') {
-			$_POST['description'] = $props['description'];
-			$_POST['category'] = $props['category_id'];
+			$_POST['description'] = is_array($props) ? $props['description'] : '';
+			$_POST['category'] = is_array($props) ? $props['category_id'] : '';
 		}
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);

@@ -80,7 +80,7 @@ function print_audit_trail()
     $aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right');
 
 	$usr = get_user($user);
-	$user_id = $usr['user_id'];
+	$user_id = isset($usr['user_id']) ? $usr['user_id'] : "";
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
                     	2 => array('text' => _('Type'), 'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')), 'to' => ''),
@@ -96,6 +96,7 @@ function print_audit_trail()
 
     $trans = getTransactions($from, $to, $systype, $user);
 
+	$tot_amount = 0;
     while ($myrow=db_fetch($trans))
     {
         $rep->TextCol(0, 1, sql2date(date("Y-m-d", $myrow['unix_stamp'])));
@@ -112,11 +113,19 @@ function print_audit_trail()
         else
         	$action = _('Closed');
         $rep->TextCol(6, 7, $action);
-        if ($myrow['amount'] != null)
+        if ($myrow['amount'] != null) {
         	$rep->AmountCol(7, 8, $myrow['amount'], $dec);
+			if ($systype != -1)
+				$tot_amount += $myrow['amount'];
+		}
         $rep->NewLine(1, 2);
     }
     $rep->Line($rep->row  + 4);
+	if ($systype != -1) {
+        $rep->NewLine(1, 2);
+        $rep->TextCol(6, 7, _('Total'));
+		$rep->AmountCol(7, 8, $tot_amount, $dec);
+	}
     $rep->End();
 }
 

@@ -89,6 +89,8 @@ function delete_sales_order($order_no, $trans_type)
 	begin_transaction();
 	hook_db_prevoid($trans_type, $order_no);
 
+	$order = get_sales_order_header($order_no, $trans_type);
+	
 	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . db_escape($order_no) 
 		. " AND trans_type=".db_escape($trans_type);
 
@@ -98,7 +100,7 @@ function delete_sales_order($order_no, $trans_type)
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
 
-	add_audit_trail($trans_type, $order_no, Today(), _("Deleted."));
+	add_audit_trail($trans_type, $order_no, sql2date($order['ord_date']), _("Deleted."));
 	commit_transaction();
 }
 
@@ -283,6 +285,7 @@ function get_sales_order_details($order_no, $trans_type) {
 				line.quantity,
 				discount_percent,
 				qty_sent as qty_done,
+				item.long_description,
 				item.units,
 				item.mb_flag,
 				item.material_cost
@@ -491,7 +494,8 @@ function get_sql_for_sales_orders_view($trans_type, $trans_no, $filter,
 			allocs.ord_payments,
 			inv.inv_payments,
 			sorder.total,
-			sorder.trans_type
+			sorder.trans_type,
+			sorder.debtor_no
 		FROM ".TB_PREF."sales_orders as sorder
 		LEFT JOIN (SELECT trans_no_to, sum(amt) ord_payments FROM ".TB_PREF."cust_allocations WHERE trans_type_to=".ST_SALESORDER." GROUP BY trans_no_to)
 			 allocs ON sorder.trans_type=".ST_SALESORDER." AND allocs.trans_no_to=sorder.order_no
@@ -644,6 +648,6 @@ function last_sales_order_detail($order, $field)
 
         $last_query=db_query($sql, "Could not retrieve last order detail");
         $row = db_fetch_row($last_query);
-        return $row[0];
+        return $row == false ? false : $row[0];
 }
 

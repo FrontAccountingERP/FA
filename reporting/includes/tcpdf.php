@@ -1,4 +1,4 @@
-4527<?php
+<?php
 //============================================================+
 // File name   : tcpdf.php
 // Begin       : 2002-08-03
@@ -176,6 +176,17 @@ require_once(dirname(__FILE__)."/barcodes.php");
  * HTML entity decode functions
  */
 require_once(dirname(__FILE__)."/html_entity_decode_php4.php");
+
+//
+// Check image file format against specific TCPDF engine requirements.
+//
+function check_image_file($filename)
+{
+	$test = new TCPDF();
+	if ( !$test->Image($filename, 0, 0) )
+		return _('Unsupported image file format.');
+	return '';
+}
 
 if (!class_exists('TCPDF')) {
 	/**
@@ -613,7 +624,7 @@ if (!class_exists('TCPDF')) {
 		 * @var Header font.
 		 * @access protected
 		 */
-		var $header_font;
+		var $header_font = array('helvetica', '', 12);
 
 		/**
 		 * @var Footer font.
@@ -3707,6 +3718,7 @@ if (!class_exists('TCPDF')) {
 				}
 			}
 			$this->endlinex = $this->img_rb_x;
+			return $info;
 		}
 
 		/**

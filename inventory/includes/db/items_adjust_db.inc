@@ -36,8 +36,8 @@ function add_stock_adjustment($items, $location, $date_, $reference, $memo_)
 		if ($SysPrefs->loc_notification() == 1 && $line_item->quantity < 0)
 		{
 			$tmp = $line_item->quantity;
-			$chg = $line_item; $chg->quantity= -$chg->quantity;	// calculate_reorder_level expect positive qty
-			$loc = calculate_reorder_level($location, $chg, $st_ids, $st_names, $st_num, $st_reorder); 
+			$line_item->quantity = -$line_item->quantity;	// calculate_reorder_level expect positive qty
+			$loc = calculate_reorder_level($location, $line_item, $st_ids, $st_names, $st_num, $st_reorder);
 			$line_item->quantity = $tmp;
 		}
 
@@ -123,12 +123,12 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $refer
 		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_,
 			$stock_gl_codes['adjustment_account'], $stock_gl_codes['dimension_id'], $stock_gl_codes['dimension2_id'], $memo_, $adj_value  );
 
-		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, $inv_value);
+		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['inventory_account'], $stock_gl_codes['dimension_id'], $stock_gl_codes['dimension2_id'], $memo_, $inv_value);
 	}
 
 	if (is_fixed_asset($mb_flag)) {
 		// Additional gl entry for fixed asset.
 		$grn_act = get_company_pref('default_loss_on_asset_disposal_act');
-		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $grn_act, 0, 0, $memo_, ($standard_cost * -($quantity)));
+		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $grn_act, $stock_gl_codes['dimension_id'], $stock_gl_codes['dimension2_id'], $memo_, ($standard_cost * -($quantity)));
 	}
 }

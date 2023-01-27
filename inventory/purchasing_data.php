@@ -133,6 +133,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 if ($mb_flag == -1)
 {
 	display_error(_("Entered item is not defined. Please re-enter."));
+  	$Ajax->activate('price_table');
 	set_focus('stock_id');
 }
 else
@@ -218,7 +219,7 @@ if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
    	$_POST['conversion_factor'] = maxprec_format(1);
 }
 amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', null, null, null, 'max');
-text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
+text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 50);
 
 end_table(1);
 

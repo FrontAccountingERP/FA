@@ -113,11 +113,15 @@ echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
+$units = $dec = '';
 $result = get_item_code_dflts($_POST['stock_id']);
-$dec = $result['decimals'];
-$units = $result['units'];
-$dflt_desc = $result['description'];
-$dflt_cat = $result['category_id'];
+if ($result) {
+	$dec = $result['decimals'];
+	$units = $result['units'];
+	$dflt_desc = $result['description'];
+	$dflt_cat = $result['category_id'];
+}
+
 
 $result = get_all_item_codes($_POST['stock_id']);
 div_start('code_table');

@@ -228,8 +228,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		if (is_subledger_account(get_post('code_id')))
 		{	// for home currency postings show all customers
 			$sel_cur = get_post('currency', $order->currency);
-			subledger_list_cells(null, 'person_id', get_post('code_id'), null, false, false,
-				get_company_currency() == $sel_cur  ? null : $sel_cur);
+			subledger_list_cells(null, 'person_id', get_post('code_id'), null);
 		} elseif ($order->has_sub_accounts())
 			label_cell('');
 		if ($dim >= 1) 
@@ -246,8 +245,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 		{
 			// for home currency postings show all customers
 			$sel_cur = get_post('currency', $order->currency);
-			subledger_list_cells(null, 'person_id', get_post('code_id'), null, false, false,
-				get_company_currency() == $sel_cur  ? null : $sel_cur);
+			subledger_list_cells(null, 'person_id', get_post('code_id'), null);
 		}
 		elseif ($order->has_sub_accounts())
 			label_cell('');
@@ -262,7 +260,7 @@ function gl_edit_item_controls(&$order, $dim, $sub_accounts, $Index=null)
 	if (get_post('_code_id_update'))
 	{
 	    $Ajax->activate('code_id');
-		set_focus($sub_accounts ? 'person_id' : 'AmountDebit');
+		set_focus($sub_accounts ? 'person_id' : ($dim < 1 ? 'AmountDebit' : 'dimension_id'));
 	}
 	if ($dim < 1)
 		hidden('dimension_id', 0);

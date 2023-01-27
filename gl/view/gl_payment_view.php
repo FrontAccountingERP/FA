@@ -43,6 +43,9 @@ if ($from_trans['bank_curr_code'] != $from_trans['settle_curr'])
 	$show_currencies = true;
 }
 
+if (!empty($SysPrefs->prefs['company_logo_on_views']))
+	company_logo_on_view();
+
 display_heading(_("GL Payment") . " #$trans_no");
 
 echo "<br>";

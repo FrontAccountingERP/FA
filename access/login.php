@@ -20,6 +20,7 @@ function defaultCompany()
 	document.forms[0].company_login_name.options[".user_company()."].selected = true;
 }
 </script>";
+
 	add_js_file('login.js');
 	// Display demo user name and password within login form if allow_demo_mode option is true
 	if ($SysPrefs->allow_demo_mode == true)
@@ -36,13 +37,16 @@ function defaultCompany()
 
 	if (check_faillog())
 	{
-		$blocked_msg = '<span class="redfg">'._('Too many failed login attempts.<br>Please wait a while or try later.').'</span>';
+		$blocked = true;
 
 	    $js .= "<script>setTimeout(function() {
 	    	document.getElementsByName('SubmitUser')[0].disabled=0;
 	    	document.getElementById('log_msg').innerHTML='$demo_text'}, 1000*".$SysPrefs->login_delay.");</script>";
-	    $demo_text = $blocked_msg;
+	    $demo_text = '<span class="redfg">'._('Too many failed login attempts.<br>Please wait a while or try later.').'</span>';
+	} elseif ($_SESSION["wa_current_user"]->login_attempt > 1) {
+		$demo_text = '<span class="redfg">'._("Invalid password or username. Please, try again.").'</span>';
 	}
+
 	flush_dir(user_js_cache());
 	if (!isset($def_coy))
 		$def_coy = 0;
@@ -66,6 +70,7 @@ function defaultCompany()
 	{
 		echo $js;
 	}
+
 	echo "</head>\n";
 
 	echo "<body id='loginscreen' $onload>\n";
@@ -76,6 +81,7 @@ function defaultCompany()
 	br();br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
 	start_table(false, "class='login'");
+
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
@@ -85,41 +91,50 @@ function defaultCompany()
 	} 
 	echo "</td>\n";
 	end_row();
-
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build ".$SysPrefs->build_version." - "._("Login"));
+
 	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($SysPrefs->allow_demo_mode ? "demouser":"");
 
-	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
+	$allow = SECURE_ONLY !== true ? true : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_NAME'] === "localhost";
 
-	$password = $SysPrefs->allow_demo_mode ? "password":"";
+	if ($allow) {
 
-	password_row(_("Password:"), 'password', $password);
+		text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
 
-	if ($login_timeout) {
-		hidden('company_login_name', user_company());
-	} else {
-		$coy =  user_company();
-		if (!isset($coy))
-			$coy = $def_coy;
-		if (!@$SysPrefs->text_company_selection) {
-			echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";
-			for ($i = 0; $i < count($db_connections); $i++)
-				echo "<option value=$i ".($i==$coy ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
-			echo "</select>\n";
-			echo "</td></tr>";
+		$password = $SysPrefs->allow_demo_mode ? "password":"";
+
+		password_row(_("Password:"), 'password', $password);
+
+		if ($login_timeout) {
+			hidden('company_login_name', user_company());
 		} else {
-			text_row(_("Company"), "company_login_nickname", "", 20, 50);
+			$coy =  user_company();
+			if (!isset($coy))
+				$coy = $def_coy;
+			if (!@$SysPrefs->text_company_selection) {
+				echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";
+				for ($i = 0; $i < count($db_connections); $i++)
+					echo "<option value=$i ".($i==$coy ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
+				echo "</select>\n";
+				echo "</td></tr>";
+			} else {
+				text_row(_("Company"), "company_login_nickname", "", 20, 50);
+			}
 		}
-		start_row();
-		label_cell($demo_text, "colspan=2 align='center' id='log_msg'");
-		end_row();
-	}; 
+	}
+ 	else {
+		$demo_text = '<span class="redfg">'._("HTTP access is not allowed on this site. This is unsecure. If you really want to access this unsecure site then set the SECURE_ONLY to false in /includes/session.inc file.").'</span>';
+	}
+	start_row();
+	label_cell($demo_text, "colspan=2 align='center' id='log_msg'");
+	end_row();
 	end_table(1);
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".!fallback_mode()."' >\n";
-	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
-		." onclick='set_fullmode();'".(isset($blocked_msg) ? " disabled" : '')." ></center>\n";
-
+	if ($allow) {
+		echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
+			." onclick='".(in_ajax() ? 'retry();': 'set_fullmode();')."'".(isset($blocked) ? " disabled" : '')." ></center>\n";
+	}		
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data
 		if (!in_array($p, array('ui_mode', 'user_name_entry_field', 
@@ -131,7 +146,7 @@ function defaultCompany()
 					echo "<input type='hidden' name='{$p}[$i]' value='$v'>";
 	}
 	end_form(1);
-	$Ajax->addScript(true, "document.forms[0].password.focus();");
+	$Ajax->addScript(true, "if (document.forms.length) document.forms[0].password.focus();");
 
     echo "<script language='JavaScript' type='text/javascript'>
     //<![CDATA[

@@ -93,7 +93,10 @@ function get_item_edit_info($stock_id)
 		." AND item.units=unit.abbr";
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
-	return db_fetch($result);
+	$row = db_fetch($result);
+	if (is_array($row) && $row['decimals'] == -1)
+		$row['decimals'] = user_qty_dec();
+	return $row;
 }
 
 //--------------------------------------------------------------------------------------
@@ -107,7 +110,7 @@ function get_unit_cost($stock_id)
 
 	$myrow = db_fetch_row($result);
 
-	return $myrow[0];
+	return is_array($myrow) ? $myrow[0] : false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -121,7 +124,7 @@ function get_purchase_cost($stock_id)
 
 	$myrow = db_fetch_row($result);
 
-	return $myrow[0];
+	return is_array($myrow) ? $myrow[0] : false;
 }
 
 //--------------------------------------------------------------------------------------
@@ -167,7 +170,7 @@ function get_already_delivered($stock_id, $location, $trans_no)
 		AND type=".ST_CUSTDELIVERY." AND trans_no=".db_escape($trans_no);
 	$result = db_query($sql, "Could not get stock moves");
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 /*
 	Returns start move_id in latest negative status period for $stock_id
@@ -345,7 +348,7 @@ function get_purchase_value($stock_id)
 
 	$result = db_query($sql,"retreive stock purchase price");
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function update_purchase_value($stock_id, $price)

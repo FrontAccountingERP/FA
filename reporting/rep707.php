@@ -26,8 +26,7 @@ include_once($path_to_root . "/admin/db/tags_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, 
-	$tags, &$pg, $graphics)
+function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, $tags, &$pg, $graphics, &$labels, &$serie1, &$serie2)
 {
 	$code_per_balance = 0;
 	$code_acc_balance = 0;
@@ -101,7 +100,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
+			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics, $labels, $serie1, $serie2);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
@@ -118,9 +117,9 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		$rep->AmountCol(4, 5, Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)), $pdec);		
 		if ($graphics)
 		{
-			$pg->x[] = $typename;
-			$pg->y[] = abs($code_per_balance + $per_balance_total);
-			$pg->z[] = abs($code_acc_balance + $acc_balance_total);
+			$labels[] = $typename;
+			$serie1[] = abs($code_per_balance + $per_balance_total);
+			$serie2[] = abs($code_acc_balance + $acc_balance_total);
 		}
 		$rep->NewLine();
 	}
@@ -193,10 +192,13 @@ function print_profit_and_loss_statement()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$orientation = ($orientation ? 'L' : 'P');
+	$labels = array();
+	$serie1 = array();
+	$serie2 = array();
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
-		$pg = new graph();
+		$pg = new Chart($graphics);
 	}
 	if (!$decimals)
 		$dec = 0;
@@ -285,8 +287,7 @@ function print_profit_and_loss_statement()
 		$typeresult = get_account_types(false, $class['cid'], -1);
 		while ($accounttype=db_fetch($typeresult))
 		{
-			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-				$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics, $labels, $serie1, $serie2);
 			$class_per_total += $classtotal[0];
 			$class_acc_total += $classtotal[1];			
 		}
@@ -312,25 +313,23 @@ function print_profit_and_loss_statement()
 	$rep->AmountCol(2, 3, $salesper *-1, $dec); // always convert
 	$rep->AmountCol(3, 4, $salesacc * -1, $dec);
 	$rep->AmountCol(4, 5, Achieve($salesper, $salesacc), $pdec);
-	if ($graphics)
-	{
-		$pg->x[] = _('Calculated Return');
-		$pg->y[] = abs($salesper);
-		$pg->z[] = abs($salesacc);
-	}
 	$rep->Font();
 	$rep->NewLine();
 	$rep->Line($rep->row);
 	if ($graphics)
 	{
-		$pg->title     = $rep->title;
-		$pg->axis_x    = _("Group");
-		$pg->axis_y    = _("Amount");
-		$pg->graphic_1 = $headers[2];
-		$pg->graphic_2 = $headers[3];
-		$pg->type      = $graphics;
-		$pg->skin      = $SysPrefs->graph_skin;
-		$pg->built_in  = false;
+		$labels[] = _('Calculated Return');
+		$serie1[] = abs($salesper);
+		$serie2[] = abs($salesacc);
+		$pg->setStream('png');
+		$pg->setLabels($labels);
+		$pg->addSerie($headers[2], $serie1);
+		$pg->addSerie($headers[3], $serie2);
+		$pg->setTitle($rep->title);
+		$pg->setXTitle(_("Group"));
+		$pg->setYTitle(_("Amount"));
+		$pg->setDTitle(number_format2(abs($salesper)));
+		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);

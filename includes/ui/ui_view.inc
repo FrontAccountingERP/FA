@@ -270,7 +270,7 @@ function check_ui_refresh($name=null)
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency=null, $to_currency=null, $date_, $force_edit=false)
+function exchange_rate_display($from_currency, $to_currency, $date_, $force_edit=false)
 {
     global $Ajax, $SysPrefs;
 
@@ -925,7 +925,7 @@ function get_js_select_combo_item() {
 		} else {			
 			var stock_element = doc.getElementsByName('stock_id');
 	    	if( stock_element.length > 0) {
-				stock_element.value = value;	
+				stock_element[0].value = value;	
 				var stock_id = doc.getElementById('_stock_id_edit'); 
 				stock_id.value=value;
 				stock_id.onblur();		
@@ -939,6 +939,7 @@ function get_js_select_combo_item() {
 function get_js_set_combo_item() {
 	$js = "function setComboItem(doc, client_id, value, text){
     	var element = doc.getElementById(client_id);
+    	var search = doc.getElementById('_'+client_id+'_edit');
   		if(typeof(element) != 'undefined' && element != null && element.tagName === 'SELECT') {
 	 		var options = element.options;
 	 		options.length = 0;
@@ -947,6 +948,7 @@ function get_js_set_combo_item() {
 			option.text = text;
 	   		element.add(option, 0);
 			element.selectedIndex = 0;
+			search.value = '';
 	        element.onchange();
 	    } else {
 			var stock_element = doc.getElementsByName('stock_id');
@@ -1579,4 +1581,22 @@ function trans_editor_link($type, $trans_no)
 	return !isset($editor_url[$type]) ? '--' :
 		(is_closed_trans($type, $trans_no) ? set_icon(ICON_CLOSED, _('Closed')) :
 			pager_link(_("Edit"), sprintf($editor_url[$type], $trans_no, $type), ICON_EDIT));
+}
+
+function company_logo_on_view()
+{
+	// Display View Header
+	global $SysPrefs;
+
+	$logo = company_path() . "/images/" . $SysPrefs->prefs['coy_logo'];
+	$nl = 1;
+	if (!empty($SysPrefs->prefs['company_logo_report']) && $SysPrefs->prefs['coy_logo'] != '' && file_exists($logo))
+	{
+		$size = getimagesize($logo);
+		$height = $size[0] > 150 ? $size[1] * 150 / $size[0] : 30; 
+		$text = "<img src='$logo' height=$height>";
+	}
+	else
+		$text = $SysPrefs->prefs['coy_name'];
+	display_note($text, 0, $nl, "style='font-size:16px;font-weight:600'");
 }

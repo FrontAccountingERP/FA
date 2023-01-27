@@ -10,14 +10,14 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function write_supp_payment($trans_no, $supplier_id, $bank_account,
-	$date_, $ref, $supp_amount, $supp_discount, $memo_, $bank_charge=0, $bank_amount=0)
+	$date_, $ref, $supp_amount, $supp_discount, $memo_, $bank_charge=0, $bank_amount=0, $dimension=0, $dimension2=0)
 {
 	global $Refs;
 
 	begin_transaction();
-	$args = func_get_args(); while (count($args) < 10) $args[] = 0;
+	$args = func_get_args(); while (count($args) < 12) $args[] = 0;
 	$args = (object)array_combine(array('trans_no', 'supplier_id', 'bank_account', 'date_',
-		 'ref', 'bank_amount', 'supp_amount', 'supp_discount', 'memo_', 'bank_charge'), $args);
+		 'ref', 'supp_amount', 'supp_discount', 'memo_', 'bank_charge', 'bank_amount', 'dimension', 'dimension2'), $args);
 	$args->trans_no = 0;
 	hook_db_prewrite( $args, ST_SUPPAYMENT);
 
@@ -50,31 +50,31 @@ function write_supp_payment($trans_no, $supplier_id, $bank_account,
 
 	$total = 0;
     $supplier_accounts = get_supplier_accounts($supplier_id);
-	$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+	$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payable_account"], $dimension, $dimension2,
 		$supp_amount + $supp_discount, $supplier_id, "", $rate);
 
 	// Now credit discount received account with discounts
 	if ($supp_discount != 0)
 	{
-		$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0,
+		$total += add_gl_trans_supplier(ST_SUPPAYMENT, $payment_id, $date_, $supplier_accounts["payment_discount_account"], $dimension, $dimension2,
 			-$supp_discount, $supplier_id, "", $rate);
 	}
 
 	if ($bank_charge != 0)
 	{
 		$charge_act = get_company_pref('bank_charge_act');
-		$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $charge_act, 0, 0, '',
+		$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $charge_act, $dimension, $dimension2, '',
 			$bank_charge, $bank['bank_curr_code']);
 	}
 
-	$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $bank['account_code'], 0, 0, '',
+	$total += add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $bank['account_code'], $dimension, $dimension2, '',
 		-($bank_amount + $bank_charge), $bank['bank_curr_code'], PT_SUPPLIER, $supplier_id);
 
 	/*Post a balance post if $total != 0 due to variance in AP and bank posted values*/
 	if ($total != 0)
 	{
 		$variance_act = get_company_pref('exchange_diff_act');
-		add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $variance_act, 0, 0, '',
+		add_gl_trans(ST_SUPPAYMENT, $payment_id, $date_, $variance_act, $dimension, $dimension2, '',
 			-$total, null, PT_SUPPLIER,  $supplier_id);
 	}
 

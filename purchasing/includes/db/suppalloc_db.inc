@@ -44,7 +44,7 @@ function get_supp_trans_allocation_balance($trans_type, $trans_no)
 	$result = db_query($sql,"calculate the allocation");
 	$myrow = db_fetch_row($result);
 
-	return $myrow[0];
+	return $myrow ? $myrow[0] : 0;
 }
 
 //----------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ function clear_supp_alloctions($type, $type_no, $person_id=null, $date="")
 }
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_supp_sql($supplier_id=null, $settled)
+function get_allocatable_from_supp_sql($supplier_id, $settled)
 {
 	$sql = "SELECT
 		trans.type,
@@ -301,6 +301,10 @@ function get_sql_for_supplier_allocation_inquiry()
    		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) // credits
    		{
 			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
+   		}
+   		elseif ($_POST['filterType'] == '6')	// Journal
+   		{
+			$sql .= " AND trans.type = ".ST_JOURNAL." ";
    		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) // overdude 

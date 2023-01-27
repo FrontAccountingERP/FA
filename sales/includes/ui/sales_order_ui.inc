@@ -353,7 +353,7 @@ function display_order_header(&$order, $editable, $date_text)
 		else
 		{
 			$row = get_customer_to_order($_POST['customer_id']);
-			if ($row['dissallow_invoices'] == 1)
+			if ($row && $row['dissallow_invoices'] == 1)
 				$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 		}
 	}
@@ -378,7 +378,7 @@ function display_order_header(&$order, $editable, $date_text)
 	if (($order->pos['cash_sale'] || $order->pos['credit_sale']) 
 		&& !$order->is_started()) {
 		 // editable payment type 
-		if (get_post('payment') !== $order->payment) {
+        if (isset($_POST['payment']) && $_POST['payment'] !== $order->payment) {
 			$order->payment = get_post('payment');
 			$order->payment_terms = get_payment_terms($order->payment);
 			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
@@ -515,8 +515,11 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
         }		
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
-		$units = $item_info["units"];
-		$dec = $item_info['decimals'];
+		$units = ''; $dec = 2;
+		if ($item_info) {
+				$units = $item_info["units"];
+				$dec = $item_info['decimals'];
+		}
 		$_POST['qty'] = number_format2(1, $dec);
 		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
@@ -629,7 +632,7 @@ function display_delivery_details(&$order)
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 50, 60,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 
-		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
+		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5, 255,
 			_('Delivery address. Default is address of customer branch'));
 
 		table_section(2);

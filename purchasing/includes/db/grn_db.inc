@@ -17,14 +17,13 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	// save a couple of db calls like get_supplier()
 	
 	$supp = get_supplier($supplier);
-	if ($supplier != null)
+    if ($supplier != null) {
 		$currency = $supp['curr_code'];
-	else
+        if ($supp['tax_included'])
+            $price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+                $supp['tax_included']);
+    } else
 		$currency = null;
-
-	if ($supp['tax_included'])
-		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
-			$supp['tax_included']);
 
 	if ($currency != null)
 	{

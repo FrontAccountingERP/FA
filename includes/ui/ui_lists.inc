@@ -150,7 +150,7 @@ $opts = array(		// default options
 					foreach($opts['search'] as $i=> $s)
 						$opts['search'][$i] = $s . " LIKE "
 							.db_escape(($class=='combo3' ? '' : '%').$txt.'%');
-					$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+					$opts['where'][] = '('. implode(' OR ', $opts['search']) . ')';
 				}
 		}
 	}
@@ -302,55 +302,57 @@ $opts = array(		// default options
 		$link = "";
   		$id = $name;
   		if ($SysPrefs->use_popup_windows) {
-    		switch (strtolower($type)) {
-      			case "stock":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_manufactured":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_purchased":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_sales":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "stock_costable":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "component":
-      				$parent = $opts['parent'];
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=component&parent=".$parent."&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "kits":
-        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
-        			$img_title = _("Search items");
-        			break;
-      			case "customer":
-        			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
-        			$img_title = _("Search customers");
-        			break;
-      			case "branch":
-        			$link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#customer_id";
-        			$img_title = _("Search branches");
-        			break;
-      			case "supplier":
-        			$link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
-        			$img_title = _("Search suppliers");
-        			break;
-      			case "account":
-      			case "account2":
-      				$skip = strtolower($type) == "account" ? false : true;
-        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
-        			$img_title = _("Search GL accounts");
-        			break;
-    		}
+  			if ($type != NULL) {
+	    		switch (strtolower($type)) {
+	      			case "stock":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=all&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_manufactured":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=manufactured&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_purchased":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=purchasable&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_sales":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=sales&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "stock_costable":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=costable&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "component":
+	      				$parent = $opts['parent'];
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=component&parent=".$parent."&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "kits":
+	        			$link = $path_to_root . "/inventory/inquiry/stock_list.php?popup=1&type=kits&client_id=" . $id;
+	        			$img_title = _("Search items");
+	        			break;
+	      			case "customer":
+	        			$link = $path_to_root . "/sales/inquiry/customers_list.php?popup=1&client_id=" . $id;
+	        			$img_title = _("Search customers");
+	        			break;
+	      			case "branch":
+	        			$link = $path_to_root . "/sales/inquiry/customer_branches_list.php?popup=1&client_id=" . $id . "#customer_id";
+	        			$img_title = _("Search branches");
+	        			break;
+	      			case "supplier":
+	        			$link = $path_to_root . "/purchasing/inquiry/suppliers_list.php?popup=1&client_id=" . $id;
+	        			$img_title = _("Search suppliers");
+	        			break;
+	      			case "account":
+	      			case "account2":
+	      				$skip = strtolower($type) == "account" ? false : true;
+	        			$link = $path_to_root . "/gl/inquiry/accounts_list.php?popup=1&skip=".$skip."&client_id=" . $id;
+	        			$img_title = _("Search GL accounts");
+	        			break;
+	    		}
+	    	}
   		}
 
   		if ($link !=="") {
@@ -1343,7 +1345,7 @@ function sales_areas_list_row($label, $name, $selected_id=null, $special_option=
 
 function sales_groups_list($name, $selected_id=null, $special_option=false)
 {
-	$sql = "SELECT id, description, inactive FROM ".TB_PREF."groups";
+	$sql = "SELECT id, description, inactive FROM `".TB_PREF."groups`";
 	return combo_input($name, $selected_id, $sql, 'id', 'description', array(
 		'spec_option' => $special_option===true ? ' ' : $special_option,
 		'order' => 'description', 'spec_id' => 0,
@@ -1863,11 +1865,11 @@ function gl_all_accounts_list_cells($label, $name, $selected_id=null,
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id=null, 
-	$skip_bank_accounts=false, $cells=false, $all_option=false, $type_id=false)
+	$skip_bank_accounts=false, $cells=false, $all_option=false, $submit_on_change=false, $all=false, $type_id=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	gl_all_accounts_list_cells(null, $name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option, $type_id);
+		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all, $type_id);
 	echo "</tr>\n";
 }
 
@@ -2143,7 +2145,8 @@ function cust_allocations_list_cells($label, $name, $selected=null, $submit_on_c
 		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
-		'5' => _("Delivery Notes")
+		'5' => _("Delivery Notes"),
+		'6' => _("Journal Entries")
 	);
 	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
 	echo "</td>\n";
@@ -2159,7 +2162,8 @@ function supp_allocations_list_cell($name, $selected=null)
 		'2'=> _("Overdue Invoices"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
-		'5' => _("Overdue Credit Notes")
+		'5' => _("Overdue Credit Notes"),
+		'6' => _("Journal Entries")
 	);
 	echo array_selector($name, $selected, $allocs);
 	echo "</td>\n";
@@ -2176,7 +2180,8 @@ function supp_transactions_list_cell($name, $selected=null, $submit_on_change=fa
 		'2'=> _("Unsettled transactions"),
 		'3' => _("Payments"),
 		'4' => _("Credit Notes"),
-		'5' => _("Overdue Credit Notes")
+		'5' => _("Overdue Credit Notes"),
+		'7' => _("Journal Entries")
 	);
 
 	echo array_selector($name, $selected, $allocs, array('select_submit'=> $submit_on_change));
@@ -2310,7 +2315,7 @@ function quick_entries_list($name, $selected_id=null, $type=null, $submit_on_cha
 
 }
 
-function quick_entries_list_cells($label, $name, $selected_id=null, $type, $submit_on_change=false)
+function quick_entries_list_cells($label, $name, $selected_id, $type, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
@@ -2319,7 +2324,7 @@ function quick_entries_list_cells($label, $name, $selected_id=null, $type, $subm
 	echo "</td>";
 }
 
-function quick_entries_list_row($label, $name, $selected_id=null, $type, $submit_on_change=false)
+function quick_entries_list_row($label, $name, $selected_id, $type, $submit_on_change=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	quick_entries_list_cells(null, $name, $selected_id, $type, $submit_on_change);

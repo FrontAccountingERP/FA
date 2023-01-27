@@ -73,8 +73,12 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 
 function delete_supplier($supplier_id)
 {
+	begin_transaction();
+	delete_entity_contacts('supplier', $supplier_id);
 	$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
+
 	db_query($sql,"check failed");
+	commit_transaction();
 }
 
 function get_supplier_details($supplier_id, $to=null, $all=true)
@@ -144,7 +148,7 @@ function get_supplier_name($supplier_id)
 
 	$row = db_fetch_row($result);
 
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function get_supplier_accounts($supplier_id)
@@ -187,7 +191,7 @@ function get_supplier_currency($supplier_id)
 	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
 
 	$myrow=db_fetch_row($result);
-	return $myrow[0];
+	return $myrow ? $myrow[0] : get_company_currency();
 }
 
 function get_suppliers_search($supplier)

@@ -148,10 +148,10 @@ function print_supplier_balances()
         $accumulate = 0;
         $rate = $convert ? get_exchange_rate_from_home_currency($myrow['curr_code'], Today()) : 1;
         $bal = get_open_balance($myrow['supplier_id'], $from);
-        $init[0] = $init[1] = 0.0;
-        $init[0] = round2(abs($bal['charges']*$rate), $dec);
-        $init[1] = round2(Abs($bal['credits']*$rate), $dec);
-        $init[2] = round2($bal['Allocated']*$rate, $dec);
+		$init = array();
+        $init[0] = round2(($bal != false ? abs($bal['charges']) : 0)*$rate, $dec);
+        $init[1] = round2(($bal != false ? abs($bal['credits']) : 0)*$rate, $dec);
+        $init[2] = round2(($bal != false ? $bal['Allocated'] : 0)*$rate, $dec);
 
         $init[3] = $init[1] - $init[0];
         $accumulate += $init[3];

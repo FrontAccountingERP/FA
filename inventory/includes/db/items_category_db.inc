@@ -98,6 +98,6 @@ function get_category_name($id)
 	$result = db_query($sql, "could not get sales type");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 

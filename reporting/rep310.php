@@ -86,10 +86,7 @@ function get_supp_inv_reference($supplier_id, $stock_id, $date)
 		AND trans.tran_date=".db_escape($date);
     $result = db_query($sql,"No transactions were returned");
     $row = db_fetch_row($result);
-    if (isset($row[0]))
-    	return $row[0];
-    else
-    	return '';
+	return is_array($row) ? $row[0] : '';
 }
 
 //----------------------------------------------------------------------------------------------------

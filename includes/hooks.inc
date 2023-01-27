@@ -218,18 +218,20 @@ class hooks {
 /*
 	Installs hooks provided by extension modules
 */
-function install_hooks()
+function install_hooks($lang_code=null)
 {
 	global $path_to_root, $Hooks, $installed_extensions;
 
 	$Hooks = array();
-	
 	// include current language related $Hooks object if locale file exists
-	$lang_code  = clean_file_name($_SESSION['language']->code);
+	if (!$lang_code)
+		$lang_code = $_SESSION['language']->code;
+	$lang_code  = clean_file_name($lang_code);
+
 	if (file_exists($path_to_root . "/lang/" . $lang_code . "/locale.inc"))
 	{
 		include_once($path_to_root . "/lang/" . $lang_code . "/locale.inc");
-		$code = $_SESSION['language']->code;
+		$code = $lang_code;
 		$hook_class = 'hooks_'.$code;
 		$Hooks[$code] = new $hook_class;
 		unset($code, $hook_class);
@@ -240,6 +242,7 @@ function install_hooks()
 			$hook_class = 'hooks_'.$ext['package'];
 			if ($ext['active'] && class_exists($hook_class)) {
 				$Hooks[$ext['package']] = new $hook_class;
+				$Hooks[$ext['package']]->path = $ext['path'];
 			}
 		}	
 	}
@@ -277,7 +280,7 @@ function hook_invoke($ext, $method, &$data, $opts=null)
 
 	$ret = null;
 	if (isset($Hooks[$ext]) && method_exists($Hooks[$ext], $method)) {
-		set_ext_domain('modules/'.$ext);
+		set_ext_domain($Hooks[$ext]->path);
 		$ret = $Hooks[$ext]->$method($data, $opts);
 		set_ext_domain();
 	} 
@@ -297,7 +300,7 @@ function hook_invoke_all($method, &$data, $opts=null)
 	{
 		foreach($Hooks as $ext => $hook)
 			if (method_exists($hook, $method)) {
-				set_ext_domain('modules/'.$ext);
+				set_ext_domain($hook->path);
 				$result = $hook->$method($data, $opts);
 				if (isset($result) && is_array($result)) {
 					$return = array_merge_recursive($return, $result);
@@ -320,7 +323,7 @@ function hook_invoke_first($method, &$data, $opts=null)
 	$result = null;
 	foreach($Hooks as $ext => $hook) {
 		if (method_exists($hook, $method)) {
-			set_ext_domain('modules/'.$ext);
+			set_ext_domain($hook->path);
 			$result = $hook->$method($data, $opts);
 			set_ext_domain();
 			if (isset($result))
@@ -342,7 +345,7 @@ function hook_invoke_last($method, &$data, $opts=null)
 	$Reverse = array_reverse($Hooks);
 	foreach($Reverse as $ext => $hook) {
 		if (method_exists($hook, $method)) {
-			set_ext_domain('modules/'.$ext);
+			set_ext_domain($hook->path);
 			$result = $hook->$method($data, $opts);
 			set_ext_domain();
 			if (isset($result))

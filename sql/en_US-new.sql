@@ -636,7 +636,7 @@ CREATE TABLE `0_fiscal_year` (
 -- Data of table `0_fiscal_year` --
 
 INSERT INTO `0_fiscal_year` VALUES
-('1', '2019-01-01', '2019-12-31', '1');
+('1', '2020-01-01', '2020-12-31', '1');
 
 -- Structure of table `0_gl_trans` --
 
@@ -1612,7 +1612,9 @@ INSERT INTO `0_sys_prefs` VALUES
 ('use_manufacturing','setup.company', 'tinyint', 1, '1'),
 ('dim_on_recurrent_invoice','setup.company', 'tinyint', 1, '0'),
 ('long_description_invoice','setup.company', 'tinyint', 1, '0'),
-('use_fixed_assets','setup.company', 'tinyint', 1, '1');
+('max_days_in_docs','setup.company', 'smallint', 5, '180'),
+('use_fixed_assets','setup.company', 'tinyint', 1, '1'),
+('company_logo_on_views', 'setup.company', 'tinyint', '1', '0');
 
 -- Structure of table `0_tag_associations` --
 
@@ -1783,7 +1785,7 @@ CREATE TABLE `0_users` (
 -- Data of table `0_users` --
 
 INSERT INTO `0_users` VALUES
-('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@example.com', 'C', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2019-05-07 13:58:33', '10', '1', '1', '1', '1', '0', 'orders', '30', '0', '1', '0', '0', '0');
+('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@example.com', 'C', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2020-05-07 13:58:33', '10', '1', '1', '1', '1', '0', 'orders', '30', '0', '1', '0', '0', '0');
 
 -- Structure of table `0_voided` --
 

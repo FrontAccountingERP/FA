@@ -72,7 +72,7 @@ class general_ledger_app extends application
 		$this->add_rapp_function(2, _("GL Account &Classes"),
 			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("&Closing GL Transactions"),
-			"gl/manage/close_period.php?", 'SA_GLSETUP', MENU_MAINTENANCE);
+			"gl/manage/close_period.php?", 'SA_GLCLOSE', MENU_MAINTENANCE);
 		$this->add_rapp_function(2, _("&Revaluation of Currency Accounts"),
 			"gl/manage/revaluate_currencies.php?", 'SA_EXCHANGERATE', MENU_MAINTENANCE);
 

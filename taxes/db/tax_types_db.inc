@@ -34,11 +34,9 @@ function get_all_tax_types($all=false)
 	$sql = "SELECT tax_type.*,
 				Chart1.account_name AS SalesAccountName,
 				Chart2.account_name AS PurchasingAccountName
-			FROM ".TB_PREF."tax_types tax_type,"
-				.TB_PREF."chart_master AS Chart1,"
-				.TB_PREF."chart_master AS Chart2
-			WHERE tax_type.sales_gl_code = Chart1.account_code
-				AND tax_type.purchasing_gl_code = Chart2.account_code";
+			FROM ".TB_PREF."tax_types tax_type LEFT JOIN "
+				.TB_PREF."chart_master AS Chart1 ON tax_type.sales_gl_code = Chart1.account_code LEFT JOIN "
+				.TB_PREF."chart_master AS Chart2 ON tax_type.purchasing_gl_code = Chart2.account_code";
 
 	if (!$all) $sql .= " AND !tax_type.inactive";
 	return db_query($sql, "could not get all tax types");
@@ -56,11 +54,10 @@ function get_tax_type($type_id)
 	$sql = "SELECT tax_type.*,
 				Chart1.account_name AS SalesAccountName,
 				Chart2.account_name AS PurchasingAccountName
-			FROM ".TB_PREF."tax_types tax_type,"
-				.TB_PREF."chart_master AS Chart1,"
-				.TB_PREF."chart_master AS Chart2
-			WHERE tax_type.sales_gl_code = Chart1.account_code
-		AND tax_type.purchasing_gl_code = Chart2.account_code AND id=".db_escape($type_id);
+			FROM ".TB_PREF."tax_types tax_type LEFT JOIN "
+				.TB_PREF."chart_master AS Chart1 ON tax_type.sales_gl_code = Chart1.account_code LEFT JOIN "
+				.TB_PREF."chart_master AS Chart2 ON tax_type.purchasing_gl_code = Chart2.account_code 
+			WHERE id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get tax type");
 	return db_fetch($result);
@@ -73,7 +70,7 @@ function get_tax_type_rate($type_id)
 	$result = db_query($sql, "could not get tax type rate");
 
 	$row = db_fetch_row($result);
-	return $row[0];
+	return is_array($row) ? $row[0] : false;
 }
 
 function delete_tax_type($type_id)

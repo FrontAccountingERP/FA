@@ -31,7 +31,7 @@ function output_html($text)
 //
 function strip_quotes($data)
 {
-	if(get_magic_quotes_gpc()) {
+	if(version_compare(phpversion(), '5.4', '<') && get_magic_quotes_gpc()) {
 		if(is_array($data)) {
 			foreach($data as $k => $v) {
 				$data[$k] = strip_quotes($data[$k]);
@@ -125,12 +125,20 @@ $inst_langs = array(
   'zh_CN' => array ( 'name' => 'Chinese Simplifed',	'code' => 'zh_CN',	'encoding' => 'utf-8'),
 );
 
+if ($SysPrefs->go_debug > 0)
+	$cur_error_level = -1;
+else
+	$cur_error_level = E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE;
+
+error_reporting($cur_error_level);
+ini_set("display_errors", "On");
+
 $Ajax = new Ajax();
 
 get_text_init();
 
 $i_lang = isset($_POST['inst_lang']) ? $_POST['inst_lang'] : 
- 	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : array('C'));
+ 	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : 'C');
 
 // Page Initialisation
 if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')
@@ -138,7 +146,7 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 {
 	$l = array_search_value($i_lang, $inst_langs,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
-	 isset($l['rtl']) ? 'rtl' : 'ltr');
+	 @isset($l['rtl']) ? 'rtl' : 'ltr');
 
 }
 if (!isset($installed_languages))

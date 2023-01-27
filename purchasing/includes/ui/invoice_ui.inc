@@ -103,6 +103,7 @@ function invoice_header(&$supp_trans)
 	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
+		copy_to_trans($supp_trans);
 		// supplier has changed
 		// delete all the order items - drastic but necessary because of
 		// change of currency, etc
@@ -168,24 +169,24 @@ function invoice_totals(&$supp_trans)
 
 	copy_to_trans($supp_trans);
 
-	$dim = get_company_pref('use_dimension');
- 	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
+	$colspan = 2;
  	div_start('tax_table');
    	start_table(TABLESTYLE, "width='95%'");
-   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
+   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "width=80% colspan=$colspan align=right", "width=10% align=right", 2);
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
     $tax_total = display_edit_tax_items($taxes, $colspan, $supp_trans->tax_included, 0, true);
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
-
+	start_row();
 	if ($supp_trans->trans_type == ST_SUPPINVOICE)
-    	label_row(_("Invoice Total:"), 
-    		$display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
+    	label_cells(_("Invoice Total:"), 
+    		$display_total, "colspan=$colspan width=80% align=right style='font-weight:bold;'", "width=10% align=right style='font-weight:bold;'");
     else
-		label_row(_("Credit Note Total"),
-			$display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
-
+		label_cells(_("Credit Note Total"),
+			$display_total, "colspan=$colspan width=80% align=right style='font-weight:bold;color:red;'", "width=10% nowrap align=right style='font-weight:bold;color:red;'");
+	submit_cells('update', _("Update"), "width=10% colspan=2 align='right'", _("Refresh"), true);
+	end_row();
     end_table(1);
     start_table(TABLESTYLE2);
     textarea_row(_("Memo:"), "Comments", null, 50, 3);

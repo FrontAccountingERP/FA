@@ -203,7 +203,7 @@ function branch_settings($selected_id, $num_branches) {
 	elseif ($Mode != 'ADD_ITEM')
 	{
 		$myrow = get_default_info_for_branch($_POST['customer_id']);
-		if(!$num_branches) {
+		if($myrow && !$num_branches) {
 			$_POST['br_name'] = $myrow["name"];
 			$_POST['br_ref'] = $myrow["debtor_ref"];
 			$_POST['contact_name'] = _('Main Branch');

@@ -31,3 +31,9 @@ function set_fullmode() {
 	document.loginform.submit();
 	return true;
 }
+
+function retry() {
+	document.getElementById('ui_mode').value = 1;
+	JsHttpRequest.request(this);
+	return true;
+}

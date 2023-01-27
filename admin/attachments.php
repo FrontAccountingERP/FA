@@ -80,17 +80,22 @@ if (isset($_GET['trans_no']))
 if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 {
 	
+	$filename = basename($_FILES['filename']['name']);
 	if (!transaction_exists($_POST['filterType'], $_POST['trans_no']))
 		display_error(_("Selected transaction does not exists."));
-	elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
+	elseif ($Mode == 'ADD_ITEM' && !in_array(strtoupper(substr($filename, strlen($filename) - 3)), array('JPG','PNG','GIF', 'PDF', 'DOC', 'ODT')))
+	{
+		display_error(_('Only graphics,pdf,doc and odt files are supported.'));
+	} elseif ($Mode == 'ADD_ITEM' && !isset($_FILES['filename']))
 		display_error(_("Select attachment file."));
 	elseif ($Mode == 'ADD_ITEM' && ($_FILES['filename']['error'] > 0)) {
     	if ($_FILES['filename']['error'] == UPLOAD_ERR_INI_SIZE) 
 		  	display_error(_("The file size is over the maximum allowed."));
     	else
 		  	display_error(_("Select attachment file."));
-  	}
-	else {
+  	} elseif ( strlen($filename) > 60) {
+		display_error(_("File name exceeds maximum of 60 chars. Please change filename and try again."));
+	} else {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
 
@@ -104,7 +109,6 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			fclose($fp);
 		}
 
-		$filename = basename($_FILES['filename']['name']);
 		$filesize = $_FILES['filename']['size'];
 		$filetype = $_FILES['filename']['type'];
 
@@ -137,10 +141,10 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 				$filename, $unique_name, $filesize, $filetype); 
 			display_notification(_("Attachment has been updated.")); 
 		}
+		reset_form();
 	}
 	refresh_pager('trans_tbl');
 	$Ajax->activate('_page_body');
-	$Mode = 'RESET';
 }
 
 if ($Mode == 'Delete')
@@ -151,11 +155,16 @@ if ($Mode == 'Delete')
 		unlink($dir."/".$row['unique_name']);
 	delete_attachment($selected_id);	
 	display_notification(_("Attachment has been deleted.")); 
-	$Mode = 'RESET';
+	reset_form();
 }
 
 if ($Mode == 'RESET')
+	reset_form();
+
+function reset_form()
 {
+	global $selected_id;
+	unset($_POST['trans_no']);
 	unset($_POST['description']);
 	$selected_id = -1;
 }
@@ -169,7 +178,7 @@ function viewing_controls()
 	start_row();
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
 	if (list_updated('filterType'))
-		$selected_id = -1;
+		reset_form();
 
 	if(get_post('filterType') == ST_CUSTOMER ){
 		customer_list_cells(_("Select a customer: "), 'trans_no', null, false, true, true);

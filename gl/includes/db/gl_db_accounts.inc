@@ -104,6 +104,7 @@ function gl_account_in_company_defaults($acc)
 		OR name='retained_earnings_act'
 		OR name='freight_act'
 		OR name='deferred_income_act'
+		OR name='grn_clearing_act'
 		OR name='default_sales_act' 
 		OR name='default_sales_discount_act'
 		OR name='default_prompt_payment_act'
@@ -224,7 +225,7 @@ function is_subledger_account($account)
 
 	$result = db_query($sql,"Couldn't test AR/AP account");
 	$myrow = db_fetch_row($result);
-	return $myrow[0];
+	return $myrow == false ? 0 : $myrow[0];
 }
 
 function get_subaccount_data($code_id, $person_id)

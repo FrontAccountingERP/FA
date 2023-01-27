@@ -14,7 +14,7 @@
 // or display_note(print_document_link($order_no, _("Print this order")));
 // You only need full parameter list for invoices/credit notes
 
-function print_document_link($doc_no, $link_text, $link=true, $type_no, 
+function print_document_link($doc_no, $link_text, $link, $type_no, 
 	$icon=false, $class='printlink', $id='', $email=0, $extra=0)
 {
 	global $path_to_root;
@@ -140,16 +140,16 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 	$icon=false, $class='printlink', $id='')
 {
 	global $path_to_root, $SysPrefs;
-
 	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
 
 	$id = default_focus($id);
+	$parm = array();
 	foreach($pars as $par => $val) {
-		$pars[$par] = "$par=".urlencode($val);
+		if ($val != "")
+			$parm[] = "$par=".urlencode($val);
 	}
-	$pars[] = 'REP_ID='.urlencode($rep);
-	$url .= implode ('&', $pars);
-
+	$parm[] = 'REP_ID='.urlencode($rep);
+	$url .= implode ('&', $parm);
 	if ($class != '')
 		$class = $SysPrefs->pdf_debug ? '' : " class='$class'";
 	if ($id != '')

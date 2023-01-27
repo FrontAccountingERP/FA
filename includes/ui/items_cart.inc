@@ -144,8 +144,8 @@ class items_cart
 	    $this->gl_items[$index]->code_id = $code_id;
 	    $this->gl_items[$index]->person_id = $person_id;
 
-		$gl_type = is_subledger_account($code_id, $person_id);
-		if ($gl_type)
+        $gl_type = is_subledger_account($code_id);
+        if ($person_id != null && $gl_type)
 		{
 			$this->gl_items[$index]->person_type_id = $gl_type > 0 ? PT_CUSTOMER : PT_SUPPLIER;
 			$data = get_subaccount_data($code_id, $person_id);
@@ -263,7 +263,7 @@ class items_cart
 
 		foreach($this->gl_items as $gl)
 		{
-			if ($person_type = is_subledger_account($gl->code_id, $gl->person_id))
+            if ($person_type = is_subledger_account($gl->code_id))
 			{
 				$tax_info['person_type'] = $person_type < 0 ? PT_SUPPLIER : PT_CUSTOMER;
 				$tax_info['person_id'] = $gl->person_id;
@@ -280,7 +280,7 @@ class items_cart
 			} elseif ($tax_id = is_tax_account($gl->code_id))
 			{
 				$tax_type = get_tax_type($tax_id);
-				if ($gl->code_id == $tax_type['purchasing_gl_code']) {
+				if ($gl->code_id == $tax_type['purchasing_gl_code'] && $gl->amount > 0) {
 					if (!isset($tax_info['tax_in'][$tax_id]))
 						$tax_info['tax_in'][$tax_id] = 0;
 					$tax_info['tax_in'][$tax_id] += $gl->amount;
@@ -299,7 +299,7 @@ class items_cart
 					// we can have both input and output tax postings in some cases like intra-EU trade.
 					// so just calculate net_amount from the higher in/out tax
 					$tax_info['net_amount'][$tax_id]
-						= $sign*round2(max(abs(@$tax_info['tax_in'][$tax_id]), abs(@$tax_info['tax_out'][$tax_id]))/$tax_type['rate']*100, 2)/$factor;
+						= $sign*round2(max(abs(@$tax_info['tax_in'][$tax_id]), abs(@$tax_info['tax_out'][$tax_id]))/$tax_type['rate']*100, user_price_dec())/$factor;
 
 				}
 			} else
@@ -521,8 +521,8 @@ class gl_item
 
 		$this->code_id = $code_id;
 		$this->person_id = $person_id;
-		$gl_type = is_subledger_account($code_id, $person_id);
-		if ($gl_type)
+        $gl_type = is_subledger_account($code_id);
+        if ($person_id != null  && $gl_type)
 		{
 			$this->person_type_id = $gl_type > 0 ? PT_CUSTOMER : PT_SUPPLIER;
 			$data = get_subaccount_data($code_id, $person_id);
@@ -531,7 +531,7 @@ class gl_item
 		}
 		$this->dimension_id = $dimension_id;
 		$this->dimension2_id = $dimension2_id;
-		$this->amount = round($amount, 2);
+		$this->amount = round2($amount, user_price_dec());
 		$this->reference = $memo;
 		$this->date = $date;
 	}

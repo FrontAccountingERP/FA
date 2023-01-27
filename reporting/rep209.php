@@ -31,7 +31,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 print_po();
 
 //----------------------------------------------------------------------------------------------------
-function get_po($order_no)
+function get_supp_po($order_no)
 {
    	$sql = "SELECT po.*, supplier.supp_name, supplier.supp_account_no,supplier.tax_included,
    		supplier.gst_no AS tax_id,
@@ -91,7 +91,7 @@ function print_po()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_po($i);
+		$myrow = get_supp_po($i);
 		if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
 			continue;
 		}

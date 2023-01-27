@@ -170,6 +170,13 @@ function check_data()
 {
 	global $Refs;
 
+	if (!get_post('supplier_id')) 
+	{
+		display_error(_("There is no supplier selected."));
+		set_focus('supplier_id');
+		return false;
+	} 
+
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
@@ -276,7 +283,8 @@ function check_item_data($n)
 		}
 	}
 
-	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n]))
+	if ($SysPrefs->check_qty_charged_vs_del_qty == true && ($_POST['qty_recd'.$n] != $_POST['prev_quantity_inv'.$n])
+		&& !empty($_POST['prev_quantity_inv'.$n]))
 	{
 		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
 			(1+ ($margin / 100)))
@@ -401,7 +409,7 @@ if ($id != -1 || $id2 != -1)
 	$Ajax->activate('inv_tot');
 }
 
-if (get_post('AddGLCodeToTrans'))
+if (get_post('AddGLCodeToTrans') || get_post('update'))
 	$Ajax->activate('inv_tot');
 
 br();

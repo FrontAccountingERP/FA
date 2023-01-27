@@ -81,7 +81,6 @@ function update_material_cost($stock_id, $qty, $unit_cost, $date)
 	{
 		// post	$qty_delayed*($avg_cost-$unit_cost)
 		$diff = $qty_delayed*($unit_cost-$avg_cost);
-		$stock_gl_code = get_item($stock_id);
 
 		$dec = user_price_dec();
 		$old_cost = -round2($avg_cost, $dec);
@@ -129,7 +128,7 @@ function add_wo_costs_journal($wo_id, $amount, $cost_type, $cr_acc, $date, $dim1
     if (!$ref) $ref = $Refs->get_next(ST_JOURNAL, null, $date);
 
 	add_gl_trans_std_cost(ST_JOURNAL, $journal_id, $date, $cr_acc,
-		0, 0, $wo_cost_types[$cost_type], -$amount);
+		$dim1, $dim2, $wo_cost_types[$cost_type], -$amount);
 
 	$is_bank_to = is_bank_account($cr_acc);
 	if ($is_bank_to)

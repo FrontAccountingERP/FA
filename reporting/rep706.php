@@ -26,7 +26,7 @@ include_once($path_to_root . "/admin/db/tags_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, $tags, &$pg, $graphics)
+function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, $tags, &$pg, $graphics, &$labels, &$serie1, &$serie2)
 {
 	$code_open_balance = 0;
 	$code_period_balance = 0;
@@ -92,7 +92,7 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
-			$rep, $dimension, $dimension2, $tags, $pg, $graphics);
+			$rep, $dimension, $dimension2, $tags, $pg, $graphics, $labels, $serie1, $serie2);
 		$open_balance_total += $totals_arr[0];
 		$period_balance_total += $totals_arr[1];
 	}
@@ -109,9 +109,9 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 		$rep->AmountCol(4, 5, ($code_open_balance + $open_balance_total + $code_period_balance + $period_balance_total) * $convert, $dec);		
 		if ($graphics)
 		{
-			$pg->x[] = $typename;
-			$pg->y[] = abs($code_open_balance + $open_balance_total);
-			$pg->z[] = abs($code_period_balance + $period_balance_total);
+			$labels[] = $typename;
+			$serie1[] = abs(($code_period_balance + $period_balance_total) * $convert);
+			$serie2[] = abs(($code_open_balance + $open_balance_total + $code_period_balance + $period_balance_total) * $convert);
 		}
 		$rep->NewLine();
 	}
@@ -169,10 +169,13 @@ function print_balance_sheet()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$orientation = ($orientation ? 'L' : 'P');
+	$labels = array();
+	$serie1 = array();
+	$serie2 = array();
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
-		$pg = new graph();
+		$pg = new Chart($graphics);
 	}
 	if (!$decimals)
 		$dec = 0;
@@ -241,8 +244,7 @@ function print_balance_sheet()
 		$typeresult = get_account_types(false, $class['cid'], -1);
 		while ($accounttype=db_fetch($typeresult))
 		{
-			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
-				$rep, $dimension, $dimension2, $tags, $pg, $graphics);
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, $rep, $dimension, $dimension2, $tags, $pg, $graphics, $labels, $serie1, $serie2);
 			$class_open_total += $classtotal[0];
 			$class_period_total += $classtotal[1];			
 		}
@@ -300,17 +302,18 @@ function print_balance_sheet()
 	$rep->Line($rep->row);
 	if ($graphics)
 	{
-		$pg->x[] = _('Calculated Return');
-		$pg->y[] = abs($calc_open);
-		$pg->z[] = abs($calc_period);
-		$pg->title     = $rep->title;
-		$pg->axis_x    = _("Group");
-		$pg->axis_y    = _("Amount");
-		$pg->graphic_1 = $headers[2];
-		$pg->graphic_2 = $headers[3];
-		$pg->type      = $graphics;
-		$pg->skin      = $SysPrefs->graph_skin;
-		$pg->built_in  = false;
+		$labels[] = _('Calculated Return');
+		$serie1[] = abs($calc_period);
+		$serie2[] = abs($calc_open + $calc_period);
+		$pg->setStream('png');
+		$pg->setLabels($labels);
+		$pg->addSerie($headers[3], $serie1);
+		$pg->addSerie($headers[4], $serie2);
+		$pg->setTitle($rep->title);
+		$pg->setXTitle(_("Group"));
+		$pg->setYTitle(_("Amount"));
+		$pg->setDTitle(number_format2(abs($calc_open + $calc_period)));
+		$pg->setValues(true);
 		$pg->latin_notation = ($SysPrefs->decseps[user_dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/". random_id().".png";
 		$pg->display($filename, true);
