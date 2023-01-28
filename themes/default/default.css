@@ -16,6 +16,7 @@
 |                                                   |
 \--------------------------------------------------*/
 
+
 body {
 	font-family: Verdana, Arial, Helvetica;
 	background: #285b86;
@@ -665,4 +666,25 @@ div.note_msg {
 #title {
 	margin-bottom: 10px;
 	width: 100%;
+}
+
+@media screen and (min-width: 1024px) {
+	body, .headingtext3 { font-size: 11px; }
+	textarea { font-size: 13px; }
+	tr, td, th, input, select, a, button, .inputsubmit, .ajaxsubmit, .amount, button.navibutton { font-size: 12px; }
+	.quick_menu_selected, .menu_group, .titletext, .headingtext, .headingtext2, .errortext, #hints { font-size: 14px; }
+	.bottomBarCell { font-size: 11px; line-height: 13px; }
+	.footer, .footer td a { font-size: 10px; }
+	#CC table { font-size: 9pt; }
+	#CC .previous, #CC .next { font-size: 1.4em; }
+}
+@media screen and (min-width: 1200px) {
+	body, .headingtext3 { font-size: 12px; }
+	textarea { font-size: 14px; }
+	tr, td, th, input, select, a, button, .inputsubmit, .ajaxsubmit, .amount, button.navibutton { font-size: 13px; }
+	.quick_menu_selected, .menu_group, .titletext, .headingtext, .headingtext2, .errortext, #hints { font-size: 15px; }
+	.bottomBarCell { font-size: 12px; line-height: 14px; }
+	.footer, .footer td a { font-size: 11px; }
+	#CC table { font-size: 10pt; }
+	#CC .previous, #CC .next { font-size: 1.4em; }
 }

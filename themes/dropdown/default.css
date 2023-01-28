@@ -8,7 +8,7 @@
 |---------------------------------------------------|
 | Developer:                                        |
 | Joe Hunt                                          |
-|                                                   |
+|                                                  |
 |---------------------------------------------------|
 | Note:                                             |
 | Changes can be made to this CSS that will be      |
@@ -890,4 +890,27 @@ div.note_msg {
 }
 #cssmenu ul ul a {
   font-size: 12px;
+}
+
+@media screen and (min-width: 1024px) {
+	body,td,th,input, select,#header ul, .inputsubmit, .ajaxsubmit, .amount, button.navibutton, button {font-size: 12px; }
+	textarea, .menu_group, .menu_group_items, .headingtext, .headingtext2, .errortext, #hints, 
+	#cssmenu ul a, #cssmenu ul ul a { font-size: 13px; }
+	.fa-footer, .fa-footer .power a, .fa-footer .date, .headingtext3 { font-size: 11px; }
+	h1 { font-size: 15px; }
+	h2, .titletext { font-size: 14px; }
+	#cssmenu ul .has-sub > a:after { font-size: 10px; }
+	#CC table { font-size: 9pt; }
+	#CC .previous, #CC .next { font-size: 1.4em; }
+}
+@media screen and (min-width: 1200px) {
+	body,td,th,input, select,#header ul, .inputsubmit, .ajaxsubmit, .amount, button.navibutton, button {font-size: 13px; }
+	textarea, .menu_group, .menu_group_items, .headingtext, .headingtext2, .errortext, #hints, 
+	#cssmenu ul a, #cssmenu ul ul a { font-size: 14px; }
+	.fa-footer, .fa-footer .power a, .fa-footer .date, .headingtext3 { font-size: 12px; }
+	h1 { font-size: 16px; }
+	h2, .titletext { font-size: 15px; }
+	#cssmenu ul .has-sub > a:after { font-size: 11px; }
+	#CC table { font-size: 10pt; }
+	#CC .previous, #CC .next { font-size: 1.4em; }
 }
