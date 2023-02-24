@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-26 15:12+0100\n"
+"POT-Creation-Date: 2023-02-24 09:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: access/login.php:95 access/password_reset.php:61
+#: access/login.php:95 access/password_reset.php:61 admin/inst_module.php:160
 msgid "Version"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 
 #: access/login.php:170 access/password_reset.php:106
 #: admin/display_prefs.php:125 themes/canvas/renderer.php:184
-#: themes/default/renderer.php:136 themes/dropdown/renderer.php:210
+#: themes/default/renderer.php:136 themes/dropdown/renderer.php:211
 msgid "Theme:"
 msgstr ""
 
@@ -236,7 +236,7 @@ msgstr ""
 
 #: admin/attachments.php:216 admin/create_coy.php:272
 #: admin/crm_categories.php:110 admin/fiscalyears.php:166
-#: admin/inst_chart.php:90 admin/inst_lang.php:109 admin/inst_module.php:152
+#: admin/inst_chart.php:90 admin/inst_lang.php:109 admin/inst_module.php:135
 #: admin/inst_theme.php:87 admin/payment_terms.php:143 admin/printers.php:97
 #: admin/shipping_companies.php:107 admin/tags.php:141 admin/users.php:157
 #: fixed_assets/fixed_asset_classes.php:102 gl/gl_budget.php:136
@@ -821,8 +821,8 @@ msgstr ""
 
 #: admin/company_preferences.php:330 admin/display_prefs.php:162
 #: admin/gl_setup.php:309 admin/inst_chart.php:84 admin/inst_lang.php:103
-#: admin/inst_module.php:146 admin/inst_module.php:164
-#: admin/inst_module.php:207 admin/inst_theme.php:81
+#: admin/inst_module.php:129 admin/inst_module.php:147
+#: admin/inst_module.php:189 admin/inst_theme.php:81
 #: dimensions/dimension_entry.php:283 gl/gl_bank.php:415 gl/gl_budget.php:134
 #: gl/includes/ui/gl_bank_ui.inc:265 gl/includes/ui/gl_journal_ui.inc:276
 #: gl/manage/gl_quick_entries.php:60 includes/ui/attachment.inc:169
@@ -1027,7 +1027,7 @@ msgid "Database Collation:"
 msgstr ""
 
 #: admin/create_coy.php:337 admin/inst_chart.php:78 admin/inst_chart.php:80
-#: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:135
+#: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:118
 #: admin/inst_theme.php:76 admin/inst_theme.php:78
 #: gl/manage/gl_account_types.php:195 includes/ui/allocation_cart.inc:337
 #: inventory/manage/items.php:467
@@ -1101,7 +1101,7 @@ msgstr ""
 
 #: admin/dashboard.php:34 themes/canvas/renderer.php:148
 #: themes/default/renderer.php:70 themes/default/renderer.php:78
-#: themes/dropdown/renderer.php:128
+#: themes/dropdown/renderer.php:129
 msgid "Dashboard"
 msgstr ""
 
@@ -1713,12 +1713,12 @@ msgstr ""
 msgid "Chart"
 msgstr ""
 
-#: admin/inst_chart.php:62 admin/inst_lang.php:36 admin/inst_module.php:115
+#: admin/inst_chart.php:62 admin/inst_lang.php:36 admin/inst_module.php:103
 #: admin/inst_theme.php:55
 msgid "Installed"
 msgstr ""
 
-#: admin/inst_chart.php:62 admin/inst_lang.php:36 admin/inst_module.php:115
+#: admin/inst_chart.php:62 admin/inst_lang.php:36 admin/inst_module.php:103
 #: admin/inst_theme.php:55 inventory/inquiry/stock_status.php:75
 #: reporting/rep303.php:215
 msgid "Available"
@@ -1729,21 +1729,21 @@ msgid "Encoding"
 msgstr ""
 
 #: admin/inst_chart.php:79 admin/inst_chart.php:81 admin/inst_lang.php:88
-#: admin/inst_module.php:136 admin/inst_module.php:137 admin/inst_theme.php:77
+#: admin/inst_module.php:119 admin/inst_module.php:120 admin/inst_theme.php:77
 #: includes/sysnames.inc:209
 msgid "Unknown"
 msgstr ""
 
-#: admin/inst_chart.php:84 admin/inst_lang.php:103 admin/inst_module.php:141
-#: admin/inst_module.php:146 admin/inst_theme.php:81
+#: admin/inst_chart.php:84 admin/inst_lang.php:103 admin/inst_module.php:124
+#: admin/inst_module.php:129 admin/inst_theme.php:81
 msgid "Install"
 msgstr ""
 
-#: admin/inst_chart.php:85 admin/inst_module.php:147 admin/inst_theme.php:82
+#: admin/inst_chart.php:85 admin/inst_module.php:130 admin/inst_theme.php:82
 msgid "Upload and install latest extension package"
 msgstr ""
 
-#: admin/inst_chart.php:92 admin/inst_module.php:154 admin/inst_theme.php:89
+#: admin/inst_chart.php:92 admin/inst_module.php:137 admin/inst_theme.php:89
 #, php-format
 msgid ""
 "You are about to remove package \\'%s\\'.\n"
@@ -1847,54 +1847,50 @@ msgstr ""
 msgid "Selected extension has been successfully deleted"
 msgstr ""
 
-#: admin/inst_module.php:114 admin/inst_module.php:177
+#: admin/inst_module.php:103 admin/inst_module.php:160
 msgid "Extension"
 msgstr ""
 
-#: admin/inst_module.php:114 admin/inst_module.php:177
-msgid "Modules provided"
-msgstr ""
-
-#: admin/inst_module.php:114 admin/inst_module.php:177
-msgid "Options provided"
-msgstr ""
-
-#: admin/inst_module.php:141
+#: admin/inst_module.php:124
 msgid "Install third-party extension."
 msgstr ""
 
-#: admin/inst_module.php:177 fixed_assets/inquiry/stock_inquiry.php:114
+#: admin/inst_module.php:160
+msgid "Path"
+msgstr ""
+
+#: admin/inst_module.php:160 fixed_assets/inquiry/stock_inquiry.php:114
 #: includes/ui/ui_lists.inc:763 includes/ui/ui_lists.inc:2360
 #: reporting/includes/excel_report.inc:229
 #: reporting/includes/pdf_report.inc:266
 msgid "Active"
 msgstr ""
 
-#: admin/inst_module.php:227
+#: admin/inst_module.php:209
 #, php-format
 msgid ""
 "Package '%s' is incompatible with current application version and cannot be "
 "activated.\n"
 msgstr ""
 
-#: admin/inst_module.php:228
+#: admin/inst_module.php:210
 #, php-format
 msgid "Check Install/Activate page for newer package version."
 msgstr ""
 
-#: admin/inst_module.php:244
+#: admin/inst_module.php:226
 msgid "Status change for some extensions failed."
 msgstr ""
 
-#: admin/inst_module.php:247
+#: admin/inst_module.php:229
 msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: admin/inst_module.php:269
+#: admin/inst_module.php:251
 msgid "Extensions:"
 msgstr ""
 
-#: admin/inst_module.php:277
+#: admin/inst_module.php:259
 msgid "No optional extension module is currently available."
 msgstr ""
 
@@ -2638,7 +2634,7 @@ msgstr ""
 #: manufacturing/work_order_costs.php:147
 #: manufacturing/work_order_entry.php:429
 #: manufacturing/work_order_release.php:102 purchasing/po_entry_items.php:486
-#: purchasing/supplier_payment.php:350
+#: purchasing/supplier_payment.php:351
 #: purchasing/includes/ui/invoice_ui.inc:192
 #: purchasing/includes/ui/po_ui.inc:474 sales/customer_invoice.php:659
 #: sales/customer_payments.php:399
@@ -2685,7 +2681,7 @@ msgstr ""
 #: gl/manage/exchange_rates.php:33 gl/manage/revaluate_currencies.php:45
 #: manufacturing/work_order_add_finished.php:89
 #: manufacturing/work_order_costs.php:80 purchasing/po_receive_items.php:174
-#: purchasing/supplier_payment.php:192 sales/customer_credit_invoice.php:90
+#: purchasing/supplier_payment.php:193 sales/customer_credit_invoice.php:90
 #: sales/sales_order_entry.php:373 sales/manage/recurrent_invoices.php:60
 #: sales/manage/recurrent_invoices.php:66
 #: sales/manage/recurrent_invoices.php:71
@@ -2699,7 +2695,7 @@ msgstr ""
 #: manufacturing/work_order_costs.php:86 manufacturing/work_order_entry.php:151
 #: manufacturing/work_order_issue.php:82 purchasing/po_entry_items.php:351
 #: purchasing/po_receive_items.php:179 purchasing/supplier_credit.php:197
-#: purchasing/supplier_invoice.php:200 purchasing/supplier_payment.php:198
+#: purchasing/supplier_invoice.php:200 purchasing/supplier_payment.php:199
 #: sales/create_recurrent_invoices.php:92
 #: sales/create_recurrent_invoices.php:170 sales/credit_note_entry.php:175
 #: sales/customer_credit_invoice.php:94 sales/customer_delivery.php:164
@@ -3777,7 +3773,7 @@ msgstr ""
 #: manufacturing/work_order_entry.php:357
 #: manufacturing/work_order_entry.php:365
 #: manufacturing/includes/work_order_issue_ui.inc:161
-#: purchasing/supplier_payment.php:307
+#: purchasing/supplier_payment.php:308
 #: purchasing/includes/ui/invoice_ui.inc:117
 #: purchasing/includes/ui/po_ui.inc:156 purchasing/includes/ui/po_ui.inc:161
 #: sales/customer_payments.php:353
@@ -4153,8 +4149,8 @@ msgstr ""
 #: includes/sysnames.inc:43 includes/sysnames.inc:182
 #: inventory/manage/items.php:478 inventory/manage/items.php:480
 #: inventory/manage/item_categories.php:258
-#: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:331
-#: purchasing/supplier_payment.php:336
+#: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:332
+#: purchasing/supplier_payment.php:337
 #: purchasing/includes/ui/invoice_ui.inc:141
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
@@ -4406,7 +4402,7 @@ msgid "Amount:"
 msgstr ""
 
 #: gl/bank_transfer.php:137 gl/bank_transfer.php:144
-#: purchasing/supplier_payment.php:324 sales/customer_payments.php:368
+#: purchasing/supplier_payment.php:325 sales/customer_payments.php:368
 msgid "Bank Charge:"
 msgstr ""
 
@@ -4423,7 +4419,7 @@ msgid "Enter Transfer"
 msgstr ""
 
 #: gl/bank_transfer.php:187 gl/bank_transfer.php:242 gl/bank_transfer.php:266
-#: purchasing/supplier_payment.php:142 purchasing/supplier_payment.php:148
+#: purchasing/supplier_payment.php:143 purchasing/supplier_payment.php:149
 msgid "The entered amount is invalid or less than zero."
 msgstr ""
 
@@ -4459,7 +4455,7 @@ msgid ""
 "transaction: %s #%s on %s."
 msgstr ""
 
-#: gl/bank_transfer.php:247 purchasing/supplier_payment.php:156
+#: gl/bank_transfer.php:247 purchasing/supplier_payment.php:157
 #: sales/customer_payments.php:188
 msgid ""
 "The Bank Charge Account has not been set in System and General GL Setup."
@@ -4509,8 +4505,9 @@ msgstr ""
 #: gl/gl_bank.php:89 gl/gl_journal.php:64 inventory/adjustments.php:65
 #: manufacturing/work_order_entry.php:67 purchasing/po_entry_items.php:117
 #: purchasing/po_entry_items.php:138 purchasing/supplier_credit.php:86
-#: purchasing/supplier_invoice.php:74 sales/credit_note_entry.php:77
-#: sales/customer_credit_invoice.php:61 sales/customer_invoice.php:72
+#: purchasing/supplier_invoice.php:74 purchasing/supplier_payment.php:107
+#: sales/credit_note_entry.php:77 sales/customer_credit_invoice.php:61
+#: sales/customer_invoice.php:72 sales/customer_payments.php:117
 #: sales/sales_order_entry.php:250
 msgid "Add an Attachment"
 msgstr ""
@@ -4558,7 +4555,7 @@ msgstr ""
 msgid "You must enter at least one payment line."
 msgstr ""
 
-#: gl/gl_bank.php:241 purchasing/supplier_payment.php:207
+#: gl/gl_bank.php:241 purchasing/supplier_payment.php:208
 #, php-format
 msgid "The total bank amount exceeds allowed limit (%s)."
 msgstr ""
@@ -11033,8 +11030,8 @@ msgid ""
 msgstr ""
 
 #: purchasing/po_entry_items.php:338 purchasing/supplier_credit.php:171
-#: purchasing/supplier_invoice.php:175 purchasing/supplier_invoice.php:391
-#: purchasing/supplier_payment.php:130
+#: purchasing/supplier_invoice.php:175 purchasing/supplier_invoice.php:392
+#: purchasing/supplier_payment.php:131
 msgid "There is no supplier selected."
 msgstr ""
 
@@ -11341,11 +11338,11 @@ msgid ""
 "See the system administrator to modify the set up parameters if necessary."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:279 purchasing/supplier_invoice.php:292
+#: purchasing/supplier_invoice.php:279 purchasing/supplier_invoice.php:293
 msgid "The over-charge percentage allowance is :"
 msgstr ""
 
-#: purchasing/supplier_invoice.php:291
+#: purchasing/supplier_invoice.php:292
 msgid ""
 "The quantity being invoiced is more than the outstanding quantity by more "
 "than the allowed over-charge percentage. The system is set up to prohibit "
@@ -11353,12 +11350,12 @@ msgid ""
 "necessary."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:373
+#: purchasing/supplier_invoice.php:374
 #, php-format
 msgid "All yet non-invoiced items on delivery line # %d has been removed."
 msgstr ""
 
-#: purchasing/supplier_invoice.php:415
+#: purchasing/supplier_invoice.php:416
 msgid "Enter Invoice"
 msgstr ""
 
@@ -11402,7 +11399,7 @@ msgstr ""
 msgid "Enter direct &Invoice"
 msgstr ""
 
-#: purchasing/supplier_payment.php:103 sales/customer_payments.php:114
+#: purchasing/supplier_payment.php:103 sales/customer_payments.php:115
 msgid "Enter Other &Payment"
 msgstr ""
 
@@ -11410,53 +11407,53 @@ msgstr ""
 msgid "Enter &Customer Payment"
 msgstr ""
 
-#: purchasing/supplier_payment.php:105 sales/customer_payments.php:112
+#: purchasing/supplier_payment.php:105 sales/customer_payments.php:113
 msgid "Enter Other &Deposit"
 msgstr ""
 
-#: purchasing/supplier_payment.php:106 sales/customer_payments.php:115
+#: purchasing/supplier_payment.php:106 sales/customer_payments.php:116
 msgid "Bank Account &Transfer"
 msgstr ""
 
-#: purchasing/supplier_payment.php:169
+#: purchasing/supplier_payment.php:170
 msgid "The entered discount is invalid or less than zero."
 msgstr ""
 
-#: purchasing/supplier_payment.php:177
+#: purchasing/supplier_payment.php:178
 msgid ""
 "The total of the amount and the discount is zero or negative. Please enter "
 "positive values."
 msgstr ""
 
-#: purchasing/supplier_payment.php:184
+#: purchasing/supplier_payment.php:185
 msgid "The entered bank amount is zero or negative."
 msgstr ""
 
-#: purchasing/supplier_payment.php:274
+#: purchasing/supplier_payment.php:275
 msgid "Payment To:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:299
+#: purchasing/supplier_payment.php:300
 msgid "From Bank Account:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:305 purchasing/view/view_supp_payment.php:58
+#: purchasing/supplier_payment.php:306 purchasing/view/view_supp_payment.php:58
 msgid "Date Paid"
 msgstr ""
 
-#: purchasing/supplier_payment.php:321
+#: purchasing/supplier_payment.php:322
 msgid "Bank Amount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:348 sales/customer_payments.php:395
+#: purchasing/supplier_payment.php:349 sales/customer_payments.php:395
 msgid "Amount of Discount:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:349
+#: purchasing/supplier_payment.php:350
 msgid "Amount of Payment:"
 msgstr ""
 
-#: purchasing/supplier_payment.php:353
+#: purchasing/supplier_payment.php:354
 msgid "Enter Payment"
 msgstr ""
 
@@ -14447,16 +14444,16 @@ msgstr ""
 msgid "&View this Customer Payment"
 msgstr ""
 
-#: sales/customer_payments.php:111 sales/customer_payments.php:134
+#: sales/customer_payments.php:110 sales/customer_payments.php:128
+msgid "&View the GL Journal Entries for this Customer Payment"
+msgstr ""
+
+#: sales/customer_payments.php:112 sales/customer_payments.php:134
 msgid "Enter Another &Customer Payment"
 msgstr ""
 
-#: sales/customer_payments.php:113
+#: sales/customer_payments.php:114
 msgid "Enter Payment to &Supplier"
-msgstr ""
-
-#: sales/customer_payments.php:117 sales/customer_payments.php:128
-msgid "&View the GL Journal Entries for this Customer Payment"
 msgstr ""
 
 #: sales/customer_payments.php:124
