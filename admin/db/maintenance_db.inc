@@ -383,7 +383,7 @@ function db_import($filename, $connection, $force=true, $init=true, $protect=fal
 	// 'set names' or equivalents should be used only on post 2.3 FA versions
 	// otherwise text encoding can be broken during import
 	//
-	$encoding = null; // UI encoding for default site language is the default
+	$encoding = 'utf8'; // UI encoding for default site language is the default
 	$new_db = $init || db_fixed();
 	$new_file = count($set_names);
 	if ($new_db)
