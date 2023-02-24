@@ -1,3 +1,178 @@
+2023-02-24 09:42:00 +0100 Joe 
+Release 2.4.15
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
+2023-02-24 09:40:59 +0100 Joe 
+PHP 8.1 onwards db_set_charset needs second parameter not null. Fixed with defaykt utf8.
+M	admin/db/maintenance_db.inc
+
+2023-02-07 23:49:49 +0100 Joe 
+Rerun cleanup in attachments_db.inc
+M	admin/db/attachments_db.inc
+
+2023-02-07 23:40:58 +0100 Joe 
+Clean up in function get_attachment_string() in attachments_db.inc
+M	admin/db/attachments_db.inc
+
+2023-02-07 23:37:55 +0100 Joe 
+Bug. php 8. nl2br with null parameter in view_sales_order. Fixed.
+M	sales/view/view_sales_order.php
+
+2023-02-06 23:28:37 +0100 Joe 
+Moved years in default COAs one year forward.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2023-02-06 00:46:47 +0100 Joe 
+Fixed a bug in presenting a fixed asset attachment (should be the Supplier Invoice).
+M	fixed_assets/inquiry/stock_inquiry.php
+
+2023-02-05 16:03:18 +0100 Joe 
+Added Customer Payment Attachments and Supplier Payment Attachments after operation.
+M	purchasing/supplier_payment.php
+M	sales/customer_payments.php
+
+2023-01-28 13:47:49 +0100 Joe 
+Implemented automatic greater fonts when higher screen resolutions.
+M	themes/canvas/default.css
+M	themes/default/default.css
+M	themes/dropdown/default.css
+
+2023-01-26 23:27:20 +0100 Janusz Dobrowolski 
+Extensions: fixed gettext support for modules.
+M	includes/hooks.inc
+M	includes/ui/ui_input.inc
+
+2023-01-26 23:24:18 +0100 Janusz Dobrowolski 
+Install/Activate Extensions: displays more sensible information for modules available/installed.
+M	admin/inst_module.php
+
+2023-01-24 11:00:47 +0100 Joe 
+Function add_access_extension was missing. Fixed.
+M	themes/dropdown/renderer.php
+
+2023-01-22 17:06:17 +0100 Joe 
+Cannot add received items to invoice if there are empty prev. items. Fixed.
+M	purchasing/supplier_invoice.php
+
+2023-01-17 12:54:17 +0100 Joe 
+GL Account in Company Defaults missing for test. Fixed
+M	gl/includes/db/gl_db_accounts.inc
+
+2023-01-16 23:21:56 +0100 Joe 
+Audit trail is showing double entries for Payment and Deposit. Fixed.
+M	purchasing/includes/db/supp_trans_db.inc
+M	sales/includes/db/cust_trans_db.inc
+
+2023-01-05 15:15:47 +0100 Joe 
+Credit note bug in suppliers. Result in errors. Fixed.
+M	purchasing/includes/db/invoice_db.inc
+
+2023-01-03 16:15:06 +0100 Joe 
+Added 'company_logo_on_views' in sys_prefs in the default sql charts.
+M	sql/en_US-demo.sql
+M	sql/en_US-new.sql
+
+2022-12-26 15:17:01 +0100 Joe 
+Added company switch for placing company logo on certain views.
+M	admin/company_preferences.php
+M	gl/view/bank_transfer_view.php
+M	gl/view/gl_deposit_view.php
+M	gl/view/gl_payment_view.php
+M	gl/view/gl_trans_view.php
+M	includes/ui/ui_view.inc
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	purchasing/view/view_po.php
+M	purchasing/view/view_supp_invoice.php
+M	purchasing/view/view_supp_payment.php
+M	sales/view/view_invoice.php
+M	sales/view/view_receipt.php
+
+2022-12-25 10:55:18 +0100 Joe 
+Reconcile Bank Account added filter up to reconcile data.
+M	gl/includes/db/gl_db_bank_accounts.inc
+
+2022-12-23 09:38:00 +0100 Joe 
+Inventory valuation report. 301 unit decimal -1 issue. Fixed.
+M	reporting/rep301.php
+
+2022-12-10 00:36:10 +0100 Joe 
+Added 'Journal Entries' to empty.po file.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2022-12-08 10:08:06 +0100 Joe 
+Customer Transactions, Allocations and Supplier Transactions, Allocations has got another selection type, Journal Entries.
+M	includes/ui/ui_lists.inc
+M	purchasing/includes/db/supp_trans_db.inc
+M	purchasing/includes/db/suppalloc_db.inc
+M	sales/includes/db/cust_trans_db.inc
+M	sales/includes/db/custalloc_db.inc
+
+2022-12-05 10:30:05 +0100 Joe 
+When booking costs on workorders the set dimension on the item wasn't booked on the balance account. Fixed.
+M	manufacturing/includes/db/work_order_costing_db.inc
+
+2022-11-20 21:18:22 +0100 Joe 
+Bug in purchasing/includes/db/invoice_db.inc gives error. Fixed.
+M	purchasing/includes/db/invoice_db.inc
+
+2022-11-17 23:56:48 +0100 Joe 
+Not translatable string in rep108. Changed text in display_notation.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	reporting/rep108.php
+
+2022-11-12 14:04:03 +0100 Joe 
+Another rerun. Not translatable string in rep108. Fixed and improved. New empty.po.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	reporting/rep108.php
+
+2022-11-11 16:30:39 +0100 Joe 
+Rerun. Not translatable string in rep108. Fixed.
+M	reporting/rep108.php
+
+2022-11-11 16:24:24 +0100 Joe 
+Not translatable string in rep108. Fixed.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	reporting/rep108.php
+
+2022-11-03 17:07:42 +0100 Joe 
+Secon Rerun of voiding Customer Payment. Of course test for type first.
+M	admin/db/voiding_db.inc
+
+2022-11-03 08:54:40 +0100 Joe 
+Cost Update - Second parameter in memo was not showing decimals. Fixed.
+M	inventory/includes/db/items_trans_db.inc
+
+2022-11-02 13:20:38 +0100 Joe 
+Rerun of Can't void Customer Payment.
+M	admin/db/voiding_db.inc
+
+2022-11-02 10:20:31 +0100 Joe 
+Can't void customer payment if there is an invoice with same number that has been credited. Fixed
+M	admin/db/voiding_db.inc
+
+2022-11-01 20:53:40 +0100 Joe 
+Bug 5660: php8. Unable to create customer credit note. Fixed.
+M	sales/includes/ui/sales_credit_ui.inc
+
+2022-11-01 20:25:55 +0100 Joe 
+Bug. Dimensions on credit note should also be set on balance accounts. Fixed.
+M	sales/includes/db/sales_credit_db.inc
+
+2022-11-01 20:10:00 +0100 Joe 
+Bug. Dimensions in cost update should also be set on balance accounts. Fixed.
+M	inventory/includes/db/items_trans_db.inc
+
+2022-11-01 17:50:45 +0100 Joe 
+Bug. GL Dimensions should also be included on balance accounts in sales order delivery and Inventory adjustments. Fixed.
+M	inventory/includes/db/items_adjust_db.inc
+M	sales/includes/db/sales_delivery_db.inc
+
+2022-10-26 09:29:07 +0200 Joe 
+CHANGELOG.txt
+M	CHANGELOG.txt
+
 2022-10-26 09:26:01 +0200 Joe 
 Release 2.4.14
 M	README.md
@@ -3645,7 +3820,7 @@ R100	themes/cool/images/sort_asc.gif	themes/canvas/images/sort_asc.gif
 A	themes/canvas/images/sort_asc2.gif
 R100	themes/cool/images/sort_desc.gif	themes/canvas/images/sort_desc.gif
 A	themes/canvas/images/sort_desc2.gif
-R078	themes/cool/images/right.gif	themes/canvas/images/sort_none.gif
+R078	themes/aqua/images/right.gif	themes/canvas/images/sort_none.gif
 A	themes/canvas/images/spacer.png
 R100	themes/aqua/images/view.gif	themes/canvas/images/view.gif
 A	themes/canvas/images/warning.png
@@ -3660,7 +3835,6 @@ D	themes/cool/images/closed.png
 D	themes/cool/images/download.gif
 D	themes/cool/images/locate.png
 D	themes/cool/images/log.png
-D	themes/cool/images/login.gif
 D	themes/cool/images/menu_entry.png
 D	themes/cool/images/menu_inquiry.png
 D	themes/cool/images/menu_maintenance.png
@@ -3681,7 +3855,7 @@ A	themes/dropdown/images/ajax-loader2.gif
 A	themes/dropdown/images/arrow_12.gif
 A	themes/dropdown/images/basket.png
 A	themes/dropdown/images/body_bg.png
-R078	themes/aqua/images/right.gif	themes/dropdown/images/breadcrumb.gif
+R078	themes/cool/images/right.gif	themes/dropdown/images/breadcrumb.gif
 A	themes/dropdown/images/button_ok.png
 A	themes/dropdown/images/cal.gif
 R100	themes/cool/images/cancel.png	themes/dropdown/images/cancel.png
@@ -3718,7 +3892,7 @@ A	themes/dropdown/images/progressbar.gif
 R100	themes/cool/images/receive.gif	themes/dropdown/images/receive.gif
 R100	themes/cool/images/remove.png	themes/dropdown/images/remove.png
 R100	themes/cool/images/report.png	themes/dropdown/images/report.png
-A	themes/dropdown/images/sort_asc.gif
+R068	themes/cool/images/login.gif	themes/dropdown/images/sort_asc.gif
 A	themes/dropdown/images/sort_asc2.gif
 A	themes/dropdown/images/sort_desc.gif
 A	themes/dropdown/images/sort_desc2.gif
