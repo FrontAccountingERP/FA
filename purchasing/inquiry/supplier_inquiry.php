@@ -156,7 +156,7 @@ div_start('totals_tbl');
 
 if ($_POST['supplier_id'] != "" && $_POST['supplier_id'] != ALL_TEXT)
 {
-	$supplier_record = get_supplier_details(get_post('supplier_id'), get_post('TransToDate'));
+	$supplier_record = get_supplier_details(get_post('supplier_id'), get_post('TransToDate'), false);
     display_supplier_summary($supplier_record);
 }
 div_end();
