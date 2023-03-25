@@ -251,6 +251,9 @@ class simple_crud {
 				$name = $fmt;
 				$fmt = array();
 			}
+			if is_string($fmt) {
+			    $fmt = array('fmt' => $fmt)
+			}
 			$post = isset($fmt['post']) ? $fmt['post'] : $name;
 			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;
 
@@ -269,6 +272,9 @@ class simple_crud {
 			if (is_int($name)) {
 				$name = $fmt;
 				$fmt = array();
+			}
+			if is_string($fmt) {
+			    $fmt = array('fmt' => $fmt)
 			}
 			$post = isset($fmt['post']) ? $fmt['post'] : $name;
 			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;
