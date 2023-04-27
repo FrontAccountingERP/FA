@@ -50,7 +50,6 @@ $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("
 table_header($th);
 $total = $k = 0;
 $overdue_items = false;
-
 foreach ($purchase_order->line_items as $stock_item)
 {
 
