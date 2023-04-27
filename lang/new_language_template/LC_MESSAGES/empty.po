@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 10:14+0200\n"
+"POT-Creation-Date: 2023-04-27 17:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -288,8 +288,8 @@ msgstr ""
 #: purchasing/inquiry/po_search.php:117
 #: purchasing/inquiry/po_search_completed.php:119
 #: purchasing/inquiry/supplier_allocation_inquiry.php:137
-#: purchasing/inquiry/supplier_inquiry.php:175 purchasing/view/view_po.php:118
-#: purchasing/view/view_po.php:143 reporting/rep101.php:137
+#: purchasing/inquiry/supplier_inquiry.php:175 purchasing/view/view_po.php:117
+#: purchasing/view/view_po.php:142 reporting/rep101.php:137
 #: reporting/rep201.php:115 reporting/rep203.php:88 reporting/rep306.php:138
 #: reporting/rep310.php:139 reporting/rep601.php:80 reporting/rep602.php:81
 #: reporting/rep704.php:79 reporting/rep704.php:87 reporting/rep704.php:95
@@ -839,7 +839,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:188
 #: purchasing/includes/ui/po_ui.inc:287 purchasing/includes/ui/po_ui.inc:445
 #: sales/credit_note_entry.php:302 sales/customer_credit_invoice.php:376
-#: sales/customer_delivery.php:531 sales/customer_invoice.php:663
+#: sales/customer_delivery.php:529 sales/customer_invoice.php:663
 #: sales/includes/ui/sales_credit_ui.inc:288
 #: sales/includes/ui/sales_order_ui.inc:231
 #: sales/includes/ui/sales_order_ui.inc:554
@@ -1502,14 +1502,14 @@ msgstr ""
 #: purchasing/includes/ui/po_ui.inc:302 purchasing/inquiry/po_search.php:118
 #: purchasing/inquiry/po_search_completed.php:120
 #: purchasing/inquiry/supplier_allocation_inquiry.php:138
-#: purchasing/inquiry/supplier_inquiry.php:176 purchasing/view/view_po.php:118
+#: purchasing/inquiry/supplier_inquiry.php:176 purchasing/view/view_po.php:117
 #: purchasing/view/view_supp_credit.php:43
 #: purchasing/view/view_supp_invoice.php:50
 #: purchasing/view/view_supp_payment.php:76 reporting/rep501.php:87
 #: reporting/rep601.php:80 reporting/rep602.php:81 reporting/rep702.php:53
 #: reporting/includes/doctext.inc:222 sales/customer_credit_invoice.php:241
-#: sales/customer_credit_invoice.php:246 sales/customer_delivery.php:337
-#: sales/customer_delivery.php:342 sales/customer_invoice.php:446
+#: sales/customer_credit_invoice.php:246 sales/customer_delivery.php:335
+#: sales/customer_delivery.php:340 sales/customer_invoice.php:446
 #: sales/customer_invoice.php:451
 #: sales/allocations/customer_allocation_main.php:94
 #: sales/includes/ui/sales_credit_ui.inc:81
@@ -2283,7 +2283,7 @@ msgid "Cancel Edition"
 msgstr ""
 
 #: admin/shipping_companies.php:15 sales/customer_credit_invoice.php:253
-#: sales/customer_delivery.php:360 sales/customer_invoice.php:471
+#: sales/customer_delivery.php:358 sales/customer_invoice.php:471
 #: sales/view/view_credit.php:74 sales/view/view_dispatch.php:92
 #: sales/view/view_invoice.php:95
 msgid "Shipping Company"
@@ -2571,7 +2571,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:115
 #: purchasing/includes/ui/po_ui.inc:316
 #: purchasing/inquiry/supplier_allocation_inquiry.php:141
-#: purchasing/inquiry/supplier_inquiry.php:179 purchasing/view/view_po.php:143
+#: purchasing/inquiry/supplier_inquiry.php:179 purchasing/view/view_po.php:142
 #: reporting/rep101.php:137 reporting/rep107.php:226 reporting/rep201.php:115
 #: reporting/rep306.php:138 reporting/rep310.php:139 reporting/rep402.php:136
 #: reporting/rep402.php:141 reporting/rep501.php:87 reporting/rep601.php:80
@@ -2579,7 +2579,7 @@ msgstr ""
 #: reporting/rep704.php:95 reporting/rep709.php:117 reporting/rep710.php:77
 #: reporting/includes/doctext.inc:166 reporting/includes/doctext.inc:209
 #: reporting/includes/doctext.inc:247 reporting/includes/header2.inc:135
-#: sales/customer_delivery.php:370 sales/customer_invoice.php:486
+#: sales/customer_delivery.php:368 sales/customer_invoice.php:486
 #: sales/allocations/customer_allocation_main.php:95
 #: sales/inquiry/customer_allocation_inquiry.php:151
 #: sales/inquiry/customer_inquiry.php:203 sales/view/view_credit.php:69
@@ -4171,7 +4171,7 @@ msgstr ""
 #: reporting/reports_main.php:441 reporting/reports_main.php:453
 #: reporting/reports_main.php:459 reporting/reports_main.php:468
 #: reporting/reports_main.php:479 reporting/reports_main.php:491
-#: sales/customer_delivery.php:387 sales/customer_delivery.php:395
+#: sales/customer_delivery.php:385 sales/customer_delivery.php:393
 #: sales/customer_invoice.php:458 sales/customer_invoice.php:495
 #: sales/customer_payments.php:375 sales/customer_payments.php:380
 #: sales/includes/ui/sales_credit_ui.inc:128
@@ -4203,7 +4203,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282 reporting/rep402.php:141
-#: sales/customer_credit_invoice.php:359 sales/customer_delivery.php:527
+#: sales/customer_credit_invoice.php:359 sales/customer_delivery.php:525
 #: sales/includes/ui/sales_credit_ui.inc:334
 msgid "Memo"
 msgstr ""
@@ -4264,7 +4264,7 @@ msgstr ""
 #: purchasing/view/view_supp_payment.php:75 reporting/rep102.php:234
 #: reporting/rep107.php:228 reporting/rep107.php:293 reporting/rep109.php:181
 #: reporting/rep110.php:194 reporting/rep111.php:196 reporting/rep113.php:183
-#: reporting/rep202.php:253 reporting/rep209.php:196 reporting/rep706.php:314
+#: reporting/rep202.php:253 reporting/rep209.php:197 reporting/rep706.php:314
 #: reporting/rep707.php:330 reporting/rep710.php:78
 #: sales/inquiry/customer_inquiry.php:208 sales/view/view_receipt.php:47
 msgid "Amount"
@@ -4659,7 +4659,7 @@ msgstr ""
 #: purchasing/allocations/supplier_allocation_main.php:100
 #: purchasing/includes/ui/invoice_ui.inc:342
 #: purchasing/includes/ui/invoice_ui.inc:504
-#: purchasing/includes/ui/invoice_ui.inc:575 purchasing/view/view_po.php:143
+#: purchasing/includes/ui/invoice_ui.inc:575 purchasing/view/view_po.php:142
 #: reporting/rep101.php:262 reporting/rep106.php:91 reporting/rep106.php:126
 #: reporting/rep106.php:173 reporting/rep114.php:161 reporting/rep201.php:230
 #: reporting/rep203.php:89 reporting/rep203.php:166 reporting/rep204.php:113
@@ -4674,7 +4674,7 @@ msgstr ""
 #: reporting/rep706.php:257 reporting/rep706.php:292 reporting/rep707.php:114
 #: reporting/rep707.php:300 reporting/rep708.php:253 reporting/rep710.php:126
 #: reporting/includes/doctext.inc:32 reporting/includes/doctext.inc:191
-#: sales/customer_credit_invoice.php:276 sales/customer_delivery.php:425
+#: sales/customer_credit_invoice.php:276 sales/customer_delivery.php:423
 #: sales/customer_invoice.php:520 sales/customer_invoice.php:523
 #: sales/allocations/customer_allocation_main.php:98
 #: sales/includes/ui/sales_credit_ui.inc:163
@@ -5439,7 +5439,7 @@ msgstr ""
 #: reporting/rep104.php:114 reporting/rep115.php:173 reporting/rep201.php:125
 #: reporting/rep202.php:137 reporting/rep203.php:96 reporting/rep205.php:141
 #: reporting/rep206.php:123 sales/customer_credit_invoice.php:236
-#: sales/customer_delivery.php:332 sales/customer_invoice.php:456
+#: sales/customer_delivery.php:330 sales/customer_invoice.php:456
 #: sales/allocations/customer_allocation_main.php:97
 #: sales/allocations/customer_allocation_main.php:105
 #: sales/inquiry/customer_allocation_inquiry.php:154
@@ -6033,7 +6033,7 @@ msgstr ""
 msgid "Posted"
 msgstr ""
 
-#: gl/manage/gl_quick_entries.php:338 sales/customer_delivery.php:425
+#: gl/manage/gl_quick_entries.php:338 sales/customer_delivery.php:423
 #: sales/customer_invoice.php:520 sales/customer_invoice.php:523
 msgid "Tax Type"
 msgstr ""
@@ -6905,7 +6905,7 @@ msgstr ""
 #: reporting/reports_main.php:47 reporting/reports_main.php:59
 #: reporting/reports_main.php:115 reporting/reports_main.php:134
 #: reporting/reports_main.php:260 sales/create_recurrent_invoices.php:209
-#: sales/customer_credit_invoice.php:234 sales/customer_delivery.php:330
+#: sales/customer_credit_invoice.php:234 sales/customer_delivery.php:328
 #: sales/customer_invoice.php:432
 #: sales/allocations/customer_allocation_main.php:96
 #: sales/allocations/customer_allocation_main.php:104
@@ -7237,7 +7237,7 @@ msgstr ""
 #: includes/dashboard.inc:1011 includes/dashboard.inc:1051
 #: reporting/rep105.php:110 reporting/rep106.php:90 reporting/rep112.php:189
 #: sales/create_recurrent_invoices.php:209
-#: sales/customer_credit_invoice.php:235 sales/customer_delivery.php:331
+#: sales/customer_credit_invoice.php:235 sales/customer_delivery.php:329
 #: sales/customer_invoice.php:433 sales/inquiry/customer_branches_list.php:37
 #: sales/inquiry/customer_branches_list.php:49
 #: sales/inquiry/customer_inquiry.php:206
@@ -7273,7 +7273,7 @@ msgstr ""
 
 #: includes/dashboard.inc:1124
 #: purchasing/inquiry/supplier_allocation_inquiry.php:158
-#: purchasing/inquiry/supplier_inquiry.php:200 purchasing/view/view_po.php:103
+#: purchasing/inquiry/supplier_inquiry.php:200 purchasing/view/view_po.php:102
 #: sales/inquiry/customer_allocation_inquiry.php:168
 #: sales/inquiry/customer_inquiry.php:225
 #: sales/inquiry/sales_deliveries_view.php:196
@@ -7336,7 +7336,7 @@ msgid "The entered reference is invalid."
 msgstr ""
 
 #: includes/data_checks.inc:674 sales/credit_note_entry.php:199
-#: sales/customer_credit_invoice.php:204 sales/customer_delivery.php:302
+#: sales/customer_credit_invoice.php:204 sales/customer_delivery.php:300
 #: sales/customer_invoice.php:365 sales/sales_order_entry.php:484
 msgid "The entered reference is already in use."
 msgstr ""
@@ -8853,14 +8853,14 @@ msgstr ""
 
 #: includes/ui/ui_view.inc:448 reporting/rep107.php:284
 #: reporting/rep109.php:172 reporting/rep110.php:185 reporting/rep111.php:187
-#: reporting/rep113.php:174 reporting/rep209.php:187
+#: reporting/rep113.php:174 reporting/rep209.php:188
 msgid "Total Tax Excluded"
 msgstr ""
 
 #: includes/ui/ui_view.inc:454 includes/ui/ui_view.inc:473
 #: includes/ui/ui_view.inc:497 includes/ui/ui_view.inc:514
 #: reporting/rep107.php:293 reporting/rep109.php:181 reporting/rep110.php:194
-#: reporting/rep111.php:196 reporting/rep113.php:183 reporting/rep209.php:196
+#: reporting/rep111.php:196 reporting/rep113.php:183 reporting/rep209.php:197
 msgid "Included"
 msgstr ""
 
@@ -9154,21 +9154,22 @@ msgid "The selected price has been deleted."
 msgstr ""
 
 #: inventory/prices.php:151 reporting/rep104.php:116
-#: sales/customer_delivery.php:347 sales/customer_invoice.php:454
+#: sales/customer_delivery.php:345 sales/customer_invoice.php:454
 #: sales/includes/ui/sales_credit_ui.inc:98 sales/view/view_credit.php:73
 #: sales/view/view_dispatch.php:93 sales/view/view_invoice.php:96
 msgid "Sales Type"
 msgstr ""
 
 #: inventory/prices.php:151 inventory/purchasing_data.php:151
-#: purchasing/po_receive_items.php:66 purchasing/includes/ui/invoice_ui.inc:514
-#: purchasing/view/view_grn.php:41 purchasing/view/view_po.php:48
-#: reporting/rep104.php:109 reporting/includes/doctext.inc:32
-#: reporting/includes/doctext.inc:191 sales/customer_credit_invoice.php:276
-#: sales/customer_delivery.php:425 sales/customer_invoice.php:520
-#: sales/customer_invoice.php:523 sales/includes/ui/sales_credit_ui.inc:163
-#: sales/view/view_credit.php:91 sales/view/view_dispatch.php:113
-#: sales/view/view_invoice.php:119 sales/view/view_sales_order.php:222
+#: inventory/purchasing_data.php:215 purchasing/po_receive_items.php:66
+#: purchasing/includes/ui/invoice_ui.inc:514 purchasing/view/view_grn.php:41
+#: purchasing/view/view_po.php:48 reporting/rep104.php:109
+#: reporting/includes/doctext.inc:32 reporting/includes/doctext.inc:191
+#: sales/customer_credit_invoice.php:276 sales/customer_delivery.php:423
+#: sales/customer_invoice.php:520 sales/customer_invoice.php:523
+#: sales/includes/ui/sales_credit_ui.inc:163 sales/view/view_credit.php:91
+#: sales/view/view_dispatch.php:113 sales/view/view_invoice.php:119
+#: sales/view/view_sales_order.php:222
 msgid "Price"
 msgstr ""
 
@@ -9180,7 +9181,7 @@ msgstr ""
 msgid "Sales Type:"
 msgstr ""
 
-#: inventory/prices.php:204 inventory/purchasing_data.php:214
+#: inventory/prices.php:204
 msgid "Price:"
 msgstr ""
 
@@ -9257,15 +9258,15 @@ msgstr ""
 msgid "Supplier's Description"
 msgstr ""
 
-#: inventory/purchasing_data.php:215
+#: inventory/purchasing_data.php:218
 msgid "Suppliers Unit of Measure:"
 msgstr ""
 
-#: inventory/purchasing_data.php:221
+#: inventory/purchasing_data.php:224
 msgid "Conversion Factor (to our UOM):"
 msgstr ""
 
-#: inventory/purchasing_data.php:222
+#: inventory/purchasing_data.php:225
 msgid "Supplier's Code or Description:"
 msgstr ""
 
@@ -9371,7 +9372,7 @@ msgstr ""
 #: purchasing/view/view_grn.php:40 purchasing/view/view_po.php:48
 #: reporting/includes/doctext.inc:31 reporting/includes/doctext.inc:190
 #: reporting/includes/doctext.inc:229 sales/customer_credit_invoice.php:275
-#: sales/customer_delivery.php:423 sales/customer_invoice.php:519
+#: sales/customer_delivery.php:421 sales/customer_invoice.php:519
 #: sales/customer_invoice.php:522 sales/includes/ui/sales_credit_ui.inc:162
 #: sales/includes/ui/sales_order_ui.inc:146 sales/view/view_credit.php:90
 #: sales/view/view_dispatch.php:112 sales/view/view_invoice.php:118
@@ -9386,7 +9387,7 @@ msgstr ""
 #: purchasing/includes/ui/po_ui.inc:216 purchasing/view/view_grn.php:40
 #: purchasing/view/view_po.php:48 reporting/includes/doctext.inc:31
 #: reporting/includes/doctext.inc:190 reporting/includes/doctext.inc:229
-#: sales/customer_credit_invoice.php:275 sales/customer_delivery.php:423
+#: sales/customer_credit_invoice.php:275 sales/customer_delivery.php:421
 #: sales/customer_invoice.php:519 sales/customer_invoice.php:522
 #: sales/includes/ui/sales_credit_ui.inc:162
 #: sales/includes/ui/sales_order_ui.inc:146 sales/view/view_credit.php:90
@@ -9798,7 +9799,7 @@ msgstr ""
 #: inventory/manage/sales_kits.php:36 inventory/view/view_adjustment.php:55
 #: inventory/view/view_transfer.php:50 manufacturing/manage/bom_edit.php:44
 #: manufacturing/view/wo_issue_view.php:76 purchasing/po_receive_items.php:65
-#: sales/customer_credit_invoice.php:275 sales/customer_delivery.php:424
+#: sales/customer_credit_invoice.php:275 sales/customer_delivery.php:422
 #: sales/customer_invoice.php:519 sales/customer_invoice.php:522
 msgid "Units"
 msgstr ""
@@ -10634,7 +10635,7 @@ msgid "Issue Items to Work order"
 msgstr ""
 
 #: manufacturing/includes/db/work_orders_db.inc:95
-#: purchasing/includes/db/po_db.inc:154 sales/includes/db/cust_trans_db.inc:115
+#: purchasing/includes/db/po_db.inc:166 sales/includes/db/cust_trans_db.inc:115
 #: sales/includes/db/sales_order_db.inc:213
 msgid "Updated."
 msgstr ""
@@ -11151,7 +11152,7 @@ msgid ""
 msgstr ""
 
 #: purchasing/po_receive_items.php:65 reporting/rep105.php:115
-#: sales/customer_delivery.php:424
+#: sales/customer_delivery.php:422
 msgid "Ordered"
 msgstr ""
 
@@ -11165,14 +11166,14 @@ msgstr ""
 msgid "Outstanding"
 msgstr ""
 
-#: purchasing/po_receive_items.php:66 sales/customer_delivery.php:425
+#: purchasing/po_receive_items.php:66 sales/customer_delivery.php:423
 msgid "This Delivery"
 msgstr ""
 
 #: purchasing/po_receive_items.php:117 purchasing/includes/ui/po_ui.inc:276
 #: reporting/rep107.php:255 reporting/rep109.php:138 reporting/rep110.php:156
-#: reporting/rep111.php:153 reporting/rep113.php:145 reporting/rep209.php:166
-#: sales/customer_credit_invoice.php:317 sales/customer_delivery.php:509
+#: reporting/rep111.php:153 reporting/rep113.php:145 reporting/rep209.php:167
+#: sales/customer_credit_invoice.php:317 sales/customer_delivery.php:507
 #: sales/customer_invoice.php:626 sales/includes/ui/sales_credit_ui.inc:212
 #: sales/includes/ui/sales_order_ui.inc:223 sales/view/view_dispatch.php:146
 #: sales/view/view_invoice.php:153
@@ -11180,8 +11181,8 @@ msgid "Sub-total"
 msgstr ""
 
 #: purchasing/po_receive_items.php:125 purchasing/includes/ui/po_ui.inc:285
-#: purchasing/view/view_grn.php:89 purchasing/view/view_po.php:96
-#: sales/customer_delivery.php:516 sales/includes/ui/sales_order_ui.inc:230
+#: purchasing/view/view_grn.php:89 purchasing/view/view_po.php:95
+#: sales/customer_delivery.php:514 sales/includes/ui/sales_order_ui.inc:230
 #: sales/view/view_sales_order.php:265
 msgid "Amount Total"
 msgstr ""
@@ -12140,7 +12141,7 @@ msgstr ""
 msgid "Required by"
 msgstr ""
 
-#: purchasing/view/view_grn.php:80 purchasing/view/view_po.php:87
+#: purchasing/view/view_grn.php:80 purchasing/view/view_po.php:86
 #: purchasing/view/view_supp_credit.php:60
 #: purchasing/view/view_supp_invoice.php:69 sales/view/view_credit.php:135
 #: sales/view/view_sales_order.php:255
@@ -12167,16 +12168,16 @@ msgstr ""
 msgid "Requested By"
 msgstr ""
 
-#: purchasing/view/view_po.php:116 sales/view/view_invoice.php:101
+#: purchasing/view/view_po.php:115 sales/view/view_invoice.php:101
 #: sales/view/view_sales_order.php:51
 msgid "Deliveries"
 msgstr ""
 
-#: purchasing/view/view_po.php:118
+#: purchasing/view/view_po.php:117
 msgid "Delivered On"
 msgstr ""
 
-#: purchasing/view/view_po.php:141 sales/view/view_sales_order.php:53
+#: purchasing/view/view_po.php:140 sales/view/view_sales_order.php:53
 msgid "Invoices/Credits"
 msgstr ""
 
@@ -12236,7 +12237,7 @@ msgid "Payment Currency"
 msgstr ""
 
 #: purchasing/view/view_supp_payment.php:65 reporting/rep112.php:164
-#: reporting/rep210.php:164 sales/customer_delivery.php:425
+#: reporting/rep210.php:164 sales/customer_delivery.php:423
 #: sales/customer_invoice.php:520 sales/customer_invoice.php:523
 #: sales/view/view_receipt.php:48 sales/view/view_sales_order.php:222
 msgid "Discount"
@@ -12461,7 +12462,7 @@ msgstr ""
 msgid "Loc"
 msgstr ""
 
-#: reporting/rep105.php:115 sales/customer_delivery.php:424
+#: reporting/rep105.php:115 sales/customer_delivery.php:422
 #: sales/customer_invoice.php:522 sales/includes/ui/sales_order_ui.inc:147
 msgid "Delivered"
 msgstr ""
@@ -12729,7 +12730,7 @@ msgstr ""
 msgid "PURCHASE ORDER"
 msgstr ""
 
-#: reporting/rep209.php:210
+#: reporting/rep209.php:211
 msgid "TOTAL PO"
 msgstr ""
 
@@ -12744,6 +12745,10 @@ msgstr ""
 
 #: reporting/rep301.php:178
 msgid "Inventory Valuation Report"
+msgstr ""
+
+#: reporting/rep302.php:121
+msgid "3*M"
 msgstr ""
 
 #: reporting/rep302.php:122
@@ -14206,19 +14211,19 @@ msgid ""
 "items marked."
 msgstr ""
 
-#: sales/customer_delivery.php:345
+#: sales/customer_delivery.php:343
 msgid "For Sales Order"
 msgstr ""
 
-#: sales/customer_delivery.php:354
+#: sales/customer_delivery.php:352
 msgid "Delivery From"
 msgstr ""
 
-#: sales/customer_delivery.php:403
+#: sales/customer_delivery.php:401
 msgid "Invoice Dead-line"
 msgstr ""
 
-#: sales/customer_delivery.php:413 sales/customer_invoice.php:507
+#: sales/customer_delivery.php:411 sales/customer_invoice.php:507
 #: sales/includes/ui/sales_order_ui.inc:83
 #: sales/includes/ui/sales_order_ui.inc:357
 msgid ""
@@ -14226,49 +14231,49 @@ msgid ""
 "credit control personnel to discuss."
 msgstr ""
 
-#: sales/customer_delivery.php:418
+#: sales/customer_delivery.php:416
 msgid "Delivery Items"
 msgstr ""
 
-#: sales/customer_delivery.php:424
+#: sales/customer_delivery.php:422
 msgid "Max. delivery"
 msgstr ""
 
-#: sales/customer_delivery.php:424 sales/customer_invoice.php:522
+#: sales/customer_delivery.php:422 sales/customer_invoice.php:522
 msgid "Invoiced"
 msgstr ""
 
-#: sales/customer_delivery.php:501 sales/customer_invoice.php:612
+#: sales/customer_delivery.php:499 sales/customer_invoice.php:612
 msgid "Shipping Cost"
 msgstr ""
 
-#: sales/customer_delivery.php:521 sales/includes/ui/sales_order_ui.inc:236
+#: sales/customer_delivery.php:519 sales/includes/ui/sales_order_ui.inc:236
 msgid ""
 "Marked items have insufficient quantities in stock as on day of delivery."
 msgstr ""
 
-#: sales/customer_delivery.php:525
+#: sales/customer_delivery.php:523
 msgid "Action For Balance"
 msgstr ""
 
-#: sales/customer_delivery.php:532 sales/customer_delivery.php:534
-#: sales/customer_delivery.php:537 sales/customer_invoice.php:664
+#: sales/customer_delivery.php:530 sales/customer_delivery.php:532
+#: sales/customer_delivery.php:535 sales/customer_invoice.php:664
 msgid "Refresh document page"
 msgstr ""
 
-#: sales/customer_delivery.php:534
+#: sales/customer_delivery.php:532
 msgid "Reset quantity"
 msgstr ""
 
-#: sales/customer_delivery.php:537
+#: sales/customer_delivery.php:535
 msgid "Clear quantity"
 msgstr ""
 
-#: sales/customer_delivery.php:539
+#: sales/customer_delivery.php:537
 msgid "Process Dispatch"
 msgstr ""
 
-#: sales/customer_delivery.php:540 sales/customer_invoice.php:666
+#: sales/customer_delivery.php:538 sales/customer_invoice.php:666
 #: sales/sales_order_entry.php:762
 msgid "Check entered data and save document"
 msgstr ""
