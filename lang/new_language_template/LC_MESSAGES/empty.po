@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-27 17:41+0200\n"
+"POT-Creation-Date: 2023-04-30 14:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: access/login.php:116 access/login.php:122 access/password_reset.php:69
 #: access/password_reset.php:75 admin/create_coy.php:247
-#: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:210
+#: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:211
 msgid "Company"
 msgstr ""
 
@@ -121,11 +121,11 @@ msgstr ""
 msgid "Send password -->"
 msgstr ""
 
-#: admin/attachments.php:71
+#: admin/attachments.php:72
 msgid "Attach Documents"
 msgstr ""
 
-#: admin/attachments.php:85 admin/db/voiding_db.inc:28
+#: admin/attachments.php:88 admin/db/voiding_db.inc:28
 #: admin/db/voiding_db.inc:40 admin/db/voiding_db.inc:53
 #: admin/db/voiding_db.inc:68 admin/db/voiding_db.inc:74
 #: admin/db/voiding_db.inc:93 admin/db/voiding_db.inc:100
@@ -133,37 +133,37 @@ msgstr ""
 msgid "Selected transaction does not exists."
 msgstr ""
 
-#: admin/attachments.php:88
+#: admin/attachments.php:91
 msgid "Only graphics,pdf,doc and odt files are supported."
 msgstr ""
 
-#: admin/attachments.php:90 admin/attachments.php:95
+#: admin/attachments.php:93 admin/attachments.php:98
 msgid "Select attachment file."
 msgstr ""
 
-#: admin/attachments.php:93 admin/company_preferences.php:74
-#: inventory/manage/items.php:129
+#: admin/attachments.php:96 admin/company_preferences.php:74
+#: inventory/manage/items.php:130
 msgid "The file size is over the maximum allowed."
 msgstr ""
 
-#: admin/attachments.php:97
+#: admin/attachments.php:100
 msgid ""
 "File name exceeds maximum of 60 chars. Please change filename and try again."
 msgstr ""
 
-#: admin/attachments.php:136
+#: admin/attachments.php:139
 msgid "Attachment has been inserted."
 msgstr ""
 
-#: admin/attachments.php:142
+#: admin/attachments.php:145
 msgid "Attachment has been updated."
 msgstr ""
 
-#: admin/attachments.php:157
+#: admin/attachments.php:160
 msgid "Attachment has been deleted."
 msgstr ""
 
-#: admin/attachments.php:179 admin/view_print_transaction.php:72
+#: admin/attachments.php:182 admin/view_print_transaction.php:72
 #: gl/inquiry/journal_inquiry.php:47
 #: manufacturing/work_order_add_finished.php:191
 #: manufacturing/work_order_costs.php:136
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Type:"
 msgstr ""
 
-#: admin/attachments.php:184 sales/allocations/customer_allocation_main.php:32
+#: admin/attachments.php:187 sales/allocations/customer_allocation_main.php:32
 #: sales/inquiry/customer_allocation_inquiry.php:42
 #: sales/inquiry/customer_inquiry.php:159
 #: sales/inquiry/sales_deliveries_view.php:115
@@ -183,14 +183,18 @@ msgstr ""
 msgid "Select a customer: "
 msgstr ""
 
-#: admin/attachments.php:186 purchasing/inquiry/po_search.php:76
+#: admin/attachments.php:189 purchasing/inquiry/po_search.php:76
 #: purchasing/inquiry/po_search_completed.php:104
 #: purchasing/inquiry/supplier_allocation_inquiry.php:48
 #: purchasing/manage/suppliers.php:302
 msgid "Select a supplier: "
 msgstr ""
 
-#: admin/attachments.php:201 admin/create_coy.php:269
+#: admin/attachments.php:191
+msgid "Select an Item: "
+msgstr ""
+
+#: admin/attachments.php:208 admin/create_coy.php:269
 #: admin/crm_categories.php:106 admin/fiscalyears.php:164
 #: admin/inst_lang.php:100 admin/payment_terms.php:142 admin/printers.php:96
 #: admin/shipping_companies.php:106 admin/tags.php:140 admin/users.php:155
@@ -226,15 +230,15 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: admin/attachments.php:206 gl/inquiry/journal_inquiry.php:122
+#: admin/attachments.php:213 gl/inquiry/journal_inquiry.php:122
 msgid "View"
 msgstr ""
 
-#: admin/attachments.php:211 includes/ui/attachment.inc:96
+#: admin/attachments.php:218 includes/ui/attachment.inc:96
 msgid "Download"
 msgstr ""
 
-#: admin/attachments.php:216 admin/create_coy.php:272
+#: admin/attachments.php:223 admin/create_coy.php:272
 #: admin/crm_categories.php:110 admin/fiscalyears.php:166
 #: admin/inst_chart.php:90 admin/inst_lang.php:109 admin/inst_module.php:135
 #: admin/inst_theme.php:87 admin/payment_terms.php:143 admin/printers.php:97
@@ -269,7 +273,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: admin/attachments.php:223 admin/view_print_transaction.php:126
+#: admin/attachments.php:231 admin/view_print_transaction.php:126
 #: admin/void_transaction.php:186 dimensions/inquiry/search_dimensions.php:131
 #: dimensions/view/view_dimension.php:55
 #: fixed_assets/inquiry/stock_inquiry.php:165 gl/bank_account_reconcile.php:267
@@ -288,8 +292,8 @@ msgstr ""
 #: purchasing/inquiry/po_search.php:117
 #: purchasing/inquiry/po_search_completed.php:119
 #: purchasing/inquiry/supplier_allocation_inquiry.php:137
-#: purchasing/inquiry/supplier_inquiry.php:175 purchasing/view/view_po.php:117
-#: purchasing/view/view_po.php:142 reporting/rep101.php:137
+#: purchasing/inquiry/supplier_inquiry.php:177 purchasing/view/view_po.php:117
+#: purchasing/view/view_po.php:144 reporting/rep101.php:137
 #: reporting/rep201.php:115 reporting/rep203.php:88 reporting/rep306.php:138
 #: reporting/rep310.php:139 reporting/rep601.php:80 reporting/rep602.php:81
 #: reporting/rep704.php:79 reporting/rep704.php:87 reporting/rep704.php:95
@@ -302,56 +306,33 @@ msgstr ""
 msgid "#"
 msgstr ""
 
-#: admin/attachments.php:224 admin/attachments.php:276
-#: admin/crm_categories.php:88 admin/payment_terms.php:127
-#: admin/printers.php:84 admin/print_profiles.php:147
-#: admin/view/view_package.php:32 fixed_assets/fixed_asset_classes.php:89
-#: fixed_assets/inquiry/stock_inquiry.php:168 gl/inquiry/accounts_list.php:39
-#: gl/inquiry/accounts_list.php:52 gl/inquiry/tax_inquiry.php:80
-#: gl/manage/gl_quick_entries.php:190 gl/manage/gl_quick_entries.php:230
-#: includes/dashboard.inc:1051 includes/dashboard.inc:1145
-#: inventory/inquiry/stock_list.php:41 inventory/inquiry/stock_list.php:53
-#: inventory/manage/item_codes.php:131 inventory/manage/item_units.php:94
-#: inventory/manage/sales_kits.php:36 inventory/view/view_adjustment.php:54
-#: inventory/view/view_transfer.php:50
-#: manufacturing/includes/manufacturing_ui.inc:28
-#: manufacturing/manage/bom_edit.php:43 purchasing/po_receive_items.php:65
-#: purchasing/includes/ui/invoice_ui.inc:501
-#: purchasing/includes/ui/invoice_ui.inc:513 reporting/rep104.php:109
-#: reporting/rep105.php:115 reporting/rep204.php:84 reporting/rep303.php:223
-#: reporting/rep303.php:229 reporting/rep304.php:127 reporting/rep305.php:106
-#: reporting/rep306.php:138 reporting/rep307.php:114 reporting/rep308.php:224
-#: reporting/rep309.php:99 reporting/rep310.php:139 reporting/rep401.php:71
-#: sales/create_recurrent_invoices.php:209
-#: sales/inquiry/sales_orders_view.php:305
-#: sales/inquiry/sales_orders_view.php:309 sales/manage/credit_status.php:97
-#: sales/manage/recurrent_invoices.php:128 taxes/tax_groups.php:126
-#: taxes/tax_types.php:115
-msgid "Description"
+#: admin/attachments.php:232 admin/attachments.php:284
+#: includes/ui/attachment.inc:84 includes/ui/attachment.inc:139
+msgid "Doc Title"
 msgstr ""
 
-#: admin/attachments.php:225 admin/backups.php:74 admin/backups.php:160
+#: admin/attachments.php:233 admin/backups.php:74 admin/backups.php:160
 #: includes/ui/attachment.inc:84
 msgid "Filename"
 msgstr ""
 
-#: admin/attachments.php:226 includes/ui/attachment.inc:84
+#: admin/attachments.php:234 includes/ui/attachment.inc:84
 msgid "Size"
 msgstr ""
 
-#: admin/attachments.php:227 includes/ui/attachment.inc:84
+#: admin/attachments.php:235 includes/ui/attachment.inc:84
 msgid "Filetype"
 msgstr ""
 
-#: admin/attachments.php:228
-msgid "Date Uploaded"
+#: admin/attachments.php:236 includes/ui/attachment.inc:84
+msgid "Doc Date"
 msgstr ""
 
-#: admin/attachments.php:268 admin/attachments.php:274
+#: admin/attachments.php:276 admin/attachments.php:282
 msgid "Transaction #"
 msgstr ""
 
-#: admin/attachments.php:277
+#: admin/attachments.php:285
 msgid "Attached File"
 msgstr ""
 
@@ -587,18 +568,18 @@ msgid ""
 "expected"
 msgstr ""
 
-#: admin/company_preferences.php:97 inventory/manage/items.php:155
+#: admin/company_preferences.php:97 inventory/manage/items.php:156
 msgid ""
 "The file size is over the maximum allowed. The maximum size allowed in KB is"
 msgstr ""
 
-#: admin/company_preferences.php:102 inventory/manage/items.php:145
-#: inventory/manage/items.php:160
+#: admin/company_preferences.php:102 inventory/manage/items.php:146
+#: inventory/manage/items.php:161
 msgid "Only graphics files can be uploaded"
 msgstr ""
 
 #: admin/company_preferences.php:110 admin/company_preferences.php:139
-#: inventory/manage/items.php:165
+#: inventory/manage/items.php:166
 msgid "The existing image could not be removed"
 msgstr ""
 
@@ -825,7 +806,7 @@ msgstr ""
 #: admin/inst_module.php:189 admin/inst_theme.php:81
 #: dimensions/dimension_entry.php:283 gl/gl_bank.php:415 gl/gl_budget.php:134
 #: gl/includes/ui/gl_bank_ui.inc:265 gl/includes/ui/gl_journal_ui.inc:276
-#: gl/manage/gl_quick_entries.php:60 includes/ui/attachment.inc:169
+#: gl/manage/gl_quick_entries.php:60 includes/ui/attachment.inc:171
 #: includes/ui/class.crud_view.inc:298 includes/ui/db_pager_view.inc:180
 #: includes/ui/simple_crud_class.inc:56 includes/ui/simple_crud_class.inc:225
 #: includes/ui/ui_input.inc:227 includes/ui/ui_input.inc:967
@@ -1030,7 +1011,7 @@ msgstr ""
 #: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:118
 #: admin/inst_theme.php:76 admin/inst_theme.php:78
 #: gl/manage/gl_account_types.php:195 includes/ui/allocation_cart.inc:337
-#: inventory/manage/items.php:467
+#: inventory/manage/items.php:468
 msgid "None"
 msgstr ""
 
@@ -1081,6 +1062,33 @@ msgstr ""
 #: admin/crm_categories.php:88 purchasing/inquiry/suppliers_list.php:53
 #: sales/inquiry/customers_list.php:54 sales/manage/customer_branches.php:283
 msgid "Short Name"
+msgstr ""
+
+#: admin/crm_categories.php:88 admin/payment_terms.php:127
+#: admin/printers.php:84 admin/print_profiles.php:147
+#: admin/view/view_package.php:32 fixed_assets/fixed_asset_classes.php:89
+#: fixed_assets/inquiry/stock_inquiry.php:168 gl/inquiry/accounts_list.php:39
+#: gl/inquiry/accounts_list.php:52 gl/inquiry/tax_inquiry.php:80
+#: gl/manage/gl_quick_entries.php:190 gl/manage/gl_quick_entries.php:230
+#: includes/dashboard.inc:1051 includes/dashboard.inc:1145
+#: inventory/inquiry/stock_list.php:41 inventory/inquiry/stock_list.php:53
+#: inventory/manage/item_codes.php:131 inventory/manage/item_units.php:94
+#: inventory/manage/sales_kits.php:36 inventory/view/view_adjustment.php:54
+#: inventory/view/view_transfer.php:50
+#: manufacturing/includes/manufacturing_ui.inc:28
+#: manufacturing/manage/bom_edit.php:43 purchasing/po_receive_items.php:65
+#: purchasing/includes/ui/invoice_ui.inc:501
+#: purchasing/includes/ui/invoice_ui.inc:513 reporting/rep104.php:109
+#: reporting/rep105.php:115 reporting/rep204.php:84 reporting/rep303.php:223
+#: reporting/rep303.php:229 reporting/rep304.php:127 reporting/rep305.php:106
+#: reporting/rep306.php:138 reporting/rep307.php:114 reporting/rep308.php:224
+#: reporting/rep309.php:99 reporting/rep310.php:139 reporting/rep401.php:71
+#: sales/create_recurrent_invoices.php:209
+#: sales/inquiry/sales_orders_view.php:305
+#: sales/inquiry/sales_orders_view.php:309 sales/manage/credit_status.php:97
+#: sales/manage/recurrent_invoices.php:128 taxes/tax_groups.php:126
+#: taxes/tax_types.php:115
+msgid "Description"
 msgstr ""
 
 #: admin/crm_categories.php:135 admin/crm_categories.php:139
@@ -1200,7 +1208,7 @@ msgid "Portrait"
 msgstr ""
 
 #: admin/display_prefs.php:117 applications/setup.php:42
-#: includes/sysnames.inc:101
+#: includes/sysnames.inc:102
 msgid "Miscellaneous"
 msgstr ""
 
@@ -1502,7 +1510,7 @@ msgstr ""
 #: purchasing/includes/ui/po_ui.inc:302 purchasing/inquiry/po_search.php:118
 #: purchasing/inquiry/po_search_completed.php:120
 #: purchasing/inquiry/supplier_allocation_inquiry.php:138
-#: purchasing/inquiry/supplier_inquiry.php:176 purchasing/view/view_po.php:117
+#: purchasing/inquiry/supplier_inquiry.php:178 purchasing/view/view_po.php:117
 #: purchasing/view/view_supp_credit.php:43
 #: purchasing/view/view_supp_invoice.php:50
 #: purchasing/view/view_supp_payment.php:76 reporting/rep501.php:87
@@ -1555,7 +1563,7 @@ msgstr ""
 msgid "Receivable Account:"
 msgstr ""
 
-#: admin/gl_setup.php:236 admin/gl_setup.php:281 inventory/manage/items.php:489
+#: admin/gl_setup.php:236 admin/gl_setup.php:281 inventory/manage/items.php:490
 #: inventory/manage/item_categories.php:228
 #: sales/manage/customer_branches.php:242
 msgid "Sales Account:"
@@ -1645,23 +1653,23 @@ msgstr ""
 msgid "Items Defaults"
 msgstr ""
 
-#: admin/gl_setup.php:283 inventory/manage/items.php:498
+#: admin/gl_setup.php:283 inventory/manage/items.php:499
 #: inventory/manage/item_categories.php:244
 msgid "Inventory Account:"
 msgstr ""
 
-#: admin/gl_setup.php:285 inventory/manage/items.php:499
-#: inventory/manage/items.php:504 inventory/manage/item_categories.php:232
+#: admin/gl_setup.php:285 inventory/manage/items.php:500
+#: inventory/manage/items.php:505 inventory/manage/item_categories.php:232
 #: inventory/manage/item_categories.php:246
 msgid "C.O.G.S. Account:"
 msgstr ""
 
-#: admin/gl_setup.php:287 inventory/manage/items.php:500
+#: admin/gl_setup.php:287 inventory/manage/items.php:501
 #: inventory/manage/item_categories.php:247
 msgid "Inventory Adjustments Account:"
 msgstr ""
 
-#: admin/gl_setup.php:289 inventory/manage/items.php:511
+#: admin/gl_setup.php:289 inventory/manage/items.php:512
 msgid "WIP Account:"
 msgstr ""
 
@@ -1730,7 +1738,7 @@ msgstr ""
 
 #: admin/inst_chart.php:79 admin/inst_chart.php:81 admin/inst_lang.php:88
 #: admin/inst_module.php:119 admin/inst_module.php:120 admin/inst_theme.php:77
-#: includes/sysnames.inc:209
+#: includes/sysnames.inc:210
 msgid "Unknown"
 msgstr ""
 
@@ -2024,7 +2032,7 @@ msgstr ""
 #: manufacturing/includes/manufacturing_ui.inc:295
 #: manufacturing/includes/manufacturing_ui.inc:346
 #: purchasing/inquiry/supplier_allocation_inquiry.php:136
-#: purchasing/inquiry/supplier_inquiry.php:174 reporting/rep102.php:127
+#: purchasing/inquiry/supplier_inquiry.php:176 reporting/rep102.php:127
 #: reporting/rep202.php:138 reporting/rep402.php:136 reporting/rep501.php:87
 #: reporting/rep601.php:80 reporting/rep602.php:81 reporting/rep702.php:60
 #: reporting/rep704.php:79 reporting/rep704.php:87 reporting/rep704.php:95
@@ -2223,7 +2231,7 @@ msgstr ""
 
 #: admin/security_roles.php:177 fixed_assets/inquiry/stock_inquiry.php:40
 #: gl/manage/gl_accounts.php:208 inventory/inquiry/stock_movements.php:67
-#: inventory/manage/items.php:565 purchasing/manage/suppliers.php:304
+#: inventory/manage/items.php:566 purchasing/manage/suppliers.php:304
 #: sales/manage/customers.php:333
 msgid "Show inactive:"
 msgstr ""
@@ -2266,11 +2274,11 @@ msgstr ""
 
 #: admin/security_roles.php:244 admin/void_transaction.php:253
 #: gl/includes/ui/gl_bank_ui.inc:267 gl/includes/ui/gl_journal_ui.inc:278
-#: gl/manage/gl_quick_entries.php:61 includes/ui/attachment.inc:171
+#: gl/manage/gl_quick_entries.php:61 includes/ui/attachment.inc:173
 #: includes/ui/class.crud_view.inc:301 includes/ui/simple_crud_class.inc:58
 #: includes/ui/simple_crud_class.inc:229 includes/ui/ui_controls.inc:645
 #: includes/ui/ui_input.inc:230 inventory/includes/item_adjustments_ui.inc:214
-#: inventory/includes/stock_transfers_ui.inc:151 inventory/manage/items.php:548
+#: inventory/includes/stock_transfers_ui.inc:151 inventory/manage/items.php:549
 #: manufacturing/includes/work_order_issue_ui.inc:134
 #: purchasing/includes/ui/po_ui.inc:447 sales/create_recurrent_invoices.php:196
 #: sales/includes/ui/sales_credit_ui.inc:290
@@ -2278,7 +2286,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: admin/security_roles.php:244 inventory/manage/items.php:548
+#: admin/security_roles.php:244 inventory/manage/items.php:549
 msgid "Cancel Edition"
 msgstr ""
 
@@ -2335,7 +2343,7 @@ msgid "Address"
 msgstr ""
 
 #: admin/shipping_companies.php:134 gl/includes/ui/gl_bank_ui.inc:57
-#: gl/manage/gl_account_types.php:193 inventory/manage/items.php:388
+#: gl/manage/gl_account_types.php:193 inventory/manage/items.php:389
 #: manufacturing/manage/work_centres.php:137
 msgid "Name:"
 msgstr ""
@@ -2521,7 +2529,7 @@ msgstr ""
 #: purchasing/inquiry/po_search_completed.php:108
 #: purchasing/inquiry/suppliers_list.php:42
 #: purchasing/inquiry/supplier_allocation_inquiry.php:57
-#: purchasing/inquiry/supplier_inquiry.php:147
+#: purchasing/inquiry/supplier_inquiry.php:149
 #: sales/inquiry/customers_list.php:42
 #: sales/inquiry/customer_allocation_inquiry.php:51
 #: sales/inquiry/customer_branches_list.php:38
@@ -2553,7 +2561,7 @@ msgstr ""
 #: gl/view/bank_transfer_view.php:86 gl/view/gl_deposit_view.php:71
 #: gl/view/gl_payment_view.php:69 includes/dashboard.inc:1011
 #: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:311
-#: includes/ui/attachment.inc:136 includes/ui/ui_view.inc:552
+#: includes/ui/attachment.inc:138 includes/ui/ui_view.inc:552
 #: inventory/inquiry/stock_movements.php:109
 #: inventory/view/view_adjustment.php:44 inventory/view/view_transfer.php:37
 #: manufacturing/search_work_orders.php:171
@@ -2571,7 +2579,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:115
 #: purchasing/includes/ui/po_ui.inc:316
 #: purchasing/inquiry/supplier_allocation_inquiry.php:141
-#: purchasing/inquiry/supplier_inquiry.php:179 purchasing/view/view_po.php:142
+#: purchasing/inquiry/supplier_inquiry.php:181 purchasing/view/view_po.php:144
 #: reporting/rep101.php:137 reporting/rep107.php:226 reporting/rep201.php:115
 #: reporting/rep306.php:138 reporting/rep310.php:139 reporting/rep402.php:136
 #: reporting/rep402.php:141 reporting/rep501.php:87 reporting/rep601.php:80
@@ -2832,7 +2840,8 @@ msgid ""
 "closed."
 msgstr ""
 
-#: admin/db/voiding_db.inc:130 sales/includes/db/sales_invoice_db.inc:254
+#: admin/db/voiding_db.inc:130 purchasing/inquiry/supplier_inquiry.php:85
+#: sales/includes/db/sales_invoice_db.inc:254
 msgid "Voided."
 msgstr ""
 
@@ -3324,7 +3333,7 @@ msgstr ""
 msgid "&Units of Measure"
 msgstr ""
 
-#: applications/inventory.php:45 inventory/manage/items.php:594
+#: applications/inventory.php:45 inventory/manage/items.php:595
 msgid "&Reorder Levels"
 msgstr ""
 
@@ -3340,7 +3349,7 @@ msgstr ""
 msgid "Purchasing &Pricing"
 msgstr ""
 
-#: applications/inventory.php:53 inventory/manage/items.php:593
+#: applications/inventory.php:53 inventory/manage/items.php:594
 msgid "Standard &Costs"
 msgstr ""
 
@@ -3669,7 +3678,7 @@ msgstr ""
 msgid "Delete unused dimension"
 msgstr ""
 
-#: dimensions/dimension_entry.php:292 includes/ui/attachment.inc:167
+#: dimensions/dimension_entry.php:292 includes/ui/attachment.inc:169
 #: includes/ui/class.crud_view.inc:305 includes/ui/simple_crud_class.inc:223
 #: purchasing/includes/ui/invoice_ui.inc:219
 #: purchasing/includes/ui/invoice_ui.inc:421
@@ -3689,7 +3698,7 @@ msgstr ""
 #: fixed_assets/process_depreciation.php:100 gl/accruals.php:104
 #: gl/inquiry/gl_account_inquiry.php:131 gl/inquiry/gl_trial_balance.php:231
 #: gl/manage/gl_quick_entries.php:248 gl/manage/gl_quick_entries.php:342
-#: includes/dashboard.inc:1176 includes/sysnames.inc:181
+#: includes/dashboard.inc:1176 includes/sysnames.inc:182
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282 reporting/rep701.php:110
@@ -3726,7 +3735,7 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:240 gl/inquiry/gl_trial_balance.php:242
 #: gl/view/accrual_trans.php:60 gl/view/gl_trans_view.php:99
 #: gl/view/gl_trans_view.php:102 gl/view/gl_trans_view.php:105
-#: includes/sysnames.inc:92 manufacturing/view/wo_costs_view.php:61
+#: includes/sysnames.inc:93 manufacturing/view/wo_costs_view.php:61
 #: purchasing/inquiry/supplier_allocation_inquiry.php:145
 #: reporting/rep115.php:164 reporting/rep206.php:116 reporting/rep402.php:141
 #: reporting/rep601.php:81 reporting/rep602.php:82 reporting/rep702.php:54
@@ -3742,8 +3751,8 @@ msgstr ""
 #: includes/dashboard.inc:624 includes/dashboard.inc:649
 #: includes/dashboard.inc:1176
 #: purchasing/inquiry/supplier_allocation_inquiry.php:147
-#: purchasing/inquiry/supplier_inquiry.php:183
-#: purchasing/inquiry/supplier_inquiry.php:196 reporting/rep101.php:141
+#: purchasing/inquiry/supplier_inquiry.php:185
+#: purchasing/inquiry/supplier_inquiry.php:198 reporting/rep101.php:141
 #: reporting/rep115.php:164 reporting/rep201.php:119 reporting/rep203.php:89
 #: reporting/rep204.php:84 reporting/rep206.php:116 reporting/rep307.php:114
 #: reporting/rep601.php:81 reporting/rep602.php:82 reporting/rep701.php:110
@@ -3805,7 +3814,7 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:55 gl/inquiry/journal_inquiry.php:48
 #: gl/inquiry/profit_loss.php:175 inventory/inquiry/stock_movements.php:85
 #: purchasing/inquiry/supplier_allocation_inquiry.php:50
-#: purchasing/inquiry/supplier_inquiry.php:143
+#: purchasing/inquiry/supplier_inquiry.php:145
 #: sales/inquiry/customer_inquiry.php:165
 msgid "From:"
 msgstr ""
@@ -3814,7 +3823,7 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:56 gl/inquiry/journal_inquiry.php:49
 #: gl/inquiry/profit_loss.php:176 inventory/inquiry/stock_movements.php:86
 #: purchasing/inquiry/supplier_allocation_inquiry.php:51
-#: purchasing/inquiry/supplier_inquiry.php:144
+#: purchasing/inquiry/supplier_inquiry.php:146
 #: sales/inquiry/customer_inquiry.php:166
 msgid "To:"
 msgstr ""
@@ -3834,7 +3843,7 @@ msgstr ""
 #: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:311
 #: purchasing/includes/ui/invoice_ui.inc:136
 #: purchasing/inquiry/supplier_allocation_inquiry.php:142
-#: purchasing/inquiry/supplier_inquiry.php:180
+#: purchasing/inquiry/supplier_inquiry.php:182
 #: purchasing/view/view_supp_credit.php:48
 #: purchasing/view/view_supp_invoice.php:55 reporting/rep101.php:137
 #: reporting/rep201.php:115 reporting/rep203.php:88 reporting/rep501.php:87
@@ -3932,7 +3941,7 @@ msgstr ""
 msgid "Fixed asset class:"
 msgstr ""
 
-#: fixed_assets/fixed_asset_classes.php:137 inventory/manage/items.php:390
+#: fixed_assets/fixed_asset_classes.php:137 inventory/manage/items.php:391
 #: inventory/manage/item_codes.php:186 inventory/manage/sales_kits.php:206
 #: inventory/manage/sales_kits.php:230
 #: manufacturing/manage/work_centres.php:138
@@ -3975,7 +3984,8 @@ msgid "There are no fixed assets that could be depreciated."
 msgstr ""
 
 #: fixed_assets/process_depreciation.php:100 includes/dashboard.inc:556
-#: includes/dashboard.inc:558 manufacturing/search_work_orders.php:168
+#: includes/dashboard.inc:558 includes/sysnames.inc:46
+#: manufacturing/search_work_orders.php:168
 #: manufacturing/view/wo_issue_view.php:43
 #: manufacturing/view/wo_production_view.php:44
 #: purchasing/includes/ui/invoice_ui.inc:501
@@ -3985,7 +3995,7 @@ msgstr ""
 msgid "Item"
 msgstr ""
 
-#: fixed_assets/process_depreciation.php:139 inventory/manage/items.php:562
+#: fixed_assets/process_depreciation.php:139 inventory/manage/items.php:563
 msgid "Select an item:"
 msgstr ""
 
@@ -4037,13 +4047,13 @@ msgstr ""
 #: inventory/inquiry/stock_movements.php:88
 #: purchasing/includes/ui/invoice_ui.inc:483
 #: purchasing/inquiry/supplier_allocation_inquiry.php:57
-#: purchasing/inquiry/supplier_inquiry.php:147
+#: purchasing/inquiry/supplier_inquiry.php:149
 #: sales/inquiry/customer_allocation_inquiry.php:51
 #: sales/inquiry/customer_inquiry.php:170
 msgid "Refresh Inquiry"
 msgstr ""
 
-#: fixed_assets/inquiry/stock_inquiry.php:101 inventory/manage/items.php:451
+#: fixed_assets/inquiry/stock_inquiry.php:101 inventory/manage/items.php:452
 msgid "years"
 msgstr ""
 
@@ -4080,7 +4090,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: fixed_assets/inquiry/stock_inquiry.php:172 includes/sysnames.inc:174
+#: fixed_assets/inquiry/stock_inquiry.php:172 includes/sysnames.inc:175
 msgid "Purchased"
 msgstr ""
 
@@ -4088,7 +4098,7 @@ msgstr ""
 msgid "Initial"
 msgstr ""
 
-#: fixed_assets/inquiry/stock_inquiry.php:174 inventory/manage/items.php:528
+#: fixed_assets/inquiry/stock_inquiry.php:174 inventory/manage/items.php:529
 #: reporting/rep451.php:80 themes/canvas/renderer.php:120
 msgid "Depreciations"
 msgstr ""
@@ -4146,8 +4156,8 @@ msgstr ""
 #: gl/view/gl_payment_view.php:106 gl/view/gl_payment_view.php:109
 #: gl/view/gl_trans_view.php:98 gl/view/gl_trans_view.php:101
 #: includes/dashboard.inc:354 includes/dashboard.inc:624
-#: includes/sysnames.inc:43 includes/sysnames.inc:182
-#: inventory/manage/items.php:478 inventory/manage/items.php:480
+#: includes/sysnames.inc:43 includes/sysnames.inc:183
+#: inventory/manage/items.php:479 inventory/manage/items.php:481
 #: inventory/manage/item_categories.php:258
 #: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:332
 #: purchasing/supplier_payment.php:337
@@ -4253,13 +4263,13 @@ msgstr ""
 #: gl/view/gl_payment_view.php:113 includes/dashboard.inc:444
 #: includes/dashboard.inc:486 includes/dashboard.inc:558
 #: includes/dashboard.inc:978 includes/dashboard.inc:983
-#: includes/sysnames.inc:140 includes/ui/allocation_cart.inc:311
+#: includes/sysnames.inc:141 includes/ui/allocation_cart.inc:311
 #: includes/ui/ui_lists.inc:1375
 #: manufacturing/includes/manufacturing_ui.inc:253
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282
-#: purchasing/inquiry/supplier_inquiry.php:182
+#: purchasing/inquiry/supplier_inquiry.php:184
 #: purchasing/view/view_supp_payment.php:63
 #: purchasing/view/view_supp_payment.php:75 reporting/rep102.php:234
 #: reporting/rep107.php:228 reporting/rep107.php:293 reporting/rep109.php:181
@@ -4659,7 +4669,7 @@ msgstr ""
 #: purchasing/allocations/supplier_allocation_main.php:100
 #: purchasing/includes/ui/invoice_ui.inc:342
 #: purchasing/includes/ui/invoice_ui.inc:504
-#: purchasing/includes/ui/invoice_ui.inc:575 purchasing/view/view_po.php:142
+#: purchasing/includes/ui/invoice_ui.inc:575 purchasing/view/view_po.php:144
 #: reporting/rep101.php:262 reporting/rep106.php:91 reporting/rep106.php:126
 #: reporting/rep106.php:173 reporting/rep114.php:161 reporting/rep201.php:230
 #: reporting/rep203.php:89 reporting/rep203.php:166 reporting/rep204.php:113
@@ -4694,7 +4704,7 @@ msgstr ""
 msgid "Modifying Journal Transaction # %d."
 msgstr ""
 
-#: gl/gl_journal.php:36 includes/sysnames.inc:22 includes/sysnames.inc:157
+#: gl/gl_journal.php:36 includes/sysnames.inc:22 includes/sysnames.inc:158
 #: themes/canvas/renderer.php:131
 msgid "Journal Entry"
 msgstr ""
@@ -5093,7 +5103,7 @@ msgstr ""
 msgid "Source ref:"
 msgstr ""
 
-#: gl/includes/ui/gl_journal_ui.inc:57 includes/sysnames.inc:105
+#: gl/includes/ui/gl_journal_ui.inc:57 includes/sysnames.inc:106
 msgid "Quick Entry"
 msgstr ""
 
@@ -5134,7 +5144,7 @@ msgstr ""
 msgid "Add new line to journal"
 msgstr ""
 
-#: gl/inquiry/accounts_list.php:25 inventory/manage/items.php:487
+#: gl/inquiry/accounts_list.php:25 inventory/manage/items.php:488
 #: sales/manage/customer_branches.php:240 themes/canvas/renderer.php:136
 msgid "GL Accounts"
 msgstr ""
@@ -5168,7 +5178,7 @@ msgstr ""
 msgid "Calculated Return"
 msgstr ""
 
-#: gl/inquiry/balance_sheet.php:233 includes/sysnames.inc:128
+#: gl/inquiry/balance_sheet.php:233 includes/sysnames.inc:129
 #: reporting/rep706.php:292
 msgid "Liabilities"
 msgstr ""
@@ -5308,7 +5318,7 @@ msgstr ""
 #: purchasing/includes/ui/grn_ui.inc:34 purchasing/includes/ui/grn_ui.inc:77
 #: purchasing/includes/ui/po_ui.inc:332 purchasing/inquiry/po_search.php:121
 #: purchasing/inquiry/po_search_completed.php:123
-#: purchasing/inquiry/supplier_inquiry.php:178
+#: purchasing/inquiry/supplier_inquiry.php:180
 #: purchasing/view/view_supp_credit.php:44
 #: purchasing/view/view_supp_invoice.php:51 reporting/includes/doctext.inc:163
 #: reporting/includes/doctext.inc:186
@@ -5431,8 +5441,8 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:143
 #: purchasing/inquiry/supplier_allocation_inquiry.php:153
 #: purchasing/inquiry/supplier_inquiry.php:50
-#: purchasing/inquiry/supplier_inquiry.php:181
-#: purchasing/inquiry/supplier_inquiry.php:193
+#: purchasing/inquiry/supplier_inquiry.php:183
+#: purchasing/inquiry/supplier_inquiry.php:195
 #: purchasing/view/view_supp_credit.php:49
 #: purchasing/view/view_supp_invoice.php:57 reporting/rep101.php:148
 #: reporting/rep102.php:126 reporting/rep102.php:132 reporting/rep103.php:229
@@ -5945,7 +5955,7 @@ msgstr ""
 msgid "Quick Entries"
 msgstr ""
 
-#: gl/manage/gl_quick_entries.php:58 includes/ui/attachment.inc:163
+#: gl/manage/gl_quick_entries.php:58 includes/ui/attachment.inc:165
 #: includes/ui/class.crud_view.inc:305 includes/ui/class.crud_view.inc:309
 #: includes/ui/simple_crud_class.inc:219 includes/ui/ui_input.inc:225
 msgid "Add new"
@@ -6298,7 +6308,7 @@ msgid "Dimensions configuration"
 msgstr ""
 
 #: includes/access_levels.inc:79 includes/dashboard.inc:332
-#: inventory/manage/items.php:476 reporting/reports_main.php:350
+#: inventory/manage/items.php:477 reporting/reports_main.php:350
 msgid "Dimensions"
 msgstr ""
 
@@ -6634,7 +6644,7 @@ msgstr ""
 msgid "Fixed Asset disposals"
 msgstr ""
 
-#: includes/access_levels.inc:207 inventory/manage/items.php:432
+#: includes/access_levels.inc:207 inventory/manage/items.php:433
 msgid "Depreciation"
 msgstr ""
 
@@ -6897,7 +6907,7 @@ msgstr ""
 #: includes/dashboard.inc:200 includes/dashboard.inc:410
 #: includes/dashboard.inc:444 includes/dashboard.inc:1011
 #: includes/dashboard.inc:1051 includes/sysnames.inc:44
-#: includes/sysnames.inc:103 includes/sysnames.inc:211 reporting/rep101.php:146
+#: includes/sysnames.inc:104 includes/sysnames.inc:212 reporting/rep101.php:146
 #: reporting/rep102.php:118 reporting/rep102.php:125 reporting/rep105.php:110
 #: reporting/rep106.php:90 reporting/rep114.php:95 reporting/rep115.php:170
 #: reporting/rep304.php:127 reporting/rep304.php:137
@@ -6946,8 +6956,8 @@ msgstr ""
 
 #: includes/dashboard.inc:237 includes/dashboard.inc:415
 #: includes/dashboard.inc:486 includes/dashboard.inc:1095
-#: includes/sysnames.inc:45 includes/sysnames.inc:104 includes/sysnames.inc:189
-#: includes/sysnames.inc:212 inventory/purchasing_data.php:151
+#: includes/sysnames.inc:45 includes/sysnames.inc:105 includes/sysnames.inc:190
+#: includes/sysnames.inc:213 inventory/purchasing_data.php:151
 #: purchasing/allocations/supplier_allocation_main.php:98
 #: purchasing/allocations/supplier_allocation_main.php:106
 #: purchasing/includes/ui/grn_ui.inc:20 purchasing/includes/ui/grn_ui.inc:52
@@ -6957,8 +6967,8 @@ msgstr ""
 #: purchasing/inquiry/suppliers_list.php:53
 #: purchasing/inquiry/supplier_allocation_inquiry.php:139
 #: purchasing/inquiry/supplier_allocation_inquiry.php:152
-#: purchasing/inquiry/supplier_inquiry.php:177
-#: purchasing/inquiry/supplier_inquiry.php:192
+#: purchasing/inquiry/supplier_inquiry.php:179
+#: purchasing/inquiry/supplier_inquiry.php:194
 #: purchasing/view/view_supp_credit.php:42
 #: purchasing/view/view_supp_invoice.php:49 reporting/rep201.php:124
 #: reporting/rep202.php:129 reporting/rep202.php:136 reporting/rep203.php:95
@@ -7250,7 +7260,7 @@ msgid "Branch"
 msgstr ""
 
 #: includes/dashboard.inc:1012 includes/dashboard.inc:1096
-#: includes/sysnames.inc:139
+#: includes/sysnames.inc:140
 msgid "Remainder"
 msgstr ""
 
@@ -7273,7 +7283,7 @@ msgstr ""
 
 #: includes/dashboard.inc:1124
 #: purchasing/inquiry/supplier_allocation_inquiry.php:158
-#: purchasing/inquiry/supplier_inquiry.php:200 purchasing/view/view_po.php:102
+#: purchasing/inquiry/supplier_inquiry.php:202 purchasing/view/view_po.php:102
 #: sales/inquiry/customer_allocation_inquiry.php:168
 #: sales/inquiry/customer_inquiry.php:225
 #: sales/inquiry/sales_deliveries_view.php:196
@@ -7521,11 +7531,11 @@ msgid ""
 "Software Upgrade page"
 msgstr ""
 
-#: includes/sysnames.inc:23 includes/sysnames.inc:156
+#: includes/sysnames.inc:23 includes/sysnames.inc:157
 msgid "Bank Payment"
 msgstr ""
 
-#: includes/sysnames.inc:24 includes/sysnames.inc:155
+#: includes/sysnames.inc:24 includes/sysnames.inc:156
 msgid "Bank Deposit"
 msgstr ""
 
@@ -7579,7 +7589,7 @@ msgstr ""
 msgid "Purchase Order Delivery"
 msgstr ""
 
-#: includes/sysnames.inc:37 includes/sysnames.inc:102 includes/types.inc:135
+#: includes/sysnames.inc:37 includes/sysnames.inc:103 includes/types.inc:136
 msgid "Work Order"
 msgstr ""
 
@@ -7604,400 +7614,400 @@ msgstr ""
 msgid "Cost Update"
 msgstr ""
 
-#: includes/sysnames.inc:49 inventory/adjustments.php:32
+#: includes/sysnames.inc:50 inventory/adjustments.php:32
 msgid "Fixed Assets Disposal"
 msgstr ""
 
-#: includes/sysnames.inc:50
+#: includes/sysnames.inc:51
 msgid "Fixed Assets Revaluation"
 msgstr ""
 
-#: includes/sysnames.inc:54
+#: includes/sysnames.inc:55
 msgid "GJ"
 msgstr ""
 
-#: includes/sysnames.inc:55
+#: includes/sysnames.inc:56
 msgid "BP"
 msgstr ""
 
-#: includes/sysnames.inc:56
+#: includes/sysnames.inc:57
 msgid "BD"
 msgstr ""
 
-#: includes/sysnames.inc:57
+#: includes/sysnames.inc:58
 msgid "BT"
 msgstr ""
 
-#: includes/sysnames.inc:58
+#: includes/sysnames.inc:59
 msgid "SI"
 msgstr ""
 
-#: includes/sysnames.inc:59
+#: includes/sysnames.inc:60
 msgid "CN"
 msgstr ""
 
-#: includes/sysnames.inc:60
+#: includes/sysnames.inc:61
 msgid "CP"
 msgstr ""
 
-#: includes/sysnames.inc:61 sales/customer_invoice.php:526
+#: includes/sysnames.inc:62 sales/customer_invoice.php:526
 msgid "DN"
 msgstr ""
 
-#: includes/sysnames.inc:62
+#: includes/sysnames.inc:63
 msgid "IT"
 msgstr ""
 
-#: includes/sysnames.inc:63
+#: includes/sysnames.inc:64
 msgid "IA"
 msgstr ""
 
-#: includes/sysnames.inc:64
+#: includes/sysnames.inc:65
 msgid "PO"
 msgstr ""
 
-#: includes/sysnames.inc:65
+#: includes/sysnames.inc:66
 msgid "PI"
 msgstr ""
 
-#: includes/sysnames.inc:66
+#: includes/sysnames.inc:67
 msgid "PC"
 msgstr ""
 
-#: includes/sysnames.inc:67
+#: includes/sysnames.inc:68
 msgid "SP"
 msgstr ""
 
-#: includes/sysnames.inc:68 reporting/rep204.php:84 reporting/rep305.php:106
+#: includes/sysnames.inc:69 reporting/rep204.php:84 reporting/rep305.php:106
 msgid "GRN"
 msgstr ""
 
-#: includes/sysnames.inc:69
+#: includes/sysnames.inc:70
 msgid "WO"
 msgstr ""
 
-#: includes/sysnames.inc:70
+#: includes/sysnames.inc:71
 msgid "WI"
 msgstr ""
 
-#: includes/sysnames.inc:71
+#: includes/sysnames.inc:72
 msgid "WP"
 msgstr ""
 
-#: includes/sysnames.inc:72
+#: includes/sysnames.inc:73
 msgid "SO"
 msgstr ""
 
-#: includes/sysnames.inc:73
+#: includes/sysnames.inc:74
 msgid "SQ"
 msgstr ""
 
-#: includes/sysnames.inc:74
+#: includes/sysnames.inc:75
 msgid "CU"
 msgstr ""
 
-#: includes/sysnames.inc:75
+#: includes/sysnames.inc:76
 msgid "Dim"
 msgstr ""
 
-#: includes/sysnames.inc:83
+#: includes/sysnames.inc:84
 msgid "Savings Account"
 msgstr ""
 
-#: includes/sysnames.inc:84
+#: includes/sysnames.inc:85
 msgid "Chequing Account"
 msgstr ""
 
-#: includes/sysnames.inc:85 manufacturing/work_order_costs.php:146
+#: includes/sysnames.inc:86 manufacturing/work_order_costs.php:146
 msgid "Credit Account"
 msgstr ""
 
-#: includes/sysnames.inc:86
+#: includes/sysnames.inc:87
 msgid "Cash Account"
 msgstr ""
 
-#: includes/sysnames.inc:90
+#: includes/sysnames.inc:91
 msgid "Transfer"
 msgstr ""
 
-#: includes/sysnames.inc:91
+#: includes/sysnames.inc:92
 msgid "Cheque"
 msgstr ""
 
-#: includes/sysnames.inc:93 includes/sysnames.inc:197
+#: includes/sysnames.inc:94 includes/sysnames.inc:198
 msgid "Cash"
 msgstr ""
 
-#: includes/sysnames.inc:112
+#: includes/sysnames.inc:113
 msgid "Assemble"
 msgstr ""
 
-#: includes/sysnames.inc:113
+#: includes/sysnames.inc:114
 msgid "Unassemble"
 msgstr ""
 
-#: includes/sysnames.inc:114
+#: includes/sysnames.inc:115
 msgid "Advanced Manufacture"
 msgstr ""
 
-#: includes/sysnames.inc:118
+#: includes/sysnames.inc:119
 msgid "Labour Cost"
 msgstr ""
 
-#: includes/sysnames.inc:119
+#: includes/sysnames.inc:120
 msgid "Overhead Cost"
 msgstr ""
 
-#: includes/sysnames.inc:120
+#: includes/sysnames.inc:121
 msgid "Materials"
 msgstr ""
 
-#: includes/sysnames.inc:127
+#: includes/sysnames.inc:128
 msgid "Assets"
 msgstr ""
 
-#: includes/sysnames.inc:129
+#: includes/sysnames.inc:130
 msgid "Equity"
 msgstr ""
 
-#: includes/sysnames.inc:130
+#: includes/sysnames.inc:131
 msgid "Income"
 msgstr ""
 
-#: includes/sysnames.inc:131
+#: includes/sysnames.inc:132
 msgid "Cost of Goods Sold"
 msgstr ""
 
-#: includes/sysnames.inc:132
+#: includes/sysnames.inc:133
 msgid "Expense"
 msgstr ""
 
-#: includes/sysnames.inc:141
+#: includes/sysnames.inc:142
 msgid "Amount, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:142
+#: includes/sysnames.inc:143
 msgid "Amount, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:143
+#: includes/sysnames.inc:144
 msgid "% amount of base"
 msgstr ""
 
-#: includes/sysnames.inc:144
+#: includes/sysnames.inc:145
 msgid "% amount of base, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:145
+#: includes/sysnames.inc:146
 msgid "% amount of base, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:146
+#: includes/sysnames.inc:147
 msgid "Taxes added"
 msgstr ""
 
-#: includes/sysnames.inc:147
+#: includes/sysnames.inc:148
 msgid "Taxes added, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:148
+#: includes/sysnames.inc:149
 msgid "Taxes added, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:149
+#: includes/sysnames.inc:150
 msgid "Taxes included"
 msgstr ""
 
-#: includes/sysnames.inc:150
+#: includes/sysnames.inc:151
 msgid "Taxes included, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:151
+#: includes/sysnames.inc:152
 msgid "Taxes included, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:158
+#: includes/sysnames.inc:159
 msgid "Supplier Invoice/Credit"
 msgstr ""
 
-#: includes/sysnames.inc:164
+#: includes/sysnames.inc:165
 msgid "Declining balance"
 msgstr ""
 
-#: includes/sysnames.inc:165
+#: includes/sysnames.inc:166
 msgid "Straight line"
 msgstr ""
 
-#: includes/sysnames.inc:166
+#: includes/sysnames.inc:167
 msgid "Sum of the Year Digits"
 msgstr ""
 
-#: includes/sysnames.inc:167
+#: includes/sysnames.inc:168
 msgid "One-time"
 msgstr ""
 
-#: includes/sysnames.inc:173 manufacturing/search_work_orders.php:170
+#: includes/sysnames.inc:174 manufacturing/search_work_orders.php:170
 #: manufacturing/includes/manufacturing_ui.inc:293 reporting/rep402.php:136
 msgid "Manufactured"
 msgstr ""
 
-#: includes/sysnames.inc:175
+#: includes/sysnames.inc:176
 msgid "Service"
 msgstr ""
 
-#: includes/sysnames.inc:188
+#: includes/sysnames.inc:189
 msgid "Customer branch"
 msgstr ""
 
-#: includes/sysnames.inc:190
+#: includes/sysnames.inc:191
 msgid "Shipper"
 msgstr ""
 
-#: includes/sysnames.inc:191
+#: includes/sysnames.inc:192
 msgid "Company internal"
 msgstr ""
 
-#: includes/sysnames.inc:196
+#: includes/sysnames.inc:197
 msgid "Prepayment"
 msgstr ""
 
-#: includes/sysnames.inc:198
+#: includes/sysnames.inc:199
 msgid "After No. of Days"
 msgstr ""
 
-#: includes/sysnames.inc:199
+#: includes/sysnames.inc:200
 msgid "Day In Following Month"
 msgstr ""
 
-#: includes/sysnames.inc:203
+#: includes/sysnames.inc:204
 msgid "Sum per line taxes"
 msgstr ""
 
-#: includes/sysnames.inc:204
+#: includes/sysnames.inc:205
 msgid "Taxes from totals"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Jan"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Feb"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Mar"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Apr"
 msgstr ""
 
-#: includes/sysnames.inc:216 includes/ui/ui_view.inc:1010
+#: includes/sysnames.inc:217 includes/ui/ui_view.inc:1010
 msgid "May"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Jun"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Jul"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Aug"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Sep"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Oct"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Nov"
 msgstr ""
 
-#: includes/sysnames.inc:216
+#: includes/sysnames.inc:217
 msgid "Dec"
 msgstr ""
 
-#: includes/sysnames.inc:222
+#: includes/sysnames.inc:223
 msgid "Unicode (multilanguage)"
 msgstr ""
 
-#: includes/sysnames.inc:223
+#: includes/sysnames.inc:224
 msgid "Icelandic"
 msgstr ""
 
-#: includes/sysnames.inc:224
+#: includes/sysnames.inc:225
 msgid "Latvian"
 msgstr ""
 
-#: includes/sysnames.inc:225
+#: includes/sysnames.inc:226
 msgid "Romanian"
 msgstr ""
 
-#: includes/sysnames.inc:226
+#: includes/sysnames.inc:227
 msgid "Slovenian"
 msgstr ""
 
-#: includes/sysnames.inc:227
+#: includes/sysnames.inc:228
 msgid "Polish"
 msgstr ""
 
-#: includes/sysnames.inc:228
+#: includes/sysnames.inc:229
 msgid "Estonian"
 msgstr ""
 
-#: includes/sysnames.inc:229
+#: includes/sysnames.inc:230
 msgid "Spanish"
 msgstr ""
 
-#: includes/sysnames.inc:230
+#: includes/sysnames.inc:231
 msgid "Swedish"
 msgstr ""
 
-#: includes/sysnames.inc:231
+#: includes/sysnames.inc:232
 msgid "Turkish"
 msgstr ""
 
-#: includes/sysnames.inc:232
+#: includes/sysnames.inc:233
 msgid "Czech"
 msgstr ""
 
-#: includes/sysnames.inc:233
+#: includes/sysnames.inc:234
 msgid "Danish"
 msgstr ""
 
-#: includes/sysnames.inc:234
+#: includes/sysnames.inc:235
 msgid "Lithuanian"
 msgstr ""
 
-#: includes/sysnames.inc:235
+#: includes/sysnames.inc:236
 msgid "Slovak"
 msgstr ""
 
-#: includes/sysnames.inc:236
+#: includes/sysnames.inc:237
 msgid "Spanish (alternative)"
 msgstr ""
 
-#: includes/sysnames.inc:237
+#: includes/sysnames.inc:238
 msgid "Persian"
 msgstr ""
 
-#: includes/sysnames.inc:238
+#: includes/sysnames.inc:239
 msgid "Hungarian"
 msgstr ""
 
-#: includes/sysnames.inc:239
+#: includes/sysnames.inc:240
 msgid "French"
 msgstr ""
 
-#: includes/sysnames.inc:240
+#: includes/sysnames.inc:241
 msgid "Italian"
 msgstr ""
 
@@ -8394,14 +8404,6 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: includes/ui/attachment.inc:84 includes/ui/attachment.inc:137
-msgid "Docs Title"
-msgstr ""
-
-#: includes/ui/attachment.inc:84
-msgid "Date Updated"
-msgstr ""
-
 #: includes/ui/attachment.inc:112
 msgid "Attachment Detail"
 msgstr ""
@@ -8414,46 +8416,50 @@ msgstr ""
 msgid "Supplier ID"
 msgstr ""
 
-#: includes/ui/attachment.inc:139
+#: includes/ui/attachment.inc:135
+msgid "Item ID"
+msgstr ""
+
+#: includes/ui/attachment.inc:141
 msgid "File:"
 msgstr ""
 
-#: includes/ui/attachment.inc:139
+#: includes/ui/attachment.inc:141
 #, php-format
 msgid "%s [%s bytes]"
 msgstr ""
 
-#: includes/ui/attachment.inc:140
+#: includes/ui/attachment.inc:142
 msgid "File change"
 msgstr ""
 
-#: includes/ui/attachment.inc:140
+#: includes/ui/attachment.inc:142
 msgid "Select file"
 msgstr ""
 
-#: includes/ui/attachment.inc:169 includes/ui/class.crud_view.inc:298
+#: includes/ui/attachment.inc:171 includes/ui/class.crud_view.inc:298
 #: includes/ui/simple_crud_class.inc:225 includes/ui/ui_input.inc:227
 msgid "Submit changes"
 msgstr ""
 
-#: includes/ui/attachment.inc:171 includes/ui/simple_crud_class.inc:229
+#: includes/ui/attachment.inc:173 includes/ui/simple_crud_class.inc:229
 #: includes/ui/ui_input.inc:230
 msgid "Cancel edition"
 msgstr ""
 
-#: includes/ui/attachment.inc:207 includes/ui/attachment.inc:259
+#: includes/ui/attachment.inc:209 includes/ui/attachment.inc:261
 msgid "The existing Docs could not be removed"
 msgstr ""
 
-#: includes/ui/attachment.inc:224
+#: includes/ui/attachment.inc:226
 msgid "A New Attachment Added Successfully"
 msgstr ""
 
-#: includes/ui/attachment.inc:285
+#: includes/ui/attachment.inc:287
 msgid "Description cannot be empty."
 msgstr ""
 
-#: includes/ui/attachment.inc:315
+#: includes/ui/attachment.inc:317
 msgid "The Selected Attachment is Deleted Successfully"
 msgstr ""
 
@@ -9419,7 +9425,7 @@ msgstr ""
 msgid "Unit Cost"
 msgstr ""
 
-#: inventory/includes/item_adjustments_ui.inc:57 inventory/manage/items.php:527
+#: inventory/includes/item_adjustments_ui.inc:57 inventory/manage/items.php:528
 msgid "Initial Value"
 msgstr ""
 
@@ -9538,233 +9544,238 @@ msgstr ""
 msgid "On Order"
 msgstr ""
 
-#: inventory/manage/items.php:74
+#: inventory/manage/items.php:75
 msgid "No image"
 msgstr ""
 
-#: inventory/manage/items.php:91
+#: inventory/manage/items.php:92
 msgid "Delete Image:"
 msgstr ""
 
-#: inventory/manage/items.php:133
+#: inventory/manage/items.php:134
 msgid "Error uploading file."
 msgstr ""
 
-#: inventory/manage/items.php:150
+#: inventory/manage/items.php:151
 msgid ""
 "Only graphics files are supported - a file extension of .jpg, .png or .gif "
 "is expected"
 msgstr ""
 
-#: inventory/manage/items.php:183
+#: inventory/manage/items.php:184
 msgid ""
 "There are no fixed asset categories defined in the system. At least one "
 "fixed asset category is required to add a fixed asset."
 msgstr ""
 
-#: inventory/manage/items.php:184
+#: inventory/manage/items.php:185
 msgid ""
 "There are no fixed asset classes defined in the system. At least one fixed "
 "asset class is required to add a fixed asset."
 msgstr ""
 
-#: inventory/manage/items.php:186
+#: inventory/manage/items.php:187
 msgid ""
 "There are no item categories defined in the system. At least one item "
 "category is required to add a item."
 msgstr ""
 
-#: inventory/manage/items.php:188
+#: inventory/manage/items.php:189
 msgid ""
 "There are no item tax types defined in the system. At least one item tax "
 "type is required to add a item."
 msgstr ""
 
-#: inventory/manage/items.php:220
+#: inventory/manage/items.php:221
 msgid "The item name must be entered."
 msgstr ""
 
-#: inventory/manage/items.php:226
+#: inventory/manage/items.php:227
 msgid "The item code cannot be empty"
 msgstr ""
 
-#: inventory/manage/items.php:234
+#: inventory/manage/items.php:235
 msgid ""
 "The item code cannot contain any of the following characters -  & + OR a "
 "space OR quotes"
 msgstr ""
 
-#: inventory/manage/items.php:241 inventory/manage/item_codes.php:58
+#: inventory/manage/items.php:242 inventory/manage/item_codes.php:58
 #: inventory/manage/sales_kits.php:89
 msgid "This item code is already assigned to stock item or sale kit."
 msgstr ""
 
-#: inventory/manage/items.php:254
+#: inventory/manage/items.php:255
 msgid "The depracation cannot start before the fixed asset purchase date"
 msgstr ""
 
-#: inventory/manage/items.php:282
+#: inventory/manage/items.php:283
 msgid "Item has been updated."
 msgstr ""
 
-#: inventory/manage/items.php:297
+#: inventory/manage/items.php:298
 msgid "A new item has been added."
 msgstr ""
 
-#: inventory/manage/items.php:339
+#: inventory/manage/items.php:340
 msgid "Selected item has been deleted."
 msgstr ""
 
-#: inventory/manage/items.php:356
+#: inventory/manage/items.php:357
 msgid "General Settings"
 msgstr ""
 
-#: inventory/manage/items.php:365
+#: inventory/manage/items.php:366
 msgid "Generate EAN-8 Barcode"
 msgstr ""
 
-#: inventory/manage/items.php:372 inventory/manage/items.php:382
+#: inventory/manage/items.php:373 inventory/manage/items.php:383
 msgid "Item Code:"
 msgstr ""
 
-#: inventory/manage/items.php:392 inventory/manage/item_codes.php:187
+#: inventory/manage/items.php:393 inventory/manage/item_codes.php:187
 #: inventory/manage/sales_kits.php:207 inventory/manage/sales_kits.php:231
 msgid "Category:"
 msgstr ""
 
-#: inventory/manage/items.php:417 inventory/manage/item_categories.php:212
+#: inventory/manage/items.php:418 inventory/manage/item_categories.php:212
 msgid "Item Tax Type:"
 msgstr ""
 
-#: inventory/manage/items.php:420 inventory/manage/item_categories.php:217
+#: inventory/manage/items.php:421 inventory/manage/item_categories.php:217
 msgid "Item Type:"
 msgstr ""
 
-#: inventory/manage/items.php:422 inventory/manage/item_categories.php:219
+#: inventory/manage/items.php:423 inventory/manage/item_categories.php:219
 msgid "Units of Measure:"
 msgstr ""
 
-#: inventory/manage/items.php:426
+#: inventory/manage/items.php:427
 msgid "Editable description:"
 msgstr ""
 
-#: inventory/manage/items.php:427 inventory/manage/item_categories.php:224
+#: inventory/manage/items.php:428 inventory/manage/item_categories.php:224
 msgid "Exclude from sales:"
 msgstr ""
 
-#: inventory/manage/items.php:428 inventory/manage/item_categories.php:226
+#: inventory/manage/items.php:429 inventory/manage/item_categories.php:226
 msgid "Exclude from purchases:"
 msgstr ""
 
-#: inventory/manage/items.php:434
+#: inventory/manage/items.php:435
 msgid "Fixed Asset Class"
 msgstr ""
 
-#: inventory/manage/items.php:436
+#: inventory/manage/items.php:437
 msgid "Depreciation Method"
 msgstr ""
 
-#: inventory/manage/items.php:447 inventory/manage/items.php:456
+#: inventory/manage/items.php:448 inventory/manage/items.php:457
 msgid "Depreciation Rate"
 msgstr ""
 
-#: inventory/manage/items.php:451
+#: inventory/manage/items.php:452
 msgid "Depreciation Years"
 msgstr ""
 
-#: inventory/manage/items.php:454
+#: inventory/manage/items.php:455
 msgid "Base Rate"
 msgstr ""
 
-#: inventory/manage/items.php:459
+#: inventory/manage/items.php:460
 msgid "Rate multiplier"
 msgstr ""
 
-#: inventory/manage/items.php:463 inventory/manage/items.php:466
+#: inventory/manage/items.php:464 inventory/manage/items.php:467
 msgid "Depreciation Start"
 msgstr ""
 
-#: inventory/manage/items.php:467
+#: inventory/manage/items.php:468
 msgid "Last Depreciation"
 msgstr ""
 
-#: inventory/manage/items.php:492 inventory/manage/item_categories.php:238
+#: inventory/manage/items.php:493 inventory/manage/item_categories.php:238
 msgid "Asset account:"
 msgstr ""
 
-#: inventory/manage/items.php:493 inventory/manage/item_categories.php:239
+#: inventory/manage/items.php:494 inventory/manage/item_categories.php:239
 msgid "Depreciation cost account:"
 msgstr ""
 
-#: inventory/manage/items.php:494 inventory/manage/item_categories.php:240
+#: inventory/manage/items.php:495 inventory/manage/item_categories.php:240
 msgid "Depreciation/Disposal account:"
 msgstr ""
 
-#: inventory/manage/items.php:515
+#: inventory/manage/items.php:516
 msgid "Other"
 msgstr ""
 
-#: inventory/manage/items.php:517
+#: inventory/manage/items.php:518
 msgid "Image File (.jpg)"
 msgstr ""
 
-#: inventory/manage/items.php:521
+#: inventory/manage/items.php:522
 msgid "Item status:"
 msgstr ""
 
-#: inventory/manage/items.php:523
+#: inventory/manage/items.php:524
 msgid "Values"
 msgstr ""
 
-#: inventory/manage/items.php:529
+#: inventory/manage/items.php:530
 msgid "Current Value"
 msgstr ""
 
-#: inventory/manage/items.php:538
+#: inventory/manage/items.php:539
 msgid "Insert New Item"
 msgstr ""
 
-#: inventory/manage/items.php:542
+#: inventory/manage/items.php:543
 msgid "Update Item"
 msgstr ""
 
-#: inventory/manage/items.php:545
+#: inventory/manage/items.php:546
 msgid "Select this items and return to document entry."
 msgstr ""
 
-#: inventory/manage/items.php:546
+#: inventory/manage/items.php:547
 msgid "Clone This Item"
 msgstr ""
 
-#: inventory/manage/items.php:547
+#: inventory/manage/items.php:548
 msgid "Delete This Item"
 msgstr ""
 
-#: inventory/manage/items.php:563
+#: inventory/manage/items.php:564
 msgid "New item"
 msgstr ""
 
-#: inventory/manage/items.php:587 inventory/manage/items.php:590
+#: inventory/manage/items.php:588 inventory/manage/items.php:591
 #: purchasing/manage/suppliers.php:321 sales/manage/customers.php:352
 #: sales/manage/customer_branches.php:310
 msgid "&General settings"
 msgstr ""
 
-#: inventory/manage/items.php:588 inventory/manage/items.php:596
+#: inventory/manage/items.php:589 inventory/manage/items.php:597
 #: purchasing/manage/suppliers.php:323 sales/manage/customers.php:354
 msgid "&Transactions"
 msgstr ""
 
-#: inventory/manage/items.php:591
+#: inventory/manage/items.php:592
 msgid "S&ales Pricing"
 msgstr ""
 
-#: inventory/manage/items.php:592
+#: inventory/manage/items.php:593
 msgid "&Purchasing Pricing"
 msgstr ""
 
-#: inventory/manage/items.php:598
+#: inventory/manage/items.php:599
 msgid "&Status"
+msgstr ""
+
+#: inventory/manage/items.php:600 purchasing/manage/suppliers.php:325
+#: sales/manage/customers.php:356
+msgid "Attachments"
 msgstr ""
 
 #: inventory/manage/item_categories.php:47
@@ -11938,16 +11949,16 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:94
+#: purchasing/inquiry/supplier_inquiry.php:96
 #: sales/inquiry/customer_inquiry.php:78
 msgid "Credit This"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:109
+#: purchasing/inquiry/supplier_inquiry.php:111
 msgid "Print Remittance"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:137
+#: purchasing/inquiry/supplier_inquiry.php:139
 msgid "Select a supplier:"
 msgstr ""
 
@@ -12119,10 +12130,6 @@ msgstr ""
 msgid "Purchase &Orders"
 msgstr ""
 
-#: purchasing/manage/suppliers.php:325 sales/manage/customers.php:356
-msgid "Attachments"
-msgstr ""
-
 #: purchasing/view/view_grn.php:21
 msgid "View Purchase Order Delivery"
 msgstr ""
@@ -12177,7 +12184,7 @@ msgstr ""
 msgid "Delivered On"
 msgstr ""
 
-#: purchasing/view/view_po.php:140 sales/view/view_sales_order.php:53
+#: purchasing/view/view_po.php:142 sales/view/view_sales_order.php:53
 msgid "Invoices/Credits"
 msgstr ""
 
