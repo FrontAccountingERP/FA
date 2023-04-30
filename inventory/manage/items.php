@@ -38,6 +38,7 @@ page($_SESSION['page_title'], @$_REQUEST['popup'], false, "", $js);
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/ui/attachment.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/fixed_assets/includes/fixed_assets_db.inc");
@@ -596,6 +597,7 @@ $tabs = (get_post('fixed_asset'))
 		'movement' => array(_('&Transactions'), (user_check_access('SA_ITEMSTRANSVIEW') && is_inventory_item($stock_id) ? 
 			$stock_id : null)),
 		'status' => array(_('&Status'), (user_check_access('SA_ITEMSSTATVIEW') ? $stock_id : null)),
+		'attachments' => array(_('Attachments'), (user_check_access('SA_ATTACHDOCUMENT') ? get_item_code_id($stock_id) : null)),
 	);
 
 tabbed_content_start('tabs', $tabs);
@@ -637,6 +639,12 @@ tabbed_content_start('tabs', $tabs);
 			$_GET['stock_id'] = $stock_id;
 			include_once($path_to_root."/inventory/inquiry/stock_status.php");
 			break;
+		case 'attachments':
+			$id = get_item_code_id($stock_id);
+			$_GET['trans_no'] = $id;
+			$_GET['type_no']= ST_ITEM;
+			$attachments = new attachments('attachment', $id, 'items');
+			$attachments->show();
 	};
 
 br();
@@ -692,3 +700,4 @@ function generateBarcode() {
 		$tmpBarcodeID = "";	 
 	}
 }
+
