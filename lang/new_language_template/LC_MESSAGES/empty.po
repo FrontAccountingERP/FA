@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-30 14:11+0200\n"
+"POT-Creation-Date: 2023-05-03 10:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: access/login.php:116 access/login.php:122 access/password_reset.php:69
 #: access/password_reset.php:75 admin/create_coy.php:247
-#: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:211
+#: admin/create_coy.php:327 admin/inst_upgrade.php:63 includes/sysnames.inc:212
 msgid "Company"
 msgstr ""
 
@@ -190,11 +190,11 @@ msgstr ""
 msgid "Select a supplier: "
 msgstr ""
 
-#: admin/attachments.php:191
+#: admin/attachments.php:191 admin/attachments.php:193
 msgid "Select an Item: "
 msgstr ""
 
-#: admin/attachments.php:208 admin/create_coy.php:269
+#: admin/attachments.php:212 admin/create_coy.php:269
 #: admin/crm_categories.php:106 admin/fiscalyears.php:164
 #: admin/inst_lang.php:100 admin/payment_terms.php:142 admin/printers.php:96
 #: admin/shipping_companies.php:106 admin/tags.php:140 admin/users.php:155
@@ -230,15 +230,15 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: admin/attachments.php:213 gl/inquiry/journal_inquiry.php:122
+#: admin/attachments.php:217 gl/inquiry/journal_inquiry.php:122
 msgid "View"
 msgstr ""
 
-#: admin/attachments.php:218 includes/ui/attachment.inc:96
+#: admin/attachments.php:222 includes/ui/attachment.inc:96
 msgid "Download"
 msgstr ""
 
-#: admin/attachments.php:223 admin/create_coy.php:272
+#: admin/attachments.php:227 admin/create_coy.php:272
 #: admin/crm_categories.php:110 admin/fiscalyears.php:166
 #: admin/inst_chart.php:90 admin/inst_lang.php:109 admin/inst_module.php:135
 #: admin/inst_theme.php:87 admin/payment_terms.php:143 admin/printers.php:97
@@ -273,7 +273,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: admin/attachments.php:231 admin/view_print_transaction.php:126
+#: admin/attachments.php:235 admin/view_print_transaction.php:126
 #: admin/void_transaction.php:186 dimensions/inquiry/search_dimensions.php:131
 #: dimensions/view/view_dimension.php:55
 #: fixed_assets/inquiry/stock_inquiry.php:165 gl/bank_account_reconcile.php:267
@@ -306,33 +306,33 @@ msgstr ""
 msgid "#"
 msgstr ""
 
-#: admin/attachments.php:232 admin/attachments.php:284
-#: includes/ui/attachment.inc:84 includes/ui/attachment.inc:139
+#: admin/attachments.php:236 admin/attachments.php:288
+#: includes/ui/attachment.inc:84 includes/ui/attachment.inc:141
 msgid "Doc Title"
 msgstr ""
 
-#: admin/attachments.php:233 admin/backups.php:74 admin/backups.php:160
+#: admin/attachments.php:237 admin/backups.php:74 admin/backups.php:160
 #: includes/ui/attachment.inc:84
 msgid "Filename"
 msgstr ""
 
-#: admin/attachments.php:234 includes/ui/attachment.inc:84
+#: admin/attachments.php:238 includes/ui/attachment.inc:84
 msgid "Size"
 msgstr ""
 
-#: admin/attachments.php:235 includes/ui/attachment.inc:84
+#: admin/attachments.php:239 includes/ui/attachment.inc:84
 msgid "Filetype"
 msgstr ""
 
-#: admin/attachments.php:236 includes/ui/attachment.inc:84
+#: admin/attachments.php:240 includes/ui/attachment.inc:84
 msgid "Doc Date"
 msgstr ""
 
-#: admin/attachments.php:276 admin/attachments.php:282
+#: admin/attachments.php:280 admin/attachments.php:286
 msgid "Transaction #"
 msgstr ""
 
-#: admin/attachments.php:285
+#: admin/attachments.php:289
 msgid "Attached File"
 msgstr ""
 
@@ -806,7 +806,7 @@ msgstr ""
 #: admin/inst_module.php:189 admin/inst_theme.php:81
 #: dimensions/dimension_entry.php:283 gl/gl_bank.php:415 gl/gl_budget.php:134
 #: gl/includes/ui/gl_bank_ui.inc:265 gl/includes/ui/gl_journal_ui.inc:276
-#: gl/manage/gl_quick_entries.php:60 includes/ui/attachment.inc:171
+#: gl/manage/gl_quick_entries.php:60 includes/ui/attachment.inc:173
 #: includes/ui/class.crud_view.inc:298 includes/ui/db_pager_view.inc:180
 #: includes/ui/simple_crud_class.inc:56 includes/ui/simple_crud_class.inc:225
 #: includes/ui/ui_input.inc:227 includes/ui/ui_input.inc:967
@@ -1208,7 +1208,7 @@ msgid "Portrait"
 msgstr ""
 
 #: admin/display_prefs.php:117 applications/setup.php:42
-#: includes/sysnames.inc:102
+#: includes/sysnames.inc:103
 msgid "Miscellaneous"
 msgstr ""
 
@@ -1738,7 +1738,7 @@ msgstr ""
 
 #: admin/inst_chart.php:79 admin/inst_chart.php:81 admin/inst_lang.php:88
 #: admin/inst_module.php:119 admin/inst_module.php:120 admin/inst_theme.php:77
-#: includes/sysnames.inc:210
+#: includes/sysnames.inc:211
 msgid "Unknown"
 msgstr ""
 
@@ -2274,7 +2274,7 @@ msgstr ""
 
 #: admin/security_roles.php:244 admin/void_transaction.php:253
 #: gl/includes/ui/gl_bank_ui.inc:267 gl/includes/ui/gl_journal_ui.inc:278
-#: gl/manage/gl_quick_entries.php:61 includes/ui/attachment.inc:173
+#: gl/manage/gl_quick_entries.php:61 includes/ui/attachment.inc:175
 #: includes/ui/class.crud_view.inc:301 includes/ui/simple_crud_class.inc:58
 #: includes/ui/simple_crud_class.inc:229 includes/ui/ui_controls.inc:645
 #: includes/ui/ui_input.inc:230 inventory/includes/item_adjustments_ui.inc:214
@@ -2561,7 +2561,7 @@ msgstr ""
 #: gl/view/bank_transfer_view.php:86 gl/view/gl_deposit_view.php:71
 #: gl/view/gl_payment_view.php:69 includes/dashboard.inc:1011
 #: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:311
-#: includes/ui/attachment.inc:138 includes/ui/ui_view.inc:552
+#: includes/ui/attachment.inc:140 includes/ui/ui_view.inc:552
 #: inventory/inquiry/stock_movements.php:109
 #: inventory/view/view_adjustment.php:44 inventory/view/view_transfer.php:37
 #: manufacturing/search_work_orders.php:171
@@ -3333,7 +3333,7 @@ msgstr ""
 msgid "&Units of Measure"
 msgstr ""
 
-#: applications/inventory.php:45 inventory/manage/items.php:595
+#: applications/inventory.php:45 inventory/manage/items.php:596
 msgid "&Reorder Levels"
 msgstr ""
 
@@ -3349,7 +3349,7 @@ msgstr ""
 msgid "Purchasing &Pricing"
 msgstr ""
 
-#: applications/inventory.php:53 inventory/manage/items.php:594
+#: applications/inventory.php:53 inventory/manage/items.php:595
 msgid "Standard &Costs"
 msgstr ""
 
@@ -3678,7 +3678,7 @@ msgstr ""
 msgid "Delete unused dimension"
 msgstr ""
 
-#: dimensions/dimension_entry.php:292 includes/ui/attachment.inc:169
+#: dimensions/dimension_entry.php:292 includes/ui/attachment.inc:171
 #: includes/ui/class.crud_view.inc:305 includes/ui/simple_crud_class.inc:223
 #: purchasing/includes/ui/invoice_ui.inc:219
 #: purchasing/includes/ui/invoice_ui.inc:421
@@ -3698,7 +3698,7 @@ msgstr ""
 #: fixed_assets/process_depreciation.php:100 gl/accruals.php:104
 #: gl/inquiry/gl_account_inquiry.php:131 gl/inquiry/gl_trial_balance.php:231
 #: gl/manage/gl_quick_entries.php:248 gl/manage/gl_quick_entries.php:342
-#: includes/dashboard.inc:1176 includes/sysnames.inc:182
+#: includes/dashboard.inc:1176 includes/sysnames.inc:183
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282 reporting/rep701.php:110
@@ -3735,7 +3735,7 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:240 gl/inquiry/gl_trial_balance.php:242
 #: gl/view/accrual_trans.php:60 gl/view/gl_trans_view.php:99
 #: gl/view/gl_trans_view.php:102 gl/view/gl_trans_view.php:105
-#: includes/sysnames.inc:93 manufacturing/view/wo_costs_view.php:61
+#: includes/sysnames.inc:94 manufacturing/view/wo_costs_view.php:61
 #: purchasing/inquiry/supplier_allocation_inquiry.php:145
 #: reporting/rep115.php:164 reporting/rep206.php:116 reporting/rep402.php:141
 #: reporting/rep601.php:81 reporting/rep602.php:82 reporting/rep702.php:54
@@ -4090,7 +4090,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: fixed_assets/inquiry/stock_inquiry.php:172 includes/sysnames.inc:175
+#: fixed_assets/inquiry/stock_inquiry.php:172 includes/sysnames.inc:176
 msgid "Purchased"
 msgstr ""
 
@@ -4156,7 +4156,7 @@ msgstr ""
 #: gl/view/gl_payment_view.php:106 gl/view/gl_payment_view.php:109
 #: gl/view/gl_trans_view.php:98 gl/view/gl_trans_view.php:101
 #: includes/dashboard.inc:354 includes/dashboard.inc:624
-#: includes/sysnames.inc:43 includes/sysnames.inc:183
+#: includes/sysnames.inc:43 includes/sysnames.inc:184
 #: inventory/manage/items.php:479 inventory/manage/items.php:481
 #: inventory/manage/item_categories.php:258
 #: inventory/manage/item_categories.php:260 purchasing/supplier_payment.php:332
@@ -4263,7 +4263,7 @@ msgstr ""
 #: gl/view/gl_payment_view.php:113 includes/dashboard.inc:444
 #: includes/dashboard.inc:486 includes/dashboard.inc:558
 #: includes/dashboard.inc:978 includes/dashboard.inc:983
-#: includes/sysnames.inc:141 includes/ui/allocation_cart.inc:311
+#: includes/sysnames.inc:142 includes/ui/allocation_cart.inc:311
 #: includes/ui/ui_lists.inc:1375
 #: manufacturing/includes/manufacturing_ui.inc:253
 #: purchasing/includes/ui/invoice_ui.inc:278
@@ -4704,7 +4704,7 @@ msgstr ""
 msgid "Modifying Journal Transaction # %d."
 msgstr ""
 
-#: gl/gl_journal.php:36 includes/sysnames.inc:22 includes/sysnames.inc:158
+#: gl/gl_journal.php:36 includes/sysnames.inc:22 includes/sysnames.inc:159
 #: themes/canvas/renderer.php:131
 msgid "Journal Entry"
 msgstr ""
@@ -5103,7 +5103,7 @@ msgstr ""
 msgid "Source ref:"
 msgstr ""
 
-#: gl/includes/ui/gl_journal_ui.inc:57 includes/sysnames.inc:106
+#: gl/includes/ui/gl_journal_ui.inc:57 includes/sysnames.inc:107
 msgid "Quick Entry"
 msgstr ""
 
@@ -5178,7 +5178,7 @@ msgstr ""
 msgid "Calculated Return"
 msgstr ""
 
-#: gl/inquiry/balance_sheet.php:233 includes/sysnames.inc:129
+#: gl/inquiry/balance_sheet.php:233 includes/sysnames.inc:130
 #: reporting/rep706.php:292
 msgid "Liabilities"
 msgstr ""
@@ -5955,7 +5955,7 @@ msgstr ""
 msgid "Quick Entries"
 msgstr ""
 
-#: gl/manage/gl_quick_entries.php:58 includes/ui/attachment.inc:165
+#: gl/manage/gl_quick_entries.php:58 includes/ui/attachment.inc:167
 #: includes/ui/class.crud_view.inc:305 includes/ui/class.crud_view.inc:309
 #: includes/ui/simple_crud_class.inc:219 includes/ui/ui_input.inc:225
 msgid "Add new"
@@ -6907,7 +6907,7 @@ msgstr ""
 #: includes/dashboard.inc:200 includes/dashboard.inc:410
 #: includes/dashboard.inc:444 includes/dashboard.inc:1011
 #: includes/dashboard.inc:1051 includes/sysnames.inc:44
-#: includes/sysnames.inc:104 includes/sysnames.inc:212 reporting/rep101.php:146
+#: includes/sysnames.inc:105 includes/sysnames.inc:213 reporting/rep101.php:146
 #: reporting/rep102.php:118 reporting/rep102.php:125 reporting/rep105.php:110
 #: reporting/rep106.php:90 reporting/rep114.php:95 reporting/rep115.php:170
 #: reporting/rep304.php:127 reporting/rep304.php:137
@@ -6956,8 +6956,8 @@ msgstr ""
 
 #: includes/dashboard.inc:237 includes/dashboard.inc:415
 #: includes/dashboard.inc:486 includes/dashboard.inc:1095
-#: includes/sysnames.inc:45 includes/sysnames.inc:105 includes/sysnames.inc:190
-#: includes/sysnames.inc:213 inventory/purchasing_data.php:151
+#: includes/sysnames.inc:45 includes/sysnames.inc:106 includes/sysnames.inc:191
+#: includes/sysnames.inc:214 inventory/purchasing_data.php:151
 #: purchasing/allocations/supplier_allocation_main.php:98
 #: purchasing/allocations/supplier_allocation_main.php:106
 #: purchasing/includes/ui/grn_ui.inc:20 purchasing/includes/ui/grn_ui.inc:52
@@ -7260,7 +7260,7 @@ msgid "Branch"
 msgstr ""
 
 #: includes/dashboard.inc:1012 includes/dashboard.inc:1096
-#: includes/sysnames.inc:140
+#: includes/sysnames.inc:141
 msgid "Remainder"
 msgstr ""
 
@@ -7531,11 +7531,11 @@ msgid ""
 "Software Upgrade page"
 msgstr ""
 
-#: includes/sysnames.inc:23 includes/sysnames.inc:157
+#: includes/sysnames.inc:23 includes/sysnames.inc:158
 msgid "Bank Payment"
 msgstr ""
 
-#: includes/sysnames.inc:24 includes/sysnames.inc:156
+#: includes/sysnames.inc:24 includes/sysnames.inc:157
 msgid "Bank Deposit"
 msgstr ""
 
@@ -7589,7 +7589,7 @@ msgstr ""
 msgid "Purchase Order Delivery"
 msgstr ""
 
-#: includes/sysnames.inc:37 includes/sysnames.inc:103 includes/types.inc:136
+#: includes/sysnames.inc:37 includes/sysnames.inc:104 includes/types.inc:137
 msgid "Work Order"
 msgstr ""
 
@@ -7614,400 +7614,404 @@ msgstr ""
 msgid "Cost Update"
 msgstr ""
 
-#: includes/sysnames.inc:50 inventory/adjustments.php:32
+#: includes/sysnames.inc:47
+msgid "Fixed Asset"
+msgstr ""
+
+#: includes/sysnames.inc:51 inventory/adjustments.php:32
 msgid "Fixed Assets Disposal"
 msgstr ""
 
-#: includes/sysnames.inc:51
+#: includes/sysnames.inc:52
 msgid "Fixed Assets Revaluation"
 msgstr ""
 
-#: includes/sysnames.inc:55
+#: includes/sysnames.inc:56
 msgid "GJ"
 msgstr ""
 
-#: includes/sysnames.inc:56
+#: includes/sysnames.inc:57
 msgid "BP"
 msgstr ""
 
-#: includes/sysnames.inc:57
+#: includes/sysnames.inc:58
 msgid "BD"
 msgstr ""
 
-#: includes/sysnames.inc:58
+#: includes/sysnames.inc:59
 msgid "BT"
 msgstr ""
 
-#: includes/sysnames.inc:59
+#: includes/sysnames.inc:60
 msgid "SI"
 msgstr ""
 
-#: includes/sysnames.inc:60
+#: includes/sysnames.inc:61
 msgid "CN"
 msgstr ""
 
-#: includes/sysnames.inc:61
+#: includes/sysnames.inc:62
 msgid "CP"
 msgstr ""
 
-#: includes/sysnames.inc:62 sales/customer_invoice.php:526
+#: includes/sysnames.inc:63 sales/customer_invoice.php:526
 msgid "DN"
 msgstr ""
 
-#: includes/sysnames.inc:63
+#: includes/sysnames.inc:64
 msgid "IT"
 msgstr ""
 
-#: includes/sysnames.inc:64
+#: includes/sysnames.inc:65
 msgid "IA"
 msgstr ""
 
-#: includes/sysnames.inc:65
+#: includes/sysnames.inc:66
 msgid "PO"
 msgstr ""
 
-#: includes/sysnames.inc:66
+#: includes/sysnames.inc:67
 msgid "PI"
 msgstr ""
 
-#: includes/sysnames.inc:67
+#: includes/sysnames.inc:68
 msgid "PC"
 msgstr ""
 
-#: includes/sysnames.inc:68
+#: includes/sysnames.inc:69
 msgid "SP"
 msgstr ""
 
-#: includes/sysnames.inc:69 reporting/rep204.php:84 reporting/rep305.php:106
+#: includes/sysnames.inc:70 reporting/rep204.php:84 reporting/rep305.php:106
 msgid "GRN"
 msgstr ""
 
-#: includes/sysnames.inc:70
+#: includes/sysnames.inc:71
 msgid "WO"
 msgstr ""
 
-#: includes/sysnames.inc:71
+#: includes/sysnames.inc:72
 msgid "WI"
 msgstr ""
 
-#: includes/sysnames.inc:72
+#: includes/sysnames.inc:73
 msgid "WP"
 msgstr ""
 
-#: includes/sysnames.inc:73
+#: includes/sysnames.inc:74
 msgid "SO"
 msgstr ""
 
-#: includes/sysnames.inc:74
+#: includes/sysnames.inc:75
 msgid "SQ"
 msgstr ""
 
-#: includes/sysnames.inc:75
+#: includes/sysnames.inc:76
 msgid "CU"
 msgstr ""
 
-#: includes/sysnames.inc:76
+#: includes/sysnames.inc:77
 msgid "Dim"
 msgstr ""
 
-#: includes/sysnames.inc:84
+#: includes/sysnames.inc:85
 msgid "Savings Account"
 msgstr ""
 
-#: includes/sysnames.inc:85
+#: includes/sysnames.inc:86
 msgid "Chequing Account"
 msgstr ""
 
-#: includes/sysnames.inc:86 manufacturing/work_order_costs.php:146
+#: includes/sysnames.inc:87 manufacturing/work_order_costs.php:146
 msgid "Credit Account"
 msgstr ""
 
-#: includes/sysnames.inc:87
+#: includes/sysnames.inc:88
 msgid "Cash Account"
 msgstr ""
 
-#: includes/sysnames.inc:91
+#: includes/sysnames.inc:92
 msgid "Transfer"
 msgstr ""
 
-#: includes/sysnames.inc:92
+#: includes/sysnames.inc:93
 msgid "Cheque"
 msgstr ""
 
-#: includes/sysnames.inc:94 includes/sysnames.inc:198
+#: includes/sysnames.inc:95 includes/sysnames.inc:199
 msgid "Cash"
 msgstr ""
 
-#: includes/sysnames.inc:113
+#: includes/sysnames.inc:114
 msgid "Assemble"
 msgstr ""
 
-#: includes/sysnames.inc:114
+#: includes/sysnames.inc:115
 msgid "Unassemble"
 msgstr ""
 
-#: includes/sysnames.inc:115
+#: includes/sysnames.inc:116
 msgid "Advanced Manufacture"
 msgstr ""
 
-#: includes/sysnames.inc:119
+#: includes/sysnames.inc:120
 msgid "Labour Cost"
 msgstr ""
 
-#: includes/sysnames.inc:120
+#: includes/sysnames.inc:121
 msgid "Overhead Cost"
 msgstr ""
 
-#: includes/sysnames.inc:121
+#: includes/sysnames.inc:122
 msgid "Materials"
 msgstr ""
 
-#: includes/sysnames.inc:128
+#: includes/sysnames.inc:129
 msgid "Assets"
 msgstr ""
 
-#: includes/sysnames.inc:130
+#: includes/sysnames.inc:131
 msgid "Equity"
 msgstr ""
 
-#: includes/sysnames.inc:131
+#: includes/sysnames.inc:132
 msgid "Income"
 msgstr ""
 
-#: includes/sysnames.inc:132
+#: includes/sysnames.inc:133
 msgid "Cost of Goods Sold"
 msgstr ""
 
-#: includes/sysnames.inc:133
+#: includes/sysnames.inc:134
 msgid "Expense"
 msgstr ""
 
-#: includes/sysnames.inc:142
+#: includes/sysnames.inc:143
 msgid "Amount, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:143
+#: includes/sysnames.inc:144
 msgid "Amount, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:144
+#: includes/sysnames.inc:145
 msgid "% amount of base"
 msgstr ""
 
-#: includes/sysnames.inc:145
+#: includes/sysnames.inc:146
 msgid "% amount of base, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:146
+#: includes/sysnames.inc:147
 msgid "% amount of base, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:147
+#: includes/sysnames.inc:148
 msgid "Taxes added"
 msgstr ""
 
-#: includes/sysnames.inc:148
+#: includes/sysnames.inc:149
 msgid "Taxes added, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:149
+#: includes/sysnames.inc:150
 msgid "Taxes added, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:150
+#: includes/sysnames.inc:151
 msgid "Taxes included"
 msgstr ""
 
-#: includes/sysnames.inc:151
+#: includes/sysnames.inc:152
 msgid "Taxes included, increase base"
 msgstr ""
 
-#: includes/sysnames.inc:152
+#: includes/sysnames.inc:153
 msgid "Taxes included, reduce base"
 msgstr ""
 
-#: includes/sysnames.inc:159
+#: includes/sysnames.inc:160
 msgid "Supplier Invoice/Credit"
 msgstr ""
 
-#: includes/sysnames.inc:165
+#: includes/sysnames.inc:166
 msgid "Declining balance"
 msgstr ""
 
-#: includes/sysnames.inc:166
+#: includes/sysnames.inc:167
 msgid "Straight line"
 msgstr ""
 
-#: includes/sysnames.inc:167
+#: includes/sysnames.inc:168
 msgid "Sum of the Year Digits"
 msgstr ""
 
-#: includes/sysnames.inc:168
+#: includes/sysnames.inc:169
 msgid "One-time"
 msgstr ""
 
-#: includes/sysnames.inc:174 manufacturing/search_work_orders.php:170
+#: includes/sysnames.inc:175 manufacturing/search_work_orders.php:170
 #: manufacturing/includes/manufacturing_ui.inc:293 reporting/rep402.php:136
 msgid "Manufactured"
 msgstr ""
 
-#: includes/sysnames.inc:176
+#: includes/sysnames.inc:177
 msgid "Service"
 msgstr ""
 
-#: includes/sysnames.inc:189
+#: includes/sysnames.inc:190
 msgid "Customer branch"
 msgstr ""
 
-#: includes/sysnames.inc:191
+#: includes/sysnames.inc:192
 msgid "Shipper"
 msgstr ""
 
-#: includes/sysnames.inc:192
+#: includes/sysnames.inc:193
 msgid "Company internal"
 msgstr ""
 
-#: includes/sysnames.inc:197
+#: includes/sysnames.inc:198
 msgid "Prepayment"
 msgstr ""
 
-#: includes/sysnames.inc:199
+#: includes/sysnames.inc:200
 msgid "After No. of Days"
 msgstr ""
 
-#: includes/sysnames.inc:200
+#: includes/sysnames.inc:201
 msgid "Day In Following Month"
 msgstr ""
 
-#: includes/sysnames.inc:204
+#: includes/sysnames.inc:205
 msgid "Sum per line taxes"
 msgstr ""
 
-#: includes/sysnames.inc:205
+#: includes/sysnames.inc:206
 msgid "Taxes from totals"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Jan"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Feb"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Mar"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Apr"
 msgstr ""
 
-#: includes/sysnames.inc:217 includes/ui/ui_view.inc:1010
+#: includes/sysnames.inc:218 includes/ui/ui_view.inc:1010
 msgid "May"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Jun"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Jul"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Aug"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Sep"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Oct"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Nov"
 msgstr ""
 
-#: includes/sysnames.inc:217
+#: includes/sysnames.inc:218
 msgid "Dec"
 msgstr ""
 
-#: includes/sysnames.inc:223
+#: includes/sysnames.inc:224
 msgid "Unicode (multilanguage)"
 msgstr ""
 
-#: includes/sysnames.inc:224
+#: includes/sysnames.inc:225
 msgid "Icelandic"
 msgstr ""
 
-#: includes/sysnames.inc:225
+#: includes/sysnames.inc:226
 msgid "Latvian"
 msgstr ""
 
-#: includes/sysnames.inc:226
+#: includes/sysnames.inc:227
 msgid "Romanian"
 msgstr ""
 
-#: includes/sysnames.inc:227
+#: includes/sysnames.inc:228
 msgid "Slovenian"
 msgstr ""
 
-#: includes/sysnames.inc:228
+#: includes/sysnames.inc:229
 msgid "Polish"
 msgstr ""
 
-#: includes/sysnames.inc:229
+#: includes/sysnames.inc:230
 msgid "Estonian"
 msgstr ""
 
-#: includes/sysnames.inc:230
+#: includes/sysnames.inc:231
 msgid "Spanish"
 msgstr ""
 
-#: includes/sysnames.inc:231
+#: includes/sysnames.inc:232
 msgid "Swedish"
 msgstr ""
 
-#: includes/sysnames.inc:232
+#: includes/sysnames.inc:233
 msgid "Turkish"
 msgstr ""
 
-#: includes/sysnames.inc:233
+#: includes/sysnames.inc:234
 msgid "Czech"
 msgstr ""
 
-#: includes/sysnames.inc:234
+#: includes/sysnames.inc:235
 msgid "Danish"
 msgstr ""
 
-#: includes/sysnames.inc:235
+#: includes/sysnames.inc:236
 msgid "Lithuanian"
 msgstr ""
 
-#: includes/sysnames.inc:236
+#: includes/sysnames.inc:237
 msgid "Slovak"
 msgstr ""
 
-#: includes/sysnames.inc:237
+#: includes/sysnames.inc:238
 msgid "Spanish (alternative)"
 msgstr ""
 
-#: includes/sysnames.inc:238
+#: includes/sysnames.inc:239
 msgid "Persian"
 msgstr ""
 
-#: includes/sysnames.inc:239
+#: includes/sysnames.inc:240
 msgid "Hungarian"
 msgstr ""
 
-#: includes/sysnames.inc:240
+#: includes/sysnames.inc:241
 msgid "French"
 msgstr ""
 
-#: includes/sysnames.inc:241
+#: includes/sysnames.inc:242
 msgid "Italian"
 msgstr ""
 
@@ -8420,46 +8424,50 @@ msgstr ""
 msgid "Item ID"
 msgstr ""
 
-#: includes/ui/attachment.inc:141
+#: includes/ui/attachment.inc:137
+msgid "Fixed Asset ID"
+msgstr ""
+
+#: includes/ui/attachment.inc:143
 msgid "File:"
 msgstr ""
 
-#: includes/ui/attachment.inc:141
+#: includes/ui/attachment.inc:143
 #, php-format
 msgid "%s [%s bytes]"
 msgstr ""
 
-#: includes/ui/attachment.inc:142
+#: includes/ui/attachment.inc:144
 msgid "File change"
 msgstr ""
 
-#: includes/ui/attachment.inc:142
+#: includes/ui/attachment.inc:144
 msgid "Select file"
 msgstr ""
 
-#: includes/ui/attachment.inc:171 includes/ui/class.crud_view.inc:298
+#: includes/ui/attachment.inc:173 includes/ui/class.crud_view.inc:298
 #: includes/ui/simple_crud_class.inc:225 includes/ui/ui_input.inc:227
 msgid "Submit changes"
 msgstr ""
 
-#: includes/ui/attachment.inc:173 includes/ui/simple_crud_class.inc:229
+#: includes/ui/attachment.inc:175 includes/ui/simple_crud_class.inc:229
 #: includes/ui/ui_input.inc:230
 msgid "Cancel edition"
 msgstr ""
 
-#: includes/ui/attachment.inc:209 includes/ui/attachment.inc:261
+#: includes/ui/attachment.inc:211 includes/ui/attachment.inc:263
 msgid "The existing Docs could not be removed"
 msgstr ""
 
-#: includes/ui/attachment.inc:226
+#: includes/ui/attachment.inc:228
 msgid "A New Attachment Added Successfully"
 msgstr ""
 
-#: includes/ui/attachment.inc:287
+#: includes/ui/attachment.inc:289
 msgid "Description cannot be empty."
 msgstr ""
 
-#: includes/ui/attachment.inc:317
+#: includes/ui/attachment.inc:319
 msgid "The Selected Attachment is Deleted Successfully"
 msgstr ""
 
@@ -9750,32 +9758,32 @@ msgstr ""
 msgid "New item"
 msgstr ""
 
-#: inventory/manage/items.php:588 inventory/manage/items.php:591
+#: inventory/manage/items.php:588 inventory/manage/items.php:592
 #: purchasing/manage/suppliers.php:321 sales/manage/customers.php:352
 #: sales/manage/customer_branches.php:310
 msgid "&General settings"
 msgstr ""
 
-#: inventory/manage/items.php:589 inventory/manage/items.php:597
+#: inventory/manage/items.php:589 inventory/manage/items.php:598
 #: purchasing/manage/suppliers.php:323 sales/manage/customers.php:354
 msgid "&Transactions"
 msgstr ""
 
-#: inventory/manage/items.php:592
-msgid "S&ales Pricing"
+#: inventory/manage/items.php:590 inventory/manage/items.php:601
+#: purchasing/manage/suppliers.php:325 sales/manage/customers.php:356
+msgid "Attachments"
 msgstr ""
 
 #: inventory/manage/items.php:593
+msgid "S&ales Pricing"
+msgstr ""
+
+#: inventory/manage/items.php:594
 msgid "&Purchasing Pricing"
 msgstr ""
 
-#: inventory/manage/items.php:599
+#: inventory/manage/items.php:600
 msgid "&Status"
-msgstr ""
-
-#: inventory/manage/items.php:600 purchasing/manage/suppliers.php:325
-#: sales/manage/customers.php:356
-msgid "Attachments"
 msgstr ""
 
 #: inventory/manage/item_categories.php:47
