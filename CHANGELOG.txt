@@ -1,3 +1,148 @@
+2023-05-03 10:59:32 +0200 Joe 
+Release 2.4.16
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
+2023-05-01 00:50:32 +0200 Joe 
+Rerun of items attachments. Including fixed assets.
+M	admin/attachments.php
+M	admin/db/attachments_db.inc
+M	admin/db/transactions_db.inc
+M	includes/sysnames.inc
+M	includes/types.inc
+M	includes/ui/attachment.inc
+M	inventory/manage/items.php
+
+2023-04-30 17:52:54 +0200 Joe 
+Rerun of setup item Attachment. admin/attqachments.php.
+M	admin/attachments.php
+
+2023-04-30 15:04:25 +0200 Joe 
+Rerun fixed_assets attachments (items.php)
+M	inventory/manage/items.php
+
+2023-04-30 14:14:28 +0200 Joe 
+New empty.po after adding item attachments
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2023-04-30 13:38:11 +0200 Joe 
+Implemented an Items tab for attachments and modified the existing setup attachments.
+M	admin/attachments.php
+M	admin/db/attachments_db.inc
+M	admin/db/transactions_db.inc
+M	includes/sysnames.inc
+M	includes/types.inc
+M	includes/ui/attachment.inc
+M	inventory/includes/db/items_db.inc
+M	inventory/manage/items.php
+
+2023-04-28 23:28:39 +0200 Joe 
+Bug 5694: Request Various Attachment Changes. Fixed the most.
+M	includes/ui/attachment.inc
+
+2023-04-28 17:49:54 +0200 Joe 
+Rerun of Supplier Inquiry Aging. Optimizing.
+M	purchasing/includes/db/suppliers_db.inc
+M	reporting/rep202.php
+
+2023-04-28 14:53:39 +0200 Joe 
+Bug 5697: In Supplier Transaction Inquiry, Aging balances are Incorrect. Fixed.
+M	purchasing/inquiry/supplier_inquiry.php
+
+2023-04-28 10:44:35 +0200 Joe 
+Bug 5682: Voided Invoices and PO Deliveries showing up in inquiries. Fixed.
+M	purchasing/inquiry/supplier_inquiry.php
+M	purchasing/view/view_po.php
+
+2023-04-27 17:45:10 +0200 Joe 
+Bug 5698: Rep302 Spelling Mistake. Fixed.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	reporting/rep302.php
+
+2023-04-27 17:34:39 +0200 Joe 
+Allow fractional entry of Purchase Order Line Price. Upot 6 decimals.
+M	inventory/purchasing_data.php
+M	purchasing/includes/ui/po_ui.inc
+
+2023-04-27 17:32:38 +0200 Joe 
+Bug 5695: Purchase Order Item Description should be saved on the PO line description directly. Fixed.
+M	purchasing/includes/db/po_db.inc
+M	purchasing/includes/po_class.inc
+M	purchasing/includes/purchasing_db.inc
+M	purchasing/view/view_po.php
+M	reporting/rep209.php
+
+2023-04-19 07:24:56 +0200 Joe 
+Supplier description is overwritten when receiving items. Fixed.
+M	purchasing/includes/purchasing_db.inc
+
+2023-04-16 10:06:09 +0200 Joe 
+The average material cost test for either qoh > 0 and qoh + qty > 0 has changed to 0.0000000001 to avoid strange php results for very small values.
+M	purchasing/includes/db/grn_db.inc
+
+2023-04-15 11:27:08 +0200 Joe 
+Changed get_unic_dec to get_qty_dec for eliminating return -1.
+M	sales/customer_delivery.php
+M	sales/customer_invoice.php
+
+2023-04-14 10:17:54 +0200 Joe 
+New translatable strings in locations.php.
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2023-04-14 10:09:26 +0200 Joe 
+0005692: Translatable Strings in locations.php were not translatable. Fixed.
+M	inventory/manage/locations.php
+
+2023-04-04 16:54:53 +0200 Joe 
+Bug 5685: Bank Statement w/Reconcile report includes gl_trans values that are "0.00". Fixed.
+M	reporting/rep601.php
+M	reporting/rep602.php
+
+2023-04-01 14:29:21 +0200 Joe 
+Bug 5687: Unable to dispatch SO for service items with u/m decimal places set as "user defined" when SO item qty is less than 5. Fixed.
+M	sales/customer_delivery.php
+
+2023-03-29 10:24:38 +0200 Joe 
+Annoyance 5683: Allow attachments from most needed post-creation option screens.
+M	purchasing/po_entry_items.php
+M	purchasing/po_receive_items.php
+M	sales/customer_delivery.php
+M	sales/sales_order_entry.php
+
+2023-03-25 22:50:30 +0100 Joe 
+Rerun. Attach documents: error message when attaching document on some php8 versions fixed.
+M	includes/ui/simple_crud_class.inc
+
+2023-03-25 21:48:17 +0100 Janusz Dobrowolski 
+[0005684] Attach documents: error message when attaching document on some php8 versions fixed.
+M	includes/ui/simple_crud_class.inc
+
+2023-03-18 09:17:06 +0100 Janusz Dobrowolski 
+[0005679] Supplier Invoices: error when second invoice to GRN was entered, fixed.
+M	purchasing/includes/db/invoice_db.inc
+
+2023-03-08 00:48:48 +0100 Joe 
+Bug 5678: Customer/Supplier Transactions Ageing Display Calculates Incorrectly (including full allocs) in Customer/Supplier Inquiries. Fixed.
+M	purchasing/inquiry/supplier_inquiry.php
+M	sales/inquiry/customer_inquiry.php
+
+2023-03-03 16:10:01 +0100 Joe 
+bug. Supplier Payment db calls void_cust_allocations. Fixed to void_supp_allocations.
+M	purchasing/includes/db/supp_payment_db.inc
+
+2023-02-28 11:00:12 +0100 Joe 
+Bug 5676: Currency stored in MySQL DOUBLE Type causes strange error. Fixed by explicitly SQL ROUND to price dec in updating allocations.
+M	purchasing/includes/db/suppalloc_db.inc
+M	sales/includes/db/custalloc_db.inc
+
+2023-02-24 10:49:28 +0100 Joe 
+Bug. add_domain function generates a big list of not found domain file errors. Fixed.
+M	includes/lang/gettext.inc
+
+2023-02-24 09:44:24 +0100 Joe 
+New CHANGELOG.txt
+M	CHANGELOG.txt
+
 2023-02-24 09:42:00 +0100 Joe 
 Release 2.4.15
 M	lang/new_language_template/LC_MESSAGES/empty.po
