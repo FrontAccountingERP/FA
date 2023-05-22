@@ -136,11 +136,11 @@ function print_supplier_balances()
 	$total = array();
 	$grandtotal = array(0,0,0,0);
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code, inactive FROM ".TB_PREF."suppliers";
 	if ($fromsupp != ALL_TEXT)
 		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
 	$sql .= " ORDER BY supp_name";
-	$result = db_query($sql, "The customers could not be retrieved");
+	$result = db_query($sql, "The suppliers could not be retrieved");
 
 	while ($myrow=db_fetch($result))
 	{
@@ -164,7 +164,7 @@ function print_supplier_balances()
 		if ($no_zeros && db_num_rows($res) == 0) continue;
 
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow['name'].($myrow['inactive']==1 ? " ("._("Inactive").")" : ""));
 		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
 		$rep->TextCol(3, 4,	_("Open Balance"));

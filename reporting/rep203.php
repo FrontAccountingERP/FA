@@ -107,11 +107,11 @@ function print_payment_report()
 	$total = array();
 	$grandtotal = array(0,0);
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code, s.inactive, pt.terms FROM ".TB_PREF."suppliers s, ".TB_PREF."payment_terms pt
 		WHERE ";
 	if ($fromsupp != ALL_TEXT)
 		$sql .= "supplier_id=".db_escape($fromsupp)." AND ";
-	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+	$sql .= "s.payment_terms = pt.terms_indicator
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 
@@ -123,7 +123,7 @@ function print_payment_report()
 		if ($no_zeros && db_num_rows($res)==0) continue;
 
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 6, $myrow['name'] . " - " . $myrow['terms']);
+		$rep->TextCol(0, 6, $myrow['name'].($myrow['inactive']==1 ? " ("._("Inactive").")" : "") . " - " . $myrow['terms']);
 		if ($convert)
 			$rep->TextCol(6, 7,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
