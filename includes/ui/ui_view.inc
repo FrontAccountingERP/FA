@@ -12,6 +12,10 @@
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 include_once($path_to_root . "/includes/types.inc");
 
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/gl/includes/gl_db_rates.inc");
+
 //--------------------------------------------------------------------------------------
 
 function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false, 
@@ -1526,27 +1530,55 @@ function display_backtrace($cond=true, $msg='') {
 //
 if (!isset($payment_services))
 {
-	$payment_services = array(
-		'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
-	);
+    $payment_services = array(
+        'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
+        'XUMM' => "https://xumm.app/detect/request:{{account}}?amount=<amount>"
+    );
 }
+
 /*
-*	Payment link generation. Options provided during invoice generation:
-*	company_email, comment, amount, currency
+*   Payment link generation. Options provided during invoice generation:
+*   company_email, comment, amount, currency
 */
 function payment_link($name, $options)
 {
-	global $payment_services;
+    global $payment_services, $db;
 
-	$link = @$payment_services[$name];
+    $link = @$payment_services[$name];
 
-	if (!$link) return null;
+    if (!$link) return null;
 
-	$patterns = array();
-	foreach ($options as $id => $option)
-		$patterns['<'.$id.'>'] = urlencode($options[$id]);
+    $patterns = array();
+    foreach ($options as $id => $option)
+        $patterns['<'.$id.'>'] = urlencode($options[$id]);
 
-	return strtr($link, $patterns);
+    if ($name == 'XUMM')
+    {
+        // Get the account number for 'XRPL Account' from 'bank_accounts' table
+        $sql = "SELECT bank_account_number FROM ".TB_PREF."bank_accounts WHERE bank_account_name = 'XRPL Account'";
+        $result = db_query($sql, "could not retrieve XRPL Account bank account number");
+        $row = db_fetch($result);
+        $account = $row['bank_account_number'];
+
+        // Replace the {{account}} placeholder in the XUMM URL with the extracted account value
+        $link = str_replace('{{account}}', urlencode($account), $link);
+        
+        // Extract XRP exchange rate
+        $curr_code = 'XRP';
+        $date = date('Y-m-d'); // Get the current date in 'YYYY-MM-DD' format
+        $sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code = '$curr_code' AND date_ = '$date'";
+        $result = db_query($sql, "could not retrieve exchange rate for $curr_code - $date");
+        $row = db_fetch($result);
+        $exchange_rate = $row['rate_buy'];
+
+        // Divide the amount by the exchange rate
+        $options['amount'] /= $exchange_rate;
+
+        // Replace the <amount> placeholder in the XUMM URL with the modified amount value
+        $link = str_replace('<amount>', urlencode($options['amount']), $link);
+    }
+
+    return strtr($link, $patterns);
 }
 
 function trans_editor_link($type, $trans_no)
