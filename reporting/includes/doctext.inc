@@ -114,7 +114,7 @@
 
 		case ST_SALESINVOICE:
 			$this->title = $this->formData['prepaid']=='partial' ? _("PREPAYMENT INVOICE")
-				: ($this->formData['prepaid']=='final' ? _("FINAL INVOICE")  : _("INVOICE"));
+				: ($this->formData['prepaid']=='final' ? _("FINAL INVOICE")  : _("TAX INVOICE"));
 			$this->formData['document_name'] =_("Invoice No.");
 			$this->formData['domicile'] = $this->company['domicile'];
 			$Footer[0] = _("Please quote Invoice no. when paying. All amounts stated in"). " - " . $this->formData['curr_code'];
