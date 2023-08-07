@@ -60,7 +60,7 @@ file for later presentation.
 	Joe Hunt
 */
 define('MAXLEN', 27); // we cut after 25 chars + ...
-class Chart 
+class Chart extends \stdClass
 {
 	var $id;
 	var $labels = array();
