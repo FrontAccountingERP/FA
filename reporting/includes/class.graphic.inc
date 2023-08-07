@@ -60,7 +60,7 @@ file for later presentation.
 	Joe Hunt
 */
 define('MAXLEN', 27); // we cut after 25 chars + ...
-class Chart extends \stdClass
+class Chart
 {
 	var $id;
 	var $labels = array();
@@ -102,6 +102,23 @@ class Chart extends \stdClass
 	var $lang;
 	var $font;
 	var $path;
+	var $bar_width = 0;
+	var $space_between_dots	= 0;
+	var $higher_value = 0;
+	var $higher_value_str = null;
+	var $graphic_area_width	= 0;
+	var $graphic_area_height = 0;
+	var $graphic_area_x1 = 0;
+	var $graphic_area_x2 = 0;
+	var $graphic_area_y1 = 0;
+	var $graphic_area_y2 = 0;
+	var $legend_exists = false;
+	var $legend_box_width = 0;
+	var $legend_box_x1 = 0;
+	var $legend_box_x2 = 0;
+	var $legend_box_y1 = 0;
+	var $legend_box_y2 = 0;
+
 
 	function __construct($type = 1, $id = 'id', $width = 0, $height = 0)
 	{
