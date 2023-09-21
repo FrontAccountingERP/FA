@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 10:56+0200\n"
+"POT-Creation-Date: 2023-09-21 14:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: admin/attachments.php:187 sales/allocations/customer_allocation_main.php:32
 #: sales/inquiry/customer_allocation_inquiry.php:42
-#: sales/inquiry/customer_inquiry.php:159
+#: sales/inquiry/customer_inquiry.php:161
 #: sales/inquiry/sales_deliveries_view.php:115
 #: sales/inquiry/sales_orders_view.php:252 sales/manage/customers.php:331
 #: sales/manage/customer_branches.php:270
@@ -206,7 +206,7 @@ msgstr ""
 #: gl/manage/gl_quick_entries.php:201 gl/manage/gl_quick_entries.php:303
 #: includes/ui/attachment.inc:94 includes/ui/class.crud_view.inc:290
 #: includes/ui/contacts_view.inc:61 includes/ui/simple_crud_class.inc:52
-#: includes/ui/ui_view.inc:1583 inventory/prices.php:163
+#: includes/ui/ui_view.inc:1619 inventory/prices.php:163
 #: inventory/purchasing_data.php:168
 #: inventory/includes/item_adjustments_ui.inc:106
 #: inventory/includes/stock_transfers_ui.inc:85
@@ -279,7 +279,7 @@ msgstr ""
 #: fixed_assets/inquiry/stock_inquiry.php:165 gl/bank_account_reconcile.php:267
 #: gl/inquiry/bank_inquiry.php:71 gl/inquiry/gl_account_inquiry.php:128
 #: gl/inquiry/journal_inquiry.php:112 gl/inquiry/journal_inquiry.php:127
-#: includes/ui/allocation_cart.inc:311
+#: includes/ui/allocation_cart.inc:312
 #: inventory/inquiry/stock_movements.php:104
 #: manufacturing/search_work_orders.php:164
 #: manufacturing/includes/manufacturing_ui.inc:174
@@ -292,7 +292,7 @@ msgstr ""
 #: purchasing/inquiry/po_search.php:117
 #: purchasing/inquiry/po_search_completed.php:119
 #: purchasing/inquiry/supplier_allocation_inquiry.php:137
-#: purchasing/inquiry/supplier_inquiry.php:177 purchasing/view/view_po.php:117
+#: purchasing/inquiry/supplier_inquiry.php:180 purchasing/view/view_po.php:117
 #: purchasing/view/view_po.php:144 reporting/rep101.php:137
 #: reporting/rep201.php:115 reporting/rep203.php:88 reporting/rep306.php:138
 #: reporting/rep310.php:139 reporting/rep601.php:80 reporting/rep602.php:81
@@ -301,7 +301,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:209 reporting/includes/doctext.inc:247
 #: sales/allocations/customer_allocation_main.php:93
 #: sales/inquiry/customer_allocation_inquiry.php:148
-#: sales/inquiry/customer_inquiry.php:200 sales/view/view_sales_order.php:111
+#: sales/inquiry/customer_inquiry.php:202 sales/view/view_sales_order.php:111
 #: sales/view/view_sales_order.php:144 sales/view/view_sales_order.php:181
 msgid "#"
 msgstr ""
@@ -1010,7 +1010,7 @@ msgstr ""
 #: admin/create_coy.php:337 admin/inst_chart.php:78 admin/inst_chart.php:80
 #: admin/inst_lang.php:87 admin/inst_lang.php:90 admin/inst_module.php:118
 #: admin/inst_theme.php:76 admin/inst_theme.php:78
-#: gl/manage/gl_account_types.php:195 includes/ui/allocation_cart.inc:337
+#: gl/manage/gl_account_types.php:195 includes/ui/allocation_cart.inc:338
 #: inventory/manage/items.php:468
 msgid "None"
 msgstr ""
@@ -1343,7 +1343,7 @@ msgstr ""
 
 #: admin/fiscalyears.php:138 dimensions/inquiry/search_dimensions.php:137
 #: dimensions/inquiry/search_dimensions.php:144 includes/ui/ui_lists.inc:763
-#: includes/ui/ui_view.inc:1582 manufacturing/search_work_orders.php:116
+#: includes/ui/ui_view.inc:1618 manufacturing/search_work_orders.php:116
 #: reporting/rep402.php:136 reporting/rep501.php:87 reporting/rep710.php:114
 #: reporting/includes/excel_report.inc:231
 #: reporting/includes/pdf_report.inc:268
@@ -1510,7 +1510,7 @@ msgstr ""
 #: purchasing/includes/ui/po_ui.inc:302 purchasing/inquiry/po_search.php:118
 #: purchasing/inquiry/po_search_completed.php:120
 #: purchasing/inquiry/supplier_allocation_inquiry.php:138
-#: purchasing/inquiry/supplier_inquiry.php:178 purchasing/view/view_po.php:117
+#: purchasing/inquiry/supplier_inquiry.php:181 purchasing/view/view_po.php:117
 #: purchasing/view/view_supp_credit.php:43
 #: purchasing/view/view_supp_invoice.php:50
 #: purchasing/view/view_supp_payment.php:76 reporting/rep501.php:87
@@ -1524,7 +1524,7 @@ msgstr ""
 #: sales/includes/ui/sales_credit_ui.inc:83
 #: sales/includes/ui/sales_order_ui.inc:361
 #: sales/inquiry/customer_allocation_inquiry.php:149
-#: sales/inquiry/customer_inquiry.php:202
+#: sales/inquiry/customer_inquiry.php:204
 #: sales/inquiry/sales_deliveries_view.php:174 sales/view/view_dispatch.php:85
 #: sales/view/view_invoice.php:88 sales/view/view_receipt.php:42
 #: sales/view/view_sales_order.php:96
@@ -2032,7 +2032,7 @@ msgstr ""
 #: manufacturing/includes/manufacturing_ui.inc:295
 #: manufacturing/includes/manufacturing_ui.inc:346
 #: purchasing/inquiry/supplier_allocation_inquiry.php:136
-#: purchasing/inquiry/supplier_inquiry.php:176 reporting/rep102.php:127
+#: purchasing/inquiry/supplier_inquiry.php:179 reporting/rep102.php:127
 #: reporting/rep202.php:138 reporting/rep402.php:136 reporting/rep501.php:87
 #: reporting/rep601.php:80 reporting/rep602.php:81 reporting/rep702.php:60
 #: reporting/rep704.php:79 reporting/rep704.php:87 reporting/rep704.php:95
@@ -2041,7 +2041,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:161 reporting/includes/doctext.inc:204
 #: reporting/includes/doctext.inc:223
 #: sales/inquiry/customer_allocation_inquiry.php:147
-#: sales/inquiry/customer_inquiry.php:199
+#: sales/inquiry/customer_inquiry.php:201
 msgid "Type"
 msgstr ""
 
@@ -2529,11 +2529,11 @@ msgstr ""
 #: purchasing/inquiry/po_search_completed.php:108
 #: purchasing/inquiry/suppliers_list.php:42
 #: purchasing/inquiry/supplier_allocation_inquiry.php:57
-#: purchasing/inquiry/supplier_inquiry.php:149
+#: purchasing/inquiry/supplier_inquiry.php:152
 #: sales/inquiry/customers_list.php:42
 #: sales/inquiry/customer_allocation_inquiry.php:51
 #: sales/inquiry/customer_branches_list.php:38
-#: sales/inquiry/customer_inquiry.php:170
+#: sales/inquiry/customer_inquiry.php:172
 #: sales/inquiry/sales_deliveries_view.php:117
 #: sales/inquiry/sales_orders_view.php:256
 msgid "Search"
@@ -2560,7 +2560,7 @@ msgstr ""
 #: gl/inquiry/journal_inquiry.php:113 gl/view/accrual_trans.php:52
 #: gl/view/bank_transfer_view.php:86 gl/view/gl_deposit_view.php:71
 #: gl/view/gl_payment_view.php:69 includes/dashboard.inc:1011
-#: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:311
+#: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:312
 #: includes/ui/attachment.inc:140 includes/ui/ui_view.inc:552
 #: inventory/inquiry/stock_movements.php:109
 #: inventory/view/view_adjustment.php:44 inventory/view/view_transfer.php:37
@@ -2579,7 +2579,7 @@ msgstr ""
 #: purchasing/includes/ui/invoice_ui.inc:115
 #: purchasing/includes/ui/po_ui.inc:316
 #: purchasing/inquiry/supplier_allocation_inquiry.php:141
-#: purchasing/inquiry/supplier_inquiry.php:181 purchasing/view/view_po.php:144
+#: purchasing/inquiry/supplier_inquiry.php:184 purchasing/view/view_po.php:144
 #: reporting/rep101.php:137 reporting/rep107.php:226 reporting/rep201.php:115
 #: reporting/rep306.php:138 reporting/rep310.php:139 reporting/rep402.php:136
 #: reporting/rep402.php:141 reporting/rep501.php:87 reporting/rep601.php:80
@@ -2590,7 +2590,7 @@ msgstr ""
 #: sales/customer_delivery.php:368 sales/customer_invoice.php:486
 #: sales/allocations/customer_allocation_main.php:95
 #: sales/inquiry/customer_allocation_inquiry.php:151
-#: sales/inquiry/customer_inquiry.php:203 sales/view/view_credit.php:69
+#: sales/inquiry/customer_inquiry.php:205 sales/view/view_credit.php:69
 #: sales/view/view_sales_order.php:111 sales/view/view_sales_order.php:144
 #: sales/view/view_sales_order.php:181
 msgid "Date"
@@ -2840,56 +2840,56 @@ msgid ""
 "closed."
 msgstr ""
 
-#: admin/db/voiding_db.inc:130 purchasing/inquiry/supplier_inquiry.php:85
+#: admin/db/voiding_db.inc:130 purchasing/inquiry/supplier_inquiry.php:88
 #: sales/includes/db/sales_invoice_db.inc:254
 msgid "Voided."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:98
+#: admin/includes/fa_patch.class.inc:99
 #, php-format
 msgid "Uncompatible extension '%s' disabled for company %d."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:119
+#: admin/includes/fa_patch.class.inc:120
 #, php-format
 msgid "Upgrade started for company %s."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:122
+#: admin/includes/fa_patch.class.inc:123
 msgid "Cannot connect to company database."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:126
+#: admin/includes/fa_patch.class.inc:127
 #, php-format
 msgid ""
 "Cannot upgrade company %s: database version is incompatible ('%s' instead of "
 "'%s')."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:141
+#: admin/includes/fa_patch.class.inc:142
 msgid "Security backup failed."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:143
+#: admin/includes/fa_patch.class.inc:144
 #, php-format
 msgid "Security backup in file %s done."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:191
+#: admin/includes/fa_patch.class.inc:192
 msgid "Cannot connect to company database for database restore."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:196
+#: admin/includes/fa_patch.class.inc:197
 msgid "Upgrade failed. Original database content restored successfully."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:198
+#: admin/includes/fa_patch.class.inc:199
 #, php-format
 msgid ""
 "Database restore operation failed. Original database content is in %s file."
 msgstr ""
 
-#: admin/includes/fa_patch.class.inc:205
+#: admin/includes/fa_patch.class.inc:206
 #, php-format
 msgid "Upgrade for company %s finished."
 msgstr ""
@@ -3751,15 +3751,15 @@ msgstr ""
 #: includes/dashboard.inc:624 includes/dashboard.inc:649
 #: includes/dashboard.inc:1176
 #: purchasing/inquiry/supplier_allocation_inquiry.php:147
-#: purchasing/inquiry/supplier_inquiry.php:185
-#: purchasing/inquiry/supplier_inquiry.php:198 reporting/rep101.php:141
+#: purchasing/inquiry/supplier_inquiry.php:188
+#: purchasing/inquiry/supplier_inquiry.php:201 reporting/rep101.php:141
 #: reporting/rep115.php:164 reporting/rep201.php:119 reporting/rep203.php:89
 #: reporting/rep204.php:84 reporting/rep206.php:116 reporting/rep307.php:114
 #: reporting/rep601.php:81 reporting/rep602.php:82 reporting/rep701.php:110
 #: reporting/rep704.php:80 reporting/rep704.php:88 reporting/rep704.php:96
 #: reporting/rep708.php:185 sales/inquiry/customer_allocation_inquiry.php:158
-#: sales/inquiry/customer_inquiry.php:209
-#: sales/inquiry/customer_inquiry.php:222
+#: sales/inquiry/customer_inquiry.php:211
+#: sales/inquiry/customer_inquiry.php:224
 msgid "Balance"
 msgstr ""
 
@@ -3790,7 +3790,7 @@ msgid "Reference:"
 msgstr ""
 
 #: dimensions/inquiry/search_dimensions.php:75
-#: includes/ui/allocation_cart.inc:335 includes/ui/ui_lists.inc:2127
+#: includes/ui/allocation_cart.inc:336 includes/ui/ui_lists.inc:2127
 #: reporting/rep101.php:116 reporting/rep102.php:89 reporting/rep104.php:95
 #: reporting/rep104.php:99 reporting/rep105.php:96 reporting/rep105.php:100
 #: reporting/rep115.php:131 reporting/rep201.php:97 reporting/rep202.php:99
@@ -3814,8 +3814,8 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:55 gl/inquiry/journal_inquiry.php:48
 #: gl/inquiry/profit_loss.php:175 inventory/inquiry/stock_movements.php:85
 #: purchasing/inquiry/supplier_allocation_inquiry.php:50
-#: purchasing/inquiry/supplier_inquiry.php:145
-#: sales/inquiry/customer_inquiry.php:165
+#: purchasing/inquiry/supplier_inquiry.php:148
+#: sales/inquiry/customer_inquiry.php:167
 msgid "From:"
 msgstr ""
 
@@ -3823,8 +3823,8 @@ msgstr ""
 #: gl/inquiry/gl_trial_balance.php:56 gl/inquiry/journal_inquiry.php:49
 #: gl/inquiry/profit_loss.php:176 inventory/inquiry/stock_movements.php:86
 #: purchasing/inquiry/supplier_allocation_inquiry.php:51
-#: purchasing/inquiry/supplier_inquiry.php:146
-#: sales/inquiry/customer_inquiry.php:166
+#: purchasing/inquiry/supplier_inquiry.php:149
+#: sales/inquiry/customer_inquiry.php:168
 msgid "To:"
 msgstr ""
 
@@ -3840,10 +3840,10 @@ msgstr ""
 
 #: dimensions/inquiry/search_dimensions.php:136
 #: dimensions/view/view_dimension.php:55 includes/dashboard.inc:1011
-#: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:311
+#: includes/dashboard.inc:1095 includes/ui/allocation_cart.inc:312
 #: purchasing/includes/ui/invoice_ui.inc:136
 #: purchasing/inquiry/supplier_allocation_inquiry.php:142
-#: purchasing/inquiry/supplier_inquiry.php:182
+#: purchasing/inquiry/supplier_inquiry.php:185
 #: purchasing/view/view_supp_credit.php:48
 #: purchasing/view/view_supp_invoice.php:55 reporting/rep101.php:137
 #: reporting/rep201.php:115 reporting/rep203.php:88 reporting/rep501.php:87
@@ -3852,7 +3852,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:207 reporting/includes/doctext.inc:209
 #: sales/customer_invoice.php:493 sales/includes/ui/sales_order_ui.inc:595
 #: sales/inquiry/customer_allocation_inquiry.php:152
-#: sales/inquiry/customer_inquiry.php:204 sales/view/view_dispatch.php:97
+#: sales/inquiry/customer_inquiry.php:206 sales/view/view_dispatch.php:97
 #: sales/view/view_invoice.php:99 sales/view/view_sales_order.php:71
 msgid "Due Date"
 msgstr ""
@@ -4047,9 +4047,9 @@ msgstr ""
 #: inventory/inquiry/stock_movements.php:88
 #: purchasing/includes/ui/invoice_ui.inc:483
 #: purchasing/inquiry/supplier_allocation_inquiry.php:57
-#: purchasing/inquiry/supplier_inquiry.php:149
+#: purchasing/inquiry/supplier_inquiry.php:152
 #: sales/inquiry/customer_allocation_inquiry.php:51
-#: sales/inquiry/customer_inquiry.php:170
+#: sales/inquiry/customer_inquiry.php:172
 msgid "Refresh Inquiry"
 msgstr ""
 
@@ -4263,20 +4263,20 @@ msgstr ""
 #: gl/view/gl_payment_view.php:113 includes/dashboard.inc:444
 #: includes/dashboard.inc:486 includes/dashboard.inc:558
 #: includes/dashboard.inc:978 includes/dashboard.inc:983
-#: includes/sysnames.inc:142 includes/ui/allocation_cart.inc:311
+#: includes/sysnames.inc:142 includes/ui/allocation_cart.inc:312
 #: includes/ui/ui_lists.inc:1375
 #: manufacturing/includes/manufacturing_ui.inc:253
 #: purchasing/includes/ui/invoice_ui.inc:278
 #: purchasing/includes/ui/invoice_ui.inc:280
 #: purchasing/includes/ui/invoice_ui.inc:282
-#: purchasing/inquiry/supplier_inquiry.php:184
+#: purchasing/inquiry/supplier_inquiry.php:187
 #: purchasing/view/view_supp_payment.php:63
 #: purchasing/view/view_supp_payment.php:75 reporting/rep102.php:234
 #: reporting/rep107.php:228 reporting/rep107.php:293 reporting/rep109.php:181
 #: reporting/rep110.php:194 reporting/rep111.php:196 reporting/rep113.php:183
 #: reporting/rep202.php:253 reporting/rep209.php:197 reporting/rep706.php:314
 #: reporting/rep707.php:330 reporting/rep710.php:78
-#: sales/inquiry/customer_inquiry.php:208 sales/view/view_receipt.php:47
+#: sales/inquiry/customer_inquiry.php:210 sales/view/view_receipt.php:47
 msgid "Amount"
 msgstr ""
 
@@ -5318,7 +5318,7 @@ msgstr ""
 #: purchasing/includes/ui/grn_ui.inc:34 purchasing/includes/ui/grn_ui.inc:77
 #: purchasing/includes/ui/po_ui.inc:332 purchasing/inquiry/po_search.php:121
 #: purchasing/inquiry/po_search_completed.php:123
-#: purchasing/inquiry/supplier_inquiry.php:180
+#: purchasing/inquiry/supplier_inquiry.php:183
 #: purchasing/view/view_supp_credit.php:44
 #: purchasing/view/view_supp_invoice.php:51 reporting/includes/doctext.inc:163
 #: reporting/includes/doctext.inc:186
@@ -5441,8 +5441,8 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:143
 #: purchasing/inquiry/supplier_allocation_inquiry.php:153
 #: purchasing/inquiry/supplier_inquiry.php:50
-#: purchasing/inquiry/supplier_inquiry.php:183
-#: purchasing/inquiry/supplier_inquiry.php:195
+#: purchasing/inquiry/supplier_inquiry.php:186
+#: purchasing/inquiry/supplier_inquiry.php:198
 #: purchasing/view/view_supp_credit.php:49
 #: purchasing/view/view_supp_invoice.php:57 reporting/rep101.php:148
 #: reporting/rep102.php:126 reporting/rep102.php:132 reporting/rep103.php:229
@@ -5455,8 +5455,8 @@ msgstr ""
 #: sales/inquiry/customer_allocation_inquiry.php:154
 #: sales/inquiry/customer_allocation_inquiry.php:164
 #: sales/inquiry/customer_inquiry.php:126
-#: sales/inquiry/customer_inquiry.php:207
-#: sales/inquiry/customer_inquiry.php:219
+#: sales/inquiry/customer_inquiry.php:209
+#: sales/inquiry/customer_inquiry.php:221
 #: sales/inquiry/sales_deliveries_view.php:179
 #: sales/inquiry/sales_orders_view.php:282
 #: sales/inquiry/sales_orders_view.php:296 sales/view/view_credit.php:70
@@ -6922,8 +6922,8 @@ msgstr ""
 #: sales/inquiry/customers_list.php:41 sales/inquiry/customers_list.php:54
 #: sales/inquiry/customer_allocation_inquiry.php:153
 #: sales/inquiry/customer_allocation_inquiry.php:163
-#: sales/inquiry/customer_inquiry.php:205
-#: sales/inquiry/customer_inquiry.php:218
+#: sales/inquiry/customer_inquiry.php:207
+#: sales/inquiry/customer_inquiry.php:220
 #: sales/inquiry/sales_deliveries_view.php:170
 #: sales/inquiry/sales_orders_view.php:274
 #: sales/inquiry/sales_orders_view.php:288
@@ -6967,8 +6967,8 @@ msgstr ""
 #: purchasing/inquiry/suppliers_list.php:53
 #: purchasing/inquiry/supplier_allocation_inquiry.php:139
 #: purchasing/inquiry/supplier_allocation_inquiry.php:152
-#: purchasing/inquiry/supplier_inquiry.php:179
-#: purchasing/inquiry/supplier_inquiry.php:194
+#: purchasing/inquiry/supplier_inquiry.php:182
+#: purchasing/inquiry/supplier_inquiry.php:197
 #: purchasing/view/view_supp_credit.php:42
 #: purchasing/view/view_supp_invoice.php:49 reporting/rep201.php:124
 #: reporting/rep202.php:129 reporting/rep202.php:136 reporting/rep203.php:95
@@ -7250,7 +7250,7 @@ msgstr ""
 #: sales/customer_credit_invoice.php:235 sales/customer_delivery.php:329
 #: sales/customer_invoice.php:433 sales/inquiry/customer_branches_list.php:37
 #: sales/inquiry/customer_branches_list.php:49
-#: sales/inquiry/customer_inquiry.php:206
+#: sales/inquiry/customer_inquiry.php:208
 #: sales/inquiry/sales_deliveries_view.php:172
 #: sales/inquiry/sales_orders_view.php:275
 #: sales/inquiry/sales_orders_view.php:289 sales/manage/customers.php:256
@@ -7283,9 +7283,9 @@ msgstr ""
 
 #: includes/dashboard.inc:1124
 #: purchasing/inquiry/supplier_allocation_inquiry.php:158
-#: purchasing/inquiry/supplier_inquiry.php:202 purchasing/view/view_po.php:102
+#: purchasing/inquiry/supplier_inquiry.php:205 purchasing/view/view_po.php:102
 #: sales/inquiry/customer_allocation_inquiry.php:168
-#: sales/inquiry/customer_inquiry.php:225
+#: sales/inquiry/customer_inquiry.php:227
 #: sales/inquiry/sales_deliveries_view.php:196
 #: sales/inquiry/sales_orders_view.php:334
 msgid "Marked items are overdue."
@@ -8336,22 +8336,22 @@ msgstr ""
 msgid "Zero/negative inventory handling"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:309
+#: includes/ui/allocation_cart.inc:310
 #, php-format
 msgid "Allocated amounts in %s:"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:311
+#: includes/ui/allocation_cart.inc:312
 #: purchasing/allocations/supplier_allocation_main.php:94
 #: sales/allocations/customer_allocation_main.php:92
 msgid "Transaction Type"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:311
+#: includes/ui/allocation_cart.inc:312
 msgid "Supplier Ref"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:311 reporting/rep704.php:79
+#: includes/ui/allocation_cart.inc:312 reporting/rep704.php:79
 #: reporting/rep704.php:87 reporting/rep704.php:95 reporting/rep709.php:117
 #: sales/inquiry/customer_branches_list.php:49
 #: sales/inquiry/sales_orders_view.php:234
@@ -8362,11 +8362,11 @@ msgstr ""
 msgid "Ref"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:312
+#: includes/ui/allocation_cart.inc:313
 msgid "Other Allocations"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:312 includes/ui/allocation_cart.inc:358
+#: includes/ui/allocation_cart.inc:313 includes/ui/allocation_cart.inc:359
 #: includes/ui/ui_view.inc:553
 #: purchasing/allocations/supplier_allocation_main.php:101
 #: reporting/rep112.php:159 reporting/rep210.php:157
@@ -8375,29 +8375,29 @@ msgstr ""
 msgid "Left to Allocate"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:312 includes/ui/ui_view.inc:553
+#: includes/ui/allocation_cart.inc:313 includes/ui/ui_view.inc:553
 #: reporting/includes/doctext.inc:166 reporting/includes/doctext.inc:209
 msgid "This Allocation"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:345 reporting/rep112.php:156
+#: includes/ui/allocation_cart.inc:346 reporting/rep112.php:156
 #: reporting/rep210.php:154
 msgid "Total Allocated"
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:379
+#: includes/ui/allocation_cart.inc:380
 msgid "The entry for one or more amounts is invalid or negative."
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:390
+#: includes/ui/allocation_cart.inc:391
 msgid "At least one transaction is overallocated."
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:402 includes/ui/allocation_cart.inc:412
+#: includes/ui/allocation_cart.inc:403 includes/ui/allocation_cart.inc:413
 msgid "Allocated transaction allocated is not related to company selected."
 msgstr ""
 
-#: includes/ui/allocation_cart.inc:427
+#: includes/ui/allocation_cart.inc:428
 msgid ""
 "These allocations cannot be processed because the amount allocated is more "
 "than the total amount left to allocate."
@@ -8645,6 +8645,9 @@ msgid "Click Here to Pick up the date"
 msgstr ""
 
 #: includes/ui/ui_input.inc:977 includes/ui/ui_lists.inc:2360
+#: reporting/rep101.php:190 reporting/rep102.php:171 reporting/rep115.php:232
+#: reporting/rep115.php:252 reporting/rep201.php:167 reporting/rep202.php:191
+#: reporting/rep203.php:126 reporting/rep206.php:170 reporting/rep206.php:212
 #: reporting/rep301.php:229 reporting/rep302.php:167 reporting/rep303.php:300
 #: reporting/rep304.php:184 reporting/rep304.php:188 reporting/rep306.php:231
 #: reporting/rep306.php:238 reporting/rep310.php:186 reporting/rep310.php:194
@@ -8986,6 +8989,16 @@ msgstr ""
 
 #: includes/ui/ui_view.inc:1012
 msgid "W"
+msgstr ""
+
+#: includes/ui/ui_view.inc:1557
+#, php-format
+msgid "Could not retrieve %s bank account number"
+msgstr ""
+
+#: includes/ui/ui_view.inc:1572
+#, php-format
+msgid "Could not retrieve exchange rate for %s - %s"
 msgstr ""
 
 #: inventory/adjustments.php:34
@@ -11957,16 +11970,16 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:96
+#: purchasing/inquiry/supplier_inquiry.php:99
 #: sales/inquiry/customer_inquiry.php:78
 msgid "Credit This"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:111
+#: purchasing/inquiry/supplier_inquiry.php:114
 msgid "Print Remittance"
 msgstr ""
 
-#: purchasing/inquiry/supplier_inquiry.php:139
+#: purchasing/inquiry/supplier_inquiry.php:142
 msgid "Select a supplier:"
 msgstr ""
 
@@ -12457,7 +12470,7 @@ msgstr ""
 
 #: reporting/rep105.php:110 reporting/rep204.php:84
 #: sales/inquiry/customer_allocation_inquiry.php:150
-#: sales/inquiry/customer_inquiry.php:201
+#: sales/inquiry/customer_inquiry.php:203
 msgid "Order"
 msgstr ""
 
@@ -13417,7 +13430,7 @@ msgstr ""
 
 #: reporting/reports_main.php:366 reporting/reports_main.php:438
 #: reporting/reports_main.php:489 reporting/reports_main.php:535
-#: sales/inquiry/customer_inquiry.php:168
+#: sales/inquiry/customer_inquiry.php:170
 msgid "Zero values"
 msgstr ""
 
@@ -14889,7 +14902,7 @@ msgstr ""
 msgid "Customer Allocations"
 msgstr ""
 
-#: sales/includes/cart_class.inc:407
+#: sales/includes/cart_class.inc:408
 msgid "You have to enter valid stock code or nonempty description"
 msgstr ""
 
