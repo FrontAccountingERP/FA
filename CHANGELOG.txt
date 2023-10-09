@@ -1,3 +1,67 @@
+2023-09-22 23:22:34 +0200 Joe 
+Bug Found in Supplier Invoice in Calculating Unit Tax
+M	purchasing/includes/db/invoice_db.inc
+
+2023-09-21 14:22:57 +0200 Joe 
+New empty language empty.po file
+M	lang/new_language_template/LC_MESSAGES/empty.po
+
+2023-08-08 16:55:12 +0200 Joe 
+PHP 8.2 rerun of /sales/includes/cart_class.inc. Fixed back to deliver_to.
+M	sales/includes/cart_class.inc
+
+2023-08-07 23:03:40 +0200 Joe 
+PHP 8.2 More fixes. Deprecated dynamic member adds.
+M	admin/includes/fa_patch.class.inc
+M	sales/includes/cart_class.inc
+
+2023-08-07 21:17:15 +0200 Joe 
+PHP 8.2 Compatibility Improvement, better implementation.
+M	includes/hooks.inc
+M	includes/prefs/userprefs.inc
+M	includes/ui/allocation_cart.inc
+M	reporting/includes/class.graphic.inc
+M	sales/includes/cart_class.inc
+
+2023-08-07 16:45:51 +0200 Joe 
+First fix of PHP 8.2 deprecated errors. Not seen with $go_debug = 0, but error.log was huge.
+M	includes/hooks.inc
+M	includes/prefs/userprefs.inc
+M	includes/ui/allocation_cart.inc
+M	includes/ui/attachment.inc
+M	includes/ui/contacts_view.inc
+M	purchasing/inquiry/supplier_inquiry.php
+M	reporting/includes/class.graphic.inc
+M	reporting/rep110.php
+M	sales/includes/cart_class.inc
+M	sales/inquiry/customer_inquiry.php
+
+2023-08-06 10:10:35 +0200 Joe 
+Improvement of last commit, XUMM XRP. Payment Link.
+M	includes/ui/ui_view.inc
+
+2023-08-01 09:28:37 +0200 Joe 
+Added Payment Link (Payment Service) for XUMM. A Dutch free Payment Service.
+M	includes/ui/ui_view.inc
+
+2023-07-03 10:20:31 +0200 Joe 
+Bug 5709: Opening Bal. is calculated incorrectly in supplier balance. Fixed.
+M	reporting/rep201.php
+
+2023-05-22 06:56:06 +0200 Joe 
+Mark Inactive Customers and Suppliers in Reports (when no Filter).
+M	reporting/rep101.php
+M	reporting/rep102.php
+M	reporting/rep115.php
+M	reporting/rep201.php
+M	reporting/rep202.php
+M	reporting/rep203.php
+M	reporting/rep206.php
+
+2023-05-03 11:01:57 +0200 Joe 
+CHANGELOG.txt
+M	CHANGELOG.txt
+
 2023-05-03 10:59:32 +0200 Joe 
 Release 2.4.16
 M	lang/new_language_template/LC_MESSAGES/empty.po
