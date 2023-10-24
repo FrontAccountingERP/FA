@@ -135,6 +135,8 @@ class attachments extends simple_crud {
 			$id_word = _("Item ID");
 		elseif($type_no==ST_FIXEDASSET) 
 			$id_word = _("Fixed Asset ID");
+		elseif($type_no==ST_BANKACCOUNT) 
+			$id_word = _("Bank Account ID");
 
 		label_row(_($id_word), $_POST['trans_no']);	
 		date_row(_("Date"), 'tran_date');
@@ -236,7 +238,6 @@ class attachments extends simple_crud {
 			$max_image_size = 5000;
 		$upload_file = "";
 		if (isset($_FILES['file_attachment_name']) && $_FILES['file_attachment_name']['name'] != '') {
-			
 			$result = $_FILES['file_attachment_name']['error'];
 			$upload_file = 'Yes'; 
 			$attr_dir = company_path().'/attachments' ; 
