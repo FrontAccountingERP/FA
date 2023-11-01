@@ -35,7 +35,7 @@ class email
     var $bcc = array();
     var $attachment = array();
     var $boundary = "";
-    var $headers = [];
+    var $headers = array();
     var $subject = "";
     var $body = "";
 	var $charset = 'ISO-8859-1';
