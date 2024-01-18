@@ -264,7 +264,7 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 
-	$cart->reference = $_POST['ref'];
+	$cart->reference = get_post('ref');
 
 	$cart->Comments =  $_POST['Comments'];
 

@@ -28,6 +28,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		var $settings;
 		var $applications;
 		var $selected_application;
+		var $renderer = null;
 
 		var $menu;
 
