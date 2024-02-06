@@ -41,7 +41,8 @@ function print_deliveries()
 	$email = $_POST['PARAM_2'];
 	$packing_slip = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
-	$orientation = $_POST['PARAM_5'];
+	$shipper = $_POST['PARAM_5'];
+	$orientation = $_POST['PARAM_6'];
 
 	if (!$from || !$to) return;
 
@@ -75,8 +76,12 @@ function print_deliveries()
 	{
 			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
 				continue;
-			$myrow = get_customer_trans($i, ST_CUSTDELIVERY);
-			$branch = get_branch($myrow["branch_code"]);
+      $myrow = get_customer_trans($i, ST_CUSTDELIVERY);
+
+			if ($shipper && $myrow['ship_via'] != $shipper)
+        continue;
+      
+      $branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1)
 			{

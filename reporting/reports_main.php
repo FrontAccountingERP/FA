@@ -129,6 +129,7 @@ $reports->addReport(RC_CUSTOMER, 110, _('Print &Deliveries'),
 			_('email Customers') => 'YES_NO',
 			_('Print as Packing Slip') => 'YES_NO',
 			_('Comments') => 'TEXTBOX',
+      _('Shipper') => 'SHIPPERS_NO_FILTER',
 			_('Orientation') => 'ORIENTATION'));
 $reports->addReport(RC_CUSTOMER, 108, _('Print &Statements'),
 	array(	_('Customer') => 'CUSTOMERS_NO_FILTER',

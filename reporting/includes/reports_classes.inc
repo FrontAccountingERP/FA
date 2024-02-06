@@ -315,7 +315,14 @@ class BoxReports
 					if ($type == 'SUPPLIERS_NO_FILTER')
 						return supplier_list($name, null, _("No Supplier Filter"));
 					else
-						return supplier_list($name);
+            return supplier_list($name);
+
+        case 'SHIPPERS_NO_FILTER':
+        case 'SHIPPERS':
+					if ($type == 'SHIPPERS_NO_FILTER')
+            return shippers_list($name, null, _("No Shipper Filter"));
+					else
+            return shippers_list($name);
 
 				case 'INVOICE':
 					$IV = $type_shortcuts[ST_SALESINVOICE];
