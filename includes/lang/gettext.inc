@@ -299,7 +299,8 @@ class gettext_php_support extends gettext_native_support
 			$domain .= '-'.$version;
 		}
 
-        if (array_key_exists($domain, $this->_domains)) 
+        $domains = array_map(function($d) {return $d->name;}, $this->_domains);
+        if (in_array($domain, $domains))
         { 
             return; 
         }
