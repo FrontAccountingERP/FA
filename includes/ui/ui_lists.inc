@@ -1265,13 +1265,11 @@ function item_tax_types_list_row($label, $name, $selected_id=null, $show_inactiv
 
 //------------------------------------------------------------------------------------
 
-function shippers_list($name, $selected_id=null, $spec_option=false)
+function shippers_list($name, $selected_id=null)
 {
 	$sql = "SELECT shipper_id, shipper_name, inactive FROM ".TB_PREF."shippers";
 	return combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', 
-    array('order'=>array('shipper_name'),
-		'spec_option' => $spec_option === true ? _("All Shippers") : $spec_option,
-  ));
+		array('order'=>array('shipper_name')));
 }
 
 function shippers_list_cells($label, $name, $selected_id=null)
