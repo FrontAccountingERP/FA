@@ -44,25 +44,43 @@ class email
     function __construct($name, $mail)
     {
         $this->boundary = md5(uniqid(time()));
-		$this->headers['From'] = "$name <$mail>";
+		$this->headers['From'] = $this->encode($name)." <$mail>";
+
 		$bcc = get_company_pref('bcc_email');
 		if ($bcc)
 			$this->bcc[] = $bcc;
     }
 
-    function to($mail)
+    function encode($txt)
     {
-    	$this->to[] = $mail;
+
+        $opts = array('input-charset' => $_SESSION['language']->encoding,
+            'output-charest' => 'utf-8', // utf-8 works always nowadays
+            'line-length'=>  72,
+            'linebreak-chars'=>'\n',
+            'scheme' => 'Q',
+        );
+        return substr(iconv_mime_encode(null, $txt, $opts), 2);
     }
 
-    function cc($mail)
+    //
+    // For backward compatibility in extensions address can be passed
+    // in $name in form: '"full name" <adr@host>'.
+    // Don't use this form unless all the mail addresses are encoded in ASCII
+    //
+    function to($name, $mail='')
     {
-    	$this->cc[] = $mail;
+    	$this->to[] = $mail=='' ? $name : ($this->encode($name)." <$mail>");
     }
 
-    function bcc($mail)
+    function cc($name, $mail='')
     {
-    	$this->bcc[] = $mail;
+    	$this->cc[] = $mail=='' ? $name : ($this->encode($name)." <$mail>");
+    }
+
+    function bcc($name='', $mail='')
+    {
+    	$this->bcc[] = $mail=='' ? $name : ($this->encode($name)." <$mail>");
     }
 
     function attachment($file, $filename=null)
@@ -74,7 +92,7 @@ class email
 
     function subject($subject)
     {
-    	$this->subject = $subject;
+    	$this->subject = $this->encode($subject);
     }
 
     function text($text)
@@ -120,11 +138,11 @@ class email
     {
         // Add CC Recipients 
 		if (!empty($this->cc)) 
-			$this->headers['Cc'] = implode(", ", $this->cc); 
+			$this->headers['Cc'] = implode(", ", $this->cc);
 
 		// Add BCC Recipients 
 		if (!empty($this->bcc)) 
-			$this->headers['Bcc'] = implode(", ", $this->bcc); 
+			$this->headers['Bcc'] = implode(", ", $this->bcc);
 		$this->headers['Content-Type'] = "multipart/mixed;\n boundary=\"$this->boundary\"";
 
         // Add Attachments
