@@ -1,3 +1,84 @@
+2024-04-03 11:13:23 +0200 Joe 
+Release 2.4.18
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
+2024-03-29 09:10:04 +0100 Joe 
+Wrong implicit conversion from double. Fixed by using int.
+M	inventory/manage/items.php
+
+2024-03-29 09:08:25 +0100 Joe 
+Wrong default function parameters in display_type. Fixed.
+M	gl/inquiry/profit_loss.php
+
+2024-03-17 11:04:46 +0100 Janusz Dobrowolski 
+[0005735] Additional fix for php>=8.2
+M	reporting/includes/class.mail.inc
+
+2024-03-15 12:18:14 +0100 Joe 
+Bug. Edit Journal -> orphaned attachments.
+M	gl/includes/db/gl_journal.inc
+
+2024-03-15 11:46:33 +0100 Janusz Dobrowolski 
+[0005735] Problems with sending emails with encoding other than ASCII - fixed.
+M	inventory/includes/inventory_db.inc
+M	reporting/includes/class.mail.inc
+M	reporting/includes/pdf_report.inc
+M	reporting/rep107.php
+M	reporting/rep108.php
+
+2024-03-15 11:43:52 +0100 Janusz Dobrowolski 
+Fixed language modules locale.inc integration.
+M	includes/hooks.inc
+
+2024-01-18 10:17:02 +0100 Joe 
+Fixed more php 8.2 deprecation bugs.
+M	frontaccounting.php
+M	reporting/includes/Workbook.php
+M	reporting/includes/excel_report.inc
+M	sales/sales_order_entry.php
+
+2023-11-15 08:58:24 +0100 Joe 
+Better sql construct in sales/includes/db/sales_order_db.inc
+M	sales/includes/db/sales_order_db.inc
+
+2023-11-01 19:58:56 +0100 Janusz Dobrowolski 
+Compatibility regression fix for previous commit.
+M	reporting/includes/class.mail.inc
+
+2023-10-29 23:06:25 +0100 Janusz Dobrowolski 
+[0005711] Bad Content-type set for invoice mail attachment; malformed invoice mails sent from  Win based FA servers. Fixed
+M	reporting/includes/class.mail.inc
+
+2023-10-24 13:31:52 +0200 Joe 
+Rerun bank_accounts.php. Fixed missing Date Picker.
+M	gl/manage/bank_accounts.php
+
+2023-10-24 10:11:19 +0200 Joe 
+Implemented attachments for Bank Account, and redesign of Bank Accounts to a tabbed window with Settings, transactions and attachments.
+M	admin/attachments.php
+M	admin/db/attachments_db.inc
+M	admin/db/transactions_db.inc
+M	gl/inquiry/bank_inquiry.php
+M	gl/manage/bank_accounts.php
+M	includes/sysnames.inc
+M	includes/types.inc
+M	includes/ui/attachment.inc
+
+2023-10-22 00:25:51 +0200 Joe 
+Customer Transaction Inquiry on Reference (partly) fixed.
+M	sales/inquiry/customer_inquiry.php
+
+2023-10-22 00:10:20 +0200 Joe 
+Bug 5722: Canceled Sales Orders Show Up In Sales Order Inquiry. Fixed.
+M	sales/includes/db/cust_trans_db.inc
+M	sales/includes/db/sales_order_db.inc
+M	sales/inquiry/sales_orders_view.php
+
+2023-10-09 23:46:39 +0200 Joe 
+CHANGELOG.txt
+M	CHANGELOG.txt
+
 2023-10-09 23:39:22 +0200 Joe 
 Release 2.4.17
 M	CHANGELOG.txt
