@@ -84,12 +84,25 @@ function edit_link($row)
 {
 	global $page_nested;
 
-	$str = '';
 	if ($page_nested)
 		return '';
 
 	return $row['type'] == ST_CUSTCREDIT && $row['order_'] ? '' : 	// allow  only free hand credit notes edition
 			trans_editor_link($row['type'], $row['trans_no']);
+}
+
+function copy_link($row)
+{
+    global $page_nested;
+
+    if ($page_nested)
+        return '';
+    if ($row['type'] == ST_CUSTDELIVERY)
+        return pager_link(_("Copy Delivery"), "/sales/sales_order_entry.php?NewDelivery=" 
+            .$row['order_'], ICON_DOC);
+    elseif ($row['type'] == ST_SALESINVOICE)
+        return pager_link(_("Copy Invoice"),    "/sales/sales_order_entry.php?NewInvoice="
+            . $row['order_'], ICON_DOC);
 }
 
 function prt_link($row)
@@ -213,6 +226,7 @@ $cols = array(
 	_("Balance") => array('align'=>'right', 'type'=>'amount'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'copy_link'),
 		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'prt_link')
 	);

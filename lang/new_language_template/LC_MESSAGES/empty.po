@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-03 10:40+0200\n"
+"POT-Creation-Date: 2024-04-26 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Joe Hunt <joe@frontaccounting.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: admin/attachments.php:187 sales/allocations/customer_allocation_main.php:32
 #: sales/inquiry/customer_allocation_inquiry.php:42
-#: sales/inquiry/customer_inquiry.php:163
+#: sales/inquiry/customer_inquiry.php:176
 #: sales/inquiry/sales_deliveries_view.php:115
 #: sales/inquiry/sales_orders_view.php:252 sales/manage/customers.php:331
 #: sales/manage/customer_branches.php:270
@@ -305,7 +305,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:209 reporting/includes/doctext.inc:247
 #: sales/allocations/customer_allocation_main.php:93
 #: sales/inquiry/customer_allocation_inquiry.php:148
-#: sales/inquiry/customer_inquiry.php:204 sales/view/view_sales_order.php:111
+#: sales/inquiry/customer_inquiry.php:217 sales/view/view_sales_order.php:111
 #: sales/view/view_sales_order.php:144 sales/view/view_sales_order.php:181
 msgid "#"
 msgstr ""
@@ -1528,7 +1528,7 @@ msgstr ""
 #: sales/includes/ui/sales_credit_ui.inc:83
 #: sales/includes/ui/sales_order_ui.inc:361
 #: sales/inquiry/customer_allocation_inquiry.php:149
-#: sales/inquiry/customer_inquiry.php:206
+#: sales/inquiry/customer_inquiry.php:219
 #: sales/inquiry/sales_deliveries_view.php:174 sales/view/view_dispatch.php:85
 #: sales/view/view_invoice.php:88 sales/view/view_receipt.php:42
 #: sales/view/view_sales_order.php:96
@@ -2045,7 +2045,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:161 reporting/includes/doctext.inc:204
 #: reporting/includes/doctext.inc:223
 #: sales/inquiry/customer_allocation_inquiry.php:147
-#: sales/inquiry/customer_inquiry.php:203
+#: sales/inquiry/customer_inquiry.php:216
 msgid "Type"
 msgstr ""
 
@@ -2505,7 +2505,7 @@ msgstr ""
 #: dimensions/inquiry/search_dimensions.php:123 includes/ui/ui_controls.inc:213
 #: manufacturing/search_work_orders.php:152 purchasing/inquiry/po_search.php:94
 #: purchasing/inquiry/po_search_completed.php:52
-#: sales/inquiry/customer_inquiry.php:102
+#: sales/inquiry/customer_inquiry.php:115
 #: sales/inquiry/sales_deliveries_view.php:149
 #: sales/inquiry/sales_orders_view.php:102
 msgid "Print"
@@ -2537,7 +2537,7 @@ msgstr ""
 #: sales/inquiry/customers_list.php:42
 #: sales/inquiry/customer_allocation_inquiry.php:51
 #: sales/inquiry/customer_branches_list.php:38
-#: sales/inquiry/customer_inquiry.php:174
+#: sales/inquiry/customer_inquiry.php:187
 #: sales/inquiry/sales_deliveries_view.php:117
 #: sales/inquiry/sales_orders_view.php:257
 msgid "Search"
@@ -2594,7 +2594,7 @@ msgstr ""
 #: sales/customer_delivery.php:368 sales/customer_invoice.php:486
 #: sales/allocations/customer_allocation_main.php:95
 #: sales/inquiry/customer_allocation_inquiry.php:151
-#: sales/inquiry/customer_inquiry.php:207 sales/view/view_credit.php:69
+#: sales/inquiry/customer_inquiry.php:220 sales/view/view_credit.php:69
 #: sales/view/view_sales_order.php:111 sales/view/view_sales_order.php:144
 #: sales/view/view_sales_order.php:181
 msgid "Date"
@@ -3762,8 +3762,8 @@ msgstr ""
 #: reporting/rep601.php:81 reporting/rep602.php:82 reporting/rep701.php:110
 #: reporting/rep704.php:80 reporting/rep704.php:88 reporting/rep704.php:96
 #: reporting/rep708.php:185 sales/inquiry/customer_allocation_inquiry.php:158
-#: sales/inquiry/customer_inquiry.php:213
 #: sales/inquiry/customer_inquiry.php:226
+#: sales/inquiry/customer_inquiry.php:240
 msgid "Balance"
 msgstr ""
 
@@ -3789,7 +3789,7 @@ msgstr ""
 #: purchasing/supplier_payment.php:308
 #: purchasing/includes/ui/invoice_ui.inc:117
 #: purchasing/includes/ui/po_ui.inc:156 purchasing/includes/ui/po_ui.inc:161
-#: sales/customer_payments.php:353 sales/inquiry/customer_inquiry.php:160
+#: sales/customer_payments.php:353 sales/inquiry/customer_inquiry.php:173
 msgid "Reference:"
 msgstr ""
 
@@ -3819,7 +3819,7 @@ msgstr ""
 #: gl/inquiry/profit_loss.php:175 inventory/inquiry/stock_movements.php:85
 #: purchasing/inquiry/supplier_allocation_inquiry.php:50
 #: purchasing/inquiry/supplier_inquiry.php:148
-#: sales/inquiry/customer_inquiry.php:169
+#: sales/inquiry/customer_inquiry.php:182
 msgid "From:"
 msgstr ""
 
@@ -3828,7 +3828,7 @@ msgstr ""
 #: gl/inquiry/profit_loss.php:176 inventory/inquiry/stock_movements.php:86
 #: purchasing/inquiry/supplier_allocation_inquiry.php:51
 #: purchasing/inquiry/supplier_inquiry.php:149
-#: sales/inquiry/customer_inquiry.php:170
+#: sales/inquiry/customer_inquiry.php:183
 msgid "To:"
 msgstr ""
 
@@ -3856,7 +3856,7 @@ msgstr ""
 #: reporting/includes/doctext.inc:207 reporting/includes/doctext.inc:209
 #: sales/customer_invoice.php:493 sales/includes/ui/sales_order_ui.inc:595
 #: sales/inquiry/customer_allocation_inquiry.php:152
-#: sales/inquiry/customer_inquiry.php:208 sales/view/view_dispatch.php:97
+#: sales/inquiry/customer_inquiry.php:221 sales/view/view_dispatch.php:97
 #: sales/view/view_invoice.php:99 sales/view/view_sales_order.php:71
 msgid "Due Date"
 msgstr ""
@@ -4053,7 +4053,7 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:57
 #: purchasing/inquiry/supplier_inquiry.php:152
 #: sales/inquiry/customer_allocation_inquiry.php:51
-#: sales/inquiry/customer_inquiry.php:174
+#: sales/inquiry/customer_inquiry.php:187
 msgid "Refresh Inquiry"
 msgstr ""
 
@@ -4111,7 +4111,7 @@ msgstr ""
 #: includes/dashboard.inc:875 purchasing/inquiry/supplier_inquiry.php:50
 #: reporting/rep102.php:118 reporting/rep102.php:231 reporting/rep108.php:163
 #: reporting/rep202.php:129 reporting/rep202.php:249 reporting/rep451.php:80
-#: sales/inquiry/customer_inquiry.php:126
+#: sales/inquiry/customer_inquiry.php:139
 msgid "Current"
 msgstr ""
 
@@ -4280,7 +4280,7 @@ msgstr ""
 #: reporting/rep110.php:194 reporting/rep111.php:196 reporting/rep113.php:183
 #: reporting/rep202.php:253 reporting/rep209.php:197 reporting/rep706.php:314
 #: reporting/rep707.php:330 reporting/rep710.php:78
-#: sales/inquiry/customer_inquiry.php:212 sales/view/view_receipt.php:47
+#: sales/inquiry/customer_inquiry.php:225 sales/view/view_receipt.php:47
 msgid "Amount"
 msgstr ""
 
@@ -5298,7 +5298,7 @@ msgstr ""
 msgid "Journal Inquiry"
 msgstr ""
 
-#: gl/inquiry/journal_inquiry.php:45 sales/inquiry/customer_inquiry.php:160
+#: gl/inquiry/journal_inquiry.php:45 sales/inquiry/customer_inquiry.php:173
 msgid "Enter reference fragment or leave empty"
 msgstr ""
 
@@ -5458,9 +5458,9 @@ msgstr ""
 #: sales/allocations/customer_allocation_main.php:105
 #: sales/inquiry/customer_allocation_inquiry.php:154
 #: sales/inquiry/customer_allocation_inquiry.php:164
-#: sales/inquiry/customer_inquiry.php:126
-#: sales/inquiry/customer_inquiry.php:211
-#: sales/inquiry/customer_inquiry.php:223
+#: sales/inquiry/customer_inquiry.php:139
+#: sales/inquiry/customer_inquiry.php:224
+#: sales/inquiry/customer_inquiry.php:237
 #: sales/inquiry/sales_deliveries_view.php:179
 #: sales/inquiry/sales_orders_view.php:282
 #: sales/inquiry/sales_orders_view.php:296 sales/view/view_credit.php:70
@@ -6944,8 +6944,8 @@ msgstr ""
 #: sales/inquiry/customers_list.php:41 sales/inquiry/customers_list.php:54
 #: sales/inquiry/customer_allocation_inquiry.php:153
 #: sales/inquiry/customer_allocation_inquiry.php:163
-#: sales/inquiry/customer_inquiry.php:209
 #: sales/inquiry/customer_inquiry.php:222
+#: sales/inquiry/customer_inquiry.php:236
 #: sales/inquiry/sales_deliveries_view.php:170
 #: sales/inquiry/sales_orders_view.php:274
 #: sales/inquiry/sales_orders_view.php:288
@@ -7238,9 +7238,9 @@ msgstr ""
 #: reporting/rep202.php:123 reporting/rep202.php:124 reporting/rep202.php:125
 #: reporting/rep202.php:157 reporting/rep202.php:158 reporting/rep202.php:159
 #: reporting/rep202.php:252 sales/create_recurrent_invoices.php:209
-#: sales/inquiry/customer_inquiry.php:121
-#: sales/inquiry/customer_inquiry.php:122
-#: sales/inquiry/customer_inquiry.php:123
+#: sales/inquiry/customer_inquiry.php:134
+#: sales/inquiry/customer_inquiry.php:135
+#: sales/inquiry/customer_inquiry.php:136
 #: sales/manage/recurrent_invoices.php:128
 msgid "Days"
 msgstr ""
@@ -7272,7 +7272,7 @@ msgstr ""
 #: sales/customer_credit_invoice.php:235 sales/customer_delivery.php:329
 #: sales/customer_invoice.php:433 sales/inquiry/customer_branches_list.php:37
 #: sales/inquiry/customer_branches_list.php:49
-#: sales/inquiry/customer_inquiry.php:210
+#: sales/inquiry/customer_inquiry.php:223
 #: sales/inquiry/sales_deliveries_view.php:172
 #: sales/inquiry/sales_orders_view.php:275
 #: sales/inquiry/sales_orders_view.php:289 sales/manage/customers.php:256
@@ -7307,7 +7307,7 @@ msgstr ""
 #: purchasing/inquiry/supplier_allocation_inquiry.php:158
 #: purchasing/inquiry/supplier_inquiry.php:205 purchasing/view/view_po.php:102
 #: sales/inquiry/customer_allocation_inquiry.php:168
-#: sales/inquiry/customer_inquiry.php:229
+#: sales/inquiry/customer_inquiry.php:243
 #: sales/inquiry/sales_deliveries_view.php:196
 #: sales/inquiry/sales_orders_view.php:334
 msgid "Marked items are overdue."
@@ -11970,18 +11970,18 @@ msgstr ""
 
 #: purchasing/inquiry/supplier_inquiry.php:46 reporting/rep102.php:115
 #: reporting/rep108.php:161 reporting/rep202.php:125 reporting/rep202.php:159
-#: sales/inquiry/customer_inquiry.php:123
+#: sales/inquiry/customer_inquiry.php:136
 msgid "Over"
 msgstr ""
 
 #: purchasing/inquiry/supplier_inquiry.php:50
-#: sales/inquiry/customer_inquiry.php:126
+#: sales/inquiry/customer_inquiry.php:139
 msgid "Terms"
 msgstr ""
 
 #: purchasing/inquiry/supplier_inquiry.php:51 reporting/rep102.php:119
 #: reporting/rep108.php:163 reporting/rep202.php:130
-#: sales/inquiry/customer_inquiry.php:127
+#: sales/inquiry/customer_inquiry.php:140
 msgid "Total Balance"
 msgstr ""
 
@@ -12485,7 +12485,7 @@ msgstr ""
 
 #: reporting/rep105.php:110 reporting/rep204.php:84
 #: sales/inquiry/customer_allocation_inquiry.php:150
-#: sales/inquiry/customer_inquiry.php:205
+#: sales/inquiry/customer_inquiry.php:218
 msgid "Order"
 msgstr ""
 
@@ -13440,7 +13440,7 @@ msgstr ""
 
 #: reporting/reports_main.php:366 reporting/reports_main.php:438
 #: reporting/reports_main.php:489 reporting/reports_main.php:535
-#: sales/inquiry/customer_inquiry.php:172
+#: sales/inquiry/customer_inquiry.php:185
 #: sales/inquiry/sales_orders_view.php:256
 msgid "Zero values"
 msgstr ""
@@ -14917,7 +14917,7 @@ msgstr ""
 msgid "You have to enter valid stock code or nonempty description"
 msgstr ""
 
-#: sales/includes/sales_ui.inc:50
+#: sales/includes/sales_ui.inc:52
 msgid ""
 "This edit session has been abandoned by opening sales document in another "
 "browser tab. You cannot edit more than one sales document at once."
@@ -15102,11 +15102,19 @@ msgstr ""
 msgid "Customer Transactions"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:98
+#: sales/inquiry/customer_inquiry.php:101
+msgid "Copy Delivery"
+msgstr ""
+
+#: sales/inquiry/customer_inquiry.php:104
+msgid "Copy Invoice"
+msgstr ""
+
+#: sales/inquiry/customer_inquiry.php:111
 msgid "Print Receipt"
 msgstr ""
 
-#: sales/inquiry/customer_inquiry.php:118
+#: sales/inquiry/customer_inquiry.php:131
 msgid "CUSTOMER ACCOUNT IS ON HOLD"
 msgstr ""
 
