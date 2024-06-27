@@ -451,9 +451,10 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
     }
 	if ($aid != 0)
 	{
-		$row = get_attachment($aid);
-		update_attachment($aid, $row['type_no'], $trans_no, $row['description'],
-			$row['filename'], $row['unique_name'], $row['filesize'], $row['filetype']);
+		move_trans_attachments($trans_type, $old_trans, $trans_no);
+		//$row = get_attachment($aid);
+		//update_attachment($aid, $row['type_no'], $trans_no, $row['description'],
+		//	$row['filename'], $row['unique_name'], $row['filesize'], $row['filetype']);
 	}
 	// do the source account postings
 
