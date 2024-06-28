@@ -27,9 +27,6 @@ function set_global_connection($company=-1)
 
 	$_SESSION["wa_current_user"]->cur_con = $company;
 
-    if (!is_string($db_connections[$company]['tbpref'])) 
-		$db_connections[$company]['tbpref'] = '';
-
 	$connection = $db_connections[$company];
 
 	$db = mysqli_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"], "", 
@@ -55,7 +52,7 @@ function db_query($sql, $err_msg=null)
 
 	// set current db prefix
 	$comp = isset($_SESSION["wa_current_user"]->cur_con) ? $_SESSION["wa_current_user"]->cur_con : 0;
-	$cur_prefix = @$db_connections[$comp]['tbpref'];
+	$cur_prefix = (string)@$db_connections[$comp]['tbpref'];
 	$sql = str_replace(TB_PREF, $cur_prefix, $sql);
 
 	if ($SysPrefs->show_sql)
