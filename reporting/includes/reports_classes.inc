@@ -317,6 +317,13 @@ class BoxReports
 					else
 						return supplier_list($name);
 
+        case 'SHIPPERS_NO_FILTER':
+        case 'SHIPPERS':
+          if ($type == 'SHIPPERS_NO_FILTER')
+            return shippers_list($name, null, _("No Shipper Filter"));
+          else
+            return shippers_list($name);
+
 				case 'INVOICE':
 					$IV = $type_shortcuts[ST_SALESINVOICE];
 					$ref = ($SysPrefs->print_invoice_no() == 1 ? "trans_no" : "reference");
