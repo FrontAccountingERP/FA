@@ -1,7 +1,7 @@
 ![FrontAccounting ERP](./themes/default/images/logo_frontaccounting.jpg  "FrontAccounting ERP")
 ===================
 
-FrontAccounting ERP is open source, web-based accounting software for small and medium enterprises.
+FrontAccounting ERP is open source, web-based accounting software for small, medium and large enterprises.
 It supports double entry accounting providing both low level journal entry and user friendly, document based 
 interface for everyday business activity with automatic GL postings generation. This is multicurrency,
 multilanguage system with active worldwide users community:
