@@ -1528,7 +1528,10 @@ if (!isset($payment_services))
 {
 	$payment_services = array(
 		'PayPal' => "https://www.paypal.com/xclick?business=<company_email>&item_name=<comment>&amount=<amount>&currency_code=<currency>",
-		'XUMM XRP' => "https://xumm.app/detect/request:{{account}}?amount=<amount>"
+		'XUMM XRP' => "https://xaman.app/detect/request:{{account}}?amount=<amount>",
+		// XRPL links: use account from bank_accounts and convert amount according to exchange_rates
+		// Example name: 'XRPL USD' (suffix contains currency code)
+		'XRPL USD' => "https://xaman.app/detect/request:{{account}}?amount=<amount>&network=MAINNET&issuer={{issuer}}&currency={{currency}}"
 	);
 }
 /*
@@ -1547,43 +1550,78 @@ function payment_link($name, $options)
 	foreach ($options as $id => $option)
 		$patterns['<'.$id.'>'] = urlencode($options[$id]);
 
-    if (substr($name, 0, 4) == 'XUMM')
+	// Handle XUMM and XRPL style payment services that require a bank account lookup
+	if (in_array(substr($name, 0, 4), array('XUMM', 'XRPL')))
     {
-        // Get the account number for 'XRPL Account' from 'bank_accounts' table
-        $sql = "SELECT bank_account_number FROM ".TB_PREF."bank_accounts WHERE bank_name = '$name'";
-        $result = db_query($sql, "could not retrieve $name bank account number");
+        // For XRPL USD payment links, get the account from XUMM XRP bank account
+        $sql = "SELECT bank_account_number FROM ".TB_PREF."bank_accounts WHERE bank_name = 'XUMM XRP'";
+        $result = db_query($sql, "could not retrieve XUMM XRP bank account number");
         $row = db_fetch($result);
         if ($row == false) {
-        	display_error(sprintf(_("Could not retrieve %s bank account number"), $name));
-        	return false;
+            display_error(_("Could not retrieve XUMM XRP bank account number"));
+            return false;
         }
         $account = $row['bank_account_number'];
-
-        // Replace the {{account}} placeholder in the XUMM URL with the extracted account value
+        
+        // Replace the {{account}} placeholder in the URL
         $link = str_replace('{{account}}', urlencode($account), $link);
+        
+        // For XRPL USD links, get issuer and currency format from the XRPL USD bank account
+        if (substr($name, 0, 4) == 'XRPL') {
+            $sql = "SELECT bank_account_number FROM ".TB_PREF."bank_accounts WHERE bank_name = '$name'";
+            $result = db_query($sql, "could not retrieve $name bank account number");
+            $row = db_fetch($result);
+            if ($row == false) {
+                display_error(sprintf(_("Could not retrieve %s bank account number"), $name));
+                return false;
+            }
+            
+			// Bank account number format: issuer:currency
+			$parts = explode(':', $row['bank_account_number']);
+			if (count($parts) !== 2) {
+				display_error(sprintf(_("Invalid format for %s bank account number. Expected format: issuer:currency"), $name));
+				return false;
+			}
 
-        // Extract XRP exchange rate
-        $curr_code = substr($name, -3);
-        $date = date('Y-m-d'); // Get the current date in 'YYYY-MM-DD' format
-        $sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code = '$curr_code' AND date_ = '$date'";
-        $result = db_query($sql, "could not retrieve exchange rate for $curr_code - $date");
-        $row = db_fetch($result);
-        if ($row == false) {
-        	display_error(sprintf(_("Could not retrieve exchange rate for %s - %s"), $curr_code, $date));
-        	return false;
+			$issuer = $parts[0];
+			$currency = $parts[1];
+
+			// Ensure currency part is exactly 40 characters by appending trailing zeros if needed
+			if (strlen($currency) < 40) {
+				$currency .= str_repeat('0', 40 - strlen($currency));
+			}
+
+			// Replace the placeholders in the URL with values (currency now padded to 40 chars)
+			$link = str_replace('{{issuer}}', urlencode($issuer), $link);
+			$link = str_replace('{{currency}}', urlencode($currency), $link);
         }
-        $exchange_rate = $row['rate_buy'];
-        if ($exchange_rate == 0) $exchange_rate = 1;
 
-        // Divide the amount by the exchange rate
-        $options['amount'] /= $exchange_rate;
+		// For XUMM XRP links, convert amount using exchange rate and format to 2 decimals
+		if ($name === 'XUMM XRP') {
+			$curr_code = 'XRP';
+			$date = date('Y-m-d');
+			$sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code = '$curr_code' AND date_ = '$date'";
+			$result = db_query($sql, "could not retrieve exchange rate for $curr_code - $date");
+			$row = db_fetch($result);
+			if ($row == false) {
+				display_error(sprintf(_("Could not retrieve exchange rate for %s - %s"), $curr_code, $date));
+				return false;
+			}
+			$exchange_rate = $row['rate_buy'];
+			if ($exchange_rate == 0) $exchange_rate = 1;
 
-        // Replace the <amount> placeholder in the XUMM URL with the modified amount value
+			// Divide the amount by the exchange rate for XRP
+			$options['amount'] /= $exchange_rate;
+
+			// Round/format amount to 2 decimal places for XUMM XRP links
+			// Use dot as decimal separator and ensure two digits after decimal
+			$options['amount'] = number_format((float)$options['amount'], 2, '.', '');
+		}
+        // For XRPL USD links, use amount as is (no conversion)
+        
+        // Replace the <amount> placeholder in the URL with the amount value
         $link = str_replace('<amount>', urlencode($options['amount']), $link);
     }
-
-	return strtr($link, $patterns);
-}
 
 function trans_editor_link($type, $trans_no)
 {
