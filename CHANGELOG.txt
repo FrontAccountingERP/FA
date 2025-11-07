@@ -1,3 +1,10 @@
+2025-11-07 15:36:35 +0100 Joe 
+Release 2.4.19
+M	CHANGELOG.txt
+M	install/lang/new_language_template/LC_MESSAGES/empty.po
+M	lang/new_language_template/LC_MESSAGES/empty.po
+M	version.php
+
 2025-10-07 16:14:16 +0200 Joe 
 Bug 5753: The company logo cannot be set. $padding in TCPDF class must be inside class deklaration.
 M	reporting/includes/tcpdf.php
