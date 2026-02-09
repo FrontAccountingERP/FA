@@ -165,8 +165,9 @@ function get_extern_rate($curr_b, $provider, $date)
 	}
 	elseif ($provider == 'EXCHANGE-RATES.ORG')
 	{
-		$filename = "/converter/{$curr_b}/{$curr_a}/1";
-		$site = "exchange-rates.org";
+		//$filename = "/converter/{$curr_b}/{$curr_a}/1";
+    	$filename = "/converter/{$curr_b}-{$curr_a}";
+  		$site = "exchange-rates.org";
 		$proto = 'https://';
 		$contents=file_get_contents($proto.$site.$filename);
 	}
