@@ -84,7 +84,7 @@ function print_bank_transactions()
 		recalculate_cols($cols);
 	$sql = "SELECT id, bank_account_name, bank_curr_code, bank_account_number FROM ".TB_PREF."bank_accounts";
 	if ($acc != ALL_TEXT)
-		$sql .= " WHERE id = $acc";
+		$sql .= " WHERE id = ".db_escape($acc);
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($account=db_fetch($result))
 	{

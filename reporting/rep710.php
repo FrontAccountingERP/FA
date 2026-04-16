@@ -42,12 +42,12 @@ function getTransactions($from, $to, $type, $user)
 			AND g.type=a.type)
 		WHERE a.user = u.id ";
 	if ($type != -1)
-		$sql .= "AND a.type=$type ";
+		$sql .= "AND a.type=".db_escape($type)." ";
 	if ($user != -1)	
-		$sql .= "AND a.user='$user' ";
+		$sql .= "AND a.user=".db_escape($user)." ";
 	$sql .= "AND a.stamp >= '$fromdate'
 			AND a.stamp <= '$todate'
-		GROUP BY a.trans_no,a.gl_seq,a.stamp	
+		GROUP BY a.trans_no,a.gl_seq,a.stamp
 		ORDER BY a.stamp,a.gl_seq";
     return db_query($sql,"No transactions were returned");
 }
