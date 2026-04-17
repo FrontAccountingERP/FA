@@ -44,12 +44,12 @@ function getYTD($dim)
 {
 	$date = Today();
 	$date = begin_fiscalyear($date);
-	date2sql($date);
+	$date = date2sql($date);
 	
 	$sql = "SELECT SUM(amount) AS Balance
 		FROM
 			".TB_PREF."gl_trans
-		WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
+		WHERE (dimension_id = ".db_escape($dim)." OR dimension2_id = ".db_escape($dim).")
 		AND tran_date >= '$date'";
 
     $TransResult = db_query($sql,"No transactions were returned");

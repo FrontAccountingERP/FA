@@ -36,7 +36,7 @@ function getTransactions($supplier, $date)
 			(ABS( ov_amount) + ABS( ov_gst) -  alloc) AS Balance,
 			(ABS( ov_amount) + ABS( ov_gst) ) AS TranTotal
 		FROM ".TB_PREF."supp_trans
-		WHERE  supplier_id = '$supplier'
+		WHERE  supplier_id = ".db_escape($supplier)."
 		AND ROUND(ABS( ov_amount),$dec) + ROUND(ABS( ov_gst),$dec) - 
 		ROUND( alloc,$dec) != 0
 		AND  tran_date <='$date'

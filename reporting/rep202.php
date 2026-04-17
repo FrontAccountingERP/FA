@@ -55,7 +55,7 @@ function get_invoices($supplier_id, $to, $all=true)
 			".TB_PREF."supp_trans trans
 
 	   	WHERE supplier.supplier_id = trans.supplier_id
-			AND trans.supplier_id = $supplier_id
+			AND trans.supplier_id = ".db_escape($supplier_id)."
 			AND trans.tran_date <= '$todate'
 			AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) > ".FLOAT_COMP_DELTA;
 	if (!$all)

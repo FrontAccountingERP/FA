@@ -49,7 +49,7 @@ function get_invoices($customer_id, $to, $all=true)
 		FROM ".TB_PREF."debtor_trans trans
 
 		WHERE type <> ".ST_CUSTDELIVERY."
-			AND debtor_no = $customer_id 
+			AND debtor_no = ".db_escape($customer_id)." 
 			AND tran_date <= '$todate'
 			AND ABS($value) > " . FLOAT_COMP_DELTA;
 

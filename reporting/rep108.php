@@ -30,8 +30,10 @@ print_statements();
 
 //----------------------------------------------------------------------------------------------------
 
-function getTransactions($debtorno, $date, $show_also_allocated)
+function getTransactions($debtorno, $show_also_allocated)
 {
+	$date = date('Y-m-d');
+
     $sql = "SELECT trans.type,
         trans.trans_no,
         trans.order_,
@@ -100,11 +102,10 @@ function print_statements()
 		if ($currency != ALL_TEXT && $myrow['curr_code'] != $currency) {
 			continue;
 		}	
-		$date = date('Y-m-d');
 
 		$myrow['order_'] = "";
 
-		$TransResult = getTransactions($myrow['debtor_no'], $date, $show_also_allocated);
+		$TransResult = getTransactions($myrow['debtor_no'], $show_also_allocated);
 		$baccount = get_default_bank_account($myrow['curr_code']);
 		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)

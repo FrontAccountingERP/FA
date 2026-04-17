@@ -30,8 +30,7 @@ print_supplier_balances();
 
 function get_open_balance($supplier_id, $to)
 {
-    if($to)
-        $to = date2sql($to);
+    $to = date2sql($to);
 
     $sql = "SELECT SUM(IF(t.type = ".ST_SUPPINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
         -abs(t.ov_amount + t.ov_gst + t.ov_discount), 0)) AS charges,";
@@ -67,7 +66,7 @@ function getTransactions($supplier_id, $from, $to)
         FROM ".TB_PREF."supp_trans
         LEFT JOIN ".TB_PREF."comments comments ON ".TB_PREF."supp_trans.type=comments.type AND ".TB_PREF."supp_trans.trans_no=comments.id
         WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to'
-        AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' AND ".TB_PREF."supp_trans.ov_amount!=0
+        AND ".TB_PREF."supp_trans.supplier_id = ".db_escape($supplier_id)." AND ".TB_PREF."supp_trans.ov_amount!=0
         ORDER BY ".TB_PREF."supp_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");

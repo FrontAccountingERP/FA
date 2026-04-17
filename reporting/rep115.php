@@ -31,8 +31,8 @@ print_customer_balances();
 
 function get_open_balance($debtorno, $to)
 {
-	if($to)
-		$to = date2sql($to);
+	$to = date2sql($to);
+
 	$sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKPAYMENT.") AND t.ov_amount>0),
              -abs(IF(t.prep_amount, t.prep_amount, t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)), 0)) AS charges,";
 
@@ -46,7 +46,7 @@ function get_open_balance($debtorno, $to)
 		FROM ".TB_PREF."debtor_trans t
     	WHERE t.debtor_no = ".db_escape($debtorno)
 		." AND t.type <> ".ST_CUSTDELIVERY;
-    if ($to)
+    if ($to != '')
     	$sql .= " AND t.tran_date < '$to'";
 	$sql .= " GROUP BY debtor_no";
 
@@ -97,7 +97,7 @@ function get_transactions($debtorno, $from, $to)
 function get_customer_reference ($order_number)
 {
 
-    $sql = "SELECT customer_ref FROM ".TB_PREF."sales_orders WHERE order_no ='$order_number' AND trans_type=".ST_SALESORDER."";
+    $sql = "SELECT customer_ref FROM ".TB_PREF."sales_orders WHERE order_no =".db_escape($order_number)." AND trans_type=".ST_SALESORDER."";
 
     $result = db_query($sql,"No Transcation were returned");
 

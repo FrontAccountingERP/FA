@@ -29,8 +29,7 @@ print_supplier_balances();
 
 function get_open_balance($supplier_id, $to)
 {
-    if ($to)
-        $to = date2sql($to);
+    $to = date2sql($to);
 
     $sql = "SELECT SUM(IF(t.type = ".ST_SUPPINVOICE." OR (t.type IN (".ST_JOURNAL." , ".ST_BANKDEPOSIT.") AND t.ov_amount>0),
         -abs(t.ov_amount + t.ov_gst + t.ov_discount), 0)) AS charges,";
@@ -45,7 +44,7 @@ function get_open_balance($supplier_id, $to)
         (abs(t.ov_amount + t.ov_gst + t.ov_discount) - abs(t.alloc))) AS OutStanding
         FROM ".TB_PREF."supp_trans t
         WHERE t.supplier_id = ".db_escape($supplier_id);
-    if ($to)
+    if ($to != '')
         $sql .= " AND t.tran_date < '$to'";
     $sql .= " GROUP BY supplier_id";
 
@@ -61,11 +60,13 @@ function getTransactions($supplier_id, $from, $to)
     $sql = "SELECT *,
 				(ov_amount + ov_gst + ov_discount) AS TotalAmount,
 				alloc AS Allocated,
-				((type = ".ST_SUPPINVOICE.") AND due_date < '$to') AS OverDue
+				((type = ".ST_SUPPINVOICE.")".($to!='' ? " AND due_date < '$to'" : '').") AS OverDue
    			FROM ".TB_PREF."supp_trans
-   			WHERE tran_date >= '$from' AND tran_date <= '$to' 
-    			AND supplier_id = '$supplier_id' AND ov_amount!=0
-    				ORDER BY tran_date";
+   			WHERE tran_date >= '$from' ";
+	    if ($to != '')
+	        $sql .= "AND tran_date <= '$to' ";
+    	$sql .= "AND supplier_id = ".db_escape($supplier_id)." AND ov_amount!=0
+   				ORDER BY tran_date";
 
     $TransResult = db_query($sql,"No transactions were returned");
 
