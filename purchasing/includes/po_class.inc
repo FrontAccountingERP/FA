@@ -14,7 +14,7 @@
 
 class purch_order 
 {
-
+	var $trans_no; 
 	var $trans_type; // order/grn/invoice (direct)
 	var $line_items;
 	var $curr_code;
