@@ -287,7 +287,7 @@ else {
 	if ($type != ST_SUPPLIER && $type != ST_CUSTOMER && $type != ST_ITEM && $type != ST_FIXEDASSET && $type != ST_BANKACCOUNT)
 		text_row_ex(_("Transaction #").':', 'trans_no', 10);
 }
-text_row_ex(_("Doc Title").':', 'description', 40);
+text_row_ex(_("Doc Title").':', 'description', 60);
 file_row(_("Attached File") . ":", 'filename', 'filename');
 
 end_table(1);

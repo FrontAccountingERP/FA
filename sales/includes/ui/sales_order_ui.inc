@@ -639,7 +639,7 @@ function display_delivery_details(&$order)
 
 		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
 		    _('Phone number of ordering person. Defaults to branch phone number'));
-		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
+		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 45, 255,
 		  _('Customer reference number for this order (if any)'));
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 
