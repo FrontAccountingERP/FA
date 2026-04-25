@@ -667,8 +667,7 @@ end_page(@$_REQUEST['popup']);
 function generateBarcode() {
 	$tmpBarcodeID = "";
 	$tmpCountTrys = 0;
-	while ($tmpBarcodeID == "")	{
-		srand ((int) microtime( )*1000000);
+	while ($tmpBarcodeID == "" && $tmpCountTrys<2)	{
 		$random_1  = rand(1,9);
 		$random_2  = rand(0,9);
 		$random_3  = rand(0,9);
@@ -698,7 +697,10 @@ function generateBarcode() {
 		if (  !$arr_stock || !$arr_stock['stock_id'] ) {
 			return $tmpBarcodeID;
 		}
+		display_error("Rejected: $tmpBarcodeID");
 		$tmpBarcodeID = "";	 
+		$tmpCountTrys++;
 	}
+	return '';  // this should never happen
 }
 
