@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
+
 function update_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, 
 	$cogs_account, 	$adjustment_account, $wip_account, $dimension_id, 
@@ -92,10 +94,8 @@ function add_item($stock_id, $description, $long_description, $category_id,
 
 function delete_item($stock_id)
 {
-	$sql="DELETE FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
-	db_query($sql, "could not delete stock item");
 
-	/*and cascade deletes in loc_stock */
+	/*cascade deletes in loc_stock */
 	$sql ="DELETE FROM ".TB_PREF."loc_stock WHERE stock_id=".db_escape($stock_id);
 	db_query($sql, "could not delete stock item loc stock");
 
@@ -110,6 +110,12 @@ function delete_item($stock_id)
 	/*and cascade delete the bill of material if any */
 	$sql = "DELETE FROM ".TB_PREF."bom WHERE parent=".db_escape($stock_id);
 	db_query($sql, "could not delete stock item bom");
+
+	delete_attachments(ST_ITEM, get_item_code_id($stock_id));
+
+	/* this can be deleted after attachments are done */
+	$sql="DELETE FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+	db_query($sql, "could not delete stock item");
 
 	delete_item_kit($stock_id);
 }

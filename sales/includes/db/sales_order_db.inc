@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
 //----------------------------------------------------------------------------------------
 function add_sales_order(&$order)
 {
@@ -99,7 +100,7 @@ function delete_sales_order($order_no, $trans_type)
 	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" 
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
-
+	delete_attachments($trans_type, $order_no);
 	add_audit_trail($trans_type, $order_no, sql2date($order['ord_date']), _("Deleted."));
 	commit_transaction();
 }

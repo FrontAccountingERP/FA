@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
+
 /*
 	Common entry procedure for all work order types
 */
@@ -111,6 +113,7 @@ function delete_work_order($woid, $stock_id, $qty, $date)
 	db_query($sql,"The work order could not be deleted");
 
 	delete_comments(ST_WORKORDER, $woid);
+	delete_attachments(ST_WORKORDER, $woid);
 	add_audit_trail(ST_WORKORDER, $woid, $date, _("Canceled."));
 
 	commit_transaction();

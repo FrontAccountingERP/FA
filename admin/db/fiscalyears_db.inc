@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 require_once($path_to_root. "/includes/ui/items_cart.inc");
+require_once($path_to_root. "/admin/db/attachments_db.inc");
 
 // fiscal year routines
 function add_fiscalyear($from_date, $to_date, $closed)
@@ -188,22 +189,7 @@ function open_year($year)
 //---------------------------------------------------------------------------------------------
 function delete_attachments_and_comments($type_no, $trans_no)
 {
-	
-	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no = $type_no AND trans_no = $trans_no";
-	$result = db_query($sql, "Could not retrieve attachments");
-	$delflag = false;
-	while ($row = db_fetch($result))
-	{
-		$delflag = true;
-		$dir =  company_path(). "/attachments";
-		if (file_exists($dir."/".$row['unique_name']))
-			unlink($dir."/".$row['unique_name']);
-	}
-	if ($delflag)
-	{
-		$sql = "DELETE FROM ".TB_PREF."attachments WHERE  type_no = $type_no AND trans_no = $trans_no";
-		db_query($sql, "Could not delete attachment");
-	}	
+	delete_attachments($type_no, $trans_no);
 	$sql = "DELETE FROM ".TB_PREF."comments WHERE  type = $type_no AND id = $trans_no";
 	db_query($sql, "Could not delete comments");
 	$sql = "DELETE FROM ".TB_PREF."refs WHERE  type = $type_no AND id = $trans_no";

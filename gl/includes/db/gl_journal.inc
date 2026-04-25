@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
+
 function add_journal($type, $trans_no, $amount, $tran_date, $currency, $reference, $source_ref='', $rate=1,
 	 $event_date='', $doc_date='')
 {
@@ -48,6 +50,8 @@ function update_journal($type, $trans_no, $amount, $tran_date, $currency, $refer
 
 function delete_journal($type, $trans_no)
 {
+    delete_attachments($type, $trans_no);
+
 	$sql = "DELETE FROM ".TB_PREF."journal 
 	   WHERE `type`=".db_escape($type)." AND " ."`trans_no`=".db_escape($trans_no);
 

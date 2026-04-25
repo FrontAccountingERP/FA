@@ -52,6 +52,24 @@ function delete_attachment($id)
 	db_query($sql, "Could not delete attachment");
 }
 
+
+function delete_attachments($type_no, $trans_no)
+{
+	$type_no = db_escape($type_no);
+	$trans_no = db_escape($trans_no);
+	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no = $type_no AND trans_no = $trans_no";
+	$result = db_query($sql, "Could not retrieve attachments");
+	$dir =  company_path(). "/attachments";
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."attachments WHERE unique_name='".$row['unique_name']."'";
+		db_query($sql, "Could not delete attachment");
+
+		if (file_exists($dir."/".$row['unique_name'])) {
+			unlink($dir."/".$row['unique_name']);
+		}
+	}
+}
 //----------------------------------------------------------------------------------------
 
 function get_attachment_string($type, $id)
@@ -118,5 +136,3 @@ function move_trans_attachments($type, $trans_from, $trans_to)
 		." WHERE type_no=".db_escape($type)." AND trans_no=".db_escape($trans_from);
 	db_query($sql, 'cannot move atachments');
 }
-
-

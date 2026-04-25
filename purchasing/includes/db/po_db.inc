@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
 // ------------------------------------------------------------------------------
 
 function get_supplier_details_to_order(&$order, $supplier_id)
@@ -56,6 +57,7 @@ function delete_po($po)
 	$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no =".db_escape($po);
 	db_query($sql, "The order detail lines could not be deleted");
 
+	delete_attachments(ST_PURCHORDER, $po);
 	$Refs->restore_last(ST_PURCHORDER, $po);
 	commit_transaction();
 }

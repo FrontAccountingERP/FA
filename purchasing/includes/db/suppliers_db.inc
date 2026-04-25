@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
 
 function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
 	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
@@ -77,6 +78,7 @@ function delete_supplier($supplier_id)
 	delete_entity_contacts('supplier', $supplier_id);
 	$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
+	delete_attachments(ST_SUPPLIER, $supplier_id);
 	db_query($sql,"check failed");
 	commit_transaction();
 }

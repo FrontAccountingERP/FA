@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+require_once($path_to_root. "/admin/db/attachments_db.inc");
 
 function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
 	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
@@ -57,6 +58,7 @@ function delete_customer($customer_id)
 
 	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 	db_query($sql,"cannot delete customer");
+	delete_attachments(ST_CUSTOMER, $customer_id);
 	commit_transaction();
 }
 
