@@ -1018,6 +1018,7 @@ function get_js_date_picker()
 
 
 	$js = "
+let tmonths = ['', '$tmonths[1]','$tmonths[2]','$tmonths[3]','$tmonths[4]','$tmonths[5]','$tmonths[6]','$tmonths[7]','$tmonths[8]','$tmonths[9]','$tmonths[10]','$tmonths[11]'];
 function positionInfo(object) {
   var p_elm = object;
   this.getElementLeft = getElementLeft;
@@ -1089,7 +1090,6 @@ function CC() {
   var selectedDay = 0;
   var months = ['$months[0]','$months[1]','$months[2]','$months[3]','$months[4]','$months[5]','$months[6]','$months[7]','$months[8]','$months[9]','$months[10]','$months[11]'];
   var wdays = ['$wdays[0]', '$wdays[1]', '$wdays[2]', '$wdays[3]', '$wdays[4]', '$wdays[5]', '$wdays[6]'];
-  var tmonths = ['$tmonths[0]','$tmonths[1]','$tmonths[2]','$tmonths[3]','$tmonths[4]','$tmonths[5]','$tmonths[6]','$tmonths[7]','$tmonths[8]','$tmonths[9]','$tmonths[10]','$tmonths[11]','$tmonths[12]'];
   var dateField = null;
   function getProperty(p_property){
     var p_elm = calendarId;

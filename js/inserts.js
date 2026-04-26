@@ -272,6 +272,120 @@ function fix_date(date, last)
 	return year+user.datesep+month+user.datesep+day;
 }
 
+// Parse date in user format
+function parseDate(dateStr) {
+    const [d1,d2,d3] = dateStr.split(user.datesep);
+    var month, day, year;
+    switch(user.datefmt) {
+        case 0:
+        case 3: [month, day, year] = [d1,d2,d3];
+                break;
+        case 1:
+        case 4: [day, month, year] = [d1,d2,d3];
+                break;
+        case 2:
+        case 5: [year, month, day] = [d1,d2,d3];
+    }
+    if (user.datefmt>2) {
+        month = tmonths.indexOf(month);
+    }
+    [day,month,year] = [day, month, year].map(Number)
+
+    if (!month || !day || !year) return new Date();
+    return new Date(year, month - 1, day);
+}
+
+// Convert date into user format
+function formatDate(date) {
+    const mm = user.datefmt<3 ? String(date.getMonth() + 1).padStart(2, '0') : tmonths[date.getMonth()+1];
+    const dd = String(date.getDate()).padStart(2, '0');
+    const yyyy = date.getFullYear();
+
+    switch(user.datefmt) {
+        case 0:
+        case 3:
+             return `${mm}${user.datesep}${dd}${user.datesep}${yyyy}`;
+        case 1:
+        case 4:
+             return `${dd}${user.datesep}${mm}${user.datesep}${yyyy}`;
+        case 2:
+        case 5:
+             return `${yyyy}${user.datesep}${mm}${user.datesep}${dd}`;
+    }
+}
+
+// Function to add or subtract months, adjusting for month length
+function addMonths(date, months) {
+    const originalDay = date.getDate();
+    const newDate = new Date(date);
+    newDate.setDate(1); // Prevent overflow
+    newDate.setMonth(newDate.getMonth() + months);
+
+    // Determine the maximum days in the new month
+    const maxDay = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+    newDate.setDate(Math.min(originalDay, maxDay));
+
+    return newDate;
+}
+
+// Check if use sync date change
+function sync_date_change(input) {
+
+    return window.location.pathname.split('/').pop() == 'gl_journal.php' && input.name=='date_';
+}
+
+// Function to update date inputs
+function updateDateInputs(newDateStr, currentInput) {
+    if (sync_date_change(currentInput)) {
+        const dateInputs = document.querySelectorAll('input.date');
+        dateInputs.forEach(input => {
+            input.value = newDateStr;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    } else {
+        currentInput.value = newDateStr;
+        currentInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+}
+// Function to handle keydown events in date fields
+function handleKeyDown(event) {
+
+    if (!(event.altKey && event.shiftKey)) return;
+
+    const input = event.target;
+    if (!input.classList.contains('date')) return;
+
+    const date = parseDate(input.value);
+    if (!date) return;
+
+    let newDate;
+    switch (event.key) {
+        case 'ArrowLeft':
+            event.preventDefault();
+            newDate = new Date(date);
+            newDate.setDate(newDate.getDate() - 1);
+            break;
+        case 'ArrowRight':
+            event.preventDefault();
+            newDate = new Date(date);
+            newDate.setDate(newDate.getDate() + 1);
+            break;
+        case 'ArrowUp':
+            event.preventDefault();
+            newDate = addMonths(date, -1);
+            break;
+        case 'ArrowDown':
+            event.preventDefault();
+            newDate = addMonths(date, 1);
+            break;
+        default:
+            return;
+    }
+
+    const newDateStr = formatDate(newDate);
+    updateDateInputs(newDateStr, input);
+}
+
 /*
  Behaviour definitions
 */
@@ -288,16 +402,16 @@ var inserts = {
 				_set_combo_input(e);
 		}
 		else
-    		if(e.type == 'text' ) {
-   	  			e.onkeydown = function(ev) {
-  					ev = ev||window.event;
-  					key = ev.keyCode||ev.which;
- 	  				if(key == 13) {
+			if(e.type == 'text' ) {
+				e.onkeydown = function(ev) {
+					ev = ev||window.event;
+					key = ev.keyCode||ev.which;
+					if(key == 13) {
 						if(e.className == 'searchbox') e.onblur();
 						return false;
 					}
 					return true;
-	  			}
+				}
 			}
 	},
 	'input.combo2,input[aspect="fallback"]':
@@ -375,6 +489,7 @@ var inserts = {
 	},
 	'.date':
 		function(e) {
+			e.addEventListener('keydown', handleKeyDown);
 			e.setAttribute('_last_val', e.value);
 			e.setAttribute('autocomplete', 'off');
   		  	e.onblur = function() {
