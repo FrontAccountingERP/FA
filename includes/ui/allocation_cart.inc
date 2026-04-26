@@ -53,12 +53,12 @@ class allocation
 	}
 
 	function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, 
-		$current_allocated, $ref)
+		$current_allocated, $ref, $foreign_ref)
 	{
 		if (floatcmp($amount, 0))
 		{
 			$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, 
-				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref);
+				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref, $foreign_ref);
 			return true;
 		} 
 		else 
@@ -68,12 +68,12 @@ class allocation
 	}
 	
 	function update_item($index, $type, $type_no, $date_, $due_date, 
-		$amount, $amount_allocated, $current_allocated, $ref)
+		$amount, $amount_allocated, $current_allocated, $ref, $foreign_ref)
 	{
 		if (floatcmp($amount, 0))
 		{
 			$this->allocs[$index] = new allocation_item($type, $type_no, 
-				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref);
+				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref, $foreign_ref);
 			return true;
 		} 
 		else 
@@ -83,7 +83,7 @@ class allocation
 	}
 	
 	function add_or_update_item($type, $type_no, $date_, $due_date, 
-		$amount, $amount_allocated, $current_allocated, $ref)
+		$amount, $amount_allocated, $current_allocated, $ref, $foreign_ref)
 	{
 		for ($i = 0; $i < count($this->allocs); $i++) 
 		{
@@ -91,11 +91,11 @@ class allocation
 			if (($item->type == $type) && ($item->type_no == $type_no)) 
 			{
 				return $this->update_item($i, $type, $type_no, $date_, $due_date, 
-					$amount, $amount_allocated, $current_allocated, $ref);
+					$amount, $amount_allocated, $current_allocated, $ref, $foreign_ref);
 			}
 		}
         return $this->add_item($type, $type_no, $date_, $due_date, 
-        	$amount, $amount_allocated, $current_allocated, $ref);
+        	$amount, $amount_allocated, $current_allocated, $ref, $foreign_ref);
 	}
 
 	//
@@ -154,7 +154,7 @@ class allocation
 					$myrow["Total"], // trans total
 					$myrow["alloc"], // trans total allocated
 					0,
-					$myrow["reference"]); // this allocation
+					$myrow["reference"], $this->person_type==PT_SUPPLIER ? $myrow["supp_reference"] : $myrow["customer_ref"]);
 			}
 		}
 		if ($this->trans_no == 0) return; // this is new payment
@@ -178,7 +178,8 @@ class allocation
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
 				$myrow["Total"],
-				$myrow["alloc"] - $myrow["amt"], $myrow["amt"], $myrow["reference"]);
+				$myrow["alloc"] - $myrow["amt"], $myrow["amt"], $myrow["reference"],
+				$this->person_type==PT_SUPPLIER ? $myrow["supp_reference"] : $myrow["customer_ref"]);
 		}
 
 		/* Finally, if there any unallocated money remaining, assign the unallocated portion to
@@ -275,15 +276,17 @@ class allocation_item
 	var $ref;
 	
 	var $current_allocated;
-	
+	var $foreign_ref;
+
 	function __construct($type, $type_no, $date_, $due_date, $amount, 
-		$amount_allocated, $current_allocated, $ref)
+		$amount_allocated, $current_allocated, $ref, $foreign_ref)
 	{
 
 		$this->type = $type;
 		$this->type_no = $type_no;
 
 		$this->ref = $ref;
+		$this->foreign_ref = $foreign_ref;
 
 		$this->date_ = $date_;
 		$this->due_date = $due_date;
@@ -309,7 +312,7 @@ function show_allocatable($show_totals) {
 	{
 		display_heading(sprintf(_("Allocated amounts in %s:"), $cart->person_curr));
 		start_table(TABLESTYLE, "width='60%'");
-   		$th = array(_("Transaction Type"), _("#"), $supp_ref ? _("Supplier Ref"): _("Ref"), _("Date"), _("Due Date"), _("Amount"),
+   		$th = array(_("Transaction Type"), _("#"), _("Ref"), $supp_ref ? _("Supplier Ref") : _("Customer Ref"), _("Date"), _("Due Date"), _("Amount"),
    			_("Other Allocations"), _("Left to Allocate"), _("This Allocation"),'','');
 
 	   	table_header($th);
@@ -322,6 +325,7 @@ function show_allocatable($show_totals) {
     			label_cell($systypes_array[$alloc_item->type]);
 	   			label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no), "nowrap align='right'");
 		   		label_cell($alloc_item->ref);
+		   		label_cell($alloc_item->foreign_ref);
     			label_cell($alloc_item->date_, "align=right");
     			label_cell($alloc_item->due_date, "align=right");
 	    		amount_cell(abs($alloc_item->amount));

@@ -149,7 +149,7 @@ function get_allocatable_purch_orders($supplier_id = null, $trans_no=null, $type
 		due_dates.date as due_date,
 		supplier.address,
 		amt,
-		requisition_no as supp_ref
+		requisition_no as supp_reference
 		FROM ".TB_PREF."purch_orders as porder
 			LEFT JOIN ".TB_PREF."suppliers as supplier ON porder.supplier_id = supplier.supplier_id
 			LEFT JOIN ".TB_PREF."supp_allocations as alloc
@@ -181,7 +181,7 @@ function get_allocatable_to_supp_transactions($supplier_id=null, $trans_no=null,
 	$sql = "SELECT
 		trans.type,
 		trans.trans_no,
-		IF(trans.supp_reference='',trans.reference,trans.supp_reference) as reference,
+		trans.reference as reference,
  		trans.tran_date,
 		supplier.supp_name, 
 		supplier.curr_code, 

@@ -149,7 +149,8 @@ function get_allocatable_sales_orders($customer_id = null, $trans_no=null, $type
 		sorder.version,
 		amt,
 		sorder.debtor_no,
-		sorder.branch_code
+		sorder.branch_code,
+		sorder.customer_ref
 		FROM ".TB_PREF."sales_orders as sorder
 			LEFT JOIN ".TB_PREF."debtors_master as debtor ON sorder.debtor_no = debtor.debtor_no
 			LEFT JOIN ".TB_PREF."cust_allocations as alloc 
@@ -192,8 +193,11 @@ function get_allocatable_to_cust_transactions($customer_id = null, $trans_no=nul
 		trans.version,
 		amt,
 		trans.debtor_no,
-		trans.branch_code
+		trans.branch_code,
+		customer_ref
 	 FROM ".TB_PREF."debtor_trans as trans
+			LEFT JOIN (SELECT customer_ref, order_no FROM ".TB_PREF."sales_orders WHERE trans_type=".ST_SALESORDER.") as ord
+				ON trans.order_ = ord.order_no
 			LEFT JOIN ".TB_PREF."cust_allocations as alloc
 				ON trans.trans_no = alloc.trans_no_to AND trans.type = alloc.trans_type_to AND alloc.person_id=trans.debtor_no,"
 	 		.TB_PREF."debtors_master as debtor
