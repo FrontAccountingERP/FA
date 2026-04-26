@@ -237,6 +237,9 @@
 			$this->formData['domicile'] = $this->company['domicile'];
 			$Payment_Terms = '';
 			$this->title = _("STATEMENT");
+            $Addr2 = $Addr1;
+	        $Addr1['title'] = $Addr1['name'] = $Addr1['address'] = '';
+
 			$aux_info = array(
 				_("Customer's Reference") => '',
 				_("Sales Person") => '',
@@ -244,7 +247,7 @@
 				_("Our Order No") => '',
 				_("Delivery Date") => '',
 			);
-			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Debits"),
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Customer Ref"), _("DueDate"), _("Debits"),
 				_("Credits"), _("Allocated"), _("Outstanding"));
 	}
 
