@@ -16,6 +16,12 @@
 
 class archive
 {
+	var $options = array();
+	var $files = array();
+	var $exclude = array();
+	var $storeonly = array();
+	var $error = array();
+
 	function __construct($name)
 	{
 		$this->options = array (
@@ -33,10 +39,6 @@ class archive
 			'type' => "",
 			'comment' => ""
 		);
-		$this->files = array ();
-		$this->exclude = array ();
-		$this->storeonly = array ();
-		$this->error = array ();
 	}
 
 	function set_options($options)
