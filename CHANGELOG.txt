@@ -1,3 +1,104 @@
+2026-04-28 11:44:38 +0200 Joe Hunt 
+New Release 2.4.20
+M	version.php
+
+2026-04-26 19:24:49 +0200 Janusz Dobrowolski 
+Install/Activate Extensions: fixed deprecation warning on php >=8.2.
+M	includes/archive.inc
+
+2026-04-26 18:46:26 +0200 Janusz Dobrowolski 
+[0005751] Customer Payments, Supplier Payments: added contractor reference for easier allocations.
+M	includes/ui/allocation_cart.inc
+M	purchasing/includes/db/suppalloc_db.inc
+M	sales/includes/db/custalloc_db.inc
+
+2026-04-26 16:55:21 +0200 Janusz Dobrowolski 
+[0005712] Added fast date input edition with keyboard shortcuts (CtrlAlt-Arrows).
+M	includes/ui/ui_view.inc
+M	js/inserts.js
+
+2026-04-26 16:47:46 +0200 Janusz Dobrowolski 
+[0005752] Customer Statements Report: added customer reference column.
+M	reporting/includes/doctext.inc
+M	reporting/rep108.php
+
+2026-04-25 21:47:07 +0200 Janusz Dobrowolski 
+[0005738] Customer/Supplier Allocation Inquiry: changed default sort order to ascending by Due Date.
+M	purchasing/inquiry/supplier_allocation_inquiry.php
+M	sales/inquiry/customer_allocation_inquiry.php
+
+2026-04-25 21:16:20 +0200 Janusz Dobrowolski 
+[0005750] Fixed hangs on barcode generation.
+M	inventory/manage/items.php
+
+2026-04-25 18:55:38 +0200 Janusz Dobrowolski 
+Attachments should be deleted when related document/entity is deleted. Fixes [0005757].
+M	admin/db/attachments_db.inc
+M	admin/db/fiscalyears_db.inc
+M	gl/includes/db/gl_db_bank_accounts.inc
+M	gl/includes/db/gl_journal.inc
+M	inventory/includes/db/items_db.inc
+M	manufacturing/includes/db/work_orders_db.inc
+M	purchasing/includes/db/po_db.inc
+M	purchasing/includes/db/suppliers_db.inc
+M	sales/includes/db/customers_db.inc
+M	sales/includes/db/sales_order_db.inc
+
+2026-04-24 23:14:46 +0200 Janusz Dobrowolski 
+[0005737] Attachment editors: fixed input field width to underlying db field size.
+M	admin/attachments.php
+M	includes/ui/attachment.inc
+M	sales/includes/ui/sales_order_ui.inc
+
+2026-04-17 12:51:17 +0200 Janusz Dobrowolski 
+Database procedures in reports fixed to be compliant with codebase rules.
+M	reporting/rep102.php
+M	reporting/rep108.php
+M	reporting/rep114.php
+M	reporting/rep115.php
+M	reporting/rep201.php
+M	reporting/rep202.php
+M	reporting/rep203.php
+M	reporting/rep206.php
+M	reporting/rep501.php
+M	reporting/rep601.php
+M	reporting/rep602.php
+
+2026-04-17 00:21:04 +0200 Janusz Dobrowolski 
+Fixed safety issues in bank and audit reports.
+M	gl/includes/db/gl_db_trans.inc
+M	reporting/rep601.php
+M	reporting/rep710.php
+
+2026-04-16 23:41:14 +0200 Janusz Dobrowolski 
+Multiply cleanups/security fixes in attachments editor.
+M	includes/ui/attachment.inc
+
+2026-04-18 15:46:41 +0200 Joe 
+$trans_no missing in purch_order definition class.
+M	purchasing/includes/po_class.inc
+
+2026-02-26 11:44:04 +0100 Joe 
+EXCHANGE-RATES.ORG can now also fetch historical rates. Fixed
+M	gl/includes/db/gl_db_rates.inc
+
+2026-02-10 00:48:27 +0100 Joe 
+New exchange-rates.org update
+M	gl/includes/db/gl_db_rates.inc
+
+2025-11-11 16:25:45 +0100 Joe 
+Changed Bank Account Reconcile to sort descending.
+M	includes/ui/ui_lists.inc
+
+2025-11-11 16:08:01 +0100 Joe 
+Added two XRPL Payment Links. By Leslie Proud.
+M	includes/ui/ui_view.inc
+M	reporting/rep107.php
+
+2025-11-07 15:42:22 +0100 Joe 
+Rerun CHANGELOG.txt
+M	CHANGELOG.txt
+
 2025-11-07 15:36:35 +0100 Joe 
 Release 2.4.19
 M	CHANGELOG.txt
