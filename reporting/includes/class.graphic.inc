@@ -262,15 +262,15 @@ class Chart
 		$this->legend_box_height  += (14 * $this->num_labels);
 		for ($i = 0; $i < $this->num_labels; $i++)
 		{
-			if (strlen($this->labels[$i]) > MAXLEN)
-				$this->labels[$i] = substr($this->labels[$i], 0, MAXLEN)."...";
-			if (strlen($this->labels[$i]) > strlen($this->max_label))
+			if (mb_strlen($this->labels[$i]) > MAXLEN)
+				$this->labels[$i] = mb_substr($this->labels[$i], 0, MAXLEN)."...";
+			if (mb_strlen($this->labels[$i]) > mb_strlen($this->max_label))
 				$this->max_label = $this->labels[$i];
 		}
 		for ($j = 0; $j < $this->num_series; $j++)
 		{
 			$this->sum_total[$j] = 0;
-			if (strlen($this->series[$j]['label']) > strlen($this->max_legend_str))
+			if (mb_strlen($this->series[$j]['label']) > mb_strlen($this->max_legend_str))
 				$this->max_legend_str = $this->series[$j]['label'];
 			for ($i = 0; $i < $this->num_labels; $i++)
 			{
@@ -333,7 +333,7 @@ class Chart
 			}
 			$higher_value_y	   = $this->graphic_area_y1 + (0.1 * $this->graphic_area_height);
 			$this->higher_value_size = 0.9 * $this->graphic_area_height;
-			$less  = 7 * strlen($this->higher_value_str);
+			$less  = 7 * ($this->higher_value_str);
 			if ($this->stream == 'svg')
 			{
 				$this->svg->line($this->graphic_area_x1, $higher_value_y, $this->graphic_area_x2, $higher_value_y, $this->color['bg_lines']);
@@ -358,8 +358,8 @@ class Chart
 				if ($i % 2 == 0) 
 				{
 					$value = $this->number_formated($this->higher_value * $i / 10, $this->dec1);
-					$len1 = strlen($this->higher_value_str);
-					$len2 = strlen($value);
+					$len1 = mb_strlen($this->higher_value_str);
+					$len2 = mb_strlen($value);
 					if ($len2 < $len1)
 						$len2 += ($len1-$len2-1);
 					$less = 7 * $len2;
@@ -420,7 +420,7 @@ class Chart
 					imageline($this->img, ($this->graphic_area_x1+$dec_x), $this->graphic_area_y1, ($this->graphic_area_x1+$dec_x), $this->graphic_area_y2, $this->color['bg_lines']);
 				if ($i % 2 == 0) 
 				{
-					$alt   = (strlen($this->max_value) > 4 && $alt != 15) ? 15 : 2;
+					$alt   = (mb_strlen($this->max_value) > 4 && $alt != 15) ? 15 : 2;
 					$value = $this->number_formated($this->higher_value * $i / 10, $this->dec1);
 					if ($this->stream == 'svg')
 						$this->svg->text((($this->graphic_area_x1+$dec_x) - ($this->string_width($this->higher_value, $this->size)/2)), ($this->graphic_area_y2+$alt+18), $value, $this->size, $this->color['axis_values'], false, $this->align);
@@ -1185,9 +1185,9 @@ class Chart
 			if (!empty($this->axis_x)) // Only first serie [0]
 			{
 				if ($this->stream == 'svg')
-					$this->svg->text(((($x1+$x1+$total_len)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x." (".$this->series[0]['label'].")", $this->size, $this->color['title'], false, $this->align);
+					$this->svg->text(((($x1+$x1+$total_len)/2) - (mb_strlen($this->axis_x)*7/2)), $y, $this->axis_x." (".$this->series[0]['label'].")", $this->size, $this->color['title'], false, $this->align);
 				else
-					$this->_imagestring($this->img, $this->size, (($x1+$x1+$total_len)/2 - strlen($this->axis_x)*7/2)+30, $y, 
+					$this->_imagestring($this->img, $this->size, (($x1+$x1+$total_len)/2 - mb_strlen($this->axis_x)*7/2)+30, $y, 
 					$this->axis_x."-".$this->series[0]['label'], $this->color['title']);
 				$y += 25;
 			}
@@ -1243,7 +1243,7 @@ class Chart
 
 	function calculate_higher_value() 
 	{
-		$digits	  = strlen(round($this->max_value));
+		$digits	  = mb_strlen(round($this->max_value));
 		$interval = pow(10, ($digits-1));
 		$this->higher_value = round(($this->max_value - (round($this->max_value) % $interval) + $interval), 1);
 		$this->higher_value_str = $this->number_formated($this->higher_value, $this->dec1);
@@ -1335,7 +1335,7 @@ class Chart
 	function colorLuminate($hex, $percent) // Color lightner, minus is darker
 	{
 		$hex = ltrim($hex, '#');
-		if (strlen($hex) == 3) {
+		if (mb_strlen($hex) == 3) {
 			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
 		}
 		$hex = array_map('hexdec', str_split($hex, 2));
@@ -1395,8 +1395,8 @@ class Chart
 				$alt_len = 18;
 			else
 				$alt_len = 12;
-			if (strlen($string) > $alt_len)
-				$string = substr($string, 0, $alt_len);
+			if (mb_strlen($string) > $alt_len)
+				$string = mb_substr($string, 0, $alt_len);
 		}		
 		if ($this->encoding == 'UTF-8')
 		{
