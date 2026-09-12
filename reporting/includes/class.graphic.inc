@@ -333,7 +333,7 @@ class Chart
 			}
 			$higher_value_y	   = $this->graphic_area_y1 + (0.1 * $this->graphic_area_height);
 			$this->higher_value_size = 0.9 * $this->graphic_area_height;
-			$less  = 7 * ($this->higher_value_str);
+			$less  = 7 * mb_strlen($this->higher_value_str);
 			if ($this->stream == 'svg')
 			{
 				$this->svg->line($this->graphic_area_x1, $higher_value_y, $this->graphic_area_x2, $higher_value_y, $this->color['bg_lines']);
