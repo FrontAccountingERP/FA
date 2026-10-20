@@ -400,6 +400,8 @@ function find_custom_file($rep)
 	Changes all not POSIX compatible chars to underscore.
 */
 function clean_file_name($filename) {
+    if ($filename === null)
+        return '';
     $filename = str_replace(chr(0), '', $filename);
     return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
 }

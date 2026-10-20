@@ -13,14 +13,17 @@
 // Mark changes in debtor_trans_details
 //
 function update_customer_trans_version($type, $versions) {
+	if (empty($versions))
+		return true;
 
+	$where = array();
 	$sql= 'UPDATE '.TB_PREF. 'debtor_trans SET version=version+1
 			WHERE type='.db_escape($type).' AND (';
 
 	foreach ($versions as $trans_no=>$version)
 		$where[] = 	'(trans_no='.db_escape($trans_no).' AND version='.$version.')';
 
-		$sql .= implode(' OR ', $where) .')';
+	$sql .= implode(' OR ', $where) .')';
 
 	return  db_query($sql, 'Concurrent editing conflict');
 }

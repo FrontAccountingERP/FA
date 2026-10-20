@@ -2675,8 +2675,7 @@ function subledger_list_cells($label, $name, $account, $selected_id=null)
 	echo "</td>\n";
 }
 
-function subledger_list_row($label, $name, $selected_id=null, $all_option = false, 
-	$submit_on_change=false, $show_inactive=false, $editkey = false)
+function subledger_list_row($label, $name, $account, $selected_id=null)
 {
 	echo "<tr><td class='label'>$label</td><td nowrap>";
 	echo subledger_list($name, $account, $selected_id);

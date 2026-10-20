@@ -77,6 +77,7 @@ function print_statements()
 
 	$orientation = ($orientation ? 'L' : 'P');
 	$dec = user_price_dec();
+	$date = date2sql(Today());
 
 	$cols = array(4, 70, 120, 170, 280, 320, 360, 410, 460, 515);
 
@@ -106,6 +107,7 @@ function print_statements()
 			continue;
 		}	
 
+		$date = $myrow['tran_date'];
 		$myrow['order_'] = "";
 
 		$TransResult = getTransactions($myrow['debtor_no'], $show_also_allocated);

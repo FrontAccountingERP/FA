@@ -613,7 +613,7 @@ class Chart
 							$r = $this->imageSpline($p);
 							if ($r == false)
 								break;
-							while (list ($xx, $yy) = each($r)) 
+							foreach ($r as $xx => $yy)
 							{
 								imagefilledellipse($this->img, round($xx), round($yy)+1, 3, 3, $this->color['line'][$j]);
 								if ($this->series[$j]['fill'] == true)

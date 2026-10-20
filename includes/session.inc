@@ -331,8 +331,11 @@ function strip_quotes($data)
 */
 function html_specials_encode($str)
 {
-	return htmlspecialchars($str, ENT_QUOTES, $_SESSION['language']->encoding=='iso-8859-2' ?
-		 'ISO-8859-1' : $_SESSION['language']->encoding);
+	if ($str === null)
+		return '';
+	$encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : 'ISO-8859-1';
+	return htmlspecialchars($str, ENT_QUOTES, strtolower($encoding) == 'iso-8859-2' ?
+		 'ISO-8859-1' : $encoding);
 }
 
 function html_cleanup(&$parms)
@@ -533,8 +536,9 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
 		{
 			// strip ajax marker from uri, to force synchronous page reload
+			$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', html_specials_encode($_SERVER['REQUEST_URI'])),
+					'', html_specials_encode($uri)),
 				'post' => $_POST);
 		if (in_ajax())
 			$Ajax->popup($path_to_root ."/access/timeout.php");
