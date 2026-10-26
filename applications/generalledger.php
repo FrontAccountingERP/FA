@@ -28,6 +28,10 @@ class general_ledger_app extends application
 			"gl/gl_budget.php?", 'SA_BUDGETENTRY', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("&Reconcile Bank Account"),
 			"gl/bank_account_reconcile.php?", 'SA_RECONCILE', MENU_TRANSACTION);
+		$this->add_rapp_function(0, _("Bank Statement &Import"),
+			"gl/bank_statement_import.php?", 'SA_BANKIMPORT', MENU_TRANSACTION);
+		$this->add_rapp_function(0, _("Bank Import &Rules"),
+			"gl/bank_import_rules.php?", 'SA_BANKIMPORT', MENU_TRANSACTION);
 		$this->add_rapp_function(0, _("Revenue / &Costs Accruals"),
 			"gl/accruals.php?", 'SA_ACCRUALS', MENU_TRANSACTION);
 

@@ -555,7 +555,7 @@ if (!defined('FA_LOGOUT_PHP_FILE')){
 				$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 				$_POST["user_name_entry_field"], $_POST["password"]);
 			// select full vs fallback ui mode on login
-			$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
+			$_SESSION["wa_current_user"]->ui_mode = isset($_POST['ui_mode']) ? $_POST['ui_mode'] : 0;
 			if (!$succeed)
 			{
 			// Incorrect password

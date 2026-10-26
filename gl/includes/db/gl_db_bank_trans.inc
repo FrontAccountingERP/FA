@@ -110,6 +110,44 @@ function get_bank_trans_for_bank_account($bank_account, $from, $to)
 
 //----------------------------------------------------------------------------------------
 
+// Returns the set of transactions (as "type:trans_no" keys) that have a posting
+// line on $gl_account in the given date range. The bank inquiry intersects this
+// with the rows of the account it is showing, so only bank transactions coded to
+// $gl_account survive (no need to join back to the bank GL account, and no risk
+// of trans_no collisions across transaction types).
+function get_bank_trans_gl_account_keys($gl_account, $from, $to)
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "SELECT DISTINCT type, type_no
+		FROM ".TB_PREF."gl_trans
+		WHERE account=".db_escape($gl_account)."
+			AND tran_date >= '$from'
+			AND tran_date <= '$to'";
+
+	$result = db_query($sql, "could not retrieve the transactions for the selected GL account");
+
+	$keys = array();
+	while ($row = db_fetch($result))
+		$keys[$row['type'].':'.$row['type_no']] = true;
+
+	return $keys;
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_bank_trans_date_range($bank_account)
+{
+	$sql = "SELECT MIN(trans_date) first_date, MAX(trans_date) last_date
+		FROM ".TB_PREF."bank_trans
+		WHERE bank_act=".db_escape($bank_account);
+	$result = db_query($sql, "could not retrieve the bank transaction date range");
+
+	return db_fetch($result);
+}
+
+//----------------------------------------------------------------------------------------
+
 function get_balance_before_for_bank_account($bank_account, $from)
 {
 	$from = date2sql($from);
